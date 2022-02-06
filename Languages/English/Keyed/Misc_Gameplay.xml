@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<ShipStatsShipName>Ship name: {0}</ShipStatsShipName>
+	<ShipStatsNotoriety>Notoriety: {0}</ShipStatsNotoriety>
+	<ShipStatsShipMass>Weight: {0}</ShipStatsShipMass>
+	<ShipStatsShipMaxTakeoff>Maximum takeoff weight: {0}</ShipStatsShipMaxTakeoff>
+	<ShipStatsShipEnergy>Stored power: {0} / {1} Wd</ShipStatsShipEnergy>
+	<ShipStatsShipHeat>Stored heat: {0} / {1}</ShipStatsShipHeat>
+	<ShipStatsShipCombatRating>Combat rating: {0}</ShipStatsShipCombatRating>
+	<ShipStatsShipCombatThrust>Thrust/Weight ratio: {0}</ShipStatsShipCombatThrust>
+	<ShipStatsChemfuel>Chemfuel needed for takeoff: {0}</ShipStatsChemfuel>
+	<ShipReportInterReady>Ready for interstellar travel.</ShipReportInterReady>
+	<ShipReportInterNotReady>Not ready for interstellar travel:</ShipReportInterNotReady>
+	<ShipReportNeedPilot>Ship requires either a pilot or an AI core.</ShipReportNeedPilot>
+	<ShipNeedsMoreChemfuel>Ship has {0} units of chemfuel, but it needs {1}.</ShipNeedsMoreChemfuel>
+	<ShipNeedsMorePower>Ship requires {0} Wd of stored power.</ShipNeedsMorePower>
+	<ShipNeedsMoreJTEngines>Ship requires more JT engines due to its size.</ShipNeedsMoreJTEngines>
+	<ShipPlanetLeave>Go to new planet</ShipPlanetLeave>
+	<ShipPlanetLeaveDesc>Leave this planet behind and find a new rimworld to settle</ShipPlanetLeaveDesc>
+	<ShipPlanetReturn>Return to visited planet</ShipPlanetReturn>
+	<ShipPlanetReturnDesc>Return to a planet you have previously visited</ShipPlanetReturnDesc>
+	<ShipPlanetReturnTo>To which planet would you like to return?</ShipPlanetReturnTo>
+	<ShipAbandonColoniesWarning>You are about to embark on a journey spanning years or decades, during which time no communication with your planet-bound colonies will be possible. It is unlikely they will be able to survive on their own.\n\nFurthermore, any colonists or animals aboard the ship will not survive the journey unless they are in cryptosleep.\n\nGive this order only if you are willing to abandon everyone and everything left behind.</ShipAbandonColoniesWarning>
+	<ShipAbandonColoniesWarningPK>Due to the incoming planetkiller, you will not be able to return to this world.\n\nFurthermore, any colonists or animals aboard the ship will not survive the journey unless they are in cryptosleep.\n\nGive this order only if you are willing to abandon everyone and everything left behind.</ShipAbandonColoniesWarningPK>
+	<ChooseAllyToTakeColony>Before you leave, you can send a message to an allied faction, offering them your colony's buildings and any colonists left behind. Should you ever return to this planet, you may find that your former colony has become a thriving settlement of that faction.</ChooseAllyToTakeColony>
+	
+	<SoSHibernatableHibernating>Momentum buildup critical</SoSHibernatableHibernating>
+    <SoSHibernatableStartingUp>Discharging</SoSHibernatableStartingUp>
+	<SoSHibernateWarningStandalone>The drive is ready to begin discharging its stored momentum. Once this is done, your colonists will be able to safely disassemble the drive and retrieve its Entanglement Manifold.\n\nThe process will take about 15 days, and the energy signature will be detectable from a long distance away. This sort of energy signature indicates interstellar flight capability, and will attract gangs of desperate raiders and swarms of deadly mechanoids.\n\nYou will be assaulted with an intensity you've never seen. Make sure your defenses are prepared first.</SoSHibernateWarningStandalone>
+    <SoSCommandShipStartup>Begin discharge</SoSCommandShipStartup>
+    <SoSCommandShipStartupDesc>Discharge the drive's stored momentum.</SoSCommandShipStartupDesc>
+	
+	<SpaceSiteFuelCost>Fuel cost: {0}%</SpaceSiteFuelCost>
+	<ShipForceExitAndRemoveMapCountdown>Entering atmosphere in {0}</ShipForceExitAndRemoveMapCountdown>
+	<ShipBurnupPlayer>Orbit failiure!</ShipBurnupPlayer>
+	<ShipBurnupPlayerDesc>With the loss of the last ship bridge this map can no longer maintain its orbit and will enter the atmoshpere in {0} days! \n\nEveryting on it will be destroyed!</ShipBurnupPlayerDesc>
+	<ShipBurnupPlayerPrevented>Building a ship bridge has allowed you to stabilize the orbit.</ShipBurnupPlayerPrevented>
+	<ShipBurnUpCountdown>Entering atmosphere in {0}!</ShipBurnUpCountdown>
+	<ShipBurnUpCountdownTip>This map will enter atmosphere in {0}. Everything on it will be destroyed.</ShipBurnUpCountdownTip>
+	
+	<UnfoldStatus>Status: </UnfoldStatus>
+	<UnfoldRetracted>Retracted</UnfoldRetracted>
+	<UnfoldExtended>Extended</UnfoldExtended>
+	<UnfoldExtending>Extending</UnfoldExtending>
+	<UnfoldRetracting>Retracting</UnfoldRetracting>
+	
+    <ShipHeatStored>Grid heat stored/capacity: {0} HU / {1} HU</ShipHeatStored>
+	<CannotFireDueToHeat>{0} cannot fire: not enough heatsink capacity</CannotFireDueToHeat>
+	<CannotFireDueToPower>{0} cannot fire: not enough power</CannotFireDueToPower>
+	<CannotFireDueToAmmo>{0} cannot fire: not enough ammo</CannotFireDueToAmmo>
+	<ShipCombatShieldBroken>Our shield has broken due to lack of heat capacity!</ShipCombatShieldBroken>
+	<ShipCombatShieldBrokenEnemy>Enemy shield has broken due to lack of heat capacity!</ShipCombatShieldBrokenEnemy>
+	<ShipAirlockHacked>Airlock hack successful!</ShipAirlockHacked>
+	<ShipAirlockHackFailed>Airlock hacking failed!</ShipAirlockHackFailed>
+	<ShipAirlockBreached>Airlock breached!</ShipAirlockBreached>
+	<ShipCombatTooltip>Shows the enemy ship's distance from your ship, and all projectiles currently in flight.\n\nRED range: All weapons can fire. Railguns are highly inaccurate.\n\nGREEN range: Plasma cannons, railguns, and torpedoes can fire. Railguns are moderately accurate.\n\nBLUE range: Only railguns and torpedoes can fire. Railguns are highly accurate.</ShipCombatTooltip>
+	<ShipAmplifierCount>Amplifiers: {0}</ShipAmplifierCount>
+	<ShipSpinalCapNotFound>Spinal capacitor not found.</ShipSpinalCapNotFound>
+	<ShipTorpedoLoaded>Loaded: {0}</ShipTorpedoLoaded>
+	<ShipTorpedoNotLoaded>Not loaded</ShipTorpedoNotLoaded>
+	<shipTubeFullyLoaded>Fully loaded</shipTubeFullyLoaded>
+	<shipNoTorpedoes>No torpedoes</shipNoTorpedoes>
+	<MessageTurretWontFireBecausePointDefense>Warning: Turret will not target the enemy ship because it is set to Point Defense mode</MessageTurretWontFireBecausePointDefense>
+	<MessageShuttleMustBePartiallyFueled>Shuttle must have at least 25% fuel to launch a boarding action</MessageShuttleMustBePartiallyFueled>
+	<MessageShuttleMustBeFueledToLand>Shuttle must have at least 15% fuel to land.</MessageShuttleMustBeFueledToLand>
+	<MessageShuttleMustBeFueledToOrbit>Shuttle must have at least 80% fuel to reach orbit.</MessageShuttleMustBeFueledToOrbit>
+	
+	<MustPlaceNearSpinalMountPort>Must place adjacent to a spinal-mount module</MustPlaceNearSpinalMountPort>
+	<MustPlaceInsideShipFramework>Must place in a room bordered only by ship parts.</MustPlaceInsideShipFramework>
+	<MustPlaceInsideShip>Must place inside a fully enclosed ship hull.</MustPlaceInsideShip>
+	<MustPlaceOnShipHull>Must place on ship hull.</MustPlaceOnShipHull>
+	<MustNotPlaceOnShipPart>Space occupied.</MustNotPlaceOnShipPart>
+	
+	<NoSalvageBays>No salvage bays available</NoSalvageBays>
+	<EnemyShipRetreating>Enemy ship is attempting to retreat!</EnemyShipRetreating>
+	<EnemyShipRetreated>Enemy ship has escaped!</EnemyShipRetreated>
+	
+	<TradeShipComms>Communicating with </TradeShipComms>
+	<TradeShipTradeWith>Ask to trade with them.</TradeShipTradeWith>
+	<TradeShipTradeDecline>{0} does not want to trade with you due to your notoriety.</TradeShipTradeDecline>
+	<TradeShipPirate>Demand they hand over their cargo (This is an act of piracy!)</TradeShipPirate>
+	<TradeShipPirateEmpire>Our act of piracy against the Empire has not gone unnoticed!</TradeShipPirateEmpire>
+	<TradeShipTryingToFlee> has closed comms and is trying to flee!</TradeShipTryingToFlee>
+	<TradeShipAttack>After them!</TradeShipAttack>
+	<TradeShipFlee>Let them go.</TradeShipFlee>
+	<TradeShipPayBounty>Pay your bounty (cost: {0} silver)</TradeShipPayBounty>
+	<NotEnoughForBounty>need {0} silver near trade beacons</NotEnoughForBounty>
+	
+	<SporeNeedsName>Your archotech spore requests that you grant it a name.</SporeNeedsName>
+	<ArchoGift>Unlocks archotech gifts</ArchoGift>
+	<ArchotechGoodwillPlus>Psychically increase goodwill (+10, costs 3 field strength)</ArchotechGoodwillPlus>
+	<ArchotechGoodwillMinus>Psychically decrease goodwill (-10, costs 3 field strength)</ArchotechGoodwillMinus>
+	
+	<MechanitesInHomeArea>Mechanites!</MechanitesInHomeArea>
+    <MechanitesInHomeAreaDesc>Disassembler mechanites have infested the home area.</MechanitesInHomeAreaDesc>
+	<ArchotechSporeMoodLow>Archotech spore unhappy</ArchotechSporeMoodLow>
+	<ArchotechSporeMoodLowDesc>Your archotech spore's mood is low, and it may decide to start playing "pranks" on your crew.\n\nThe spore's mood can be improved slowly by having colonists meditate nearby, or quickly by sacrificing prisoners to it.</ArchotechSporeMoodLowDesc>
+	<ArchotechSporeMoodLowDescNoRoyalty>Your archotech spore's mood is low, and it may decide to start playing "pranks" on your crew.\n\nThe spore's mood can be improved by sacrificing prisoners' brains to it.</ArchotechSporeMoodLowDescNoRoyalty>
+	
+	<ShipQuestPillarA>Attack KSS Horizon</ShipQuestPillarA>
+	<ShipQuestPillarAdesc>Attempt to engage the ancient terraforming station and recover an archotech pillar</ShipQuestPillarAdesc>
+	<ShipQuestPillarB>Raid moon base</ShipQuestPillarB>
+	<ShipQuestPillarBdesc>Attack the mechanoid moon base and attempt to recover an archotech pillar.\n\nThis will also provoke a mechanoid warship!</ShipQuestPillarBdesc>
+	<MeditationFocusPerPillarAbstract>{1} per nearby archotech pillar (max {0})</MeditationFocusPerPillarAbstract>
+	<MeditationFocusPerPillar>{2} per nearby archotech pillar ({0} / {1})</MeditationFocusPerPillar>
+</LanguageData>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <SitePartDef>
+    <defName>SpaceValuableAsteroids</defName>
+    <label>valuable asteroids</label>
+	<description>Small rocks containing a high concentration of precious materials. Likely towed into orbit long ago, but never mined for some unknown reason.</description>
+    <siteTexture>UI/Asteroids_Icon</siteTexture>
+    <expandingIconTexture>UI/Asteroids_Icon</expandingIconTexture>
+    <handlesWorldObjectTimeoutInspectString>true</handlesWorldObjectTimeoutInspectString>
+	<tags>
+		<li>SpaceCore</li>
+	</tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>SpaceValuableAsteroids</defName>
+    <linkWithSite>SpaceValuableAsteroids</linkWithSite>
+    <order>420</order>
+    <genStep Class="GenStep_ValuableAsteroids">
+    </genStep>
+  </GenStepDef>
+  
+  <SitePartDef>
+    <defName>SpaceShipDebris</defName>
+    <label>ship debris</label>
+	<description>A fragment of a derelict ship. Sensors indicate multiple hull breaches and minimal power signature.</description>
+    <siteTexture>UI/shipChunk</siteTexture>
+    <expandingIconTexture>UI/shipChunk</expandingIconTexture>
+    <handlesWorldObjectTimeoutInspectString>true</handlesWorldObjectTimeoutInspectString>
+	<tags>
+		<li>SpaceCore</li>
+	</tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>SpaceShipDebris</defName>
+    <linkWithSite>SpaceShipDebris</linkWithSite>
+    <order>420</order>
+    <genStep Class="GenStep_ShipDebris">
+      <count>1</count>
+      <nearMapCenter>true</nearMapCenter>
+    </genStep>
+  </GenStepDef>
+
+  <SitePartDef>
+    <defName>SpaceHackableSatellite</defName>
+    <label>damaged satellites</label>
+	<description>Ancient satellites dating back to this world's original terraformation. If repaired, they could prove useful.</description>
+    <siteTexture>UI/Satellite_Icon</siteTexture>
+    <expandingIconTexture>UI/Satellite_Icon</expandingIconTexture>
+    <handlesWorldObjectTimeoutInspectString>true</handlesWorldObjectTimeoutInspectString>
+	<tags>
+		<li>SpaceCore</li>
+	</tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>SpaceHackableSatellite</defName>
+    <linkWithSite>SpaceHackableSatellite</linkWithSite>
+    <order>420</order>
+    <genStep Class="GenStep_HackableSatellite">
+      <count>1</count>
+      <nearMapCenter>true</nearMapCenter>
+    </genStep>
+  </GenStepDef>
+  
+  <!-- TODO Implement in a near-future version
+  <SitePartDef>
+    <defName>SpaceDistressSignal</defName>
+    <label>anomalous signals</label>
+		<description>The origin point of brief but high-intensity radio transmissions. It could be a scrambled distress signal, or perhaps a mechanoid hiveship communicating with its drones.</description>
+    <siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
+    <expandingIconTexture>UI/shipChunk</expandingIconTexture>
+    <forceExitAndRemoveMapCountdownDurationDays>15</forceExitAndRemoveMapCountdownDurationDays>
+	<tags>
+		<li>SpaceCore</li>
+	</tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>SpaceDistressSignal</defName>
+    <linkWithSite>SpaceDistressSignal</linkWithSite>
+    <order>480</order>
+    <genStep Class="GenStep_IntactShip">
+      <count>1</count>
+      <nearMapCenter>true</nearMapCenter>
+    </genStep>
+  </GenStepDef>
+  -->
+  
+  <SitePartDef>
+    <defName>BlackBoxMission</defName>
+    <label>starship bow</label>
+	<description>The front portion of an ancient starship. Scans indicate life signs and an active power signature.</description>
+    <siteTexture>UI/Ship_Bow_Icon_Quest</siteTexture>
+    <expandingIconTexture>UI/Ship_Bow_Icon_Quest</expandingIconTexture>
+    <handlesWorldObjectTimeoutInspectString>true</handlesWorldObjectTimeoutInspectString>
+	<tags>
+		<li>SpaceCore</li>
+		<li>SpaceBlackBox</li>
+	</tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>BlackBoxMission</defName>
+    <linkWithSite>BlackBoxMission</linkWithSite>
+    <order>420</order>
+    <genStep Class="GenStep_BlackBoxMission">
+    </genStep>
+  </GenStepDef>
+  
+  <SitePartDef>
+    <defName>SoSMayday</defName>
+    <label>downed ship</label>
+    <description>A downed starship.</description>
+    <siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
+    <expandingIconTexture>World/WorldObjects/Expanding/Sites/ItemStash</expandingIconTexture>
+    <handlesWorldObjectTimeoutInspectString>true</handlesWorldObjectTimeoutInspectString>
+    <tags>
+      <li>SoSMayday</li>
+    </tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>SoSMayday</defName>
+    <linkWithSite>SoSMayday</linkWithSite>
+    <order>420</order>
+    <genStep Class="GenStep_DownedShip">
+      <count>1</count>
+      <nearMapCenter>true</nearMapCenter>
+    </genStep>
+  </GenStepDef>
+</Defs>

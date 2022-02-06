@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- ============================== Big threats ==============================-->
+  
+  <IncidentDef>
+    <defName>ShipCombat</defName>
+    <label>ship combat</label>
+    <targetTags>
+      <li>Map_SpaceHome</li>
+    </targetTags>
+    <workerClass>IncidentWorker_ShipCombat</workerClass>
+    <baseChance>1</baseChance>
+    <category>ThreatBig</category>
+    <pointsScaleable>true</pointsScaleable>
+    <tale>ShipCombat</tale>
+  </IncidentDef>
+
+</Defs>

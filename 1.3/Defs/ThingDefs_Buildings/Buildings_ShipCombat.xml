@@ -1,0 +1,2448 @@
+<Defs>
+	<ThingDef ParentName="BaseWeapon" Name="BaseShipWeaponTurret" Abstract="True">
+		<destroyOnDrop>True</destroyOnDrop>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<canGenerateDefaultDesignator>false</canGenerateDefaultDesignator>
+		<tradeability>None</tradeability>
+		<useHitPoints>false</useHitPoints>
+		<weaponTags>
+			<li>TurretGun</li>
+		</weaponTags>
+		<weaponClasses>
+			<li>Ranged</li>
+		</weaponClasses>
+		<graphicData>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipWeaponTurret" Name="BaseShipArtilleryWeapon" Abstract="True">
+		<graphicData>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<weaponTags Inherit="False">
+		</weaponTags>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase" Name="BaseShipArtilleryBuilding" Abstract="True">
+		<thingClass>Building_ShipTurret</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<graphicData>
+			<graphicClass>Graphic_Single</graphicClass>
+			<texPath>Things/Building/Ship/Hardpoint</texPath>
+			<drawSize>(2,2)</drawSize>
+			<damageData>
+				<rect>(0.38,0.2,0.56375,0.8)</rect>
+				<cornerTL>Damage/Corner</cornerTL>
+			</damageData>
+			<shadowData>
+				<offset>(-0.13,-0.87,-0.1)</offset>
+				<volume>(0.5,0.4,1.05)</volume>
+			</shadowData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<size>(2,2)</size>
+		<passability>PassThroughOnly</passability>
+		<pathCost>50</pathCost>
+		<fillPercent>0.4</fillPercent>
+		<tickerType>Normal</tickerType>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<designationCategory>Ship</designationCategory>
+		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
+		<statBases>
+			<MaxHitPoints>1000</MaxHitPoints>
+			<Flammability>0.5</Flammability>
+			<WorkToBuild>8000</WorkToBuild>
+			<Mass>120</Mass>
+			<Beauty>0</Beauty>
+			<RangedWeapon_DamageMultiplier>1.0</RangedWeapon_DamageMultiplier>
+		</statBases>
+		<building>
+			<shipPart>true</shipPart>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_TurretTop</li>
+		</placeWorkers>
+		<uiIconScale>1.0</uiIconScale>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>HullFoamDistributor</defName>
+		<label>hullfoam distributor</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullFoamDistributor</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<researchPrerequisites>
+			<li>HullFoam</li>
+		</researchPrerequisites>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>0.8</fillPercent>
+		<blockLight>false</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<WorkToBuild>4000</WorkToBuild>
+			<MaxHitPoints>1500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>A pumping station for distributing hullfoam throughout a ship. When a portion of the ship's hull is destroyed in combat, this system will automatically patch the hole with hullfoam.</description>
+		<size>(3,3)</size>
+		<designationCategory>Ship</designationCategory>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>200</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_ShipPart"/>
+			<li Class="CompProperties_Refuelable">
+				<fuelCapacity>50.0</fuelCapacity>
+				<fuelFilter>
+					<thingDefs>
+						<li>HullFoam</li>
+					</thingDefs>
+				</fuelFilter>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+			</li>
+			<li Class="CompProperties_HullFoamDistributor"/>
+		</comps>
+		<rotatable>false</rotatable>
+		<building>
+			<shipPart>true</shipPart>
+		</building>
+		<costList>
+			<Steel>80</Steel>
+			<Plasteel>40</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<designationHotKey>Misc5</designationHotKey>
+	</ThingDef>
+	<DesignatorDropdownGroupDef>
+		<defName>Ship_Shields</defName>
+	</DesignatorDropdownGroupDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipCombatShieldGenerator</defName>
+		<label>shield generator</label>
+		<designatorDropdown>Ship_Shields</designatorDropdown>
+		<description>A shielding device which projects a momentum repulsor field. Shots can go out, but not in.\n\nGenerates heat when it blocks attacks. If no heatsink capacity is available, the shield will be damaged and require repairs.\n\nShip radiators cannot disperse heat while shields are up. Captains are advised to drop shields once heatsinks are close to capacity, or risk their ships turning into ovens.</description>
+		<size>(3,3)</size>
+		<receivesSignals>true</receivesSignals>
+		<statBases>
+			<MaxHitPoints>600</MaxHitPoints>
+			<Flammability>0.5</Flammability>
+			<WorkToBuild>8000</WorkToBuild>
+		</statBases>
+		<graphicData>
+			<texPath>Things/Building/Ship/ShieldGenerator</texPath>
+			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<drawSize>(3,3)</drawSize>
+			<shadowData>
+				<volume>(2.6, 0.8, 2.6)</volume>
+			</shadowData>
+			<damageData>
+				<rect>(0.2, 0.2, 2.8, 2.8)</rect>
+			</damageData>
+		</graphicData>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<placeWorkers>
+			<li>PlaceWorker_ShipProjectileInterceptorRadius</li>
+		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_ShipCombatShield">
+				<radius>40</radius>
+			</li>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>2000</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Breakdownable"/>
+		</comps>
+		<rotatable>false</rotatable>
+		<selectable>true</selectable>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<designationCategory>Ship</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<tickerType>Normal</tickerType>
+		<researchPrerequisites>
+			<li>ShipShields</li>
+		</researchPrerequisites>
+		<costList>
+			<Plasteel>120</Plasteel>
+			<Silver>800</Silver>
+			<Steel>40</Steel>
+			<ComponentSpacer>12</ComponentSpacer>
+		</costList>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase" Name="ShipHeatConduit">
+		<defName>ShipHeatConduit</defName>
+		<label>thermal conduit</label>
+		<description>A liquid conduit for moving heat around a starship.</description>
+		<thingClass>Building_ShipConduit</thingClass>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Ship/Atlas_CoolantConduit</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Custom4</li>
+			</linkFlags>
+			<damageData>
+				<rect>(0,0.35,1,0.3)</rect>
+			</damageData>
+		</graphicData>
+		<drawerType>MapMeshOnly</drawerType>
+		<uiIconPath>Things/Building/Ship/CoolantConduit_MenuIcon</uiIconPath>
+		<uiIconScale>0.7</uiIconScale>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<isInert>true</isInert>
+			<isEdifice>false</isEdifice>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Ship/Blueprint_Atlas_CoolantConduit</texPath>
+			</blueprintGraphicData>
+		</building>
+		<altitudeLayer>Conduits</altitudeLayer>
+		<passability>Standable</passability>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<statBases>
+			<MaxHitPoints>80</MaxHitPoints>
+			<WorkToBuild>35</WorkToBuild>
+			<Flammability>0.7</Flammability>
+			<Beauty>-2</Beauty>
+		</statBases>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
+		<costList>
+			<Steel>1</Steel>
+			<Plasteel>1</Plasteel>
+		</costList>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeat</compClass>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_ShipHeatConduit</li>
+		</placeWorkers>
+		<rotatable>false</rotatable>
+		<selectable>true</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<designationCategory>Ship</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<clearBuildingArea>false</clearBuildingArea>
+		<designationHotKey>Misc1</designationHotKey>
+		<researchPrerequisites>
+			<li>ShipHeatsink</li>
+		</researchPrerequisites>
+	</ThingDef>
+	<!-- heatsinks -->
+	<DesignatorDropdownGroupDef>
+		<defName>Ship_Heatsinks</defName>
+	</DesignatorDropdownGroupDef>
+	<ThingDef ParentName="BuildingBase" Name="ShipHeatsinkBase" Abstract="True">
+		<designatorDropdown>Ship_Heatsinks</designatorDropdown>
+		<thingClass>Building</thingClass>
+		<category>Building</category>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>0.8</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<rotatable>true</rotatable>
+		<selectable>true</selectable>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<designationCategory>Ship</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<tickerType>Normal</tickerType>
+		<placeWorkers>
+			<li>PlaceWorker_Heater</li>
+		</placeWorkers>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+	</ThingDef>
+	<ThingDef ParentName="ShipHeatsinkBase">
+		<defName>ShipHeatsink</defName>
+		<label>heatsink</label>
+		<description>A liquid-cooled heatsink for storing excess heat from weapons fire. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 150\nHeat released: 0.5/s</description>
+		<size>(2,2)</size>
+		<graphicData>
+			<texPath>Things/Building/Ship/Heatsink</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2.1,4.7)</drawSize>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>800</MaxHitPoints>
+			<WorkToBuild>3500</WorkToBuild>
+			<Flammability>0.7</Flammability>
+			<Beauty>-2</Beauty>
+		</statBases>
+		<costList>
+			<Steel>100</Steel>
+			<Plasteel>25</Plasteel>
+			<ComponentSpacer>2</ComponentSpacer>
+			<ComponentIndustrial>2</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSink</compClass>
+				<heatCapacity>150</heatCapacity>
+				<heatVentTick>120</heatVentTick>
+				<threat>2</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
+		</comps>
+		<researchPrerequisites>
+			<li>ShipHeatsink</li>
+		</researchPrerequisites>
+	</ThingDef>
+	<ThingDef ParentName="ShipHeatsinkBase">
+		<defName>ShipHeatsinkLarge</defName>
+		<label>large heatsink</label>
+		<description>A liquid-cooled heatsink for storing excess heat from weapons fire. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 750\nHeat released: 0.5/s</description>
+		<size>(4,4)</size>
+		<graphicData>
+			<texPath>Things/Building/Ship/HeatsinkLarge</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>1600</MaxHitPoints>
+			<WorkToBuild>12000</WorkToBuild>
+			<Flammability>0.7</Flammability>
+			<Beauty>-2</Beauty>
+		</statBases>
+		<costList>
+			<Steel>500</Steel>
+			<Plasteel>125</Plasteel>
+			<ComponentSpacer>10</ComponentSpacer>
+			<ComponentIndustrial>10</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSink</compClass>
+				<heatCapacity>750</heatCapacity>
+				<heatVentTick>120</heatVentTick>
+				<threat>12</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
+		</comps>
+		<researchPrerequisites>
+			<li>ShipHeatsink</li>
+		</researchPrerequisites>
+	</ThingDef>
+	<ThingDef ParentName="ShipHeatsinkBase">
+		<defName>ShipHeatManifold</defName>
+		<label>heat manifold</label>
+		<description>A specialized heatsink for storing excess heat from weapons fire. Quickly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 120\nHeat released: 2/s</description>
+		<size>(2,2)</size>
+		<graphicData>
+			<texPath>Things/Building/Ship/QuickBleedingHeatsink</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2.1,4.7)</drawSize>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>800</MaxHitPoints>
+			<WorkToBuild>3500</WorkToBuild>
+			<Flammability>0.7</Flammability>
+			<Beauty>-2</Beauty>
+		</statBases>
+		<costList>
+			<Steel>100</Steel>
+			<Plasteel>25</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+			<ComponentIndustrial>4</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSink</compClass>
+				<heatCapacity>120</heatCapacity>
+				<heatVentTick>30</heatVentTick>
+				<threat>2</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
+		</comps>
+		<researchPrerequisites>
+			<li>ShipHeatManifold</li>
+		</researchPrerequisites>
+	</ThingDef>
+	<ThingDef ParentName="ShipHeatsinkBase">
+		<defName>ShipPurgePort</defName>
+		<label>emergency purge port</label>
+		<description>A system for channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.\n\nHeat released: 0.5/s</description>
+		<size>(2,2)</size>
+		<graphicData>
+			<texPath>Things/Building/Ship/PurgePort</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2.1,4.7)</drawSize>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>800</MaxHitPoints>
+			<WorkToBuild>3500</WorkToBuild>
+			<Flammability>0.7</Flammability>
+			<Beauty>-2</Beauty>
+		</statBases>
+		<costList>
+			<Steel>100</Steel>
+			<Plasteel>25</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<rotatable>false</rotatable>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatPurge</compClass>
+				<heatCapacity>5</heatCapacity>
+				<heatVentTick>120</heatVentTick>
+				<heatPurge>5</heatPurge>
+				<threat>5</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Refuelable">
+				<fuelCapacity>1000.0</fuelCapacity>
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+				<fuelFilter>
+					<thingDefs>
+						<li>Silver</li>
+					</thingDefs>
+				</fuelFilter>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<autoRefuelPercent>1</autoRefuelPercent>
+				<showFuelGizmo>true</showFuelGizmo>
+				<drawOutOfFuelOverlay>true</drawOutOfFuelOverlay>
+				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+			</li>
+		</comps>
+		<researchPrerequisites>
+			<li>ShipHeatsink</li>
+		</researchPrerequisites>
+	</ThingDef>
+	<ThingDef ParentName="ShipHeatsinkBase">
+		<defName>ShipPurgePortLarge</defName>
+		<label>large emergency purge port</label>
+		<description>A system for rapidly channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.\n\nHeat released: 0.5/s</description>
+		<size>(4,4)</size>
+		<graphicData>
+			<texPath>Things/Building/Ship/PurgePortLarge</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>1600</MaxHitPoints>
+			<WorkToBuild>12000</WorkToBuild>
+			<Flammability>0.7</Flammability>
+			<Beauty>-2</Beauty>
+		</statBases>
+		<costList>
+			<Steel>600</Steel>
+			<Plasteel>150</Plasteel>
+			<ComponentSpacer>20</ComponentSpacer>
+		</costList>
+		<rotatable>false</rotatable>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatPurge</compClass>
+				<heatCapacity>25</heatCapacity>
+				<heatVentTick>120</heatVentTick>
+				<heatPurge>25</heatPurge>
+				<threat>30</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Refuelable">
+				<fuelCapacity>5000.0</fuelCapacity>
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+				<fuelFilter>
+					<thingDefs>
+						<li>Silver</li>
+					</thingDefs>
+				</fuelFilter>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<autoRefuelPercent>1</autoRefuelPercent>
+				<showFuelGizmo>true</showFuelGizmo>
+				<drawOutOfFuelOverlay>true</drawOutOfFuelOverlay>
+				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+			</li>
+		</comps>
+		<researchPrerequisites>
+			<li>ShipHeatsink</li>
+		</researchPrerequisites>
+	</ThingDef>
+	<!-- turrets -->
+	<!-- cannons -->
+	<DesignatorDropdownGroupDef>
+		<defName>ShipTurrets_AC</defName>
+	</DesignatorDropdownGroupDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_ACI</defName>
+		<label>cannon turret</label>
+		<designatorDropdown>ShipTurrets_AC</designatorDropdown>
+		<description>A starship turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range. Can be set to intercept torpedoes rather than firing at the enemy ship.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>2</heatPerPulse>
+				<energyToFire>0</energyToFire>
+				<optRange>50</optRange>
+				<maxRange>50</maxRange>
+				<projectileSpeed>4</projectileSpeed>
+				<pointDefense>true</pointDefense>
+				<threat>10</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>100</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Refuelable">
+				<fuelLabel>Shots until rearm</fuelLabel>
+				<fuelGizmoLabel>Uranium slugs</fuelGizmoLabel>
+				<outOfFuelMessage>Cannot shoot: No slugs</outOfFuelMessage>
+				<fuelFilter>
+					<thingDefs>
+						<li>Uranium</li>
+					</thingDefs>
+				</fuelFilter>
+				<fuelCapacity>25</fuelCapacity>
+				<fuelMultiplier>0.5</fuelMultiplier>
+				<initialFuelPercent>1</initialFuelPercent>
+				<autoRefuelPercent>0.5</autoRefuelPercent>
+				<showFuelGizmo>true</showFuelGizmo>
+				<minimumFueledThreshold>1</minimumFueledThreshold>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<fuelIconPath>UI/Overlays/Barrel</fuelIconPath>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_ACITop</turretGunDef>
+			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
+			<turretBurstCooldownTime>10.0</turretBurstCooldownTime>
+			<turretTopDrawSize>3</turretTopDrawSize>
+		</building>
+		<costList>
+			<Steel>100</Steel>
+			<Uranium>50</Uranium>
+			<Plasteel>80</Plasteel>
+			<ComponentSpacer>2</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretACI_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretAC</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_ACITop</defName>
+		<label>autocannon</label>
+		<description>Ship cannon. Best used at short range.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/Turret_ACI</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot slug</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0.5</warmupTime>
+				<burstShotCount>8</burstShotCount>
+				<noiseRadius>10</noiseRadius>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<soundCast>ShipCombatACI</soundCast>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_ACI</defaultProjectile>
+				<spawnDef>Proj_ShipTurretACI</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_ACI</defName>
+		<label>Autocannon slug</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretACI</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>140</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretACI</defName>
+		<label>Autocannon Slug</label>
+		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretACI</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>0</explosionRadius>
+			<damageDef>BombACI</damageDef>
+			<speed>140</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="BombAC">
+		<defName>BombACI</defName>
+		<label>bomb</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has died in an explosion.</deathMessage>
+		<hediff>Shredded</hediff>
+		<hediffSolid>Crack</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Sharp</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>40</defaultDamage>
+		<defaultStoppingPower>1</defaultStoppingPower>
+		<defaultArmorPenetration>0.5</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>5</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastDry</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_ACII</defName>
+		<label>large cannon turret</label>
+		<designatorDropdown>ShipTurrets_AC</designatorDropdown>
+		<description>A cruiser-class turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HardpointYellow</texPath>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>4</heatPerPulse>
+				<energyToFire>0</energyToFire>
+				<optRange>50</optRange>
+				<maxRange>100</maxRange>
+				<projectileSpeed>4</projectileSpeed>
+				<threat>30</threat>
+			</li>
+			<li Class="CompProperties_Refuelable">
+				<fuelLabel>Shots until rearm</fuelLabel>
+				<fuelGizmoLabel>Uranium slugs</fuelGizmoLabel>
+				<outOfFuelMessage>Cannot shoot: No slugs</outOfFuelMessage>
+				<fuelFilter>
+					<thingDefs>
+						<li>Uranium</li>
+					</thingDefs>
+				</fuelFilter>
+				<fuelCapacity>25</fuelCapacity>
+				<fuelMultiplier>0.125</fuelMultiplier>
+				<initialFuelPercent>1</initialFuelPercent>
+				<autoRefuelPercent>0.5</autoRefuelPercent>
+				<showFuelGizmo>true</showFuelGizmo>
+				<minimumFueledThreshold>1</minimumFueledThreshold>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<fuelIconPath>UI/Overlays/Barrel</fuelIconPath>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>120</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_ACIITop</turretGunDef>
+			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
+			<turretBurstCooldownTime>20.0</turretBurstCooldownTime>
+			<turretTopDrawSize>3</turretTopDrawSize>
+		</building>
+		<costList>
+			<Steel>150</Steel>
+			<Uranium>200</Uranium>
+			<Plasteel>110</Plasteel>
+			<ComponentSpacer>6</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretACII_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretMedium</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<size>(3,3)</size>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_ACIITop</defName>
+		<label>autocannon</label>
+		<description>Autocannon. Best used at short range.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/Turret_ACII</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot slug</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0.4</warmupTime>
+				<burstShotCount>8</burstShotCount>
+				<noiseRadius>8</noiseRadius>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<soundCast>ShipCombatACII</soundCast>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_ACII</defaultProjectile>
+				<spawnDef>Proj_ShipTurretACII</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_ACII</defName>
+		<label>Autocannon slug</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretACII</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>155</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretACII</defName>
+		<label>Autocannon Slug</label>
+		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretACII</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>.9</explosionRadius>
+			<damageDef>BombACII</damageDef>
+			<speed>155</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="BombACII">
+		<defName>BombACII</defName>
+		<label>bomb</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has died in an explosion.</deathMessage>
+		<hediff>Shredded</hediff>
+		<hediffSolid>Crack</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Sharp</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>105</defaultDamage>
+		<defaultStoppingPower>0.5</defaultStoppingPower>
+		<defaultArmorPenetration>0.6</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>5</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastDry</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_ACIII</defName>
+		<label>artillery turret</label>
+		<designatorDropdown>ShipTurrets_AC</designatorDropdown>
+		<description>A capital-class turret that rapidly accelerates a stream of massive uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HardpointYellow</texPath>
+			<drawSize>(5,5)</drawSize>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>12</heatPerPulse>
+				<energyToFire>0</energyToFire>
+				<optRange>50</optRange>
+				<maxRange>100</maxRange>
+				<projectileSpeed>4</projectileSpeed>
+				<threat>100</threat>
+			</li>
+			<li Class="CompProperties_Refuelable">
+				<fuelLabel>Shots until rearm</fuelLabel>
+				<fuelGizmoLabel>Uranium slugs</fuelGizmoLabel>
+				<outOfFuelMessage>Cannot shoot: No slugs</outOfFuelMessage>
+				<fuelFilter>
+					<thingDefs>
+						<li>Uranium</li>
+					</thingDefs>
+				</fuelFilter>
+				<fuelCapacity>25</fuelCapacity>
+				<fuelMultiplier>0.03125</fuelMultiplier>
+				<initialFuelPercent>1</initialFuelPercent>
+				<autoRefuelPercent>0.5</autoRefuelPercent>
+				<showFuelGizmo>true</showFuelGizmo>
+				<minimumFueledThreshold>1</minimumFueledThreshold>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<fuelIconPath>UI/Overlays/Barrel</fuelIconPath>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>250</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_ACIIITop</turretGunDef>
+			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
+			<turretBurstCooldownTime>30.0</turretBurstCooldownTime>
+			<turretTopDrawSize>6</turretTopDrawSize>
+		</building>
+		<costList>
+			<Steel>500</Steel>
+			<Uranium>800</Uranium>
+			<Plasteel>200</Plasteel>
+			<ComponentSpacer>12</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretACIII_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretLarge</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<size>(5,5)</size>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_ACIIITop</defName>
+		<label>autocannon</label>
+		<description>Autocannon. Best used at short range.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/Turret_ACIII</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot slug</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0.5</warmupTime>
+				<burstShotCount>10</burstShotCount>
+				<noiseRadius>10</noiseRadius>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<soundCast>ShipCombatACIII</soundCast>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_ACIII</defaultProjectile>
+				<spawnDef>Proj_ShipTurretACIII</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_ACIII</defName>
+		<label>Autocannon slug</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretACIII</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(5,5)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>150</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretACIII</defName>
+		<label>Autocannon Slug</label>
+		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretACIII</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(5,5)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>4.9</explosionRadius>
+			<damageDef>BombACIII</damageDef>
+			<speed>150</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="BombACIII">
+		<defName>BombACIII</defName>
+		<label>bomb</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has died in an explosion.</deathMessage>
+		<hediff>Shredded</hediff>
+		<hediffSolid>Crack</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Sharp</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>270</defaultDamage>
+		<defaultStoppingPower>.9</defaultStoppingPower>
+		<defaultArmorPenetration>0.9</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>5</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastDry</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+
+	<DesignatorDropdownGroupDef>
+		<defName>ShipTurrets_Laser</defName>
+	</DesignatorDropdownGroupDef>
+	<DesignatorDropdownGroupDef>
+		<defName>ShipTurrets_Plasma</defName>
+	</DesignatorDropdownGroupDef>
+	<DesignatorDropdownGroupDef>
+		<defName>ShipTurrets_Kinetic</defName>
+	</DesignatorDropdownGroupDef>
+	<!-- small -->
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_Laser</defName>
+		<label>laser turret</label>
+		<designatorDropdown>ShipTurrets_Laser</designatorDropdown>
+		<description>A starship turret that fires a powerful laser. While it can inflict devastating damage, it is only usable at short range. Can be set to intercept torpedoes rather than firing on the enemy ship.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HardpointRed</texPath>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>10</heatPerPulse>
+				<energyToFire>80</energyToFire>
+				<optRange>50</optRange>
+				<maxRange>50</maxRange>
+				<projectileSpeed>10</projectileSpeed>
+				<pointDefense>true</pointDefense>
+				<singleFireSound>ShipCombatLaser</singleFireSound>
+				<threat>10</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_LaserTop</turretGunDef>
+			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
+			<turretBurstCooldownTime>25.0</turretBurstCooldownTime>
+		</building>
+		<costList>
+			<Steel>80</Steel>
+			<Uranium>20</Uranium>
+			<Plasteel>80</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretLaser_Sm_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretLaser</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_LaserTop</defName>
+		<label>laser</label>
+		<description>Laser cannon. Short-ranged but devastating.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/TurretLaserSmall</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot laser</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<burstShotCount>6</burstShotCount>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_Laser</defaultProjectile>
+				<spawnDef>Proj_ShipTurretLaser</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Laser</defName>
+		<label>laser beam</label>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>100</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretLaser</defName>
+		<label>laser beam</label>
+		<thingClass>Projectile_ExplosiveShipCombatLaser</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<projectile>
+			<explosionRadius>1.9</explosionRadius>
+			<damageDef>ShipLaserSmall</damageDef>
+			<speed>200</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="ShipLaserSmall">
+		<defName>ShipLaserSmall</defName>
+		<label>laser</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has been lasered to death.</deathMessage>
+		<hediff>Burn</hediff>
+		<hediffSolid>Burn</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Heat</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>30</defaultDamage>
+		<defaultStoppingPower>0.5</defaultStoppingPower>
+		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>25</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastLaserSoS</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+	<FleckDef ParentName="FleckBase">
+		<defName>BlastLaserSoS</defName>
+		<graphicData>
+			<texPath>Things/Mote/LaserImpact</texPath>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<solidTime>0</solidTime>
+		<fadeOutTime>0.2</fadeOutTime>
+	</FleckDef>
+	<ThingDef ParentName="MoteBase">
+		<defName>ShipCombatLaserMote</defName>
+		<thingClass>ShipCombatLaserMote</thingClass>
+		<graphicData>
+			<texPath>Other/OrbitalBeam</texPath>
+			<shaderType>MoteGlow</shaderType>
+		</graphicData>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<drawOffscreen>true</drawOffscreen>
+		<mote>
+			<fadeInTime>0.125</fadeInTime>
+			<solidTime>0.25</solidTime>
+			<fadeOutTime>0.25</fadeOutTime>
+		</mote>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_Plasma</defName>
+		<label>plasma turret</label>
+		<designatorDropdown>ShipTurrets_Plasma</designatorDropdown>
+		<description>A starship turret that fires a burst of superheated plasma. This balanced weapon can be used at up to medium range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HardpointGreen</texPath>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>15</heatPerPulse>
+				<energyToFire>50</energyToFire>
+				<optRange>100</optRange>
+				<maxRange>100</maxRange>
+				<projectileSpeed>3</projectileSpeed>
+				<threat>10</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_PlasmaTop</turretGunDef>
+			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
+			<turretBurstCooldownTime>25.0</turretBurstCooldownTime>
+			<turretTopDrawSize>4</turretTopDrawSize>
+		</building>
+		<costList>
+			<Steel>80</Steel>
+			<Uranium>20</Uranium>
+			<Plasteel>80</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretPlasma_Sm_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretPlasma</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_PlasmaTop</defName>
+		<label>plasma</label>
+		<description>Plasma cannon. Medium-range and balanced.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/TurretPlasmaSmall</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>fire plasma</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>1.5</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<soundCast>ShipCombatPlasma</soundCast>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_Plasma</defaultProjectile>
+				<spawnDef>Proj_ShipTurretPlasma</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Plasma</defName>
+		<label>plasma toroid</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>100</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretPlasma</defName>
+		<label>plasma toroid</label>
+		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>6.9</explosionRadius>
+			<damageDef>ShipPlasmaSmall</damageDef>
+			<speed>100</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="ShipPlasmaSmall">
+		<defName>ShipPlasmaSmall</defName>
+		<label>plasma</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has been vaporized by plasma.</deathMessage>
+		<hediff>Burn</hediff>
+		<hediffSolid>Burn</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Heat</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>105</defaultDamage>
+		<defaultStoppingPower>0.5</defaultStoppingPower>
+		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>25</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastPlasma</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+	<FleckDef ParentName="FleckBase">
+		<defName>BlastPlasma</defName>
+		<graphicData>
+			<texPath>Things/Mote/PlasmaBlast</texPath>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<solidTime>0</solidTime>
+		<fadeOutTime>0.2</fadeOutTime>
+	</FleckDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_Kinetic</defName>
+		<label>railgun turret</label>
+		<designatorDropdown>ShipTurrets_Kinetic</designatorDropdown>
+		<description>A starship turret that accelerates metal slugs to relativistic speeds. Its tracking system excels at striking distant targets, but becomes wildly inaccurate at close range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>5</heatPerPulse>
+				<energyToFire>60</energyToFire>
+				<optRange>150</optRange>
+				<maxRange>150</maxRange>
+				<projectileSpeed>4</projectileSpeed>
+				<threat>10</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_KineticTop</turretGunDef>
+			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
+			<turretBurstCooldownTime>25.0</turretBurstCooldownTime>
+			<turretTopDrawSize>3</turretTopDrawSize>
+		</building>
+		<costList>
+			<Steel>80</Steel>
+			<Uranium>20</Uranium>
+			<Plasteel>80</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretKinetic_Sm_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretKinetic</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_KineticTop</defName>
+		<label>railgun</label>
+		<description>Railgun. Best used at long range.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/TurretKineticSmall</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot slug</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0.5</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<soundCast>ShipCombatKinetic</soundCast>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_Kinetic</defaultProjectile>
+				<spawnDef>Proj_ShipTurretKinetic</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Kinetic</defName>
+		<label>railgun slug</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretKinetic</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>150</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretKinetic</defName>
+		<label>railgun slug</label>
+		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretKinetic</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>3.9</explosionRadius>
+			<damageDef>BombKinetic</damageDef>
+			<speed>150</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="BombKinetic">
+		<defName>BombKinetic</defName>
+		<label>bomb</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has died in an explosion.</deathMessage>
+		<hediff>Shredded</hediff>
+		<hediffSolid>Crack</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Sharp</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>90</defaultDamage>
+		<defaultStoppingPower>0.5</defaultStoppingPower>
+		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>5</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastDry</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+	<!-- large -->
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_Laser_Large</defName>
+		<label>large laser turret</label>
+		<designatorDropdown>ShipTurrets_Laser</designatorDropdown>
+		<description>A cruiser-sized turret that fires a powerful laser. While it can inflict devastating damage, it is only usable at short range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HardpointRed</texPath>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>30</heatPerPulse>
+				<energyToFire>240</energyToFire>
+				<optRange>50</optRange>
+				<maxRange>100</maxRange>
+				<projectileSpeed>10</projectileSpeed>
+				<singleFireSound>ShipCombatLaserLarge</singleFireSound>
+				<threat>30</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_LaserTop_Large</turretGunDef>
+			<turretBurstWarmupTime>1.0</turretBurstWarmupTime>
+			<turretBurstCooldownTime>35.0</turretBurstCooldownTime>
+		</building>
+		<costList>
+			<Steel>240</Steel>
+			<Uranium>80</Uranium>
+			<Plasteel>240</Plasteel>
+			<ComponentSpacer>12</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretLaser_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretMedium</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<size>(3,3)</size>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_LaserTop_Large</defName>
+		<label>laser</label>
+		<description>Laser cannon. Short-ranged but devastating.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/TurretLaser</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot laser</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<burstShotCount>12</burstShotCount>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_Laser</defaultProjectile>
+				<spawnDef>Proj_ShipTurretLaserTwo</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretLaserTwo</defName>
+		<label>laser beam</label>
+		<thingClass>Projectile_ExplosiveShipCombatLaser</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<projectile>
+			<explosionRadius>1.9</explosionRadius>
+			<damageDef>ShipLaserTwo</damageDef>
+			<speed>200</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="ShipLaserTwo">
+		<defName>ShipLaserTwo</defName>
+		<label>laser</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has been lasered to death.</deathMessage>
+		<hediff>Burn</hediff>
+		<hediffSolid>Burn</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Heat</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>60</defaultDamage>
+		<defaultStoppingPower>0.5</defaultStoppingPower>
+		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>25</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastLaserSoS</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_Plasma_Large</defName>
+		<label>large plasma turret</label>
+		<designatorDropdown>ShipTurrets_Plasma</designatorDropdown>
+		<description>A cruiser-sized turret that fires a burst of superheated plasma. This balanced weapon can be used at up to medium range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HardpointGreen</texPath>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>45</heatPerPulse>
+				<energyToFire>150</energyToFire>
+				<optRange>100</optRange>
+				<maxRange>150</maxRange>
+				<projectileSpeed>3</projectileSpeed>
+				<threat>30</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_PlasmaTop_Large</turretGunDef>
+			<turretBurstWarmupTime>1.5</turretBurstWarmupTime>
+			<turretBurstCooldownTime>35.0</turretBurstCooldownTime>
+			<turretTopDrawSize>4</turretTopDrawSize>
+		</building>
+		<costList>
+			<Steel>240</Steel>
+			<Uranium>80</Uranium>
+			<Plasteel>240</Plasteel>
+			<ComponentSpacer>12</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretPlasma_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretMedium</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<size>(3,3)</size>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_PlasmaTop_Large</defName>
+		<label>plasma</label>
+		<description>Plasma cannon. Medium-range and balanced.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/TurretPlasma</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>fire plasma</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>1.5</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<soundCast>ShipCombatPlasmaLarge</soundCast>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_Plasma_Large</defaultProjectile>
+				<spawnDef>Proj_ShipTurretPlasma_Large</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+				<burstShotCount>2</burstShotCount>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Plasma_Large</defName>
+		<label>plasma toroid</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(6,6)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>100</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretPlasma_Large</defName>
+		<label>plasma toroid</label>
+		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(6,6)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>8.9</explosionRadius>
+			<damageDef>ShipPlasmaLarge</damageDef>
+			<speed>100</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="ShipPlasmaLarge">
+		<defName>ShipPlasmaLarge</defName>
+		<label>plasma</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has been vaporized by plasma.</deathMessage>
+		<hediff>Burn</hediff>
+		<hediffSolid>Burn</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Heat</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>160</defaultDamage>
+		<defaultStoppingPower>0.5</defaultStoppingPower>
+		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>25</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastPlasma</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipTurret_Kinetic_Large</defName>
+		<label>large railgun turret</label>
+		<designatorDropdown>ShipTurrets_Kinetic</designatorDropdown>
+		<description>A cruiser-sized turret that accelerates metal slugs to relativistic speeds. Its tracking system excels at striking distant targets, but becomes wildly inaccurate at close range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>15</heatPerPulse>
+				<energyToFire>180</energyToFire>
+				<optRange>150</optRange>
+				<maxRange>250</maxRange>
+				<projectileSpeed>4</projectileSpeed>
+				<threat>30</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<building>
+			<turretGunDef>ShipTurret_KineticTop_Large</turretGunDef>
+			<turretBurstWarmupTime>1.5</turretBurstWarmupTime>
+			<turretBurstCooldownTime>35.0</turretBurstCooldownTime>
+			<turretTopDrawSize>3</turretTopDrawSize>
+		</building>
+		<costList>
+			<Steel>240</Steel>
+			<Uranium>80</Uranium>
+			<Plasteel>240</Plasteel>
+			<ComponentSpacer>12</ComponentSpacer>
+		</costList>
+		<uiIconPath>Things/Building/Ship/TurretKinetic_MenuIcon</uiIconPath>
+		<researchPrerequisites>
+			<li>ShipTurretMedium</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<graphicData>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<size>(3,3)</size>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_KineticTop_Large</defName>
+		<label>railgun</label>
+		<description>Railgun. Best used at long range.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/TurretKinetic</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot slug</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0.5</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<soundCast>ShipCombatKineticLarge</soundCast>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_Kinetic_Large</defaultProjectile>
+				<spawnDef>Proj_ShipTurretKinetic_Large</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+				<burstShotCount>2</burstShotCount>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Kinetic_Large</defName>
+		<label>railgun slug</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretKinetic</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(6,6)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>150</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretKinetic_Large</defName>
+		<label>railgun slug</label>
+		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretKinetic</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(6,6)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>7.9</explosionRadius>
+			<damageDef>BombKineticLarge</damageDef>
+			<speed>150</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef Name="BombKineticLarge">
+		<defName>BombKineticLarge</defName>
+		<label>bomb</label>
+		<workerClass>DamageWorker_AddInjury</workerClass>
+		<externalViolence>true</externalViolence>
+		<isExplosive>true</isExplosive>
+		<deathMessage>{0} has died in an explosion.</deathMessage>
+		<hediff>Shredded</hediff>
+		<hediffSolid>Crack</hediffSolid>
+		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+		<impactSoundType>Blunt</impactSoundType>
+		<armorCategory>Sharp</armorCategory>
+		<minDamageToFragment>15</minDamageToFragment>
+		<defaultDamage>135</defaultDamage>
+		<defaultStoppingPower>0.5</defaultStoppingPower>
+		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<buildingDamageFactor>4</buildingDamageFactor>
+		<plantDamageFactor>4</plantDamageFactor>
+		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+		<explosionHeatEnergyPerCell>5</explosionHeatEnergyPerCell>
+		<explosionCellFleck>BlastDry</explosionCellFleck>
+		<explosionColorCenter>(1, 0.5, 0.3)</explosionColorCenter>
+		<explosionColorEdge>(0.6, 0.5, 0.4)</explosionColorEdge>
+		<soundExplosion>Explosion_Bomb</soundExplosion>
+		<combatLogRules>Damage_Bomb</combatLogRules>
+	</DamageDef>
+	<!-- spinal -->
+	<DesignatorDropdownGroupDef>
+		<defName>ShipTurrets_Spinal</defName>
+	</DesignatorDropdownGroupDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipSpinalEmitter</defName>
+		<label>spinal capacitor</label>
+		<designatorDropdown>ShipTurrets_Spinal</designatorDropdown>
+		<description>The first segment of a spinal-mount weapon. Connects to one or more amplifiers, then a barrel.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/SpinalMountEmitter</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(5,3.2)</drawSize>
+		</graphicData>
+		<size>(5,3)</size>
+		<rotatable>true</rotatable>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1.0</fillPercent>
+		<designationCategory>Ship</designationCategory>
+		<canOverlapZones>false</canOverlapZones>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToBuild>3000</WorkToBuild>
+			<Flammability>0.5</Flammability>
+		</statBases>
+		<costList>
+			<Steel>240</Steel>
+			<Uranium>80</Uranium>
+			<Plasteel>240</Plasteel>
+			<ComponentSpacer>12</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SpinalMount">
+				<emits>true</emits>
+				<stackEnd>true</stackEnd>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_SpinalMountPort</li>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<researchPrerequisites>
+			<li>ShipTurretLarge</li>
+		</researchPrerequisites>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<uiIconScale>0.9</uiIconScale>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipSpinalAmplifier</defName>
+		<label>spinal amplifier</label>
+		<designatorDropdown>ShipTurrets_Spinal</designatorDropdown>
+		<description>A middle segment of a spinal-mount weapon. Attach one or more of these to an emitter, then add a barrel to complete the gun.\n\nIncreases base damage by 25%, but also increases power consumption and heat generated by the same percentage.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/SpinalMountAmplifier</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(5,1.2)</drawSize>
+		</graphicData>
+		<size>(5,1)</size>
+		<rotatable>true</rotatable>
+		<tickerType>Normal</tickerType>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<castEdgeShadows>false</castEdgeShadows>
+		<designationHotKey>Misc12</designationHotKey>
+		<fillPercent>0.5</fillPercent>
+		<designationCategory>Ship</designationCategory>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<statBases>
+			<MaxHitPoints>250</MaxHitPoints>
+			<WorkToBuild>1600</WorkToBuild>
+			<Flammability>0.5</Flammability>
+		</statBases>
+		<costList>
+			<Steel>60</Steel>
+			<Uranium>20</Uranium>
+			<Plasteel>80</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SpinalMount">
+				<emits>true</emits>
+				<receives>true</receives>
+				<ampAmount>0.25</ampAmount>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_NeedsSpinalMountPort</li>
+			<li>PlaceWorker_SpinalMountPort</li>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<researchPrerequisites>
+			<li>ShipTurretLarge</li>
+		</researchPrerequisites>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<uiIconScale>0.65</uiIconScale>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipSpinalBarrelLaser</defName>
+		<label>spinal barrel: laser</label>
+		<designatorDropdown>ShipTurrets_Spinal</designatorDropdown>
+		<description>The final segment of a spinal-mount cannon. Should be placed outside the ship, unless you want a new hole in your hull.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/SpinalMountBarrel_Laser</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(5,4.2)</drawSize>
+		</graphicData>
+		<size>(5,4)</size>
+		<rotatable>true</rotatable>
+		<tickerType>Normal</tickerType>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<passability>Impassable</passability>
+		<castEdgeShadows>false</castEdgeShadows>
+		<designationHotKey>Misc12</designationHotKey>
+		<fillPercent>1</fillPercent>
+		<statBases>
+			<MaxHitPoints>1250</MaxHitPoints>
+			<WorkToBuild>8000</WorkToBuild>
+			<Flammability>0.5</Flammability>
+			<RangedWeapon_DamageMultiplier>1.01</RangedWeapon_DamageMultiplier>
+		</statBases>
+		<costList>
+			<Steel>240</Steel>
+			<Plasteel>240</Plasteel>
+			<ComponentSpacer>8</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SpinalMount">
+				<emits>false</emits>
+				<receives>true</receives>
+				<color>(0.5,0,0)</color>
+			</li>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>60</heatPerPulse>
+				<energyToFire>720</energyToFire>
+				<optRange>50</optRange>
+				<maxRange>100</maxRange>
+				<projectileSpeed>10</projectileSpeed>
+				<singleFireSound>ShipCombatLaser</singleFireSound>
+				<threat>100</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_NeedsSpinalMountPort</li>
+		</placeWorkers>
+		<researchPrerequisites>
+			<li>ShipTurretLarge</li>
+		</researchPrerequisites>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<uiIconScale>0.65</uiIconScale>
+		<building>
+			<turretGunDef>ShipTurret_SpinalMountTopLaser</turretGunDef>
+			<turretBurstWarmupTime>2</turretBurstWarmupTime>
+			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
+		</building>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_SpinalMountTopLaser</defName>
+		<label>spinal-mount cannon</label>
+		<description>Capital ship weaponry.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<burstShotCount>40</burstShotCount>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<defaultProjectile>Bullet_Fake_Laser</defaultProjectile>
+				<spawnDef>Proj_ShipSpinalBeamLaser</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipSpinalBeamLaser</defName>
+		<label>death ray</label>
+		<thingClass>Projectile_ExplosiveShipCombatLaser</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<projectile>
+			<explosionRadius>4.9</explosionRadius>
+			<damageDef>ShipLaserTwo</damageDef>
+			<speed>200</speed>
+		</projectile>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipSpinalBarrelPlasma</defName>
+		<label>spinal barrel: plasma</label>
+		<designatorDropdown>ShipTurrets_Spinal</designatorDropdown>
+		<description>The final segment of a spinal-mount cannon. Should be placed outside the ship, unless you want a new hole in your hull.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/SpinalMountBarrel_Plasma</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(5,4.2)</drawSize>
+		</graphicData>
+		<size>(5,4)</size>
+		<rotatable>true</rotatable>
+		<tickerType>Normal</tickerType>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<passability>Impassable</passability>
+		<castEdgeShadows>false</castEdgeShadows>
+		<designationHotKey>Misc12</designationHotKey>
+		<fillPercent>1</fillPercent>
+		<statBases>
+			<MaxHitPoints>1250</MaxHitPoints>
+			<WorkToBuild>8000</WorkToBuild>
+			<Flammability>0.5</Flammability>
+			<RangedWeapon_DamageMultiplier>1.01</RangedWeapon_DamageMultiplier>
+		</statBases>
+		<costList>
+			<Steel>240</Steel>
+			<Plasteel>240</Plasteel>
+			<ComponentSpacer>8</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SpinalMount">
+				<emits>false</emits>
+				<receives>true</receives>
+				<color>(0,0.5,0)</color>
+			</li>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>60</heatPerPulse>
+				<energyToFire>450</energyToFire>
+				<optRange>100</optRange>
+				<maxRange>150</maxRange>
+				<projectileSpeed>3</projectileSpeed>
+				<threat>100</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_NeedsSpinalMountPort</li>
+		</placeWorkers>
+		<researchPrerequisites>
+			<li>ShipTurretLarge</li>
+		</researchPrerequisites>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<uiIconScale>0.65</uiIconScale>
+		<building>
+			<turretGunDef>ShipTurret_SpinalMountTopPlasma</turretGunDef>
+			<turretBurstWarmupTime>2</turretBurstWarmupTime>
+			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
+		</building>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_SpinalMountTopPlasma</defName>
+		<label>spinal-mount cannon</label>
+		<description>Capital ship weaponry.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<burstShotCount>5</burstShotCount>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<soundCast>ShipCombatPlasma</soundCast>
+				<defaultProjectile>Bullet_Fake_Plasma_XL</defaultProjectile>
+				<spawnDef>Proj_ShipSpinalBeamPlasma</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Plasma_XL</defName>
+		<label>plasma toroid</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(12,12)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<speed>100</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipSpinalBeamPlasma</defName>
+		<label>death ray</label>
+		<thingClass>Projectile_ExplosiveShipCombatPlasmaXL</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(9,9)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>14.9</explosionRadius>
+			<damageDef>ShipPlasmaLarge</damageDef>
+			<speed>100</speed>
+		</projectile>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding">
+		<defName>ShipSpinalBarrelKinetic</defName>
+		<label>spinal barrel: railgun</label>
+		<designatorDropdown>ShipTurrets_Spinal</designatorDropdown>
+		<description>The final segment of a spinal-mount cannon. Should be placed outside the ship, unless you want a new hole in your hull.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/SpinalMountBarrel_Kinetic</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(5,4.2)</drawSize>
+		</graphicData>
+		<size>(5,4)</size>
+		<rotatable>true</rotatable>
+		<tickerType>Normal</tickerType>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<passability>Impassable</passability>
+		<castEdgeShadows>false</castEdgeShadows>
+		<designationHotKey>Misc12</designationHotKey>
+		<fillPercent>1</fillPercent>
+		<statBases>
+			<MaxHitPoints>1250</MaxHitPoints>
+			<WorkToBuild>8000</WorkToBuild>
+			<Flammability>0.5</Flammability>
+			<RangedWeapon_DamageMultiplier>1.01</RangedWeapon_DamageMultiplier>
+		</statBases>
+		<costList>
+			<Steel>240</Steel>
+			<Plasteel>240</Plasteel>
+			<ComponentSpacer>8</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SpinalMount">
+				<emits>false</emits>
+				<receives>true</receives>
+				<color>(0,0,0.5)</color>
+			</li>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>60</heatPerPulse>
+				<energyToFire>540</energyToFire>
+				<optRange>150</optRange>
+				<maxRange>250</maxRange>
+				<projectileSpeed>4</projectileSpeed>
+				<threat>100</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_NeedsSpinalMountPort</li>
+		</placeWorkers>
+		<researchPrerequisites>
+			<li>ShipTurretLarge</li>
+		</researchPrerequisites>
+		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
+		<uiIconScale>0.65</uiIconScale>
+		<building>
+			<turretGunDef>ShipTurret_SpinalMountTopKinetic</turretGunDef>
+			<turretBurstWarmupTime>2</turretBurstWarmupTime>
+			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
+		</building>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon">
+		<defName>ShipTurret_SpinalMountTopKinetic</defName>
+		<label>spinal-mount cannon</label>
+		<description>Capital ship weaponry.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+		</graphicData>
+		<verbs>
+			<li>
+				<label>shoot</label>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<hasStandardCommand>true</hasStandardCommand>
+				<range>12.9</range>
+				<warmupTime>0</warmupTime>
+				<noiseRadius>4</noiseRadius>
+				<burstShotCount>12</burstShotCount>
+				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
+				<requireLineOfSight>false</requireLineOfSight>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+				<soundCast>ShipCombatKinetic</soundCast>
+				<defaultProjectile>Bullet_Fake_Kinetic</defaultProjectile>
+				<spawnDef>Proj_ShipTurretKinetic_Large</spawnDef>
+				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
+			</li>
+		</verbs>
+	</ThingDef>
+	<DamageDef ParentName="StunBase">
+		<defName>ShieldExplosion</defName>
+		<label>Shield</label>
+		<deathMessage>{0} has glitched to death.</deathMessage>
+		<harmsHealth>false</harmsHealth>
+		<impactSoundType>Electric</impactSoundType>
+		<defaultDamage>0</defaultDamage>
+		<explosionSnowMeltAmount>0</explosionSnowMeltAmount>
+		<explosionCellFleck>BlastShield</explosionCellFleck>
+		<explosionColorEdge>(0.8, 0.8, 0.8, 0.8)</explosionColorEdge>
+		<explosionInteriorFleck>ElectricalSpark</explosionInteriorFleck>
+		<soundExplosion>Interceptor_BlockProjectile</soundExplosion>
+	</DamageDef>
+	<FleckDef ParentName="FleckBase">
+		<defName>BlastShield</defName>
+		<graphicData>
+			<texPath>Things/Mote/ShieldImpact</texPath>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<solidTime>0</solidTime>
+		<fadeOutTime>0.2</fadeOutTime>
+	</FleckDef>
+	<!-- torpedos -->
+	<DesignatorDropdownGroupDef>
+		<defName>ShipTurrets_Torpedo</defName>
+	</DesignatorDropdownGroupDef>
+	<ThingDef ParentName="BaseShipArtilleryWeapon" Name="BaseShipTorpedoWeapon" Abstract="True">
+		<description>Torpedo launcher. Accurate and devastating against shields, but vulnerable to point-defense lasers.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+		</graphicData>
+		<weaponTags>
+			<li>Artillery_BaseDestroyer</li>
+		</weaponTags>
+		<verbs>
+			<li>
+				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<forceNormalTimeSpeed>false</forceNormalTimeSpeed>
+				<warmupTime>4.0</warmupTime>
+				<requireLineOfSight>false</requireLineOfSight>
+				<range>500</range>
+				<burstShotCount>1</burstShotCount>
+				<soundCast>Mortar_LaunchA</soundCast>
+				<muzzleFlashScale>16</muzzleFlashScale>
+				<targetParams>
+					<canTargetLocations>true</canTargetLocations>
+				</targetParams>
+			</li>
+		</verbs>
+		<building>
+			<fixedStorageSettings>
+				<filter>
+					<categories>
+						<li>SpaceTorpedoes</li>
+					</categories>
+				</filter>
+			</fixedStorageSettings>
+			<defaultStorageSettings>
+				<filter>
+					<categories>
+						<li>SpaceTorpedoes</li>
+					</categories>
+				</filter>
+			</defaultStorageSettings>
+		</building>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipTorpedoWeapon">
+		<defName>Artillery_ShipTorpedo_One</defName>
+		<label>torpedo tube</label>
+		<comps>
+			<li Class="CompProperties_ChangeableProjectilePlural">
+				<tubes>1</tubes>
+				<maxTorpedoes>6</maxTorpedoes>
+			</li>
+		</comps>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipTorpedoWeapon">
+		<defName>Artillery_ShipTorpedo_Two</defName>
+		<label>torpedo tubes (2)</label>
+		<comps>
+			<li Class="CompProperties_ChangeableProjectilePlural">
+				<tubes>2</tubes>
+				<maxTorpedoes>14</maxTorpedoes>
+			</li>
+		</comps>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipTorpedoWeapon">
+		<defName>Artillery_ShipTorpedo</defName>
+		<label>torpedo tubes (6)</label>
+		<comps>
+			<li Class="CompProperties_ChangeableProjectilePlural">
+				<tubes>6</tubes>
+				<maxTorpedoes>32</maxTorpedoes>
+			</li>
+		</comps>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipArtilleryBuilding" Name="BaseShipTorpedoBuilding" Abstract="True">
+		<thingClass>Building_ShipTurretTorpedo</thingClass>
+		<designatorDropdown>ShipTurrets_Torpedo</designatorDropdown>
+		<description>Tubes that launch all kinds of torpedoes. Highly accurate and devastating against shields, but slow to reach targets and vulnerable to point-defense lasers.</description>
+		<graphicData>
+			<graphicClass>Graphic_Single</graphicClass>
+			<damageData>
+				<rect>(0.38,0.2,0.56375,0.8)</rect>
+				<cornerTL>Damage/Corner</cornerTL>
+			</damageData>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+		<uiIconScale>0.9</uiIconScale>
+		<researchPrerequisites>
+			<li>ShipTorpedoes</li>
+		</researchPrerequisites>
+		<inspectorTabs>
+			<li>ITab_Shells</li>
+		</inspectorTabs>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<rotatable>false</rotatable>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipTorpedoBuilding">
+		<defName>ShipTorpedoOne</defName>
+		<label>torpedo tube</label>
+		<graphicData>
+			<texPath>Things/Building/Ship/TorpedoTubes_Single</texPath>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<size>(3,3)</size>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>1</heatPerPulse>
+				<energyToFire>0</energyToFire>
+				<optRange>300</optRange>
+				<maxRange>300</maxRange>
+				<projectileSpeed>1</projectileSpeed>
+				<threat>20</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+		</comps>
+		<building>
+			<turretGunDef>Artillery_ShipTorpedo_One</turretGunDef>
+		</building>
+		<uiIconPath>Things/Building/Ship/TorpedoTubes_Single</uiIconPath>
+		<costList>
+			<Plasteel>10</Plasteel>
+			<Steel>20</Steel>
+			<ComponentSpacer>1</ComponentSpacer>
+		</costList>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipTorpedoBuilding">
+		<defName>ShipTorpedoTwo</defName>
+		<label>torpedo tubes (2)</label>
+		<graphicData>
+			<texPath>Things/Building/Ship/TorpedoTubes_small</texPath>
+			<drawSize>(6,3)</drawSize>
+		</graphicData>
+		<size>(6,3)</size>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>1</heatPerPulse>
+				<energyToFire>0</energyToFire>
+				<optRange>300</optRange>
+				<maxRange>300</maxRange>
+				<projectileSpeed>1</projectileSpeed>
+				<threat>40</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>75</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+		</comps>
+		<building>
+			<turretGunDef>Artillery_ShipTorpedo_Two</turretGunDef>
+		</building>
+		<uiIconPath>Things/Building/Ship/TorpedoTubes_small</uiIconPath>
+		<costList>
+			<Plasteel>20</Plasteel>
+			<Steel>40</Steel>
+			<ComponentSpacer>2</ComponentSpacer>
+		</costList>
+	</ThingDef>
+	<ThingDef ParentName="BaseShipTorpedoBuilding">
+		<defName>ShipTorpedoSix</defName>
+		<label>torpedo tubes (6)</label>
+		<graphicData>
+			<texPath>Things/Building/Ship/TorpedoTubes</texPath>
+			<drawSize>(6,7)</drawSize>
+		</graphicData>
+		<size>(6,7)</size>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
+				<heatPerPulse>1</heatPerPulse>
+				<energyToFire>0</energyToFire>
+				<optRange>300</optRange>
+				<maxRange>300</maxRange>
+				<projectileSpeed>1</projectileSpeed>
+				<threat>120</threat>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+		</comps>
+		<building>
+			<turretGunDef>Artillery_ShipTorpedo</turretGunDef>
+		</building>
+		<uiIconPath>Things/Building/Ship/TorpedoTubes</uiIconPath>
+		<costList>
+			<Plasteel>60</Plasteel>
+			<Steel>120</Steel>
+			<ComponentSpacer>3</ComponentSpacer>
+		</costList>
+	</ThingDef>
+</Defs>

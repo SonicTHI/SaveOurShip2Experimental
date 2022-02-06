@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Factions Expanded - Pirates</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketPartBase"]/apparel</xpath>
+					<value><tags><li>EVA</li></tags></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Patch>
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>LWM's Deep Storage</li>
+    </mods>
+    <match Class="PatchOperationAdd">
+      <xpath>/Defs/ThingDef[defName="LWM_Pallet_Covered"]/building/fixedStorageSettings/filter/categories</xpath>
+      <value>
+        <li>SpaceTorpedoes</li>
+      </value>
+    </match>
+  </Operation>
+</Patch>

@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<!-- shuttle -->
+	<CommandToggleHover>Toggle hover mode</CommandToggleHover>
+	<CommandHoverOnDesc>Activate this shuttle's hover mode, allowing it to join a caravan.</CommandHoverOnDesc>
+	<CommandHoverOffDesc>Deactivate this shuttle's hover mode, allowing it to be loaded and launched.</CommandHoverOffDesc>
+	<MessageShuttleMustBeFullyFueled>Shuttles must be fully fueled to travel to or from orbit.</MessageShuttleMustBeFullyFueled>
+	<NeedOpenShuttleBay>Landing shuttles require an unobstructed bay clear of buildings, debris, and landed shuttle-craft. Clear the shuttle bay to prepare for landing.</NeedOpenShuttleBay>
+	<MessageShuttleOnlyPods>Enemy ship has active engines. Use personal shuttles to directly assault the enemy ship or disable its engines.</MessageShuttleOnlyPods>
+	<MessageShuttleNeedsMoreFuel>Your shuttle must be at least {0}% fueled to reach this site. Bring double this if you intend to return!</MessageShuttleNeedsMoreFuel>
+	<MustLaunchFromOrbit>This site can only be reached by a shuttle launched from orbit.</MustLaunchFromOrbit>
+	<!-- orbit -->
+	<ShipInsideMoveWestFar>Long burn west</ShipInsideMoveWestFar>
+	<ShipInsideMoveWestFarDesc>Move the ship westward.</ShipInsideMoveWestFarDesc>
+	<ShipInsideMoveWest>Short burn west</ShipInsideMoveWest>
+	<ShipInsideMoveWestDesc>Move the ship westward.</ShipInsideMoveWestDesc>
+	<ShipInsideMoveEast>Short burn east</ShipInsideMoveEast>
+	<ShipInsideMoveEastDesc>Move the ship eastward.</ShipInsideMoveEastDesc>
+	<ShipInsideMoveEastFar>Long burn east</ShipInsideMoveEastFar>
+	<ShipInsideMoveEastFarDesc>Move the ship eastward.</ShipInsideMoveEastFarDesc>
+	<ShipInsideMoveComplete>Orbital reposition complete</ShipInsideMoveComplete>
+	
+	<ShipInsideAbandonHome>Abandon ship</ShipInsideAbandonHome>
+	<ShipInsideAbandonHomeDesc>Abandon your ship, any colonists on it will be lost.</ShipInsideAbandonHomeDesc>
+	<ShipInsideLeaveGraveyard>Abandon wreck</ShipInsideLeaveGraveyard>
+	<ShipInsideLeaveGraveyardDesc>Leave the wreck to its fate.</ShipInsideLeaveGraveyardDesc>
+	<!-- bridge -->
+	<ShipInsideToggleScanShips>Scan for ships</ShipInsideToggleScanShips>
+	<ShipInsideToggleScanShipsDesc>Toggle scanning for other ships</ShipInsideToggleScanShipsDesc>
+	<ShipInsideToggleScanSites>Scan for sites</ShipInsideToggleScanSites>
+	<ShipInsideToggleScanSitesDesc>Toggle scanning for orbital sites</ShipInsideToggleScanSitesDesc>
+	<ShipInsideToggleShields>Toggle shields</ShipInsideToggleShields>
+	<ShipInsideToggleShieldsDesc>Activate or deactivate your ship's shields</ShipInsideToggleShieldsDesc>
+	<ShipInsideToggleCloak>Toggle cloaking device</ShipInsideToggleCloak>
+	<ShipInsideToggleCloakDesc>Activate or deactivate your ship's cloaking device</ShipInsideToggleCloakDesc>
+	<ShipInsideShipInfo>Ship info</ShipInsideShipInfo>
+	<ShipInsideShipInfoDesc>Shows ship statistics and readiness for interstellar travel.</ShipInsideShipInfoDesc>
+	<ShipInsideRename>Rename ship</ShipInsideRename>
+	<ShipInsideRenameDesc>Give this ship a new name</ShipInsideRenameDesc>
+	<ShipInsideMove>Move ship</ShipInsideMove>
+	<ShipInsideMoveDesc>Move the ship elsewhere on this map</ShipInsideMoveDesc>
+	<ShipInsideMoveFlip>Flip ship</ShipInsideMoveFlip>
+	<ShipInsideMoveFlipDesc>Flip the ship horizontally</ShipInsideMoveFlipDesc>
+	<ShipInsideMoveRot>Rotate ship</ShipInsideMoveRot>
+	<ShipInsideMoveRotDesc>Rotate the ship counter clockwise\nWARNING: Non rotatable buildings will not be placed correctly!</ShipInsideMoveRotDesc>
+	<ShipInsideLand>Land ship</ShipInsideLand>
+	<ShipInsideLandDesc>Land this ship near </ShipInsideLandDesc>
+	<ShipMoveDesc>Deselect to confirm location</ShipMoveDesc>
+	<ShipCombatEscape>Escape combat</ShipCombatEscape>
+	<ShipCombatEscapeDesc>Flee from battle, leaving behind anyone aboard the enemy ship</ShipCombatEscapeDesc>
+	<ShipCombatRetreat>Retreat</ShipCombatRetreat>
+	<ShipCombatRetreatDesc>Try to move away from the enemy ship</ShipCombatRetreatDesc>
+	<ShipCombatStop>Stop</ShipCombatStop>
+	<ShipCombatStopDesc>Cut power to your ship's engines</ShipCombatStopDesc>
+	<ShipCombatMaintain>Maintain</ShipCombatMaintain>
+	<ShipCombatMaintainDesc>Maintain distance to the enemy ship</ShipCombatMaintainDesc>
+	<ShipCombatAdvance>Advance</ShipCombatAdvance>
+	<ShipCombatAdvanceDesc>Try to move closer to the enemy ship</ShipCombatAdvanceDesc>
+	<CommandScuttleShip>Launch all escape pods</CommandScuttleShip>
+	<CommandScuttleShipDesc>Launches all escape pods to selected destination on the planet.</CommandScuttleShipDesc>
+	<CommandScuttleShipPods>Can not abandon ship with pods in transit to/from it!</CommandScuttleShipPods>
+	<ShipInsideNoLoadedPods>No loaded crypto pods.</ShipInsideNoLoadedPods>
+	<CommandWithdrawShip>Withdraw Ship</CommandWithdrawShip>
+	<CommandWithdrawShipDesc>Withdraw this ship from the battle</CommandWithdrawShipDesc>
+	<CommandWithdrawShipLast>Last ship can not withdraw</CommandWithdrawShipLast>
+	<ShipInsideSelectWeapons>Weapons</ShipInsideSelectWeapons>
+	<ShipInsideSelectWeaponsDesc>Select all ship-to-ship weapons</ShipInsideSelectWeaponsDesc>
+	<NotAtMaxShipRange>Not at maximum range</NotAtMaxShipRange>
+	<ShipOnEnemyMap>Ship is on enemy map</ShipOnEnemyMap>
+	<!-- salvage/capture -->
+	<ShipInsideReturnShip>Return</ShipInsideReturnShip>
+	<ShipInsideReturnShipDesc>Move this ship back to your stable orbit</ShipInsideReturnShipDesc>
+	<ShipInsideCaptureShip>Capture</ShipInsideCaptureShip>
+	<ShipInsideCaptureShipDesc>Move this ship to your map</ShipInsideCaptureShipDesc>
+	<ShipSalvageCommand>Retrieve wreck</ShipSalvageCommand>
+	<ShipSalvageCommandDesc>Retrieve a wreck from target ship</ShipSalvageCommandDesc>
+	<ShipSalvageDisabled>Disabled while in battle</ShipSalvageDisabled>
+	<ShipSalvageBridge>Can not salvage intact ships, capture or detroy the bridge.</ShipSalvageBridge>
+	<ShipSalvageCount>Not enough salvage bays. {0}/{1}</ShipSalvageCount>
+	<ShipClaimWrecksCommand>Claim wrecks</ShipClaimWrecksCommand>
+	<ShipClaimWrecksCommandDesc>Claim all wrecks on this map</ShipClaimWrecksCommandDesc>
+	<ShipClaimWrecksSuccess>Claimed {0} buildings!</ShipClaimWrecksSuccess>
+	<ShipClaimWrecksDisabled>Enemy forces present!</ShipClaimWrecksDisabled>
+	<ShipRemoveWrecksCommand>Remove wreck</ShipRemoveWrecksCommand>
+	<ShipRemoveWrecksCommandDesc>Remove target wreck from this map</ShipRemoveWrecksCommandDesc>
+	<!-- heat -->
+	<ShipInsideHeatWithPower>Use power for heating</ShipInsideHeatWithPower>
+	<ShipInsideHeatWithPowerDesc>Use power for heating when not enough heat is present in the network.</ShipInsideHeatWithPowerDesc>
+	<SoSPurgeHeat>Emergency heat purge</SoSPurgeHeat>
+	<SoSPurgeHeatDesc>Eject molten silver into space to rapidly lower your ship's stored heat.\n\nThis will cause your shields to drop!</SoSPurgeHeatDesc>
+	<!-- turret -->
+	<MessageTurretWontFireBecauseNotInShipCombat>Warning: Turret will not fire because you are not in ship combat.</MessageTurretWontFireBecauseNotInShipCombat>
+	<CommandExtractShipTorpedo>Extract torpedoes</CommandExtractShipTorpedo>
+	<CommandExtractShipTorpedoDesc>Unloads the current torpedoes so they can be replaced with different ammunition.</CommandExtractShipTorpedoDesc>
+	<CommandShipOptimalRange>Use optimal range</CommandShipOptimalRange>
+	<CommandShipOptimalRangeDesc>Enable to only fire on targets within optimal range</CommandShipOptimalRangeDesc>
+	<CommandShipPointDefense>Point Defense mode</CommandShipPointDefense>
+	<CommandShipPointDefenseDesc>Use this turret to intercept incoming torpedoes</CommandShipPointDefenseDesc>
+	<!-- scan -->
+	<ShipInsidescanRegion>Scan</ShipInsidescanRegion>
+	<ShipInsidescanRegionDesc>Reveal an area on the planet's surface.</ShipInsidescanRegionDesc>
+	<SoSScanMap>Observe area</SoSScanMap>
+	<SoSScanMapDesc>View a single map from orbit</SoSScanMapDesc>
+	<SoSStopScanMap>End observation</SoSStopScanMap>
+	<SoSStopScanMapDesc>Stop observing {0}. This will cause the map to de-spawn unless colonists are present.</SoSStopScanMapDesc>
+	<!-- shield -->
+	<ShipInsideRadius>Radius current/set: </ShipInsideRadius>
+	<CommandResetShieldRadius>Reset shield radius</CommandResetShieldRadius>
+	<CommandResetShieldRadiusDesc>Reset shield radius to 40.</CommandResetShieldRadiusDesc>
+	<CommandDecShieldRadius>Decrease shield radius</CommandDecShieldRadius>
+	<CommandIncShieldRadius>Increase shield radius</CommandIncShieldRadius>
+	<!-- reactor -->
+	<ShipReactorOverdrive>Overdrive I</ShipReactorOverdrive>
+	<ShipReactorOverdriveDesc>Increase reactor output, at the cost of increased heat production and fuel consumption.</ShipReactorOverdriveDesc>
+	<ShipReactorOverdrive2>Overdrive II</ShipReactorOverdrive2>
+	<ShipReactorOverdrive2Desc>Greatly increase reactor output, at the cost of increased heat production and fuel consumption. Increases instability, risking fire and radiation leaks.</ShipReactorOverdrive2Desc>
+	<ShipReactorOverdrive3>Overdrive III</ShipReactorOverdrive3>
+	<ShipReactorOverdrive3Desc>Vastly increase reactor output, at the cost of increased heat production and fuel consumption. Increases instability, risking fire and radiation leaks.</ShipReactorOverdrive3Desc>
+	
+	<SelectEverything>Select Everything</SelectEverything>
+	<SelectEverythingDesc>Select everything.</SelectEverythingDesc>
+	<!-- holo/spore -->
+	<SoSSpawnHologram>Generate hologram</SoSSpawnHologram>
+	<SoSSpawnHologramDesc>Begin projecting a hologram through which this consciousness can affect the world</SoSSpawnHologramDesc>
+	<SoSDespawnHologram>Deactivate hologram</SoSDespawnHologram>
+	<SoSDespawnHologramDesc>Stop projecting a hologram from this device</SoSDespawnHologramDesc>
+	<ShipInsideRenameAI>Rename AI</ShipInsideRenameAI>
+	<ShipInsideRenameAIDesc>Give this AI a new name</ShipInsideRenameAIDesc>
+	<ShipInsideInstallConsciousness>Install consciousness</ShipInsideInstallConsciousness>
+	<ShipInsideInstallConsciousnessThisOne>Install consciousness: {0}</ShipInsideInstallConsciousnessThisOne>
+	<ShipInsideInstallConsciousnessDesc>Install a consciousness into this device</ShipInsideInstallConsciousnessDesc>
+	<ShipInsideInstallCore>Install AI core</ShipInsideInstallCore>
+	<ShipInsideInstallCoreDesc>Order your colonists to install an AI core in this device</ShipInsideInstallCoreDesc>
+	<ShipInsideNoBrains>No consciousness available</ShipInsideNoBrains>
+	<ShipInsideNoCores>No persona cores available</ShipInsideNoCores>
+	<SoSSpawnHologramDelay>Hologram regenerating: available in {0}</SoSSpawnHologramDelay>
+	<SoSHologramColor>Hologram Color</SoSHologramColor>
+	<SoSHologramColorDesc>Choose the color for this mind's hologram</SoSHologramColorDesc>
+	<SoSHologramDrug>Simulate Drug</SoSHologramDrug>
+	<SoSHologramDrugDesc>Affect this mind with a simulated version of an organic drug.</SoSHologramDrugDesc>
+	<SoSHologramDrugTaken>Effects of {1} applied to {0}</SoSHologramDrugTaken>
+	<SoSHologramRelay>Relay hologram</SoSHologramRelay>
+	<SoSHologramRelayDesc>Temporarily transfer a hologram to this location, even across great distances</SoSHologramRelayDesc>
+	<SoSHologramRelayStop>Stop relaying hologram</SoSHologramRelayStop>
+	<SoSHologramRelayStopDesc>Return {0} to the hologram's original map</SoSHologramRelayStopDesc>
+	<SoSHologramApparel>Wear holographic apparel</SoSHologramApparel>
+	<SoSHologramApparelDesc>Simulate apparel on this hologram</SoSHologramApparelDesc>
+	<!-- archo -->
+	<ArchotechNotEnoughFieldStrength>Insufficient field strength</ArchotechNotEnoughFieldStrength>
+	<ArchotechCommandSoothe>Psychic soothe</ArchotechCommandSoothe>
+	<ArchotechCommandSootheDesc>Perform a psychic soothe on one map (costs 2 field strength)</ArchotechCommandSootheDesc>
+	<ArchotechCommandShock>Psychic shock</ArchotechCommandShock>
+	<ArchotechCommandShockDesc>Inflict psychic shock on one pawn (costs 0.5 field strength)</ArchotechCommandShockDesc>
+	<ArchotechCommandInsanity>Psychic insanity</ArchotechCommandInsanity>
+	<ArchotechCommandInsanityDesc>Inflict psychic insanity on one pawn (costs 1 field strength)</ArchotechCommandInsanityDesc>
+	<ArchotechCommandPsylink>Psylink</ArchotechCommandPsylink>
+	<ArchotechCommandPsylinkDesc>Grant a level of psylink to one pawn (costs 10 field strength)</ArchotechCommandPsylinkDesc>
+	<CraftArchocat>Spawn archocat</CraftArchocat>
+	<CraftArchomutt>Spawn archomutt</CraftArchomutt>
+	<CraftArchostrich>Spawn archostrich</CraftArchostrich>
+	<CraftArchoffalo>Spawn archoffalo</CraftArchoffalo>
+	<CraftArchospider>Spawn archospider</CraftArchospider>
+	<CraftArcholope>Spawn archolope</CraftArcholope>
+	<CraftArchotortoise>Spawn archotortoise</CraftArchotortoise>
+	<CraftArchopanda>Spawn archopanda</CraftArchopanda>
+	<CraftArchojerboa>Spawn archojerboa</CraftArchojerboa>
+	<CraftArchothrumbo>Spawn archothrumbo</CraftArchothrumbo>
+	<ArchotechOptimizeMatter>Optimize matter</ArchotechOptimizeMatter>
+	<ArchotechOptimizeMatterDesc>Automatically convert standard hull to archotech hull in a slowly widening radius. This will not affect large structures such as heatsinks or shield generators.</ArchotechOptimizeMatterDesc>
+	<ArchotechSporeEvolve>Initiate archotech evolution</ArchotechSporeEvolve>
+	<ArchotechSporeEvolveDesc>Evolve your archotech spore into a true archotech, and usher in a new age for this world.\n\nThis will end the game!</ArchotechSporeEvolveDesc>
+	
+	<!-- obsolete -->
+	<SalvageShip>Salvage enemy ship</SalvageShip>
+	<SalvageShipCancel>Abandon enemy ship</SalvageShipCancel>
+	<SalvageShipCancelDesc>Leave the enemy ship behind without salvaging it. Do not do this if any of your crew are still aboard.</SalvageShipCancelDesc>
+	<SoSEmergencyJTFar>Emergency boost (long range)</SoSEmergencyJTFar>
+	<SoSEmergencyJTFarDesc>Use your Johnson-Tanaka drive to immediately reach long range. This costs {0}Wd of energy and will require repairs to the drive.</SoSEmergencyJTFarDesc>
+	<SoSEmergencyJTNear>Emergency boost (close range)</SoSEmergencyJTNear>
+	<SoSEmergencyJTNearDesc>Use your Johnson-Tanaka drive to immediately reach close range. This costs {0}Wd of energy and will require repairs to the drive.</SoSEmergencyJTNearDesc>
+</LanguageData>

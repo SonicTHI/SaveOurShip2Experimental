@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+  <ResearchProjectDef Name="ArchotechResearchProjectBase" Abstract="True">
+    <requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+    <requiredResearchFacilities>
+      <li>ArchotechUplink</li>
+    </requiredResearchFacilities>
+	<tab>ResearchTabArchotech</tab>
+    <techLevel>Ultra</techLevel>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechMechanites</defName>
+    <label>mechanite assembly</label>
+    <description>Design simple mechanites to assemble or repair objects, atom-by-atom.</description>
+    <baseCost>5000</baseCost>
+    <researchViewX>0</researchViewX>
+    <researchViewY>2</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechBioMechanites</defName>
+    <label>bio-mechanite integration</label>
+    <description>Design more specialized mechanites to interface with, and improve upon, biology.</description>
+    <baseCost>6000</baseCost>
+	<prerequisites>
+		<li>ArchotechMechanites</li>
+	</prerequisites>
+    <researchViewX>1</researchViewX>
+    <researchViewY>1</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechBioMechanitesTwo</defName>
+    <label>swarm intelligence</label>
+    <description>Grant a gestalt intelligence to mechanite swarms, allowing them to collectively diagnose and repair injuries - or even death.</description>
+    <baseCost>8000</baseCost>
+	<prerequisites>
+		<li>ArchotechBioMechanites</li>
+	</prerequisites>
+    <researchViewX>2</researchViewX>
+    <researchViewY>0</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>SoSArchotechOrgans</defName>
+    <label>organ redesign</label>
+    <description>Reinvent biology from the molecular level upward, creating vastly superior organs.</description>
+    <baseCost>8000</baseCost>
+	<prerequisites>
+		<li>ArchotechBioMechanites</li>
+		<li>ArchotechPsychicField</li>
+		<li>ArchotechVanometrics</li>
+	</prerequisites>
+    <researchViewX>2</researchViewX>
+    <researchViewY>1</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechAnimals</defName>
+    <label>animal redesign</label>
+    <description>Surpass natural evolution, creating an ecosystem of purpose-built creatures which need not kill, die, or suffer - and which provide great benefits to their human companions.</description>
+    <baseCost>10000</baseCost>
+	<prerequisites>
+		<li>SoSArchotechOrgans</li>
+	</prerequisites>
+    <researchViewX>3</researchViewX>
+    <researchViewY>0</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechPlants</defName>
+    <label>plant redesign</label>
+    <description>Surpass natural evolution, creating an ecosystem of purpose-built plants which provide great benefits to humans.</description>
+    <baseCost>5000</baseCost>
+	<prerequisites>
+		<li>SoSArchotechOrgans</li>
+	</prerequisites>
+    <researchViewX>3</researchViewX>
+    <researchViewY>1</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechMechaniteWeapon</defName>
+    <label>mechanite disassembly</label>
+    <description>Design mechanites which break down matter atom-by-atom - useful for recycling unwanted items, or "recycling" enemy ships.</description>
+    <baseCost>9000</baseCost>
+	<prerequisites>
+		<li>ArchotechMechanites</li>
+	</prerequisites>
+    <researchViewX>1</researchViewX>
+    <researchViewY>2</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechHullConversion</defName>
+    <label>matter optimization</label>
+    <description>Automatically upgrade ship hull to archotech hull. This will not affect large structures such as heatsinks or shield generators.</description>
+    <baseCost>8000</baseCost>
+	<prerequisites>
+		<li>ArchotechMechanites</li>
+	</prerequisites>
+    <researchViewX>2</researchViewX>
+    <researchViewY>2</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechPsychicField</defName>
+    <label>psychic field formation</label>
+    <description>Discover the basic principles of psychic interaction, allowing your archotech spore to begin generating a psychic field.</description>
+    <baseCost>5000</baseCost>
+    <researchViewX>0</researchViewX>
+    <researchViewY>4</researchViewY>
+    <discoveredLetterTitle>About: Psychic Field</discoveredLetterTitle>
+    <discoveredLetterText>Your archotech spore has begun generating a psychic field. Once you have accumulated enough Field Strength and completed the necessary research, you can request your archotech spore to perform certain psychic feats. Field Strength grows slowly on its own, and is slightly increased by having colonists meditate nearby, but can be greatly boosted by installing archotech pillars.</discoveredLetterText>
+  </ResearchProjectDef>
+	
+	<ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+		<defName>ArchotechPsychicManipulation</defName>
+		<label>psychic field manipulation</label>
+		<description>Utilize your psychic field to generate simple sensations, soothing an entire region or overwhelming a single individual.</description>
+		<baseCost>6000</baseCost>
+		<prerequisites>
+			<li>ArchotechPsychicField</li>
+		</prerequisites>
+		<researchViewX>1</researchViewX>
+		<researchViewY>4</researchViewY>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+		<defName>ArchotechBroadManipulation</defName>
+		<label>broad manipulation</label>
+		<description>Psychically transmit messages and dreams to thousands of individuals, influencing a faction's opinion of you. Contact them using a comms console to use this ability.</description>
+		<baseCost>7000</baseCost>
+		<prerequisites>
+			<li>ArchotechPsychicManipulation</li>
+		</prerequisites>
+		<researchViewX>2</researchViewX>
+		<researchViewY>4</researchViewY>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+		<defName>ArchotechPsylink</defName>
+		<label>psylink</label>
+		<description>---REQUIRES ROYALTY DLC---\n\nEnable your archotech spore to grant psylink to colonists. This consumes a considerable amount of Field Strength.</description>
+		<baseCost>8000</baseCost>
+		<prerequisites>
+			<li>ArchotechPsychicManipulation</li>
+		</prerequisites>
+		<researchViewX>2</researchViewX>
+		<researchViewY>5</researchViewY>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+		<defName>ArchotechPsychicEffectors</defName>
+		<label>psychic effectors</label>
+		<description>Design limited-use psychic effectors such as shock lances and animal pulsers.</description>
+		<baseCost>7500</baseCost>
+		<prerequisites>
+			<li>ArchotechPsychicField</li>
+			<li>ArchotechMechanites</li>
+		</prerequisites>
+		<researchViewX>1</researchViewX>
+		<researchViewY>3</researchViewY>
+	</ResearchProjectDef>
+	
+	<ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+		<defName>ArchotechPsychicWeapon</defName>
+		<label>psychic weaponry</label>
+		<description>Design ship weaponry which utilizes psychic phenomena to incapacitate enemy crew.</description>
+		<baseCost>9000</baseCost>
+		<prerequisites>
+			<li>ArchotechPsychicEffectors</li>
+		</prerequisites>
+		<researchViewX>2</researchViewX>
+		<researchViewY>3</researchViewY>
+	</ResearchProjectDef>
+	
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechExotics</defName>
+    <label>exotic particles</label>
+    <description>Expand on the commonly-understood laws of physics, discovering a variety of particles with exotic behaviors.</description>
+    <baseCost>6000</baseCost>
+    <researchViewX>0</researchViewX>
+    <researchViewY>6</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechVanometrics</defName>
+    <label>vanometrics</label>
+    <description>Design vanometric power cells, which generate free energy without using fuel.</description>
+    <baseCost>8000</baseCost>
+	<prerequisites>
+		<li>ArchotechExotics</li>
+	</prerequisites>
+    <researchViewX>1</researchViewX>
+    <researchViewY>5</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechShields</defName>
+    <label>advanced shields</label>
+    <description>Utilize exotic particles to improve the efficiency of your ship's shields.</description>
+    <baseCost>8000</baseCost>
+	<prerequisites>
+		<li>ArchotechExotics</li>
+	</prerequisites>
+    <researchViewX>1</researchViewX>
+    <researchViewY>6</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechHeatsink</defName>
+    <label>anti-entropics</label>
+    <description>Utilize exotic particles to construct heatsinks which eliminate heat altogether, rather than venting it into your ship.</description>
+    <baseCost>9000</baseCost>
+	<prerequisites>
+		<li>ArchotechShields</li>
+	</prerequisites>
+    <researchViewX>2</researchViewX>
+    <researchViewY>6</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechAntimatter</defName>
+    <label>matter inversion</label>
+    <description>Develop a method for efficiently producing antigrain shells from exotic particles.</description>
+    <baseCost>4000</baseCost>
+	<prerequisites>
+		<li>ArchotechExotics</li>
+	</prerequisites>
+    <researchViewX>1</researchViewX>
+    <researchViewY>7</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechEngine</defName>
+    <label>antimatter thruster</label>
+    <description>Utilize exotic particles for thrust in combat.</description>
+    <baseCost>6000</baseCost>
+	<prerequisites>
+		<li>ArchotechAntimatter</li>
+	</prerequisites>
+    <researchViewX>3</researchViewX>
+    <researchViewY>7</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechReactor</defName>
+    <label>antimatter reactor</label>
+    <description>Utilize exotic particles to quickly generate vast amounts of power.</description>
+    <baseCost>8000</baseCost>
+	<prerequisites>
+		<li>ArchotechAntimatter</li>
+	</prerequisites>
+    <researchViewX>3</researchViewX>
+    <researchViewY>6</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechPillarA</defName>
+    <label>locate alpha pillar</label>
+    <description>Discover the location of an archotech pillar. This particular specimen is somewhere in orbit.</description>
+    <baseCost>1000</baseCost>
+    <researchViewX>5</researchViewX>
+    <researchViewY>1</researchViewY>
+	<discoveredLetterTitle>Archotech pillar detected</discoveredLetterTitle>
+    <discoveredLetterText>You have managed to discern the location of an archotech pillar! This specimen resides aboard the KSS Horizon, an ancient terraforming station.\n\nScans indicate the station's dome section has maintained a functioning ecosystem for thousands of years. However, it is currently occupied by a clan of space pirates - and, given the number of heavy armaments they have mounted on the station's hull, they intend to discourage visitors.\n\nYou will need to engage the Horizon in ship combat from your bridge.</discoveredLetterText>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechPillarB</defName>
+    <label>locate beta pillar</label>
+    <description>Discover the location of an archotech pillar. This particular specimen is somewhere on one of the planet's moons.</description>
+    <baseCost>1000</baseCost>
+    <researchViewX>5</researchViewX>
+    <researchViewY>2</researchViewY>
+	<discoveredLetterTitle>Archotech pillar detected</discoveredLetterTitle>
+    <discoveredLetterText>You have managed to discern the location of an archotech pillar! This specimen is apparently being studied by a mechanoid hive on one of the planet's moons.\n\nScans indicate the hive is defended by a very large mechanoid warship.\n\nYou will need to load a shuttle with your raiding party, then select the "Moon Hive" option - at which point you will have to fight two simultaneous battles, one on the surface and one against the warship. Be sure your shuttle is fully fueled.</discoveredLetterText>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechPillarC</defName>
+    <label>locate gamma pillar</label>
+    <description>Discover the location of an archotech pillar. This particular specimen is somewhere on the planet's surface.</description>
+    <baseCost>1000</baseCost>
+    <researchViewX>5</researchViewX>
+    <researchViewY>3</researchViewY>
+	<discoveredLetterTitle>Archotech pillar detected</discoveredLetterTitle>
+    <discoveredLetterText>You have managed to discern the location of an archotech pillar! This specimen is the most sacred artifact of the planet's tribal cultures, referred to as the Star Totem.\n\nIt was once a sacred meeting place where rival tribes spoke under a banner of peace, but has been captured and defiled by a savage berserker clan.\n\nWhen your raiding party arrives at the site, they will be joined by allies from any tribes you have befriended, eager to see the sacred totem return to friendly hands.</discoveredLetterText>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechPillarD</defName>
+    <label>locate delta pillar</label>
+    <description>Discover the location of an archotech pillar. This particular specimen is somewhere beneath the planet's crust.</description>
+    <baseCost>1000</baseCost>
+    <researchViewX>5</researchViewX>
+    <researchViewY>4</researchViewY>
+	<discoveredLetterTitle>Archotech pillar detected</discoveredLetterTitle>
+    <discoveredLetterText>You have managed to discern the location of an archotech pillar! This specimen sits deep underground, at the center of a colossal insect hive.\n\nScans detect a large breeding population of Sorne Geneline insects as well as several anomalous readings - perhaps archospiders or something even worse.\n\nYour raiding party is advised to train in close-quarters combat...</discoveredLetterText>
+  </ResearchProjectDef>
+</Defs>

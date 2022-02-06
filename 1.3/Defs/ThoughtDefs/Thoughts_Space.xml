@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ThoughtDef>
+    <defName>SpaceThoughts</defName>
+    <workerClass>ThoughtWorker_SpaceThoughts</workerClass>
+    <stages>
+      <li>
+        <label>space!</label>
+        <description>It's so cooool!</description>
+        <baseMoodEffect>5</baseMoodEffect>
+      </li>
+      <li>
+        <label>space...</label>
+        <description>So empty...So big! *shudder*</description>
+        <baseMoodEffect>-5</baseMoodEffect>
+      </li>
+      <li>
+        <label>EVA</label>
+        <description>Holy crap! I'm actually doing this!</description>
+        <baseMoodEffect>15</baseMoodEffect>
+      </li>
+      <li>
+        <label>EVA</label>
+        <description>Why am I doing this?!?</description>
+        <baseMoodEffect>-15</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <ThoughtDef>
+    <defName>ProsthophileImmortal</defName>
+    <workerClass>ThoughtWorker_IsHologram</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <requiredTraits>
+      <li>Transhumanist</li>
+    </requiredTraits>
+    <stages>
+      <li>
+        <label>body modder immortal</label>
+        <description>I have transcended mere humanity!</description>
+        <baseMoodEffect>18</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+  
+  <ThoughtDef>
+    <defName>ProsthophobeImmortal</defName>
+    <workerClass>ThoughtWorker_IsHologram</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <requiredTraits>
+      <li>BodyPurist</li>
+    </requiredTraits>
+    <stages>
+      <li>
+        <label>body gone</label>
+        <description>I am a machine desperately trying to convince itself that it is human.</description>
+        <baseMoodEffect>-36</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

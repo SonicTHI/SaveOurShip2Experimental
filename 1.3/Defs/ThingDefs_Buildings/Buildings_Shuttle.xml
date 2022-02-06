@@ -1,0 +1,229 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <ThingDef ParentName="BuildingBase">
+    <defName>PersonalShuttle</defName>
+    <label>personal shuttle</label>
+    <thingClass>Building</thingClass>
+	<drawerType>MapMeshAndRealTime</drawerType>
+    <description>A small, reusable shuttlecraft. Can be used for transport, surprise attacks, or reinforcing battles.</description>
+    <graphicData>
+      <texPath>Things/Shuttle/shuttle_personal</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(2,2)</drawSize>
+    </graphicData>
+    <size>(1,1)</size>
+    <rotatable>false</rotatable>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <castEdgeShadows>false</castEdgeShadows>
+    <fillPercent>0.5</fillPercent>
+    <designationCategory>Ship</designationCategory>
+	<building>
+      <hasFuelingPort>true</hasFuelingPort>
+    </building>
+    <statBases>
+      <MaxHitPoints>500</MaxHitPoints>
+      <WorkToBuild>8000</WorkToBuild>
+      <Flammability>0</Flammability>
+	  <Mass>300</Mass>
+    </statBases>
+    <costList>
+      <Plasteel>40</Plasteel>
+	  <Steel>160</Steel>
+      <ComponentIndustrial>12</ComponentIndustrial>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Transporter">
+		<massCapacity>150</massCapacity>
+        <restEffectiveness>0.8</restEffectiveness>
+	  </li>
+      <li Class="CompProperties_ShuttleLaunchable">
+		<fuelPerTile>1</fuelPerTile>
+		<skyfaller>PersonalShuttleSkyfaller</skyfaller>
+	  </li>
+	  <li Class="CompProperties_Refuelable">
+        <fuelCapacity>250.0</fuelCapacity>
+        <targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+        <initialConfigurableTargetFuelLevel>250</initialConfigurableTargetFuelLevel>
+        <fuelFilter>
+          <thingDefs>
+            <li>Chemfuel</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+        <autoRefuelPercent>1</autoRefuelPercent>
+        <showFuelGizmo>true</showFuelGizmo>
+        <drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
+      </li>
+		<li Class="CompProperties_BecomePawn">
+			<pawnDef>ShuttlePersonalHover</pawnDef>
+		</li>
+    </comps>
+    <inspectorTabs>
+      <li>ITab_ContentsTransporter</li>
+    </inspectorTabs>
+    <placeWorkers>
+    </placeWorkers>
+		<researchPrerequisites>
+			<li>ShuttlePersonal</li>
+		</researchPrerequisites>
+    <minifiedDef>MinifiedThing</minifiedDef>
+	<thingCategories>
+      <li>BuildingsFurniture</li>
+    </thingCategories>
+    <uiIconScale>0.65</uiIconScale>
+  </ThingDef>
+  
+  <ThingDef ParentName="BuildingBase">
+    <defName>CargoShuttle</defName>
+    <label>cargo shuttle</label>
+    <thingClass>Building</thingClass>
+	<drawerType>MapMeshAndRealTime</drawerType>
+    <description>A reusable shuttlecraft powered by uranium fuel pods. Can carry a significant amount of cargo.</description>
+    <graphicData>
+      <texPath>Things/Shuttle/shuttle</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(6,6)</drawSize>
+      <shaderType>Cutout</shaderType>
+    </graphicData>
+    <size>(3,3)</size>
+    <rotatable>true</rotatable>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <castEdgeShadows>false</castEdgeShadows>
+    <fillPercent>0.5</fillPercent>
+    <designationCategory>Ship</designationCategory>
+    <defaultPlacingRot>South</defaultPlacingRot>
+	<building>
+      <hasFuelingPort>true</hasFuelingPort>
+    </building>
+    <statBases>
+      <MaxHitPoints>1000</MaxHitPoints>
+      <WorkToBuild>12000</WorkToBuild>
+      <Flammability>0</Flammability>
+	  <Mass>600</Mass>
+    </statBases>
+    <costList>
+      <Plasteel>80</Plasteel>
+	  <Steel>320</Steel>
+      <ComponentIndustrial>12</ComponentIndustrial>
+      <ComponentSpacer>3</ComponentSpacer>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Transporter">
+		<massCapacity>1000</massCapacity>
+        <restEffectiveness>0.8</restEffectiveness>
+	  </li>
+      <li Class="CompProperties_ShuttleLaunchable">
+		<fuelPerTile>0.5</fuelPerTile>
+		<skyfaller>CargoShuttleSkyfaller</skyfaller>
+	  </li>
+	  <li Class="CompProperties_Refuelable">
+        <fuelCapacity>300.0</fuelCapacity>
+        <targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+        <initialConfigurableTargetFuelLevel>300</initialConfigurableTargetFuelLevel>
+        <fuelFilter>
+          <thingDefs>
+            <li>ShuttleFuelPods</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+        <autoRefuelPercent>1</autoRefuelPercent>
+        <showFuelGizmo>true</showFuelGizmo>
+        <drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
+      </li>
+		<li Class="CompProperties_BecomePawn">
+			<pawnDef>ShuttleCargoHover</pawnDef>
+		</li>
+    </comps>
+    <inspectorTabs>
+      <li>ITab_ContentsTransporter</li>
+    </inspectorTabs>
+    <placeWorkers>
+    </placeWorkers>
+		<researchPrerequisites>
+			<li>ShuttleCargo</li>
+		</researchPrerequisites>
+    <minifiedDef>MinifiedThing</minifiedDef>
+	<thingCategories>
+      <li>BuildingsFurniture</li>
+    </thingCategories>
+  </ThingDef>
+  
+  <ThingDef ParentName="BuildingBase">
+    <defName>HeavyShuttle</defName>
+    <label>heavy cargo shuttle</label>
+    <thingClass>Building</thingClass>
+	<drawerType>MapMeshAndRealTime</drawerType>
+    <description>A reusable shuttlecraft powered by uranium fuel pods. Can carry tonnes of cargo.</description>
+    <graphicData>
+      <texPath>Things/Shuttle/shuttle_heavy</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(6,6)</drawSize>
+      <shaderType>Cutout</shaderType>
+    </graphicData>
+    <size>(5,5)</size>
+    <rotatable>true</rotatable>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <castEdgeShadows>false</castEdgeShadows>
+    <fillPercent>0.5</fillPercent>
+    <designationCategory>Ship</designationCategory>
+	<building>
+      <hasFuelingPort>true</hasFuelingPort>
+    </building>
+    <statBases>
+      <MaxHitPoints>1500</MaxHitPoints>
+      <WorkToBuild>20000</WorkToBuild>
+      <Flammability>0</Flammability>
+	  <Mass>1000</Mass>
+    </statBases>
+    <costList>
+      <Plasteel>120</Plasteel>
+	  <Steel>480</Steel>
+      <ComponentIndustrial>16</ComponentIndustrial>
+	  <ComponentSpacer>6</ComponentSpacer>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Transporter">
+		<massCapacity>2000</massCapacity>
+        <restEffectiveness>0.8</restEffectiveness>
+	  </li>
+      <li Class="CompProperties_ShuttleLaunchable">
+		<fuelPerTile>1</fuelPerTile>
+		<skyfaller>HeavyCargoShuttleSkyfaller</skyfaller>
+	  </li>
+	  <li Class="CompProperties_Refuelable">
+        <fuelCapacity>500.0</fuelCapacity>
+        <targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+        <initialConfigurableTargetFuelLevel>500</initialConfigurableTargetFuelLevel>
+        <fuelFilter>
+          <thingDefs>
+            <li>ShuttleFuelPods</li>
+          </thingDefs>
+        </fuelFilter>
+        <consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+        <autoRefuelPercent>1</autoRefuelPercent>
+        <showFuelGizmo>true</showFuelGizmo>
+        <drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
+      </li>
+		<li Class="CompProperties_BecomePawn">
+			<pawnDef>ShuttleHeavyHover</pawnDef>
+		</li>
+    </comps>
+    <inspectorTabs>
+      <li>ITab_ContentsTransporter</li>
+    </inspectorTabs>
+    <placeWorkers>
+    </placeWorkers>
+		<researchPrerequisites>
+			<li>ShuttleHeavy</li>
+		</researchPrerequisites>
+    <minifiedDef>MinifiedThing</minifiedDef>
+	<thingCategories>
+      <li>BuildingsFurniture</li>
+    </thingCategories>
+  </ThingDef>
+  
+</Defs>

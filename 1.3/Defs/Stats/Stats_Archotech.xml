@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <StatDef>
+    <defName>ArchotechPillarsConnected</defName>
+    <label>archotech pillars connected</label>
+    <description>The number of unique pillars connected to this archotech spore.</description>
+    <category>Building</category>
+    <defaultBaseValue>0</defaultBaseValue>
+    <minValue>0</minValue>
+    <toStringStyle>Integer</toStringStyle>
+    <showIfUndefined>false</showIfUndefined>
+    <parts>
+    </parts>
+    <displayPriorityInCategory>1000</displayPriorityInCategory>
+  </StatDef>
+</Defs>

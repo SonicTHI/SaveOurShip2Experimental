@@ -102,7 +102,7 @@ namespace RimWorld
                 fieldStrength += 0.001f * (1+ NumConnectedPillars);
             }
 
-            if(tick-lastGiftTick > 90000 * (5- NumConnectedPillars) * (3-mood))
+            if (tick-lastGiftTick > 90000 * (5- NumConnectedPillars) * (3-mood))
             {
                 int numUnlock = 0;
                 foreach (ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)

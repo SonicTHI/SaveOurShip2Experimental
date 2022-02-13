@@ -81,26 +81,20 @@ namespace RimWorld
 		public override bool PawnCanOpen(Pawn p)
         {
             //enemy pawns can pass through their doors if outside or with EVA when player is present
-            if (p.Faction != Faction.OfPlayer && this.Outerdoor())
+            if (p.Map.IsSpace() && p.Faction != Faction.OfPlayer && this.Outerdoor())
             {
-                var mapComp = this.Map.GetComponent<ShipHeatMapComp>();
-                if (InVacuum(p) || (ShipInteriorMod2.EVAlevel(p)>3 && (!mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned))) { }
+                if (ShipInteriorMod2.RoomIsVacuum(p.GetRoom()) || (ShipInteriorMod2.EVAlevel(p)>3 && (!this.Map.GetComponent<ShipHeatMapComp>().InCombat || p.Map.mapPawns.AnyColonistSpawned))) { }
                 else return false;
             }
             Lord lord = p.GetLord();
             return (lord != null && lord.LordJob != null && lord.LordJob.CanOpenAnyDoor(p)) || WildManUtility.WildManShouldReachOutsideNow(p) || base.Faction == null || (p.guest != null && p.guest.Released) || GenAI.MachinesLike(base.Faction, p);
-        }
-        private bool InVacuum(Pawn pawn)
-        {
-            Room room = pawn.Position.GetRoom(pawn.Map);
-            return room == null || room.OpenRoofCount > 0 || room.TouchesMapEdge;
         }
         public bool Outerdoor()
         {
             foreach (IntVec3 pos in GenAdj.CellsAdjacentCardinal(this))
             {
                 Room room = pos.GetRoom(this.Map);
-                if (room != null && (room.OpenRoofCount > 0 || room.TouchesMapEdge))
+                if (ShipInteriorMod2.RoomIsVacuum(room))
                 {
                     return true;
                 }

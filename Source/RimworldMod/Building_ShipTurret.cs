@@ -382,7 +382,7 @@ namespace RimWorld
             {
                 if (this.GetRoom() == null || this.GetRoom().OpenRoofCount > 0 || this.GetRoom().TouchesMapEdge)
                 {
-                    if(!PointDefenseMode && PlayerControlled)
+                    if (!PointDefenseMode && PlayerControlled)
                         Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat",this.Label), this, MessageTypeDefOf.CautionInput);
                     this.shipTarget = LocalTargetInfo.Invalid;
                     return;
@@ -396,7 +396,7 @@ namespace RimWorld
             {
                 if (this.TryGetComp<CompRefuelable>().Fuel <= 0)
                 {
-                    if(PlayerControlled)
+                    if (!PointDefenseMode && PlayerControlled)
                         Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToAmmo", this.Label), this, MessageTypeDefOf.CautionInput);
                     this.shipTarget = LocalTargetInfo.Invalid;
                     return;

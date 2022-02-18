@@ -12,7 +12,7 @@ If you do not know what to do with these files or where to put them do not bothe
 
 To update: Make sure to delete the old folder then extract the new one.
 
-**Download the source (Code -> Download ZIP) for the latest build.**
+**Download the source for the latest build. (Code -> Download ZIP)**
 
 You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - make sure to mention that you are using the experimental build. Check the feature list before reporting. If you encounter bugs or issues not directly related to changed or added features please try replicating the bug with the STEAM build.
 

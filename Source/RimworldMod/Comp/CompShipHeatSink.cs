@@ -48,7 +48,7 @@ namespace RimWorld
                         myNet.AddHeat(heatStored);
                     }*/
                 }
-                else if (!this.Props.antiEntropic && this.parent.GetRoom() != null && this.parent.GetRoom().OpenRoofCount <= 0 && !this.parent.GetRoom().TouchesMapEdge)
+                else if (!this.Props.antiEntropic && !ShipInteriorMod2.RoomIsVacuum(this.parent.GetRoom()))
                 {
                     if (heatStored >= 1)
                         GenTemperature.PushHeat(this.parent, ShipInteriorMod2.HeatPushMult);

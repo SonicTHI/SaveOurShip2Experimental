@@ -42,7 +42,7 @@ namespace RimWorld
                         float num2 = (1.0f - num1 * (1.0f / 130.0f));
                         if (num2 < 0.0f)
                             num2 = 0.0f;
-                        float energyLimit = ((this.compTempControl.Props.energyPerSecond) * num2 * 4.1667f);
+                        float energyLimit = this.compTempControl.Props.energyPerSecond * num2 * 4.1667f;
                         float tempChange = GenTemperature.ControlTemperatureTempChange(intVec3_1, this.Map, energyLimit, this.compTempControl.targetTemperature);
                         flag = !Mathf.Approximately(tempChange, 0.0f);
                         if (flag)

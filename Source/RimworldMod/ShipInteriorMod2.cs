@@ -1003,7 +1003,7 @@ namespace SaveOurShip2
 			//normalize temp in ship
 			foreach (Room room in targetMap.regionGrid.allRooms)
 			{
-				if (!(room == null || room.OpenRoofCount > 0 || room.TouchesMapEdge) && room.Temperature < -99f)
+				if (!RoomIsVacuum(room) && room.Temperature < -99f)
 					room.Temperature = 21f;
 			}
 			//takeoff - explosions
@@ -1675,44 +1675,16 @@ namespace SaveOurShip2
 		{
 			if (!Find.CurrentMap.IsSpace()) return;
 
-			IntVec3 intVec = UI.MouseCell();
-			Room room = intVec.GetRoom(Find.CurrentMap);
-			if (room == null)
+			if (ShipInteriorMod2.RoomIsVacuum(UI.MouseCell().GetRoom(Find.CurrentMap)))
 			{
-				__result = __result + " (Vacuum)";
-			}
-			else if (room.OpenRoofCount > 0 || room.TouchesMapEdge)
-			{
-				bool inAirlock = false;
-				foreach (Thing t in Find.CurrentMap.thingGrid.ThingsAt(intVec))
-				{
-					if (t.def.defName.Equals("ShipAirlock"))
-						inAirlock = true;
-				}
-
-				if (inAirlock)
-				{
-					__result = __result + " (Breathable Atmosphere)";
-				}
-				else
-				{
-					__result = __result + " (Vacuum)";
-				}
-			}
-			else if ((Find.CurrentMap.listerBuildings.allBuildingsColonist.Any(t =>
-				(t.def.defName.Equals("Ship_LifeSupport") || t.def.defName.Equals("Ship_LifeSupport_Small")) &&
-				((ThingWithComps)t).GetComp<CompFlickable>().SwitchIsOn &&
-				((ThingWithComps)t).GetComp<CompPowerTrader>().PowerOn)) ||
-				(Find.CurrentMap.listerBuildings.allBuildingsNonColonist.Any(t =>
-				(t.def.defName.Equals("Ship_LifeSupport") || t.def.defName.Equals("Ship_LifeSupport_Small")) &&
-				((ThingWithComps)t).GetComp<CompFlickable>().SwitchIsOn &&
-				((ThingWithComps)t).GetComp<CompPowerTrader>().PowerOn)))
-			{
-				__result = __result + " (Breathable Atmosphere)";
+				__result += " (Vacuum)";
 			}
 			else
-			{
-				__result = __result + " (Non-Breathable Atmosphere)";
+            {
+				if (Find.CurrentMap.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any())
+					__result += " (Breathable Atmosphere)";
+				else
+					__result += " (Non-Breathable Atmosphere)";
 			}
 		}
 	}
@@ -1726,7 +1698,7 @@ namespace SaveOurShip2
 			if (!(__instance is MechaniteFire) && __instance.Spawned && __instance.Map.IsSpace())
 			{
 				Room room = __instance.Position.GetRoom(__instance.Map);
-				if (room == null || room.OpenRoofCount > 0 || room.TouchesMapEdge)
+				if (ShipInteriorMod2.RoomIsVacuum(room))
 					__instance.TakeDamage(new DamageInfo(DamageDefOf.Extinguish, 100, 0, -1f, null, null, null,
 						DamageInfo.SourceCategory.ThingOrUnknown, null));
 			}

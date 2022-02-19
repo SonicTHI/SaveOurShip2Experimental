@@ -1737,8 +1737,9 @@
 				<basePowerConsumption>800</basePowerConsumption>
 				<transmitsPower>false</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_ShipPart"/>
+			<li Class="CompProperties_ShipLifeSupport"/>
 			<li Class="CompProperties_GraphicOnOff"/>
 		</comps>
 		<building>
@@ -1790,8 +1791,9 @@
 				<basePowerConsumption>2400</basePowerConsumption>
 				<transmitsPower>false</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_ShipPart"/>
+			<li Class="CompProperties_ShipLifeSupport"/>
 			<li Class="CompProperties_GraphicOnOff"/>
 		</comps>
 		<building>

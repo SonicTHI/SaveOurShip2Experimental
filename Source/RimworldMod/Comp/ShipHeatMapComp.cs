@@ -174,6 +174,7 @@ namespace RimWorld
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
         public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
+        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
         //SC vars
         public Map ShipCombatOriginMap; //"player" map - initializes combat vars
         public Map ShipCombatMasterMap; //"AI" map - runs all non duplicate code
@@ -1304,7 +1305,7 @@ namespace RimWorld
             var mapComp = map.GetComponent<ShipHeatMapComp>();
             if (detached.Count > 0)
             {
-                Log.Message("Detaching " + detached.Count + " tiles");
+                //Log.Message("Detaching " + detached.Count + " tiles");
                 ShipInteriorMod2.AirlockBugFlag = true;
                 List<Thing> toDestroy = new List<Thing>();
                 List<Thing> toReplace = new List<Thing>();

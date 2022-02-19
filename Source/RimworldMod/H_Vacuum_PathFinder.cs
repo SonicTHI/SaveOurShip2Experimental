@@ -129,7 +129,6 @@ namespace RimworldMod.VacuumIsNotFun {
     }
 
     public static class VacuumExtensions {
-
         public static Danger ExtraDangerFor(Danger original, Room room, Pawn p, Map map) {
             // Always pass through deadly, if tile or map isn't space, return normal danger
             if (original == Danger.Deadly || !map.IsSpace() || (!ShipInteriorMod2.useVacuumPathfinding && p.Faction.IsPlayer) || (!room?.IsSpace() ?? true)) return original;

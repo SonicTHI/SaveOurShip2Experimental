@@ -45,7 +45,8 @@ namespace RimWorld
                         else
                             pawnsToDamage.Add(pawn);
                     }
-                    else if (!HasLifeSupport(room) && eva != 1)//in ship, no air
+                    //in ship, no air
+                    else if (!room.Map.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any() && eva != 1)
                     {
                         if (eva == 3)
                         {
@@ -98,10 +99,6 @@ namespace RimWorld
                 Job Flee = new Job(DefDatabase<JobDef>.GetNamed("FleeVacuum"), b);
                 pawn.jobs.StartJob(Flee, JobCondition.InterruptForced);
             }
-        }
-        static bool HasLifeSupport(Room room)
-        {
-            return room.Map.spawnedThings.Any(t => (t.def.defName.Equals("Ship_LifeSupport") || t.def.defName.Equals("Ship_LifeSupport_Small")) && ((ThingWithComps)t).GetComp<CompFlickable>().SwitchIsOn && ((ThingWithComps)t).GetComp<CompPowerTrader>().PowerOn);
         }
     }
 }

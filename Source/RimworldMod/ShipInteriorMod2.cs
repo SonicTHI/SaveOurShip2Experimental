@@ -32,7 +32,7 @@ namespace SaveOurShip2
 
 		public static readonly float HeatPushMult = 50f;
 		public static readonly float crittersleepBodySize = 0.7f;
-		public static bool ArchoStuffEnabled = true;
+		public static bool ArchoStuffEnabled = true;//unassigned???
 		public static bool SoSWin = false;
 
 		public static bool AirlockBugFlag = false;//shipmove
@@ -753,7 +753,7 @@ namespace SaveOurShip2
 			border.Add(new IntVec3(pos.z * -1, 0, pos.x * -1));
 		}
 
-		public static void MoveShip(Building core, Map map, IntVec3 adjustment, Faction fac = null, byte rotNum = 0)
+		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0)
 		{
 			List<Thing> toSave = new List<Thing>();
 			List<Building> shipParts = ShipUtility.ShipBuildingsAttachedTo(core);
@@ -768,7 +768,6 @@ namespace SaveOurShip2
 
 			shipOriginMap = null;
 			Map sourceMap = core.Map;
-			Map targetMap = map;
 			if (targetMap == null)
 				targetMap = core.Map;
 
@@ -776,22 +775,26 @@ namespace SaveOurShip2
 			List<Thing> thingsToDestroy = new List<Thing>();
 			foreach (Thing saveThing in shipParts)
 			{
-				//remove all bridges from cache
-				var mapComp = sourceMap.GetComponent<ShipHeatMapComp>();
-				if (saveThing is Building_ShipBridge && mapComp.MapRootListAll.Contains(saveThing))
-				{
-					//Log.Message("SM-Removed: " + saveThing + " from " + sourceMap);
-					((Building_ShipBridge)saveThing).mapComp = null;
-					mapComp.MapRootListAll.Remove(saveThing as Building);
-				}
-				if (saveThing is Building_ShipTurret)
-				{
-					((Building_ShipTurret)saveThing).mapComp = null;
-				}
-
-				//area from things, things from pos
 				if (saveThing is Building)
 				{
+					//moving to a diff map, remove things from caches
+					if (sourceMap != targetMap)
+                    {
+						if (saveThing is Building_ShipBridge b)
+						{
+							var mapComp = sourceMap.GetComponent<ShipHeatMapComp>();
+							if (mapComp.MapRootListAll.Contains(saveThing))
+							{
+								//Log.Message("SM-Removed: " + saveThing + " from " + sourceMap);
+								b.mapComp = null;
+								mapComp.MapRootListAll.Remove(saveThing as Building);
+							}
+						}
+						else if (saveThing is Building_ShipTurret t)
+							t.mapComp = null;
+					}
+
+					//area from things, things from pos
 					foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(saveThing))
 					{
 						if (!targetArea.Contains(pos + adjustment))
@@ -877,7 +880,7 @@ namespace SaveOurShip2
 						int adjx = 0;
 						if (rotb == 3)
 						{
-							//CCW rot, breaks non rot things
+							//CCW rot, breaks non rot, uneven things
 							if (spawnThing.def.rotatable)
 							{
 								spawnThing.Rotation = new Rot4(spawnThing.Rotation.AsByte + rotb);
@@ -1017,7 +1020,7 @@ namespace SaveOurShip2
 			{
 				float fuelNeeded = 0f;
 				float fuelStored = 0f;
-				int nukeEngines = 0;
+				//int nukeEngines = 0;
 				List<Building> engines = new List<Building>();
 
 				foreach (Thing saveThing in shipParts)
@@ -1032,7 +1035,7 @@ namespace SaveOurShip2
 						if (saveThing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
 						{
 							fuelStored += saveThing.TryGetComp<CompRefuelable>().Fuel;
-							nukeEngines++;
+							//nukeEngines++;
 						}
 					}
 					if (saveThing is Building && saveThing.def != hullPlateDef && saveThing.def != mechHullPlateDef && saveThing.def != archoHullPlateDef)
@@ -1055,16 +1058,13 @@ namespace SaveOurShip2
 				}*/
 			}
 			//landing - remove space map
-			if (map != null)
+			if (sourceMap != targetMap && !targetMap.IsSpace())
 			{
-				if (!targetMap.IsSpace())
+				if (!sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
 				{
-					if (!sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
-					{
-						WorldObject oldParent = sourceMap.Parent;
-						Current.Game.DeinitAndRemoveMap(sourceMap);
-						Find.World.worldObjects.Remove(oldParent);
-					}
+					WorldObject oldParent = sourceMap.Parent;
+					Current.Game.DeinitAndRemoveMap(sourceMap);
+					Find.World.worldObjects.Remove(oldParent);
 				}
 			}
 			//regen affected map layers

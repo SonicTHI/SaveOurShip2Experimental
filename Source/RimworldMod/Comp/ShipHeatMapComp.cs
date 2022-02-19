@@ -170,11 +170,11 @@ namespace RimWorld
             }
         }
         //td get these into shipcache?
+        public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
-        public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
-        public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
+        public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
         //SC vars
         public Map ShipCombatOriginMap; //"player" map - initializes combat vars
         public Map ShipCombatMasterMap; //"AI" map - runs all non duplicate code

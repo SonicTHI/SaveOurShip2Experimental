@@ -175,6 +175,10 @@ namespace SaveOurShip2
                     else
                         myShuttle.GetComp<CompBecomeBuilding>().transform();
                 }
+                else if (__instance.Position.GetRoom(__instance.Map).Fogged)
+                {
+                    FloodFillerFog.FloodUnfog(__instance.Position, __instance.Map);
+                }
                 return false;
             }
             return true;

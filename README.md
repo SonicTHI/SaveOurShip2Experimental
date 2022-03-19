@@ -2,7 +2,7 @@
 
 **READ CAREFULLY AND IN FULL BEFORE DOING ANYTHING:**
 
-SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131). It includes bugfixes, changes and new features that need more testing.
+SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131). It includes bugfixes, performance optimizations, mechanics changes and some new features that need more testing.
 
 **While this version is official you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from EXPERIMENTAL back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case. **Make a separate save while NOT IN A SHIP BATTLE before switching to this version.**
 
@@ -16,4 +16,4 @@ You can report issues or give feedback here or in #save-our-ship on [Radian Heli
 
 An updated version of the Creation kit is also [available](https://drive.google.com/file/d/1i12ryPcQETc68eMPxp19QcDQloz7Pm3x/view?usp=sharing). Only use it with SOS2 EXPERIMENTAL.
 
-Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/10_vYUf1fI5b1u_rjUBuIMx5pw7ZW_JIaF2aEuG6h57Y/edit#gid=589168296) for general SOS2 info, FAQs and mod compatibility. Note that some mods that do work with the STEAM build might not or vice versa.
+Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/10_vYUf1fI5b1u_rjUBuIMx5pw7ZW_JIaF2aEuG6h57Y/edit#gid=589168296) for general SOS2 info, FAQs and mod compatibility. Note that some mods that do work with the STEAM build might not with SOS2 EXPERIMENTAL - particularly mods that alter, extend or otherwise interact with SOS2.

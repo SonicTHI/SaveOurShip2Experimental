@@ -80,6 +80,7 @@ namespace RimWorld
         }
 		public override bool PawnCanOpen(Pawn p)
         {
+            if (p.RaceProps.FenceBlocked && p.RaceProps.Roamer && p.CurJobDef != JobDefOf.FollowRoper) return false;
             //enemy pawns can pass through their doors if outside or with EVA when player is present
             if (p.Map.IsSpace() && p.Faction != Faction.OfPlayer && this.Outerdoor())
             {

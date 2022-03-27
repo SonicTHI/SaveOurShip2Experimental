@@ -104,7 +104,7 @@
     <Compile Include="Building_ShipAdvSensor.cs" />
     <Compile Include="Building_ShipAirlock.cs" />
     <Compile Include="Building_ShipCapacitor.cs" />
-    <Compile Include="Building_ShipLifeSupport.cs" />
+    <Compile Include="Comp\CompShipLifeSupport.cs" />
     <Compile Include="Building_ShipCloakingDevice.cs" />
     <Compile Include="Building_ShipConduit.cs" />
     <Compile Include="Building_ShipTurret.cs" />
@@ -115,6 +115,8 @@
     <Compile Include="CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="Comp\CompProperties_ShipLifeSupport.cs" />
+    <Compile Include="Comp\CompProperties_SoShipPart.cs" />
+    <Compile Include="Comp\CompSoSshipPart.cs" />
     <Compile Include="TransportPodsArrivalAction_ShipAssault.cs" />
     <Compile Include="Command_VerbTargetWreckMap.cs" />
     <Compile Include="Command_VerbTargetWreck.cs" />

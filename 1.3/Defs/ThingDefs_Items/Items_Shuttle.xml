@@ -21,18 +21,6 @@
     <thingCategories>
       <li>Manufactured</li>
     </thingCategories>
-		<comps>
-			<li Class="CompProperties_Explosive">
-				<explosiveRadius>2</explosiveRadius>
-				<explosiveDamageType>Bomb</explosiveDamageType>
-				<explosiveExpandPerStackcount>0.033</explosiveExpandPerStackcount>
-				<startWickHitPointsPercent>0.333</startWickHitPointsPercent>
-				<wickTicks>
-					<min>70</min>
-					<max>150</max>
-				</wickTicks>
-			</li>
-		</comps>
     <researchPrerequisites><li>ShipReactor</li></researchPrerequisites>
   </ThingDef>
   

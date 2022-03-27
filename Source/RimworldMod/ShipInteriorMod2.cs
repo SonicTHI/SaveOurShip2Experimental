@@ -615,7 +615,7 @@ namespace SaveOurShip2
 					IntVec3 cell = cargoCells.RandomElement();
 					GenPlace.TryPlaceThing(t, cell, map, ThingPlaceMode.Near);
 					cargoCells.Remove(cell);
-					if (t is Pawn)
+					if (t is Pawn p && !p.RaceProps.Animal)
 						t.SetFactionDirect(fac);
 				}
 			}

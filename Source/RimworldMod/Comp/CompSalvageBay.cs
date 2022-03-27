@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using SaveOurShip2;
 
 namespace RimWorld
 {
     [StaticConstructorOnStartup]
     public class CompShipSalvageBay : ThingComp
     {
-        public static int salvageCapacity = 3000;
+        public static int salvageCapacity = 2500;
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
 			var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
@@ -49,12 +50,15 @@ namespace RimWorld
                     action = delegate
                     {
                         List<Building> buildings = new List<Building>();
-                        foreach (Building b in this.parent.Map.listerBuildings.allBuildingsNonColonist)
+                        List<Thing> things = new List<Thing>();
+                        foreach (Thing t in this.parent.Map.listerThings.AllThings)
                         {
-                            if (b.def.CanHaveFaction)
+                            if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
                                 buildings.Add(b);
+                            else if (t is DetachedShipPart)//t.def.defName == "DetachedShipPart")
+                                things.Add(t);
                         }
-                        if (buildings.Count > 0)
+                        if (buildings.Any())
                         {
                             foreach (Building b in buildings)
                             {
@@ -62,10 +66,15 @@ namespace RimWorld
                             }
                             Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksSuccess", buildings.Count), parent, MessageTypeDefOf.PositiveEvent);
                         }
+                        //remove wrecks
+                        foreach (Thing t in things)
+                        {
+                            t.Destroy();
+                        }
                     },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommandDesc"),
-                    icon = ContentFinder<Texture2D>.Get("UI/SalvageShip")
+                    icon = ContentFinder<Texture2D>.Get("UI/Designators/Claim")
                 };
                 Command_VerbTargetWreck removeTargetWreck = new Command_VerbTargetWreck
                 {
@@ -88,11 +97,6 @@ namespace RimWorld
         {
             base.CompTickRare();
         }
-        public override void PostExposeData()
-        {
-            base.PostExposeData();
-		}
-
         public override string CompInspectStringExtra()
         {
             StringBuilder stringBuilder = new StringBuilder();

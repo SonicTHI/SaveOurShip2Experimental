@@ -21,7 +21,7 @@ namespace RimWorld
         public override void CompTickRare()
         {
             base.CompTickRare();
-            if (this.parent.Map.IsSpace() || !this.powerComp.PowerOn)
+            if (!this.parent.Map.IsSpace() || !this.powerComp.PowerOn)
                 return;
             this.daysWorkingSinceLastMinerals += 0.004f;
             float mtb = this.Props.mtbDays / 20;

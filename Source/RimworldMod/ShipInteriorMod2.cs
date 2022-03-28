@@ -2669,6 +2669,8 @@ namespace SaveOurShip2
 		public static bool ShipPartIsDestroyed(Building __instance, DestroyMode mode, out Tuple<IntVec3, Faction, Map> __state)
 		{
 			__state = null;
+			if (!__instance.def.CanHaveFaction)
+				return true;
 			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
 			if (!mapComp.InCombat || (mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct) || __instance is Frame)
 				return true;

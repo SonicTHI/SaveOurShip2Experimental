@@ -451,7 +451,6 @@ namespace RimWorld
                 launchedBoarders = false;
                 BoardStartTick = Find.TickManager.TicksGame + 1800;
             }
-
             //find one bridge per ship
             MapRootList = new List<Building>();
             foreach (Building root in MapRootListAll)
@@ -471,7 +470,6 @@ namespace RimWorld
             }
             foreach (Building b in duplicateRoots)
                 MapRootList.Remove(b);
-
             Log.Message("Ships: " + MapRootList.Count + " on map: " + this.map);
             shipsOnMap = null;//start cache
             for (int i = 0; i < ShipsOnMap.Count; i++)
@@ -1155,7 +1153,10 @@ namespace RimWorld
         public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
         public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
         public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
-        public HashSet<Building> LifeSupports = new HashSet<Building>();
+        public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
+        public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
+        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
+        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
 
         void GetBuildingsByGeneration(ref List<HashSet<Building>> generations, ref HashSet<Building> buildings, Map map)
         {
@@ -1241,48 +1242,46 @@ namespace RimWorld
             {
                 if (building is Building_ShipTurret turret)
                     Turrets.Add(turret);
-
-                var battery = building.TryGetComp<CompPowerBattery>();
-                if (battery != null)
-                    Batteries.Add(battery);
-
-                var heatSink = building.TryGetComp<CompShipHeatSink>();
-                if (heatSink != null)
-                    HeatSinks.Add(heatSink);
-
-                var combatShield = building.TryGetComp<CompShipCombatShield>();
-                if (combatShield != null)
-                    CombatShields.Add(combatShield);
-
-                var trail = building.TryGetComp<CompEngineTrail>();
-                var refuelable = building.TryGetComp<CompRefuelable>();
-                var flickable = building.TryGetComp<CompFlickable>();
-                if (trail != null)
-                    Engines.Add(new Tuple<CompEngineTrail, CompFlickable, CompRefuelable>(trail, flickable, refuelable));
-
-                var trailEnergy = building.TryGetComp<CompEngineTrailEnergy>();
-                var powered = building.TryGetComp<CompPowerTrader>();
-                if (trailEnergy != null)
-                    EnginesEnergy.Add(new Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>(trailEnergy, flickable, powered));
-
-                if (building is Building_ShipBridge bridge && !bridge.Destroyed)
+                else if (building.TryGetComp<CompPowerBattery>() != null)
+                    Batteries.Add(building.GetComp<CompPowerBattery>());
+                else if (building.TryGetComp<CompShipHeatSink>() != null)
+                    HeatSinks.Add(building.GetComp<CompShipHeatSink>());
+                else if (building.TryGetComp<CompShipCombatShield>() != null)
+                    CombatShields.Add(building.GetComp<CompShipCombatShield>());
+                else if (building is Building_ShipBridge bridge)
                 {
-                    Bridges.Add(bridge);
-                    if (resetCache)
+                    if (!bridge.Destroyed)
                     {
-                        BridgesAtStart.Add(bridge);
-                        bridge.shipIndex = index;
-                        Log.Message("Added bridge: " + bridge + " on ship: " + index);
+                        Bridges.Add(bridge);
+                        if (resetCache)
+                        {
+                            BridgesAtStart.Add(bridge);
+                            bridge.shipIndex = index;
+                            Log.Message("Added bridge: " + bridge + " on ship: " + index);
+                        }
                     }
                 }
+                else if (building.TryGetComp<CompHullFoamDistributor>() != null)
+                    FoamDistributors.Add(building.GetComp<CompHullFoamDistributor>());
+                else if (building.TryGetComp<CompShipLifeSupport>() != null)
+                    LifeSupports.Add(building.GetComp<CompShipLifeSupport>());
 
+                var trail = building.TryGetComp<CompEngineTrail>();
+                var trailEnergy = building.TryGetComp<CompEngineTrailEnergy>();
+                var flickable = building.TryGetComp<CompFlickable>();
+                if (trail != null)
+                {
+                    var refuelable = building.TryGetComp<CompRefuelable>();
+                    Engines.Add(new Tuple<CompEngineTrail, CompFlickable, CompRefuelable>(trail, flickable, refuelable));
+                }
+                else if (trailEnergy != null)
+                {
+                    var powered = building.TryGetComp<CompPowerTrader>();
+                    EnginesEnergy.Add(new Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>(trailEnergy, flickable, powered));
+                }
                 var heatPurge = building.TryGetComp<CompShipHeatPurge>();
                 if (heatPurge != null)
                     HeatPurges.Add(heatPurge);
-
-                var FoamDistributor = building.TryGetComp<CompHullFoamDistributor>();
-                if (FoamDistributor != null)
-                    FoamDistributors.Add(FoamDistributor);
 
                 if (resetCache)
                 {
@@ -1365,7 +1364,7 @@ namespace RimWorld
                     {
                         Thing replacement = ThingMaker.MakeThing(ShipInteriorMod2.wreckedBeamDef);
                         replacement.Position = t.Position;
-                        if (!t.Destroyed)
+                        if (t.def.destroyable && !t.Destroyed)
                             t.Destroy();
                         replacement.SpawnSetup(map, false);
                         toDestroy.Add(replacement);
@@ -1374,7 +1373,7 @@ namespace RimWorld
                     {
                         Thing replacement = ThingMaker.MakeThing(ShipInteriorMod2.wreckedHullPlateDef);
                         replacement.Position = t.Position;
-                        if (!t.Destroyed)
+                        if (t.def.destroyable && !t.Destroyed)
                             t.Destroy();
                         replacement.SpawnSetup(map, false);
                         toDestroy.Add(replacement);
@@ -1405,7 +1404,7 @@ namespace RimWorld
                         GenConstruct.PlaceBlueprintForBuild(t.def, t.Position, map, t.Rotation, Faction.OfPlayer, t.Stuff);
                     }
                     map.terrainGrid.RemoveTopLayer(t.Position, false);
-                    if (!t.Destroyed)
+                    if (t.def.destroyable && !t.Destroyed)
                         t.Destroy(DestroyMode.Vanish);
                 }
                 foreach (IntVec3 c in detached)

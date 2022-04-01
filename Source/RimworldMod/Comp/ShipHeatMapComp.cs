@@ -832,7 +832,6 @@ namespace RimWorld
                 }
                 if (startedBoarderLoad && !launchedBoarders && !enemyRetreating)
                 {
-                    Log.Message("det: " + hasAnyPlayerPartDetached);
                     //abort and reset if player on ship
                     if (this.map.mapPawns.AllPawnsSpawned.Where(o => o.Faction == Faction.OfPlayer).Any())
                     {

@@ -74,7 +74,7 @@ namespace RimWorld
                     },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommandDesc"),
-                    icon = ContentFinder<Texture2D>.Get("UI/Designators/Claim")
+                    icon = ContentFinder<Texture2D>.Get("UI/SalvageClaim")
                 };
                 Command_VerbTargetWreck removeTargetWreck = new Command_VerbTargetWreck
                 {

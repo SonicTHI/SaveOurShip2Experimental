@@ -55,6 +55,10 @@ namespace SaveOurShip2
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
 		public static Graphic shipThree = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Ship_Icon_On_fast",
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shuttlePlayer = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Shuttle_Icon_Player",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shuttleEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Shuttle_Icon_Enemy",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.red, Color.red);
 		public static Graphic ruler = GraphicDatabase.Get(typeof(Graphic_Single), "UI/ShipRangeRuler",
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
 		public static Graphic projectile = GraphicDatabase.Get(typeof(Graphic_Single), "UI/ShipProjectile",
@@ -1413,20 +1417,20 @@ namespace SaveOurShip2
 					if (obj.destinationTile == playerShipComp.ShipCombatMasterMap.Tile && initialTile == mapPlayer.Tile) 
 					{
 						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + rng * enemyShipComp.Range, baseY - 16, 24, 24),
-							new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.shipZero.MatSingle.mainTexture);
+							new Rect(screenHalf - 200 + rng * enemyShipComp.Range, baseY - 20, 12, 12),
+							new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.shuttlePlayer.MatSingle.mainTexture);
 					}
 					else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction != Faction.OfPlayer)
 					{
 						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 20, 24, 24),
-							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shipZeroEnemy.MatSingle.mainTexture);
+							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 24, 12, 12),
+							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shuttleEnemy.MatSingle.mainTexture);
 					}
 					else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction == Faction.OfPlayer)
 					{
 						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 20, 24, 24),
-							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shipZero.MatSingle.mainTexture);
+							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 24, 12, 12),
+							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shuttlePlayer.MatSingle.mainTexture);
 					}
 				}
 				if (Mouse.IsOver(rect))
@@ -2669,10 +2673,10 @@ namespace SaveOurShip2
 		public static bool ShipPartIsDestroyed(Building __instance, DestroyMode mode, out Tuple<IntVec3, Faction, Map> __state)
 		{
 			__state = null;
-			if (!__instance.def.CanHaveFaction)
+			if (!__instance.def.CanHaveFaction || (mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct) || __instance is Frame)
 				return true;
 			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-			if (!mapComp.InCombat || (mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct) || __instance is Frame)
+			if (!mapComp.InCombat)
 				return true;
 			mapComp.DirtyShip(__instance);
 			if (mode != DestroyMode.Deconstruct && __instance.def.blueprintDef != null)

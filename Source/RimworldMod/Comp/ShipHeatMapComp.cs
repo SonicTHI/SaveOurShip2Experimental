@@ -707,10 +707,10 @@ namespace RimWorld
                 }
                 BuildingsCount += ship.Buildings.Count;
             }
-            Log.Message("Engine power: " + EnginePower + ", ship size: " + BuildingsCount);
+            //Log.Message("Engine power: " + EnginePower + ", ship size: " + BuildingsCount);
             EnginePower *= 500f / Mathf.Pow(BuildingsCount, 1.1f);
 
-            Log.Message("Engine power: " + EnginePower + ", ship size: " + BuildingsCount);
+            //Log.Message("Engine power: " + EnginePower + ", ship size: " + BuildingsCount);
             //SCM only: ship AI and player distance maintain
             if (ShipCombatMaster)
             {
@@ -1246,6 +1246,16 @@ namespace RimWorld
                     Batteries.Add(building.GetComp<CompPowerBattery>());
                 else if (building.TryGetComp<CompShipHeatSink>() != null)
                     HeatSinks.Add(building.GetComp<CompShipHeatSink>());
+                else if (building.TryGetComp<CompEngineTrail>() != null)
+                {
+                    var refuelable = building.TryGetComp<CompRefuelable>();
+                    Engines.Add(new Tuple<CompEngineTrail, CompFlickable, CompRefuelable>(building.TryGetComp<CompEngineTrail>(), building.TryGetComp<CompFlickable>(), refuelable));
+                }
+                else if (building.TryGetComp<CompEngineTrailEnergy>() != null)
+                {
+                    var powered = building.TryGetComp<CompPowerTrader>();
+                    EnginesEnergy.Add(new Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>(building.TryGetComp<CompEngineTrailEnergy>(), building.TryGetComp<CompFlickable>(), powered));
+                }
                 else if (building.TryGetComp<CompShipCombatShield>() != null)
                     CombatShields.Add(building.GetComp<CompShipCombatShield>());
                 else if (building is Building_ShipBridge bridge)
@@ -1261,27 +1271,12 @@ namespace RimWorld
                         }
                     }
                 }
+                else if (building.TryGetComp<CompShipHeatPurge>() != null)
+                    HeatPurges.Add(building.GetComp<CompShipHeatPurge>());
                 else if (building.TryGetComp<CompHullFoamDistributor>() != null)
                     FoamDistributors.Add(building.GetComp<CompHullFoamDistributor>());
                 else if (building.TryGetComp<CompShipLifeSupport>() != null)
                     LifeSupports.Add(building.GetComp<CompShipLifeSupport>());
-
-                var trail = building.TryGetComp<CompEngineTrail>();
-                var trailEnergy = building.TryGetComp<CompEngineTrailEnergy>();
-                var flickable = building.TryGetComp<CompFlickable>();
-                if (trail != null)
-                {
-                    var refuelable = building.TryGetComp<CompRefuelable>();
-                    Engines.Add(new Tuple<CompEngineTrail, CompFlickable, CompRefuelable>(trail, flickable, refuelable));
-                }
-                else if (trailEnergy != null)
-                {
-                    var powered = building.TryGetComp<CompPowerTrader>();
-                    EnginesEnergy.Add(new Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>(trailEnergy, flickable, powered));
-                }
-                var heatPurge = building.TryGetComp<CompShipHeatPurge>();
-                if (heatPurge != null)
-                    HeatPurges.Add(heatPurge);
 
                 if (resetCache)
                 {
@@ -1413,7 +1408,10 @@ namespace RimWorld
                 }
                 ShipInteriorMod2.AirlockBugFlag = false;
                 if (map == mapComp.ShipCombatOriginMap)
+                {
+                    Log.Message("PLAYERDETACH");
                     mapComp.hasAnyPlayerPartDetached = true;
+                }
                 foreach (IntVec3 pos in detached)
                     ShipAreaAtStart.Remove(pos);
             }

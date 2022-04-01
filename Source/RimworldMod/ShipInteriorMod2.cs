@@ -1417,19 +1417,19 @@ namespace SaveOurShip2
 					if (obj.destinationTile == playerShipComp.ShipCombatMasterMap.Tile && initialTile == mapPlayer.Tile) 
 					{
 						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + rng * enemyShipComp.Range, baseY - 20, 12, 12),
+							new Rect(screenHalf - 200 + rng * enemyShipComp.Range, baseY - 16, 12, 12),
 							new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.shuttlePlayer.MatSingle.mainTexture);
 					}
 					else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction != Faction.OfPlayer)
 					{
 						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 24, 12, 12),
+							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
 							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shuttleEnemy.MatSingle.mainTexture);
 					}
 					else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction == Faction.OfPlayer)
 					{
 						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 24, 12, 12),
+							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
 							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shuttlePlayer.MatSingle.mainTexture);
 					}
 				}
@@ -1915,43 +1915,49 @@ namespace SaveOurShip2
 	public static class DoNotSpamMePlease
 	{
 		[HarmonyPrefix]
-		public static bool CheckBiome(Map ___map)
+		public static bool CheckBiome(Map ___map, out bool __state)
 		{
+			__state = false;
 			if (___map != null && ___map.IsSpace())
+			{
+				__state = true;
 				return false;
-
+			}
 			return true;
 		}
 
 		[HarmonyPostfix]
-		public static void NoMoreAreaSpam(FogGrid __instance, Map ___map, IntVec3 c)
+		public static void NoMoreAreaSpam(FogGrid __instance, Map ___map, IntVec3 c, bool __state)
 		{
-			__instance.Unfog(c);
-			for (int i = 0; i < 4; i++)
+			if (__state)
 			{
-				IntVec3 intVec = c + GenAdj.CardinalDirections[i];
-				if (intVec.InBounds(___map) && intVec.Fogged(___map))
+				__instance.Unfog(c);
+				for (int i = 0; i < 4; i++)
 				{
-					Building edifice = intVec.GetEdifice(___map);
-					if (edifice == null || !edifice.def.MakeFog)
+					IntVec3 intVec = c + GenAdj.CardinalDirections[i];
+					if (intVec.InBounds(___map) && intVec.Fogged(___map))
 					{
-						FloodFillerFog.FloodUnfog(intVec, ___map);
-					}
-					else
-					{
-						__instance.Unfog(intVec);
+						Building edifice = intVec.GetEdifice(___map);
+						if (edifice == null || !edifice.def.MakeFog)
+						{
+							FloodFillerFog.FloodUnfog(intVec, ___map);
+						}
+						else
+						{
+							__instance.Unfog(intVec);
+						}
 					}
 				}
-			}
-			for (int j = 0; j < 8; j++)
-			{
-				IntVec3 c2 = c + GenAdj.AdjacentCells[j];
-				if (c2.InBounds(___map))
+				for (int j = 0; j < 8; j++)
 				{
-					Building edifice2 = c2.GetEdifice(___map);
-					if (edifice2 != null && edifice2.def.MakeFog)
+					IntVec3 c2 = c + GenAdj.AdjacentCells[j];
+					if (c2.InBounds(___map))
 					{
-						__instance.Unfog(c2);
+						Building edifice2 = c2.GetEdifice(___map);
+						if (edifice2 != null && edifice2.def.MakeFog)
+						{
+							__instance.Unfog(c2);
+						}
 					}
 				}
 			}

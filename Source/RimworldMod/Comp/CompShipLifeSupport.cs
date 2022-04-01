@@ -10,7 +10,7 @@ namespace RimWorld
 {
     public class CompShipLifeSupport : ThingComp
     {
-        public bool active;
+        public bool active = true;
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);

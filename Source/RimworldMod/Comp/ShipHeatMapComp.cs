@@ -170,9 +170,9 @@ namespace RimWorld
             }
         }
         //td get these into shipcache?
+        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
-        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
         public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
         //SC vars
@@ -800,7 +800,7 @@ namespace RimWorld
                 //AI boarding code
                 if ((hasAnyPlayerPartDetached || Find.TickManager.TicksGame > BoardStartTick) && !startedBoarderLoad && !enemyRetreating)
                 {
-                    List<CompTransporter> transporters = new List<CompTransporter>();
+                    List <CompTransporter> transporters = new List<CompTransporter>();
                     float transporterMass = 0;
                     foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter))
                     {
@@ -832,43 +832,45 @@ namespace RimWorld
                 }
                 if (startedBoarderLoad && !launchedBoarders && !enemyRetreating)
                 {
-                    bool allOnPods = true;
-                    //board
-                    foreach (Pawn p in this.map.mapPawns.AllPawnsSpawned)
+                    Log.Message("det: " + hasAnyPlayerPartDetached);
+                    //abort and reset if player on ship
+                    if (this.map.mapPawns.AllPawnsSpawned.Where(o => o.Faction == Faction.OfPlayer).Any())
                     {
-                        if (p.Faction == Faction.OfPlayer) //abort and reset if playeer on ship
+                        foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
+                        {
+                            if (t.TryGetComp<CompTransporter>().innerContainer.Any || t.TryGetComp<CompTransporter>().AnythingLeftToLoad)
+                                t.TryGetComp<CompTransporter>().CancelLoad();
+                        }
+                        startedBoarderLoad = false;
+                    }
+                    else //board
+                    {
+                        bool allOnPods = true;
+                        foreach (Pawn p in this.map.mapPawns.AllPawnsSpawned.Where(o => o.Faction != Faction.OfPlayer))
+                        {
+                            if (p.mindState?.duty?.transportersGroup == 0 && p.MannedThing() == null)
+                                allOnPods = false;
+                        }
+                        if (allOnPods) //launch
                         {
                             List<CompShuttleLaunchable> transporters = new List<CompShuttleLaunchable>();
-                            foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter))
+                            foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
                             {
-                                t.TryGetComp<CompTransporter>().CancelLoad();
+                                var transporter = t.TryGetComp<CompTransporter>();
+                                if (!(transporter?.innerContainer.Any ?? false)) continue;
+
+                                var launchable = t.TryGetComp<CompShuttleLaunchable>();
+                                if (launchable == null) continue;
+
+                                transporters.Add(launchable);
                             }
-                            startedBoarderLoad = false;
+                            if (transporters.Count > 0)
+                            {
+                                transporters[0].TryLaunch(ShipCombatOriginMap.Parent, new TransportPodsArrivalAction_ShipAssault(ShipCombatOriginMap.Parent));
+                                OriginMapComp.ShipLord = LordMaker.MakeNewLord(ShipFaction, new LordJob_AssaultShip(ShipFaction, false, false, false, true, false), ShipCombatOriginMap, new List<Pawn>());
+                            }
+                            launchedBoarders = true;
                         }
-                        else if (p.mindState?.duty?.transportersGroup == 0 && p.MannedThing() == null)
-                            allOnPods = false;
-                    }
-                    if (allOnPods)
-                    {
-                        List<CompShuttleLaunchable> transporters = new List<CompShuttleLaunchable>();
-                        foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter))
-                        {
-                            if (t.Faction == Faction.OfPlayer) continue;
-
-                            var transporter = t.TryGetComp<CompTransporter>();
-                            if (!(transporter?.innerContainer.Any ?? false)) continue;
-
-                            var launchable = t.TryGetComp<CompShuttleLaunchable>();
-                            if (launchable == null) continue;
-
-                            transporters.Add(launchable);
-                        }
-                        if (transporters.Count > 0)
-                        {
-                            transporters[0].TryLaunch(ShipCombatOriginMap.Parent, new TransportPodsArrivalAction_ShipAssault(ShipCombatOriginMap.Parent));
-                            OriginMapComp.ShipLord = LordMaker.MakeNewLord(ShipFaction, new LordJob_AssaultShip(ShipFaction, false, false, false, true, false), ShipCombatOriginMap, new List<Pawn>());
-                        }
-                        launchedBoarders = true;
                     }
                 }
             }
@@ -1152,11 +1154,11 @@ namespace RimWorld
         public List<Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>> EnginesEnergy = new List<Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>>();
         public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
         public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
-        public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
-        public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
-        public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
-        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
-        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
+        //public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
+        //public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
+        //public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
+        //public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
+        //public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
 
         void GetBuildingsByGeneration(ref List<HashSet<Building>> generations, ref HashSet<Building> buildings, Map map)
         {
@@ -1256,8 +1258,8 @@ namespace RimWorld
                     var powered = building.TryGetComp<CompPowerTrader>();
                     EnginesEnergy.Add(new Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>(building.TryGetComp<CompEngineTrailEnergy>(), building.TryGetComp<CompFlickable>(), powered));
                 }
-                else if (building.TryGetComp<CompShipCombatShield>() != null)
-                    CombatShields.Add(building.GetComp<CompShipCombatShield>());
+                //else if (building.TryGetComp<CompShipCombatShield>() != null)
+                //    CombatShields.Add(building.GetComp<CompShipCombatShield>());
                 else if (building is Building_ShipBridge bridge)
                 {
                     if (!bridge.Destroyed)
@@ -1273,10 +1275,10 @@ namespace RimWorld
                 }
                 else if (building.TryGetComp<CompShipHeatPurge>() != null)
                     HeatPurges.Add(building.GetComp<CompShipHeatPurge>());
-                else if (building.TryGetComp<CompHullFoamDistributor>() != null)
+                /*else if (building.TryGetComp<CompHullFoamDistributor>() != null)
                     FoamDistributors.Add(building.GetComp<CompHullFoamDistributor>());
                 else if (building.TryGetComp<CompShipLifeSupport>() != null)
-                    LifeSupports.Add(building.GetComp<CompShipLifeSupport>());
+                    LifeSupports.Add(building.GetComp<CompShipLifeSupport>());*/
 
                 if (resetCache)
                 {
@@ -1408,10 +1410,7 @@ namespace RimWorld
                 }
                 ShipInteriorMod2.AirlockBugFlag = false;
                 if (map == mapComp.ShipCombatOriginMap)
-                {
-                    Log.Message("PLAYERDETACH");
                     mapComp.hasAnyPlayerPartDetached = true;
-                }
                 foreach (IntVec3 pos in detached)
                     ShipAreaAtStart.Remove(pos);
             }

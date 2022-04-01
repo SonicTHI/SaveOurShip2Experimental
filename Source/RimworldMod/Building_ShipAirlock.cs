@@ -95,7 +95,7 @@ namespace RimWorld
             foreach (IntVec3 pos in GenAdj.CellsAdjacentCardinal(this))
             {
                 Room room = pos.GetRoom(this.Map);
-                if (ShipInteriorMod2.RoomIsVacuum(room))
+                if (room != null && (room.OpenRoofCount > 0 || room.TouchesMapEdge))
                 {
                     return true;
                 }
@@ -108,9 +108,9 @@ namespace RimWorld
             string inspectString = base.GetInspectString();
             if (Prefs.DevMode)
             {
-                if (!inspectString.NullOrEmpty())
+                if (this.Outerdoor())
                 {
-                    stringBuilder.AppendLine(inspectString);
+                    stringBuilder.AppendLine("outerdoor");
                 }
                 else
                 {
@@ -337,7 +337,6 @@ namespace RimWorld
             FleckMaker.ThrowDustPuff(loc1, this.Map, 1f);
             FleckMaker.ThrowDustPuff(loc3, this.Map, 1f);
             this.TryGetComp<UnfoldComponent>().Target = 0.0f;
-            //b2.TryGetComp<UnfoldComponent>().Target = 0.0f;
             docked = false;
         }
     }

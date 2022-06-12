@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace RimWorld
@@ -47,9 +48,47 @@ namespace RimWorld
                     if (injury.IsPermanent())
                         pawn.health.RemoveHediff(injury);
                 }
+                IEnumerable<Hediff> diseases = pawn.health.hediffSet.hediffs.Where(hediff => hediff.def.makesSickThought || hediff.def.chronic);
+                foreach(Hediff disease in diseases)
+                {
+                    pawn.health.RemoveHediff(disease);
+                }
+
                 if (pawn.Map != consciousnessSource.Map && relay==null && pawn.CarriedBy==null && !pawn.InContainerEnclosed && !pawn.IsPrisoner)
                     consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramDestroyed(false);
             }
+        }
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+            List<Gizmo> gizmos = new List<Gizmo>();
+            if(pawn.equipment.Primary==null || pawn.equipment.Primary.def.IsRangedWeapon)
+            {
+                gizmos.Add(new Command_Action
+                {
+                    action = delegate
+                    {
+                        consciousnessSource.TryGetComp<CompBuildingConsciousness>().SwitchToMelee();
+                    },
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideEquipMelee"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideEquipMeleeDesc"),
+                    icon = ContentFinder<Texture2D>.Get("Things/Item/Equipment/WeaponMelee/LongSword")
+                });
+            }
+            else
+            {
+                gizmos.Add(new Command_Action
+                {
+                    action = delegate
+                    {
+                        consciousnessSource.TryGetComp<CompBuildingConsciousness>().SwitchToRanged();
+                    },
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideEquipRanged"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideEquipRangedDesc"),
+                    icon = ContentFinder<Texture2D>.Get("UI/Commands/FireAtWill")
+                });
+            }
+            return gizmos;
         }
     }
 }

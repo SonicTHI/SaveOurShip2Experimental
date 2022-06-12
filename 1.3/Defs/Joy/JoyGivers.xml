@@ -20,4 +20,17 @@
 	<desireSit>false</desireSit>
   </JoyGiverDef>
 
+  <JoyGiverDef>
+    <defName>UseTelescopeSpace</defName>
+    <giverClass>JoyGiver_InteractBuildingInteractionCell</giverClass>
+    <baseChance>2</baseChance>
+    <thingDefs>
+      <li>TelescopeSpace</li>
+    </thingDefs>
+    <jobDef>UseTelescope</jobDef>
+    <joyKind>Telescope</joyKind>
+    <requiredCapacities>
+      <li>Sight</li>
+    </requiredCapacities>
+  </JoyGiverDef>
 </Defs>

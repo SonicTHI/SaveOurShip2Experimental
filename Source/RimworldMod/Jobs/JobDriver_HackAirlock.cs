@@ -30,7 +30,10 @@ namespace RimWorld
             };
             hackIt.tickAction = delegate
             {
-                workDone++;
+                if (ModLister.IdeologyInstalled)
+                    workDone += pawn.GetStatValue(StatDefOf.HackingSpeed);
+                else
+                    workDone++;
             };
             hackIt.endConditions = new List<Func<JobCondition>>();
             hackIt.WithProgressBar(TargetIndex.A, () => workDone / hackWorkAmmount);

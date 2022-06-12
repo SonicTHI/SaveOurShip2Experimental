@@ -210,4 +210,46 @@
     </tradeTags>
     <designationCategory>Joy</designationCategory>
   </ThingDef>
+  
+  <ThingDef ParentName="BuildingBase">
+    <defName>TelescopeSpace</defName>
+    <label>space telescope</label>
+    <description>An advanced telescope for doing amateur astronomy. It's a relaxing hobby for a certain kind of person. Includes its own reinforced window slot so it can be used under ship roofs.</description>
+    <graphicData>
+      <texPath>Things/Building/Joy/Telescope</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawRotated>false</drawRotated>
+      <shadowData>
+        <volume>(0.3, 0.7, 0.3)</volume>
+    <offset>(-0.03,0,-0.35)</offset>
+      </shadowData>
+    </graphicData>
+    <canBeUsedUnderRoof>true</canBeUsedUnderRoof>
+    <fillPercent>0.15</fillPercent>
+    <altitudeLayer>Building</altitudeLayer>
+    <hasInteractionCell>true</hasInteractionCell>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
+    <passability>PassThroughOnly</passability>
+    <pathCost>30</pathCost>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <socialPropernessMatters>true</socialPropernessMatters>
+    <thingCategories>
+      <li>BuildingsJoy</li>
+    </thingCategories>
+    <building>
+      <joyKind>TelescopeSpace</joyKind>
+    </building>
+    <costList>
+      <Plasteel>25</Plasteel>
+      <ComponentSpacer>1</ComponentSpacer>
+    </costList>
+    <statBases>
+      <MaxHitPoints>75</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <MarketValue>600</MarketValue>
+      <Mass>7.5</Mass>
+      <JoyGainFactor>1.5</JoyGainFactor>
+    </statBases>
+    <designationCategory>Joy</designationCategory>
+  </ThingDef>
 </Defs>

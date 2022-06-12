@@ -276,6 +276,24 @@
 		<researchViewY>2</researchViewY>
 	</ResearchProjectDef>
 	
+	<ResearchProjectDef>
+		<defName>ShuttleDropship</defName>
+		<label>Superheavy Dropship</label>
+		<description>Deliver tonnes of goods, or an entire battalion of marines, with this superheavy shuttle.</description>
+		<baseCost>4000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShuttleHeavy</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+			<li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>5</researchViewX>
+		<researchViewY>2</researchViewY>
+	</ResearchProjectDef>
+	
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipSalvageBay</defName>
 		<label>salvage bay</label>

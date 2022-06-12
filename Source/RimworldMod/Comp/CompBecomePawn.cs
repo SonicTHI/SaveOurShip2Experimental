@@ -28,6 +28,8 @@ namespace RimWorld
 			this.parent.Destroy (DestroyMode.Vanish);
 			Pawn transformed = myPawn (this.parent, myPos, fuelAmount);
 			transformed.SpawnSetup (myMap, false);
+			if(transformed.TryGetComp<CompShuttleCosmetics>()!=null)
+				CompShuttleCosmetics.ChangeShipGraphics(transformed, transformed.TryGetComp<CompShuttleCosmetics>().Props);
 		}
 
 		public static Pawn myPawn(Thing meAsABuilding, IntVec3 myPos, int fuelAmount)
@@ -47,16 +49,21 @@ namespace RimWorld
                 injury.Severity = transformed.RaceProps.body.corePart.def.GetMaxHealth(transformed) * 0.375f * (1 - healthPercent);
                 transformed.health.AddHediff(injury);
             }
-            return transformed;
+			if (meAsABuilding.TryGetComp<CompShuttleCosmetics>() != null && transformed.TryGetComp<CompShuttleCosmetics>() != null)
+			{
+				int whichVersion = meAsABuilding.TryGetComp<CompShuttleCosmetics>().whichVersion;
+				transformed.TryGetComp<CompShuttleCosmetics>().whichVersion = whichVersion;
+			}
+			return transformed;
 		}
 
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()
 		{
+			if (parent.Faction != Faction.OfPlayer)
+				yield break;
 			foreach (Gizmo g in base.CompGetGizmosExtra()) {
 				yield return g;
 			}
-			if (parent.Faction != Faction.OfPlayer)
-				yield break;
 			Command_Action transform = new Command_Action();
 			transform.defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandToggleHover");
 			transform.defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandHoverOnDesc");
@@ -68,6 +75,13 @@ namespace RimWorld
 			if(this.parent.GetComp<CompRefuelable>().Fuel>0)
 				yield return transform;
 		}
-	}
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+			if (parent.TryGetComp<CompShuttleCosmetics>() != null)
+				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);
+		}
+    }
 }
 

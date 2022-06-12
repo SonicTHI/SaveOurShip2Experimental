@@ -21,6 +21,7 @@ using System.IO;
 using RimworldMod.VacuumIsNotFun;
 using System.Collections;
 using System.Reflection.Emit;
+using UnityEngine.SceneManagement;
 using System.Linq.Expressions;
 
 namespace SaveOurShip2
@@ -34,6 +35,7 @@ namespace SaveOurShip2
 		public static readonly float crittersleepBodySize = 0.7f;
 		public static bool ArchoStuffEnabled = true;//unassigned???
 		public static bool SoSWin = false;
+		static bool loadedGraphics = false;
 
 		public static bool AirlockBugFlag = false;//shipmove
 		public static Building shipOriginRoot = null;//used for patched original launch code
@@ -86,9 +88,12 @@ namespace SaveOurShip2
 		public static ThingDef hullPlateDef = ThingDef.Named("ShipHullTile");
 		public static ThingDef mechHullPlateDef = ThingDef.Named("ShipHullTileMech");
 		public static ThingDef archoHullPlateDef = ThingDef.Named("ShipHullTileArchotech");
+		public static ThingDef hullFoamDef = ThingDef.Named("ShipHullfoamTile");
 		public static TerrainDef hullFloorDef = TerrainDef.Named("FakeFloorInsideShip");
 		public static TerrainDef mechHullFloorDef = TerrainDef.Named("FakeFloorInsideShipMech");
 		public static TerrainDef archoHullFloorDef = TerrainDef.Named("FakeFloorInsideShipArchotech");
+		public static TerrainDef wreckedHullFloorDef = TerrainDef.Named("ShipWreckageTerrain");
+		public static TerrainDef hullFoamFloorDef = TerrainDef.Named("FakeFloorInsideShipFoam");
 		public static RoofDef shipRoofDef = DefDatabase<RoofDef>.GetNamed("RoofShip");
 
 		public static HediffDef hypoxia = HediffDef.Named("SpaceHypoxia");
@@ -277,11 +282,44 @@ namespace SaveOurShip2
 			//def.ConvertFromSymbolTable();
 			//}
 		}
+
+        public override void SceneLoaded(Scene scene)
+        {
+            base.SceneLoaded(scene);
+
+			if (!loadedGraphics)
+			{
+				foreach (ThingDef thingToResolve in CompShuttleCosmetics.GraphicsToResolve.Keys)
+				{
+					Graphic_Single[] graphicsResolved = new Graphic_Single[CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics.Count];
+					Graphic_Multi[] graphicsHoverResolved = new Graphic_Multi[CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover.Count];
+
+					for (int i = 0; i < CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics.Count; i++)
+					{
+						Graphic_Single graphic = new Graphic_Single();
+						GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i].texPath, ShaderDatabase.Cutout, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i].drawSize, Color.white, Color.white, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i], 0, null, "");
+						graphic.Init(req);
+						graphicsResolved[i] = graphic;
+					}
+					for (int i = 0; i < CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover.Count; i++)
+					{
+						Graphic_Multi graphic = new Graphic_Multi();
+						GraphicRequest req = new GraphicRequest(typeof(Graphic_Multi), CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i].texPath, ShaderDatabase.Cutout, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i].drawSize, Color.white, Color.white, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i], 0, null, "");
+						graphic.Init(req);
+						graphicsHoverResolved[i] = graphic;
+					}
+
+					CompShuttleCosmetics.graphics.Add(thingToResolve.defName, graphicsResolved);
+					CompShuttleCosmetics.graphicsHover.Add(thingToResolve.defName, graphicsHoverResolved);
+				}
+				loadedGraphics = true;
+			}
+		}
 		public static int FindWorldTile()
 		{
 			for (int i = 0; i < 420; i++)//Find.World.grid.TilesCount
 			{
-				if (!Find.World.worldObjects.AnyWorldObjectAt(i))
+				if (!Find.World.worldObjects.AnyWorldObjectAt(i) && TileFinder.IsValidTileForNewSettlement(i))
 				{
 					//Log.Message("Generating orbiting ship at tile " + i);
 					return i;
@@ -1636,7 +1674,7 @@ namespace SaveOurShip2
 		{
 			Room room = (Room)typeof(RoomTempTracker)
 				.GetField("room", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
-			if (room.Map.terrainGrid.TerrainAt(IntVec3.Zero).defName != "EmptySpace")
+			if (room.Map.terrainGrid.TerrainAt(IntVec3.Zero) != GenerateSpaceSubMesh.spaceTerrain)
 				return;
 			if (room.Role != RoomRoleDefOf.None && room.OpenRoofCount > 0)
 				__instance.Temperature = -100f;
@@ -3153,7 +3191,7 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void GoFast(Pawn_PathFollower __instance, Pawn ___pawn)
 		{
-			if (___pawn.Map.terrainGrid.TerrainAt(__instance.nextCell).defName.Equals("EmptySpace") &&
+			if (___pawn.Map.terrainGrid.TerrainAt(__instance.nextCell) == GenerateSpaceSubMesh.spaceTerrain &&
 				ShipInteriorMod2.EVAlevel(___pawn)>6)
 			{
 				__instance.nextCellCostLeft /= 4;
@@ -4315,7 +4353,7 @@ namespace SaveOurShip2
     {
 		public static void Postfix(Pawn p, ThingDef apparel, ref bool __result)
         {
-			if (ShipInteriorMod2.IsHologram(p) && apparel.thingClass != typeof(ApparelHolographic))
+			if (ShipInteriorMod2.IsHologram(p) && apparel.thingClass != typeof(ApparelHolographic) && !apparel.apparel.tags.Contains("HologramGear"))
 				__result = false;
         }
     }
@@ -4679,6 +4717,148 @@ namespace SaveOurShip2
 			}
 		}
     }
+
+	[HarmonyPatch(typeof(JobDriver_InteractAnimal), "RequiredNutritionPerFeed")]
+	public static class TameWildHologram
+	{
+		public static bool Prefix(Pawn animal)
+		{
+			return animal.needs.food != null;
+		}
+
+		public static void Postfix(Pawn animal, ref float __result)
+		{
+			if (animal.needs.food == null)
+				__result = 0;
+		}
+	}
+
+	[HarmonyPatch(typeof(WorkGiver_InteractAnimal), "HasFoodToInteractAnimal")]
+	public static class TameWildHologramToo
+	{
+		public static bool Prefix(Pawn tamee)
+		{
+			return tamee.needs.food != null;
+		}
+
+		public static void Postfix(Pawn tamee, ref bool __result)
+		{
+			if (tamee.needs.food == null)
+				__result = true;
+		}
+	}
+
+	[HarmonyPatch(typeof(WorkGiver_InteractAnimal), "TakeFoodForAnimalInteractJob")]
+	public static class TameWildHologramThree
+	{
+		public static bool Prefix(Pawn tamee)
+		{
+			return tamee.needs.food != null;
+		}
+
+		public static void Postfix(Pawn tamee, ref Job __result)
+		{
+			if (tamee.needs.food == null)
+			{
+				__result = JobMaker.MakeJob(JobDefOf.Goto, tamee.Position);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(JobDriver_InteractAnimal), "StartFeedAnimal")]
+	public static class TameWildHologramFour
+	{
+		public static bool Prefix(JobDriver_InteractAnimal __instance, TargetIndex tameeInd)
+		{
+			return ((Pawn)__instance.pawn.CurJob.GetTarget(tameeInd)).needs.food != null;
+		}
+
+		public static void Postfix(JobDriver_InteractAnimal __instance, TargetIndex tameeInd, ref Toil __result)
+		{
+			if (((Pawn)__instance.pawn.CurJob.GetTarget(tameeInd)).needs.food == null)
+				__result = Toils_General.Wait(10);
+		}
+	}
+
+	[HarmonyPatch(typeof(JobDriver_InteractAnimal), "FeedToils")]
+	public static class TameWildHologramFive
+	{
+		public static bool Prefix(JobDriver_InteractAnimal __instance)
+		{
+			return ((Pawn)__instance.job.targetA.Thing).needs.food != null;
+		}
+
+		public static void Postfix(JobDriver_InteractAnimal __instance, ref IEnumerable<Toil> __result)
+		{
+			if (((Pawn)__instance.job.targetA.Thing).needs.food == null)
+			{
+				List<Toil> newResult = new List<Toil>();
+				newResult.Add(Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch));
+				__result = newResult;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(Toils_Ingest), "FinalizeIngest")]
+	public static class HologramsDoNotEatIMeanItSeriously
+	{
+		public static void Postfix(Pawn ingester, TargetIndex ingestibleInd, ref Toil __result)
+		{
+			if (ingester.needs.food == null)
+			{
+				__result.initAction = delegate
+				{
+					Pawn actor = ingester;
+					Job curJob = actor.jobs.curJob;
+					Thing thing = curJob.GetTarget(ingestibleInd).Thing;
+					thing.Ingested(ingester, 0);
+				};
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(JobGiver_EatInGatheringArea), "TryGiveJob")]
+	public static class HologramsParty
+	{
+		public static bool Prefix(Pawn pawn)
+		{
+			return pawn.needs.food != null;
+		}
+
+		public static void Postfix(Pawn pawn, ref Job __result)
+		{
+			if (pawn.needs.food == null)
+			{
+				__result = null;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(PawnApparelGenerator), "CanUsePair")]
+	public static class NoHolographicGearOnGeneratedPawns
+	{
+		public static void Postfix(ThingStuffPair pair, Pawn pawn, ref bool __result)
+		{
+			if (pair.thing.IsApparel && pair.thing.apparel.tags != null && pair.thing.apparel.tags.Contains("HologramGear") && pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Count() == 0)
+			{
+				__result = false;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(PawnWeaponGenerator), "GetWeaponCommonalityFromIdeo")]
+	public static class NoHolographicWeaponsOnGeneratedPawns
+	{
+		static WeaponClassDef hologramClass = DefDatabase<WeaponClassDef>.GetNamed("HologramGear");
+
+		public static void Postfix(ThingStuffPair pair, Pawn pawn, ref float __result)
+		{
+			if (pair.thing.IsWeapon && pair.thing.weaponClasses != null && pair.thing.weaponClasses.Contains(hologramClass) && pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Count() == 0)
+			{
+				__result = 0f;
+			}
+		}
+	}
 	
 	//storyteller
 	[HarmonyPatch(typeof(Map), "get_PlayerWealthForStoryteller")]
@@ -4712,7 +4892,9 @@ namespace SaveOurShip2
             {
 				if (proj.IsFinished)
 					num += proj.baseCost;
-            }
+			}
+			if (num > 100000)
+				num = 100000;
 			return num;
         }
     }
@@ -5061,6 +5243,117 @@ namespace SaveOurShip2
 				__result = Find.Maps.FirstOrDefault();
 		}
 	}
+
+
+	//new -recheck
+	/*[HarmonyPatch(typeof(Room), "Notify_RoofChanged")]
+	public static class ReRoof
+	{
+		public static void Postfix(Room __instance)
+		{
+			if (__instance.Map == null)
+				return;
+			TerrainGrid grid = __instance.Map.terrainGrid;
+			foreach (IntVec3 position in __instance.Cells)
+			{
+				if (grid.UnderTerrainAt(position) == ShipInteriorMod2.ShipTerrain || grid.UnderTerrainAt(position) == ShipInteriorMod2.ShipTerrainToo)
+					__instance.Map.thingGrid.ThingsAt(position).Where(thing => thing.TryGetComp<CompRoofMe>() != null).FirstOrDefault().TryGetComp<CompRoofMe>().RoofMeAgain();
+			}
+		}
+	}
+	*/
+	[HarmonyPatch(typeof(PassingShip), "CommFloatMenuOption")]
+	public static class CanTradeInSpace
+	{
+		public static void Postfix(Building_CommsConsole console, Pawn negotiator, PassingShip __instance, ref FloatMenuOption __result)
+		{
+			if (console.Map.Biome == ShipInteriorMod2.OuterSpaceBiome)
+			{
+				__result.action = delegate { console.GiveUseCommsJob(negotiator, __instance); };
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(TradeUtility), "AllLaunchableThingsForTrade")]
+	public static class SelectAllThingsInSpace
+	{
+		public static void Postfix(Map map, ITrader trader, ref IEnumerable<Thing> __result)
+		{
+			if (map.Biome == ShipInteriorMod2.OuterSpaceBiome)
+			{
+				List<Thing> replace = new List<Thing>();
+				foreach (Thing thing in map.listerThings.AllThings)
+				{
+					if (thing.def.category == ThingCategory.Item && TradeUtility.PlayerSellableNow(thing, trader))
+						replace.Add(thing);
+				}
+				__result = replace;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(ShipLandingBeaconUtility), "GetLandingZones")]
+	public static class RoyaltyShuttlesLandOnBays
+	{
+		public static void Postfix(Map map, ref List<ShipLandingArea> __result)
+		{
+			foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBay")))
+			{
+				ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
+				area.RecalculateBlockingThing();
+				__result.Add(area);
+			}
+			foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBayLarge")))
+			{
+				ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
+				area.RecalculateBlockingThing();
+				__result.Add(area);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(QuestNode_Root_ShuttleCrash_Rescue), "TryFindShuttleCrashPosition")]
+	public static class CrashOnShuttleBay
+	{
+		public static void Postfix(Map map, Faction faction, IntVec2 size, ref IntVec3 spot, QuestNode_Root_ShuttleCrash_Rescue __instance)
+		{
+			if (map.Biome == ShipInteriorMod2.OuterSpaceBiome)
+			{
+				foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBay")))
+				{
+					ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
+					area.RecalculateBlockingThing();
+					if (area.FirstBlockingThing == null)
+					{
+						spot = area.CenterCell;
+						return;
+					}
+				}
+				foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBayLarge")))
+				{
+					ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
+					area.RecalculateBlockingThing();
+					if (area.FirstBlockingThing == null)
+					{
+						spot = area.CenterCell;
+						return;
+					}
+				}
+				QuestPart raidPart = null;
+				foreach (QuestPart part in QuestGen.quest.PartsListForReading)
+				{
+					if (part is QuestPart_PawnsArrive)
+					{
+						raidPart = part;
+						break;
+					}
+				}
+				if (raidPart != null)
+					QuestGen.quest.RemovePart(raidPart);
+			}
+		}
+	}
+
 
 	/*[HarmonyPatch(typeof(CompShipPart),"PostSpawnSetup")]
 	public static class RemoveVacuum{

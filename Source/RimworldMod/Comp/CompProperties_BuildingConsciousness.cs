@@ -15,6 +15,8 @@ namespace RimWorld
         public bool healOnMerge=false;
         public HediffDef holoHediff;
         public ThingDef holoWeapon;
+        public ThingDef holoWeaponMelee;
+        public ThingDef holoShield;
 
         public CompProperties_BuildingConsciousness()
         {

@@ -693,7 +693,7 @@ namespace RimWorld
                 };
                 yield return command_Toggle;
             }
-            else
+            if (HeatComp.Props.maxRange > HeatComp.Props.optRange)
             {
                 Command_Toggle command_Toggle = new Command_Toggle
                 {

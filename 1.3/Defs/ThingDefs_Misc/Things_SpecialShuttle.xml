@@ -49,6 +49,26 @@
       <texPath>Things/ShuttleHover/ShuttleHeavy_south</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <shaderType>CutoutFlying</shaderType>
+      <drawSize>7</drawSize>
+    </graphicData>
+    <skyfaller>
+      <movementType>Decelerate</movementType>
+      <shadow>Things/Skyfaller/SkyfallerShadowDropPod</shadow>
+      <shadowSize>(5, 5)</shadowSize>
+      <anticipationSound>DropPod_Fall</anticipationSound>
+      <anticipationSoundTicks>100</anticipationSoundTicks>
+      <motesPerCell>0</motesPerCell>
+    </skyfaller>
+  </ThingDef>
+  
+  <ThingDef ParentName="SkyfallerBase">
+    <defName>ShuttleIncomingDropship</defName>
+    <label>shuttle (incoming)</label>
+	<thingClass>DropPodIncoming</thingClass>
+    <graphicData>
+      <texPath>Things/ShuttleHover/ShuttleDropship_south</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <shaderType>CutoutFlying</shaderType>
       <drawSize>8</drawSize>
     </graphicData>
     <skyfaller>
@@ -109,6 +129,27 @@
 	<thingClass>FlyShipLeaving</thingClass>
     <graphicData>
       <texPath>Things/ShuttleHover/ShuttleHeavy_south</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <shaderType>CutoutFlying</shaderType>
+      <drawSize>7</drawSize>
+    </graphicData>
+    <skyfaller>
+      <movementType>Decelerate</movementType>
+      <reversed>true</reversed>
+      <shadow>Things/Skyfaller/SkyfallerShadowDropPod</shadow>
+      <shadowSize>(5, 5)</shadowSize>
+      <anticipationSound>DropPod_Leaving</anticipationSound>
+      <anticipationSoundTicks>-10</anticipationSoundTicks>
+      <ticksToImpactRange><min>-40</min><max>-15</max></ticksToImpactRange>
+    </skyfaller>
+  </ThingDef>
+  
+  <ThingDef ParentName="SkyfallerBase">
+    <defName>DropshipShuttleSkyfaller</defName>
+    <label>shuttle (leaving)</label>
+	<thingClass>FlyShipLeaving</thingClass>
+    <graphicData>
+      <texPath>Things/ShuttleHover/ShuttleDropship_south</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <shaderType>CutoutFlying</shaderType>
       <drawSize>8</drawSize>

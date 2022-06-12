@@ -31,8 +31,14 @@ namespace RimWorld
                 int fuelAmount = Mathf.CeilToInt(this.parent.GetComp<CompRefuelable>().Fuel);
                 this.parent.GetComp<CompRefuelable>().ConsumeFuel(fuelAmount);
                 transformed.GetComp<CompRefuelable>().Refuel(fuelAmount);
-            }
-            if (this.parent.ParentHolder != null && !(this.parent.ParentHolder is Map))
+			}
+			if (this.parent.TryGetComp<CompShuttleCosmetics>() != null && transformed.TryGetComp<CompShuttleCosmetics>() != null)
+			{
+				int whichVersion = this.parent.TryGetComp<CompShuttleCosmetics>().whichVersion;
+				transformed.TryGetComp<CompShuttleCosmetics>().whichVersion = whichVersion;
+
+			}
+			if (this.parent.ParentHolder != null && !(this.parent.ParentHolder is Map))
             {
                 if (this.parent.ParentHolder is ActiveDropPodInfo)
                 {
@@ -67,11 +73,11 @@ namespace RimWorld
 					yield return c2;
 				}
 			}*/
+			if (parent.Faction != Faction.OfPlayer)
+				yield break;
 			foreach (Gizmo g in base.CompGetGizmosExtra()) {
 				yield return g;
 			}
-			if (parent.Faction != Faction.OfPlayer)
-				yield break;
 			Command_Action transform = new Command_Action();
 			transform.defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandToggleHover");
 			transform.defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandHoverOffDesc");
@@ -120,6 +126,13 @@ namespace RimWorld
 				}
 			}
 		}
-	}
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+			if (parent.TryGetComp<CompShuttleCosmetics>() != null)
+				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);
+        }
+    }
 }
 

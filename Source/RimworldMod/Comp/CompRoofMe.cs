@@ -51,16 +51,16 @@ namespace RimWorld
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
             isTile = parent.def == ShipInteriorMod2.hullPlateDef;
-            isMechTile = parent.def == ShipInteriorMod2.mechHullPlateDef;
-            isArchoTile = parent.def == ShipInteriorMod2.archoHullPlateDef;
-            isFoamTile = parent.def.defName.Equals("ShipHullfoamTile");
+            isMechTile = Props.mechanoid;
+            isArchoTile = Props.archotech;
+            isFoamTile = parent.def == ShipInteriorMod2.hullFoamDef;
             map = parent.Map;
             positions = new List<IntVec3>();
             foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(parent))
             {
                 positions.Add(pos);
             }
-            foreach (IntVec3 pos in positions)
+            /*foreach (IntVec3 pos in positions)
             {
                 if (Props.roof && map.roofGrid.Roofed(pos) && map.roofGrid.RoofAt(pos)!=roof)
                     map.roofGrid.SetRoof(pos, roof);
@@ -68,24 +68,37 @@ namespace RimWorld
             if (respawningAfterLoad)
             {
                 return;
-            }
+            }*/
             foreach (IntVec3 pos in positions)
             {
                 if(Props.roof)
                     map.roofGrid.SetRoof(pos, roof);
-                if (!map.terrainGrid.TerrainAt(pos).layerable)
+                TerrainDef currentTerrain = map.terrainGrid.TerrainAt(pos);
+                if (!currentTerrain.layerable || currentTerrain==hullTerrain || currentTerrain==mechHullTerrain || currentTerrain == hullfoamTerrain || currentTerrain==wreckageTerrain)
                 {
-                    if (!Props.wreckage && !Props.mechanoid && !isArchoTile && !isFoamTile && map.terrainGrid.TerrainAt(pos) != hullTerrain)
-                        map.terrainGrid.SetTerrain(pos, hullTerrain);
-                    else if (!Props.wreckage && !isArchoTile && !isFoamTile && map.terrainGrid.TerrainAt(pos) != mechHullTerrain)
-                        map.terrainGrid.SetTerrain(pos, mechHullTerrain);
-                    else if (!Props.wreckage && !isFoamTile && map.terrainGrid.TerrainAt(pos) != archotechHullTerrain)
-                        map.terrainGrid.SetTerrain(pos, archotechHullTerrain);
-                    else if (!Props.wreckage && isFoamTile && map.terrainGrid.TerrainAt(pos) != hullfoamTerrain)
-                        map.terrainGrid.SetTerrain(pos, hullfoamTerrain);
+                    if (!Props.wreckage)
+                    {
+                        if (!isMechTile && !isArchoTile && !isFoamTile && currentTerrain != hullTerrain)
+                            map.terrainGrid.SetTerrain(pos, hullTerrain);
+                        else if (isMechTile && !isArchoTile && !isFoamTile && currentTerrain != mechHullTerrain)
+                            map.terrainGrid.SetTerrain(pos, mechHullTerrain);
+                        else if (isArchoTile && !isFoamTile && currentTerrain != archotechHullTerrain)
+                            map.terrainGrid.SetTerrain(pos, archotechHullTerrain);
+                        else if (isFoamTile && currentTerrain != hullfoamTerrain)
+                            map.terrainGrid.SetTerrain(pos, hullfoamTerrain);
+                    }
                     else
                         map.terrainGrid.SetTerrain(pos, wreckageTerrain);
                 }
+            }
+        }
+
+        public void RoofMeAgain()
+        {
+            foreach (IntVec3 pos in positions)
+            {
+                if (Props.roof)
+                    map.roofGrid.SetRoof(pos, roof);
             }
         }
 

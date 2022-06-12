@@ -166,6 +166,7 @@
     <Compile Include="Comp\CompProperties_AICrewmate.cs" />
     <Compile Include="Comp\CompProperties_HullFoamDistributor.cs" />
     <Compile Include="Comp\CompProperties_PowerPlantSolarShip.cs" />
+    <Compile Include="Comp\CompProperties_ShuttleCosmetics.cs" />
     <Compile Include="Comp\CompProperties_CryptoLaunchable.cs" />
     <Compile Include="Comp\CompProperties_SpinalMount.cs" />
     <Compile Include="Comp\CompProperties_ShipCombatShield.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Comp\CompShipHeatSource.cs" />
     <Compile Include="Comp\CompShipHeat.cs" />
     <Compile Include="Comp\CompArcholife.cs" />
+    <Compile Include="Comp\CompShuttleCosmetics.cs" />
     <Compile Include="Comp\CompCryptoLaunchable.cs" />
     <Compile Include="Comp\CompSpinalMount.cs" />
     <Compile Include="Comp\CompSoSUnlock.cs" />
@@ -229,14 +231,18 @@
     <Compile Include="Graphic_SingleOnOffEmpty.cs" />
     <Compile Include="Graphic_SingleOnOff.cs" />
     <Compile Include="Comp\HediffCompOnlyInSpace.cs" />
+    <Compile Include="Comp\HediffCompProperties_GiveSubPart.cs" />
     <Compile Include="Comp\HediffCompProperties_OnlyInSpace.cs" />
+    <Compile Include="Comp\HediffComp_GiveSubPart.cs" />
     <Compile Include="HediffPawnIsHologram.cs" />
+    <Compile Include="Hediff_AddedPartNoRemoveSubparts.cs" />
     <Compile Include="HideLightingLayersInSpace.cs" />
     <Compile Include="H_Vacuum_PathFinder.cs" />
     <Compile Include="Comp\InsectPillarSiteComp.cs" />
     <Compile Include="Jobs\JobDriver_FleeVacuum.cs" />
     <Compile Include="Jobs\JobDriver_InstallConsciousness.cs" />
     <Compile Include="Jobs\JobDriver_MergeWithSpore.cs" />
+    <Compile Include="Jobs\JobDriver_ResurrectHologram.cs" />
     <Compile Include="Jobs\JobGiver_RepairShields.cs" />
     <Compile Include="MoonBase.cs" />
     <Compile Include="Comp\MoonPillarSiteComp.cs" />

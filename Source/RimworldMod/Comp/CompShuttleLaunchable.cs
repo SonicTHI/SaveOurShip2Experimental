@@ -106,7 +106,7 @@ namespace RimWorld
 				List<CompTransporter> transportersInGroup = this.TransportersInGroup;
 				for (int i = 0; i < transportersInGroup.Count; i++)
 				{
-					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !(transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def.defName.Equals("ShipShuttleBay"))))
+					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !(transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def.defName.Equals("ShipShuttleBay") || t.def.defName.Equals("ShipShuttleBayLarge"))))
 					{
 						return true;
 					}
@@ -286,7 +286,7 @@ namespace RimWorld
                 if (targetMapParent is WorldObjectOrbitingShip)
                 {
                     var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
-                    IntVec3 shuttleBayPos = FirstShuttleBayOpen(targetMapParent.Map);
+                    IntVec3 shuttleBayPos = FirstShuttleBayOpen(targetMapParent.Map, parent.def);
                     if (this.parent.Map.Parent is SpaceSite)
                     {
                         if (shuttleBayPos == IntVec3.Zero)
@@ -604,21 +604,38 @@ namespace RimWorld
             }
             return false;
         }
-        public static IntVec3 FirstShuttleBayOpen(Map shipMap)
+        public static IntVec3 FirstShuttleBayOpen(Map shipMap, ThingDef whichShuttle)
         {
-            foreach(Thing thing in shipMap.spawnedThings.Where(t => t.def.defName.Equals("ShipShuttleBay")))
+            foreach (Thing thing in shipMap.listerBuildings.allBuildingsColonist.Where(t => t.def.defName.Equals("ShipShuttleBay") || t.def.defName.Equals("ShipShuttleBayLarge")))
             {
-                bool empty = true;
-                foreach(IntVec3 pos in GenAdj.CellsOccupiedBy(thing))
+                if (thing.def.Size.Area < whichShuttle.Size.Area)
+                    continue;
+
+                IntVec3 cell = CellFinder.FindNoWipeSpawnLocNear(thing.Position, shipMap, whichShuttle, Rot4.South, thing.def.defName.Equals("ShipShuttleBay")?2:3);
+
+                if (cell == thing.Position)
                 {
-                    if (pos.GetThingList(shipMap).Any(x => x.def.passability == Traversability.Impassable || x.def.passability == Traversability.PassThroughOnly))
+                    bool fail = false;
+                    foreach(IntVec3 rectCell in thing.OccupiedRect().Cells)
                     {
-                        empty = false;
-                        break;
+                        foreach(Thing otherThing in rectCell.GetThingList(shipMap))
+                        {
+                            if(otherThing is Building && GenSpawn.SpawningWipes(whichShuttle, otherThing.def))
+                            {
+                                fail = true;
+                                break;
+                            }
+                        }
+                        if (fail)
+                            break;
                     }
+                    if (fail)
+                        continue;
+                    else
+                        return cell;
                 }
-                if(empty)
-                    return thing.Position;
+                else
+                    return cell;
             }
             return IntVec3.Zero;
         }
@@ -659,20 +676,17 @@ namespace RimWorld
             }
             else if (map.Parent is SpaceSite && target.WorldObject != null)
             {
-                if (target.WorldObject.def.defName.Equals("ShipOrbiting"))
-                {
-                    if (fuelComp != null)
-                    {
-                        fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)this.parent.Map.Parent).fuelCost / 100f);
-                    }
-                }
-                else
-                {
-                    if (fuelComp != null)
-                    {
-                        fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)target.WorldObject).fuelCost / 100f);
-                    }
-                }
+                if (fuelComp != null)
+				{
+					if (target.WorldObject.def.defName.Equals("ShipOrbiting"))
+					{
+						fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)this.parent.Map.Parent).fuelCost / 100f);
+					}
+					else
+					{
+						fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)target.WorldObject).fuelCost / 100f);
+					}
+				}
             }
             else if (map.Parent is MoonBase && target.WorldObject != null && target.WorldObject.def.defName.Equals("ShipOrbiting"))
             {
@@ -704,7 +718,7 @@ namespace RimWorld
             else
             {
                 int num = Find.WorldGrid.TraversalDistanceBetween(map.Tile, target.Tile);
-                if (num > MaxLaunchDistanceAtFuelLevel(this.parent.GetComp<CompRefuelable>().Fuel))
+                if (num > MaxLaunchDistanceAtFuelLevel(fuelComp.Fuel))
                 {
                     return;
                 }
@@ -736,7 +750,6 @@ namespace RimWorld
                 ActiveDropPod activeDropPod = (ActiveDropPod)ThingMaker.MakeThing(ThingDefOf.ActiveDropPod, null);
                 activeDropPod.Contents = new ActiveDropPodInfo();
                 activeDropPod.Contents.innerContainer.TryAddRangeOrTransfer(directlyHeldThings, true, true);
-
                 activeDropPod.Contents.innerContainer.TryAddOrTransfer(meAsAPawn);
 
                 FlyShipLeaving dropPodLeaving = (FlyShipLeaving)SkyfallerMaker.MakeSkyfaller(this.Props.skyfaller, activeDropPod);
@@ -748,6 +761,16 @@ namespace RimWorld
                 compTransporter.CleanUpLoadingVars(map);
                 compTransporter.parent.Destroy(DestroyMode.Vanish);
                 GenSpawn.Spawn(dropPodLeaving, compTransporter.parent.Position, map);
+                if(parent.TryGetComp<CompShuttleCosmetics>()!=null)
+                {
+                    Graphic_Single graphic = new Graphic_Single();
+                    CompProperties_ShuttleCosmetics Props = parent.TryGetComp<CompShuttleCosmetics>().Props;
+                    int whichVersion = parent.TryGetComp<CompShuttleCosmetics>().whichVersion;
+                    GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), Props.graphicsHover[whichVersion].texPath+"_south", ShaderDatabase.Cutout, Props.graphics[whichVersion].drawSize, Color.white, Color.white, Props.graphics[whichVersion], 0, null, "");
+                    graphic.Init(req);
+                    typeof(Thing).GetField("graphicInt", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(dropPodLeaving, graphic);
+
+                }
             }
         }
         public void TryLaunch(GlobalTargetInfo target, TransportPodsArrivalAction arrivalAction)

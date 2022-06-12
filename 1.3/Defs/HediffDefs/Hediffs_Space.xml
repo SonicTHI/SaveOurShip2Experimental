@@ -339,6 +339,8 @@
 					<PsychicEntropyRecoveryRate MayRequire="Ludeon.RimWorld.Royalty">2</PsychicEntropyRecoveryRate>
 					<PsychicEntropyMax MayRequire="Ludeon.RimWorld.Royalty">1000</PsychicEntropyMax>
 					<MeditationFocusGain MayRequire="Ludeon.RimWorld.Royalty">2</MeditationFocusGain>
+					<NegotiationAbility>0.50</NegotiationAbility>
+					<TradePriceImprovement>0.10</TradePriceImprovement>
 				</statOffsets>
 				<statFactors>
 					<CertaintyLossFactor MayRequire="Ludeon.RimWorld.Ideology">0</CertaintyLossFactor>

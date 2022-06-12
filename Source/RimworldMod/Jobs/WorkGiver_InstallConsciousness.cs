@@ -8,7 +8,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class WorkGiver_InstallConsciousness : WorkGiver_Scanner
+    class WorkGiver_InstallConsciousness : WorkGiver_Scanner //Also used for installing resurrector serum into afterlife caskets, to bring back a pawn's body
     {
         public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForGroup(ThingRequestGroup.BuildingArtificial);
 
@@ -19,7 +19,7 @@ namespace RimWorld
             CompBuildingConsciousness consc = t.TryGetComp<CompBuildingConsciousness>();
             if (consc == null)
                 return false;
-            return consc.WhichPawn != null && consc.Consciousness==null && ((consc.Props.mustBeDead && ((Pawn)consc.WhichPawn).Dead) || (!consc.Props.mustBeDead && pawn==consc.WhichPawn) || consc.WhichPawn.def==ThingDefOf.AIPersonaCore) && pawn.CanReserveAndReach(t,PathEndMode.ClosestTouch,Danger.Deadly);
+            return ((consc.WhichPawn != null && consc.Consciousness==null && ((consc.Props.mustBeDead && ((Pawn)consc.WhichPawn).Dead) || (!consc.Props.mustBeDead && pawn==consc.WhichPawn) || consc.WhichPawn.def==ThingDefOf.AIPersonaCore)) || (consc.RezPlz != null)) && pawn.CanReserveAndReach(t,PathEndMode.ClosestTouch,Danger.Deadly);
         }
 
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
@@ -27,6 +27,14 @@ namespace RimWorld
             CompBuildingConsciousness consc = t.TryGetComp<CompBuildingConsciousness>();
             if (consc == null)
                 return null;
+
+            if (consc.RezPlz != null)
+            {
+                Job val2 = new Job(DefDatabase<JobDef>.GetNamed("ResurrectHologram"), t, consc.RezPlz);
+                val2.count = 1;
+                return val2;
+            }
+
             if (consc.Props.mustBeDead)
             {
                 Job val2 = new Job(DefDatabase<JobDef>.GetNamed("InstallConsciousness"), t, ((Pawn)consc.WhichPawn).Corpse);

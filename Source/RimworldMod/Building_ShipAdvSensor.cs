@@ -114,7 +114,7 @@ namespace RimWorld
 
         void PossiblyDisposeOfObservedMap()
         {
-            if (observedMap != null && !observedMap.Map.mapPawns.AnyColonistSpawned && !observedMap.Map.listerBuildings.allBuildingsColonist.Any() && observedMap.Faction==Faction.OfPlayer)
+            if (observedMap != null && observedMap.Map !=null && !observedMap.Map.mapPawns.AnyColonistSpawned && !observedMap.Map.listerBuildings.allBuildingsColonist.Any() && observedMap.Faction==Faction.OfPlayer)
             {
                 Current.Game.DeinitAndRemoveMap(observedMap.Map);
                 Find.World.worldObjects.Remove(observedMap);

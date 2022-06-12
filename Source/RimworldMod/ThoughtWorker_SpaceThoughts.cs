@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace RimWorld
     {
         protected override ThoughtState CurrentStateInternal(Pawn p)
         {
-            if(p.Map.terrainGrid.TerrainAt(p.Position).defName == "EmptySpace")
+            if(p.Map.terrainGrid.TerrainAt(p.Position) == GenerateSpaceSubMesh.spaceTerrain)
             {
                 if(p.story.traits.HasTrait(TraitDefOf.Undergrounder) || p.story.traits.HasTrait(TraitDef.Named("Wimp"))) {
                     return ThoughtState.ActiveAtStage(3);
@@ -18,7 +19,7 @@ namespace RimWorld
                 {
                     return ThoughtState.ActiveAtStage(2);
                 }
-            } else if(p.Map.terrainGrid.TerrainAt(IntVec3.Zero).defName == "EmptySpace")
+            } else if(p.Map.terrainGrid.TerrainAt(IntVec3.Zero) == GenerateSpaceSubMesh.spaceTerrain)
             {
                 if (p.story.traits.HasTrait(TraitDefOf.Undergrounder) || p.story.traits.HasTrait(TraitDef.Named("Wimp"))) {
                     return ThoughtState.ActiveAtStage(1);

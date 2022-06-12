@@ -59,6 +59,7 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
+			<li><compClass>CompColorable</compClass></li>
 		</comps>
 		<placeWorkers>
 		</placeWorkers>
@@ -133,6 +134,7 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
+			<li><compClass>CompColorable</compClass></li>
 		</comps>
 		<placeWorkers/>
 		<rotatable>false</rotatable>
@@ -166,6 +168,7 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
+			<li><compClass>CompColorable</compClass></li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 	</ThingDef>
@@ -310,6 +313,7 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
+			<li><compClass>CompColorable</compClass></li>
 		</comps>
 		<designationHotKey>Misc2</designationHotKey>
 		<statBases>
@@ -420,6 +424,7 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
+			<li><compClass>CompColorable</compClass></li>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_SolarShip</li>
@@ -524,6 +529,7 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
+			<li><compClass>CompColorable</compClass></li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc2</designationHotKey>
@@ -617,6 +623,7 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
+			<li><compClass>CompColorable</compClass></li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc2</designationHotKey>
@@ -676,6 +683,7 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
+			<li><compClass>CompColorable</compClass></li>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_NotOnBuilding</li>
@@ -1054,6 +1062,8 @@
 			<li Class="CompProperties_BuildingConsciousness">
 				<holoHediff>SoSHologramArchotech</holoHediff>
 				<holoWeapon>HologramLaserArchotech</holoWeapon>
+				<holoWeaponMelee>HologramSwordArchotech</holoWeaponMelee>
+				<holoShield>HologramShieldArchotech</holoShield>
 				<canMergeHuman>true</canMergeHuman>
 				<canMergeAI>true</canMergeAI>
 				<healOnMerge>true</healOnMerge>
@@ -1782,7 +1792,7 @@
 		<defName>RecyclotronRecipe</defName>
 		<label>recycle</label>
 		<description>Use mechanites to break down an object into its base resources, with near-perfect efficiency.</description>
-		<jobString>Recycling.</jobString>
+		<jobString>Recycling item.</jobString>
 		<workAmount>1600</workAmount>
 		<workSpeedStat>SmeltingSpeed</workSpeedStat>
 		<effectWorking>Smelt</effectWorking>

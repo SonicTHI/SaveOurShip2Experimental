@@ -9,6 +9,8 @@
 	<MessageShuttleOnlyPods>Enemy ship has active engines. Use personal shuttles to directly assault the enemy ship or disable its engines.</MessageShuttleOnlyPods>
 	<MessageShuttleNeedsMoreFuel>Your shuttle must be at least {0}% fueled to reach this site. Bring double this if you intend to return!</MessageShuttleNeedsMoreFuel>
 	<MustLaunchFromOrbit>This site can only be reached by a shuttle launched from orbit.</MustLaunchFromOrbit>
+	<ShuttleChangeColor>Set color</ShuttleChangeColor>
+	<ShuttleChangeColorDesc>Change this shuttle's color</ShuttleChangeColorDesc>
 	<!-- orbit -->
 	<ShipInsideMoveWestFar>Long burn west</ShipInsideMoveWestFar>
 	<ShipInsideMoveWestFarDesc>Move the ship westward.</ShipInsideMoveWestFarDesc>
@@ -146,6 +148,12 @@
 	<SoSHologramRelayStopDesc>Return {0} to the hologram's original map</SoSHologramRelayStopDesc>
 	<SoSHologramApparel>Wear holographic apparel</SoSHologramApparel>
 	<SoSHologramApparelDesc>Simulate apparel on this hologram</SoSHologramApparelDesc>
+	<ShipInsideEquipRanged>Ranged mode</ShipInsideEquipRanged>
+	<ShipInsideEquipRangedDesc>Equip this hologram with a ranged laser attack</ShipInsideEquipRangedDesc>
+	<ShipInsideEquipMelee>Melee mode</ShipInsideEquipMelee>
+	<ShipInsideEquipMeleeDesc>Equip this hologram with a blade and an energy shield</ShipInsideEquipMeleeDesc>
+	<ShipInsideResurrectBrain>Resurrect</ShipInsideResurrectBrain>
+	<ShipInsideResurrectBrainDesc>Use a resurrector mech serum to construct a new body for this brain</ShipInsideResurrectBrainDesc>
 	<!-- archo -->
 	<ArchotechNotEnoughFieldStrength>Insufficient field strength</ArchotechNotEnoughFieldStrength>
 	<ArchotechCommandSoothe>Psychic soothe</ArchotechCommandSoothe>
@@ -168,9 +176,11 @@
 	<CraftArchothrumbo>Spawn archothrumbo</CraftArchothrumbo>
 	<ArchotechOptimizeMatter>Optimize matter</ArchotechOptimizeMatter>
 	<ArchotechOptimizeMatterDesc>Automatically convert standard hull to archotech hull in a slowly widening radius. This will not affect large structures such as heatsinks or shield generators.</ArchotechOptimizeMatterDesc>
+	<ArchotechDemandGift>Demand gift</ArchotechDemandGift>
+	<ArchotechDemandGiftDesc>Demand an immediate gift from your archotech spore. This will result in a stacking -40 mood penalty!</ArchotechDemandGiftDesc>
+	<ArchotechNoGiftsUnlocked>No gifts unlocked by research</ArchotechNoGiftsUnlocked>
 	<ArchotechSporeEvolve>Initiate archotech evolution</ArchotechSporeEvolve>
 	<ArchotechSporeEvolveDesc>Evolve your archotech spore into a true archotech, and usher in a new age for this world.\n\nThis will end the game!</ArchotechSporeEvolveDesc>
-	
 	<!-- obsolete -->
 	<SalvageShip>Salvage enemy ship</SalvageShip>
 	<SalvageShipCancel>Abandon enemy ship</SalvageShipCancel>

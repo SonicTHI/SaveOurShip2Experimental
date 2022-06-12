@@ -236,7 +236,7 @@ namespace RimWorld
                 int numCancers = Rand.RangeInclusive(2, 5);
                 for (int i = 0; i < numCancers; i++)
                 {
-                    Pawn victim = this.Map.mapPawns.FreeColonistsAndPrisonersSpawned.RandomElement();
+                    Pawn victim = this.Map.mapPawns.FreeColonistsAndPrisonersSpawned.Where(pawn => pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Count()==0).RandomElement();
                     HediffGiverUtility.TryApply(victim, HediffDefOf.Carcinoma, null, true);
                 }
             }
@@ -557,6 +557,40 @@ namespace RimWorld
                 }
                 giz.Add(formPsylink);
             }
+
+            bool anyGiftsUnlocked = false;
+            foreach (ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)
+            {
+                if (def.research.IsFinished)
+                {
+                    anyGiftsUnlocked = true;
+                    break;
+                }
+            }
+            Command_Action demandGift = new Command_Action
+            {
+                action = delegate
+                {
+                    Slate slate = new Slate();
+                    slate.Set<string>("quest_name", "A Gift From " + Consciousness.Name.ToStringFull);
+                    slate.Set<string>("archotech_name", Consciousness.Name.ToStringShort);
+                    slate.Set<Map>("map", this.Map);
+                    slate.Set<int>("value", 5000);
+                    Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(DefDatabase<QuestScriptDef>.GetNamed("ArchotechGiftQuest"), slate);
+                    Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null);
+                    Consciousness.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named("ArchotechSporeGiftDemanded"));
+                },
+                defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechDemandGift"),
+                defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechDemandGiftDesc"),
+                icon = ContentFinder<Texture2D>.Get("UI/Buttons/GiftMode")
+            };
+            if(!anyGiftsUnlocked)
+            {
+                demandGift.disabled = true;
+                demandGift.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNoGiftsUnlocked");
+            }
+            giz.Add(demandGift);
+			
             if(NumConnectedPillars>=4)
             {
                 Command_Action winGame = new Command_Action
@@ -597,9 +631,9 @@ namespace RimWorld
                         enemyNode.options.Add(enemyTakeover);
                         enemyNode.options.Add(enemyKill);
 
-                        alliedFactions = Find.FactionManager.AllFactionsVisible.Where(fac => fac!=Faction.OfPlayer && fac.PlayerRelationKind == FactionRelationKind.Ally).ToList();
-                        neutralFactions = Find.FactionManager.AllFactionsVisible.Where(fac => fac != Faction.OfPlayer && fac.PlayerRelationKind == FactionRelationKind.Neutral).ToList();
-                        enemyFactions = Find.FactionManager.AllFactionsVisible.Where(fac => fac != Faction.OfPlayer && fac.PlayerRelationKind == FactionRelationKind.Hostile && fac.def.CanEverBeNonHostile).ToList();
+                        alliedFactions = Find.FactionManager.AllFactionsVisible.Where(fac => fac!=Faction.OfPlayer && fac.PlayerRelationKind == FactionRelationKind.Ally && !fac.defeated).ToList();
+                        neutralFactions = Find.FactionManager.AllFactionsVisible.Where(fac => fac != Faction.OfPlayer && fac.PlayerRelationKind == FactionRelationKind.Neutral && !fac.defeated).ToList();
+                        enemyFactions = Find.FactionManager.AllFactionsVisible.Where(fac => fac != Faction.OfPlayer && fac.PlayerRelationKind == FactionRelationKind.Hostile && fac.def.CanEverBeNonHostile && !fac.defeated).ToList();
 
                         List<DiaOption> lastOptions = new List<DiaOption> { end };
 

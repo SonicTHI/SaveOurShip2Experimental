@@ -22,7 +22,7 @@ namespace RimWorld
             base.Tick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (this.TryGetComp<CompPowerTrader>().PowerOn && this.TryGetComp<CompFlickable>().SwitchIsOn)
+                if (this.TryGetComp<CompPowerTrader>().PowerOn && this.TryGetComp<CompFlickable>().SwitchIsOn && (this.TryGetComp<CompShipHeatSource>().myNet!=null || (this.GetRoom()!=null && this.GetRoom().OpenRoofCount==0)))
                     active = true;
                 else
                     active = false;
@@ -50,6 +50,8 @@ namespace RimWorld
             else
             {
                 stringBuilder.AppendLine("Inactive");
+                if ((this.GetRoom() == null || this.GetRoom().OpenRoofCount > 0) && this.TryGetComp<CompShipHeatSource>().myNet == null)
+                    stringBuilder.AppendLine("<color=red>In vacuum and not connected to heat net</color>");
             }
             return stringBuilder.ToString().TrimEndNewlines();
         }

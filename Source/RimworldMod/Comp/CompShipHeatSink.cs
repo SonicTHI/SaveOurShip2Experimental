@@ -13,6 +13,7 @@ namespace RimWorld
     {
         public float heatStored;
         public bool notInsideShield;
+        public bool cloaked;
 
         public override void PostExposeData()
         {
@@ -41,12 +42,6 @@ namespace RimWorld
                     {
                         heatStored--;
                     }
-                    /*else //Diffuse heat to sinks if available
-                    {
-                        float heat = heatStored;
-                        heatStored = 0;
-                        myNet.AddHeat(heatStored);
-                    }*/
                 }
                 else if (!this.Props.antiEntropic && !ShipInteriorMod2.RoomIsVacuum(this.parent.GetRoom()))
                 {
@@ -73,6 +68,7 @@ namespace RimWorld
 
         private bool NotInsideShield()
         {
+            cloaked = false;
             foreach (CompShipCombatShield shield in parent.Map.GetComponent<ShipHeatMapComp>().Shields)
             {
                 if (!shield.shutDown && (parent.DrawPos - shield.parent.DrawPos).magnitude < shield.radius)
@@ -86,6 +82,7 @@ namespace RimWorld
                 {
                     if (cloak.active && cloak.Map == parent.Map)
                     {
+						cloaked = true;
                         return false;
                     }
                 }
@@ -95,7 +92,15 @@ namespace RimWorld
 
         public override string CompInspectStringExtra()
         {
-            return "Stored heat: " + Mathf.Round(heatStored)+"/"+Props.heatCapacity;
+            string toReturn = "Stored heat: " + Mathf.Round(heatStored)+"/"+Props.heatCapacity;
+            if(this.Props.ventHeatToSpace && !notInsideShield)
+            {
+                if (cloaked)
+                    toReturn += "\n<color=red>Cannot vent: Cloaked</color>";
+                else
+                    toReturn += "\n<color=red>Cannot vent: Inside shield</color>";
+            }
+            return toReturn;
         }
 
         public override void PostDeSpawn(Map map)

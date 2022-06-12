@@ -84,4 +84,18 @@
       </li>
     </stages>
   </ThoughtDef>
+  
+  <ThoughtDef>
+    <defName>ArchotechSporeGiftDemanded</defName>
+    <durationDays>4</durationDays>
+    <stackLimit>9</stackLimit>
+    <stackedEffectMultiplier>1</stackedEffectMultiplier>
+    <stages>
+      <li>
+        <label>gift demanded</label>
+        <description>My higher mind was forced to divert attention away from understanding the true nature of reality, at the whim of some mortal ape!</description>
+        <baseMoodEffect>-40</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
 </Defs>

@@ -4,6 +4,7 @@ using Verse;
 using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace SaveOurShip2
 {
@@ -51,8 +52,10 @@ namespace SaveOurShip2
                 }
                 else
                 {
-                    Log.Message("But archotech shuttles aren't supposed to be out yet!");
-                    van.AddPawn(CompBecomePawn.myPawn(p.InnerThing, IntVec3.Zero, 0), true);
+                    Log.Message("But archotech shuttles aren't supposed to be out yet!"); 
+					Pawn pawn = CompBecomePawn.myPawn(p.InnerThing, IntVec3.Zero, 0);
+					pawn.SetFactionDirect(Faction.OfPlayer);
+					van.AddPawn(pawn, true);
                 }
                 toRemove.Add(p);
             }
@@ -120,7 +123,7 @@ namespace SaveOurShip2
                         Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToOrbit"), MessageTypeDefOf.RejectInput);
                         return false;
                     }
-                    IntVec3 shuttleBayPos = CompShuttleLaunchable.FirstShuttleBayOpen(mapParent.Map);
+                    IntVec3 shuttleBayPos = CompShuttleLaunchable.FirstShuttleBayOpen(mapParent.Map, myVan.pawns.InnerListForReading.Where(pawn=>pawn.TryGetComp<CompBecomeBuilding>()!=null).FirstOrDefault().TryGetComp<CompBecomeBuilding>().Props.buildingDef);
                     if (shuttleBayPos == IntVec3.Zero)
                     {
                         Messages.Message(TranslatorFormattedStringExtensions.Translate("NeedOpenShuttleBay"), MessageTypeDefOf.RejectInput);

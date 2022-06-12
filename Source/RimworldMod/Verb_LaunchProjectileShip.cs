@@ -139,7 +139,7 @@ namespace RimWorld
         {
             var mapComp = caster.Map.GetComponent<ShipHeatMapComp>();
             float range = mapComp.ShipCombatMasterMap.GetComponent<ShipHeatMapComp>().Range;
-            if (target == LocalTargetInfo.Invalid)//PD
+            if (turret.PointDefenseMode) //PD
             {
                 //pods
                 List<TravelingTransportPods> podsinrange = new List<TravelingTransportPods>();

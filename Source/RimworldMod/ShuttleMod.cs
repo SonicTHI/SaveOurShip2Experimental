@@ -23,7 +23,7 @@ namespace SaveOurShip2
         [HarmonyPrefix]
         public static bool PatchThat(ref FlyShipLeaving __instance)
         {
-            if (__instance.def.defName.Equals("PersonalShuttleSkyfaller") || __instance.def.defName.Equals("CargoShuttleSkyfaller") || __instance.def.defName.Equals("HeavyCargoShuttleSkyfaller"))
+            if (__instance.def.defName.Equals("PersonalShuttleSkyfaller") || __instance.def.defName.Equals("CargoShuttleSkyfaller") || __instance.def.defName.Equals("HeavyCargoShuttleSkyfaller") || __instance.def.defName.Equals("DropshipShuttleSkyfaller"))
             {
                 if ((bool)typeof(FlyShipLeaving).GetField("alreadyLeft", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance)) {
                     __instance.Destroy(DestroyMode.Vanish);
@@ -51,8 +51,10 @@ namespace SaveOurShip2
                     travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesPersonal"));
                 else if (__instance.def.defName.Equals("CargoShuttleSkyfaller"))
                     travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesCargo"));
-                else
+                else if (__instance.def.defName.Equals("HeavyCargoShuttleSkyfaller"))
                     travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesHeavy"));
+                else
+                    travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesDropship"));
                 travelingTransportPods.Tile = __instance.Map.Tile;
 
                 Thing t = __instance.Contents.innerContainer.Where(p => p is Pawn).FirstOrDefault();
@@ -89,13 +91,15 @@ namespace SaveOurShip2
         public static bool PatchThat(IntVec3 c, Map map, ActiveDropPodInfo info)
         {
             bool hasShuttle = false;
-            ThingDef shuttleDef = null;
+            //ThingDef shuttleDef = null;
             ThingDef skyfaller = null;
+            Thing foundShuttle = null;
             foreach (Thing t in info.innerContainer) {
                 if (t.TryGetComp<CompBecomeBuilding>() != null) {
                     hasShuttle = true;
-                    shuttleDef = t.def;
+                    //shuttleDef = t.def;
                     skyfaller = t.TryGetComp<CompBecomeBuilding>().Props.skyfaller;
+                    foundShuttle = t;
                     break;
                 }
             }
@@ -103,6 +107,15 @@ namespace SaveOurShip2
                 ActiveDropPod activeDropPod = (ActiveDropPod)ThingMaker.MakeThing(ThingDefOf.ActiveDropPod, null);
                 activeDropPod.Contents = info;
                 Skyfaller theShuttle = SkyfallerMaker.SpawnSkyfaller(skyfaller, activeDropPod, c, map);
+                if (foundShuttle.TryGetComp<CompShuttleCosmetics>() != null)
+                {
+                    Graphic_Single graphic = new Graphic_Single();
+                    CompProperties_ShuttleCosmetics Props = foundShuttle.TryGetComp<CompShuttleCosmetics>().Props;
+                    int whichVersion = foundShuttle.TryGetComp<CompShuttleCosmetics>().whichVersion;
+                    GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), Props.graphicsHover[whichVersion].texPath + "_south", ShaderDatabase.Cutout, Props.graphics[whichVersion].drawSize, Color.white, Color.white, Props.graphics[whichVersion], 0, null, "");
+                    graphic.Init(req);
+                    typeof(Thing).GetField("graphicInt", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(theShuttle, graphic);
+                }
                 return false;
             }
             return true;
@@ -116,7 +129,7 @@ namespace SaveOurShip2
         public static bool PatchThat(ref DropPodIncoming __instance)
         {
             //spawns pawns and shuttle at location
-            if (__instance.def.defName.Equals("ShuttleIncomingPersonal") || __instance.def.defName.Equals("ShuttleIncomingCargo") || __instance.def.defName.Equals("ShuttleIncomingHeavy"))
+            if (__instance.def.defName.Equals("ShuttleIncomingPersonal") || __instance.def.defName.Equals("ShuttleIncomingCargo") || __instance.def.defName.Equals("ShuttleIncomingHeavy") || __instance.def.defName.Equals("ShuttleIncomingDropship"))
             {
                 for (int i = 0; i < 6; i++)
                 {
@@ -142,6 +155,8 @@ namespace SaveOurShip2
                             PawnUtility.RecoverFromUnwalkablePositionOrKill(thing.Position, thing.Map);
                             if (thing.Faction != Faction.OfPlayer && mapComp.InCombat && mapComp.ShipCombatOriginMap.GetComponent<ShipHeatMapComp>().ShipLord != null)
                                 mapComp.ShipCombatOriginMap.GetComponent<ShipHeatMapComp>().ShipLord.AddPawn((Pawn)thing);
+                            if (thing.TryGetComp<CompShuttleCosmetics>() != null)
+                                CompShuttleCosmetics.ChangeShipGraphics((Pawn)thing, ((Pawn)thing).TryGetComp<CompShuttleCosmetics>().Props);
                         });
                     }
                     else if (myShuttle != null)
@@ -368,22 +383,18 @@ namespace SaveOurShip2
     [HarmonyPatch(typeof(CaravanUIUtility), "AddPawnsSections")]
     public static class UIFix
     {
-        [HarmonyPrefix]
-        public static bool replaceit(TransferableOneWayWidget widget, List<TransferableOneWay> transferables)
+        [HarmonyPostfix]
+        public static void replaceit(TransferableOneWayWidget widget, List<TransferableOneWay> transferables)
         {
-            IEnumerable<TransferableOneWay> source = from x in transferables
-                                                     where x.ThingDef.category == ThingCategory.Pawn
-                                                     select x;
-            widget.AddSection(TranslatorFormattedStringExtensions.Translate("ColonistsSection"), from x in source
-                                                              where ((Pawn)x.AnyThing).IsFreeColonist || ((Pawn)x.AnyThing).TryGetComp<CompBecomeBuilding>() != null
-                                                              select x);
-            widget.AddSection(TranslatorFormattedStringExtensions.Translate("PrisonersSection"), from x in source
-                                                              where ((Pawn)x.AnyThing).IsPrisoner || ((Pawn)x.AnyThing).Downed
-                                                              select x);
-            widget.AddSection(TranslatorFormattedStringExtensions.Translate("AnimalsSection"), from x in source
-                                                            where ((Pawn)x.AnyThing).RaceProps.Animal
-                                                            select x);
-            return false;
+            if (Find.WorldSelector.FirstSelectedObject == null || !(Find.WorldSelector.FirstSelectedObject is MapParent) || ((MapParent)Find.WorldSelector.FirstSelectedObject).Map == null || !((MapParent)Find.WorldSelector.FirstSelectedObject).Map.IsPlayerHome)
+            {
+                IEnumerable<TransferableOneWay> source = from x in transferables
+                                                         where x.ThingDef.category == ThingCategory.Pawn
+                                                         select x;
+                widget.AddSection(TranslatorFormattedStringExtensions.Translate("SoSShuttles"), from x in source
+                                                                                                where (((Pawn)x.AnyThing).TryGetComp<CompBecomeBuilding>() != null)
+                                                                                                select x);
+            }
         }
     }
 
@@ -481,7 +492,7 @@ namespace SaveOurShip2
         public static bool NoHitRoof(Skyfaller __instance)
         {
             if (__instance.Position.GetThingList(__instance.Map).Any(t =>
-                t.def.defName.Equals("ShipShuttleBay") || t.def.defName.Equals("ShipSalvageBay")))
+                t.def.defName.Equals("ShipShuttleBay") || t.def.defName.Equals("ShipShuttleBayLarge") || t.def.defName.Equals("ShipSalvageBay")))
             {
                 return false;
             }
@@ -528,7 +539,7 @@ namespace SaveOurShip2
                     List<Thing> thingList = c.GetThingList(___map);
                     for (int i = 0; i < thingList.Count; i++)
                     {
-                        if ((!(thingList[i] is Pawn) && (thingList[i].def.Fillage != FillCategory.None || thingList[i].def.IsEdifice() || thingList[i] is Skyfaller)) && (!thingList[i].def.defName.Equals("ShipShuttleBay") && thingList[i].def != ShipInteriorMod2.hullPlateDef && thingList[i].def != ShipInteriorMod2.mechHullPlateDef && thingList[i].def != ShipInteriorMod2.archoHullPlateDef))
+                        if ((!(thingList[i] is Pawn) && (thingList[i].def.Fillage != FillCategory.None || thingList[i].def.IsEdifice() || thingList[i] is Skyfaller)) && (!thingList[i].def.defName.Equals("ShipShuttleBay") && !thingList[i].def.defName.Equals("ShipShuttleBayLarge") && thingList[i].def != ShipInteriorMod2.hullPlateDef && thingList[i].def != ShipInteriorMod2.mechHullPlateDef && thingList[i].def != ShipInteriorMod2.archoHullPlateDef))
                         {
                             ___firstBlockingThing = thingList[i];
                             return false;
@@ -584,7 +595,7 @@ namespace SaveOurShip2
         {
             if (__instance.mapParent.Map.IsSpace())
             {
-                IEnumerable<Thing> bays = __instance.mapParent.Map.listerThings.AllThings.Where(t => t.def.defName.Equals("ShipShuttleBay") || t.def.defName.Equals("ShipSalvageBay"));
+                IEnumerable<Thing> bays = __instance.mapParent.Map.listerThings.AllThings.Where(t => t.def.defName.Equals("ShipShuttleBay") || t.def.defName.Equals("ShipShuttleBayLarge") || t.def.defName.Equals("ShipSalvageBay"));
                 if (bays.Any())
                 {
                     __result = bays.RandomElement().Position;

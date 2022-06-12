@@ -1566,6 +1566,8 @@
 			<li Class="CompProperties_BuildingConsciousness">
 				<holoHediff>SoSHologramMachine</holoHediff>
 				<holoWeapon>HologramLaser</holoWeapon>
+				<holoWeaponMelee>HologramSword</holoWeaponMelee>
+				<holoShield>HologramShield</holoShield>
 			</li>
 		</comps>
 		<rotatable>false</rotatable>
@@ -2047,7 +2049,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for one shuttle. Must be kept clear of obstructions.</description>
+		<description>Provides docking facilities for shuttles. Must be kept clear of obstructions.</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2065,6 +2067,54 @@
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipShuttleBayLarge</defName>
+		<label>large shuttle bay</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/Shuttle_Bay_off</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(7,7)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<researchPrerequisites>
+			<li>ShipShuttleBay</li>
+		</researchPrerequisites>
+		<altitudeLayer>DoorMoveable</altitudeLayer>
+		<passability>Standable</passability>
+		<fillPercent>0.1</fillPercent>
+		<statBases>
+			<WorkToBuild>7000</WorkToBuild>
+			<MaxHitPoints>700</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<description>Provides docking facilities for one or more shuttles. This version is large enough to support the superheavy dropship. Must be kept clear of obstructions.</description>
+		<size>(7,7)</size>
+		<designationCategory>Ship</designationCategory>
+		<rotatable>false</rotatable>
+		<building>
+			<shipPart>true</shipPart>
+			<isEdifice>false</isEdifice>
+		</building>
+		<costList>
+			<Steel>350</Steel>
+			<Plasteel>75</Plasteel>
+			<ComponentSpacer>8</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_ShipPart"/>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_InsideStarship</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
@@ -2696,6 +2746,8 @@
 			<li Class="CompProperties_BuildingConsciousness">
 				<holoHediff>SoSHologram</holoHediff>
 				<holoWeapon>HologramLaser</holoWeapon>
+				<holoWeaponMelee>HologramSword</holoWeaponMelee>
+				<holoShield>HologramShield</holoShield>
 				<canMergeHuman>true</canMergeHuman>
 				<mustBeDead>true</mustBeDead>
 			</li>

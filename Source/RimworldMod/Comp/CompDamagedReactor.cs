@@ -9,6 +9,7 @@ namespace RimWorld
 {
     class CompDamagedReactor : ThingComp
     {
+        int lastWarnedTick = -1;
         public override void CompTick()
         {
             base.CompTick();
@@ -24,13 +25,18 @@ namespace RimWorld
                 }
                 foreach(Pawn p in pawnsToIrradiate)
                 {
-                    int damage = Rand.RangeInclusive(4, 7);
+                    int damage = Rand.RangeInclusive(3, 5);
                     p.TakeDamage(new DamageInfo(DamageDefOf.Burn, damage));
                     float num = 0.01f;
                     num *= p.GetStatValue(StatDefOf.ToxicSensitivity, true);
                     if (num != 0f)
                     {
                         HealthUtility.AdjustSeverity(p, HediffDefOf.ToxicBuildup, num);
+                    }
+                    if(lastWarnedTick < Find.TickManager.TicksGame && p.Faction==Faction.OfPlayer)
+                    {
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("SoSDamagedReactorHurtsPawn",p), p, MessageTypeDefOf.ThreatSmall, false);
+                        lastWarnedTick = Find.TickManager.TicksGame + 60;
                     }
                 }
             }

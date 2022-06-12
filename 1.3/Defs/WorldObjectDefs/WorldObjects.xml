@@ -155,4 +155,16 @@
 		<expandingIconPriority>60</expandingIconPriority>
 		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
 	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>TravelingShuttlesDropship</defName>
+		<label>shuttles</label>
+		<description>Shuttles in flight.</description>
+		<worldObjectClass>TravelingTransportPods</worldObjectClass>
+		<texture>Things/ShuttleHover/ShuttleDropship_north</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>Things/ShuttleHover/ShuttleDropship_south</expandingIconTexture>
+		<expandingIconPriority>60</expandingIconPriority>
+		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
+	</WorldObjectDef>
 </Defs>

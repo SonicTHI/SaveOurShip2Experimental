@@ -112,4 +112,10 @@
     <driverClass>JobDriver_MergeWithSpore</driverClass>
     <reportString>merging with archotech spore.</reportString>
   </JobDef>
+  
+  <JobDef>
+    <defName>ResurrectHologram</defName>
+    <driverClass>JobDriver_ResurrectHologram</driverClass>
+    <reportString>resurrecting brain in TargetA.</reportString>
+  </JobDef>
 </Defs>

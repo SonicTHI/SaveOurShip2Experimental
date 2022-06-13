@@ -137,7 +137,7 @@ namespace RimWorld
             Scribe_Values.Look<bool>(ref InCombat, "InCombat", false);
             Scribe_Values.Look<bool>(ref IsGraveyard, "IsGraveyard", false);
             Scribe_Values.Look<bool>(ref BurnUpSet, "BurnUpSet", false);
-            Scribe_Values.Look<byte>(ref EngineRot, "EngineRot");
+            Scribe_Values.Look<int>(ref EngineRot, "EngineRot");
             if (InCombat)
             {
                 Scribe_Values.Look<int>(ref Heading, "Heading");
@@ -186,7 +186,7 @@ namespace RimWorld
         public bool InCombat = false;
         public bool IsGraveyard = false; //temp map, will be removed in a few days
         public bool BurnUpSet = false; //force terminate map+WO if no player pawns or pods present or in flight to
-        public byte EngineRot; //td rechk - throws red on load
+        public int EngineRot;
 
         public float EnginePower;
         public int Heading; //+closer, -apart

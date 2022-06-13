@@ -508,7 +508,11 @@ namespace SaveOurShip2
 								}
 							}
 							if (thing.def.stackLimit > 1)
+							{
 								thing.stackCount = (int)Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
+								if (thing.stackCount * thing.MarketValue > 500)
+									thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
+							}
 							GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
 							if (shape.shapeOrDef.Equals("ShipHullTile") || shape.shapeOrDef.Equals("ShipHullTileMech") || shape.shapeOrDef.Equals("ShipHullTileArchotech"))
 								cellsToFog.Add(thing.Position);
@@ -5244,74 +5248,8 @@ namespace SaveOurShip2
 		}
 	}
 
-
-	//new -recheck
-	/*[HarmonyPatch(typeof(Room), "Notify_RoofChanged")]
-	public static class ReRoof
-	{
-		public static void Postfix(Room __instance)
-		{
-			if (__instance.Map == null)
-				return;
-			TerrainGrid grid = __instance.Map.terrainGrid;
-			foreach (IntVec3 position in __instance.Cells)
-			{
-				if (grid.UnderTerrainAt(position) == ShipInteriorMod2.ShipTerrain || grid.UnderTerrainAt(position) == ShipInteriorMod2.ShipTerrainToo)
-					__instance.Map.thingGrid.ThingsAt(position).Where(thing => thing.TryGetComp<CompRoofMe>() != null).FirstOrDefault().TryGetComp<CompRoofMe>().RoofMeAgain();
-			}
-		}
-	}
-	*/
-	[HarmonyPatch(typeof(PassingShip), "CommFloatMenuOption")]
-	public static class CanTradeInSpace
-	{
-		public static void Postfix(Building_CommsConsole console, Pawn negotiator, PassingShip __instance, ref FloatMenuOption __result)
-		{
-			if (console.Map.Biome == ShipInteriorMod2.OuterSpaceBiome)
-			{
-				__result.action = delegate { console.GiveUseCommsJob(negotiator, __instance); };
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(TradeUtility), "AllLaunchableThingsForTrade")]
-	public static class SelectAllThingsInSpace
-	{
-		public static void Postfix(Map map, ITrader trader, ref IEnumerable<Thing> __result)
-		{
-			if (map.Biome == ShipInteriorMod2.OuterSpaceBiome)
-			{
-				List<Thing> replace = new List<Thing>();
-				foreach (Thing thing in map.listerThings.AllThings)
-				{
-					if (thing.def.category == ThingCategory.Item && TradeUtility.PlayerSellableNow(thing, trader))
-						replace.Add(thing);
-				}
-				__result = replace;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(ShipLandingBeaconUtility), "GetLandingZones")]
-	public static class RoyaltyShuttlesLandOnBays
-	{
-		public static void Postfix(Map map, ref List<ShipLandingArea> __result)
-		{
-			foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBay")))
-			{
-				ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
-				area.RecalculateBlockingThing();
-				__result.Add(area);
-			}
-			foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBayLarge")))
-			{
-				ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
-				area.RecalculateBlockingThing();
-				__result.Add(area);
-			}
-		}
-	}
-
+	//new
+	//pointless as the quest should not fire in space at all since it spawns enemy pawns
 	[HarmonyPatch(typeof(QuestNode_Root_ShuttleCrash_Rescue), "TryFindShuttleCrashPosition")]
 	public static class CrashOnShuttleBay
 	{
@@ -5353,7 +5291,6 @@ namespace SaveOurShip2
 			}
 		}
 	}
-
 
 	/*[HarmonyPatch(typeof(CompShipPart),"PostSpawnSetup")]
 	public static class RemoveVacuum{

@@ -604,6 +604,26 @@ namespace SaveOurShip2
         }
     }
 
+    [HarmonyPatch(typeof(ShipLandingBeaconUtility), "GetLandingZones")]
+    public static class RoyaltyShuttlesLandOnBays
+    {
+        public static void Postfix(Map map, ref List<ShipLandingArea> __result)
+        {
+            foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBay")))
+            {
+                ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
+                area.RecalculateBlockingThing();
+                __result.Add(area);
+            }
+            foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBayLarge")))
+            {
+                ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
+                area.RecalculateBlockingThing();
+                __result.Add(area);
+            }
+        }
+    }
+
     /*[HarmonyPatch(typeof(ActiveDropPod),"PodOpen")]
 	public static class ActivePodFix{
 		[HarmonyPrefix]

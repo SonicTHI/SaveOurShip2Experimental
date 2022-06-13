@@ -36,7 +36,7 @@ namespace RimWorld
                 float heatGenerated = Props.heatGeneratedPerTickActive;
                 if (overdriveComp != null)
                     heatGenerated *= (1 + Mathf.Pow(overdriveComp.overdriveSetting, 1.5f));
-                if (!AddHeatToNetwork(heatGenerated,false))
+                if (!AddHeatToNetwork(heatGenerated))
                 {
                     GenTemperature.PushHeat(parent, heatGenerated * ShipInteriorMod2.HeatPushMult);
                 }

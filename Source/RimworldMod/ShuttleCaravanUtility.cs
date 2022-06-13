@@ -48,6 +48,7 @@ namespace SaveOurShip2
                     }
                     Pawn pawn = CompBecomePawn.myPawn(p.InnerThing, IntVec3.Zero, (int)p.InnerThing.TryGetComp<CompRefuelable>().Fuel);
                     Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.KeepForever);
+					pawn.SetFactionDirect(Faction.OfPlayer);
                     van.AddPawn(pawn, true);
                 }
                 else

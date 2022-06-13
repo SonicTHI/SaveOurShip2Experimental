@@ -284,7 +284,7 @@ namespace RimWorld
             if (shipTarget.IsValid)
             {
                 //fire same as engine direction or opposite if retreating
-                byte rotA = MapComp.EngineRot;
+                int rotA = MapComp.EngineRot;
                 int rotB = MapComp.Heading;
                 if ((rotA == 0 && rotB != -1) || (rotA == 2 && rotB == -1)) //north
                     currentTargetInt = new LocalTargetInfo(new IntVec3(Rand.RangeInclusive(this.Position.x - 5, this.Position.x + 5), 0, this.Map.Size.z - 1));

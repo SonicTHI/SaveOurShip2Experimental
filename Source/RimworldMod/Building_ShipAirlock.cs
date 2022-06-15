@@ -179,7 +179,7 @@ namespace RimWorld
             {
                 yield return g;
             }
-            if (this.Faction == Faction.OfPlayer && Outerdoor())
+            if (this.Faction == Faction.OfPlayer && (Outerdoor() || docked))
             {
                 IntVec3 facing;
                 IntVec3 leftSide;

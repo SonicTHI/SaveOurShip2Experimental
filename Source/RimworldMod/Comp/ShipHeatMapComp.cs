@@ -425,9 +425,7 @@ namespace RimWorld
                 Log.Message("Enemy range at start: " + MasterMapComp.Range);
             }
 
-
             MasterMapComp.callSlowTick = true;
-                
         }
         public void StartBattleCache()
         {
@@ -716,6 +714,11 @@ namespace RimWorld
             {
                 if (EnginePower == 0) //all engines gone
                 {
+                    if (TurretNum == 0)
+                    {
+                        EndBattle(this.map, false);
+                        return;
+                    }
                     Heading = 0;
                     enemyRetreating = false;
                 }
@@ -726,7 +729,6 @@ namespace RimWorld
                     float medThreatRel = threatPerSegment[2] / OriginMapComp.threatPerSegment[2];
                     float shortThreatRel = threatPerSegment[1] / OriginMapComp.threatPerSegment[1];
                     float cqcThreatRel = threatPerSegment[0]  / OriginMapComp.threatPerSegment[0];
-
                     //move to cqc
                     if (cqcThreatRel > shortThreatRel && cqcThreatRel > medThreatRel && cqcThreatRel > longThreatRel)
                     {
@@ -765,6 +767,7 @@ namespace RimWorld
                         else
                             Heading = 0;
                     }
+                    //retreat
                     if (totalThreat / (OriginMapComp.totalThreat * ShipInteriorMod2.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
                     {
                         Heading = -1;
@@ -1272,7 +1275,7 @@ namespace RimWorld
                         }
                     }
                 }
-                else if (building.TryGetComp<CompShipHeatPurge>() != null)
+                if (building.TryGetComp<CompShipHeatPurge>() != null)
                     HeatPurges.Add(building.GetComp<CompShipHeatPurge>());
                 /*else if (building.TryGetComp<CompHullFoamDistributor>() != null)
                     FoamDistributors.Add(building.GetComp<CompHullFoamDistributor>());

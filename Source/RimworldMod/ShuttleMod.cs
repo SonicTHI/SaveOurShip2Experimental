@@ -604,7 +604,8 @@ namespace SaveOurShip2
         }
     }
 
-    [HarmonyPatch(typeof(ShipLandingBeaconUtility), "GetLandingZones")]
+    //causes lag
+    /*[HarmonyPatch(typeof(ShipLandingBeaconUtility), "GetLandingZones")]
     public static class RoyaltyShuttlesLandOnBays
     {
         public static void Postfix(Map map, ref List<ShipLandingArea> __result)
@@ -622,7 +623,7 @@ namespace SaveOurShip2
                 __result.Add(area);
             }
         }
-    }
+    }*/
 
     /*[HarmonyPatch(typeof(ActiveDropPod),"PodOpen")]
 	public static class ActivePodFix{

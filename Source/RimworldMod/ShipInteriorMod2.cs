@@ -5248,7 +5248,6 @@ namespace SaveOurShip2
 		}
 	}
 
-	//new
 	//pointless as the quest should not fire in space at all since it spawns enemy pawns
 	[HarmonyPatch(typeof(QuestNode_Root_ShuttleCrash_Rescue), "TryFindShuttleCrashPosition")]
 	public static class CrashOnShuttleBay

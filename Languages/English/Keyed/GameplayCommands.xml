@@ -70,6 +70,9 @@
 	<ShipInsideSelectWeaponsDesc>Select all ship-to-ship weapons</ShipInsideSelectWeaponsDesc>
 	<NotAtMaxShipRange>Not at maximum range</NotAtMaxShipRange>
 	<ShipOnEnemyMap>Ship is on enemy map</ShipOnEnemyMap>
+	<!-- airlock -->
+	<ShipInsideToggleDock>Toggle extender</ShipInsideToggleDock>
+	<ShipInsideToggleDockDesc>Extend or retract the airlock extender up to 3 tiles away</ShipInsideToggleDockDesc>
 	<!-- salvage/capture -->
 	<ShipInsideReturnShip>Return</ShipInsideReturnShip>
 	<ShipInsideReturnShipDesc>Move this ship back to your stable orbit</ShipInsideReturnShipDesc>

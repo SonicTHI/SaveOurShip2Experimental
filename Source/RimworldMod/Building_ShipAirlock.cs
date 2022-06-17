@@ -145,7 +145,6 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-
         }
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
@@ -166,9 +165,7 @@ namespace RimWorld
                     leftSide = IntVec3.North;
                     rightSide = IntVec3.South;
                 }
-                Building b1 = (this.Position + leftSide).GetFirstBuilding(this.Map);
-                Building b2 = (this.Position + rightSide).GetFirstBuilding(this.Map);
-                UnDock(this.Position, facing, leftSide, rightSide, b1, b2);
+                UnDock(this.Position, facing, leftSide, rightSide);
             }
             base.Destroy(mode);
         }
@@ -211,7 +208,7 @@ namespace RimWorld
                                 docked = true;
                             }
                             else
-                                UnDock(this.Position, facing, leftSide, rightSide, b1, b2);
+                                UnDock(this.Position, facing, leftSide, rightSide);
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleDock"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleDockDesc"),
@@ -306,7 +303,7 @@ namespace RimWorld
                 GenSpawn.Spawn(dockWallDef, loc3, this.Map).SetFaction(this.Faction);
             }
         }
-        public void UnDock(IntVec3 me, IntVec3 facing, IntVec3 leftSide, IntVec3 rightSide, Building b1, Building b2)
+        public void UnDock(IntVec3 me, IntVec3 facing, IntVec3 leftSide, IntVec3 rightSide)
         {
             List<Building> toRemove = new List<Building>();
             IntVec3 loc1 = new IntVec3(0, 0, 0);

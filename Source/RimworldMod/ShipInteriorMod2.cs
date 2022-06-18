@@ -151,6 +151,7 @@ namespace SaveOurShip2
 		}
 
 		public static SettingHandle<double> difficultySoS;
+		public static SettingHandle<bool> easyMode;
 		public static SettingHandle<int> minTravelTime;
 		public static SettingHandle<int> maxTravelTime;
 		public static SettingHandle<bool> renderPlanet;
@@ -163,8 +164,11 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			difficultySoS = Settings.GetHandle("difficultySoS", "Save our Ship Difficulty",
+			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
+			easyMode = Settings.GetHandle("easyMode", "Easy Mode",
+				"If checked will prevent player pawns dying to PD and pods landing in your ship",
+				false);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
 				"Higher values mean less cooldown time between ship battles.", 1.0);
 			minTravelTime = Settings.GetHandle("minTravelTime", "Minimum Travel Time",

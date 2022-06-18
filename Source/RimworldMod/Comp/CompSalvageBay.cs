@@ -55,7 +55,7 @@ namespace RimWorld
                         {
                             if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
                                 buildings.Add(b);
-                            else if (t is DetachedShipPart)//t.def.defName == "DetachedShipPart")
+                            else if (t is DetachedShipPart)
                                 things.Add(t);
                         }
                         if (buildings.Any())

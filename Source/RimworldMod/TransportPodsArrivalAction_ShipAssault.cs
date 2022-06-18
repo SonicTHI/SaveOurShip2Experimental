@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
+using SaveOurShip2;
 
 namespace RimWorld.Planet
 {
@@ -37,7 +38,10 @@ namespace RimWorld.Planet
 		}
 		public override void Arrived(List<ActiveDropPodInfo> pods, int tile)
 		{
-			cells = FindTargetsForPods(mapParent.Map, pods.Count);
+			if (ShipInteriorMod2.easyMode)
+				cells = mapParent.Map.AllCells.Where(c => DropCellFinder.CanPhysicallyDropInto(c, mapParent.Map, true, true) && c.Standable(mapParent.Map)).ToList();
+			else
+				cells = FindTargetsForPods(mapParent.Map, pods.Count);
 			Thing lookTarget = TransportPodsArrivalActionUtility.GetLookTarget(pods);
 			for (int i = 0; i < pods.Count; i++)
 			{

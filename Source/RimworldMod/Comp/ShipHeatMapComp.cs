@@ -262,8 +262,7 @@ namespace RimWorld
             ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta - 0.1f + 0.002f * Rand.Range(0, 20);
             ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).phi - 0.01f + 0.001f * Rand.Range(0, 20);
             //EnemyShip.regionAndRoomUpdater.Enabled = false;
-
-            int playerCombatPoints = ShipThreat(this.map);
+            float playerCombatPoints = ShipThreat(this.map) * 0.9f;
             bool isDerelict = false;
             EnemyShipDef shipDef;
 
@@ -1249,7 +1248,11 @@ namespace RimWorld
                 else if (building.TryGetComp<CompPowerBattery>() != null)
                     Batteries.Add(building.GetComp<CompPowerBattery>());
                 else if (building.TryGetComp<CompShipHeatSink>() != null)
+                {
                     HeatSinks.Add(building.GetComp<CompShipHeatSink>());
+                    if (building.TryGetComp<CompShipHeatPurge>() != null)
+                        HeatPurges.Add(building.GetComp<CompShipHeatPurge>());
+                }
                 else if (building.TryGetComp<CompEngineTrail>() != null)
                 {
                     var refuelable = building.TryGetComp<CompRefuelable>();
@@ -1275,8 +1278,6 @@ namespace RimWorld
                         }
                     }
                 }
-                if (building.TryGetComp<CompShipHeatPurge>() != null)
-                    HeatPurges.Add(building.GetComp<CompShipHeatPurge>());
                 /*else if (building.TryGetComp<CompHullFoamDistributor>() != null)
                     FoamDistributors.Add(building.GetComp<CompHullFoamDistributor>());
                 else if (building.TryGetComp<CompShipLifeSupport>() != null)
@@ -1331,7 +1332,7 @@ namespace RimWorld
                             toDestroy.Add(t);
                         else if (t is Pawn)
                         {
-                            if (Rand.Chance(0.75f))
+                            if (t.Faction != Faction.OfPlayer && Rand.Chance(0.75f))
                                 toDestroy.Add(t);
                         }
                         if (t is Building)

@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using RimWorld.Planet;
 using HarmonyLib;
+using SaveOurShip2;
 
 
 namespace RimWorld
@@ -172,10 +173,18 @@ namespace RimWorld
                         foreach (Thing t in toDestroy)
                         {
                             if (t is Pawn)
-                                t.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
+                            {
+                                if (ShipInteriorMod2.easyMode && t.Faction == Faction.OfPlayer)
+                                    HealthUtility.DamageUntilDowned((Pawn)t, false);
+                                else
+                                    t.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
+                            }
                         }
-                        pod.innerContainer.ClearAndDestroyContents();
-                        pods.Remove(pod);
+                        if (toDestroy.NullOrEmpty())
+                        {
+                            pod.innerContainer.ClearAndDestroyContents();
+                            pods.Remove(pod);
+                        }
                     }
                     else
                         groupedPods.Destroy();

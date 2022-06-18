@@ -30,11 +30,10 @@ namespace RimWorld
         public override void Draw()
         {
             base.Draw();
-            float num = -3.5f*Mathf.Clamp01((float)ticksSinceOpen / (float)TicksToOpenNow);
-            float d = 0f + 0.4f * num;
+            float d = 0.4f * -3.5f *Mathf.Clamp01(ticksSinceOpen / TicksToOpenNow);
             for (int i = 0; i < 2; i++)
             {
-                Vector3 vector = default(Vector3);
+                Vector3 vector;
                 Mesh mesh;
                 if (i == 0)
                 {
@@ -77,7 +76,7 @@ namespace RimWorld
             base.Tick();
             if(this.Map.GetComponent<ShipHeatMapComp>().InCombat)
             {
-                if (ticksSinceOpen < TicksToOpenNow)
+                if (ticksSinceOpen < TicksToOpenNow && this.TryGetComp<CompPowerTrader>().PowerOn)
                     ticksSinceOpen++;
             }
             else

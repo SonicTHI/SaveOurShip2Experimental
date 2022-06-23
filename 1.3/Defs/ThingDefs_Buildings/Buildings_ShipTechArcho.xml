@@ -927,7 +927,8 @@
 		<comps>
 			<li Class="CompProperties_ShipCombatShield">
 				<radius>40</radius>
-				<archotech>true</archotech>
+				<heatMultiplier>0.75f</heatMultiplier>
+				<color>green</color>
 			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>

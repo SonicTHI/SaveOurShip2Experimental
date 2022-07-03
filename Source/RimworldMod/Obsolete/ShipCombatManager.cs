@@ -12,7 +12,7 @@ using Verse.AI.Group;
 namespace RimWorld
 {
     [StaticConstructorOnStartup]
-    class ShipCombatManager
+    public class ShipCombatManager
     {
         //obsolete
         public static int SalvageChunkProgress;

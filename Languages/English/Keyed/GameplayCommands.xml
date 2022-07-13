@@ -11,6 +11,8 @@
 	<MustLaunchFromOrbit>This site can only be reached by a shuttle launched from orbit.</MustLaunchFromOrbit>
 	<ShuttleChangeColor>Set color</ShuttleChangeColor>
 	<ShuttleChangeColorDesc>Change this shuttle's color</ShuttleChangeColorDesc>
+	<ShuttleCommandLaunchGroup>Launch at opposing ship</ShuttleCommandLaunchGroup>
+	<ShuttleCommandLaunchGroupDesc>Take off and fly to opposing ship</ShuttleCommandLaunchGroupDesc>
 	<!-- orbit -->
 	<ShipInsideMoveWestFar>Long burn west</ShipInsideMoveWestFar>
 	<ShipInsideMoveWestFarDesc>Move the ship westward.</ShipInsideMoveWestFarDesc>

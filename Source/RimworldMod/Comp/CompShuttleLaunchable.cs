@@ -88,6 +88,37 @@ namespace RimWorld
 					launch.Disable(TranslatorFormattedStringExtensions.Translate("CommandLaunchGroupFailUnderRoof"));
                 }
                 yield return launch;
+                //direct send to enemy ship
+                if (this.parent.Map.Parent is WorldObjectOrbitingShip && this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat)
+                {
+                    Command_Action launchDirect = new Command_Action();
+                    launchDirect.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShuttleCommandLaunchGroup");
+                    launchDirect.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShuttleCommandLaunchGroupDesc");
+                    launchDirect.icon = CompShuttleLaunchable.LaunchCommandTex;
+                    launchDirect.action = delegate
+                    {
+                        if (this.AnyInGroupHasAnythingLeftToLoad)
+                        {
+                            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmSendNotCompletelyLoadedPods", new NamedArgument[]
+                                {
+                                this.FirstThingLeftToLoadInGroup.LabelCapNoCount
+                                }), new Action(this.EnemyShipDestination), false, null));
+                        }
+                        else
+                        {
+                            this.EnemyShipDestination();
+                        }
+                    };
+                    if (!this.AllFuelingPortSourcesInGroupHaveAnyFuel)
+                    {
+                        launchDirect.Disable(TranslatorFormattedStringExtensions.Translate("CommandLaunchGroupFailNoFuel"));
+                    }
+                    else if (this.AnyInGroupIsUnderRoof)
+                    {
+                        launchDirect.Disable(TranslatorFormattedStringExtensions.Translate("CommandLaunchGroupFailUnderRoof"));
+                    }
+                    yield return launchDirect;
+                }
             }
 		}
 
@@ -178,7 +209,12 @@ namespace RimWorld
 				return MaxLaunchDistanceAtFuelLevel(this.parent.GetComp<CompRefuelable>().Fuel);
 			}
 		}
-		private void StartChoosingDestination()
+        private void EnemyShipDestination()
+        {
+            ChoseWorldTarget(this.parent.Map.GetComponent<ShipHeatMapComp>().ShipCombatTargetMap.Parent);
+        }
+
+        private void StartChoosingDestination()
 		{
             var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
             CameraJumper.TryJump(CameraJumper.GetWorldTarget(this.parent));

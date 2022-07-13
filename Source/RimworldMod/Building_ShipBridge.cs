@@ -871,7 +871,14 @@ namespace RimWorld
                     MoveShipSketch(LowestCorner, this, m, 0);
                 }
                 else
+                {
+                    foreach (Building b in cachedShipParts)
+                    {
+                        if (b.TryGetComp<CompEngineTrail>() != null && !b.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ArchotechExoticParticles")))
+                            b.TryGetComp<CompEngineTrail>().active = true;
+                    }
                     ShipCountdown.InitiateCountdown(this);
+                }
 			}
 		}
         private bool ChoseWorldTarget(GlobalTargetInfo target)
@@ -969,7 +976,9 @@ namespace RimWorld
             ShipThrust = 0;
             foreach (Building b in cachedShipParts)
             {
-                if (b.def != ShipInteriorMod2.hullPlateDef && b.def!= ShipInteriorMod2.archoHullPlateDef && b.def!= ShipInteriorMod2.mechHullPlateDef)
+                if (b.def == ShipInteriorMod2.hullPlateDef || b.def == ShipInteriorMod2.archoHullPlateDef || b.def == ShipInteriorMod2.mechHullPlateDef)
+                    ShipMass += 1;
+                else
                 {
                     ShipMass += (b.def.size.x * b.def.size.z) * 3;
                     if (b.TryGetComp<CompShipHeat>() != null)
@@ -989,8 +998,6 @@ namespace RimWorld
                     else if (b.TryGetComp<CompEngineTrailEnergy>() != null)
                         ShipThrust += b.TryGetComp<CompEngineTrailEnergy>().Props.thrust;
                 }
-                else if (b.def == ShipInteriorMod2.hullPlateDef || b.def== ShipInteriorMod2.archoHullPlateDef || b.def== ShipInteriorMod2.mechHullPlateDef)
-                    ShipMass += 1;
             }
             ShipThrust *= 500f / Mathf.Pow(cachedShipParts.Count, 1.1f);
             ShipThreat += ShipMass / 100;

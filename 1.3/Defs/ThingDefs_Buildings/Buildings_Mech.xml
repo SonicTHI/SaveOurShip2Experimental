@@ -105,7 +105,8 @@
 				<compClass>CompShipHeat</compClass>
 			</li>
 		</comps>
-		<placeWorkers/>
+		<placeWorkers>
+		</placeWorkers>
 		<rotatable>false</rotatable>	   
 		<building>
 			<shipPart>true</shipPart>
@@ -169,7 +170,8 @@
 				<mechanoid>true</mechanoid>
 			</li>
 		</comps>
-		<placeWorkers/>
+		<placeWorkers>
+		</placeWorkers>
 		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>
@@ -320,7 +322,9 @@
 			</li>
 			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_RoofMe"/>
+			<li Class="CompProperties_RoofMe">
+				<mechanoid>true</mechanoid>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -541,7 +545,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_PassiveVentMechanoid</defName>
 		<label>mechanoid ship vent</label>
-		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.</description>
+		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.\n\nCan also heat rooms with electricity.</description>
 		<thingClass>Building_ShipVent</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>

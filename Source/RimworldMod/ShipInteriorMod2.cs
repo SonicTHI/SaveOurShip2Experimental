@@ -379,10 +379,17 @@ namespace SaveOurShip2
 
 		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out Building core, bool shieldActive = true, bool clearArea = false, bool wreckEverything = false)
 		{
+			List<ShipShape> partsToGenerate = new List<ShipShape>();
+			List<IntVec3> cargoCells = new List<IntVec3>();
+			List<IntVec3> cellsToFog = new List<IntVec3>();
+			IntVec3 c = map.Center;
+			if (shipDef.saveSysVer == 2)
+				c = new IntVec3(shipDef.offsetX, 0, shipDef.offsetZ);
+
 			if (clearArea)
 			{
-				IntVec3 min = new IntVec3(int.MaxValue, 0, int.MaxValue);
-				IntVec3 max = new IntVec3(int.MinValue, 0, int.MinValue);
+				IntVec3 min = new IntVec3(map.Size.x, 0, map.Size.z);
+				IntVec3 max = new IntVec3(0, 0, 0);
 				foreach (ShipShape shape in shipDef.parts)
 				{
 					if (shape.x < min.x)
@@ -394,7 +401,7 @@ namespace SaveOurShip2
 					if (shape.z > max.z)
 						max.z = shape.z;
 				}
-				CellRect rect = new CellRect(min.x, min.z, max.x - min.x, max.z - min.z);
+				CellRect rect = new CellRect(c.x + min.x, c.z + min.z, c.x + max.x - min.x, c.z + max.z - min.z);
 				List<Thing> DestroyTheseThings = new List<Thing>();
 				foreach (IntVec3 pos in rect.Cells)
 				{
@@ -410,10 +417,6 @@ namespace SaveOurShip2
 				}
 			}
 
-			List<ShipShape> partsToGenerate = new List<ShipShape>();
-			List<IntVec3> cargoCells = new List<IntVec3>();
-			List<IntVec3> cellsToFog = new List<IntVec3>();
-			IntVec3 c = map.Center;
 			core = (Building)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
 			core.SetFaction(fac);
 			Rot4 corerot = shipDef.core.rot;
@@ -526,6 +529,8 @@ namespace SaveOurShip2
 					{
 						TerrainDef terrain = DefDatabase<TerrainDef>.GetNamed(shape.shapeOrDef);
 						IntVec3 pos = new IntVec3(shape.x, 0, shape.z);
+						if (shipDef.saveSysVer == 2)
+							pos = new IntVec3(c.x + shape.x, 0, c.z + shape.z);
 						if (pos.InBounds(map))
 							map.terrainGrid.SetTerrain(pos, terrain);
 						if (terrain.fertility > 0 && pos.GetEdifice(map) == null)
@@ -571,21 +576,21 @@ namespace SaveOurShip2
 						thing = PawnGenerator.GeneratePawn(kind);
 					else
 						thing = ThingMaker.MakeThing(ThingDef.Named(def.defName.Substring(0, def.defName.Length - 8)));
-					if (thing is Pawn && ((Pawn)thing).RaceProps.IsMechanoid)
-						((Pawn)thing).SetFactionDirect(Faction.OfMechanoids);
-					else if (thing is Pawn && ((Pawn)thing).RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
-						((Pawn)thing).SetFactionDirect(Faction.OfInsects);
+					if (thing is Pawn p)
+                    {
+						if (p.RaceProps.IsMechanoid)
+							p.SetFactionDirect(Faction.OfMechanoids);
+						else if (p.RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
+							p.SetFactionDirect(Faction.OfInsects);
+						p.ageTracker.AgeBiologicalTicks = 36000000;
+						p.ageTracker.AgeChronologicalTicks = 36000000;
+						if (lord != null)
+							lord.AddPawn(p);
+					}
 					else if (thing is Hive)
 						thing.SetFactionDirect(Faction.OfInsects);
 					else
 						thing.SetFaction(fac);
-					if (thing is Pawn)
-					{
-						((Pawn)thing).ageTracker.AgeBiologicalTicks = 36000000;
-						((Pawn)thing).ageTracker.AgeChronologicalTicks = 36000000;
-						if (lord != null)
-							lord.AddPawn((Pawn)thing);
-					}
 					GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
 				}
 				else if (!def.defName.Equals("Cargo"))
@@ -599,21 +604,21 @@ namespace SaveOurShip2
 						thing = ThingMaker.MakeThing(thingy);
 					if (thing.def.CanHaveFaction)
 					{
-						if (thing is Pawn && ((Pawn)thing).RaceProps.IsMechanoid)
-							((Pawn)thing).SetFactionDirect(Faction.OfMechanoids);
-						else if (thing is Pawn && ((Pawn)thing).RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
-							((Pawn)thing).SetFactionDirect(Faction.OfInsects);
+						if (thing is Pawn p)
+						{
+							if (p.RaceProps.IsMechanoid)
+								p.SetFactionDirect(Faction.OfMechanoids);
+							else if (p.RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
+								p.SetFactionDirect(Faction.OfInsects);
+							p.ageTracker.AgeBiologicalTicks = 36000000;
+							p.ageTracker.AgeChronologicalTicks = 36000000;
+							if (lord != null)
+								lord.AddPawn(p);
+						}
 						else if (thing is Hive)
 							thing.SetFactionDirect(Faction.OfInsects);
 						else
 							thing.SetFaction(fac);
-					}
-					if (thing is Pawn)
-					{
-						((Pawn)thing).ageTracker.AgeBiologicalTicks = 36000000;
-						((Pawn)thing).ageTracker.AgeChronologicalTicks = 36000000;
-						if (lord != null)
-							lord.AddPawn((Pawn)thing);
 					}
 					if (thing.TryGetComp<CompColorable>() != null)
 						thing.TryGetComp<CompColorable>().SetColor(shape.color);
@@ -921,6 +926,10 @@ namespace SaveOurShip2
 									fireExplosions.Add(spawnThing.Position + new IntVec3(3, 0, 0));
 							}
 						}
+						else if (spawnThing.TryGetComp<CompEngineTrailEnergy>() != null)
+						{
+							spawnThing.TryGetComp<CompEngineTrailEnergy>().active = false;
+						}
 
 						//move
 						if (spawnThing.Spawned)
@@ -982,12 +991,12 @@ namespace SaveOurShip2
 						if (fac != null && spawnThing is Building && spawnThing.def.CanHaveFaction)
 							spawnThing.SetFaction(fac);
 						if (spawnThing.TryGetComp<CompPower>() != null)
-							spawnThing.TryGetComp<CompPower>().ResetPowerVars();
-						if (spawnThing.TryGetComp<CompEngineTrailEnergy>() != null)
 						{
-							spawnThing.TryGetComp<CompEngineTrailEnergy>().active = false;
+							spawnThing.TryGetComp<CompPower>().ResetPowerVars();
+							//targetMap.mapDrawer.MapMeshDirty(spawnThing.Position, MapMeshFlag.PowerGrid, false, false);
+							//spawnThing.TryGetComp<CompPower>().SetUpPowerVars();
 						}
-						else if (spawnThing is Building_ShipTurret)
+						if (spawnThing is Building_ShipTurret)
 						{
 							((Building_ShipTurret)spawnThing).ResetForcedTarget();
 						}
@@ -2587,7 +2596,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(RoofGrid), "SetRoof")]
+	[HarmonyPatch(typeof(RoofGrid), "SetRoof")] //roofing ship tiles makes ship roof
 	public static class RebuildShipRoof
 	{
 		[HarmonyPrefix]

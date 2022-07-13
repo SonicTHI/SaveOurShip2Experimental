@@ -43,23 +43,23 @@ namespace RimWorld
                         heatStored--;
                     }
                 }
-                else if (!this.Props.antiEntropic && !ShipInteriorMod2.RoomIsVacuum(this.parent.GetRoom()))
+                else if (this.Props.antiEntropic)
+                {
+                    heatStored--;
+                    if (parent.TryGetComp<CompPower>() != null && parent.GetComp<CompPower>().PowerNet != null && parent.GetComp<CompPower>().PowerNet.batteryComps.Count > 0)
+                    {
+                        IEnumerable<CompPowerBattery> batteries = parent.GetComp<CompPower>().PowerNet.batteryComps.Where(b => b.StoredEnergy <= b.Props.storedEnergyMax - 2);
+                        if (batteries.Any())
+                            batteries.RandomElement().AddEnergy(2);
+                    }
+                }
+                else if (!ShipInteriorMod2.RoomIsVacuum(this.parent.GetRoom()))
                 {
                     if (heatStored >= 1)
                         GenTemperature.PushHeat(this.parent, ShipInteriorMod2.HeatPushMult);
                     else
                         GenTemperature.PushHeat(this.parent, ShipInteriorMod2.HeatPushMult * heatStored);
                     heatStored--;
-                }
-                else if (this.Props.antiEntropic)
-                {
-                    heatStored--;
-                    if (parent.TryGetComp<CompPower>().PowerNet.batteryComps.Count > 0)
-                    {
-                        IEnumerable<CompPowerBattery> batteries = parent.TryGetComp<CompPower>().PowerNet.batteryComps.Where(b => b.StoredEnergy <= b.Props.storedEnergyMax - 2);
-                        if (batteries.Any())
-                            batteries.RandomElement().AddEnergy(2);
-                    }
                 }
             }
             if (heatStored < 0)

@@ -66,7 +66,7 @@ namespace RimWorld
                             }
                             Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksSuccess", buildings.Count), parent, MessageTypeDefOf.PositiveEvent);
                         }
-                        //remove wrecks
+                        //remove floating tiles
                         foreach (Thing t in things)
                         {
                             t.Destroy();

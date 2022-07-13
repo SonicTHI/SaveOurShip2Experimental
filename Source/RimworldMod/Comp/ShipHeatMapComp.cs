@@ -351,7 +351,9 @@ namespace RimWorld
             int ShipMass = 0;
             foreach (Building b in ship.spawnedThings.Where(b => b is Building))
             {
-                if (b.def != ShipInteriorMod2.hullPlateDef && b.def != ShipInteriorMod2.mechHullPlateDef && b.def != ShipInteriorMod2.archoHullPlateDef)
+                if (b.def == ShipInteriorMod2.hullPlateDef || b.def == ShipInteriorMod2.mechHullPlateDef || b.def == ShipInteriorMod2.archoHullPlateDef)
+                    ShipMass += 1;
+                else
                 {
                     ShipMass += (b.def.size.x * b.def.size.z) * 3;
                     if (b.TryGetComp<CompShipHeat>() != null)
@@ -359,8 +361,6 @@ namespace RimWorld
                     else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
                         ShipThreat += 5;
                 }
-                else if (b.def == ShipInteriorMod2.hullPlateDef || b.def == ShipInteriorMod2.mechHullPlateDef || b.def == ShipInteriorMod2.archoHullPlateDef)
-                    ShipMass += 1;
             }
             ShipThreat += ShipMass / 100;
             return ShipThreat;
@@ -467,13 +467,13 @@ namespace RimWorld
             }
             foreach (Building b in duplicateRoots)
                 MapRootList.Remove(b);
-            Log.Message("Ships: " + MapRootList.Count + " on map: " + this.map);
+            //Log.Message("Ships: " + MapRootList.Count + " on map: " + this.map);
             shipsOnMap = null;//start cache
             for (int i = 0; i < ShipsOnMap.Count; i++)
             {
                 BuildingCountAtStart += ShipsOnMap[i].BuildingCountAtStart;
             }
-            Log.Message("Shipmap buildcount total " + BuildingCountAtStart);
+            //Log.Message("Shipmap buildcount total " + BuildingCountAtStart);
         }
 
         public override void MapComponentTick()
@@ -528,9 +528,9 @@ namespace RimWorld
                         float forcedMissRadius = 1.9f;
                         float optRange = proj.turret.TryGetComp<CompShipHeatSource>().Props.optRange;
                         if (optRange != 0 && proj.range > optRange)
-                            forcedMissRadius = 1.9f * (proj.range - optRange) / 4;
+                            forcedMissRadius = 1.9f + (proj.range - optRange) / 5;
                         //Log.Message("forcedMissRadius: " + forcedMissRadius);
-                        float num = VerbUtility.CalculateAdjustedForcedMiss(forcedMissRadius, proj.target.Cell - spawnCell);
+                        float num = Mathf.Min(VerbUtility.CalculateAdjustedForcedMiss(forcedMissRadius, proj.target.Cell - spawnCell), GenRadial.MaxRadialPatternRadius);
                         int max = GenRadial.NumCellsInRadius(num);
                         int num2 = Rand.Range(0, max);
                         IntVec3 c = proj.target.Cell + GenRadial.RadialPattern[num2];
@@ -569,7 +569,7 @@ namespace RimWorld
                     }
                     if (MapRootList.Count <= 0)//if all ships gone, end combat
                     {
-                        Log.Message("Map defeated: " + this.map);
+                        //Log.Message("Map defeated: " + this.map);
                         EndBattle(this.map, false);
                         return;
                     }
@@ -901,18 +901,18 @@ namespace RimWorld
             //Log.Message("Checking for detach on ship " + shipIndex);
             if (MapRootList[shipIndex].Destroyed || !MapRootList[shipIndex].Spawned)//if primary destroyed
             {
-                Log.Message("Main bridge "+ MapRootList[shipIndex]+" on ship " + shipIndex + " destroyed");
+                //Log.Message("Main bridge "+ MapRootList[shipIndex]+" on ship " + shipIndex + " destroyed");
                 foreach (var bridge in ShipsOnMap[shipIndex].BridgesAtStart)//cheack each bridge on ship
                 {
                     if (bridge.Destroyed || !bridge.Spawned) continue;//if destroyed, keep trying
 
                     MapRootList[shipIndex] = bridge;//if not destroyed replace main bridge
-                    Log.Message("Replacing main bridge on ship " + shipIndex + " to "+ bridge);
+                    //Log.Message("Replacing main bridge on ship " + shipIndex + " to "+ bridge);
                     break;
                 }
                 if (MapRootList[shipIndex].Destroyed || !MapRootList[shipIndex].Spawned)//no intact bridges found = ship destroyed
                 {
-                    Log.Message("Destroyed ship " + shipIndex);
+                    //Log.Message("Destroyed ship " + shipIndex);
                     RemoveShipFromBattle(shipIndex);
                     return;
                 }
@@ -973,7 +973,7 @@ namespace RimWorld
             }
             MapRootList.RemoveAt(shipIndex);
             ShipsOnMap.Remove(ShipsOnMap[shipIndex]);
-            Log.Message("Ships remaining: " + MapRootList.Count);
+            //Log.Message("Ships remaining: " + MapRootList.Count);
         }
         public void SpawnGraveyard()//if not present, create a graveyard
         {
@@ -1295,8 +1295,8 @@ namespace RimWorld
             }
             if (resetCache)
             {
-                Log.Message("Ship area is " + ShipAreaAtStart.Count);
-                Log.Message("Ship mass is " + BuildingCountAtStart);
+                //Log.Message("Ship area is " + ShipAreaAtStart.Count);
+                //Log.Message("Ship mass is " + BuildingCountAtStart);
             }
         }
         public void Detach(int shipIndex, Map map, List<IntVec3> detached)

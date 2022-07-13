@@ -8,11 +8,11 @@
 	<ShipStatsShipHeat>Stored heat: {0} / {1}</ShipStatsShipHeat>
 	<ShipStatsShipCombatRating>Combat rating: {0}</ShipStatsShipCombatRating>
 	<ShipStatsShipCombatThrust>Thrust/Weight ratio: {0}</ShipStatsShipCombatThrust>
-	<ShipStatsChemfuel>Chemfuel needed for takeoff: {0}</ShipStatsChemfuel>
+	<ShipStatsChemfuel>Fuel needed for takeoff: {0}</ShipStatsChemfuel>
 	<ShipReportInterReady>Ready for interstellar travel.</ShipReportInterReady>
 	<ShipReportInterNotReady>Not ready for interstellar travel:</ShipReportInterNotReady>
 	<ShipReportNeedPilot>Ship requires either a pilot or an AI core.</ShipReportNeedPilot>
-	<ShipNeedsMoreChemfuel>Ship has {0} units of chemfuel, but it needs {1}.</ShipNeedsMoreChemfuel>
+	<ShipNeedsMoreChemfuel>Ship has {0} units of fuel, but it needs {1}.</ShipNeedsMoreChemfuel>
 	<ShipNeedsMorePower>Ship requires {0} Wd of stored power.</ShipNeedsMorePower>
 	<ShipNeedsMoreJTEngines>Ship requires more JT engines due to its size.</ShipNeedsMoreJTEngines>
 	<ShipPlanetLeave>Go to new planet</ShipPlanetLeave>

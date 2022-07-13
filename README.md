@@ -10,10 +10,12 @@ SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamco
 
 If you do not know what to do with these files or where to put them do not bother with this and stick to the STEAM version.
 
-To update: Make sure to delete the old folder then extract the new one. **To download the latest build click above: Code -> Download ZIP**
+To update: Make sure to delete the old folder then extract the new one.
+
+**To download the latest build click above: Code -> Download ZIP**
 
 You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - make sure to read the server rules and mention that you are using the experimental build. Check the feature list before reporting. If you encounter bugs or issues not directly related to changed or added features please try replicating the bug with the STEAM build.
 
-An updated version of the Creation kit is also [available](https://drive.google.com/file/d/1i12ryPcQETc68eMPxp19QcDQloz7Pm3x/view?usp=sharing). Only use it with SOS2 EXPERIMENTAL.
+An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2 EXPERIMENTAL.
 
 Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/10_vYUf1fI5b1u_rjUBuIMx5pw7ZW_JIaF2aEuG6h57Y/edit#gid=589168296) for general SOS2 info, FAQs and mod compatibility. Note that some mods that do work with the STEAM build might not with SOS2 EXPERIMENTAL - particularly mods that alter, extend or otherwise interact with SOS2.

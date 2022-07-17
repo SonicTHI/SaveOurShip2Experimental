@@ -33,7 +33,7 @@ namespace RimWorld
                 if (eva < 4)//limited EVA
                 {
                     Room room = pawn.Position.GetRoom(base.map);
-                    if (ShipInteriorMod2.RoomIsVacuum(room))
+                    if (ShipInteriorMod2.ExposedToOutside(room))
                     {
                         RunFromVacuum(pawn);
                         if (eva == 3)//has inactive bubble

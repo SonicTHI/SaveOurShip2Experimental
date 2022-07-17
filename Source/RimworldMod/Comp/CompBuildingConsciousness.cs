@@ -96,7 +96,7 @@ namespace RimWorld
                 bool dummy=skill.TotallyDisabled;
             }
             Consciousness.skills.Notify_SkillDisablesChanged();
-            if (ModLister.IdeologyInstalled)
+            if (ModsConfig.IdeologyActive)
                 Consciousness.ideo.SetIdeo(Faction.OfPlayer.ideos.PrimaryIdeo);
             SetupConsciousness();
         }
@@ -139,7 +139,7 @@ namespace RimWorld
                     if (skill.levelInt < 10)
                         skill.levelInt = 10;
                 }
-                if(ModLister.RoyaltyInstalled)
+                if(ModsConfig.RoyaltyActive)
                 {
                     while (Consciousness.GetPsylinkLevel() < 6)
                         Consciousness.ChangePsylinkLevel(1);

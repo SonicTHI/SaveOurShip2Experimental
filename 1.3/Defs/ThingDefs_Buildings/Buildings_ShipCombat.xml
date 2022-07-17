@@ -518,6 +518,9 @@
 				<maxRange>50</maxRange>
 				<projectileSpeed>4</projectileSpeed>
 				<pointDefense>true</pointDefense>
+				<groundDefense>true</groundDefense>
+				<groundProjectile>Bullet_Ground_ACI</groundProjectile>
+				<groundMissRadius>4</groundMissRadius>
 				<threat>10</threat>
 			</li>
 			<li Class="CompProperties_Power">
@@ -575,7 +578,8 @@
 				<label>shoot slug</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<minRange>29.9</minRange>
+				<range>500</range>
 				<warmupTime>0.5</warmupTime>
 				<burstShotCount>8</burstShotCount>
 				<noiseRadius>10</noiseRadius>
@@ -605,6 +609,26 @@
 			<damageDef>Bomb</damageDef>
 			<speed>140</speed>
 			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Ground_ACI</defName>
+		<label>Autocannon slug</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretACI</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_Explosive</thingClass>
+		<projectile>
+			<damageDef>BombACI</damageDef>
+			<speed>300</speed>
+			<explosionRadius>1.1</explosionRadius>
+			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
 		<altitudeLayer>MetaOverlays</altitudeLayer>
@@ -984,6 +1008,8 @@
 				<maxRange>50</maxRange>
 				<projectileSpeed>10</projectileSpeed>
 				<pointDefense>true</pointDefense>
+				<groundDefense>true</groundDefense>
+				<groundProjectile>Bullet_Ground_Laser</groundProjectile>
 				<singleFireSound>ShipCombatLaser</singleFireSound>
 				<threat>10</threat>
 			</li>
@@ -1023,7 +1049,8 @@
 				<label>shoot laser</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<minRange>29.9</minRange>
+				<range>500</range>
 				<warmupTime>0</warmupTime>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>6</burstShotCount>
@@ -1051,6 +1078,25 @@
 			<damageDef>Bomb</damageDef>
 			<speed>100</speed>
 			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Ground_Laser</defName>
+		<label>laser beam</label>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<thingClass>Projectile_Explosive</thingClass>
+		<projectile>
+			<damageDef>ShipLaserSmall</damageDef>
+			<speed>900</speed>
+			<explosionRadius>0</explosionRadius>
+			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
 		<altitudeLayer>MetaOverlays</altitudeLayer>
@@ -1140,6 +1186,9 @@
 				<maxRange>100</maxRange>
 				<projectileSpeed>3</projectileSpeed>
 				<threat>10</threat>
+				<groundDefense>true</groundDefense>
+				<groundProjectile>Bullet_Ground_Plasma</groundProjectile>
+				<groundMissRadius>2</groundMissRadius>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -1178,7 +1227,8 @@
 				<label>fire plasma</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<minRange>29.9</minRange>
+				<range>500</range>
 				<warmupTime>1.5</warmupTime>
 				<noiseRadius>4</noiseRadius>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -1207,6 +1257,26 @@
 			<damageDef>Bomb</damageDef>
 			<speed>100</speed>
 			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Ground_Plasma</defName>
+		<label>plasma toroid</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_Explosive</thingClass>
+		<projectile>
+			<damageDef>ShipPlasmaSmall</damageDef>
+			<speed>200</speed>
+			<explosionRadius>6.9</explosionRadius>
+			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
 		<altitudeLayer>MetaOverlays</altitudeLayer>
@@ -2295,7 +2365,7 @@
 		<comps>
 			<li Class="CompProperties_ChangeableProjectilePlural">
 				<tubes>1</tubes>
-				<maxTorpedoes>6</maxTorpedoes>
+				<maxTorpedoes>7</maxTorpedoes>
 			</li>
 		</comps>
 	</ThingDef>
@@ -2315,7 +2385,7 @@
 		<comps>
 			<li Class="CompProperties_ChangeableProjectilePlural">
 				<tubes>6</tubes>
-				<maxTorpedoes>32</maxTorpedoes>
+				<maxTorpedoes>28</maxTorpedoes>
 			</li>
 		</comps>
 	</ThingDef>
@@ -2369,6 +2439,7 @@
 		</comps>
 		<building>
 			<turretGunDef>Artillery_ShipTorpedo_One</turretGunDef>
+			<turretBurstCooldownTime>6.0</turretBurstCooldownTime>
 		</building>
 		<uiIconPath>Things/Building/Ship/TorpedoTubes_Single</uiIconPath>
 		<costList>
@@ -2403,6 +2474,7 @@
 		</comps>
 		<building>
 			<turretGunDef>Artillery_ShipTorpedo_Two</turretGunDef>
+			<turretBurstCooldownTime>3.0</turretBurstCooldownTime>
 		</building>
 		<uiIconPath>Things/Building/Ship/TorpedoTubes_small</uiIconPath>
 		<costList>
@@ -2437,6 +2509,7 @@
 		</comps>
 		<building>
 			<turretGunDef>Artillery_ShipTorpedo</turretGunDef>
+			<turretBurstCooldownTime>1.0</turretBurstCooldownTime>
 		</building>
 		<uiIconPath>Things/Building/Ship/TorpedoTubes</uiIconPath>
 		<costList>

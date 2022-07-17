@@ -38,17 +38,6 @@ namespace RimWorld
         bool ShouldStartCombat = false;
 
         public ShipHeatMapComp mapComp;
-        public ShipHeatMapComp MapComp
-        {
-            get
-            {
-                if (this.mapComp == null)
-                {
-                    this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
-                }
-                return this.mapComp;
-            }
-        }
         private bool CanLaunchNow
 		{
 			get
@@ -82,7 +71,7 @@ namespace RimWorld
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreJTEngines"));
             if (this.PowerComp.PowerNet?.CurrentStoredEnergy() < playerJTReq)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", playerJTReq));
-            if (MapComp.ShipCombatMaster)
+            if (mapComp.ShipCombatMaster)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipOnEnemyMap"));
             return result;
         }
@@ -147,7 +136,7 @@ namespace RimWorld
 			{
 				yield return c;
 			}
-            if (!MapComp.InCombat)
+            if (!mapComp.InCombat)
             {
                 Command_Action renameShip = new Command_Action
                 {
@@ -299,15 +288,15 @@ namespace RimWorld
                 }
                 
                 //incombat
-                if (MapComp.InCombat)
+                if (mapComp.InCombat)
                 {
-                    var originMapComp = MapComp.OriginMapComp;
-                    var masterMapComp = MapComp.MasterMapComp;
+                    var originMapComp = mapComp.OriginMapComp;
+                    var masterMapComp = mapComp.MasterMapComp;
                     Command_Action escape = new Command_Action
                     {
                         action = delegate
                         {
-                            MapComp.EndBattle(this.Map, true);
+                            mapComp.EndBattle(this.Map, true);
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatEscape"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatEscapeDesc"),
@@ -467,7 +456,7 @@ namespace RimWorld
                 else
                 {
                     //space - move, land
-                    if (!MapComp.IsGraveyard)
+                    if (!mapComp.IsGraveyard)
                     {
                         Command_Action gotoNewWorld = new Command_Action
                         {
@@ -591,7 +580,7 @@ namespace RimWorld
                                     {
                                         AttackableShip station = new AttackableShip();
                                         station.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("ArchotechGardenStation");
-                                        MapComp.StartShipEncounter(this, station);
+                                        mapComp.StartShipEncounter(this, station);
                                     },
                                     icon = ContentFinder<Texture2D>.Get("UI/ArchotechStation_Icon_Quest"),
                                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarA"),
@@ -607,7 +596,7 @@ namespace RimWorld
                                     {
                                         AttackableShip station = new AttackableShip();
                                         station.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechShipMegaRing");
-                                        MapComp.StartShipEncounter(this, station);
+                                        mapComp.StartShipEncounter(this, station);
                                         MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
                                     },
                                     icon = ContentFinder<Texture2D>.Get("UI/Moon_Icon_Quest"),
@@ -670,8 +659,8 @@ namespace RimWorld
                                     {
                                         action = delegate
                                         {
-                                            MapComp.StartShipEncounter(this, ship);
-                                            if (ModLister.IdeologyInstalled)
+                                            mapComp.StartShipEncounter(this, ship);
+                                            if (ModsConfig.IdeologyActive)
                                                 IdeoUtility.Notify_PlayerRaidedSomeone(this.Map.mapPawns.FreeColonists);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Trader"),
@@ -686,9 +675,9 @@ namespace RimWorld
                                     {
                                         action = delegate
                                         {
-                                            MapComp.StartShipEncounter(this, ship);
+                                            mapComp.StartShipEncounter(this, ship);
                                             this.Map.passingShipManager.RemoveShip(ship);
-                                            if (ModLister.IdeologyInstalled)
+                                            if (ModsConfig.IdeologyActive)
                                                 IdeoUtility.Notify_PlayerRaidedSomeone(this.Map.mapPawns.FreeColonists);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Pirate"),
@@ -703,7 +692,7 @@ namespace RimWorld
                                     {
                                         action = delegate
                                         {
-                                            MapComp.StartShipEncounter(this, ship);
+                                            mapComp.StartShipEncounter(this, ship);
                                             this.Map.passingShipManager.RemoveShip(ship);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Quest"),
@@ -722,27 +711,27 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                if (MapComp.ShipCombatOriginMap == null)
+                                if (mapComp.ShipCombatOriginMap == null)
                                 {
                                     Map m = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault()).Map;
                                     if (m != null)
-                                        MapComp.ShipCombatOriginMap = m;
+                                        mapComp.ShipCombatOriginMap = m;
                                     else
                                         ShipInteriorMod2.GeneratePlayerShipMap(this.Map.Size, this.Map);
                                 }
-                                MoveShipSketch(LowestCorner, this, MapComp.ShipCombatOriginMap, 0);
+                                MoveShipSketch(LowestCorner, this, mapComp.ShipCombatOriginMap, 0);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShip"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShipDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Capture_Ship_Icon")
                         };
-                        if (MapComp.ShipFaction == Faction.OfPlayer)
+                        if (mapComp.ShipFaction == Faction.OfPlayer)
                         {
                             captureShip.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShip");
                             captureShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShipDesc");
                             captureShip.icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon");
                         }
-                        if (ShipCountdown.CountingDown || MapComp.OriginMapComp.InCombat)
+                        if (ShipCountdown.CountingDown || mapComp.OriginMapComp.InCombat)
                         {
                             captureShip.Disable();
                         }
@@ -903,11 +892,12 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            if (!MapComp.MapRootListAll.Contains(this))
-                MapComp.MapRootListAll.Add(this);
+            this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
+            if (!mapComp.MapRootListAll.Contains(this))
+                mapComp.MapRootListAll.Add(this);
             //Log.Message("Spawned: " + this + " to " + this.Map);
             var countdownComp = this.Map.Parent.GetComponent<TimedForcedExitShip>();
-            if (countdownComp != null && !MapComp.IsGraveyard && countdownComp.ForceExitAndRemoveMapCountdownActive)
+            if (countdownComp != null && !mapComp.IsGraveyard && countdownComp.ForceExitAndRemoveMapCountdownActive)
             {
                 countdownComp.ResetForceExitAndRemoveMapCountdown();
                 Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
@@ -934,14 +924,14 @@ namespace RimWorld
         }
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
-            if (MapComp.MapRootListAll.Contains(this))
-                MapComp.MapRootListAll.Remove(this);
+            if (mapComp.MapRootListAll.Contains(this))
+                mapComp.MapRootListAll.Remove(this);
             //Log.Message("Destroyed: " + this + " from " + this.Map);
-            if (MapComp.InCombat) //force check on next tick
+            if (mapComp.InCombat) //force check on next tick
             {
-                MapComp.BridgeDestroyed = true;
+                mapComp.BridgeDestroyed = true;
             }
-            else if (this.Map.IsSpace() && MapComp.MapRootListAll.NullOrEmpty())
+            else if (this.Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty())
             {
                 var countdownComp = this.Map.Parent.GetComponent<TimedForcedExitShip>();
                 if (countdownComp != null)
@@ -959,7 +949,7 @@ namespace RimWorld
                 selected = false;
             if (ShouldStartCombat)
             {
-                MapComp.StartShipEncounter(this);
+                mapComp.StartShipEncounter(this);
                 ShouldStartCombat = false;
             }
             //td rem this?
@@ -1028,9 +1018,9 @@ namespace RimWorld
         {
             if (pawn != null)
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
-            if (MapComp.InCombat)
+            if (mapComp.InCombat)
             {
-                MapComp.RemoveShipFromBattle(shipIndex, this, Faction.OfPlayer);
+                mapComp.RemoveShipFromBattle(shipIndex, this, Faction.OfPlayer);
             }
             else
             {

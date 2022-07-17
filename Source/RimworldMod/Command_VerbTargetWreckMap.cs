@@ -44,6 +44,8 @@ namespace RimWorld
 
         public void AfterTarget(Building b)
         {
+            if (b == null)
+                return;
             List<Building> cache = ShipUtility.ShipBuildingsAttachedTo(b);
             List<IntVec3> positions = new List<IntVec3>();
             IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);

@@ -9,6 +9,7 @@ namespace RimWorld
     public class CompChangeableProjectilePlural : ThingComp, IStoreSettingsParent
     {
         private List<ThingDef> loadedShells=new List<ThingDef>();
+        public int selectedTorp = 0;
         public StorageSettings allowedShellsSettings;
 
         public CompProperties_ChangeableProjectilePlural Props => (CompProperties_ChangeableProjectilePlural)props;
@@ -28,12 +29,12 @@ namespace RimWorld
                 {
                     return null;
                 }
-                return LoadedShells[0].projectileWhenLoaded;
+                return LoadedShells[selectedTorp].projectileWhenLoaded;
             }
         }
 
         public bool Loaded => LoadedShells.Any();
-        public bool FullyLoaded => LoadedShells.Count >= Props.tubes;
+        public bool FullyLoaded => LoadedShells.Count >= Props.maxTorpedoes;
 
         public bool StorageTabVisible => true;
 
@@ -55,7 +56,7 @@ namespace RimWorld
 
         public virtual void Notify_ProjectileLaunched()
         {
-            loadedShells.RemoveAt(0);
+            loadedShells.RemoveAt(selectedTorp);
         }
 
         public void LoadShell(ThingDef shell, int count)

@@ -34,7 +34,7 @@ namespace RimWorld
 		public Alert_ArchotechSporeMoodLow()
 		{
 			defaultLabel = "ArchotechSporeMoodLow".Translate();
-			defaultExplanation = ModLister.RoyaltyInstalled ? "ArchotechSporeMoodLowDesc".Translate() : "ArchotechSporeMoodLowDescNoRoyalty".Translate();
+			defaultExplanation = ModsConfig.RoyaltyActive ? "ArchotechSporeMoodLowDesc".Translate() : "ArchotechSporeMoodLowDescNoRoyalty".Translate();
 		}
 
 		public override AlertReport GetReport()

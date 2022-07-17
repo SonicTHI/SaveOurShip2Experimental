@@ -18,6 +18,9 @@ namespace RimWorld
         public float maxRange = 400;
         public float projectileSpeed = 1;
         public bool pointDefense = false;
+        public bool groundDefense = false;
+        public ThingDef groundProjectile;
+        public float groundMissRadius = 0;
         public float heatGeneratedPerTickActive = 0;
         public SoundDef singleFireSound=null;
         public bool antiEntropic = false;

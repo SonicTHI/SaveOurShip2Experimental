@@ -103,7 +103,7 @@
 	<CommandShipOptimalRange>Use optimal range</CommandShipOptimalRange>
 	<CommandShipOptimalRangeDesc>Enable to only fire on targets within optimal range</CommandShipOptimalRangeDesc>
 	<CommandShipPointDefense>Point Defense mode</CommandShipPointDefense>
-	<CommandShipPointDefenseDesc>Use this turret to intercept incoming torpedoes</CommandShipPointDefenseDesc>
+	<CommandShipPointDefenseDesc>Use this turret to intercept incoming torpedoes and shuttles</CommandShipPointDefenseDesc>
 	<!-- scan -->
 	<ShipInsidescanRegion>Scan</ShipInsidescanRegion>
 	<ShipInsidescanRegionDesc>Reveal an area on the planet's surface.</ShipInsidescanRegionDesc>

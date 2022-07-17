@@ -16,7 +16,7 @@ namespace RimWorld
 			{
 				return 0f;
 			}
-			else if (ModLister.IdeologyInstalled && otherPawn.ideo?.Ideo != null && otherPawn.ideo.Ideo.memes.Any(def => def == ShipInteriorMod2.Archism))
+			else if (ModsConfig.IdeologyActive && otherPawn.ideo?.Ideo != null && otherPawn.ideo.Ideo.memes.Any(def => def == ShipInteriorMod2.Archism))
 				return 100;
 			else if (otherPawn.story.traits.HasTrait(TraitDefOf.BodyPurist))
 				return -50;

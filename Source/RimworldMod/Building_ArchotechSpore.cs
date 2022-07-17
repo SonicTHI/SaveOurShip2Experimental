@@ -133,7 +133,7 @@ namespace RimWorld
             if (mood < 0.8f && tick > lastPrankTick)
                 PlayPrank(tick);
 
-            if(!ideoCrisis && tick % 20000 == 0 && ModLister.IdeologyInstalled)
+            if(!ideoCrisis && tick % 20000 == 0 && ModsConfig.IdeologyActive)
             {
                 ideoCrisis = true;
 
@@ -513,7 +513,7 @@ namespace RimWorld
                 }
                 giz.Add(insaneInTheBrain);
             }
-            if (ModLister.RoyaltyInstalled && Find.ResearchManager.GetProgress(PsylinkProj) >= PsylinkProj.CostApparent)
+            if (ModsConfig.RoyaltyActive && Find.ResearchManager.GetProgress(PsylinkProj) >= PsylinkProj.CostApparent)
             {
                 Command_Action formPsylink = new Command_Action
                 {

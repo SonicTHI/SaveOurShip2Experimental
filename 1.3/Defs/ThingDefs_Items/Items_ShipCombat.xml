@@ -5,7 +5,7 @@
     <soundInteract>Metal_Drop</soundInteract>
     <soundDrop>Standard_Drop</soundDrop>
     <tickerType>Normal</tickerType>
-    <stackLimit>6</stackLimit>
+    <stackLimit>3</stackLimit>
     <techLevel>Spacer</techLevel>
     <statBases>
       <MaxHitPoints>80</MaxHitPoints>
@@ -45,7 +45,7 @@
     </graphicData>
     <comps>
       <li Class="CompProperties_Explosive">
-        <explosiveRadius>3.9</explosiveRadius>
+        <explosiveRadius>5.9</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
         <startWickHitPointsPercent>0.7</startWickHitPointsPercent>
         <wickTicks>30~60</wickTicks>

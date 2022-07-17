@@ -1088,7 +1088,6 @@
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_EngineTrail">
 				<thrust>1</thrust>
 				<fuelUse>1</fuelUse>
@@ -1161,7 +1160,6 @@
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_EngineTrail">
 				<thrust>2</thrust>
 				<fuelUse>2</fuelUse>
@@ -1300,7 +1298,6 @@
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_EngineTrailEnergy">
 				<thrust>1</thrust>
 			</li>
@@ -1362,7 +1359,6 @@
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_EngineTrailEnergy">
 				<thrust>3</thrust>
 			</li>

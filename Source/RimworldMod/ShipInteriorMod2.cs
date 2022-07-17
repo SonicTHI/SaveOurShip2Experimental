@@ -498,7 +498,7 @@ namespace SaveOurShip2
 								thing = ThingMaker.MakeThing(def);
 							if (thing.TryGetComp<CompColorable>() != null && shape.color != Color.clear)
 								thing.SetColor(shape.color);
-							if (thing.def.CanHaveFaction && thing.def != hullPlateDef && thing.def != wreckedAirlockDef && thing.def != mechHullPlateDef && thing.def != archoHullPlateDef && thing.def != wreckedHullPlateDef && thing.def.thingClass != typeof(Building_ArchotechPillar))
+							if (thing.def.CanHaveFaction && thing.def != wreckedHullPlateDef && thing.def.thingClass != typeof(Building_ArchotechPillar))
 								thing.SetFaction(fac);
 							if (thing.TryGetComp<CompPowerBattery>() != null)
 								thing.TryGetComp<CompPowerBattery>().AddEnergy(thing.TryGetComp<CompPowerBattery>().AmountCanAccept);
@@ -704,7 +704,7 @@ namespace SaveOurShip2
 				if (b is Building_ShipTurretTorpedo)
 				{
 					CompChangeableProjectilePlural torps = ((Building_ShipTurretTorpedo)b).gun.TryGetComp<CompChangeableProjectilePlural>();
-					for (int i = 0; i < torps.Props.tubes; i++)
+					for (int i = 0; i < torps.Props.maxTorpedoes; i++)
 						torps.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
 					IntVec3 vec;
 					GenAdj.TryFindRandomAdjacentCell8WayWithRoom(b, out vec);
@@ -996,10 +996,6 @@ namespace SaveOurShip2
 							//targetMap.mapDrawer.MapMeshDirty(spawnThing.Position, MapMeshFlag.PowerGrid, false, false);
 							//spawnThing.TryGetComp<CompPower>().SetUpPowerVars();
 						}
-						if (spawnThing is Building_ShipTurret)
-						{
-							((Building_ShipTurret)spawnThing).ResetForcedTarget();
-						}
 						else if (spawnThing is Pawn)
 						{
 							Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.Remove(((Pawn)spawnThing).thingIDNumber);
@@ -1065,7 +1061,7 @@ namespace SaveOurShip2
 			//normalize temp in ship
 			foreach (Room room in targetMap.regionGrid.allRooms)
 			{
-				if (!RoomIsVacuum(room) && room.Temperature < -99f)
+				if (!ExposedToOutside(room) && room.Temperature < -99f)
 					room.Temperature = 21f;
 			}
 			//takeoff - explosions
@@ -1224,7 +1220,7 @@ namespace SaveOurShip2
 		{
 			return pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Any();
 		}
-		public static bool RoomIsVacuum(Room room)
+		public static bool ExposedToOutside(Room room)
 		{
 			return room == null || room.OpenRoofCount > 0 || room.TouchesMapEdge;
 		}
@@ -1661,20 +1657,21 @@ namespace SaveOurShip2
 			{
 				IntVec3 vec = b.Position + b.Rotation.FacingCell;
 				Room room = vec.GetRoom(b.Map);
-				if (ShipInteriorMod2.RoomIsVacuum(room))
+				if (ShipInteriorMod2.ExposedToOutside(room))
 				{
 					return false;
 				}
 				vec = b.Position - b.Rotation.FacingCell;
-				if (ShipInteriorMod2.RoomIsVacuum(room))
+				room = vec.GetRoom(b.Map);
+				if (ShipInteriorMod2.ExposedToOutside(room))
 				{
 					return false;
 				}
 				return true;
 			}
-			if (b is Building_ShipAirlock)
+			if (b is Building_ShipAirlock a)
 			{
-				if (((Building_ShipAirlock)b).Open && ((Building_ShipAirlock)b).Outerdoor())
+				if (a.Open && a.Outerdoor())
 					return false;
 				else
 					rate = 0.5f;
@@ -1734,7 +1731,7 @@ namespace SaveOurShip2
 		{
 			if (!Find.CurrentMap.IsSpace()) return;
 
-			if (ShipInteriorMod2.RoomIsVacuum(UI.MouseCell().GetRoom(Find.CurrentMap)))
+			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(Find.CurrentMap)))
 			{
 				__result += " (Vacuum)";
 			}
@@ -1757,7 +1754,7 @@ namespace SaveOurShip2
 			if (!(__instance is MechaniteFire) && __instance.Spawned && __instance.Map.IsSpace())
 			{
 				Room room = __instance.Position.GetRoom(__instance.Map);
-				if (ShipInteriorMod2.RoomIsVacuum(room))
+				if (ShipInteriorMod2.ExposedToOutside(room))
 					__instance.TakeDamage(new DamageInfo(DamageDefOf.Extinguish, 100, 0, -1f, null, null, null,
 						DamageInfo.SourceCategory.ThingOrUnknown, null));
 			}
@@ -1774,7 +1771,7 @@ namespace SaveOurShip2
 			if (__instance.Spawned && __instance.Map.IsSpace())
 			{
 				Room room = __instance.Position.GetRoom(__instance.Map);
-				if (ShipInteriorMod2.RoomIsVacuum(room))
+				if (ShipInteriorMod2.ExposedToOutside(room))
 				{
 					__instance.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 10, 0, -1f, null, null, null,
 						DamageInfo.SourceCategory.ThingOrUnknown, null));
@@ -2248,7 +2245,7 @@ namespace SaveOurShip2
 						diaOption21.action = delegate
 						{
 							negotiator.Map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, (TradeShip)__instance);
-							if (ModLister.IdeologyInstalled)
+							if (ModsConfig.IdeologyActive)
 								IdeoUtility.Notify_PlayerRaidedSomeone(__instance.Map.mapPawns.FreeColonists);
 						};
 						diaOption21.resolveTree = true;
@@ -3489,7 +3486,7 @@ namespace SaveOurShip2
 					Find.World.components.Add(comp);
 				}
 
-				if (!ModLister.IdeologyInstalled)
+				if (!ModsConfig.IdeologyActive)
 					WorldSwitchUtility.SelectiveWorldGenFlag = false;
 				WorldSwitchUtility.CacheFactions(Current.CreatingWorld.info.name);
 				WorldSwitchUtility.RespawnShip();

@@ -281,7 +281,7 @@ namespace RimWorld
                 if (shipDef == null)
                     shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.tradeShip).RandomElement();
             }
-            else if (ModLister.RoyaltyInstalled && Faction.OfEmpire != null && !Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer) || !ModLister.RoyaltyInstalled)
+            else if (ModsConfig.RoyaltyActive && Faction.OfEmpire != null && !Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer) || !ModsConfig.RoyaltyActive)
             {
                 //empire can attack if royalty and hostile or no royalty
                 //0.5-1.5
@@ -306,7 +306,7 @@ namespace RimWorld
             }
             //set ship faction
             Faction enemyshipfac = Faction.OfAncientsHostile;
-            if (shipDef.imperialShip && ModLister.RoyaltyInstalled && Faction.OfEmpire != null)
+            if (shipDef.imperialShip && ModsConfig.RoyaltyActive && Faction.OfEmpire != null)
             {
                 enemyshipfac = Faction.OfEmpire;
                 if (Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
@@ -319,8 +319,8 @@ namespace RimWorld
             MasterMapComp.ShipFaction = enemyshipfac;
             MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyshipfac, new LordJob_DefendShip(enemyshipfac, map.Center), map);
             ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyshipfac, MasterMapComp.ShipLord, out core, !isDerelict);
-            //};
-            //LongEventHandler.QueueLongEvent(generate, "GenerateEnemyShip", false, null);
+
+            Log.Message("SOS2 spawned ship: " + shipDef.defName); //keep this on for troubleshooting
             if (isDerelict)
             {
                 int time = Rand.RangeInclusive(120000, 240000);
@@ -331,13 +331,13 @@ namespace RimWorld
             {
                 Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty += 5;
                 attackedTradeship = true;
-                if (ModLister.RoyaltyInstalled && passingShip.Faction == Faction.OfEmpire && Faction.OfEmpire != null && Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
+                if (ModsConfig.RoyaltyActive && passingShip.Faction == Faction.OfEmpire && Faction.OfEmpire != null && Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
                     Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -150);
                 this.map.passingShipManager.RemoveShip(passingShip);
             }
             else if (passingShip is AttackableShip)
             {
-                if (ModLister.RoyaltyInstalled && passingShip.Faction == Faction.OfEmpire && Faction.OfEmpire != null && Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
+                if (ModsConfig.RoyaltyActive && passingShip.Faction == Faction.OfEmpire && Faction.OfEmpire != null && Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
                     Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -150);
             }
             else
@@ -371,7 +371,7 @@ namespace RimWorld
             //startup on origin
             if (playerShipRoot == null || InCombat || BurnUpSet)
             {
-                Log.Message("Error: Unable to start battle.");
+                Log.Message("SOS2 Error: Unable to start ship battle.");
                 return;
             }
             //origin vars
@@ -652,27 +652,29 @@ namespace RimWorld
                 foreach (var turret in ship.Turrets)
                 {
                     TurretNum++;
-                    totalThreat += turret.HeatComp.Props.threat;
-                    if (turret.HeatComp.Props.maxRange > 150)//long
+                    if (turret.TryGetComp<CompChangeableProjectilePlural>() != null && !turret.TryGetComp<CompChangeableProjectilePlural>().Loaded)
+                        continue;
+                    totalThreat += turret.heatComp.Props.threat;
+                    if (turret.heatComp.Props.maxRange > 150)//long
                     {
-                        threatPerSegment[0] += turret.HeatComp.Props.threat / 6;
-                        threatPerSegment[1] += turret.HeatComp.Props.threat / 4;
-                        threatPerSegment[2] += turret.HeatComp.Props.threat / 2;
-                        threatPerSegment[3] += turret.HeatComp.Props.threat;
+                        threatPerSegment[0] += turret.heatComp.Props.threat / 6;
+                        threatPerSegment[1] += turret.heatComp.Props.threat / 4;
+                        threatPerSegment[2] += turret.heatComp.Props.threat / 2;
+                        threatPerSegment[3] += turret.heatComp.Props.threat;
                     }
-                    else if (turret.HeatComp.Props.maxRange > 100)//med
+                    else if (turret.heatComp.Props.maxRange > 100)//med
                     {
-                        threatPerSegment[0] += turret.HeatComp.Props.threat / 4;
-                        threatPerSegment[1] += turret.HeatComp.Props.threat / 2;
-                        threatPerSegment[2] += turret.HeatComp.Props.threat;
+                        threatPerSegment[0] += turret.heatComp.Props.threat / 4;
+                        threatPerSegment[1] += turret.heatComp.Props.threat / 2;
+                        threatPerSegment[2] += turret.heatComp.Props.threat;
                     }
-                    else if (turret.HeatComp.Props.maxRange > 50)//short
+                    else if (turret.heatComp.Props.maxRange > 50)//short
                     {
-                        threatPerSegment[0] += turret.HeatComp.Props.threat/2;
-                        threatPerSegment[1] += turret.HeatComp.Props.threat;
+                        threatPerSegment[0] += turret.heatComp.Props.threat/2;
+                        threatPerSegment[1] += turret.heatComp.Props.threat;
                     }
                     else //cqc
-                        threatPerSegment[0] += turret.HeatComp.Props.threat;
+                        threatPerSegment[0] += turret.heatComp.Props.threat;
                 }
                 if (ship.Engines.FirstOrDefault() != null)
                     EngineRot = ship.Engines.FirstOrDefault().Item1.parent.Rotation.AsByte;
@@ -690,6 +692,8 @@ namespace RimWorld
                         else
                             engine.Item1.active = false;
                     }
+                    else
+                        engine.Item1.active = false;
                 }
                 foreach (var engine in ship.EnginesEnergy)
                 {
@@ -701,6 +705,8 @@ namespace RimWorld
                         else
                             engine.Item1.active = false;
                     }
+                    else
+                        engine.Item1.active = false;
                 }
                 BuildingsCount += ship.Buildings.Count;
             }

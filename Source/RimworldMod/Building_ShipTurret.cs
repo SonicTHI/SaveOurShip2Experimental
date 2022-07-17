@@ -9,6 +9,7 @@ using Verse.Sound;
 using SaveOurShip2;
 using RimWorld.Planet;
 using HarmonyLib;
+using RimworldMod;
 
 namespace RimWorld
 {
@@ -20,8 +21,12 @@ namespace RimWorld
 
         public Thing gun;
         protected TurretTop top;
-        protected CompPowerTrader powerComp;
+        public CompPowerTrader powerComp;
+        public ShipHeatMapComp mapComp;
+        public CompShipHeatSource heatComp;
+        public CompSpinalMount spinalComp;
         protected CompInitiatable initiatableComp;
+        protected Effecter progressBarEffecter;
         public CompShipHeatSource HeatSource;
 
         protected LocalTargetInfo currentTargetInt = LocalTargetInfo.Invalid;
@@ -34,6 +39,7 @@ namespace RimWorld
         bool selected = false;
         private bool holdFire;
         public bool PointDefenseMode;
+        public bool GroundDefenseMode;
         public bool useOptimalRange;
         static int lastPDTick = 0;
 
@@ -90,51 +96,24 @@ namespace RimWorld
         {
             top = new TurretTop(this);
         }
-        public ShipHeatMapComp mapComp;
-        public ShipHeatMapComp MapComp
-        {
-            get
-            {
-                if (this.mapComp == null)
-                {
-                    this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
-                }
-                return this.mapComp;
-            }
-        }
-        public CompShipHeatSource heatComp;
-        public CompShipHeatSource HeatComp
-        {
-            get
-            {
-                if (this.heatComp == null)
-                {
-                    this.heatComp = this.TryGetComp<CompShipHeatSource>();
-                }
-                return this.heatComp;
-            }
-        }
-        public CompSpinalMount spinalComp;
-        public CompSpinalMount SpinalComp
-        {
-            get
-            {
-                if (this.spinalComp == null)
-                {
-                    this.spinalComp = this.TryGetComp<CompSpinalMount>();
-                }
-                return this.spinalComp;
-            }
-        }
+
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
             initiatableComp = GetComp<CompInitiatable>();
             powerComp = GetComp<CompPowerTrader>();
+            this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
+            this.heatComp = this.TryGetComp<CompShipHeatSource>();
+            this.spinalComp = this.TryGetComp<CompSpinalMount>();
+            if (!this.Map.IsSpace() && heatComp.Props.groundDefense)
+                GroundDefenseMode = true;
+            else
+                GroundDefenseMode = false;
             if (!respawningAfterLoad)
             {
                 top.SetRotationFromOrientation();
                 burstCooldownTicksLeft = def.building.turretInitialCooldownTime.SecondsToTicks();
+                ResetForcedTarget();
             }
         }
 
@@ -175,16 +154,39 @@ namespace RimWorld
                 forcedTarget = targ;
                 if (burstCooldownTicksLeft <= 0)
                 {
-                    TryStartShootSomething(canBeginBurstImmediately: false);
+                    TryStartShootSomething(false);
                 }
             }
             if (holdFire)
             {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecauseHoldFire",def.label), this, MessageTypeDefOf.RejectInput, historical: false);
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecauseHoldFire", def.label), this, MessageTypeDefOf.RejectInput, historical: false);
+                return;
             }
-            if (PointDefenseMode)
+            if (this.PointDefenseMode)
             {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecausePointDefense",def.label), this, MessageTypeDefOf.RejectInput, historical: false);
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecausePointDefense", def.label), this, MessageTypeDefOf.RejectInput, historical: false);
+                return;
+            }
+            if (GroundDefenseMode)
+            {
+                if (!targ.IsValid)
+                {
+                    if (this.forcedTarget.IsValid)
+                    {
+                        this.ResetForcedTarget();
+                    }
+                    return;
+                }
+                if ((targ.Cell - base.Position).LengthHorizontal < this.AttackVerb.verbProps.EffectiveMinRange(targ, this))
+                {
+                    Messages.Message("MessageTargetBelowMinimumRange".Translate(), this, MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
+                if ((targ.Cell - base.Position).LengthHorizontal > this.AttackVerb.verbProps.range)
+                {
+                    Messages.Message("MessageTargetBeyondMaximumRange".Translate(), this, MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
             }
         }
 
@@ -199,134 +201,208 @@ namespace RimWorld
             {
                 holdFire = false;
             }
-            if (forcedTarget.ThingDestroyed || !MapComp.InCombat || (SpinalComp != null && AmplifierCount == -1))
+            if (this.forcedTarget.ThingDestroyed)
             {
-                ResetForcedTarget();
+                this.ResetForcedTarget();
             }
-            if (Active && base.Spawned)
+            if (GroundDefenseMode)
             {
-                GunCompEq.verbTracker.VerbsTick();
-                if (stunner.Stunned || AttackVerb.state == VerbState.Bursting)
+                if (this.forcedTarget.IsValid && !this.CanSetForcedTarget)
                 {
-                    return;
+                    this.ResetForcedTarget();
                 }
-                else if (burstCooldownTicksLeft > 0)
+                if (this.Active && !this.stunner.Stunned && base.Spawned)
                 {
-                    burstCooldownTicksLeft--;
-                }
-                if (MapComp.InCombat)
-                {
-                    //PD mode
-                    if ((this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0 && IncomingPtDefTargetsInRange()) && (PointDefenseMode || (!PlayerControlled && HeatComp.Props.pointDefense)))
+                    this.GunCompEq.verbTracker.VerbsTick();
+                    if (this.AttackVerb.state != VerbState.Bursting)
                     {
-                        if (Find.TickManager.TicksGame > lastPDTick + 10 && !holdFire)
-                            BeginBurst(true);
-                    }
-                    //check if we are in range
-                    else
-                    {
-                        float range = MapComp.ShipCombatMasterMap.GetComponent<ShipHeatMapComp>().Range;
-                        if ((!useOptimalRange && HeatComp.Props.maxRange > range) || (useOptimalRange && HeatComp.Props.optRange > range))
+                        if (this.burstWarmupTicksLeft > 0)
                         {
-                            //cant fire spinals opposite of heading
-                            if (SpinalComp != null)
+                            this.burstWarmupTicksLeft--;
+                            if (this.burstWarmupTicksLeft == 0)
                             {
-                                if ((this.Rotation == new Rot4(MapComp.EngineRot) && MapComp.Heading == -1) || (this.Rotation == new Rot4(MapComp.EngineRot + 2) && MapComp.Heading == 1))
-                                {
-                                    if (PlayerControlled)
-                                        return;
-                                    else
-                                    {
-                                        MapComp.Heading *= -1;
-                                    }
-                                }
-                            }
-                            if (burstWarmupTicksLeft > 0)
-                            {
-                                burstWarmupTicksLeft--;
-                                if (burstWarmupTicksLeft == 0)
-                                {
-                                    BeginBurst();
-                                }
-                            }
-                            else if (this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0)
-                            {
-                                TryStartShootSomething(canBeginBurstImmediately: true);
+                                this.BeginBurst();
                             }
                         }
+                        else
+                        {
+                            if (this.burstCooldownTicksLeft > 0)
+                            {
+                                this.burstCooldownTicksLeft--;
+                            }
+                            if (this.burstCooldownTicksLeft <= 0 && this.IsHashIntervalTick(10))
+                            {
+                                this.TryStartShootSomething(true);
+                            }
+                        }
+                        this.top.TurretTopTick();
+                        return;
                     }
                 }
-                top.TurretTopTick();
+                else
+                {
+                    this.ResetCurrentTarget();
+                }
             }
             else
             {
-                ResetCurrentTarget();
+                if (!mapComp.InCombat || (spinalComp != null && AmplifierCount == -1))
+                {
+                    ResetForcedTarget();
+                }
+                if (Active && base.Spawned)
+                {
+                    GunCompEq.verbTracker.VerbsTick();
+                    if (stunner.Stunned || AttackVerb.state == VerbState.Bursting)
+                    {
+                        return;
+                    }
+                    else if (burstCooldownTicksLeft > 0)
+                    {
+                        burstCooldownTicksLeft--;
+                    }
+                    if (mapComp.InCombat)
+                    {
+                        //PD mode
+                        if ((this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0 && IncomingPtDefTargetsInRange()) && (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense)))
+                        {
+                            if (Find.TickManager.TicksGame > lastPDTick + 10 && !holdFire)
+                                BeginBurst(true);
+                        }
+                        //check if we are in range
+                        else
+                        {
+                            float range = mapComp.ShipCombatMasterMap.GetComponent<ShipHeatMapComp>().Range;
+                            if ((!useOptimalRange && heatComp.Props.maxRange > range) || (useOptimalRange && heatComp.Props.optRange > range))
+                            {
+                                //cant fire spinals opposite of heading
+                                if (spinalComp != null)
+                                {
+                                    if ((this.Rotation == new Rot4(mapComp.EngineRot) && mapComp.Heading == -1) || (this.Rotation == new Rot4(mapComp.EngineRot + 2) && mapComp.Heading == 1))
+                                    {
+                                        if (PlayerControlled)
+                                            return;
+                                        else
+                                        {
+                                            mapComp.Heading *= -1;
+                                        }
+                                    }
+                                }
+                                if (burstWarmupTicksLeft > 0)
+                                {
+                                    burstWarmupTicksLeft--;
+                                    if (burstWarmupTicksLeft == 0)
+                                    {
+                                        BeginBurst();
+                                    }
+                                }
+                                else if (this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0)
+                                {
+                                    TryStartShootSomething(true);
+                                }
+                            }
+                        }
+                    }
+                    top.TurretTopTick();
+                }
+                else
+                {
+                    ResetCurrentTarget();
+                }
             }
         }
 
         protected void TryStartShootSomething(bool canBeginBurstImmediately)
         {
-            if (SpinalComp != null)
-                RecalcStats();
-            if (!base.Spawned || (holdFire && CanToggleHoldFire) || !AttackVerb.Available() || PointDefenseMode || !MapComp.InCombat || (SpinalComp != null && AmplifierCount == -1))
-            {
-                ResetCurrentTarget();
-                return;
-            }
-            if (!this.PlayerControlled && MapComp.ShipCombatMaster)
-            {
-                if (SpinalComp == null || SpinalComp.Props.destroysHull || MapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.Count==0)
-                    shipTarget = MapComp.ShipCombatOriginMap.listerThings.AllThings.RandomElement();
-                else //Target pawn with the Psychic Flayer
-                    shipTarget = MapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.RandomElement();
-            }
             bool isValid = currentTargetInt.IsValid;
-            if (shipTarget.IsValid)
+            if (GroundDefenseMode)
             {
-                //fire same as engine direction or opposite if retreating
-                int rotA = MapComp.EngineRot;
-                int rotB = MapComp.Heading;
-                if ((rotA == 0 && rotB != -1) || (rotA == 2 && rotB == -1)) //north
-                    currentTargetInt = new LocalTargetInfo(new IntVec3(Rand.RangeInclusive(this.Position.x - 5, this.Position.x + 5), 0, this.Map.Size.z - 1));
-                else if ((rotA == 1 && rotB != -1) || (rotA == 3 && rotB == -1)) //east
-                    currentTargetInt = new LocalTargetInfo(new IntVec3(this.Map.Size.x - 1, 0, Rand.RangeInclusive(this.Position.z - 5, this.Position.z + 5)));
-                else if ((rotA == 2 && rotB != -1) || (rotA == 0 && rotB == -1)) //south
-                    currentTargetInt = new LocalTargetInfo(new IntVec3(Rand.RangeInclusive(this.Position.x - 5, this.Position.x + 5), 0, 0));
-                else//west
-                    currentTargetInt = new LocalTargetInfo(new IntVec3(0, 0, Rand.RangeInclusive(this.Position.z - 5, this.Position.z + 5)));
-            }
-            else
-            {
-                currentTargetInt = TryFindNewTarget();
-            }
-            if (!isValid && currentTargetInt.IsValid)
-            {
-                SoundDefOf.TurretAcquireTarget.PlayOneShot(new TargetInfo(base.Position, base.Map));
-            }
-            if (currentTargetInt.IsValid)
-            {
-                if (def.building.turretBurstWarmupTime > 0f)
+                if (this.progressBarEffecter != null)
                 {
-                    burstWarmupTicksLeft = def.building.turretBurstWarmupTime.SecondsToTicks();
+                    this.progressBarEffecter.Cleanup();
+                    this.progressBarEffecter = null;
                 }
-                else if (canBeginBurstImmediately)
+                if (!base.Spawned || (this.holdFire && this.CanToggleHoldFire) || !this.AttackVerb.Available())
                 {
-                    BeginBurst();
+                    this.ResetCurrentTarget();
+                    return;
+                }
+                if (this.forcedTarget.IsValid)
+                {
+                    this.currentTargetInt = this.forcedTarget;
                 }
                 else
                 {
-                    burstWarmupTicksLeft = 1;
+                    this.currentTargetInt = this.TryFindNewTarget();
                 }
             }
             else
             {
-                ResetCurrentTarget();
+                if (spinalComp != null)
+                    RecalcStats();
+                if (!base.Spawned || (holdFire && CanToggleHoldFire) || !AttackVerb.Available() || PointDefenseMode || !mapComp.InCombat || (spinalComp != null && AmplifierCount == -1))
+                {
+                    ResetCurrentTarget();
+                    return;
+                }
+                if (!this.PlayerControlled && mapComp.ShipCombatMaster)
+                {
+                    if (spinalComp == null || spinalComp.Props.destroysHull || mapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.Count == 0)
+                        shipTarget = mapComp.ShipCombatOriginMap.listerThings.AllThings.RandomElement();
+                    else //Target pawn with the Psychic Flayer
+                        shipTarget = mapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.RandomElement();
+                }
+                if (shipTarget.IsValid)
+                {
+                    //fire same as engine direction or opposite if retreating
+                    int rotA = mapComp.EngineRot;
+                    int rotB = mapComp.Heading;
+                    if ((rotA == 0 && rotB != -1) || (rotA == 2 && rotB == -1)) //north
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(Rand.RangeInclusive(this.Position.x - 5, this.Position.x + 5), 0, this.Map.Size.z - 1));
+                    else if ((rotA == 1 && rotB != -1) || (rotA == 3 && rotB == -1)) //east
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(this.Map.Size.x - 1, 0, Rand.RangeInclusive(this.Position.z - 5, this.Position.z + 5)));
+                    else if ((rotA == 2 && rotB != -1) || (rotA == 0 && rotB == -1)) //south
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(Rand.RangeInclusive(this.Position.x - 5, this.Position.x + 5), 0, 0));
+                    else//west
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(0, 0, Rand.RangeInclusive(this.Position.z - 5, this.Position.z + 5)));
+                }
+                else
+                {
+                    currentTargetInt = TryFindNewTarget();
+                }
             }
+            if (!isValid && this.currentTargetInt.IsValid)
+            {
+                SoundDefOf.TurretAcquireTarget.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
+            }
+            if (!this.currentTargetInt.IsValid)
+            {
+                this.ResetCurrentTarget();
+                return;
+            }
+            if (this.def.building.turretBurstWarmupTime > 0f)
+            {
+                this.burstWarmupTicksLeft = this.def.building.turretBurstWarmupTime.SecondsToTicks();
+                return;
+            }
+            if (canBeginBurstImmediately)
+            {
+                this.BeginBurst();
+                return;
+            }
+            this.burstWarmupTicksLeft = 1;
         }
 
         protected LocalTargetInfo TryFindNewTarget()
         {
-            return LocalTargetInfo.Invalid;
+            if (GroundDefenseMode)
+            {
+                IAttackTargetSearcher attackTargetSearcher = this.TargSearcher();
+                TargetScanFlags targetScanFlags = TargetScanFlags.NeedThreat | TargetScanFlags.NeedAutoTargetable |  TargetScanFlags.NeedNotUnderThickRoof;
+                return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, targetScanFlags, new Predicate<Thing>(this.IsValidTarget), 0f, 9999f);
+            }
+            else
+                return LocalTargetInfo.Invalid;
         }
 
         private IAttackTargetSearcher TargSearcher()
@@ -349,50 +425,29 @@ namespace RimWorld
 
         protected void BeginBurst(bool isPtDefBurst = false)
         {
-            //PD mode
-            if (isPtDefBurst || shipTarget == null)
-                this.shipTarget = LocalTargetInfo.Invalid;
-            //sync
-            ((Verb_LaunchProjectileShip)AttackVerb).shipTarget = shipTarget;
-            if (this.AttackVerb.verbProps.burstShotCount > 0 && MapComp.ShipCombatTargetMap != null)
-                SynchronizedBurstLocation = MapComp.FindClosestEdgeCell(MapComp.ShipCombatTargetMap, shipTarget.Cell);
-            else
-                SynchronizedBurstLocation = IntVec3.Invalid;
             //check if we have power to fire
-            if (this.TryGetComp<CompPower>() != null && HeatComp != null && this.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy() < HeatComp.Props.energyToFire * (1 + (AmplifierDamageBonus)))
+            if (this.TryGetComp<CompPower>() != null && heatComp != null && this.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + (AmplifierDamageBonus)))
             {
                 //Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToPower",this.Label), this, MessageTypeDefOf.CautionInput);
                 //this.shipTarget = LocalTargetInfo.Invalid;
                 return;
             }
-            //spinal weapons fire straight
-            if (SpinalComp != null)
-            {
-                if (this.Rotation.AsByte == 0)
-                    currentTargetInt = new LocalTargetInfo(new IntVec3(this.Position.x, 0, this.Map.Size.z-1));
-                else if (this.Rotation.AsByte == 1)
-                    currentTargetInt = new LocalTargetInfo(new IntVec3(this.Map.Size.x-1, 0, this.Position.z));
-                else if (this.Rotation.AsByte == 2)
-                    currentTargetInt = new LocalTargetInfo(new IntVec3(this.Position.x, 0, 1));
-                else
-                    currentTargetInt = new LocalTargetInfo(new IntVec3(1, 0, this.Position.z));
-            }
             //if we do not have enough heatcap, vent heat to room/fail to fire in vacuum
-            if (HeatComp != null && HeatComp.AvailableCapacityInNetwork() < HeatComp.Props.heatPerPulse*(1+(AmplifierDamageBonus)))
+            if (heatComp != null && heatComp.AvailableCapacityInNetwork() < heatComp.Props.heatPerPulse * (1 + (AmplifierDamageBonus)))
             {
-                if (ShipInteriorMod2.RoomIsVacuum(this.GetRoom()))
+                if (ShipInteriorMod2.ExposedToOutside(this.GetRoom()))
                 {
                     if (!PointDefenseMode && PlayerControlled)
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat",this.Label), this, MessageTypeDefOf.CautionInput);
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", this.Label), this, MessageTypeDefOf.CautionInput);
                     this.shipTarget = LocalTargetInfo.Invalid;
                     return;
                 }
-                GenTemperature.PushHeat(this, HeatComp.Props.heatPerPulse* ShipInteriorMod2.HeatPushMult * (1 + (AmplifierDamageBonus)));
+                GenTemperature.PushHeat(this, heatComp.Props.heatPerPulse * ShipInteriorMod2.HeatPushMult * (1 + (AmplifierDamageBonus)));
             }
             else
-                HeatComp.AddHeatToNetwork(HeatComp.Props.heatPerPulse * (1 + (AmplifierDamageBonus)));
+                heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + (AmplifierDamageBonus)));
             //ammo
-            if (this.TryGetComp<CompRefuelable>()!=null)
+            if (this.TryGetComp<CompRefuelable>() != null)
             {
                 if (this.TryGetComp<CompRefuelable>().Fuel <= 0)
                 {
@@ -406,84 +461,113 @@ namespace RimWorld
             //draw the same percentage from each cap: needed*current/currenttotal
             foreach (CompPowerBattery bat in this.TryGetComp<CompPower>().PowerNet.batteryComps)
             {
-                bat.DrawPower(Mathf.Min(HeatComp.Props.energyToFire * (1 + AmplifierDamageBonus) * bat.StoredEnergy / this.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
+                bat.DrawPower(Mathf.Min(heatComp.Props.energyToFire * (1 + AmplifierDamageBonus) * bat.StoredEnergy / this.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
+            }
+            if (heatComp.Props.singleFireSound != null)
+            {
+                heatComp.Props.singleFireSound.PlayOneShot(this);
             }
 
-            if (HeatComp.Props.singleFireSound != null)
+            if (GroundDefenseMode)
             {
-                HeatComp.Props.singleFireSound.PlayOneShot(this);
+                this.AttackVerb.TryStartCastOn(this.CurrentTarget, false, true, false);
+                base.OnAttackedTarget(this.CurrentTarget);
             }
-            if (PointDefenseMode)
-                lastPDTick = Find.TickManager.TicksGame;
-            AttackVerb.TryStartCastOn(currentTargetInt);
-            OnAttackedTarget(currentTargetInt);
-            burstCooldownTicksLeft = BurstCooldownTime().SecondsToTicks(); //Seems to prevent the "turbo railgun" bug. Don't ask me why.
-            if (SpinalComp != null && SpinalComp.Props.destroysHull)
+            else
             {
-                List<Thing> thingsToDestroy = new List<Thing>();
-
-                if (this.Rotation.AsByte == 0)
-                {
-                    for (int x = Position.x - 1; x <= Position.x + 1; x++)
-                    {
-                        for (int z = Position.z + 3; z < Map.Size.z; z++)
-                        {
-                            IntVec3 vec = new IntVec3(x, 0, z);
-                            foreach (Thing thing in vec.GetThingList(Map))
-                            {
-                                thingsToDestroy.Add(thing);
-                            }
-                        }
-                    }
-                }
-                else if (this.Rotation.AsByte == 1)
-                {
-                    for (int x = Position.x + 3; x < Map.Size.x; x++)
-                    {
-                        for (int z = Position.z - 1; z <= Position.z + 1; z++)
-                        {
-                            IntVec3 vec = new IntVec3(x, 0, z);
-                            foreach (Thing thing in vec.GetThingList(Map))
-                            {
-                                thingsToDestroy.Add(thing);
-                            }
-                        }
-                    }
-                }
-                else if (this.Rotation.AsByte == 2)
-                {
-                    for (int x = Position.x - 1; x <= Position.x + 1; x++)
-                    {
-                        for (int z = Position.z - 3; z > 0; z--)
-                        {
-                            IntVec3 vec = new IntVec3(x, 0, z);
-                            foreach (Thing thing in vec.GetThingList(Map))
-                            {
-                                thingsToDestroy.Add(thing);
-                            }
-                        }
-                    }
-                }
+                //PD mode
+                if (isPtDefBurst || shipTarget == null)
+                    this.shipTarget = LocalTargetInfo.Invalid;
+                //sync
+                ((Verb_LaunchProjectileShip)AttackVerb).shipTarget = shipTarget;
+                if (this.AttackVerb.verbProps.burstShotCount > 0 && mapComp.ShipCombatTargetMap != null)
+                    SynchronizedBurstLocation = mapComp.FindClosestEdgeCell(mapComp.ShipCombatTargetMap, shipTarget.Cell);
                 else
+                    SynchronizedBurstLocation = IntVec3.Invalid;
+                if (PointDefenseMode)
+                    lastPDTick = Find.TickManager.TicksGame;
+                //spinal weapons fire straight
+                if (spinalComp != null)
                 {
-                    for (int x = 1; x <= Position.x - 3; x++)
+                    if (this.Rotation.AsByte == 0)
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(this.Position.x, 0, this.Map.Size.z - 1));
+                    else if (this.Rotation.AsByte == 1)
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(this.Map.Size.x - 1, 0, this.Position.z));
+                    else if (this.Rotation.AsByte == 2)
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(this.Position.x, 0, 1));
+                    else
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(1, 0, this.Position.z));
+                }
+                AttackVerb.TryStartCastOn(currentTargetInt);
+                OnAttackedTarget(currentTargetInt);
+                burstCooldownTicksLeft = BurstCooldownTime().SecondsToTicks(); //Seems to prevent the "turbo railgun" bug. Don't ask me why.
+                if (spinalComp != null && spinalComp.Props.destroysHull)
+                {
+                    List<Thing> thingsToDestroy = new List<Thing>();
+
+                    if (this.Rotation.AsByte == 0)
                     {
-                        for (int z = Position.z - 1; z <= Position.z + 1; z++)
+                        for (int x = Position.x - 1; x <= Position.x + 1; x++)
                         {
-                            IntVec3 vec = new IntVec3(x, 0, z);
-                            foreach (Thing thing in vec.GetThingList(Map))
+                            for (int z = Position.z + 3; z < Map.Size.z; z++)
                             {
-                                thingsToDestroy.Add(thing);
+                                IntVec3 vec = new IntVec3(x, 0, z);
+                                foreach (Thing thing in vec.GetThingList(Map))
+                                {
+                                    thingsToDestroy.Add(thing);
+                                }
                             }
                         }
                     }
-                }
+                    else if (this.Rotation.AsByte == 1)
+                    {
+                        for (int x = Position.x + 3; x < Map.Size.x; x++)
+                        {
+                            for (int z = Position.z - 1; z <= Position.z + 1; z++)
+                            {
+                                IntVec3 vec = new IntVec3(x, 0, z);
+                                foreach (Thing thing in vec.GetThingList(Map))
+                                {
+                                    thingsToDestroy.Add(thing);
+                                }
+                            }
+                        }
+                    }
+                    else if (this.Rotation.AsByte == 2)
+                    {
+                        for (int x = Position.x - 1; x <= Position.x + 1; x++)
+                        {
+                            for (int z = Position.z - 3; z > 0; z--)
+                            {
+                                IntVec3 vec = new IntVec3(x, 0, z);
+                                foreach (Thing thing in vec.GetThingList(Map))
+                                {
+                                    thingsToDestroy.Add(thing);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int x = 1; x <= Position.x - 3; x++)
+                        {
+                            for (int z = Position.z - 1; z <= Position.z + 1; z++)
+                            {
+                                IntVec3 vec = new IntVec3(x, 0, z);
+                                foreach (Thing thing in vec.GetThingList(Map))
+                                {
+                                    thingsToDestroy.Add(thing);
+                                }
+                            }
+                        }
+                    }
 
-                foreach (Thing thing in thingsToDestroy)
-                {
-                    GenExplosion.DoExplosion(thing.Position, thing.Map, 0.5f, DamageDefOf.Bomb, null);
-                    if (!thing.Destroyed)
-                        thing.Kill();
+                    foreach (Thing thing in thingsToDestroy)
+                    {
+                        GenExplosion.DoExplosion(thing.Position, thing.Map, 0.5f, DamageDefOf.Bomb, null);
+                        if (!thing.Destroyed)
+                            thing.Kill();
+                    }
                 }
             }
         }
@@ -510,15 +594,15 @@ namespace RimWorld
             {
                 stringBuilder.AppendLine(inspectString);
             }
-            if (AttackVerb.verbProps.minRange > 0f)
+            if (AttackVerb.verbProps.minRange > 0f && GroundDefenseMode)
             {
                 stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("MinimumRange") + ": " + AttackVerb.verbProps.minRange.ToString("F0"));
             }
-            else if (base.Spawned && burstCooldownTicksLeft > 0 && BurstCooldownTime() > 5f)
+            if (base.Spawned && burstCooldownTicksLeft > 0 && BurstCooldownTime() > 5f)
             {
                 stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("CanFireIn") + ": " + burstCooldownTicksLeft.ToStringSecondsFromTicks());
             }
-			if (SpinalComp != null)
+			if (spinalComp != null)
             {
                 if (AmplifierCount != -1)
                     stringBuilder.AppendLine("ShipAmplifierCount".Translate(AmplifierCount));
@@ -530,14 +614,24 @@ namespace RimWorld
             {
                 if (compChangeableProjectile.Loaded)
                 {
-                    string torps = "";
+                    int torp = 0;
+                    int torpEMP = 0;
+                    int torpAM = 0;
                     foreach (ThingDef t in compChangeableProjectile.LoadedShells)
                     {
-                        if (torps.Length > 0)
-                            torps += ", ";
-                        torps += t.label;
+                        if (t == ThingDef.Named("ShipTorpedo_EMP"))
+                            torpEMP++;
+                        else if (t == ThingDef.Named("ShipTorpedo_Antimatter"))
+                            torpAM++;
+                        else
+                            torp++;
                     }
-                    stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipTorpedoLoaded",torps));
+                    if (torp > 0)
+                        stringBuilder.AppendLine(torp + " HE torpedoes");
+                    if (torpEMP > 0)
+                        stringBuilder.AppendLine(torpEMP + " EMP torpedoes");
+                    if (torpAM > 0)
+                        stringBuilder.AppendLine(torpAM + " AM torpedoes");
                 }
                 else
                 {
@@ -555,29 +649,41 @@ namespace RimWorld
 
         public override void DrawExtraSelectionOverlays()
         {
-            /*float range = AttackVerb.verbProps.range;
-            if (range < 90f)
+            if (GroundDefenseMode)
             {
-                GenDraw.DrawRadiusRing(base.Position, range);
+                base.DrawExtraSelectionOverlays();
+                float range = this.AttackVerb.verbProps.range;
+                if (range < 90f)
+                {
+                    GenDraw.DrawRadiusRing(base.Position, range);
+                }
+                float num = this.AttackVerb.verbProps.EffectiveMinRange(true);
+                if (num < 90f && num > 0.1f)
+                {
+                    GenDraw.DrawRadiusRing(base.Position, num);
+                }
+                if (this.burstWarmupTicksLeft > 0)
+                {
+                    int degreesWide = (int)((float)this.burstWarmupTicksLeft * 0.5f);
+                    GenDraw.DrawAimPie(this, this.CurrentTarget, degreesWide, (float)this.def.size.x * 0.5f);
+                }
+                if (this.forcedTarget.IsValid && (!this.forcedTarget.HasThing || this.forcedTarget.Thing.Spawned))
+                {
+                    Vector3 vector;
+                    if (this.forcedTarget.HasThing)
+                    {
+                        vector = this.forcedTarget.Thing.TrueCenter();
+                    }
+                    else
+                    {
+                        vector = this.forcedTarget.Cell.ToVector3Shifted();
+                    }
+                    Vector3 a = this.TrueCenter();
+                    vector.y = AltitudeLayer.MetaOverlays.AltitudeFor();
+                    a.y = vector.y;
+                    GenDraw.DrawLineBetween(a, vector, Building_TurretGun.ForcedTargetLineMat, 0.2f);
+                }
             }
-            float num = AttackVerb.verbProps.EffectiveMinRange(allowAdjacentShot: true);
-            if (num < 90f && num > 0.1f)
-            {
-                GenDraw.DrawRadiusRing(base.Position, num);
-            }
-            if (burstWarmupTicksLeft > 0)
-            {
-                int degreesWide = (int)((float)burstWarmupTicksLeft * 0.5f);
-                GenDraw.DrawAimPie(this, CurrentTarget, degreesWide, (float)def.size.x * 0.5f);
-            }
-            if (forcedTarget.IsValid && (!forcedTarget.HasThing || forcedTarget.Thing.Spawned))
-            {
-                Vector3 b = (!forcedTarget.HasThing) ? forcedTarget.Cell.ToVector3Shifted() : forcedTarget.Thing.TrueCenter();
-                Vector3 a = this.TrueCenter();
-                b.y = AltitudeLayer.MetaOverlays.AltitudeFor();
-                a.y = b.y;
-                GenDraw.DrawLineBetween(a, b, ForcedTargetLineMat);
-            }*/
         }
 
         public override IEnumerable<Gizmo> GetGizmos()
@@ -591,21 +697,38 @@ namespace RimWorld
             {
                 yield return gizmo;
             }
-            if (!PlayerControlled || (SpinalComp != null && AmplifierCount == -1) || MapComp.ShipCombatMaster)
+            if (!PlayerControlled || (spinalComp != null && AmplifierCount == -1) || mapComp.ShipCombatMaster)
                 yield break;
+
             if (CanSetForcedTarget)
             {
-                Command_VerbTargetShip command_VerbTargetShip = new Command_VerbTargetShip
+                if (GroundDefenseMode)
                 {
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandSetForceAttackTarget"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandSetForceAttackTargetDesc"),
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack"),
-                    verb = AttackVerb,
-                    turrets = Find.Selector.SelectedObjects.OfType<Building_ShipTurret>().ToList(),
-                    hotKey = KeyBindingDefOf.Misc4,
-                    drawRadius = false
-                };
-                yield return command_VerbTargetShip;
+                    Command_VerbTarget command_VerbTarget = new Command_VerbTarget
+                    {
+                        defaultLabel = "CommandSetForceAttackTarget".Translate(),
+                        defaultDesc = "CommandSetForceAttackTargetDesc".Translate(),
+                        icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack", true),
+                        verb = this.AttackVerb,
+                        hotKey = KeyBindingDefOf.Misc4,
+                        drawRadius = false
+                    };
+                    yield return command_VerbTarget;
+                }
+                else
+                {
+                    Command_VerbTargetShip command_VerbTargetShip = new Command_VerbTargetShip
+                    {
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandSetForceAttackTarget"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandSetForceAttackTargetDesc"),
+                        icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack"),
+                        verb = AttackVerb,
+                        turrets = Find.Selector.SelectedObjects.OfType<Building_ShipTurret>().ToList(),
+                        hotKey = KeyBindingDefOf.Misc4,
+                        drawRadius = false
+                    };
+                    yield return command_VerbTargetShip;
+                }
             }
             if (shipTarget.IsValid)
             {
@@ -674,7 +797,7 @@ namespace RimWorld
                     yield return item;
                 }
             }
-            if (HeatComp.Props.pointDefense)
+            if (heatComp.Props.pointDefense)
             {
                 Command_Toggle command_Toggle = new Command_Toggle
                 {
@@ -693,7 +816,7 @@ namespace RimWorld
                 };
                 yield return command_Toggle;
             }
-            if (HeatComp.Props.maxRange > HeatComp.Props.optRange)
+            if (heatComp.Props.maxRange > heatComp.Props.optRange)
             {
                 Command_Toggle command_Toggle = new Command_Toggle
                 {
@@ -718,11 +841,14 @@ namespace RimWorld
 
         public void ResetForcedTarget()
         {
-            shipTarget = LocalTargetInfo.Invalid;
+            if (GroundDefenseMode)
+                this.forcedTarget = LocalTargetInfo.Invalid;
+            else
+                shipTarget = LocalTargetInfo.Invalid;
             burstWarmupTicksLeft = 0;
-            if (MapComp.InCombat && burstCooldownTicksLeft <= 0)
+            if ((mapComp.InCombat || GroundDefenseMode) && burstCooldownTicksLeft <= 0)
             {
-                TryStartShootSomething(canBeginBurstImmediately: false);
+                TryStartShootSomething(false);
             }
         }
 
@@ -755,12 +881,12 @@ namespace RimWorld
         }
         public bool IncomingPtDefTargetsInRange() //PD targets are in range if they are on target map and in PD range
         {
-            if (MapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>().TorpsInRange.Any())
+            if (mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>().TorpsInRange.Any())
                 return true;
             foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
             {
                 float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
-                if (obj.destinationTile == this.Map.Parent.Tile && obj.Faction != MapComp.ShipFaction && rng > 0.75)
+                if (obj.destinationTile == this.Map.Parent.Tile && obj.Faction != mapComp.ShipFaction && rng > 0.75)
                 {
                     return true;
                 }
@@ -806,7 +932,7 @@ namespace RimWorld
                 {
                     AmplifierCount += 1;
                     ampBoost += amp.TryGetComp<CompSpinalMount>().Props.ampAmount;
-                    amp.TryGetComp<CompSpinalMount>().SetColor(SpinalComp.Props.color);
+                    amp.TryGetComp<CompSpinalMount>().SetColor(spinalComp.Props.color);
                 }
                 //found emitter
                 else if (amp.Position == previousThingPos + vec && amp.TryGetComp<CompSpinalMount>().Props.stackEnd)

@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using SaveOurShip2;
+using RimworldMod;
 
 namespace RimWorld
 {
@@ -53,7 +54,7 @@ namespace RimWorld
                             batteries.RandomElement().AddEnergy(2);
                     }
                 }
-                else if (!ShipInteriorMod2.RoomIsVacuum(this.parent.GetRoom()))
+                else if (!this.parent.Map.IsSpace() || (this.parent.Map.IsSpace() && !ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom())))
                 {
                     if (heatStored >= 1)
                         GenTemperature.PushHeat(this.parent, ShipInteriorMod2.HeatPushMult);

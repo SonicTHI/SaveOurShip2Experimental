@@ -30,7 +30,7 @@ namespace RimWorld
             };
             hackIt.tickAction = delegate
             {
-                if (ModLister.IdeologyInstalled)
+                if (ModsConfig.IdeologyActive)
                     workDone += pawn.GetStatValue(StatDefOf.HackingSpeed);
                 else
                     workDone++;

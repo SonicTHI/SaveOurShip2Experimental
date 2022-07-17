@@ -7,7 +7,7 @@ using Verse;
 using RimWorld.Planet;
 using HarmonyLib;
 using SaveOurShip2;
-
+using RimworldMod;
 
 namespace RimWorld
 {
@@ -33,20 +33,28 @@ namespace RimWorld
 
         protected override bool TryCastShot()
         {
-            Building_ShipTurret turret = this.caster as Building_ShipTurret;
-            if (turret != null)
-            {
-                if (turret.gun.TryGetComp<CompChangeableProjectilePlural>() == null)
-                    RegisterProjectile(turret, this.shipTarget, this.verbProps.spawnDef, turret.SynchronizedBurstLocation);
-                else
-                    RegisterProjectile(turret, this.shipTarget, turret.gun.TryGetComp<CompChangeableProjectilePlural>().Projectile.interactionCellIcon, turret.SynchronizedBurstLocation); //This is a horrible kludge, but it's a way to attach one projectile's ThingDef to another projectile
-            }
             ThingDef projectile = Projectile;
             if (projectile == null)
             {
                 return true;
             }
-            ShootLine resultingLine= new ShootLine(caster.Position, currentTarget.Cell);
+            Building_ShipTurret turret = this.caster as Building_ShipTurret;
+            if (turret != null)
+            {
+                if (turret.GroundDefenseMode)
+                {
+                    if (turret.heatComp.Props.groundProjectile != null)
+                        projectile = turret.heatComp.Props.groundProjectile;
+                }
+                else
+                {
+                    if (turret.gun.TryGetComp<CompChangeableProjectilePlural>() == null)
+                        RegisterProjectile(turret, this.shipTarget, this.verbProps.spawnDef, turret.SynchronizedBurstLocation);
+                    else
+                        RegisterProjectile(turret, this.shipTarget, turret.gun.TryGetComp<CompChangeableProjectilePlural>().Projectile.interactionCellIcon, turret.SynchronizedBurstLocation); //This is a horrible kludge, but it's a way to attach one projectile's ThingDef to another projectile
+                }
+            }
+            ShootLine resultingLine = new ShootLine(caster.Position, currentTarget.Cell);
             Thing launcher = caster;
             Thing equipment = base.EquipmentSource;
             Vector3 drawPos = caster.DrawPos;
@@ -55,6 +63,33 @@ namespace RimWorld
                 base.EquipmentSource.GetComp<CompChangeableProjectilePlural>()?.Notify_ProjectileLaunched();
             }
             Projectile projectile2 = (Projectile)GenSpawn.Spawn(projectile, resultingLine.Source, caster.Map);
+
+            if (turret.GroundDefenseMode && turret.heatComp.Props.groundMissRadius > 0.5f)
+            {
+                float num = turret.heatComp.Props.groundMissRadius;
+                float num2 = VerbUtility.CalculateAdjustedForcedMiss(num, this.currentTarget.Cell - this.caster.Position);
+                if (num2 > 0.5f)
+                {
+                    int max = GenRadial.NumCellsInRadius(num2);
+                    int num3 = Rand.Range(0, max);
+                    if (num3 > 0)
+                    {
+                        IntVec3 c = this.currentTarget.Cell + GenRadial.RadialPattern[num3];
+                        ProjectileHitFlags projectileHitFlags = ProjectileHitFlags.NonTargetWorld;
+                        if (Rand.Chance(0.5f))
+                        {
+                            projectileHitFlags = ProjectileHitFlags.All;
+                        }
+                        if (!this.canHitNonTargetPawnsNow)
+                        {
+                            projectileHitFlags &= ~ProjectileHitFlags.NonTargetPawns;
+                        }
+                        projectile2.Launch(launcher, drawPos, c, this.currentTarget, projectileHitFlags, this.preventFriendlyFire, equipment, null);
+                        return true;
+                    }
+                }
+            }
+
             if (launcher is Building_ShipTurretTorpedo)
             {
                 projectile2.Launch(launcher, (drawPos + ((Building_ShipTurretTorpedo)launcher).TorpedoTubePos()), currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
@@ -62,7 +97,7 @@ namespace RimWorld
             else
                 projectile2.Launch(launcher, currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
 
-            if (projectile.defName.Equals("Bullet_Fake_Laser"))
+            if (projectile.defName.Equals("Bullet_Fake_Laser") || projectile.defName.Equals("Bullet_Ground_Laser"))
             {
                 ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
                 obj.origin = drawPos;

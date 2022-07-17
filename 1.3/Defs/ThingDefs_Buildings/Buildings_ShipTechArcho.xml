@@ -753,7 +753,6 @@
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_EngineTrail">
 				<thrust>36</thrust>
 				<fuelUse>2</fuelUse>

@@ -27,7 +27,7 @@ namespace RimWorld
                         return comp.Projectile;
                     }
                 }
-                return verbProps.defaultProjectile;
+                return this.verbProps.spawnDef;
             }
         }
 
@@ -49,7 +49,7 @@ namespace RimWorld
                 else
                 {
                     if (turret.gun.TryGetComp<CompChangeableProjectilePlural>() == null)
-                        RegisterProjectile(turret, this.shipTarget, this.verbProps.spawnDef, turret.SynchronizedBurstLocation);
+                        RegisterProjectile(turret, this.shipTarget, verbProps.defaultProjectile, turret.SynchronizedBurstLocation);
                     else
                         RegisterProjectile(turret, this.shipTarget, turret.gun.TryGetComp<CompChangeableProjectilePlural>().Projectile.interactionCellIcon, turret.SynchronizedBurstLocation); //This is a horrible kludge, but it's a way to attach one projectile's ThingDef to another projectile
                 }

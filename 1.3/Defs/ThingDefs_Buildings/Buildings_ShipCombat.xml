@@ -581,6 +581,7 @@
 				<minRange>29.9</minRange>
 				<range>500</range>
 				<warmupTime>0.5</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<burstShotCount>8</burstShotCount>
 				<noiseRadius>10</noiseRadius>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -589,8 +590,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_ACI</defaultProjectile>
-				<spawnDef>Proj_ShipTurretACI</spawnDef>
+				<defaultProjectile>Proj_ShipTurretACI</defaultProjectile>
+				<spawnDef>Bullet_Fake_ACI</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -607,14 +608,30 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>140</speed>
+			<speed>200</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
 		<altitudeLayer>MetaOverlays</altitudeLayer>
 		<seeThroughFog>true</seeThroughFog>
 	</ThingDef>
-	<ThingDef ParentName="BaseBullet">
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Proj_ShipTurretACI</defName>
+		<label>Autocannon Slug</label>
+		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretACI</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>0</explosionRadius>
+			<damageDef>BombACI</damageDef>
+			<speed>200</speed>
+		</projectile>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Bullet_Ground_ACI</defName>
 		<label>Autocannon slug</label>
 		<graphicData>
@@ -634,22 +651,6 @@
 		<altitudeLayer>MetaOverlays</altitudeLayer>
 		<seeThroughFog>true</seeThroughFog>
 	</ThingDef>
-	<ThingDef ParentName="BaseGrenadeProjectile">
-		<defName>Proj_ShipTurretACI</defName>
-		<label>Autocannon Slug</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
-		<graphicData>
-			<texPath>Things/Projectile/ShipTurretACI</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<shaderType>TransparentPostLight</shaderType>
-			<drawSize>(2,2)</drawSize>
-		</graphicData>
-		<projectile>
-			<explosionRadius>0</explosionRadius>
-			<damageDef>BombACI</damageDef>
-			<speed>140</speed>
-		</projectile>
-	</ThingDef>
 	<DamageDef Name="BombAC">
 		<defName>BombACI</defName>
 		<label>bomb</label>
@@ -664,8 +665,8 @@
 		<armorCategory>Sharp</armorCategory>
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>40</defaultDamage>
-		<defaultStoppingPower>1</defaultStoppingPower>
-		<defaultArmorPenetration>0.5</defaultArmorPenetration>
+		<defaultStoppingPower>4</defaultStoppingPower>
+		<defaultArmorPenetration>0.6</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -751,8 +752,9 @@
 				<label>shoot slug</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1000</range>
 				<warmupTime>0.4</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<burstShotCount>8</burstShotCount>
 				<noiseRadius>8</noiseRadius>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -761,8 +763,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_ACII</defaultProjectile>
-				<spawnDef>Proj_ShipTurretACII</spawnDef>
+				<defaultProjectile>Proj_ShipTurretACII</defaultProjectile>
+				<spawnDef>Bullet_Fake_ACII</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -779,7 +781,7 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>155</speed>
+			<speed>150</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -799,7 +801,7 @@
 		<projectile>
 			<explosionRadius>.9</explosionRadius>
 			<damageDef>BombACII</damageDef>
-			<speed>155</speed>
+			<speed>150</speed>
 		</projectile>
 	</ThingDef>
 	<DamageDef Name="BombACII">
@@ -816,8 +818,8 @@
 		<armorCategory>Sharp</armorCategory>
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>105</defaultDamage>
-		<defaultStoppingPower>0.5</defaultStoppingPower>
-		<defaultArmorPenetration>0.6</defaultArmorPenetration>
+		<defaultStoppingPower>5</defaultStoppingPower>
+		<defaultArmorPenetration>0.7</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -903,8 +905,9 @@
 				<label>shoot slug</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1000</range>
 				<warmupTime>0.5</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<burstShotCount>10</burstShotCount>
 				<noiseRadius>10</noiseRadius>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -913,8 +916,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_ACIII</defaultProjectile>
-				<spawnDef>Proj_ShipTurretACIII</spawnDef>
+				<defaultProjectile>Proj_ShipTurretACIII</defaultProjectile>
+				<spawnDef>Bullet_Fake_ACIII</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -968,8 +971,8 @@
 		<armorCategory>Sharp</armorCategory>
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>270</defaultDamage>
-		<defaultStoppingPower>.9</defaultStoppingPower>
-		<defaultArmorPenetration>0.9</defaultArmorPenetration>
+		<defaultStoppingPower>6</defaultStoppingPower>
+		<defaultArmorPenetration>0.8</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -1049,9 +1052,10 @@
 				<label>shoot laser</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<minRange>29.9</minRange>
 				<range>500</range>
+				<minRange>29.9</minRange>
 				<warmupTime>0</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>6</burstShotCount>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -1059,8 +1063,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_Laser</defaultProjectile>
-				<spawnDef>Proj_ShipTurretLaser</spawnDef>
+				<defaultProjectile>Proj_ShipTurretLaser</defaultProjectile>
+				<spawnDef>Bullet_Fake_Laser</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -1076,27 +1080,8 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>100</speed>
+			<speed>400</speed>
 			<explosionRadius>0</explosionRadius>
-			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
-		</projectile>
-		<altitudeLayer>MetaOverlays</altitudeLayer>
-		<seeThroughFog>true</seeThroughFog>
-	</ThingDef>
-	<ThingDef ParentName="BaseBullet">
-		<defName>Bullet_Ground_Laser</defName>
-		<label>laser beam</label>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<shaderType>TransparentPostLight</shaderType>
-		</graphicData>
-		<thingClass>Projectile_Explosive</thingClass>
-		<projectile>
-			<damageDef>ShipLaserSmall</damageDef>
-			<speed>900</speed>
-			<explosionRadius>0</explosionRadius>
-			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
 		<altitudeLayer>MetaOverlays</altitudeLayer>
@@ -1114,8 +1099,27 @@
 		<projectile>
 			<explosionRadius>1.9</explosionRadius>
 			<damageDef>ShipLaserSmall</damageDef>
-			<speed>200</speed>
+			<speed>400</speed>
 		</projectile>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Bullet_Ground_Laser</defName>
+		<label>laser beam</label>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<thingClass>Projectile_Explosive</thingClass>
+		<projectile>
+			<damageDef>ShipLaserSmall</damageDef>
+			<speed>800</speed>
+			<explosionRadius>0</explosionRadius>
+			<flyOverhead>true</flyOverhead>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
 	</ThingDef>
 	<DamageDef Name="ShipLaserSmall">
 		<defName>ShipLaserSmall</defName>
@@ -1132,7 +1136,7 @@
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>30</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
-		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<defaultArmorPenetration>0.30</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -1227,9 +1231,10 @@
 				<label>fire plasma</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
+				<range>1000</range>
 				<minRange>29.9</minRange>
-				<range>500</range>
 				<warmupTime>1.5</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
 				<soundCast>ShipCombatPlasma</soundCast>
@@ -1237,8 +1242,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_Plasma</defaultProjectile>
-				<spawnDef>Proj_ShipTurretPlasma</spawnDef>
+				<defaultProjectile>Proj_ShipTurretPlasma</defaultProjectile>
+				<spawnDef>Bullet_Fake_Plasma</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -1255,28 +1260,8 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>100</speed>
+			<speed>150</speed>
 			<explosionRadius>0</explosionRadius>
-			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
-		</projectile>
-		<altitudeLayer>MetaOverlays</altitudeLayer>
-		<seeThroughFog>true</seeThroughFog>
-	</ThingDef>
-	<ThingDef ParentName="BaseBullet">
-		<defName>Bullet_Ground_Plasma</defName>
-		<label>plasma toroid</label>
-		<graphicData>
-			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<shaderType>TransparentPostLight</shaderType>
-			<drawSize>(4,4)</drawSize>
-		</graphicData>
-		<thingClass>Projectile_Explosive</thingClass>
-		<projectile>
-			<damageDef>ShipPlasmaSmall</damageDef>
-			<speed>200</speed>
-			<explosionRadius>6.9</explosionRadius>
-			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
 		<altitudeLayer>MetaOverlays</altitudeLayer>
@@ -1295,8 +1280,27 @@
 		<projectile>
 			<explosionRadius>6.9</explosionRadius>
 			<damageDef>ShipPlasmaSmall</damageDef>
-			<speed>100</speed>
+			<speed>150</speed>
 		</projectile>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Bullet_Ground_Plasma</defName>
+		<label>plasma toroid</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<projectile>
+			<damageDef>ShipPlasmaSmall</damageDef>
+			<speed>200</speed>
+			<explosionRadius>6.9</explosionRadius>
+			<flyOverhead>true</flyOverhead>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
 	</ThingDef>
 	<DamageDef Name="ShipPlasmaSmall">
 		<defName>ShipPlasmaSmall</defName>
@@ -1313,7 +1317,7 @@
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>105</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
-		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<defaultArmorPenetration>0.20</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -1348,6 +1352,9 @@
 				<maxRange>150</maxRange>
 				<projectileSpeed>4</projectileSpeed>
 				<threat>10</threat>
+				<groundDefense>true</groundDefense>
+				<groundProjectile>Bullet_Ground_Kinetic</groundProjectile>
+				<groundMissRadius>2</groundMissRadius>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -1386,8 +1393,10 @@
 				<label>shoot slug</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1500</range>
+				<minRange>29.9</minRange>
 				<warmupTime>0.5</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
 				<soundCast>ShipCombatKinetic</soundCast>
@@ -1395,8 +1404,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_Kinetic</defaultProjectile>
-				<spawnDef>Proj_ShipTurretKinetic</spawnDef>
+				<defaultProjectile>Proj_ShipTurretKinetic</defaultProjectile>
+				<spawnDef>Bullet_Fake_Kinetic</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -1413,7 +1422,7 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>150</speed>
+			<speed>300</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -1433,8 +1442,29 @@
 		<projectile>
 			<explosionRadius>3.9</explosionRadius>
 			<damageDef>BombKinetic</damageDef>
-			<speed>150</speed>
+			<speed>300</speed>
 		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Bullet_Ground_Kinetic</defName>
+		<label>railgun slug</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretKinetic</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<projectile>
+			<damageDef>BombKinetic</damageDef>
+			<speed>500</speed>
+			<explosionRadius>3.9</explosionRadius>
+			<flyOverhead>true</flyOverhead>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
 	</ThingDef>
 	<DamageDef Name="BombKinetic">
 		<defName>BombKinetic</defName>
@@ -1451,7 +1481,7 @@
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>90</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
-		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<defaultArmorPenetration>0.80</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -1520,8 +1550,9 @@
 				<label>shoot laser</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1000</range>
 				<warmupTime>0</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>12</burstShotCount>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -1529,8 +1560,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_Laser</defaultProjectile>
-				<spawnDef>Proj_ShipTurretLaserTwo</spawnDef>
+				<defaultProjectile>Proj_ShipTurretLaserTwo</defaultProjectile>
+				<spawnDef>Bullet_Fake_Laser</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -1547,7 +1578,7 @@
 		<projectile>
 			<explosionRadius>1.9</explosionRadius>
 			<damageDef>ShipLaserTwo</damageDef>
-			<speed>200</speed>
+			<speed>400</speed>
 		</projectile>
 	</ThingDef>
 	<DamageDef Name="ShipLaserTwo">
@@ -1565,7 +1596,7 @@
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>60</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
-		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<defaultArmorPenetration>0.40</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -1633,8 +1664,9 @@
 				<label>fire plasma</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1500</range>
 				<warmupTime>1.5</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
 				<soundCast>ShipCombatPlasmaLarge</soundCast>
@@ -1642,8 +1674,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_Plasma_Large</defaultProjectile>
-				<spawnDef>Proj_ShipTurretPlasma_Large</spawnDef>
+				<defaultProjectile>Proj_ShipTurretPlasma_Large</defaultProjectile>
+				<spawnDef>Bullet_Fake_Plasma_Large</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 				<burstShotCount>2</burstShotCount>
 			</li>
@@ -1661,7 +1693,7 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>100</speed>
+			<speed>150</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -1681,7 +1713,7 @@
 		<projectile>
 			<explosionRadius>8.9</explosionRadius>
 			<damageDef>ShipPlasmaLarge</damageDef>
-			<speed>100</speed>
+			<speed>150</speed>
 		</projectile>
 	</ThingDef>
 	<DamageDef Name="ShipPlasmaLarge">
@@ -1699,7 +1731,7 @@
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>160</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
-		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<defaultArmorPenetration>0.30</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -1768,6 +1800,7 @@
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>12.9</range>
 				<warmupTime>0.5</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
 				<soundCast>ShipCombatKineticLarge</soundCast>
@@ -1775,8 +1808,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_Kinetic_Large</defaultProjectile>
-				<spawnDef>Proj_ShipTurretKinetic_Large</spawnDef>
+				<defaultProjectile>Proj_ShipTurretKinetic_Large</defaultProjectile>
+				<spawnDef>Bullet_Fake_Kinetic_Large</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 				<burstShotCount>2</burstShotCount>
 			</li>
@@ -1794,7 +1827,7 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>150</speed>
+			<speed>300</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -1814,7 +1847,7 @@
 		<projectile>
 			<explosionRadius>7.9</explosionRadius>
 			<damageDef>BombKineticLarge</damageDef>
-			<speed>150</speed>
+			<speed>300</speed>
 		</projectile>
 	</ThingDef>
 	<DamageDef Name="BombKineticLarge">
@@ -1832,7 +1865,7 @@
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>135</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
-		<defaultArmorPenetration>0.10</defaultArmorPenetration>
+		<defaultArmorPenetration>0.90</defaultArmorPenetration>
 		<buildingDamageFactor>4</buildingDamageFactor>
 		<plantDamageFactor>4</plantDamageFactor>
 		<explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
@@ -2033,8 +2066,9 @@
 				<label>shoot</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1000</range>
 				<warmupTime>0</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>40</burstShotCount>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -2042,8 +2076,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_Laser</defaultProjectile>
-				<spawnDef>Proj_ShipSpinalBeamLaser</spawnDef>
+				<defaultProjectile>Proj_ShipSpinalBeamLaser</defaultProjectile>
+				<spawnDef>Bullet_Fake_Laser</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -2060,7 +2094,7 @@
 		<projectile>
 			<explosionRadius>4.9</explosionRadius>
 			<damageDef>ShipLaserTwo</damageDef>
-			<speed>200</speed>
+			<speed>400</speed>
 		</projectile>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryBuilding">
@@ -2144,8 +2178,9 @@
 				<label>shoot</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1500</range>
 				<warmupTime>0</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>5</burstShotCount>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -2154,8 +2189,8 @@
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
 				<soundCast>ShipCombatPlasma</soundCast>
-				<defaultProjectile>Bullet_Fake_Plasma_XL</defaultProjectile>
-				<spawnDef>Proj_ShipSpinalBeamPlasma</spawnDef>
+				<defaultProjectile>Proj_ShipSpinalBeamPlasma</defaultProjectile>
+				<spawnDef>Bullet_Fake_Plasma_XL</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -2172,7 +2207,7 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>100</speed>
+			<speed>150</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -2192,7 +2227,7 @@
 		<projectile>
 			<explosionRadius>14.9</explosionRadius>
 			<damageDef>ShipPlasmaLarge</damageDef>
-			<speed>100</speed>
+			<speed>150</speed>
 		</projectile>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryBuilding">
@@ -2276,8 +2311,9 @@
 				<label>shoot</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>2500</range>
 				<warmupTime>0</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>12</burstShotCount>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -2286,8 +2322,8 @@
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
 				<soundCast>ShipCombatKinetic</soundCast>
-				<defaultProjectile>Bullet_Fake_Kinetic</defaultProjectile>
-				<spawnDef>Proj_ShipTurretKinetic_Large</spawnDef>
+				<defaultProjectile>Proj_ShipTurretKinetic_Large</defaultProjectile>
+				<spawnDef>Bullet_Fake_Kinetic</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -2333,7 +2369,7 @@
 				<forceNormalTimeSpeed>false</forceNormalTimeSpeed>
 				<warmupTime>4.0</warmupTime>
 				<requireLineOfSight>false</requireLineOfSight>
-				<range>500</range>
+				<range>3000</range>
 				<burstShotCount>1</burstShotCount>
 				<soundCast>Mortar_LaunchA</soundCast>
 				<muzzleFlashScale>16</muzzleFlashScale>
@@ -2439,7 +2475,7 @@
 		</comps>
 		<building>
 			<turretGunDef>Artillery_ShipTorpedo_One</turretGunDef>
-			<turretBurstCooldownTime>6.0</turretBurstCooldownTime>
+			<turretBurstCooldownTime>12.0</turretBurstCooldownTime>
 		</building>
 		<uiIconPath>Things/Building/Ship/TorpedoTubes_Single</uiIconPath>
 		<costList>
@@ -2474,7 +2510,7 @@
 		</comps>
 		<building>
 			<turretGunDef>Artillery_ShipTorpedo_Two</turretGunDef>
-			<turretBurstCooldownTime>3.0</turretBurstCooldownTime>
+			<turretBurstCooldownTime>6.0</turretBurstCooldownTime>
 		</building>
 		<uiIconPath>Things/Building/Ship/TorpedoTubes_small</uiIconPath>
 		<costList>
@@ -2509,7 +2545,7 @@
 		</comps>
 		<building>
 			<turretGunDef>Artillery_ShipTorpedo</turretGunDef>
-			<turretBurstCooldownTime>1.0</turretBurstCooldownTime>
+			<turretBurstCooldownTime>2.0</turretBurstCooldownTime>
 		</building>
 		<uiIconPath>Things/Building/Ship/TorpedoTubes</uiIconPath>
 		<costList>

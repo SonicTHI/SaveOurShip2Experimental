@@ -1172,27 +1172,16 @@ namespace SaveOurShip2
 			//sourceMap.mapDrawer.RegenerateEverythingNow();
 			//foreach (IntVec3 pos in posToClear)
 			//sourceMap.mapDrawer.MapMeshDirty(pos, MapMeshFlag.PowerGrid);
-			//also causes more moves
-			/*if (targetMap.IsSpace())
-			{
-				List<Room> rooms = new List<Room>();
-				for (int i = 0; i < posToClear.Count; i++)
-				{
-					var r = posToClear[i].GetRoom(targetMap);
-					if (!rooms.Contains(r))
-						rooms.Add(r);
-				}
-				foreach (Room room in rooms)
-					room.Temperature = 21f;
-			}*/
-			//rewire - causes moves
-			/*
-			foreach (Thing powerThing in targetMap.listerThings.AllThings)
+			//rewire - call next tick
+			/*foreach (Thing powerThing in targetMap.listerThings.AllThings)
 			{
 				CompPower powerComp = powerThing.TryGetComp<CompPower>();
 				if (powerComp != null)
 				{
-					powerComp.ResetPowerVars();
+					typeof(CompPower).GetMethod("TryManualReconnect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(powerComp, new object[0]);
+					//Traverse.Create<CompPower>().Method("TryManualReconnect", powerComp);
+					//Traverse.Create(powerComp).Method("TryManualReconnect");
+					//powerComp.ResetPowerVars();
 				}
 			}*/
 			/*if (sourceMap.IsSpace() && !sourceMap.IsSpace() || (!sourceMap.IsSpace() && sourceMap.IsSpace())
@@ -1244,7 +1233,7 @@ namespace SaveOurShip2
 			Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache[pawn.thingIDNumber] = result;
 			return result;
 		}
-		private static byte EVAlevelSlow(Pawn pawn)
+		public static byte EVAlevelSlow(Pawn pawn)
 		{
 			if (pawn.RaceProps.IsMechanoid || pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Any() || !pawn.RaceProps.IsFlesh)
 				return 8;
@@ -1764,7 +1753,6 @@ namespace SaveOurShip2
 	[HarmonyPatch(typeof(Plant), "TickLong")]
 	public static class KillThePlantsInSpace
 	{
-
 		[HarmonyPostfix]
 		public static void Extinguish(Plant __instance)
 		{
@@ -3404,6 +3392,24 @@ namespace SaveOurShip2
 		public static void Postfix(ref List<Pawn> __result)
 		{
 			__result = __result.ListFullCopy();
+		}
+	}
+
+	[HarmonyPatch(typeof(Pawn_MindState), "Notify_DamageTaken")]
+	public static class ShipTurretIsNull
+	{
+		[HarmonyPrefix]
+		public static bool AnimalsFlee(DamageInfo dinfo, Pawn_MindState __instance)
+		{
+			if (dinfo.Instigator is Building_ShipTurret)
+			{
+				if (Traverse.Create<Pawn_MindState>().Method("CanStartFleeingBecauseOfPawnAction", __instance.pawn).GetValue<bool>())
+				{
+					__instance.StartFleeingBecauseOfPawnAction(dinfo.Instigator);
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 

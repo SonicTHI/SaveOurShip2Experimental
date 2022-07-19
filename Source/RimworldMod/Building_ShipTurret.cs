@@ -284,7 +284,7 @@ namespace RimWorld
                                             return;
                                         else
                                         {
-                                            mapComp.Heading *= -1;
+                                            mapComp.Heading = 1;
                                         }
                                     }
                                 }
@@ -440,6 +440,7 @@ namespace RimWorld
                     if (!PointDefenseMode && PlayerControlled)
                         Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", this.Label), this, MessageTypeDefOf.CautionInput);
                     this.shipTarget = LocalTargetInfo.Invalid;
+                    ResetCurrentTarget();
                     return;
                 }
                 GenTemperature.PushHeat(this, heatComp.Props.heatPerPulse * ShipInteriorMod2.HeatPushMult * (1 + (AmplifierDamageBonus)));
@@ -454,6 +455,7 @@ namespace RimWorld
                     if (!PointDefenseMode && PlayerControlled)
                         Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToAmmo", this.Label), this, MessageTypeDefOf.CautionInput);
                     this.shipTarget = LocalTargetInfo.Invalid;
+                    ResetCurrentTarget();
                     return;
                 }
                 this.TryGetComp<CompRefuelable>().ConsumeFuel(1);

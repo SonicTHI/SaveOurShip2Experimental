@@ -159,6 +159,7 @@ namespace RimWorld
                 Scribe_Values.Look<int>(ref BuildingCountAtStart, "BuildingCountAtStart");
                 Scribe_Values.Look<bool>(ref enemyRetreating, "enemyRetreating");
                 Scribe_Values.Look<bool>(ref warnedAboutRetreat, "warnedAboutRetreat");
+                Scribe_Values.Look<int>(ref warnedAboutAdrift, "warnedAboutAdrift");
                 Scribe_Values.Look<bool>(ref hasAnyPlayerPartDetached, "PlayerPartDetached");
                 Scribe_Values.Look<bool>(ref startedBoarderLoad, "StartedBoarding");
                 Scribe_Values.Look<bool>(ref launchedBoarders, "LaunchedBoarders");
@@ -249,6 +250,7 @@ namespace RimWorld
         public int BuildingCountAtStart = 0;
         public bool enemyRetreating = false;
         public bool warnedAboutRetreat = false;
+        public int warnedAboutAdrift = 0;
         public bool hasAnyPlayerPartDetached = false;
         public bool startedBoarderLoad = false;
         public bool launchedBoarders = false;
@@ -443,6 +445,7 @@ namespace RimWorld
                 PlayerMaintain = false;
                 enemyRetreating = false;
                 warnedAboutRetreat = false;
+                warnedAboutAdrift = 0;
                 hasAnyPlayerPartDetached = false;
                 startedBoarderLoad = false;
                 launchedBoarders = false;
@@ -719,9 +722,19 @@ namespace RimWorld
             {
                 if (EnginePower == 0) //all engines gone
                 {
-                    if (TurretNum == 0)
+                    if (threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1)
                     {
                         EndBattle(this.map, false);
+                        return;
+                    }
+                    if (warnedAboutAdrift == 0)
+                    {
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipAdrift"), this.map.Parent, MessageTypeDefOf.NegativeEvent);
+                        warnedAboutAdrift = Find.TickManager.TicksGame + Rand.RangeInclusive(60000, 100000);
+                    }
+                    else if (Find.TickManager.TicksGame > warnedAboutAdrift)
+                    {
+                        EndBattle(this.map, false, warnedAboutAdrift - Find.TickManager.TicksGame);
                         return;
                     }
                     Heading = 0;
@@ -1061,16 +1074,16 @@ namespace RimWorld
                     b.TryGetComp<CompFlickable>().SwitchIsOn = false;
             }
         }
-        public void EndBattle(Map loser, bool fled)
+        public void EndBattle(Map loser, bool fled, int burnTimeElapsed = 0)
         {
             OriginMapComp.InCombat = false;
             MasterMapComp.InCombat = false;
             OriginMapComp.ShipBuildingsOff();
             MasterMapComp.ShipCombatMaster = false;
             if (OriginMapComp.ShipGraveyard != null)
-                OriginMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000));
+                OriginMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
             if (MasterMapComp.ShipGraveyard != null)
-                MasterMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000));
+                MasterMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
             if (loser == ShipCombatMasterMap)
             {
                 if (!fled)//master lost
@@ -1078,7 +1091,7 @@ namespace RimWorld
                     MasterMapComp.IsGraveyard = true;
                     if (OriginMapComp.attackedTradeship)
                         Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty += 15;
-                    ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 120000));
+                    ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
                     Find.LetterStack.ReceiveLetter("WinShipBattle".Translate(), "WinShipBattleDesc".Translate(ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
                 }
                 else //master fled

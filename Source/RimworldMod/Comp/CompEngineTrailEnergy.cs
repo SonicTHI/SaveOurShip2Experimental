@@ -66,7 +66,7 @@ namespace RimWorld
                     List<Thing> toBurn = new List<Thing>();
                     foreach (Thing t in cell.GetThingList(parent.Map))
                     {
-                        if (t.HitPoints != -1)
+                        if (t.def.useHitPoints)
                             toBurn.Add(t);
                     }
                     foreach (Thing t in toBurn)

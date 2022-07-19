@@ -1,258 +1,249 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	
-  <ThingDef Name="ShipTorpedoBase" ParentName="ResourceBase" Abstract="True">
-    <soundInteract>Metal_Drop</soundInteract>
-    <soundDrop>Standard_Drop</soundDrop>
-    <tickerType>Normal</tickerType>
-    <stackLimit>3</stackLimit>
-    <techLevel>Spacer</techLevel>
-    <statBases>
-      <MaxHitPoints>80</MaxHitPoints>
-      <Mass>25</Mass>
-      <Flammability>1.0</Flammability>
-      <DeteriorationRate>1.5</DeteriorationRate>
-    </statBases>
-    <thingCategories>
-      <li>SpaceTorpedoes</li>
-    </thingCategories>
-    <tradeTags>
-      <li>MortarShell</li>
-    </tradeTags>
-	<recipeMaker>
-      <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
-      <effectWorking>Cook</effectWorking>
-      <soundWorking>Recipe_Machining</soundWorking>
-      <workAmount>1600</workAmount>
-      <targetCountAdjustment>5</targetCountAdjustment>
-      <workSkill>Crafting</workSkill>
-      <recipeUsers>
-        <li>FabricationBench</li>
-      </recipeUsers>
-      <skillRequirements>
-        <Crafting>8</Crafting>
-      </skillRequirements>
-    </recipeMaker>
-  </ThingDef>
-  
-  <ThingDef ParentName="ShipTorpedoBase">
-    <defName>ShipTorpedo_HighExplosive</defName>
-    <label>high-explosive torpedo</label>
-    <description>A torpedo tipped with high explosives. Can be fired from torpedo tubes. Explodes when damaged.</description>
-    <graphicData>
-      <texPath>Things/Item/Resource/ShipTorpedoExplosive</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
-    </graphicData>
-    <comps>
-      <li Class="CompProperties_Explosive">
-        <explosiveRadius>5.9</explosiveRadius>
-        <explosiveDamageType>Bomb</explosiveDamageType>
-        <startWickHitPointsPercent>0.7</startWickHitPointsPercent>
-        <wickTicks>30~60</wickTicks>
-      </li>
-    </comps>
-    <projectileWhenLoaded>Bullet_Fake_Torpedo_HighExplosive</projectileWhenLoaded>
-    <costList>
-      <Steel>20</Steel>
-      <Chemfuel>30</Chemfuel>
-	  <ComponentIndustrial>3</ComponentIndustrial>
-	  <Shell_HighExplosive>1</Shell_HighExplosive>
-    </costList>
-    <recipeMaker>
-      <researchPrerequisite>ShipTorpedoes</researchPrerequisite>
-    </recipeMaker>
-  </ThingDef>
-  
-  <ThingDef ParentName="BaseBullet">
-    <defName>Bullet_Fake_Torpedo_HighExplosive</defName>
-    <label>high-explosive torpedo</label>
-    <graphicData>
-      <texPath>Things/Projectile/ShipTorpedoExplosive</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>TransparentPostLight</shaderType>
-	  <drawSize>(4,4)</drawSize>
-    </graphicData>
-    <thingClass>Projectile_SoSFake</thingClass>
-    <projectile>
-      <damageDef>Bomb</damageDef>
-      <!-- damage amount is the damage def default -->
-      <speed>60</speed>
-      <explosionRadius>0</explosionRadius>
-      <soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
-    </projectile>
-	<interactionCellIcon>Bullet_Torpedo_HighExplosive</interactionCellIcon> <!-- This is such a horrible kludge, but it's a way to attach a ThingDef to another ThingDef!-->
-	<altitudeLayer>MetaOverlays</altitudeLayer>
-  </ThingDef>
-  
-  <ThingDef ParentName="BaseGrenadeProjectile">
-    <defName>Bullet_Torpedo_HighExplosive</defName>
-    <label>high-explosive torpedo</label>
-    <thingClass>Projectile_TorpedoShipCombat</thingClass>
-    <graphicData>
-      <texPath>Things/Projectile/ShipTorpedoExplosive</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>TransparentPostLight</shaderType>
-	  <drawSize>(4,4)</drawSize>
-    </graphicData>
-    <projectile>
-      <explosionRadius>6.9</explosionRadius>
-      <damageDef>ShipTorpedoBomb</damageDef>
-      <speed>60</speed>
-    </projectile>
-  </ThingDef>
-  
-  <DamageDef ParentName="Bomb">
-    <defName>ShipTorpedoBomb</defName>
-    <defaultDamage>1000</defaultDamage>
-    <defaultStoppingPower>2.0</defaultStoppingPower>
-    <defaultArmorPenetration>1.30</defaultArmorPenetration>
-  </DamageDef>
-  
-  <ThingDef ParentName="ShipTorpedoBase">
-    <defName>ShipTorpedo_EMP</defName>
-    <label>EMP torpedo</label>
-    <description>A torpedo tipped with an EMP generator. Can be fired from torpedo tubes. Explodes when damaged.</description>
-    <graphicData>
-      <texPath>Things/Item/Resource/ShipTorpedoEMP</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
-    </graphicData>
-    <comps>
-      <li Class="CompProperties_Explosive">
-        <explosiveRadius>14.9</explosiveRadius>
-        <explosiveDamageType>EMP</explosiveDamageType>
-        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
-        <startWickHitPointsPercent>0.7</startWickHitPointsPercent>
-        <wickTicks>30~60</wickTicks>
-      </li>
-    </comps>
-    <projectileWhenLoaded>Bullet_Fake_Torpedo_EMP</projectileWhenLoaded>
-    <costList>
-      <Steel>20</Steel>
-      <Chemfuel>30</Chemfuel>
-	  <ComponentIndustrial>3</ComponentIndustrial>
-	  <Shell_EMP>1</Shell_EMP>
-    </costList>
-    <recipeMaker>
-      <researchPrerequisite>ShipTorpedoes</researchPrerequisite>
-    </recipeMaker>
-  </ThingDef>
-  
-  <ThingDef ParentName="BaseBullet">
-    <defName>Bullet_Fake_Torpedo_EMP</defName>
-    <label>EMP torpedo</label>
-    <graphicData>
-      <texPath>Things/Projectile/ShipTorpedoEMP</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>TransparentPostLight</shaderType>
-	  <drawSize>(4,4)</drawSize>
-    </graphicData>
-    <thingClass>Projectile_SoSFake</thingClass>
-    <projectile>
-      <damageDef>EMP</damageDef>
-      <!-- damage amount is the damage def default -->
-      <speed>60</speed>
-      <explosionRadius>0</explosionRadius>
-      <soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
-    </projectile>
-	<interactionCellIcon>Bullet_Torpedo_EMP</interactionCellIcon> <!-- This is such a horrible kludge, but it's a way to attach a ThingDef to another ThingDef!-->
+	<ThingDef Name="ShipTorpedoBase" ParentName="ResourceBase" Abstract="True">
+		<soundInteract>Metal_Drop</soundInteract>
+		<soundDrop>Standard_Drop</soundDrop>
+		<tickerType>Normal</tickerType>
+		<stackLimit>3</stackLimit>
+		<techLevel>Spacer</techLevel>
+		<statBases>
+			<MaxHitPoints>80</MaxHitPoints>
+			<Mass>25</Mass>
+			<Flammability>1.0</Flammability>
+			<DeteriorationRate>1.5</DeteriorationRate>
+		</statBases>
+		<thingCategories>
+			<li>SpaceTorpedoes</li>
+		</thingCategories>
+		<tradeTags>
+			<li>MortarShell</li>
+		</tradeTags>
+		<recipeMaker>
+			<workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+			<effectWorking>Cook</effectWorking>
+			<soundWorking>Recipe_Machining</soundWorking>
+			<workAmount>1600</workAmount>
+			<targetCountAdjustment>5</targetCountAdjustment>
+			<workSkill>Crafting</workSkill>
+			<recipeUsers>
+				<li>FabricationBench</li>
+			</recipeUsers>
+			<skillRequirements>
+				<Crafting>8</Crafting>
+			</skillRequirements>
+		</recipeMaker>
+	</ThingDef>
+	<ThingDef ParentName="ShipTorpedoBase">
+		<defName>ShipTorpedo_HighExplosive</defName>
+		<label>high-explosive torpedo</label>
+		<description>A torpedo tipped with high explosives. Can be fired from torpedo tubes. Explodes when damaged.</description>
+		<graphicData>
+			<texPath>Things/Item/Resource/ShipTorpedoExplosive</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_Explosive">
+				<explosiveRadius>5.9</explosiveRadius>
+				<explosiveDamageType>Bomb</explosiveDamageType>
+				<startWickHitPointsPercent>0.7</startWickHitPointsPercent>
+				<wickTicks>30~60</wickTicks>
+			</li>
+		</comps>
+		<projectileWhenLoaded>Bullet_Fake_Torpedo_HighExplosive</projectileWhenLoaded>
+		<costList>
+			<Steel>20</Steel>
+			<Chemfuel>30</Chemfuel>
+			<ComponentIndustrial>3</ComponentIndustrial>
+			<Shell_HighExplosive>1</Shell_HighExplosive>
+		</costList>
+		<recipeMaker>
+			<researchPrerequisite>ShipTorpedoes</researchPrerequisite>
+		</recipeMaker>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Torpedo_HighExplosive</defName>
+		<label>high-explosive torpedo</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTorpedoExplosive</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>Bomb</damageDef>
+			<!-- damage amount is the damage def default -->
+			<speed>60</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<interactionCellIcon>Bullet_Torpedo_HighExplosive</interactionCellIcon>
+		<!-- This is such a horrible kludge, but it's a way to attach a ThingDef to another ThingDef!-->
 		<altitudeLayer>MetaOverlays</altitudeLayer>
-  </ThingDef>
-  
-  <ThingDef ParentName="BaseGrenadeProjectile">
-    <defName>Bullet_Torpedo_EMP</defName>
-    <label>EMP torpedo</label>
-    <thingClass>Projectile_TorpedoShipCombat</thingClass>
-    <graphicData>
-      <texPath>Things/Projectile/ShipTorpedoEMP</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>TransparentPostLight</shaderType>
-	  <drawSize>(4,4)</drawSize>
-    </graphicData>
-    <projectile>
-      <explosionRadius>15.9</explosionRadius>
-      <damageDef>EMP</damageDef>
-      <speed>60</speed>
-    </projectile>
-  </ThingDef>
-  
-  <ThingDef ParentName="ShipTorpedoBase">
-    <defName>ShipTorpedo_Antimatter</defName>
-    <label>antigrain torpedo</label>
-    <description>A torpedo tipped with an antigrain warhead. Can be fired from torpedo tubes. Explodes when damaged.</description>
-    <graphicData>
-      <texPath>Things/Item/Resource/ShipTorpedoAntimatter</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
-    </graphicData>
-    <comps>
-      <li Class="CompProperties_Explosive">
-        <explosiveRadius>14.9</explosiveRadius>
-        <explosiveDamageType>BombSuper</explosiveDamageType>
-        <explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
-        <startWickHitPointsPercent>0.7</startWickHitPointsPercent>
-        <chanceToStartFire>0.22</chanceToStartFire>
-        <damageFalloff>true</damageFalloff>
-        <explosionEffect>GiantExplosion</explosionEffect>
-        <explosionSound>Explosion_GiantBomb</explosionSound>
-        <wickTicks>60~120</wickTicks>
-      </li>
-    </comps>
-    <statBases>
-      <MarketValue>1500</MarketValue>
-    </statBases>
-    <projectileWhenLoaded>Bullet_Fake_Torpedo_Antimatter</projectileWhenLoaded>
-    <costList>
-      <Steel>20</Steel>
-      <Chemfuel>30</Chemfuel>
-	  <ComponentIndustrial>3</ComponentIndustrial>
-	  <Shell_AntigrainWarhead>1</Shell_AntigrainWarhead>
-    </costList>
-    <recipeMaker>
-      <researchPrerequisite>ShipTorpedoes</researchPrerequisite>
-    </recipeMaker>
-  </ThingDef>
-  
-  <ThingDef ParentName="BaseBullet">
-    <defName>Bullet_Fake_Torpedo_Antimatter</defName>
-    <label>antigrain torpedo</label>
-    <graphicData>
-      <texPath>Things/Projectile/ShipTorpedoAntimatter</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>TransparentPostLight</shaderType>
-	  <drawSize>(4,4)</drawSize>
-    </graphicData>
-    <thingClass>Projectile_SoSFake</thingClass>
-    <projectile>
-      <damageDef>BombSuper</damageDef>
-      <!-- damage amount is the damage def default -->
-      <speed>60</speed>
-      <explosionRadius>0</explosionRadius>
-      <soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
-    </projectile>
-	<interactionCellIcon>Bullet_Torpedo_Antimatter</interactionCellIcon> <!-- This is such a horrible kludge, but it's a way to attach a ThingDef to another ThingDef!-->
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Bullet_Torpedo_HighExplosive</defName>
+		<label>high-explosive torpedo</label>
+		<thingClass>Projectile_TorpedoShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTorpedoExplosive</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>6.9</explosionRadius>
+			<damageDef>ShipTorpedoBomb</damageDef>
+			<speed>60</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef ParentName="Bomb">
+		<defName>ShipTorpedoBomb</defName>
+		<defaultDamage>1000</defaultDamage>
+		<defaultStoppingPower>2.0</defaultStoppingPower>
+		<defaultArmorPenetration>1.30</defaultArmorPenetration>
+	</DamageDef>
+	<ThingDef ParentName="ShipTorpedoBase">
+		<defName>ShipTorpedo_EMP</defName>
+		<label>EMP torpedo</label>
+		<description>A torpedo tipped with an EMP generator. Can be fired from torpedo tubes. Explodes when damaged.</description>
+		<graphicData>
+			<texPath>Things/Item/Resource/ShipTorpedoEMP</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_Explosive">
+				<explosiveRadius>14.9</explosiveRadius>
+				<explosiveDamageType>EMP</explosiveDamageType>
+				<explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+				<startWickHitPointsPercent>0.7</startWickHitPointsPercent>
+				<wickTicks>30~60</wickTicks>
+			</li>
+		</comps>
+		<projectileWhenLoaded>Bullet_Fake_Torpedo_EMP</projectileWhenLoaded>
+		<costList>
+			<Steel>20</Steel>
+			<Chemfuel>30</Chemfuel>
+			<ComponentIndustrial>3</ComponentIndustrial>
+			<Shell_EMP>1</Shell_EMP>
+		</costList>
+		<recipeMaker>
+			<researchPrerequisite>ShipTorpedoes</researchPrerequisite>
+		</recipeMaker>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Torpedo_EMP</defName>
+		<label>EMP torpedo</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTorpedoEMP</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>EMP</damageDef>
+			<!-- damage amount is the damage def default -->
+			<speed>60</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<interactionCellIcon>Bullet_Torpedo_EMP</interactionCellIcon>
+		<!-- This is such a horrible kludge, but it's a way to attach a ThingDef to another ThingDef!-->
 		<altitudeLayer>MetaOverlays</altitudeLayer>
-  </ThingDef>
-  
-  <ThingDef ParentName="BaseGrenadeProjectile">
-    <defName>Bullet_Torpedo_Antimatter</defName>
-    <label>antigrain torpedo</label>
-    <thingClass>Projectile_ExplosiveShipCombatAntigrain</thingClass>
-    <graphicData>
-      <texPath>Things/Projectile/ShipTorpedoAntimatter</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>TransparentPostLight</shaderType>
-	  <drawSize>(4,4)</drawSize>
-    </graphicData>
-    <projectile>
-      <explosionRadius>15.9</explosionRadius>
-      <damageDef>ShipTorpedoBombSuper</damageDef>
-      <speed>60</speed>
-    </projectile>
-  </ThingDef>
-  
-  <DamageDef ParentName="Bomb">
-    <defName>ShipTorpedoBombSuper</defName>
-    <defaultDamage>9999</defaultDamage>
-    <defaultStoppingPower>9.0</defaultStoppingPower>
-    <defaultArmorPenetration>9.0</defaultArmorPenetration>
-  </DamageDef>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Bullet_Torpedo_EMP</defName>
+		<label>EMP torpedo</label>
+		<thingClass>Projectile_TorpedoShipCombat</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTorpedoEMP</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>15.9</explosionRadius>
+			<damageDef>EMP</damageDef>
+			<speed>60</speed>
+		</projectile>
+	</ThingDef>
+	<ThingDef ParentName="ShipTorpedoBase">
+		<defName>ShipTorpedo_Antimatter</defName>
+		<label>antigrain torpedo</label>
+		<description>A torpedo tipped with an antigrain warhead. Can be fired from torpedo tubes. Explodes when damaged.</description>
+		<graphicData>
+			<texPath>Things/Item/Resource/ShipTorpedoAntimatter</texPath>
+			<graphicClass>Graphic_StackCount</graphicClass>
+		</graphicData>
+		<comps>
+			<li Class="CompProperties_Explosive">
+				<explosiveRadius>14.9</explosiveRadius>
+				<explosiveDamageType>BombSuper</explosiveDamageType>
+				<explosiveExpandPerStackcount>0.4</explosiveExpandPerStackcount>
+				<startWickHitPointsPercent>0.7</startWickHitPointsPercent>
+				<chanceToStartFire>0.22</chanceToStartFire>
+				<damageFalloff>true</damageFalloff>
+				<explosionEffect>GiantExplosion</explosionEffect>
+				<explosionSound>Explosion_GiantBomb</explosionSound>
+				<wickTicks>60~120</wickTicks>
+			</li>
+		</comps>
+		<statBases>
+			<MarketValue>1500</MarketValue>
+		</statBases>
+		<projectileWhenLoaded>Bullet_Fake_Torpedo_Antimatter</projectileWhenLoaded>
+		<costList>
+			<Steel>20</Steel>
+			<Chemfuel>30</Chemfuel>
+			<ComponentIndustrial>3</ComponentIndustrial>
+			<Shell_AntigrainWarhead>1</Shell_AntigrainWarhead>
+		</costList>
+		<recipeMaker>
+			<researchPrerequisite>ShipTorpedoes</researchPrerequisite>
+		</recipeMaker>
+	</ThingDef>
+	<ThingDef ParentName="BaseBullet">
+		<defName>Bullet_Fake_Torpedo_Antimatter</defName>
+		<label>antigrain torpedo</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTorpedoAntimatter</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<thingClass>Projectile_SoSFake</thingClass>
+		<projectile>
+			<damageDef>BombSuper</damageDef>
+			<!-- damage amount is the damage def default -->
+			<speed>60</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<interactionCellIcon>Bullet_Torpedo_Antimatter</interactionCellIcon>
+		<!-- This is such a horrible kludge, but it's a way to attach a ThingDef to another ThingDef!-->
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+	</ThingDef>
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Bullet_Torpedo_Antimatter</defName>
+		<label>antigrain torpedo</label>
+		<thingClass>Projectile_ExplosiveShipCombatAntigrain</thingClass>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTorpedoAntimatter</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<projectile>
+			<explosionRadius>15.9</explosionRadius>
+			<damageDef>ShipTorpedoBombSuper</damageDef>
+			<speed>60</speed>
+		</projectile>
+	</ThingDef>
+	<DamageDef ParentName="Bomb">
+		<defName>ShipTorpedoBombSuper</defName>
+		<defaultDamage>9999</defaultDamage>
+		<defaultStoppingPower>9.0</defaultStoppingPower>
+		<defaultArmorPenetration>9.0</defaultArmorPenetration>
+	</DamageDef>
 </Defs>

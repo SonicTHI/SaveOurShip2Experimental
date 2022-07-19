@@ -74,6 +74,7 @@
 	<NoSalvageBays>No salvage bays available</NoSalvageBays>
 	<EnemyShipRetreating>Enemy ship is attempting to retreat!</EnemyShipRetreating>
 	<EnemyShipRetreated>Enemy ship has escaped!</EnemyShipRetreated>
+	<EnemyShipAdrift>Enemy ship has started to drift and is slowly losing orbit!</EnemyShipAdrift>
 	
 	<TradeShipComms>Communicating with </TradeShipComms>
 	<TradeShipTradeWith>Ask to trade with them.</TradeShipTradeWith>

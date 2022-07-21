@@ -1356,7 +1356,7 @@
 				<label>shoot</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1500</range>
 				<warmupTime>0</warmupTime>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>10</burstShotCount>
@@ -1365,8 +1365,8 @@
 				<targetParams>
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
-				<defaultProjectile>Bullet_Fake_Psychic</defaultProjectile>
-				<spawnDef>Proj_ShipTurretPsychic</spawnDef>
+				<defaultProjectile>Proj_ShipTurretPsychic</defaultProjectile>
+				<spawnDef>Bullet_Fake_Psychic</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>
@@ -1508,7 +1508,7 @@
 				<label>shoot</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>1500</range>
 				<warmupTime>0</warmupTime>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>10</burstShotCount>
@@ -1518,8 +1518,8 @@
 					<canTargetLocations>true</canTargetLocations>
 				</targetParams>
 				<soundCast>ShipCombatKinetic</soundCast>
-				<defaultProjectile>Bullet_Fake_Mechanite</defaultProjectile>
-				<spawnDef>Proj_ShipTurretMechanite</spawnDef>
+				<defaultProjectile>Proj_ShipTurretMechanite</defaultProjectile>
+				<spawnDef>Bullet_Fake_Mechanite</spawnDef>
 				<rangedFireRulepack>Combat_RangedFire_Thrown</rangedFireRulepack>
 			</li>
 		</verbs>

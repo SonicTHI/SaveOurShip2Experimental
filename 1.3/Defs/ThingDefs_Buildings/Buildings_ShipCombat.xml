@@ -1132,7 +1132,7 @@
 		<hediffSolid>Burn</hediffSolid>
 		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
 		<impactSoundType>Blunt</impactSoundType>
-		<armorCategory>Heat</armorCategory>
+		<armorCategory>Sharp</armorCategory>
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>30</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
@@ -1313,7 +1313,7 @@
 		<hediffSolid>Burn</hediffSolid>
 		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
 		<impactSoundType>Blunt</impactSoundType>
-		<armorCategory>Heat</armorCategory>
+		<armorCategory>Sharp</armorCategory>
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>105</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
@@ -1592,7 +1592,7 @@
 		<hediffSolid>Burn</hediffSolid>
 		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
 		<impactSoundType>Blunt</impactSoundType>
-		<armorCategory>Heat</armorCategory>
+		<armorCategory>Sharp</armorCategory>
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>60</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
@@ -1727,7 +1727,7 @@
 		<hediffSolid>Burn</hediffSolid>
 		<harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
 		<impactSoundType>Blunt</impactSoundType>
-		<armorCategory>Heat</armorCategory>
+		<armorCategory>Sharp</armorCategory>
 		<minDamageToFragment>15</minDamageToFragment>
 		<defaultDamage>160</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>

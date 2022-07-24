@@ -1358,6 +1358,7 @@
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1500</range>
 				<warmupTime>0</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>10</burstShotCount>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>
@@ -1510,6 +1511,7 @@
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1500</range>
 				<warmupTime>0</warmupTime>
+				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
 				<burstShotCount>10</burstShotCount>
 				<ai_IsBuildingDestroyer>true</ai_IsBuildingDestroyer>

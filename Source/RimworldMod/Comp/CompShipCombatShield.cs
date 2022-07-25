@@ -72,6 +72,11 @@ namespace RimWorld
 			stringBuilder.Append("ShipInsideRadius".Translate() + radius + "/" + radiusSet);
             return stringBuilder.ToString();
         }
+        public virtual float GetHeatMultiplier()
+        {
+            return Props.heatMultiplier;
+        }
+
         public void HitShield(Projectile_ExplosiveShipCombat proj)
         {
             lastInterceptAngle = proj.DrawPos.AngleToFlat(parent.TrueCenter());
@@ -102,8 +107,7 @@ namespace RimWorld
             else
                 heatGenerated = proj.DamageAmount * HeatDamageMult;
 
-            if (Props.archotech)
-                heatGenerated *= 0.75f;
+            heatGenerated *= GetHeatMultiplier();
 
             if (parent.TryGetComp<CompShipHeatSource>() != null && parent.TryGetComp<CompShipHeatSource>().AvailableCapacityInNetwork() < heatGenerated)
             {
@@ -164,6 +168,17 @@ namespace RimWorld
             Scribe_Values.Look(ref radius, "radius",40);
             Scribe_Values.Look(ref radiusSet, "radiusSet",40);
         }
+
+        public virtual Color GetColor()
+        {
+            Color ret = Color.white;
+            if (Props.color == "green")
+            {
+                ret = Color.green;
+            }
+            return ret;
+        }
+
         public override void PostDraw()
         {
             base.PostDraw();
@@ -172,9 +187,7 @@ namespace RimWorld
             float alpha = Alpha();
             if (alpha > 0f)
             {
-                Color value = Color.white;
-                if (Props.archotech)
-                    value = Color.green;
+                Color value = GetColor();
                 value.a *= alpha;
                 PropBlock.SetColor(ShaderPropertyIDs.Color, value);
                 Matrix4x4 matrix = default(Matrix4x4);

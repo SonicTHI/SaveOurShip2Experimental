@@ -9,7 +9,8 @@ namespace RimWorld
     public class CompProperties_ShipCombatShield : CompProperties
     {
         public float radius = 40;
-        public bool archotech = false;
+        public float heatMultiplier = 1.0f;
+        public string color = "white";
 
         public CompProperties_ShipCombatShield()
         {

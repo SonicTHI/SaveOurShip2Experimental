@@ -255,7 +255,7 @@ namespace RimWorld
         public bool startedBoarderLoad = false;
         public bool launchedBoarders = false;
         public int BoardStartTick = 0;
-
+        
         public void SpawnEnemyShip(PassingShip passingShip)
         {
             Building core = null;
@@ -300,11 +300,21 @@ namespace RimWorld
                 if (!spaceNavyFaction.AllyOrNeutralTo(Faction.OfPlayer))
                 {
                     // Choose a ship from enemy space navy's roster
-                    // TODO: Calculations
-                    enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.RandomElement();
 
-                    // Set the enemy ship's faction to the enemy space navy's faction
+                    //0.5-1.5
+                    enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
+                    
+                    //0-1.5
+                    if (enemySpaceNavyShipDef == null)
+                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
+
+                    //Last fallback
+                    if (enemySpaceNavyShipDef == null)
+                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= 50).RandomElement();
+
+                    // Set the enemy ship's faction to the enemy space navy's faction, and enemy spaceNavyDef
                     enemyShipFaction = spaceNavyFaction;
+                    enemySpaceNavyDef = spaceNavyDef;
                 }
             }
 
@@ -354,7 +364,8 @@ namespace RimWorld
             MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyShipFaction, new LordJob_DefendShip(enemyShipFaction, map.Center), map);
             ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyShipFaction, MasterMapComp.ShipLord, out core, !isDerelict);
 
-            Log.Message("SOS2 spawned ship: " + shipDef.defName + (enemySpaceNavyDef != null ? " (Faction: " + enemyShipFaction.Name + ")" : "")); //keep this on for troubleshooting
+            Log.Message("SOS2 spawned ship: " + shipDef.defName + (enemySpaceNavyDef is SpaceNavyDef ? " (Spacy navy: " + enemySpaceNavyDef.label + ")" : "")); //keep this on for troubleshooting
+
             if (isDerelict)
             {
                 int time = Rand.RangeInclusive(120000, 240000);

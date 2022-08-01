@@ -353,3 +353,5 @@ MigrationBackup/
 /1.3/Assemblies/HugsLib.xml
 /Common/Defs/Misc/ShipDefs/AllianceCorvette.xml
 /Common/Defs/Misc/SpaceNavyDefs/Alliance_SpacyNavy.xml
+/Common/Defs/Misc/ShipDefs/AllianceFighter.xml
+/Common/Defs/Misc/ShipDefs/AllianceDestroyer.xml

@@ -8,7 +8,7 @@ namespace RimWorld
     {
         public FactionDef factionDef;
 
-        public string navyName;
+        public string label;
 
         public List<EnemyShipDef> enemyShipDefs;
 

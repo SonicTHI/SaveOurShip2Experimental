@@ -51,7 +51,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="0Harmony>
       <HintPath>..\..\..\2009463077 Harmony\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -400,5 +400,4 @@
     <Compile Include="WeatherEvent_VacuumDamage.cs" />
     <Compile Include="WorldSwitchUtility.cs" />
     <Compile Include="Jobs\JobDriver_CarryToCryptonest.cs" />
-  </ItemGroup>
 </Project>

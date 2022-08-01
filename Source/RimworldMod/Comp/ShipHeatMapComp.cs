@@ -291,30 +291,37 @@ namespace RimWorld
             SpaceNavyDef enemySpaceNavyDef = null;
             EnemyShipDef enemySpaceNavyShipDef = null;
 
-            // Look through space navies
-            foreach (SpaceNavyDef spaceNavyDef in spaceNavyDefs)
+            int navyEncounterPercentage = 25;
+
+            System.Random s_Random = new System.Random();
+
+            if(s_Random.Next(0, 100) <= navyEncounterPercentage)
             {
-                Faction spaceNavyFaction = Find.FactionManager.AllFactions.Where(faction => faction.def == spaceNavyDef.factionDef).First();
-
-                // Check if space navy's faction is hostile to player
-                if (!spaceNavyFaction.AllyOrNeutralTo(Faction.OfPlayer))
+                // Look through space navies
+                foreach (SpaceNavyDef spaceNavyDef in spaceNavyDefs)
                 {
-                    // Choose a ship from enemy space navy's roster
+                    Faction spaceNavyFaction = Find.FactionManager.AllFactions.Where(faction => faction.def == spaceNavyDef.factionDef).First();
 
-                    //0.5-1.5
-                    enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
-                    
-                    //0-1.5
-                    if (enemySpaceNavyShipDef == null)
-                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
+                    // Check if space navy's faction is hostile to player
+                    if (!spaceNavyFaction.AllyOrNeutralTo(Faction.OfPlayer))
+                    {
+                        // Choose a ship from enemy space navy's roster
 
-                    //Last fallback
-                    if (enemySpaceNavyShipDef == null)
-                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= 50).RandomElement();
+                        //0.5-1.5
+                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
 
-                    // Set the enemy ship's faction to the enemy space navy's faction, and enemy spaceNavyDef
-                    enemyShipFaction = spaceNavyFaction;
-                    enemySpaceNavyDef = spaceNavyDef;
+                        //0-1.5
+                        if (enemySpaceNavyShipDef == null)
+                            enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
+
+                        //Last fallback
+                        if (enemySpaceNavyShipDef == null)
+                            enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= 50).RandomElement();
+
+                        // Set the enemy ship's faction to the enemy space navy's faction, and enemy spaceNavyDef
+                        enemyShipFaction = spaceNavyFaction;
+                        enemySpaceNavyDef = spaceNavyDef;
+                    }
                 }
             }
 
@@ -364,7 +371,7 @@ namespace RimWorld
             MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyShipFaction, new LordJob_DefendShip(enemyShipFaction, map.Center), map);
             ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyShipFaction, MasterMapComp.ShipLord, out core, !isDerelict);
 
-            Log.Message("SOS2 spawned ship: " + shipDef.defName + (enemySpaceNavyDef is SpaceNavyDef ? " (Spacy navy: " + enemySpaceNavyDef.label + ")" : "")); //keep this on for troubleshooting
+            Log.Message("SOS2 spawned ship: " + shipDef.defName + (enemySpaceNavyDef is SpaceNavyDef ? " (Space navy: " + enemySpaceNavyDef.label + ")" : "")); //keep this on for troubleshooting
 
             if (isDerelict)
             {

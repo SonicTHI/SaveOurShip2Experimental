@@ -268,7 +268,49 @@ namespace RimWorld
             bool isDerelict = false;
             EnemyShipDef shipDef;
 
-            if (passingShip is AttackableShip)
+            //set ship faction
+            /*
+            Faction enemyshipfac = Faction.OfAncientsHostile;
+            if (shipDef.imperialShip && ModsConfig.RoyaltyActive && Faction.OfEmpire != null)
+            {
+                enemyshipfac = Faction.OfEmpire;
+                if (Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
+                    Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -150);
+            }
+            else if (shipDef.mechanoidShip)
+                enemyshipfac = Faction.OfMechanoids;
+            else if (shipDef.pirateShip)
+                enemyshipfac = Faction.OfPirates;
+            */
+
+            // Find an enemy space navy
+            Faction enemyShipFaction = Faction.OfAncientsHostile;
+
+            IEnumerable<SpaceNavyDef> spaceNavyDefs = DefDatabase<SpaceNavyDef>.AllDefs;
+
+            SpaceNavyDef enemySpaceNavyDef = null;
+            EnemyShipDef enemySpaceNavyShipDef = null;
+
+            // Look through space navies
+            foreach (SpaceNavyDef spaceNavyDef in spaceNavyDefs)
+            {
+                Faction spaceNavyFaction = Find.FactionManager.AllFactions.Where(faction => faction.def == spaceNavyDef.factionDef).First();
+
+                // Check if space navy's faction is hostile to player
+                if (!spaceNavyFaction.AllyOrNeutralTo(Faction.OfPlayer))
+                {
+                    // Choose a ship from enemy space navy's roster
+                    // TODO: Calculations
+                    enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.RandomElement();
+
+                    // Set the enemy ship's faction to the enemy space navy's faction
+                    enemyShipFaction = spaceNavyFaction;
+                }
+            }
+
+            if (enemySpaceNavyShipDef is EnemyShipDef)
+                shipDef = enemySpaceNavyShipDef;
+            else if (passingShip is AttackableShip)
                 shipDef = ((AttackableShip)passingShip).enemyShip;
             else if (passingShip is DerelictShip)
             {
@@ -306,23 +348,13 @@ namespace RimWorld
                 if (shipDef == null)
                     shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.imperialShip && def.combatPoints <= 50).RandomElement();
             }
-            //set ship faction
-            Faction enemyshipfac = Faction.OfAncientsHostile;
-            if (shipDef.imperialShip && ModsConfig.RoyaltyActive && Faction.OfEmpire != null)
-            {
-                enemyshipfac = Faction.OfEmpire;
-                if (Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
-                    Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -150);
-            }
-            else if (shipDef.mechanoidShip)
-                enemyshipfac = Faction.OfMechanoids;
-            else if (shipDef.pirateShip)
-                enemyshipfac = Faction.OfPirates;
-            MasterMapComp.ShipFaction = enemyshipfac;
-            MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyshipfac, new LordJob_DefendShip(enemyshipfac, map.Center), map);
-            ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyshipfac, MasterMapComp.ShipLord, out core, !isDerelict);
 
-            Log.Message("SOS2 spawned ship: " + shipDef.defName); //keep this on for troubleshooting
+            // Set enemy ship's faction
+            MasterMapComp.ShipFaction = enemyShipFaction;
+            MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyShipFaction, new LordJob_DefendShip(enemyShipFaction, map.Center), map);
+            ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyShipFaction, MasterMapComp.ShipLord, out core, !isDerelict);
+
+            Log.Message("SOS2 spawned ship: " + shipDef.defName + (enemySpaceNavyDef != null ? " (Faction: " + enemyShipFaction.Name + ")" : "")); //keep this on for troubleshooting
             if (isDerelict)
             {
                 int time = Rand.RangeInclusive(120000, 240000);

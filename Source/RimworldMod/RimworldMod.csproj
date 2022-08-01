@@ -51,17 +51,16 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\2009463077 Harmony\Current\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\HarmonyLocal\Current\Assemblies\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HugsLib">
-      <HintPath>..\..\..\818773962 HugsLib\v1.3\Assemblies\HugsLib.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\HugsLibLocal\v1.3\Assemblies\HugsLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -117,6 +116,7 @@
     <Compile Include="Comp\CompProperties_ShipLifeSupport.cs" />
     <Compile Include="Comp\CompProperties_SoShipPart.cs" />
     <Compile Include="Comp\CompSoSshipPart.cs" />
+    <Compile Include="SpaceNavyDef.cs" />
     <Compile Include="TransportPodsArrivalAction_ShipAssault.cs" />
     <Compile Include="Command_VerbTargetWreckMap.cs" />
     <Compile Include="Command_VerbTargetWreck.cs" />
@@ -401,5 +401,7 @@
     <Compile Include="WorldSwitchUtility.cs" />
     <Compile Include="Jobs\JobDriver_CarryToCryptonest.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\..\1.3\Assemblies\0Harmony.dll" />
+  </ItemGroup>
 </Project>

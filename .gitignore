@@ -348,3 +348,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/1.3/Assemblies/0Harmony.dll
+/1.3/Assemblies/HugsLib.dll
+/1.3/Assemblies/HugsLib.xml
+/Common/Defs/Misc/ShipDefs/AllianceCorvette.xml
+/Common/Defs/Misc/SpaceNavyDefs/Alliance_SpacyNavy.xml

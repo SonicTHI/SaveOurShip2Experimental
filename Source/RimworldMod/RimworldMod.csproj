@@ -52,15 +52,16 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\HarmonyLocal\Current\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\2009463077 Harmony\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HugsLib">
-      <HintPath>..\..\..\HugsLibLocal\v1.3\Assemblies\HugsLib.dll</HintPath>
+      <HintPath>..\..\..\818773962 HugsLib\v1.3\Assemblies\HugsLib.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -399,8 +400,5 @@
     <Compile Include="WeatherEvent_VacuumDamage.cs" />
     <Compile Include="WorldSwitchUtility.cs" />
     <Compile Include="Jobs\JobDriver_CarryToCryptonest.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\1.3\Assemblies\0Harmony.dll" />
   </ItemGroup>
 </Project>

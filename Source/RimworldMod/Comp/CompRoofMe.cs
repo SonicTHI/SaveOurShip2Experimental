@@ -97,7 +97,7 @@ namespace RimWorld
                 bool stillHasTile = false;
                 foreach(Thing t in map.thingGrid.ThingsAt(pos))
                 {
-                    if(t.TryGetComp<CompRoofMe>()!=null)
+                    if (t.TryGetComp<CompRoofMe>()!=null)
                     {
                         stillHasTile = true;
                         break;

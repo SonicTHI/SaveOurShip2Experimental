@@ -291,11 +291,9 @@ namespace RimWorld
             SpaceNavyDef enemySpaceNavyDef = null;
             EnemyShipDef enemySpaceNavyShipDef = null;
 
-            int navyEncounterPercentage = 25;
-
             System.Random s_Random = new System.Random();
 
-            if(s_Random.Next(0, 100) <= navyEncounterPercentage)
+            if (s_Random.Next(0, 100) <= ShipInteriorMod2.navyEncounterChance)
             {
                 // Look through space navies
                 foreach (SpaceNavyDef spaceNavyDef in spaceNavyDefs)
@@ -307,14 +305,14 @@ namespace RimWorld
                     {
                         // Choose a ship from enemy space navy's roster
 
-                        //0.5-1.5
+                        // 0.5-1.5
                         enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
 
-                        //0-1.5
+                        // 0-1.5
                         if (enemySpaceNavyShipDef == null)
                             enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
 
-                        //Last fallback
+                        // Last fallback
                         if (enemySpaceNavyShipDef == null)
                             enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= 50).RandomElement();
 

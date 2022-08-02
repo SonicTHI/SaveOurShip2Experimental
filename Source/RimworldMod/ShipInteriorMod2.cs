@@ -160,6 +160,7 @@ namespace SaveOurShip2
 		public static SettingHandle<bool> useSplashScreen;
 		public static SettingHandle<int> offsetUIx;
 		public static SettingHandle<int> offsetUIy;
+		public static SettingHandle<int> navyEncounterChance;
 
 		public override void DefsLoaded()
 		{
@@ -188,6 +189,8 @@ namespace SaveOurShip2
 				"UI offset horizontal from the center of your screen.", 0);
 			offsetUIy = Settings.GetHandle("offsetUIy", "Ship UI offset y",
 				"UI offset vertical from bellow the pawn bar.", 0);
+			navyEncounterChance = Settings.GetHandle("navyEncounterChance", "Chance to encounter a space navy",
+				"Percentage chance to encounter a faction's space navy", 25);
 
 			if (useSplashScreen)
 				((UI_BackgroundMain)UIMenuBackgroundManager.background).overrideBGImage = Splash;

@@ -7,6 +7,7 @@
 		<cargoValue>500</cargoValue>
 		<imperialShip>false</imperialShip>
 		<crewDef>RE_AllianceOfficer</crewDef>
+		<navyExclusive>true</navyExclusive>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<x>-6</x>

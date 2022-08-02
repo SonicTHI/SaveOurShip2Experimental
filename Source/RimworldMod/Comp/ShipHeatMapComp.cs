@@ -336,7 +336,7 @@ namespace RimWorld
             else if (passingShip is TradeShip)
             {
                 //tradeship 0.5-2
-                shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.tradeShip && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 2 * ShipInteriorMod2.difficultySoS).RandomElement();
+                shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.tradeShip && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 2 * ShipInteriorMod2.difficultySoS && !def.navyExclusive).RandomElement();
                 if (shipDef == null)
                     shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.tradeShip).RandomElement();
             }
@@ -344,24 +344,24 @@ namespace RimWorld
             {
                 //empire can attack if royalty and hostile or no royalty
                 //0.5-1.5
-                shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
+                shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS && !def.navyExclusive).RandomElement();
                 //0-1.5
                 if (shipDef == null)
-                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
+                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS && !def.navyExclusive).RandomElement();
                 //Last fallback
                 if (shipDef == null)
-                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= 50).RandomElement();
+                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= 50 && !def.navyExclusive).RandomElement();
             }
             else
             {
                 //0.5-1.5
-                shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && !def.imperialShip && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
+                shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && !def.imperialShip && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS && !def.navyExclusive).RandomElement();
                 //0-1.5
                 if (shipDef == null)
-                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.imperialShip && def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
+                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.imperialShip && def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS && !def.navyExclusive).RandomElement();
                 //Last fallback
                 if (shipDef == null)
-                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.imperialShip && def.combatPoints <= 50).RandomElement();
+                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.imperialShip && def.combatPoints <= 50 && !def.navyExclusive).RandomElement();
             }
 
             // Set enemy ship's faction

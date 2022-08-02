@@ -91,6 +91,7 @@ namespace RimWorld
         public bool tradeShip = false;
         public bool startingShip = false;
         public bool startingDungeon = false;
+        public bool navyExclusive = false;
         public string bigString = "";
         public string crewDef;
         public string marineDef;

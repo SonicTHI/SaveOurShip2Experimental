@@ -4,7 +4,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class SpaceNavyDef : Def
+    public class SpaceNavyDef : Def
     {
         public FactionDef factionDef;
 
@@ -12,7 +12,10 @@ namespace RimWorld
 
         public List<EnemyShipDef> enemyShipDefs;
 
-        public List<string> crewDefs;
+        // Crew defs
+        public string crewDef;
+        public string marineDef;
+        public string marineHeavyDef;
 
         public string GetUniqueLoadID()
         {

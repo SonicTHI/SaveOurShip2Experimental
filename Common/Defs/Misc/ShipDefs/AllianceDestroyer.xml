@@ -6,8 +6,7 @@
 		<combatPoints>1564</combatPoints>
 		<cargoValue>500</cargoValue>
 		<imperialShip>false</imperialShip>
-		<marineDef>RE_Alliance_Marine</marineDef>
-		<marineHeavyDef>RE_Alliance_MarineHeavy</marineHeavyDef>
+		<crewDef>RE_AllianceOfficer</crewDef>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<x>-6</x>

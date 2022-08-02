@@ -4,12 +4,13 @@
         <defName>RE_SystemsAlliance_SpaceNavy</defName>
         <label>Systems Alliance Space Corps</label>
         <factionDef>RE_SystemsAlliance</factionDef>
+        <crewDef>RE_Colonist</crewDef>
+        <marineDef>RE_Alliance_Marine</marineDef>
+        <marineHeavyDef>RE_Alliance_MarineHeavy</marineHeavyDef>
         <enemyShipDefs>
             <li>AllianceDestroyer</li>
             <li>AllianceCorvette</li>
             <li>AllianceFighter</li>
         </enemyShipDefs>
-        <crewDefs>
-        </crewDefs>
     </SpaceNavyDef>
 </Defs>

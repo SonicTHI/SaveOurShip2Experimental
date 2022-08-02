@@ -367,7 +367,7 @@ namespace RimWorld
             // Set enemy ship's faction
             MasterMapComp.ShipFaction = enemyShipFaction;
             MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyShipFaction, new LordJob_DefendShip(enemyShipFaction, map.Center), map);
-            ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyShipFaction, MasterMapComp.ShipLord, out core, !isDerelict);
+            ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyShipFaction, MasterMapComp.ShipLord, out core, !isDerelict, false, false, enemySpaceNavyDef);
 
             Log.Message("SOS2 spawned ship: " + shipDef.defName + (enemySpaceNavyDef is SpaceNavyDef ? " (Space navy: " + enemySpaceNavyDef.label + ")" : "")); //keep this on for troubleshooting
 

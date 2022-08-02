@@ -380,7 +380,7 @@ namespace SaveOurShip2
 			Find.WorldObjects.Add(impactSite);
 		}
 
-		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out Building core, bool shieldActive = true, bool clearArea = false, bool wreckEverything = false)
+		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out Building core, bool shieldActive = true, bool clearArea = false, bool wreckEverything = false, SpaceNavyDef spaceNavyDef = null)
 		{
 			List<ShipShape> partsToGenerate = new List<ShipShape>();
 			List<IntVec3> cargoCells = new List<IntVec3>();
@@ -425,16 +425,33 @@ namespace SaveOurShip2
 			Rot4 corerot = shipDef.core.rot;
 			GenSpawn.Spawn(core, new IntVec3(c.x + shipDef.core.x, 0, c.z + shipDef.core.z), map, corerot);
 
-			//check if custom replacers for pawns are set and present in the game
-			bool crewOver = false;
-			bool marineOver = false;
-			bool heavyOver = false;
+			// Check if custom replacers for pawns are set and present in the game
+
+			// Initialize the pawnDefs dictionary, which is going to be used for checking if pawnKinds exist, and assigning pawnKinds
+			Dictionary<string, string> pawnDefs = new Dictionary<string, string>();
+			pawnDefs.Add("crewDef", null);
+			pawnDefs.Add("marineDef", null);
+			pawnDefs.Add("marineHeavyDef", null);
+
+			// If space navy is defined, use the navy's defined pawnKinds as base, ships can overwrite pawnKinds in their own defs
+			if (spaceNavyDef is SpaceNavyDef)
+            {
+				if (spaceNavyDef.crewDef != null && DefDatabase<PawnKindDef>.GetNamed(spaceNavyDef.crewDef) != null)
+					pawnDefs["crewDef"] = spaceNavyDef.crewDef;
+				if (spaceNavyDef.marineDef != null && DefDatabase<PawnKindDef>.GetNamed(spaceNavyDef.marineDef) != null)
+					pawnDefs["marineDef"] = spaceNavyDef.marineDef;
+				if (spaceNavyDef.marineHeavyDef != null && DefDatabase<PawnKindDef>.GetNamed(spaceNavyDef.marineHeavyDef) != null)
+					pawnDefs["marineHeavyDef"] = spaceNavyDef.marineHeavyDef;
+			}
+
+			// Always prefer ship's defined pawnKinds
 			if (shipDef.crewDef != null && DefDatabase<PawnKindDef>.GetNamed(shipDef.crewDef) != null)
-				crewOver = true;
+				pawnDefs["crewDef"] = shipDef.crewDef;
 			if (shipDef.marineDef != null && DefDatabase<PawnKindDef>.GetNamed(shipDef.marineDef) != null)
-				marineOver = true;
+				pawnDefs["marineDef"] = shipDef.marineDef;
 			if (shipDef.marineHeavyDef != null && DefDatabase<PawnKindDef>.GetNamed(shipDef.marineHeavyDef) != null)
-				heavyOver = true;
+				pawnDefs["marineHeavyDef"] = shipDef.marineHeavyDef;
+
 			foreach (ShipShape shape in shipDef.parts)
 			{
 				try
@@ -470,12 +487,12 @@ namespace SaveOurShip2
 					else if (DefDatabase<PawnKindDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
 						string pawnGen = shape.shapeOrDef;
-						if (crewOver && shape.shapeOrDef.Equals("SpaceCrew"))
-							pawnGen = shipDef.crewDef;
-						else if (marineOver && shape.shapeOrDef.Equals("SpaceCrewMarine"))
-							pawnGen = shipDef.marineDef;
-						else if (heavyOver && shape.shapeOrDef.Equals("SpaceCrewMarineHeavy"))
-							pawnGen = shipDef.marineHeavyDef;
+						if (pawnDefs["crewDef"] != null && shape.shapeOrDef.Equals("SpaceCrew"))
+							pawnGen = pawnDefs["crewDef"];
+						else if (pawnDefs["marineDef"] != null && shape.shapeOrDef.Equals("SpaceCrewMarine"))
+							pawnGen = pawnDefs["marineDef"];
+						else if (pawnDefs["marineHeavyDef"] != null && shape.shapeOrDef.Equals("SpaceCrewMarineHeavy"))
+							pawnGen = pawnDefs["marineHeavyDef"];
 						PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(pawnGen), fac);
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
 						if (lord != null)

@@ -5,8 +5,6 @@
 		<label>Alliance Gladius fighter</label>
 		<combatPoints>27</combatPoints>
 		<imperialShip>false</imperialShip>
-		<marineDef>RE_Alliance_Marine</marineDef>
-		<marineHeavyDef>RE_Alliance_MarineHeavy</marineHeavyDef>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>-6</x>

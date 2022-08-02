@@ -5,8 +5,6 @@
 		<label>Alliance Scutum class corvette</label>
 		<combatPoints>351</combatPoints>
 		<imperialShip>false</imperialShip>
-		<marineDef>RE_Alliance_Marine</marineDef>
-		<marineHeavyDef>RE_Alliance_MarineHeavy</marineHeavyDef>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<x>7</x>

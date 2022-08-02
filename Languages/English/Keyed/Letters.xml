@@ -62,6 +62,7 @@
   <WinShipEncounterDesc>The derelict has been secured but will soon burn up in the atmosphere.\n\nYou can capture the derelict by using its bridge or manually retrieve cargo and prisoners with your boarding party. Otherwise, use your bridge to issue an order to salvage the enemy ship. Your salvage bays will retrieve some fraction of its construction materials and cargo, along with the corpses of its crew.</WinShipEncounterDesc>
   <ShipCombatStart>Ship battle</ShipCombatStart>
   <ShipCombatStartDesc>A hostile ship is approaching! Scans identify it as a {0}.</ShipCombatStartDesc>
+  <NavyShipCombatStartDesc>A hostile ship is approaching, it is a part of {0}! Scans identify it as a {1}.</NavyShipCombatStartDesc>
   <WinShipBattle>Ship battle won</WinShipBattle>
   <WinShipBattleDesc>With the destruction of its control systems, the enemy ship has been reduced to a derelict. It will re-enter the atmosphere and burn up in {0}.\n\nYou may manually retrieve cargo and prisoners via a boarding party, if you wish. Otherwise, use your bridge to issue an order to salvage the enemy ship. Your salvage bays will retrieve some fraction of its construction materials and cargo, along with the corpses of its crew.</WinShipBattleDesc>
   <LoseShipBattle>Ship battle lost</LoseShipBattle>

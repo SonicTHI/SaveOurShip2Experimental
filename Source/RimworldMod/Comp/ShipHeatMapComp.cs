@@ -369,7 +369,12 @@ namespace RimWorld
             MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyShipFaction, new LordJob_DefendShip(enemyShipFaction, map.Center), map);
             ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyShipFaction, MasterMapComp.ShipLord, out core, !isDerelict, false, false, enemySpaceNavyDef);
 
-            Log.Message("SOS2 spawned ship: " + shipDef.defName + (enemySpaceNavyDef is SpaceNavyDef ? " (Space navy: " + enemySpaceNavyDef.label + ")" : "")); //keep this on for troubleshooting
+            Log.Message("SOS2 spawned ship: " + shipDef.defName); //keep this on for troubleshooting
+
+            if (enemySpaceNavyDef is SpaceNavyDef)
+            {
+                Log.Message("Space navy: " + (enemySpaceNavyDef.label != null ? enemySpaceNavyDef.label : enemyShipFaction.Name + " (Faction name, space navy label not set)"));
+            }
 
             if (isDerelict)
             {
@@ -389,6 +394,10 @@ namespace RimWorld
             {
                 if (ModsConfig.RoyaltyActive && passingShip.Faction == Faction.OfEmpire && Faction.OfEmpire != null && Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
                     Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -150);
+            }
+            else if (enemySpaceNavyDef is SpaceNavyDef)
+            {
+                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("NavyShipCombatStartDesc", (enemySpaceNavyDef.label != null ? enemySpaceNavyDef.label : enemyShipFaction.Name), shipDef.label), LetterDefOf.ThreatBig);
             }
             else
             {

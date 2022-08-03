@@ -152,6 +152,25 @@
               <initialResistanceRange>17~26</initialResistanceRange>
             </PawnKindDef>
 
+            <SpaceNavyDef>
+              <defName>Empire_SpaceNavy</defName>
+              <label>Royal Space Navy</label>
+              <factionDef>Empire</factionDef>
+              <marineDef>Empire_Fighter_Marine_Space</marineDef>
+              <marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
+              <enemyShipDefs>
+                  <li>EmpireBomber</li>
+                  <li>EmpireCorvette</li>
+                  <li>EmpireCruiser</li>
+                  <li>EmpireDestroyer</li>
+                  <li>EmpireDestroyer2</li>
+                  <li>EmpireFighter</li>
+                  <li>EmpireFrigate</li>
+                  <li>EmpireFrigateEscort</li>
+                  <li>EmpireStrikeWing</li>
+              </enemyShipDefs>
+            </SpaceNavyDef>
+
         </value>
         </li>
         <li Class="PatchOperationAdd">

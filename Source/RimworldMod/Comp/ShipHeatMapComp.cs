@@ -293,15 +293,15 @@ namespace RimWorld
                         // Choose a ship from enemy space navy's roster
 
                         // 0.5-1.5
-                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
+                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
 
                         // 0-1.5
                         if (enemySpaceNavyShipDef == null)
-                            enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
+                            enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
 
                         // Last fallback
                         if (enemySpaceNavyShipDef == null)
-                            enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => def.combatPoints <= 50).RandomElement();
+                            enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= 50).RandomElement();
 
                         // Set the enemy ship's faction to the enemy space navy's faction, and enemy spaceNavyDef
                         enemyShipFaction = spaceNavyFaction;

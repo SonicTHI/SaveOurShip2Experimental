@@ -300,8 +300,8 @@ namespace RimWorld
                 {
                     Faction spaceNavyFaction = Find.FactionManager.AllFactions.Where(faction => faction.def == spaceNavyDef.factionDef).RandomElement();
 
-                    // Check if space navy's faction is hostile to player
-                    if (!spaceNavyFaction.AllyOrNeutralTo(Faction.OfPlayer))
+                    // Check if space navy's faction is hostile to player, check if space navy can operate after it's faction is defeated
+                    if (!spaceNavyFaction.AllyOrNeutralTo(Faction.OfPlayer) && (!spaceNavyDef.canOperateAfterFactionDefeated ? !spaceNavyFaction.defeated : true))
                     {
                         // Choose a ship from enemy space navy's roster
 

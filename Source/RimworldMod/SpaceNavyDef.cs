@@ -12,6 +12,8 @@ namespace RimWorld
 
         public List<EnemyShipDef> enemyShipDefs;
 
+        public bool canOperateAfterFactionDefeated = false;
+
         // Crew defs
         public string crewDef;
         public string marineDef;

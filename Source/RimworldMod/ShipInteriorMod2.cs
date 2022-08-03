@@ -257,7 +257,6 @@ namespace SaveOurShip2
 				Scribe_Values.Look<bool>(ref def.neverRandom, "neverRandom");
 				Scribe_Values.Look<bool>(ref def.neverAttacks, "neverAttacks");
 				Scribe_Values.Look<bool>(ref def.spaceSite, "spaceSite");
-				Scribe_Values.Look<bool>(ref def.imperialShip, "imperialShip");
 				Scribe_Values.Look<bool>(ref def.pirateShip, "pirateShip");
 				Scribe_Values.Look<bool>(ref def.bountyShip, "bountyShip");
 				Scribe_Values.Look<bool>(ref def.mechanoidShip, "mechanoidShip");

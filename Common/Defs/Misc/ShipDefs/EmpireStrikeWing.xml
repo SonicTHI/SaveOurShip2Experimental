@@ -4,9 +4,6 @@
 		<defName>EmpireStrikeWing</defName>
 		<label>Imperial strike wing</label>
 		<combatPoints>308</combatPoints>
-		<imperialShip>true</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>51</x>

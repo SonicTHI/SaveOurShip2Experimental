@@ -5,9 +5,6 @@
 		<label>Imperial Augustus class cruiser</label>
 		<combatPoints>2545</combatPoints>
 		<cargoValue>1000</cargoValue>
-		<imperialShip>true</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>2</x>

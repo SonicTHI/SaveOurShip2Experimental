@@ -5,9 +5,6 @@
 		<label>Imperial Longinus class frigate with escorts</label>
 		<combatPoints>1632</combatPoints>
 		<cargoValue>500</cargoValue>
-		<imperialShip>true</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>17</x>

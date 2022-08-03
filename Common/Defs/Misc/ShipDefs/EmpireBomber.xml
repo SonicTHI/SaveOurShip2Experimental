@@ -4,9 +4,6 @@
 		<defName>EmpireBomber</defName>
 		<label>Imperial Pilum bomber</label>
 		<combatPoints>98</combatPoints>
-		<imperialShip>true</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>-11</x>

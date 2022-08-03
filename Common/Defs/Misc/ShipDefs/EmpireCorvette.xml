@@ -4,9 +4,6 @@
 		<defName>EmpireCorvette</defName>
 		<label>Imperial Scutum class corvette</label>
 		<combatPoints>351</combatPoints>
-		<imperialShip>true</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<x>7</x>

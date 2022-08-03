@@ -4,9 +4,6 @@
 		<defName>EmpireFighter</defName>
 		<label>Imperial Gladius fighter</label>
 		<combatPoints>27</combatPoints>
-		<imperialShip>true</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>-6</x>

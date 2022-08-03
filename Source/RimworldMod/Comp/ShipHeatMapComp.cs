@@ -268,20 +268,7 @@ namespace RimWorld
             bool isDerelict = false;
             EnemyShipDef shipDef;
 
-            //set ship faction
-            /*
-            Faction enemyshipfac = Faction.OfAncientsHostile;
-            if (shipDef.imperialShip && ModsConfig.RoyaltyActive && Faction.OfEmpire != null)
-            {
-                enemyshipfac = Faction.OfEmpire;
-                if (Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer))
-                    Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -150);
-            }
-            else if (shipDef.mechanoidShip)
-                enemyshipfac = Faction.OfMechanoids;
-            else if (shipDef.pirateShip)
-                enemyshipfac = Faction.OfPirates;
-            */
+            // Set ship faction
 
             // Find an enemy space navy
             Faction enemyShipFaction = Faction.OfAncientsHostile;
@@ -340,9 +327,8 @@ namespace RimWorld
                 if (shipDef == null)
                     shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.tradeShip).RandomElement();
             }
-            else if (ModsConfig.RoyaltyActive && Faction.OfEmpire != null && !Faction.OfEmpire.AllyOrNeutralTo(Faction.OfPlayer) || !ModsConfig.RoyaltyActive)
+            else
             {
-                //empire can attack if royalty and hostile or no royalty
                 //0.5-1.5
                 shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS && !def.navyExclusive).RandomElement();
                 //0-1.5
@@ -351,17 +337,6 @@ namespace RimWorld
                 //Last fallback
                 if (shipDef == null)
                     shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= 50 && !def.navyExclusive).RandomElement();
-            }
-            else
-            {
-                //0.5-1.5
-                shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && !def.imperialShip && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS && !def.navyExclusive).RandomElement();
-                //0-1.5
-                if (shipDef == null)
-                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.imperialShip && def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS && !def.navyExclusive).RandomElement();
-                //Last fallback
-                if (shipDef == null)
-                    shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.imperialShip && def.combatPoints <= 50 && !def.navyExclusive).RandomElement();
             }
 
             // Set enemy ship's faction

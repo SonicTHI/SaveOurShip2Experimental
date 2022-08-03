@@ -82,7 +82,6 @@ namespace RimWorld
         public bool neverRandom = false;
         public bool neverAttacks = false;
         public bool spaceSite = false;
-        public bool imperialShip = false;
         public bool pirateShip = false;
         public bool bountyShip = false;
         public bool mechanoidShip = false;
@@ -231,7 +230,6 @@ namespace RimWorld
         public bool neverRandom = false;
         public bool neverAttacks = false;
         public bool spaceSite = false;
-        public bool imperialShip = false;
         public bool pirateShip = false;
         public bool bountyShip = false;
         public bool mechanoidShip = false;

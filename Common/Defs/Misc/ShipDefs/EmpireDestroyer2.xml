@@ -5,7 +5,6 @@
 		<label>Pair of Imperial Scipio class destroyers</label>
 		<combatPoints>3128</combatPoints>
 		<cargoValue>1000</cargoValue>
-		<imperialShip>True</imperialShip>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>2</x>

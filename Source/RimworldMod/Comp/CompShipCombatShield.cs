@@ -11,7 +11,7 @@ using SaveOurShip2;
 namespace RimWorld
 {
     [StaticConstructorOnStartup]
-    public class CompShipCombatShield : ThingComp
+    public class CompShipCombatShield : CompShipHeatSource
     {
         private static readonly Material ShieldMaterial = MaterialPool.MatFrom("Things/Building/Ship/ShieldBubbleSOS", ShaderDatabase.MoteGlow);
         private static readonly Material ConeMaterial = MaterialPool.MatFrom("Other/ForceFieldCone", ShaderDatabase.MoteGlow);
@@ -25,14 +25,6 @@ namespace RimWorld
         private float lastInterceptAngle;
 
 		public CompFlickable Flickable;
-
-        public CompProperties_ShipCombatShield Props
-        {
-            get
-            {
-                return (CompProperties_ShipCombatShield)props;
-            }
-        }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -77,13 +69,13 @@ namespace RimWorld
             lastInterceptAngle = proj.DrawPos.AngleToFlat(parent.TrueCenter());
             lastIntercepted = Find.TickManager.TicksGame;
 
-            float heatGenerated = 0;
+            float heatGenerated = proj.DamageAmount * HeatDamageMult * Props.heatMultiplier;
             if (proj.def.projectile.damageDef==DamageDefOf.EMP)
-                heatGenerated = proj.DamageAmount * HeatDamageMult * 10;
+                heatGenerated *= 10;
             else if(proj is Projectile_ExplosiveShipCombatPlasmaXL)
-                heatGenerated = proj.DamageAmount * HeatDamageMult * 1.5f;
+                heatGenerated *= 1.5f;
             else if (proj is Projectile_TorpedoShipCombat)
-                heatGenerated = proj.DamageAmount * HeatDamageMult / 3;
+                heatGenerated /= 3;
             else if (proj is Projectile_ExplosiveShipCombatLaser || proj is Projectile_ExplosiveShipCombatPsychic)
             {
                 ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
@@ -97,17 +89,11 @@ namespace RimWorld
                     obj.large = true;
                 obj.Attach(parent);
                 GenSpawn.Spawn(obj, proj.DrawPos.ToIntVec3(), proj.Map, 0);
-                heatGenerated = proj.DamageAmount * HeatDamageMult;
             }
-            else
-                heatGenerated = proj.DamageAmount * HeatDamageMult;
 
-            if (Props.archotech)
-                heatGenerated *= 0.75f;
-
-            if (parent.TryGetComp<CompShipHeatSource>() != null && parent.TryGetComp<CompShipHeatSource>().AvailableCapacityInNetwork() < heatGenerated)
+            if (this.AvailableCapacityInNetwork() < heatGenerated)
             {
-                parent.TryGetComp<CompShipHeatSource>().AddHeatToNetwork(parent.TryGetComp<CompShipHeatSource>().AvailableCapacityInNetwork());
+                this.AddHeatToNetwork(this.AvailableCapacityInNetwork());
                 parent.TryGetComp<CompBreakdownable>().DoBreakdown();
                 GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);
                 SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent));
@@ -118,7 +104,7 @@ namespace RimWorld
             }
             else
             {
-                parent.TryGetComp<CompShipHeatSource>().AddHeatToNetwork(heatGenerated);
+                this.AddHeatToNetwork(heatGenerated);
             }
             if (parent.TryGetComp<CompPower>() != null && parent.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy() > heatGenerated /20)
             {
@@ -172,9 +158,7 @@ namespace RimWorld
             float alpha = Alpha();
             if (alpha > 0f)
             {
-                Color value = Color.white;
-                if (Props.archotech)
-                    value = Color.green;
+                Color value = Props.color;
                 value.a *= alpha;
                 PropBlock.SetColor(ShaderPropertyIDs.Color, value);
                 Matrix4x4 matrix = default(Matrix4x4);
@@ -200,7 +184,6 @@ namespace RimWorld
             {
                 yield return gizmo;
             }
-            IEnumerator<Gizmo> enumerator = null;
             yield return new Command_Action
             {
                 action = delegate ()

@@ -68,8 +68,10 @@
 	<CommandWithdrawShip>Withdraw Ship</CommandWithdrawShip>
 	<CommandWithdrawShipDesc>Withdraw this ship from the battle</CommandWithdrawShipDesc>
 	<CommandWithdrawShipLast>Last ship can not withdraw</CommandWithdrawShipLast>
-	<ShipInsideSelectWeapons>Weapons</ShipInsideSelectWeapons>
-	<ShipInsideSelectWeaponsDesc>Select all ship-to-ship weapons</ShipInsideSelectWeaponsDesc>
+	<ShipInsideSelectWeapons>Select</ShipInsideSelectWeapons>
+	<ShipInsideSelectWeaponsDesc>Select connected ship-to-ship weapons</ShipInsideSelectWeaponsDesc>
+	<ShipInsideHoldFire>Cease fire</ShipInsideHoldFire>
+	<ShipInsideHoldFireDesc>Stop all connected ship-to-ship weapons from firing on enemy ship</ShipInsideHoldFireDesc>
 	<NotAtMaxShipRange>Not at maximum range</NotAtMaxShipRange>
 	<ShipOnEnemyMap>Ship is on enemy map</ShipOnEnemyMap>
 	<!-- airlock -->

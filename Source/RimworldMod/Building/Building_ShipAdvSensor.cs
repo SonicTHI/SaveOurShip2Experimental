@@ -65,7 +65,7 @@ namespace RimWorld
         private bool ChoseWorldTarget(GlobalTargetInfo target)
         {
             PossiblyDisposeOfObservedMap();
-            if (target.WorldObject != null && target.WorldObject is MapParent)
+            if (target.WorldObject != null && target.WorldObject is MapParent p && p.def.defName.Contains("Settlement"))
             {
                 this.observedMap = (MapParent)target.WorldObject;
                 LongEventHandler.QueueLongEvent(delegate

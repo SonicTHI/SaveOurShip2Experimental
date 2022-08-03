@@ -24,15 +24,11 @@ namespace RimWorld
         public float ShipHeatCap = 0;
         public float ShipHeat = 0;
         public int shipIndex = -1;
-
+        public bool TacCon = false;
         bool selected = false;
         IntVec3 LowestCorner;
         List<Building> cachedShipParts;
-        List<Building> cachedShields;
-        List<Building> cachedCloaks;
         List<Building> cachedPods;
-        bool anyCloakOn;
-        List<Building> cachedWeapons;
         List<string> fail;
 
         bool ShouldStartCombat = false;
@@ -54,9 +50,9 @@ namespace RimWorld
             if (!cachedShipParts.Any((Building pa) => pa.def == ThingDefOf.Ship_SensorCluster || pa.def ==ThingDef.Named("Ship_SensorClusterAdv")))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
             int playerJTPower = 0;
-            if (cachedShipParts.Any((Building pa) => pa.TryGetComp<CompEngineTrailEnergy>() != null))
+            if (cachedShipParts.Any((Building pa) => pa.TryGetComp<CompEngineTrail>() != null))
             {
-                foreach (Building b in cachedShipParts.Where(b => b.TryGetComp<CompEngineTrailEnergy>() != null))
+                foreach (Building b in cachedShipParts.Where(b => b.TryGetComp<CompEngineTrail>() != null && b.GetComp<CompEngineTrail>().Props.energy))
                 {
                     int mult = 10000;
                     if (b.def.size.x > 3)
@@ -79,63 +75,53 @@ namespace RimWorld
 		[DebuggerHidden]
 		public override IEnumerable<Gizmo> GetGizmos()
 		{
-            if (this.Faction != Faction.OfPlayer)
+            var heatNet = this.TryGetComp<CompShipHeat>().myNet;
+            if (!TacCon)
             {
-                if (Prefs.DevMode)
+                if (this.Faction != Faction.OfPlayer)
                 {
-                    Command_Action hackMe = new Command_Action
+                    if (Prefs.DevMode)
                     {
-                        action = delegate
+                        Command_Action hackMe = new Command_Action
                         {
-                            Success(null);
-                        },
-                        defaultLabel = "Dev: Hack bridge",
-                        defaultDesc = "Instantly take control of this ship"
-                    };
-                    yield return hackMe;
+                            action = delegate
+                            {
+                                Success(null);
+                            },
+                            defaultLabel = "Dev: Hack bridge",
+                            defaultDesc = "Instantly take control of this ship"
+                        };
+                        yield return hackMe;
+                    }
+                    yield break;
                 }
-                yield break;
-            }
-            if (!selected)
-            {
-                Log.Message("recached: " + this);
-                cachedShipParts = ShipUtility.ShipBuildingsAttachedTo(this);
-                cachedShields = new List<Building>();
-                cachedWeapons = new List<Building>();
-                cachedCloaks = new List<Building>();
-                cachedPods = new List<Building>();
-                LowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
-                anyCloakOn = false;
-                foreach (Building b in cachedShipParts)
+                if (!selected)
                 {
-                    if (b.Position.x < LowestCorner.x)
-                        LowestCorner.x = b.Position.x;
-                    if (b.Position.z < LowestCorner.z)
-                        LowestCorner.z = b.Position.z;
-                    if (b is Building_ShipTurret)
+                    Log.Message("recached: " + this);
+                    cachedShipParts = ShipUtility.ShipBuildingsAttachedTo(this);
+                    cachedPods = new List<Building>();
+                    LowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
+                    foreach (Building b in cachedShipParts)
                     {
-                        cachedWeapons.Add(b);
+                        if (b.Position.x < LowestCorner.x)
+                            LowestCorner.x = b.Position.x;
+                        if (b.Position.z < LowestCorner.z)
+                            LowestCorner.z = b.Position.z;
+                        if (b.TryGetComp<CompCryptoLaunchable>() != null)
+                        {
+                            cachedPods.Add(b);
+                        }
                     }
-                    else if (b is Building_ShipCloakingDevice)
-                    {
-                        cachedCloaks.Add(b);
-                        if (b.TryGetComp<CompFlickable>().SwitchIsOn)
-                            anyCloakOn = true;
-                    }
-                    else if (b.TryGetComp<CompShipCombatShield>() != null)
-                        cachedShields.Add(b);
-                    else if (b.TryGetComp<CompCryptoLaunchable>() != null)
-                    {
-                        cachedPods.Add(b);
-                    }
+                    fail = InterstellarFailReasons();
+                    selected = true;
                 }
-                fail = InterstellarFailReasons();
-                selected = true;
             }
 			foreach (Gizmo c in base.GetGizmos())
 			{
 				yield return c;
-			}
+            }
+            if (TacCon || heatNet == null)
+                yield break;
             if (!mapComp.InCombat)
             {
                 Command_Action renameShip = new Command_Action
@@ -241,15 +227,16 @@ namespace RimWorld
                     }
                     yield return abandon;
                 }
-                if (cachedCloaks.Any())
+                if (heatNet.Cloaks.Any())
                 {
+					bool anyCloakOn = heatNet.AnyCloakOn();
                     Command_Toggle toggleCloak = new Command_Toggle
                     {
                         toggleAction = delegate
                         {
-                            foreach (Building b in cachedCloaks)
+                            foreach (CompShipHeatSource h in heatNet.Cloaks)
                             {
-                                b.TryGetComp<CompFlickable>().SwitchIsOn = !anyCloakOn;
+                                h.parent.TryGetComp<CompFlickable>().SwitchIsOn = !anyCloakOn;
                             }
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleCloak"),
@@ -262,21 +249,16 @@ namespace RimWorld
                         toggleCloak.icon = ContentFinder<Texture2D>.Get("UI/CloakingDeviceOff");
                     yield return toggleCloak;
                 }
-                bool anyShieldOn = false;
-                foreach(Building b in cachedShields)
+                if (heatNet.Shields.Any())
                 {
-                    if (b.TryGetComp<CompFlickable>().SwitchIsOn)
-                        anyShieldOn = true;
-                }
-                if (cachedShields.Any())
-                {
+					bool anyShieldOn = heatNet.AnyShieldOn();
 					Command_Toggle toggleShields = new Command_Toggle
 					{
 						toggleAction = delegate
 						{
-							foreach (Building b in cachedShields)
+							foreach (var b in heatNet.Shields)
 							{
-								b.TryGetComp<CompFlickable>().SwitchIsOn = !anyShieldOn;
+								b.Flickable.SwitchIsOn = !anyShieldOn;
 							}
 						},
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleShields"),
@@ -286,7 +268,6 @@ namespace RimWorld
 					};
 					yield return toggleShields;
                 }
-                
                 //incombat
                 if (mapComp.InCombat)
                 {
@@ -344,7 +325,7 @@ namespace RimWorld
                         yield return retreat;
                     }
                     if (masterMapComp.PlayerMaintain == false)
-                    { 
+                    {
                         Command_Action maintain = new Command_Action
                         {
                             action = delegate
@@ -391,16 +372,17 @@ namespace RimWorld
                         };
                         yield return advance;
                     }
-                    if (cachedWeapons.Count != 0)
+                    if (heatNet.Turrets.Any())
                     {
                         Command_Action selectWeapons = new Command_Action
                         {
                             action = delegate
                             {
                                 Find.Selector.Deselect(this);
-                                foreach (Building b in cachedWeapons)
+                                foreach (CompShipHeatSource h in heatNet.Turrets)
                                 {
-                                    Find.Selector.Select(b);
+                                    Find.Selector.Deselect(this);
+                                    Find.Selector.Select(h.parent);
                                 }
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideSelectWeapons"),
@@ -409,48 +391,6 @@ namespace RimWorld
                         };
                         yield return selectWeapons;
                     }
-                    /*if (Prefs.DevMode) //nonfunc, disable AI
-                    {
-                        if (enemyShip.Heading != -1)
-                        {
-                            Command_Action retreat = new Command_Action
-                            {
-                                action = delegate
-                                {
-                                    enemyShip.Heading = -1;
-                                    enemyShipComp.callSlowTick = true;
-                                },
-                                defaultLabel = "Dev: Enemy ship retreat",
-                            };
-                            yield return retreat;
-                        }
-                        if (enemyShip.Heading != 0)
-                        {
-                            Command_Action stop = new Command_Action
-                            {
-                                action = delegate
-                                {
-                                    enemyShipComp.Heading = 0;
-                                    enemyShipComp.callSlowTick = true;
-                                },
-                                defaultLabel = "Dev: Enemy ship stop",
-                            };
-                            yield return stop;
-                        }
-                        if (enemyShip.Heading != 1)
-                        {
-                            Command_Action advance = new Command_Action
-                            {
-                                action = delegate
-                                {
-                                    enemyShip.Heading = 1;
-                                    enemyShipComp.callSlowTick = true;
-                                },
-                                defaultLabel = "Dev: Enemy ship advance",
-                            };
-                            yield return advance;
-                        }
-                    }*/
                 }
                 //not incombat
                 else
@@ -651,53 +591,53 @@ namespace RimWorld
                         //attack passing ship
                         if (this.Map.passingShipManager.passingShips.Any())
                         {
-                            foreach (PassingShip ship in this.Map.passingShipManager.passingShips)
+                            foreach (PassingShip passingShip in this.Map.passingShipManager.passingShips)
                             {
-                                if (ship is TradeShip)
+                                if (passingShip is TradeShip)
                                 {
                                     Command_Action attackTradeShip = new Command_Action
                                     {
                                         action = delegate
                                         {
-                                            mapComp.StartShipEncounter(this, ship);
+                                            mapComp.StartShipEncounter(this, passingShip);
                                             if (ModsConfig.IdeologyActive)
                                                 IdeoUtility.Notify_PlayerRaidedSomeone(this.Map.mapPawns.FreeColonists);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Trader"),
-                                        defaultLabel = "Attack " + ship.FullTitle,
-                                        defaultDesc = "Attempt an act of space piracy against " + ship.FullTitle
+                                        defaultLabel = "Attack " + passingShip.FullTitle,
+                                        defaultDesc = "Attempt an act of space piracy against " + passingShip.FullTitle
                                     };
                                     yield return attackTradeShip;
                                 }
-                                else if (ship is AttackableShip)
+                                else if (passingShip is AttackableShip)
                                 {
                                     Command_Action attackAttackableShip = new Command_Action
                                     {
                                         action = delegate
                                         {
-                                            mapComp.StartShipEncounter(this, ship);
-                                            this.Map.passingShipManager.RemoveShip(ship);
+                                            mapComp.StartShipEncounter(this, passingShip);
+                                            this.Map.passingShipManager.RemoveShip(passingShip);
                                             if (ModsConfig.IdeologyActive)
                                                 IdeoUtility.Notify_PlayerRaidedSomeone(this.Map.mapPawns.FreeColonists);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Pirate"),
-                                        defaultLabel = "Attack " + ship.FullTitle,
-                                        defaultDesc = "Attempt to engage " + ship.FullTitle
+                                        defaultLabel = "Attack " + passingShip.FullTitle,
+                                        defaultDesc = "Attempt to engage " + passingShip.FullTitle
                                     };
                                     yield return attackAttackableShip;
                                 }
-                                else if (ship is DerelictShip)
+                                else if (passingShip is DerelictShip)
                                 {
                                     Command_Action approachDerelictShip = new Command_Action
                                     {
                                         action = delegate
                                         {
-                                            mapComp.StartShipEncounter(this, ship);
-                                            this.Map.passingShipManager.RemoveShip(ship);
+                                            mapComp.StartShipEncounter(this, passingShip);
+                                            this.Map.passingShipManager.RemoveShip(passingShip);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Quest"),
-                                        defaultLabel = "Approach " + ship.FullTitle,
-                                        defaultDesc = "Approach to investigate " + ship.FullTitle
+                                        defaultLabel = "Approach " + passingShip.FullTitle,
+                                        defaultDesc = "Approach to investigate " + passingShip.FullTitle
                                     };
                                     yield return approachDerelictShip;
                                 }
@@ -739,7 +679,7 @@ namespace RimWorld
                     }
                 }
             }
-            else //launch - very slow
+            else //launch
             {
                 Command_Action launch = new Command_Action()
                 {
@@ -790,7 +730,7 @@ namespace RimWorld
             //TODO add "solar system" option
         }
 
-        public void MoveShipSketch(IntVec3 lowestCorner, Building b, Map m, Byte rotb = 0)
+        public void MoveShipSketch(IntVec3 lowestCorner, Building b, Map m, byte rotb = 0)
         {
             Sketch shipSketch = GenerateShipSketch(lowestCorner, rotb);
             MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
@@ -861,11 +801,6 @@ namespace RimWorld
                 }
                 else
                 {
-                    foreach (Building b in cachedShipParts)
-                    {
-                        if (b.TryGetComp<CompEngineTrail>() != null && !b.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ArchotechExoticParticles")))
-                            b.TryGetComp<CompEngineTrail>().active = true;
-                    }
                     ShipCountdown.InitiateCountdown(this);
                 }
 			}
@@ -896,31 +831,16 @@ namespace RimWorld
             if (!mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Add(this);
             //Log.Message("Spawned: " + this + " to " + this.Map);
+            if (this.def.defName.Equals("ShipConsoleTactical"))
+            {
+                TacCon = true;
+            }
             var countdownComp = this.Map.Parent.GetComponent<TimedForcedExitShip>();
             if (countdownComp != null && !mapComp.IsGraveyard && countdownComp.ForceExitAndRemoveMapCountdownActive)
             {
                 countdownComp.ResetForceExitAndRemoveMapCountdown();
                 Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
             }
-            //td add name from other bridges
-            //td cache reinit
-            /*
-            if (mapComp.InCombat) //redo cache - prob better to prevent bridge building IC
-            {
-                mapComp.StartBattleCache();
-            }
-            else
-            if (!mapComp.InCombat && this.Map != mapComp.ShipCombatMasterMap && mapComp.ShipsOnMap.Count > 0)
-            {
-                foreach (Building b in ShipUtility.ShipBuildingsAttachedTo(this))
-                {
-                    if (b is Building_ShipBridge)
-                    {
-                        this.shipIndex = ((Building_ShipBridge)b).shipIndex;
-                        Log.Message("Spawned bridge: " + this + " on ship: " + shipIndex);
-                    }
-                }
-            }*/
         }
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
@@ -975,18 +895,19 @@ namespace RimWorld
                         ShipThreat += b.TryGetComp<CompShipHeat>().Props.threat;
                     else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
                         ShipThreat += 5;
-                    else if (b.TryGetComp<CompEngineTrail>() != null)
+                    var engine = b.TryGetComp<CompEngineTrail>();
+                    if (engine != null)
                     {
-                        ShipThrust += b.TryGetComp<CompEngineTrail>().Props.thrust;
-                        ShipMaxTakeoff += b.TryGetComp<CompRefuelable>().Props.fuelCapacity;
-                        //nuclear counts x2
-                        if (b.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+                        ShipThrust += engine.Props.thrust;
+                        if (engine.Props.takeOff)
                         {
                             ShipMaxTakeoff += b.TryGetComp<CompRefuelable>().Props.fuelCapacity;
+                            if (b.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+                            {
+                                ShipMaxTakeoff += b.TryGetComp<CompRefuelable>().Props.fuelCapacity;
+                            }
                         }
                     }
-                    else if (b.TryGetComp<CompEngineTrailEnergy>() != null)
-                        ShipThrust += b.TryGetComp<CompEngineTrailEnergy>().Props.thrust;
                 }
             }
             ShipThrust *= 500f / Mathf.Pow(cachedShipParts.Count, 1.1f);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using UnityEngine;
 
 namespace RimWorld
 {
@@ -25,5 +26,7 @@ namespace RimWorld
         public SoundDef singleFireSound=null;
         public bool antiEntropic = false;
         public float heatPurge = 0;
+        public float heatMultiplier = 1.0f;
+        public Color color = Color.white;
     }
 }

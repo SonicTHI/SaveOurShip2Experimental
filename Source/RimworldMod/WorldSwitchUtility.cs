@@ -682,9 +682,11 @@ namespace SaveOurShip2
                 if (PlayerFactionBounty > 20 && Find.TickManager.TicksGame-LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(PlayerFactionBounty),60000f) && !map.GetComponent<ShipHeatMapComp>().InCombat)
                 {
                     LastBountyRaidTick = Find.TickManager.TicksGame;
-                    AttackableShip ship = new AttackableShip();
-                    int threatRating = map.GetComponent<ShipHeatMapComp>().ShipThreat(map);
                     Building_ShipBridge bridge = map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();
+                    if (bridge == null)
+                        return;
+                    AttackableShip ship = new AttackableShip();
+                    int threatRating = map.GetComponent<ShipHeatMapComp>().MapThreat(map);
                     ship.enemyShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.combatPoints > threatRating * ShipInteriorMod2.difficultySoS && def.combatPoints <= Math.Pow(PlayerFactionBounty,0.3) * threatRating * ShipInteriorMod2.difficultySoS && !def.neverAttacks && !def.neverRandom && !def.mechanoidShip).RandomElement();
                     if (ship.enemyShip == null)
                         ship.enemyShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.mechanoidShip).RandomElement();

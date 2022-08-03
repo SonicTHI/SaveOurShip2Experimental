@@ -41,7 +41,7 @@ namespace RimWorld
 
         public void AfterTarget(Building b)
         {
-            List<IntVec3> positions = FindAllAttached(b);
+            List<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true);
             if (positions.NullOrEmpty())
                 return;
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmAbandonWreck", delegate
@@ -70,41 +70,6 @@ namespace RimWorld
                     Log.Warning(""+e);
                 }
             }));
-        }
-        public List<IntVec3> FindAllAttached(Building root)
-        {
-            if (root == null || root.Destroyed)
-            {
-                return new List<IntVec3>();
-            }
-            var map = root.Map;
-            var cellsTodo = new HashSet<IntVec3>();
-            var cellsDone = new HashSet<IntVec3>();
-            cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
-            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
-
-            while (cellsTodo.Count > 0)
-            {
-                var current = cellsTodo.First();
-                cellsTodo.Remove(current);
-                cellsDone.Add(current);
-                var containedThings = current.GetThingList(map);
-                if (!containedThings.Any(thing => ((thing as Building)?.def.building.shipPart ?? false) || ((thing as Building)?.def.building.isNaturalRock ?? false)))
-                {
-                    continue;
-                }
-                foreach (var thing in containedThings)
-                {
-                    if (thing is Building building)
-                    {
-                        cellsTodo.AddRange(
-                            GenAdj.CellsOccupiedBy(building).Concat(GenAdj.CellsAdjacentCardinal(building))
-                                .Where(cell => !cellsDone.Contains(cell))
-                        );
-                    }
-                }
-            }
-            return cellsDone.ToList();
         }
     }
 }

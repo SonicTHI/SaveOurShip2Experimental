@@ -200,6 +200,8 @@ namespace RimWorld
         public List<ShipCombatProjectile> TorpsInRange;
         public List<Building> MapRootListAll = new List<Building>();//all bridges on map
         public List<Building> MapRootList;//primary bridges
+
+        public Dictionary<int, SoShipCache> ShipsOnMapNew = new Dictionary<int, SoShipCache>();//bridgeId, ship
         public List<ShipCache> shipsOnMap;
         public List<ShipCache> ShipsOnMap//rebuild shipsOnMap cache if it is null
         {
@@ -264,7 +266,7 @@ namespace RimWorld
             ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta - 0.1f + 0.002f * Rand.Range(0, 20);
             ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).phi - 0.01f + 0.001f * Rand.Range(0, 20);
             //EnemyShip.regionAndRoomUpdater.Enabled = false;
-            float playerCombatPoints = ShipThreat(this.map) * 0.9f;
+            float playerCombatPoints = MapThreat(this.map) * 0.9f;
             bool isDerelict = false;
             EnemyShipDef shipDef;
 
@@ -347,11 +349,11 @@ namespace RimWorld
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
             }
         }
-        public int ShipThreat(Map ship)
+        public int MapThreat(Map map)
         {
             int ShipThreat = 0;
             int ShipMass = 0;
-            foreach (Building b in ship.spawnedThings.Where(b => b is Building))
+            foreach (Building b in map.spawnedThings.Where(b => b is Building))
             {
                 if (b.def == ShipInteriorMod2.hullPlateDef || b.def == ShipInteriorMod2.mechHullPlateDef || b.def == ShipInteriorMod2.archoHullPlateDef)
                     ShipMass += 1;
@@ -520,6 +522,9 @@ namespace RimWorld
                 {
                     if (proj.range >= MasterMapComp.Range)
                     {
+                        //td determine miss, remove proj
+                        //factors for miss: range+,pilot console+,mass-,thrusters+
+                        //factors when fired/registered:weapacc-,tac console-
                         Projectile projectile;
                         IntVec3 spawnCell;
                         if (proj.burstLoc == IntVec3.Invalid)
@@ -673,43 +678,22 @@ namespace RimWorld
                     }
                     else if (turret.heatComp.Props.maxRange > 50)//short
                     {
-                        threatPerSegment[0] += turret.heatComp.Props.threat/2;
+                        threatPerSegment[0] += turret.heatComp.Props.threat / 2;
                         threatPerSegment[1] += turret.heatComp.Props.threat;
                     }
                     else //cqc
                         threatPerSegment[0] += turret.heatComp.Props.threat;
                 }
                 if (ship.Engines.FirstOrDefault() != null)
-                    EngineRot = ship.Engines.FirstOrDefault().Item1.parent.Rotation.AsByte;
+                    EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
 
                 foreach (var engine in ship.Engines)
                 {
-                    if (engine.Item3.Fuel > 0 && engine.Item2.SwitchIsOn && EngineRot == engine.Item1.parent.Rotation.AsByte)
-                    {
-                        EnginePower += engine.Item1.Props.thrust;
-                        if (Heading != 0)
-                        {
-                            engine.Item3.ConsumeFuel(engine.Item1.Props.fuelUse);
-                            engine.Item1.active = true;
-                        }
-                        else
-                            engine.Item1.active = false;
-                    }
-                    else
-                        engine.Item1.active = false;
-                }
-                foreach (var engine in ship.EnginesEnergy)
-                {
-                    if (engine.Item3.PowerOn && engine.Item2.SwitchIsOn && EngineRot == engine.Item1.parent.Rotation.AsByte)
-                    {
-                        EnginePower += engine.Item1.Props.thrust;
-                        if (Heading != 0)
-                            engine.Item1.active = true;
-                        else
-                            engine.Item1.active = false;
-                    }
-                    else
-                        engine.Item1.active = false;
+					EnginePower += engine.Props.thrust;
+					if (Heading != 0)
+						engine.active = true;
+					else
+						engine.active = false;							 
                 }
                 BuildingsCount += ship.Buildings.Count;
             }
@@ -1028,11 +1012,7 @@ namespace RimWorld
             {
                 foreach (var engine in ship.Engines)
                 {
-                    engine.Item1.active = false;
-                }
-                foreach (var engine in ship.EnginesEnergy)
-                {
-                    engine.Item1.active = false;
+                    engine.active = false;
                 }
                 foreach (var turret in ship.Turrets)
                 {
@@ -1044,11 +1024,7 @@ namespace RimWorld
         {
             foreach (var engine in ShipsOnMap[shipIndex].Engines)
             {
-                engine.Item1.active = false;
-            }
-            foreach (var engine in ShipsOnMap[shipIndex].EnginesEnergy)
-            {
-                engine.Item1.active = false;
+                engine.active = false;
             }
             foreach (var turret in ShipsOnMap[shipIndex].Turrets)
             {
@@ -1061,15 +1037,11 @@ namespace RimWorld
             {
                 if (b.TryGetComp<CompEngineTrail>() != null)
                     b.TryGetComp<CompEngineTrail>().active = false;
-                else if (b.TryGetComp<CompEngineTrailEnergy>() != null)
-                    b.TryGetComp<CompEngineTrailEnergy>().active = false;
             }
             foreach (Building b in ShipCombatMasterMap.listerBuildings.allBuildingsNonColonist)
             {
                 if (b.TryGetComp<CompEngineTrail>() != null)
                     b.TryGetComp<CompEngineTrail>().active = false;
-                else if (b.TryGetComp<CompEngineTrailEnergy>() != null)
-                    b.TryGetComp<CompEngineTrailEnergy>().active = false;
                 else if (b.TryGetComp<CompShipCombatShield>() != null)
                     b.TryGetComp<CompFlickable>().SwitchIsOn = false;
             }
@@ -1170,11 +1142,9 @@ namespace RimWorld
         public List<CompPowerBattery> Batteries = new List<CompPowerBattery>();
         public List<CompShipHeatSink> HeatSinks = new List<CompShipHeatSink>();
         public List<CompShipCombatShield> CombatShields = new List<CompShipCombatShield>();
-        public List<Tuple<CompEngineTrail, CompFlickable, CompRefuelable>> Engines = new List<Tuple<CompEngineTrail, CompFlickable, CompRefuelable>>();
-        public List<Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>> EnginesEnergy = new List<Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>>();
+        public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
         public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
         public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
-        //public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
         //public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         //public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
         //public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
@@ -1255,8 +1225,7 @@ namespace RimWorld
             Batteries = new List<CompPowerBattery>();
             HeatSinks = new List<CompShipHeatSink>();
             CombatShields = new List<CompShipCombatShield>();
-            Engines = new List<Tuple<CompEngineTrail, CompFlickable, CompRefuelable>>();
-            EnginesEnergy = new List<Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>>();
+            Engines = new List<CompEngineTrail>();
             Bridges = new List<Building_ShipBridge>();
             HeatPurges = new List<CompShipHeatPurge>();
 
@@ -1274,13 +1243,7 @@ namespace RimWorld
                 }
                 else if (building.TryGetComp<CompEngineTrail>() != null)
                 {
-                    var refuelable = building.TryGetComp<CompRefuelable>();
-                    Engines.Add(new Tuple<CompEngineTrail, CompFlickable, CompRefuelable>(building.TryGetComp<CompEngineTrail>(), building.TryGetComp<CompFlickable>(), refuelable));
-                }
-                else if (building.TryGetComp<CompEngineTrailEnergy>() != null)
-                {
-                    var powered = building.TryGetComp<CompPowerTrader>();
-                    EnginesEnergy.Add(new Tuple<CompEngineTrailEnergy, CompFlickable, CompPowerTrader>(building.TryGetComp<CompEngineTrailEnergy>(), building.TryGetComp<CompFlickable>(), powered));
+                    Engines.Add(building.TryGetComp<CompEngineTrail>());
                 }
                 //else if (building.TryGetComp<CompShipCombatShield>() != null)
                 //    CombatShields.Add(building.GetComp<CompShipCombatShield>());

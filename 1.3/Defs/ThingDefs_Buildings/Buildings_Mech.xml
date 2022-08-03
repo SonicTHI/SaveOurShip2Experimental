@@ -1,58 +1,69 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<ThingDef ParentName="BuildingBase">
-		<defName>ShipHullTileMech</defName>
-		<label>mechanoid hull plating</label>
+		<defName>Ship_BeamMech_Unpowered</defName>
+		<label>mechanoid ship hull (unpowered)</label>
 		<thingClass>Building</thingClass>
-		<drawerType>MapMeshAndRealTime</drawerType>
-		<category>Building</category>
 		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Mechanoid_Atlas</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Wall</li>
+				<li>Rock</li>
+			</linkFlags>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+				<edgeTop>Damage/Edge</edgeTop>
+				<edgeBot>Damage/Edge</edgeBot>
+				<edgeLeft>Damage/Edge</edgeLeft>
+				<edgeRight>Damage/Edge</edgeRight>
+			</damageData>
 		</graphicData>
-		<seeThroughFog>true</seeThroughFog>
-		<uiIconPath>Things/Building/Ship/HullPlate</uiIconPath>
-		<building>
-			<ai_chillDestination>false</ai_chillDestination>
-			<isInert>true</isInert>
-			<isEdifice>false</isEdifice>
-			<shipPart>true</shipPart>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Ship/HullPlate</texPath>
-			</blueprintGraphicData>
-		</building>
-		<coversFloor>false</coversFloor>
-		<altitudeLayer>LowPlant</altitudeLayer>
-		<passability>Standable</passability>
-		<placingDraggableDimensions>2</placingDraggableDimensions>
+		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
 		<statBases>
-			<MaxHitPoints>400</MaxHitPoints>
-			<WorkToBuild>900</WorkToBuild>
-			<Flammability>0.0</Flammability>
-			<Beauty>1</Beauty>
+			<WorkToBuild>1600</WorkToBuild>
+			<MaxHitPoints>1000</MaxHitPoints>
+			<Flammability>0</Flammability>
 		</statBases>
-		<description>Spaceworthy hull plating built by mechanoids.</description>
-		<costList>
-			<Steel>3</Steel>
-			<Plasteel>1</Plasteel>
-		</costList>
+		<tickerType>Normal</tickerType>
+		<description>The outer structural elements of a mechanoid ship's hull. Does not include conduits for power or coolant.</description>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
 			<li Class="CompProperties_RoofMe">
 				<mechanoid>true</mechanoid>
 			</li>
 		</comps>
-		<placeWorkers>
-			<li>PlaceWorker_NotOnBuilding</li>
-		</placeWorkers>
 		<rotatable>false</rotatable>
-		<selectable>false</selectable>
-		<neverMultiSelect>true</neverMultiSelect>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<building>
+			<shipPart>true</shipPart>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<costList>
+			<Steel>14</Steel>
+			<Plasteel>3</Plasteel>
+			<ComponentIndustrial>1</ComponentIndustrial>
+		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<constructEffect>ConstructMetal</constructEffect>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc1</designationHotKey>
-		<fillPercent>0.0</fillPercent>
+		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_BeamMech</defName>
@@ -105,9 +116,7 @@
 				<compClass>CompShipHeat</compClass>
 			</li>
 		</comps>
-		<placeWorkers>
-		</placeWorkers>
-		<rotatable>false</rotatable>	   
+		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>
 			<blueprintGraphicData>
@@ -117,71 +126,6 @@
 		<costList>
 			<Steel>16</Steel>
 			<Plasteel>4</Plasteel>
-			<ComponentIndustrial>1</ComponentIndustrial>
-		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>		
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>Ship_BeamMech_Unpowered</defName>
-		<label>mechanoid ship hull (unpowered)</label>
-		<thingClass>Building</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Mechanoid_Atlas</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<linkType>Basic</linkType>
-			<linkFlags>
-				<li>Wall</li>
-				<li>Rock</li>
-			</linkFlags>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-				<edgeTop>Damage/Edge</edgeTop>
-				<edgeBot>Damage/Edge</edgeBot>
-				<edgeLeft>Damage/Edge</edgeLeft>
-				<edgeRight>Damage/Edge</edgeRight>
-			</damageData>
-		</graphicData>
-		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<statBases>
-			<WorkToBuild>1600</WorkToBuild>
-			<MaxHitPoints>1000</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<tickerType>Normal</tickerType>
-		<description>The outer structural elements of a mechanoid ship's hull. Does not include conduits for power or coolant.</description>
-		<placingDraggableDimensions>1</placingDraggableDimensions>
-		<comps>
-			<li Class="CompProperties_RoofMe">
-				<mechanoid>true</mechanoid>
-			</li>
-		</comps>
-		<placeWorkers>
-		</placeWorkers>
-		<rotatable>false</rotatable>
-		<building>
-			<shipPart>true</shipPart>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-		</building>
-		<costList>
-			<Steel>14</Steel>
-			<Plasteel>3</Plasteel>
 			<ComponentIndustrial>1</ComponentIndustrial>
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -289,76 +233,7 @@
 		</costList>
 		<size>(1,3)</size>
 	</ThingDef>
-
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipAirlockMech</defName>
-		<label>mechanoid ship airlock</label>
-		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
-		<category>Building</category>
-		<thingClass>Building_ShipAirlock</thingClass>
-		<altitudeLayer>DoorMoveable</altitudeLayer>
-		<fillPercent>1</fillPercent>
-		<useHitPoints>true</useHitPoints>
-		<graphicData>
-			<texPath>Things/Building/Ship/Airlock_Mover_Mech</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<damageData>
-				<!--  no damage marks because they don't move with the door
-        <rect>(0,0.12,1,0.76)</rect>-->
-				<enabled>false</enabled>
-			</damageData>
-		</graphicData>
-		<uiIconPath>Things/Building/Door/Autodoor_MenuIcon</uiIconPath>
-		<costList>
-			<Steel>40</Steel>
-			<ComponentSpacer>1</ComponentSpacer>
-			<Plasteel>25</Plasteel>
-		</costList>
-		<comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>50</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_RoofMe">
-				<mechanoid>true</mechanoid>
-			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
-			</li>
-		</comps>
-		<designationHotKey>Misc2</designationHotKey>
-		<statBases>
-			<WorkToBuild>1200</WorkToBuild>
-			<MaxHitPoints>500</MaxHitPoints>
-			<Flammability>0.0</Flammability>
-		</statBases>
-		<selectable>true</selectable>
-		<tickerType>Normal</tickerType>
-		<rotatable>false</rotatable>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<holdsRoof>true</holdsRoof>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<blockLight>true</blockLight>
-		<drawerType>RealtimeOnly</drawerType>
-		<building>
-			<shipPart>true</shipPart>
-			<isInert>true</isInert>
-			<canPlaceOverWall>true</canPlaceOverWall>
-			<soundDoorOpenPowered>Door_OpenPowered</soundDoorOpenPowered>
-			<soundDoorClosePowered>Door_ClosePowered</soundDoorClosePowered>
-			<soundDoorOpenManual>Door_OpenManual</soundDoorOpenManual>
-			<soundDoorCloseManual>Door_CloseManual</soundDoorCloseManual>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Door/Door_Blueprint</texPath>
-			</blueprintGraphicData>
-			<blueprintClass>Blueprint_Door</blueprintClass>
-		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-	</ThingDef>
+	<!-- hull misc -->
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_SolarGeneratorMech</defName>
 		<label>mechanoid solar generator</label>
@@ -540,7 +415,9 @@
 			</blueprintGraphicData>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>	
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_PassiveVentMechanoid</defName>
@@ -626,6 +503,131 @@
 			</blueprintGraphicData>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipAirlockMech</defName>
+		<label>mechanoid ship airlock</label>
+		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
+		<category>Building</category>
+		<thingClass>Building_ShipAirlock</thingClass>
+		<altitudeLayer>DoorMoveable</altitudeLayer>
+		<fillPercent>1</fillPercent>
+		<useHitPoints>true</useHitPoints>
+		<graphicData>
+			<texPath>Things/Building/Ship/Airlock_Mover_Mech</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<damageData>
+				<!--  no damage marks because they don't move with the door
+        <rect>(0,0.12,1,0.76)</rect>-->
+				<enabled>false</enabled>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Door/Autodoor_MenuIcon</uiIconPath>
+		<costList>
+			<Steel>40</Steel>
+			<ComponentSpacer>1</ComponentSpacer>
+			<Plasteel>25</Plasteel>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Forbiddable"/>
+			<li Class="CompProperties_RoofMe">
+				<mechanoid>true</mechanoid>
+			</li>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeat</compClass>
+			</li>
+		</comps>
+		<designationHotKey>Misc2</designationHotKey>
+		<statBases>
+			<WorkToBuild>1200</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0.0</Flammability>
+		</statBases>
+		<selectable>true</selectable>
+		<tickerType>Normal</tickerType>
+		<rotatable>false</rotatable>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<holdsRoof>true</holdsRoof>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<blockLight>true</blockLight>
+		<drawerType>RealtimeOnly</drawerType>
+		<building>
+			<shipPart>true</shipPart>
+			<isInert>true</isInert>
+			<canPlaceOverWall>true</canPlaceOverWall>
+			<soundDoorOpenPowered>Door_OpenPowered</soundDoorOpenPowered>
+			<soundDoorClosePowered>Door_ClosePowered</soundDoorClosePowered>
+			<soundDoorOpenManual>Door_OpenManual</soundDoorOpenManual>
+			<soundDoorCloseManual>Door_CloseManual</soundDoorCloseManual>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Door/Door_Blueprint</texPath>
+			</blueprintGraphicData>
+			<blueprintClass>Blueprint_Door</blueprintClass>
+		</building>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+	</ThingDef>
+	<!-- plating -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipHullTileMech</defName>
+		<label>mechanoid hull plating</label>
+		<thingClass>Building</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<seeThroughFog>true</seeThroughFog>
+		<uiIconPath>Things/Building/Ship/HullPlate</uiIconPath>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<isInert>true</isInert>
+			<isEdifice>false</isEdifice>
+			<shipPart>true</shipPart>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Ship/HullPlate</texPath>
+			</blueprintGraphicData>
+		</building>
+		<coversFloor>false</coversFloor>
+		<altitudeLayer>LowPlant</altitudeLayer>
+		<passability>Standable</passability>
+		<placingDraggableDimensions>2</placingDraggableDimensions>
+		<statBases>
+			<MaxHitPoints>400</MaxHitPoints>
+			<WorkToBuild>900</WorkToBuild>
+			<Flammability>0.0</Flammability>
+			<Beauty>1</Beauty>
+		</statBases>
+		<description>Spaceworthy hull plating built by mechanoids.</description>
+		<costList>
+			<Steel>3</Steel>
+			<Plasteel>1</Plasteel>
+		</costList>
+		<comps>
+			<li Class="CompProperties_RoofMe">
+				<mechanoid>true</mechanoid>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_ShipHull</li>
+		</placeWorkers>
+		<rotatable>false</rotatable>
+		<selectable>false</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<constructEffect>ConstructMetal</constructEffect>
+		<designationHotKey>Misc1</designationHotKey>
+		<fillPercent>0.0</fillPercent>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>
 </Defs>

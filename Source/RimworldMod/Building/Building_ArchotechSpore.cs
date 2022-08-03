@@ -89,11 +89,6 @@ namespace RimWorld
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSFindPillars"), TranslatorFormattedStringExtensions.Translate("SoSFindPillarsDesc"), LetterDefOf.PositiveEvent);
                 //lastGiftTick = tick;
                 lastPrankTick = tick+Rand.Range(40000,80000);
-                foreach(Building b in ShipUtility.ShipBuildingsAttachedTo(this))
-                {
-                    if (b is Building_ShipBridge)
-                        this.ShipName = ((Building_ShipBridge)b).ShipName;
-                }
             }
 
             if(unlockedPsy || PsyProj.IsFinished)

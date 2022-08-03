@@ -37,6 +37,7 @@ namespace SaveOurShip2
 		public static bool SoSWin = false;
 		static bool loadedGraphics = false;
 
+												  
 		public static bool AirlockBugFlag = false;//shipmove
 		public static Building shipOriginRoot = null;//used for patched original launch code
 		public static Map shipOriginMap = null;//used to check for shipmove map size problem, reset after move
@@ -807,7 +808,41 @@ namespace SaveOurShip2
 			border.Add(new IntVec3(pos.z, 0, pos.x * -1));
 			border.Add(new IntVec3(pos.z * -1, 0, pos.x * -1));
 		}
+		public static List<IntVec3> FindAreaAttached(Building root, bool includeNaturalRock)
+		{
+			if (root == null || root.Destroyed)
+			{
+				return new List<IntVec3>();
+			}
+			var map = root.Map;
+			var cellsTodo = new HashSet<IntVec3>();
+			var cellsDone = new HashSet<IntVec3>();
+			cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
+			cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
 
+			while (cellsTodo.Count > 0)
+			{
+				var current = cellsTodo.First();
+				cellsTodo.Remove(current);
+				cellsDone.Add(current);
+				var containedThings = current.GetThingList(map);
+				if (!containedThings.Any(thing => ((thing as Building)?.def.building.shipPart ?? false) || (includeNaturalRock && ((thing as Building)?.def.building.isNaturalRock ?? false))))
+				{
+					continue;
+				}
+				foreach (var thing in containedThings)
+				{
+					if (thing is Building building)
+					{
+						cellsTodo.AddRange(
+							GenAdj.CellsOccupiedBy(building).Concat(GenAdj.CellsAdjacentCardinal(building))
+								.Where(cell => !cellsDone.Contains(cell))
+						);
+					}
+				}
+			}
+			return cellsDone.ToList();
+		}
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0)
 		{
 			List<Thing> toSave = new List<Thing>();
@@ -925,10 +960,6 @@ namespace SaveOurShip2
 								else
 									fireExplosions.Add(spawnThing.Position + new IntVec3(3, 0, 0));
 							}
-						}
-						else if (spawnThing.TryGetComp<CompEngineTrailEnergy>() != null)
-						{
-							spawnThing.TryGetComp<CompEngineTrailEnergy>().active = false;
 						}
 
 						//move
@@ -1086,17 +1117,19 @@ namespace SaveOurShip2
 						engines.Add((Building)saveThing);
 						if (saveThing.TryGetComp<CompRefuelable>() != null)
 							fuelStored += saveThing.TryGetComp<CompRefuelable>().Fuel;
-						//nuclear counts x2
 						if (saveThing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
 						{
 							fuelStored += saveThing.TryGetComp<CompRefuelable>().Fuel;
 							//nukeEngines++;
 						}
 					}
-					if (saveThing is Building && saveThing.def != hullPlateDef && saveThing.def != mechHullPlateDef && saveThing.def != archoHullPlateDef)
-						fuelNeeded += (saveThing.def.size.x * saveThing.def.size.z) * 3f;
-					else if (saveThing.def == hullPlateDef || saveThing.def == mechHullPlateDef || saveThing.def == archoHullPlateDef)
-						fuelNeeded += 1f;
+					if (saveThing is Building)
+					{
+						if (saveThing.def == hullPlateDef || saveThing.def == mechHullPlateDef || saveThing.def == archoHullPlateDef)
+							fuelNeeded += 1f;
+						else
+							fuelNeeded += (saveThing.def.size.x * saveThing.def.size.z) * 3f;
+					}
 				}
 				foreach (Building engine in engines)
 				{
@@ -1280,7 +1313,7 @@ namespace SaveOurShip2
 		}
 	}
 	//harmony patches
-	//skyfaller in ShuttleMod
+	//skyfaller related patches in ShuttleMod
 
 	//GUI
 	[HarmonyPatch(typeof(ColonistBar), "ColonistBarOnGUI")]
@@ -2320,7 +2353,7 @@ namespace SaveOurShip2
 				diaOption2.action = delegate
 				{
 					Building bridge = __instance.Map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();
-					if (Rand.Chance(0.025f * negotiator.skills.GetSkill(SkillDefOf.Social).levelInt + negotiator.Map.GetComponent<ShipHeatMapComp>().ShipThreat(__instance.Map) / 400 - bounty / 40))
+					if (Rand.Chance(0.025f * negotiator.skills.GetSkill(SkillDefOf.Social).levelInt + negotiator.Map.GetComponent<ShipHeatMapComp>().MapThreat(__instance.Map) / 400 - bounty / 40))
 					{
 						//social + shipstr vs bounty for piracy dialog
 						Find.WindowStack.Add(new Dialog_Pirate(__instance.Map.listerBuildings.allBuildingsColonist.Where(t => t.def.defName.Equals("ShipSalvageBay")).Count(), __instance));
@@ -2425,19 +2458,19 @@ namespace SaveOurShip2
 				cellsDone.Add(current);
 
 				var containedThings = current.GetThingList(map);
-				if (!containedThings.Any(thing => (thing as Building)?.def.building.shipPart ?? false))
+				if (!containedThings.Any(t => (t as Building)?.def.building.shipPart ?? false))
 				{
 					continue;
 				}
 
 				foreach (var thing in containedThings)
 				{
-					if (thing is Building building)
+					if (thing is Building b)
 					{
-						if (containedBuildings.Add(building))
+						if (containedBuildings.Add(b))
 						{
 							cellsTodo.AddRange(
-								GenAdj.CellsOccupiedBy(building).Concat(GenAdj.CellsAdjacentCardinal(building))
+								GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b))
 									.Where(cell => !cellsDone.Contains(cell))
 							);
 						}
@@ -2464,97 +2497,46 @@ namespace SaveOurShip2
 			List<string> newResult = new List<string>();
 			List<Building> shipParts = ShipUtility.ShipBuildingsAttachedTo(rootBuilding);
 
-			if (!FindEitherThing(shipParts, ThingDefOf.Ship_Engine, ThingDef.Named("Ship_Engine_Small"), ThingDef.Named("Ship_Engine_Large")))
-				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_Engine.label);
-			if (!FindEitherThing(shipParts, ThingDefOf.Ship_SensorCluster, ThingDef.Named("Ship_SensorClusterAdv"), null))
-				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
-			if (!FindEitherThing(shipParts, ThingDef.Named("ShipPilotSeat"), ThingDefOf.Ship_ComputerCore,
-				ThingDef.Named("ShipPilotSeatMini"), ThingDef.Named("ShipArchotechSpore")))
-				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDef.Named("ShipPilotSeat"));
-
 			float fuelNeeded = 0f;
 			float fuelHad = 0f;
+			bool hasPilot = false;
+			bool hasEngine = false;
+			bool hasSensor = false;
 			foreach (Building part in shipParts)
 			{
-				if (part.def == ThingDefOf.Ship_Engine || part.def.defName.Equals("Ship_Engine_Small"))
+				var engine = part.TryGetComp<CompEngineTrail>();
+				if (engine != null)
 				{
-					if (part.TryGetComp<CompRefuelable>() != null)
-						fuelHad += part.TryGetComp<CompRefuelable>().Fuel;
+					hasEngine = true;
+					if (engine.Props.takeOff)
+						fuelHad += engine.Refuelable.Fuel;
+					if (engine.Refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+						fuelHad += engine.Refuelable.Fuel;
 				}
-				else if (part.def.defName.Equals("Ship_Engine_Large"))
+				else if (!hasPilot && part is Building_ShipBridge bridge && bridge.TryGetComp<CompPowerTrader>().PowerOn)
 				{
-					if (part.TryGetComp<CompRefuelable>() != null)
-						fuelHad += part.TryGetComp<CompRefuelable>().Fuel * 2;
+					var mannable = bridge.TryGetComp<CompMannable>();
+					if (mannable == null || (mannable != null && mannable.MannedNow))
+						hasPilot = true;
 				}
+				else if (part is Building_ShipAdvSensor)
+					hasSensor = true;
 
 				if (part.def != ShipInteriorMod2.hullPlateDef && part.def != ShipInteriorMod2.archoHullPlateDef && part.def != ShipInteriorMod2.mechHullPlateDef)
 					fuelNeeded += (part.def.size.x * part.def.size.z) * 3f;
 				else
 					fuelNeeded += 1f;
 			}
-
+			if (!hasEngine)
+				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_Engine.label);
 			if (fuelHad < fuelNeeded)
-			{
-				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreChemfuel", fuelHad, fuelNeeded));
-			}
-
-			bool hasPilot = false;
-			foreach (Building part in shipParts)
-			{
-				if ((part.def == ThingDef.Named("ShipPilotSeat") || part.def == ThingDef.Named("ShipPilotSeatMini")) &&
-					part.TryGetComp<CompMannable>().MannedNow && part.TryGetComp<CompPowerTrader>().PowerOn)
-					hasPilot = true;
-				else if ((part.def == ThingDefOf.Ship_ComputerCore || part.def == ThingDef.Named("ShipArchotechSpore")) && part.TryGetComp<CompPowerTrader>().PowerOn)
-					hasPilot = true;
-			}
-
+				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreFuel", fuelHad, fuelNeeded));
+			if (!hasSensor)
+				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
 			if (!hasPilot)
-			{
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportNeedPilot"));
-			}
-
-			/*bool fullPodFound = false;
-			foreach (Building part in shipParts)
-			{
-				if (part.def == ThingDefOf.Ship_CryptosleepCasket || part.def == ThingDef.Named("ShipInside_CryptosleepCasket"))
-				{
-					Building_CryptosleepCasket pod = part as Building_CryptosleepCasket;
-					if (pod != null && pod.HasAnyContents)
-					{
-						fullPodFound = true;
-						break;
-					}
-				}
-			}
-			if (!fullPodFound)
-			{
-				__result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportNoFullPods"));
-			}*/
 
 			__result = newResult;
-		}
-
-		private static bool FindTheThing(List<Building> shipParts, ThingDef theDef)
-		{
-			if (!shipParts.Any((Building pa) => pa.def == theDef))
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		private static bool FindEitherThing(List<Building> shipParts, ThingDef theDef, ThingDef theOtherDef, ThingDef theThirdDef, ThingDef yetAnotherDef = null)
-		{
-			if (!shipParts.Any((Building pa) => pa.def == theDef) &&
-				!shipParts.Any((Building pa) => pa.def == theOtherDef) &&
-				!shipParts.Any((Building pa) => pa.def == theThirdDef) &&
-				!shipParts.Any((Building pa) => pa.def == yetAnotherDef))
-			{
-				return false;
-			}
-
-			return true;
 		}
 	}
 
@@ -2748,7 +2730,6 @@ namespace SaveOurShip2
 						}
 					}
 				}
-
 			}
 		}
 	}

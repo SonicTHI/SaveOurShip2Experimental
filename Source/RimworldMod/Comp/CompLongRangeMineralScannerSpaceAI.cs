@@ -10,6 +10,7 @@ namespace RimWorld
 {
     class CompLongRangeMineralScannerSpaceAI : CompLongRangeMineralScannerSpace
     {
+        public float Rate = 0.004f;
         new public bool CanUseNow
         {
             get
@@ -23,7 +24,11 @@ namespace RimWorld
             base.CompTickRare();
             if (!this.parent.Map.IsSpace() || !this.powerComp.PowerOn)
                 return;
-            this.daysWorkingSinceLastMinerals += 0.004f;
+
+            float rate = Rate;
+            if (mapComp.Cloaks.Any(c => c.active))
+                rate /= 4;
+            this.daysWorkingSinceLastMinerals += rate;
             float mtb = this.Props.mtbDays / 20;
             if (this.daysWorkingSinceLastMinerals >= this.Props.guaranteedToFindLumpAfterDaysWorking || Rand.MTBEventOccurs(mtb, 60000f, 59f))
             {

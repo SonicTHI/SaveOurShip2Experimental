@@ -233,6 +233,7 @@ namespace RimWorld
                     target = target,
                     range = 0,
                     spawnProjectile = spawnProjectile,
+                    //missRadius = this.verbProps.ForcedMissRadius,
                     burstLoc = burstLoc,
                     speed = turret.TryGetComp<CompShipHeatSource>().Props.projectileSpeed,
                     Map = turret.Map

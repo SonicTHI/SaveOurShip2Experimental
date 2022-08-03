@@ -115,10 +115,7 @@
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
     <Compile Include="Comp\CompProperties_ShipLifeSupport.cs" />
-    <Compile Include="Comp\CompProperties_SoShipPart.cs" />
-    <Compile Include="Comp\CompSoSshipPart.cs" />
     <Compile Include="Comp\CompProperties_SalvageBay.cs" />
-    <Compile Include="Comp\CompProperties_EngineTrailEnergy.cs" />
     <Compile Include="Comp\CompAICrewmate.cs" />
     <Compile Include="Comp\CompArchoHullConversion.cs" />
     <Compile Include="Comp\CompBecomeBuilding.cs" />
@@ -128,7 +125,6 @@
     <Compile Include="Comp\CompBuildingConsciousness.cs" />
     <Compile Include="Comp\CompChangeableProjectilePlural.cs" />
     <Compile Include="Comp\CompEngineTrail.cs" />
-    <Compile Include="Comp\CompEngineTrailEnergy.cs" />
     <Compile Include="Comp\CompExplosivePlant.cs" />
     <Compile Include="Comp\CompGraphicOnOff.cs" />
     <Compile Include="Comp\CompDamagedReactor.cs" />
@@ -164,8 +160,8 @@
     <Compile Include="Comp\CompProperties_PowerPlantSolarShip.cs" />
     <Compile Include="Comp\CompProperties_ShuttleCosmetics.cs" />
     <Compile Include="Comp\CompProperties_CryptoLaunchable.cs" />
+    <Compile Include="Comp\CompProperties_SoShipPart.cs" />
     <Compile Include="Comp\CompProperties_SpinalMount.cs" />
-    <Compile Include="Comp\CompProperties_ShipCombatShield.cs" />
     <Compile Include="Comp\CompProperties_ShipHeat.cs" />
     <Compile Include="Comp\CompProperties_SoSUnlock.cs" />
     <Compile Include="Comp\CompProperties_ShuttleLaunchable.cs" />
@@ -173,6 +169,7 @@
     <Compile Include="Comp\CompRefuelableOverdrivable.cs" />
     <Compile Include="Comp\CompSalvageBay.cs" />
     <Compile Include="Comp\CompShipCombatShield.cs" />
+    <Compile Include="Comp\CompShipHeatTacCon.cs" />
     <Compile Include="Comp\CompShipHeatPurge.cs" />
     <Compile Include="Comp\CompShipHeatSink.cs" />
     <Compile Include="Comp\CompShipHeatSource.cs" />
@@ -181,6 +178,7 @@
     <Compile Include="Comp\CompArcholife.cs" />
     <Compile Include="Comp\CompShuttleCosmetics.cs" />
     <Compile Include="Comp\CompCryptoLaunchable.cs" />
+    <Compile Include="Comp\CompSoShipPart.cs" />
     <Compile Include="Comp\CompSpinalMount.cs" />
     <Compile Include="Comp\CompSoSUnlock.cs" />
     <Compile Include="Comp\CompShuttleLaunchable.cs" />
@@ -189,6 +187,7 @@
     <Compile Include="Comp\CompUseEffect_WeatherCancel.cs" />
     <Compile Include="Comp\HediffComp_Bubble.cs" />
     <Compile Include="Comp\HediffCompProperties_Bubble.cs" />
+    <Compile Include="SoShipCache.cs" />
     <Compile Include="DamageWorker_Mechanite.cs" />
     <Compile Include="DamageWorker_PsychicFlayer.cs" />
     <Compile Include="DeathActionWorker_AntigrainExplosion.cs" />

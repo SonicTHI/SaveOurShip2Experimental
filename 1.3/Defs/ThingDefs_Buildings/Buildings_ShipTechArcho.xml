@@ -1,9 +1,84 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<!-- beam -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Beams_Archotech</defName>
 	</DesignatorDropdownGroupDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_BeamArchotech_Unpowered</defName>
+		<label>archotech ship hull (unpowered)</label>
+		<designatorDropdown>Ship_Beams_Archotech</designatorDropdown>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Archotech_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Wall</li>
+				<li>Rock</li>
+			</linkFlags>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+				<edgeTop>Damage/Edge</edgeTop>
+				<edgeBot>Damage/Edge</edgeBot>
+				<edgeLeft>Damage/Edge</edgeLeft>
+				<edgeRight>Damage/Edge</edgeRight>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Ship/ShipBeam_Archotech_UI2</uiIconPath>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<WorkToBuild>1600</WorkToBuild>
+			<MaxHitPoints>1500</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Beauty>1</Beauty>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>The outer structural elements of an archotech-designed ship's hull. Does not include conduits for power or coolant.</description>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
+		<comps>
+			<li Class="CompProperties_RoofMe">
+				<archotech>true</archotech>
+			</li>
+			<li Class="CompProperties_SoSUnlock">
+				<unlock>ArchotechUplink</unlock>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<rotatable>false</rotatable>
+		<building>
+			<shipPart>true</shipPart>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<costList>
+			<Steel>13</Steel>
+			<Plasteel>4</Plasteel>
+			<ComponentIndustrial>1</ComponentIndustrial>
+			<Gold>10</Gold>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<designationHotKey>Misc1</designationHotKey>
+		<holdsRoof>true</holdsRoof>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
+		<designationCategory>Ship</designationCategory>
+	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_BeamArchotech</defName>
 		<label>archotech ship hull</label>
@@ -59,10 +134,10 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
-		<placeWorkers>
-		</placeWorkers>
 		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>
@@ -86,80 +161,6 @@
 		</killedLeavings>
 		<designationCategory>Ship</designationCategory>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>Ship_BeamArchotech_Unpowered</defName>
-		<label>archotech ship hull (unpowered)</label>
-		<designatorDropdown>Ship_Beams_Archotech</designatorDropdown>
-		<thingClass>Building</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Archotech_Atlas</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<linkType>Basic</linkType>
-			<linkFlags>
-				<li>Wall</li>
-				<li>Rock</li>
-			</linkFlags>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-				<edgeTop>Damage/Edge</edgeTop>
-				<edgeBot>Damage/Edge</edgeBot>
-				<edgeLeft>Damage/Edge</edgeLeft>
-				<edgeRight>Damage/Edge</edgeRight>
-			</damageData>
-		</graphicData>
-		<uiIconPath>Things/Building/Ship/ShipBeam_Archotech_UI2</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<statBases>
-			<WorkToBuild>1600</WorkToBuild>
-			<MaxHitPoints>1500</MaxHitPoints>
-			<Flammability>0</Flammability>
-			<Beauty>1</Beauty>
-		</statBases>
-		<tickerType>Normal</tickerType>
-		<description>The outer structural elements of an archotech-designed ship's hull. Does not include conduits for power or coolant.</description>
-		<placingDraggableDimensions>1</placingDraggableDimensions>
-		<comps>
-			<li Class="CompProperties_RoofMe">
-				<archotech>true</archotech>
-			</li>
-			<li Class="CompProperties_SoSUnlock">
-				<unlock>ArchotechUplink</unlock>
-			</li>
-			<li><compClass>CompColorable</compClass></li>
-		</comps>
-		<placeWorkers/>
-		<rotatable>false</rotatable>
-		<building>
-			<shipPart>true</shipPart>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-		</building>
-		<costList>
-			<Steel>13</Steel>
-			<Plasteel>4</Plasteel>
-			<ComponentIndustrial>1</ComponentIndustrial>
-			<Gold>10</Gold>
-		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
-		<designationCategory>Ship</designationCategory>
-	</ThingDef>
 	<!-- corners -->
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerArchotech" Abstract="True">
 		<designatorDropdown>Ship_Beams_Archotech</designatorDropdown>
@@ -168,7 +169,9 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 	</ThingDef>
@@ -270,82 +273,7 @@
 		</costList>
 		<size>(1,3)</size>
 	</ThingDef>
-	<!-- beam misc -->
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipAirlockArchotech</defName>
-		<label>archotech ship airlock</label>
-		<designatorDropdown>Ship_Airlocks</designatorDropdown>
-		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
-		<category>Building</category>
-		<thingClass>Building_ShipAirlock</thingClass>
-		<designationCategory>Ship</designationCategory>
-		<altitudeLayer>DoorMoveable</altitudeLayer>
-		<fillPercent>1</fillPercent>
-		<useHitPoints>true</useHitPoints>
-		<graphicData>
-			<texPath>Things/Building/Ship/ArchoAirlock_Mover</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<damageData>
-				<!--  no damage marks because they don't move with the door
-        <rect>(0,0.12,1,0.76)</rect>-->
-				<enabled>false</enabled>
-			</damageData>
-		</graphicData>
-		<uiIconPath>Things/Building/Door/Autodoor_MenuIcon</uiIconPath>
-		<costList>
-			<Steel>40</Steel>
-			<ComponentSpacer>1</ComponentSpacer>
-			<Plasteel>25</Plasteel>
-			<Gold>50</Gold>
-		</costList>
-		<comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>20</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_RoofMe"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
-			</li>
-			<li Class="CompProperties_SoSUnlock">
-				<unlock>ArchotechUplink</unlock>
-			</li>
-			<li><compClass>CompColorable</compClass></li>
-		</comps>
-		<designationHotKey>Misc2</designationHotKey>
-		<statBases>
-			<WorkToBuild>1200</WorkToBuild>
-			<MaxHitPoints>1000</MaxHitPoints>
-			<Flammability>0.0</Flammability>
-		</statBases>
-		<selectable>true</selectable>
-		<tickerType>Normal</tickerType>
-		<rotatable>false</rotatable>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<holdsRoof>true</holdsRoof>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<blockLight>true</blockLight>
-		<drawerType>RealtimeOnly</drawerType>
-		<building>
-			<shipPart>true</shipPart>
-			<isInert>true</isInert>
-			<canPlaceOverWall>true</canPlaceOverWall>
-			<soundDoorOpenPowered>Door_OpenPowered</soundDoorOpenPowered>
-			<soundDoorClosePowered>Door_ClosePowered</soundDoorClosePowered>
-			<soundDoorOpenManual>Door_OpenManual</soundDoorOpenManual>
-			<soundDoorCloseManual>Door_CloseManual</soundDoorCloseManual>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Door/Door_Blueprint</texPath>
-			</blueprintGraphicData>
-			<blueprintClass>Blueprint_Door</blueprintClass>
-			<roamerCanOpen>false</roamerCanOpen>
-		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-	</ThingDef>
+	<!-- hull misc -->
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_SolarGeneratorArchotech</defName>
 		<label>archotech solar generator</label>
@@ -424,7 +352,9 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_SolarShip</li>
@@ -529,7 +459,9 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc2</designationHotKey>
@@ -616,14 +548,18 @@
 				<graphicPath>Things/Building/Ship/Ship_Vent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
+			<li Class="CompProperties_RoofMe">
+				<archotech>true</archotech>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>
 			</li>
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc2</designationHotKey>
@@ -635,9 +571,89 @@
 			</blueprintGraphicData>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
-	<!-- hull -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipAirlockArchotech</defName>
+		<label>archotech ship airlock</label>
+		<designatorDropdown>Ship_Airlocks</designatorDropdown>
+		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
+		<category>Building</category>
+		<thingClass>Building_ShipAirlock</thingClass>
+		<designationCategory>Ship</designationCategory>
+		<altitudeLayer>DoorMoveable</altitudeLayer>
+		<fillPercent>1</fillPercent>
+		<useHitPoints>true</useHitPoints>
+		<graphicData>
+			<texPath>Things/Building/Ship/ArchoAirlock_Mover</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<damageData>
+				<!--  no damage marks because they don't move with the door
+        <rect>(0,0.12,1,0.76)</rect>-->
+				<enabled>false</enabled>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Door/Autodoor_MenuIcon</uiIconPath>
+		<costList>
+			<Steel>40</Steel>
+			<ComponentSpacer>1</ComponentSpacer>
+			<Plasteel>25</Plasteel>
+			<Gold>50</Gold>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>20</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Forbiddable"/>
+			<li Class="CompProperties_RoofMe">
+				<archotech>true</archotech>
+			</li>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeat</compClass>
+			</li>
+			<li Class="CompProperties_SoSUnlock">
+				<unlock>ArchotechUplink</unlock>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<designationHotKey>Misc2</designationHotKey>
+		<statBases>
+			<WorkToBuild>1200</WorkToBuild>
+			<MaxHitPoints>1000</MaxHitPoints>
+			<Flammability>0.0</Flammability>
+		</statBases>
+		<selectable>true</selectable>
+		<tickerType>Normal</tickerType>
+		<rotatable>false</rotatable>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<holdsRoof>true</holdsRoof>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<blockLight>true</blockLight>
+		<drawerType>RealtimeOnly</drawerType>
+		<building>
+			<shipPart>true</shipPart>
+			<isInert>true</isInert>
+			<canPlaceOverWall>true</canPlaceOverWall>
+			<soundDoorOpenPowered>Door_OpenPowered</soundDoorOpenPowered>
+			<soundDoorClosePowered>Door_ClosePowered</soundDoorClosePowered>
+			<soundDoorOpenManual>Door_OpenManual</soundDoorOpenManual>
+			<soundDoorCloseManual>Door_CloseManual</soundDoorCloseManual>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Door/Door_Blueprint</texPath>
+			</blueprintGraphicData>
+			<blueprintClass>Blueprint_Door</blueprintClass>
+			<roamerCanOpen>false</roamerCanOpen>
+		</building>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+	</ThingDef>
+	<!-- plating -->
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipHullTileArchotech</defName>
 		<label>archotech hull plating</label>
@@ -683,10 +699,12 @@
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_NotOnBuilding</li>
+			<li>PlaceWorker_ShipHull</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>
@@ -736,7 +754,6 @@
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
 				<fuelCapacity>100.0</fuelCapacity>
@@ -796,7 +813,7 @@
 		<passability>PassThroughOnly</passability>
 		<pathCost>50</pathCost>
 		<blockWind>true</blockWind>
-		<fillPercent>1.0</fillPercent>
+		<fillPercent>1</fillPercent>
 		<rotatable>false</rotatable>
 		<statBases>
 			<MaxHitPoints>3000</MaxHitPoints>
@@ -856,6 +873,9 @@
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc4</designationHotKey>
 		<constructEffect>ConstructMetal</constructEffect>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
 		<researchPrerequisites>
 			<li>ArchotechReactor</li>
 		</researchPrerequisites>
@@ -925,19 +945,16 @@
 				<rect>(0.2, 0.2, 2.8, 2.8)</rect>
 			</damageData>
 		</graphicData>
-		<building>
-		</building>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<placeWorkers>
 			<li>PlaceWorker_ShipProjectileInterceptorRadius</li>
+			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<comps>
-			<li Class="CompProperties_ShipCombatShield">
-				<radius>40</radius>
-				<archotech>true</archotech>
-			</li>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipCombatShield</compClass>
+				<heatMultiplier>0.75</heatMultiplier>
+				<color>(0,255,0)</color>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -1004,7 +1021,6 @@
 		<description>An incubator for a mortal mind, either humanlike or machine, that has begun upgrading itself into an archotech.\n\nThe vast majority of its computational power is focused inward, contemplating its own structure and other unknowable mysteries, but enough is left over to serve as a ship's computer core.\n\nIts mood can be improved by having colonists meditate nearby, or by sacrificing prisoners to it. Should its mood dip too low, it might decide to play "pranks."\n\nBuilding more than one archotech spore will not produce gifts more frequently, but they will develop psychic field strength independently.</description>
 		<size>(5,2)</size>
 		<building>
-			<shipPart>true</shipPart>
 			<buildingTags>
 				<li>RitualFocus</li>
 			</buildingTags>
@@ -1184,9 +1200,6 @@
 		</statBases>
 		<description>A complex and bizarre apparatus which serves no human-comprehensible purpose, but which will apparently advance the plans of your archotech spore in some way.\n\nThere is no benefit to building more than one copy of the same pillar.</description>
 		<size>(1,1)</size>
-		<building>
-			<shipPart>true</shipPart>
-		</building>
 		<costList>
 			<Gold>200</Gold>
 			<Uranium>100</Uranium>
@@ -1195,7 +1208,6 @@
 			<ArchotechExoticParticles>12</ArchotechExoticParticles>
 		</costList>
 		<comps>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Facility">
 				<statOffsets>
 					<ArchotechPillarsConnected>1</ArchotechPillarsConnected>
@@ -1266,10 +1278,9 @@
 		</comps>
 	</ThingDef>
 	<!-- weapon -->
-	<ThingDef ParentName="BaseShipArtilleryBuilding">
+	<ThingDef ParentName="ShipSpinalTurretBuilding">
 		<defName>ShipSpinalBarrelPsychic</defName>
 		<label>spinal barrel: psychic flayer</label>
-		<designatorDropdown>ShipTurrets_Spinal</designatorDropdown>
 		<description>The final segment of a spinal-mount cannon. Fires a beam of directed psychic trauma that stuns crew and will likely cause brain damage. Ignores hull (but not shields). Unlike other spinal weapons, the psychic flayer cannot damage your own ship.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Psychic</texPath>
@@ -1277,16 +1288,6 @@
 			<shaderType>CutoutComplex</shaderType>
 			<drawSize>(5,4.2)</drawSize>
 		</graphicData>
-		<size>(5,4)</size>
-		<rotatable>true</rotatable>
-		<tickerType>Normal</tickerType>
-		<altitudeLayer>BuildingOnTop</altitudeLayer>
-		<passability>Impassable</passability>
-		<castEdgeShadows>false</castEdgeShadows>
-		<designationHotKey>Misc12</designationHotKey>
-		<fillPercent>1</fillPercent>
-		<designationCategory>Ship</designationCategory>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<statBases>
 			<MaxHitPoints>1250</MaxHitPoints>
 			<WorkToBuild>1600</WorkToBuild>
@@ -1326,18 +1327,14 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
-		<placeWorkers>
-			<li>PlaceWorker_NeedsSpinalMountPort</li>
-		</placeWorkers>
 		<researchPrerequisites>
 			<li>ArchotechPsychicWeapon</li>
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 		<uiIconScale>0.65</uiIconScale>
 		<building>
+			<shipPart>true</shipPart>
 			<turretGunDef>ShipTurret_SpinalMountTopPsychic</turretGunDef>
-			<buildingTags>
-			</buildingTags>
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
 			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
 		</building>
@@ -1421,10 +1418,9 @@
 		<soundExplosion>PsychicShockLanceCast</soundExplosion>
 		<combatLogRules>Damage_Stun</combatLogRules>
 	</DamageDef>
-	<ThingDef ParentName="BaseShipArtilleryBuilding">
+	<ThingDef ParentName="ShipSpinalTurretBuilding">
 		<defName>ShipSpinalBarrelMechanite</defName>
 		<label>spinal barrel: disassembler</label>
-		<designatorDropdown>ShipTurrets_Spinal</designatorDropdown>
 		<description>The final segment of a spinal-mount cannon. A modified railgun which launches globs of disassembler mechanites. Should be placed outside the ship, unless you want a new hole in your hull.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Shipeater</texPath>
@@ -1432,16 +1428,6 @@
 			<shaderType>CutoutComplex</shaderType>
 			<drawSize>(5,4.2)</drawSize>
 		</graphicData>
-		<size>(5,4)</size>
-		<rotatable>true</rotatable>
-		<tickerType>Normal</tickerType>
-		<altitudeLayer>BuildingOnTop</altitudeLayer>
-		<passability>Impassable</passability>
-		<castEdgeShadows>false</castEdgeShadows>
-		<designationHotKey>Misc12</designationHotKey>
-		<fillPercent>1</fillPercent>
-		<designationCategory>Ship</designationCategory>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<statBases>
 			<MaxHitPoints>1250</MaxHitPoints>
 			<WorkToBuild>1600</WorkToBuild>
@@ -1479,18 +1465,14 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
-		<placeWorkers>
-			<li>PlaceWorker_NeedsSpinalMountPort</li>
-		</placeWorkers>
 		<researchPrerequisites>
 			<li>ArchotechMechaniteWeapon</li>
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 		<uiIconScale>0.65</uiIconScale>
 		<building>
+			<shipPart>true</shipPart>
 			<turretGunDef>ShipTurret_SpinalMountTopMechanite</turretGunDef>
-			<buildingTags>
-			</buildingTags>
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
 			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
 		</building>

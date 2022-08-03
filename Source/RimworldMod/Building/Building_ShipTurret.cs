@@ -37,7 +37,7 @@ namespace RimWorld
         public int AmplifierCount = -1;
         public float AmplifierDamageBonus = 0;
         bool selected = false;
-        private bool holdFire;
+        public bool holdFire;
         public bool PointDefenseMode;
         public bool GroundDefenseMode;
         public bool useOptimalRange;

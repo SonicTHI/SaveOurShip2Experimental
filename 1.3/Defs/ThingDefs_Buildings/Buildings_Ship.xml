@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
-	<!-- beam -->
+	<!-- hull -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Beams</defName>
 	</DesignatorDropdownGroupDef>
@@ -46,10 +46,10 @@
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
 			<li Class="CompProperties_RoofMe"/>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
-		<placeWorkers>
-		</placeWorkers>
 		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>
@@ -70,7 +70,9 @@
 		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_Beam</defName>
@@ -121,10 +123,10 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
-		<placeWorkers>
-		</placeWorkers>
 		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>
@@ -145,7 +147,9 @@
 		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<!-- corners -->
 	<ThingDef ParentName="BuildingBase" Name="ShipCornerBase" Abstract="True">
@@ -185,13 +189,17 @@
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCorner" Abstract="True">
 		<designatorDropdown>Ship_Beams</designatorDropdown>
 		<description>Angled armor for a ship's outer hull.</description>
 		<comps>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 		<researchPrerequisites>
@@ -290,7 +298,7 @@
 		</costList>
 		<size>(1,3)</size>
 	</ThingDef>
-	<!-- beam misc -->
+	<!-- hull misc -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_SolarGenerators</defName>
 	</DesignatorDropdownGroupDef>
@@ -368,7 +376,9 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_SolarShip</li>
@@ -383,7 +393,9 @@
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Radiators</defName>
@@ -474,7 +486,9 @@
 				<ventHeatToSpace>true</ventHeatToSpace>
 				<heatVentTick>1200</heatVentTick>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc2</designationHotKey>
@@ -490,7 +504,9 @@
 			</blueprintGraphicData>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_PassiveCoolerAdvanced</defName>
@@ -579,7 +595,9 @@
 				<ventHeatToSpace>true</ventHeatToSpace>
 				<heatVentTick>1000</heatVentTick>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc2</designationHotKey>
@@ -594,7 +612,9 @@
 			</blueprintGraphicData>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Vents</defName>
@@ -673,7 +693,9 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc2</designationHotKey>
@@ -689,7 +711,9 @@
 			</blueprintGraphicData>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Airlocks</defName>
@@ -726,13 +750,14 @@
 				<basePowerConsumption>50</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Forbiddable"/>
 			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 			<li Class="CompProperties_Unfold">
 				<extendRate>0.005</extendRate>
 				<retractRate>0.005</retractRate>
@@ -846,7 +871,9 @@
 				<graphicPath>Things/Building/Ship/DockAttach</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li><compClass>CompColorable</compClass></li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_SolarShip</li>
@@ -859,9 +886,11 @@
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
-	<!-- hull -->
+	<!-- plating -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Hulls</defName>
 	</DesignatorDropdownGroupDef>
@@ -949,8 +978,10 @@
 		</statBases>
 		<description>Support structure for attaching buildings and turrets to a ship's exterior. Anything built atop this will be considered part of the ship.\n\nIntegrated nano-composite armor reduces damage to turrets placed atop this hardpoint by 75%.</description>
 		<comps>
-			<li Class="CompProperties_ShipPart"/>
-			<li><compClass>CompColorable</compClass></li>
+			<li Class="CompProperties_RoofMe"/>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<rotatable>false</rotatable>
 		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
@@ -1067,11 +1098,11 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
 				<fuelCapacity>500.0</fuelCapacity>
@@ -1089,8 +1120,14 @@
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
 			<li Class="CompProperties_EngineTrail">
+				<!--graphicData>
+					<texPath>Things/Building/Ship/Ship_Engine_Trail_Single</texPath>
+					<graphicClass>Graphic_Multi</graphicClass>
+					<drawSize>(7,16.5)</drawSize>
+				</graphicData-->
 				<thrust>1</thrust>
 				<fuelUse>1</fuelUse>
+				<takeOff>true</takeOff>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -1139,11 +1176,11 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
 				<fuelCapacity>1000.0</fuelCapacity>
@@ -1161,8 +1198,14 @@
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
 			<li Class="CompProperties_EngineTrail">
+				<!--graphicData>
+					<texPath>Things/Building/Ship/Ship_Engine_Trail_Double</texPath>
+					<graphicClass>Graphic_Multi</graphicClass>
+					<drawSize>(7,16.5)</drawSize>
+				</graphicData-->
 				<thrust>2</thrust>
 				<fuelUse>2</fuelUse>
+				<takeOff>true</takeOff>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -1213,6 +1256,7 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1233,10 +1277,15 @@
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_EngineTrail">
+				<!--graphicData>
+					<texPath>Things/Building/Ship/NuclearEngineTrail</texPath>
+					<graphicClass>Graphic_Multi</graphicClass>
+					<drawSize>(7,26.5)</drawSize>
+				</graphicData-->
 				<thrust>6</thrust>
 				<fuelUse>3</fuelUse>
+				<takeOff>true</takeOff>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -1291,14 +1340,20 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>200</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_EngineTrailEnergy">
+			<li Class="CompProperties_EngineTrail">
+				<!--graphicData>
+					<texPath>Things/Building/Ship/Ship_Engine_Trail_Energy_Double</texPath>
+					<graphicClass>Graphic_Multi</graphicClass>
+					<drawSize>(7,16.5)</drawSize>
+				</graphicData-->
+				<energy>true</energy>
 				<thrust>1</thrust>
 			</li>
 		</comps>
@@ -1352,14 +1407,20 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>600</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_EngineTrailEnergy">
+			<li Class="CompProperties_EngineTrail">
+				<!--graphicData>
+					<texPath>Things/Building/Ship/Ship_Engine_Trail_Energy_Large</texPath>
+					<graphicClass>Graphic_Multi</graphicClass>
+					<drawSize>(11,26.5)</drawSize>
+				</graphicData-->
+				<energy>true</energy>
 				<thrust>3</thrust>
 			</li>
 		</comps>
@@ -1387,7 +1448,7 @@
 	</DesignatorDropdownGroupDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipPilotSeatMini</defName>
-		<label>minimal ship bridge</label>
+		<label>pilot console</label>
 		<designatorDropdown>Ship_Bridges</designatorDropdown>
 		<thingClass>Building_ShipBridge</thingClass>
 		<graphicData>
@@ -1412,6 +1473,7 @@
 		<defaultPlacingRot>South</defaultPlacingRot>
 		<tickerType>Normal</tickerType>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<description>Allows colonists to pilot a starship.</description>
 		<designationCategory>Ship</designationCategory>
 		<costList>
 			<Steel>20</Steel>
@@ -1439,7 +1501,6 @@
 			<Beauty>1</Beauty>
 		</statBases>
 		<building>
-			<shipPart>true</shipPart>
 			<isSittable>true</isSittable>
 		</building>
 		<placeWorkers>
@@ -1448,18 +1509,17 @@
 		<researchPrerequisites>
 			<li>ShipPilotSeat</li>
 		</researchPrerequisites>
-		<description>Allows colonists to pilot a starship into orbit. Unlike its larger counterpart, cannot be used to scan for orbital sites, and suffers reduced accuracy and engine speed when used in combat.</description>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
-		<defName>ShipPilotSeat</defName>
-		<label>ship bridge</label>
+		<defName>ShipConsoleTactical</defName>
+		<label>tactical console</label>
 		<designatorDropdown>Ship_Bridges</designatorDropdown>
 		<thingClass>Building_ShipBridge</thingClass>
 		<graphicData>
-			<texPath>Things/Building/Ship/Ship_Bridge</texPath>
+			<texPath>Things/Building/Ship/Ship_Console_Tactical</texPath>
 			<graphicClass>Graphic_MultiOnOff</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(6,7)</drawSize>
+			<drawSize>(5,3.5)</drawSize>
 			<damageData>
 				<cornerTL>Damage/Corner</cornerTL>
 				<cornerTR>Damage/Corner</cornerTR>
@@ -1469,43 +1529,42 @@
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
 		<hasInteractionCell>True</hasInteractionCell>
-		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
+		<interactionCellOffset>(0,0,1)</interactionCellOffset>
 		<stealable>false</stealable>
-		<size>(5,3)</size>
+		<size>(3,1)</size>
 		<pathCost>30</pathCost>
 		<fillPercent>0.40</fillPercent>
 		<defaultPlacingRot>South</defaultPlacingRot>
 		<tickerType>Normal</tickerType>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<description>Provides weapon selection and targeting options. Increases weapon accuracy.</description>
 		<designationCategory>Ship</designationCategory>
 		<costList>
-			<Steel>50</Steel>
-			<ComponentSpacer>3</ComponentSpacer>
+			<Steel>20</Steel>
+			<ComponentSpacer>1</ComponentSpacer>
 		</costList>
 		<comps>
 			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Mannable"/>
-			<li Class="CompProperties_LongRangeMineralScannerSpace"/>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>250</basePowerConsumption>
+				<basePowerConsumption>50</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_GraphicOnOff"/>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+				<compClass>CompShipHeatTacCon</compClass>
 			</li>
 		</comps>
 		<statBases>
-			<MaxHitPoints>220</MaxHitPoints>
-			<WorkToBuild>7500</WorkToBuild>
-			<Mass>18</Mass>
+			<MaxHitPoints>120</MaxHitPoints>
+			<WorkToBuild>5000</WorkToBuild>
+			<Mass>8</Mass>
 			<Flammability>0</Flammability>
 			<Beauty>1</Beauty>
 		</statBases>
 		<building>
-			<shipPart>true</shipPart>
 			<isSittable>true</isSittable>
 		</building>
 		<placeWorkers>
@@ -1514,7 +1573,6 @@
 		<researchPrerequisites>
 			<li>ShipPilotSeat</li>
 		</researchPrerequisites>
-		<description>Allows colonists to pilot a starship into orbit. Once in orbit, it can also be used to scan for objects of interest.</description>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_ComputerCore</defName>
@@ -1542,7 +1600,7 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>A computer core capable of housing a superhumanlike AI who can guide a ship on interstellar journeys. Once in orbit, automatically scans for nearby sites of interest.</description>
+		<description>A computer core capable of housing a superhumanlike AI who can pilot your ship or guide it on interstellar journeys.</description>
 		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
@@ -1552,7 +1610,6 @@
 				<basePowerConsumption>1000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_LongRangeMineralScannerSpaceAI"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -1565,9 +1622,6 @@
 			</li>
 		</comps>
 		<rotatable>false</rotatable>
-		<building>
-			<shipPart>true</shipPart>
-		</building>
 		<placeWorkers>
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
@@ -1582,6 +1636,70 @@
 		<designationHotKey>Misc3</designationHotKey>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
+	</ThingDef>
+
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipPilotSeat</defName>
+		<label>ship bridge</label>
+		<designatorDropdown>Ship_Bridges</designatorDropdown>
+		<thingClass>Building_ShipBridge</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/Ship_Bridge</texPath>
+			<graphicClass>Graphic_MultiOnOff</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(6,7)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
+		<stealable>false</stealable>
+		<size>(5,3)</size>
+		<pathCost>30</pathCost>
+		<fillPercent>0.40</fillPercent>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<tickerType>Normal</tickerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<costList>
+			<Steel>50</Steel>
+			<ComponentSpacer>3</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_ShipPart"/>
+			<li Class="CompProperties_Mannable"/>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>250</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeat</compClass>
+			</li>
+		</comps>
+		<statBases>
+			<MaxHitPoints>220</MaxHitPoints>
+			<WorkToBuild>7500</WorkToBuild>
+			<Mass>18</Mass>
+			<Flammability>0</Flammability>
+			<Beauty>1</Beauty>
+		</statBases>
+		<building>
+			<isSittable>true</isSittable>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<researchPrerequisites>
+			<li>ShipPilotSeat</li>
+		</researchPrerequisites>
+		<description>Allows colonists to pilot a starship.</description>
 	</ThingDef>
 	<!-- sensors -->
 	<DesignatorDropdownGroupDef>
@@ -1613,7 +1731,7 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>Basic ship sensors. Capable of detecting nearby craft and observing sites from orbit.</description>
+		<description>Basic ship sensors required for ship operation. Allow a ship to reach orbit or observe an area to land at once in orbit.</description>
 		<size>(1,1)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
@@ -1622,19 +1740,18 @@
 				<basePowerConsumption>250</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Flickable"/>
 		</comps>
 		<rotatable>false</rotatable>
-		<building>
-			<shipPart>true</shipPart>
-		</building>
 		<costList>
 			<Steel>140</Steel>
 			<Gold>4</Gold>
 			<ComponentIndustrial>6</ComponentIndustrial>
 			<ComponentSpacer>6</ComponentSpacer>
 		</costList>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
@@ -1666,31 +1783,95 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>Advanced ship sensors. Capable of scanning the interiors of enemy ships and observing sites from orbit.</description>
+		<description>Advanced ship sensors. Automatically scans for nearby sites of interest. Capable of scanning the interiors of enemy ships.</description>
 		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
+			<li Class="CompProperties_LongRangeMineralScannerSpaceAI"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>750</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Flickable"/>
 		</comps>
 		<rotatable>false</rotatable>
-		<building>
-			<shipPart>true</shipPart>
-		</building>
 		<costList>
 			<Steel>480</Steel>
 			<Gold>16</Gold>
 			<ComponentSpacer>24</ComponentSpacer>
 		</costList>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipConsoleScience</defName>
+		<label>science console</label>
+		<designatorDropdown>Ship_Sensors</designatorDropdown>
+		<thingClass>Building_ShipAdvSensor</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/Ship_Console_Science</texPath>
+			<graphicClass>Graphic_MultiOnOff</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(5,3.5)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,1)</interactionCellOffset>
+		<stealable>false</stealable>
+		<size>(3,1)</size>
+		<pathCost>30</pathCost>
+		<fillPercent>0.40</fillPercent>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<tickerType>Normal</tickerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<description>Allows colonists to scan for objects of interest or observe sites from orbit.</description>
+		<designationCategory>Ship</designationCategory>
+		<costList>
+			<Steel>20</Steel>
+			<ComponentSpacer>1</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Mannable"/>
+			<li Class="CompProperties_LongRangeMineralScannerSpace"/>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeat</compClass>
+			</li>
+		</comps>
+		<statBases>
+			<MaxHitPoints>120</MaxHitPoints>
+			<WorkToBuild>5000</WorkToBuild>
+			<Mass>8</Mass>
+			<Flammability>0</Flammability>
+			<Beauty>1</Beauty>
+		</statBases>
+		<building>
+			<isSittable>true</isSittable>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<researchPrerequisites>
+			<li>ShipPilotSeat</li>
+		</researchPrerequisites>
 	</ThingDef>
 	<!-- ls -->
 	<DesignatorDropdownGroupDef>
@@ -1732,13 +1913,12 @@
 				<transmitsPower>false</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_ShipLifeSupport"/>
 			<li Class="CompProperties_GraphicOnOff"/>
 		</comps>
-		<building>
-			<shipPart>true</shipPart>
-		</building>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
 		<costList>
 			<Steel>120</Steel>
 			<Plasteel>60</Plasteel>
@@ -1786,13 +1966,12 @@
 				<transmitsPower>false</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_ShipLifeSupport"/>
 			<li Class="CompProperties_GraphicOnOff"/>
 		</comps>
-		<building>
-			<shipPart>true</shipPart>
-		</building>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
 		<costList>
 			<Steel>40</Steel>
 			<Plasteel>20</Plasteel>
@@ -1804,7 +1983,7 @@
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<rotatable>false</rotatable>
 	</ThingDef>
-	<!-- caps -->
+	<!-- power -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Capacitors</defName>
 	</DesignatorDropdownGroupDef>
@@ -1920,7 +2099,6 @@
 			<li>ShipCapacitor</li>
 		</researchPrerequisites>
 	</ThingDef>
-
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Reactors</defName>
 	</DesignatorDropdownGroupDef>
@@ -1960,9 +2138,6 @@
 		<description>A compact, self-contained fission reactor. Burns uranium fuel pods. Vents heat into a heatsink network if available, or into the surrounding room if not.\n\nIts base power production of 10,000W can be boosted with several increasingly risky overdrive modes.</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
-		<building>
-			<shipPart>true</shipPart>
-		</building>
 		<costList>
 			<Steel>500</Steel>
 			<Plasteel>200</Plasteel>
@@ -1997,7 +2172,6 @@
 				<glowRadius>8</glowRadius>
 				<glowColor>(222,64,64,0)</glowColor>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Explosive">
 				<wickTicks>240</wickTicks>
 				<explosiveRadius>12.9</explosiveRadius>
@@ -2008,6 +2182,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -2015,9 +2190,14 @@
 		<designationHotKey>Misc4</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 	</ThingDef>
+	<!-- bays -->
+	<DesignatorDropdownGroupDef>
+		<defName>Ship_ShuttleBays</defName>
+	</DesignatorDropdownGroupDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipShuttleBay</defName>
 		<label>shuttle bay</label>
+		<designatorDropdown>Ship_ShuttleBays</designatorDropdown>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/Shuttle_Bay_off</texPath>
@@ -2046,7 +2226,6 @@
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
 		<building>
-			<shipPart>true</shipPart>
 			<isEdifice>false</isEdifice>
 		</building>
 		<costList>
@@ -2054,9 +2233,6 @@
 			<Plasteel>50</Plasteel>
 			<ComponentSpacer>6</ComponentSpacer>
 		</costList>
-		<comps>
-			<li Class="CompProperties_ShipPart"/>
-		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
@@ -2066,6 +2242,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipShuttleBayLarge</defName>
 		<label>large shuttle bay</label>
+		<designatorDropdown>Ship_ShuttleBays</designatorDropdown>
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/Shuttle_Bay_off</texPath>
@@ -2094,7 +2271,6 @@
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
 		<building>
-			<shipPart>true</shipPart>
 			<isEdifice>false</isEdifice>
 		</building>
 		<costList>
@@ -2102,11 +2278,8 @@
 			<Plasteel>75</Plasteel>
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
-		<comps>
-			<li Class="CompProperties_ShipPart"/>
-		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_InsideStarship</li>
+			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
@@ -2141,7 +2314,6 @@
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
 		<building>
-			<shipPart>true</shipPart>
 			<isEdifice>false</isEdifice>
 		</building>
 		<costList>
@@ -2151,13 +2323,72 @@
 		</costList>
 		<comps>
 			<li Class="CompProperties_SalvageBay"/>
-			<li Class="CompProperties_ShipPart"/>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+	</ThingDef>
+	<!-- misc -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>HullFoamDistributor</defName>
+		<label>hullfoam distributor</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullFoamDistributor</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<researchPrerequisites>
+			<li>HullFoam</li>
+		</researchPrerequisites>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>0.8</fillPercent>
+		<blockLight>false</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<WorkToBuild>4000</WorkToBuild>
+			<MaxHitPoints>1500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>A pumping station for distributing hullfoam throughout a ship. When a portion of the ship's hull is destroyed in combat, this system will automatically patch the hole with hullfoam.</description>
+		<size>(3,3)</size>
+		<designationCategory>Ship</designationCategory>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>200</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Refuelable">
+				<fuelCapacity>50.0</fuelCapacity>
+				<fuelFilter>
+					<thingDefs>
+						<li>HullFoam</li>
+					</thingDefs>
+				</fuelFilter>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+			</li>
+			<li Class="CompProperties_HullFoamDistributor"/>
+		</comps>
+		<rotatable>false</rotatable>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<costList>
+			<Steel>80</Steel>
+			<Plasteel>40</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<designationHotKey>Misc5</designationHotKey>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipCloakingDevice</defName>
@@ -2194,7 +2425,7 @@
 				<basePowerConsumption>5000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_Flickable" />
+			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_GraphicOnOff"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>
@@ -2206,7 +2437,6 @@
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<building>
-			<shipPart>true</shipPart>
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
@@ -2268,7 +2498,6 @@
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Explosive">
 				<explosiveRadius>2.66</explosiveRadius>
 				<explosiveDamageType>Flame</explosiveDamageType>
@@ -2277,7 +2506,6 @@
 		</comps>
 		<defaultPlacingRot>South</defaultPlacingRot>
 		<building>
-			<shipPart>true</shipPart>
 			<isPlayerEjectable>true</isPlayerEjectable>
 		</building>
 		<costList>
@@ -2444,7 +2672,6 @@
 		<staticSunShadowHeight>0.4</staticSunShadowHeight>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 	</ThingDef>
-
 	<ThingDef ParentName="EtherealThingBase">
 		<defName>ShipMoveBlueprint</defName>
 		<label>New Ship Position</label>
@@ -2490,10 +2717,6 @@
 		<drawerType>RealtimeOnly</drawerType>
 		<drawOffscreen>true</drawOffscreen>
 		<canLoadIntoCaravan>false</canLoadIntoCaravan>
-		<building>
-		</building>
-		<placeWorkers>
-		</placeWorkers>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2575,7 +2798,9 @@
 		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>HullFoamWall</defName>
@@ -2688,7 +2913,6 @@
 		<fillPercent>0.0</fillPercent>
 		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
 	</ThingDef>
-	
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_AvatarCasket</defName>
 		<label>afterlife casket</label>
@@ -2705,10 +2929,10 @@
 		<researchPrerequisites>
 			<li>ShipAvatarCasket</li>
 		</researchPrerequisites>
-    <thingCategories>
-      <li>Buildings</li>
-    </thingCategories>
-    <minifiedDef>MinifiedThing</minifiedDef>
+		<thingCategories>
+			<li>Buildings</li>
+		</thingCategories>
+		<minifiedDef>MinifiedThing</minifiedDef>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<pathCost>70</pathCost>
@@ -2775,10 +2999,10 @@
 		<researchPrerequisites>
 			<li>ShipHologramRepeater</li>
 		</researchPrerequisites>
-    <thingCategories>
-      <li>Buildings</li>
-    </thingCategories>
-    <minifiedDef>MinifiedThing</minifiedDef>
+		<thingCategories>
+			<li>Buildings</li>
+		</thingCategories>
+		<minifiedDef>MinifiedThing</minifiedDef>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<pathCost>70</pathCost>

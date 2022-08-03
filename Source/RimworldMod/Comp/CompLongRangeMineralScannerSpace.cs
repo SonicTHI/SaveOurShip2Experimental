@@ -19,7 +19,7 @@ namespace RimWorld
         public bool scanSites = true;
         public float findRate = 60000f;
         protected float daysWorkingSinceLastMinerals;
-
+        public ShipHeatMapComp mapComp;
         public CompPowerTrader powerComp;
 
         public CompProperties_LongRangeMineralScannerSpace Props
@@ -44,7 +44,6 @@ namespace RimWorld
             Scribe_Values.Look<bool>(ref this.scanShips, "scanShips", true);
             Scribe_Values.Look<bool>(ref this.scanSites, "scanSites", true);			
         }
-
         public override void Initialize(CompProperties props)
         {
             base.Initialize(props);
@@ -54,16 +53,20 @@ namespace RimWorld
         {
             base.PostSpawnSetup(respawningAfterLoad);
             this.powerComp = this.parent.GetComp<CompPowerTrader>();
+            this.mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
         }
 
         public void Used(Pawn worker)
         {
             if (!this.CanUseNow)
             {
-                Log.Error("Used while CanUseNow is false.", false);
+                Log.Error("Used while CanUseNow is false.");
             }
             float statValue = worker.GetStatValue(StatDefOf.ResearchSpeed, true);
-            this.daysWorkingSinceLastMinerals += statValue / findRate;
+            float rate = findRate;
+            if (mapComp.Cloaks.Any(c => c.active))
+                rate *= 5;
+            this.daysWorkingSinceLastMinerals += statValue / rate;
             if (Find.TickManager.TicksGame % 59 == 0)
             {
                 float mtb = this.Props.mtbDays / statValue;
@@ -72,16 +75,6 @@ namespace RimWorld
                     this.FoundMinerals(worker);
                 }
             }
-        }
-
-        public override void CompTickRare()
-        {
-            base.CompTickRare();
-            var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
-            if (mapComp.Cloaks.Any(c => c.active))
-                findRate = 600000f;
-            else
-                findRate = 60000f;
         }
 
         protected void FoundMinerals(Pawn worker)

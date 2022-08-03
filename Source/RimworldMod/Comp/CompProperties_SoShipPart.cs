@@ -3,13 +3,14 @@ using Verse;
 
 namespace RimWorld
 {
-	public class CompProperties_SoSshipPart : CompProperties
+	public class CompProperties_SoShipPart : CompProperties
 	{
-		public bool hull = false;
+		public bool isPlating = false;
+		public bool isHull = false;
 
-		public CompProperties_SoSshipPart()
+		public CompProperties_SoShipPart()
 		{
-			compClass = typeof(CompSoSshipPart);
+			compClass = typeof(CompSoShipPart);
 		}
 	}
 }

@@ -298,7 +298,7 @@ namespace RimWorld
                 // Look through space navies
                 foreach (SpaceNavyDef spaceNavyDef in spaceNavyDefs)
                 {
-                    Faction spaceNavyFaction = Find.FactionManager.AllFactions.Where(faction => faction.def == spaceNavyDef.factionDef).First();
+                    Faction spaceNavyFaction = Find.FactionManager.AllFactions.Where(faction => faction.def == spaceNavyDef.factionDef).RandomElement();
 
                     // Check if space navy's faction is hostile to player
                     if (!spaceNavyFaction.AllyOrNeutralTo(Faction.OfPlayer))

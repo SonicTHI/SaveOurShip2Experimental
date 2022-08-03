@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <SpaceNavyDef>
+        <defName>Mechanoid_SpaceNavy</defName>
+        <factionDef>Mechanoid</factionDef>
+        <enemyShipDefs>
+            <li>LargeMechSphere01</li>
+            <li>MechanoidSystemDefender</li>
+            <li>MiniMechSphere2Eng3Turrets</li>
+            <li>LargeMechSphere02</li>
+            <li>MechExterminationSphere01</li>
+            <li>MiniMechSphere2Eng5Turrets</li>
+            <li>LargeMechSphere03</li>
+            <li>MechHijackedLeviathan</li>
+            <li>MiniMechSphere2Eng7Turrets</li>
+            <li>MechanoidDaywrecker</li>
+            <li>MechShipMegaRing</li>
+            <li>MysteriousArchotechSphere</li>
+            <li>MechanoidHeavyDroneSquadron</li>
+            <li>MiniMechSphere1Eng1Turret</li>
+            <li>PsychicAmplifier</li>
+            <li>MechanoidMegaRingShip</li>
+            <li>MiniMechSphere1Eng2Turret</li>
+            <li>PsychicMothership</li>
+            <li>MechanoidMoonBase</li>
+            <li>MiniMechSphere1Eng3Turret</li>
+        </enemyShipDefs>
+    </SpaceNavyDef>
+</Defs>

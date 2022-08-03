@@ -687,7 +687,7 @@ namespace SaveOurShip2
                     Building_ShipBridge bridge = map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();
                     ship.enemyShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.combatPoints > threatRating * ShipInteriorMod2.difficultySoS && def.combatPoints <= Math.Pow(PlayerFactionBounty,0.3) * threatRating * ShipInteriorMod2.difficultySoS && !def.neverAttacks && !def.neverRandom && !def.mechanoidShip).RandomElement();
                     if (ship.enemyShip == null)
-                        ship.enemyShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.mechanoidShip).RandomElement();
+                        ship.enemyShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.mechanoidShip && !def.navyExclusive).RandomElement();
                     if(ship.enemyShip!=null)
                         map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, ship);
                 }

@@ -686,7 +686,6 @@ namespace SaveOurShip2
 				{
 					if (cell.GetRoom(map) == null || (cell.GetRoom(map).OpenRoofCount == 0 && !cell.GetRoom(map).IsDoorway))
 						map.fogGrid.fogGrid[map.cellIndices.CellToIndex(cell)] = true;
-
 				}
 			}
 			map.mapDrawer.MapMeshDirty(c, MapMeshFlag.Things | MapMeshFlag.FogOfWar);

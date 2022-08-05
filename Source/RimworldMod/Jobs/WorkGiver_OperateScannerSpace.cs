@@ -13,7 +13,7 @@ namespace RimWorld
         {
             get
             {
-                return ThingRequest.ForDef(ThingDef.Named("ShipPilotSeat"));
+                return ThingRequest.ForDef(ThingDef.Named("ShipConsoleScience"));
             }
         }
 
@@ -32,7 +32,7 @@ namespace RimWorld
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            return pawn.Map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipPilotSeat")).Cast<Thing>();
+            return pawn.Map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipConsoleScience")).Cast<Thing>();
         }
 
         public override bool ShouldSkip(Pawn pawn, bool forced = false)

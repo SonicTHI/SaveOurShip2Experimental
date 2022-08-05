@@ -70,6 +70,8 @@ namespace RimWorld
         [Unsaved(false)]
         public List<ShipPosRotShape> ShipStructure;*/
         public int saveSysVer = 1;
+        public bool isFleet = false;
+        public List<EnemyShipDef> ships;
         public int offsetX = 0;
         public int offsetZ = 0;
         public int sizeX = 0;
@@ -210,39 +212,5 @@ namespace RimWorld
                 ShipStructure.Add(shape);
             }
         }*/
-    }
-    public struct FleetShip : IExposable
-    {
-        public string shipName;
-        public int offsetX;
-        public int offsetZ;
-
-        public void ExposeData()
-        {
-            Scribe_Values.Look<string>(ref shipName, "shipName");
-            Scribe_Values.Look<int>(ref offsetX, "offsetX");
-            Scribe_Values.Look<int>(ref offsetZ, "offsetZ");
-        }
-    }
-    public class FleetDef : Def, ILoadReferenceable
-    {
-        public int combatPoints;
-        public bool neverRandom = false;
-        public bool neverAttacks = false;
-        public bool spaceSite = false;
-        public bool imperialShip = false;
-        public bool pirateShip = false;
-        public bool bountyShip = false;
-        public bool mechanoidShip = false;
-        public bool fighterShip = false;
-        public bool carrierShip = false;
-        public bool tradeShip = false;
-        public bool startingShip = false;
-        public bool startingDungeon = false;
-        public List<FleetShip> ships;
-        public string GetUniqueLoadID()
-        {
-            return "ShipFleet_" + defName;
-        }
     }
 }

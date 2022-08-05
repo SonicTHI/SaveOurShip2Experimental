@@ -19,10 +19,10 @@ namespace RimWorld
             }
         }
 
-        public override void CompTickRare()
+        public override void CompTick()
         {
-            base.CompTickRare();
-            if (!this.parent.Map.IsSpace() || !this.powerComp.PowerOn)
+            base.CompTick();
+            if (Find.TickManager.TicksGame % 250 != 0 || !this.parent.Map.IsSpace() || !this.powerComp.PowerOn)
                 return;
 
             float rate = Rate;

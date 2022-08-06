@@ -4,15 +4,15 @@
 
 SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131). It includes bugfixes, performance optimizations, mechanics changes and some new features that need more testing.
 
-**While this version is official you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from EXPERIMENTAL back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case. **Make a separate save while NOT IN A SHIP BATTLE before switching to this version.**
+**While this version is official you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from EXPERIMENTAL back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case.
 
-**Read the [feature list](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) for differences between the builds.** It also includes other info that you might find usefull.
+**Make a separate save while NOT IN A SHIP BATTLE before switching to this version and unsubscribe from SOS2 on STEAM!**
 
-If you do not know what to do with these files or where to put them do not bother with this and stick to the STEAM version.
+**To download the latest build click above: Code -> Download ZIP**
 
 To update: Make sure to delete the old folder then extract the new one.
 
-**To download the latest build click above: Code -> Download ZIP**
+**Read the [feature list](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) for differences between the builds.** It also includes other info that you might find usefull.
 
 You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - make sure to read the server rules and mention that you are using the experimental build. Check the feature list before reporting. If you encounter bugs or issues not directly related to changed or added features please try replicating the bug with the STEAM build.
 

@@ -11,10 +11,17 @@ namespace RimWorld
     public class Building_ShipCloakingDevice : Building
     {
         public bool active;
+        public CompPowerTrader powerComp;
+        public CompShipHeatSource heatComp;
+        public CompFlickable flickComp;
+
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
             this.Map.GetComponent<ShipHeatMapComp>().Cloaks.Add(this);
+            powerComp = this.TryGetComp<CompPowerTrader>();
+            heatComp = this.TryGetComp<CompShipHeatSource>();
+            flickComp = this.TryGetComp<CompFlickable>();
         }
 
         public override void Tick()
@@ -22,7 +29,7 @@ namespace RimWorld
             base.Tick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (this.TryGetComp<CompPowerTrader>().PowerOn && this.TryGetComp<CompFlickable>().SwitchIsOn && (this.TryGetComp<CompShipHeatSource>().myNet!=null || (this.GetRoom()!=null && this.GetRoom().OpenRoofCount==0)))
+                if (powerComp.PowerOn && flickComp.SwitchIsOn && (heatComp.myNet!=null || (this.GetRoom()!=null && this.GetRoom().OpenRoofCount==0)))
                     active = true;
                 else
                     active = false;
@@ -50,7 +57,7 @@ namespace RimWorld
             else
             {
                 stringBuilder.AppendLine("Inactive");
-                if ((this.GetRoom() == null || this.GetRoom().OpenRoofCount > 0) && this.TryGetComp<CompShipHeatSource>().myNet == null)
+                if ((this.GetRoom() == null || this.GetRoom().OpenRoofCount > 0) && heatComp.myNet == null)
                     stringBuilder.AppendLine("<color=red>In vacuum and not connected to heat net</color>");
             }
             return stringBuilder.ToString().TrimEndNewlines();

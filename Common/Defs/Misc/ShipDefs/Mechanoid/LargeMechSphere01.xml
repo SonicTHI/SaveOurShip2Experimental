@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>LargeMechSphere02</defName>
+		<defName>LargeMechSphere01</defName>
 		<label>Large Mech Sphere</label>
-		<combatPoints>402</combatPoints>
-		<randomTurretPoints>180</randomTurretPoints>
+		<combatPoints>342</combatPoints>
+		<randomTurretPoints>120</randomTurretPoints>
 		<mechanoidShip>True</mechanoidShip>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
-			<x>-15</x>
-			<z>-6</z>
+			<x>10</x>
+			<z>8</z>
 		</core>
 		<symbolTable>
 			<li>
@@ -27,7 +27,7 @@
 			<li>
 				<key>A</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCooler</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 				</value>
 			</li>
 			<li>

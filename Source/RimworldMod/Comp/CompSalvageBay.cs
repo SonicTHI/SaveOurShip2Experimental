@@ -45,6 +45,19 @@ namespace RimWorld
 						retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
 					yield return retrieveShipEnemy;
                 }
+                Command_VerbTargetWreckMap moveWreck = new Command_VerbTargetWreckMap
+                {
+                    salvageBay = (Building)this.parent,
+                    salvageBayNum = this.parent.Map.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompShipSalvageBay>() != null).Count(),
+                    otherMap = false,
+                    targetMap = this.parent.Map,
+                    icon = ContentFinder<Texture2D>.Get("UI/SalvageMove"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckCommand"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckCommandDesc")
+                };
+                if (mapComp.InCombat)
+                    moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+                yield return moveWreck;
                 Command_Action claim = new Command_Action
                 {
                     action = delegate

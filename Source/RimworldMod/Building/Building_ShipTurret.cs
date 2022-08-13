@@ -21,13 +21,14 @@ namespace RimWorld
 
         public Thing gun;
         protected TurretTop top;
-        public CompPowerTrader powerComp;
         public ShipHeatMapComp mapComp;
-        public CompShipHeatSource heatComp;
+        public CompPowerTrader powerComp;
+        public CompShipHeat heatComp;
+        public CompRefuelable fuelComp;
         public CompSpinalMount spinalComp;
+        public CompChangeableProjectilePlural torpComp;
         protected CompInitiatable initiatableComp;
         protected Effecter progressBarEffecter;
-        public CompShipHeatSource HeatSource;
 
         protected LocalTargetInfo currentTargetInt = LocalTargetInfo.Invalid;
         public int[] SegmentPower = new int[3];
@@ -63,7 +64,7 @@ namespace RimWorld
                 {
                     return false;
                 }
-                return gun.TryGetComp<CompChangeableProjectilePlural>()?.Loaded ?? false;
+                return torpComp?.Loaded ?? false;
             }
         }
 
@@ -100,11 +101,13 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
+            mapComp = this.Map.GetComponent<ShipHeatMapComp>();
             initiatableComp = GetComp<CompInitiatable>();
-            powerComp = GetComp<CompPowerTrader>();
-            this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
-            this.heatComp = this.TryGetComp<CompShipHeatSource>();
-            this.spinalComp = this.TryGetComp<CompSpinalMount>();
+            powerComp = this.TryGetComp<CompPowerTrader>();
+            heatComp = this.TryGetComp<CompShipHeat>();
+            fuelComp = this.TryGetComp<CompRefuelable>();
+            spinalComp = this.TryGetComp<CompSpinalMount>();
+            torpComp = this.gun.TryGetComp<CompChangeableProjectilePlural>();
             if (!this.Map.IsSpace() && heatComp.Props.groundDefense)
                 GroundDefenseMode = true;
             else
@@ -426,14 +429,14 @@ namespace RimWorld
         protected void BeginBurst(bool isPtDefBurst = false)
         {
             //check if we have power to fire
-            if (this.TryGetComp<CompPower>() != null && heatComp != null && this.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + (AmplifierDamageBonus)))
+            if (powerComp != null && heatComp != null && powerComp.PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + AmplifierDamageBonus))
             {
                 //Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToPower",this.Label), this, MessageTypeDefOf.CautionInput);
                 //this.shipTarget = LocalTargetInfo.Invalid;
                 return;
             }
             //if we do not have enough heatcap, vent heat to room/fail to fire in vacuum
-            if (heatComp != null && heatComp.AvailableCapacityInNetwork() < heatComp.Props.heatPerPulse * (1 + (AmplifierDamageBonus)))
+            if (!heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus)))
             {
                 if (ShipInteriorMod2.ExposedToOutside(this.GetRoom()))
                 {
@@ -443,14 +446,12 @@ namespace RimWorld
                     ResetCurrentTarget();
                     return;
                 }
-                GenTemperature.PushHeat(this, heatComp.Props.heatPerPulse * ShipInteriorMod2.HeatPushMult * (1 + (AmplifierDamageBonus)));
+                GenTemperature.PushHeat(this, heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus));
             }
-            else
-                heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + (AmplifierDamageBonus)));
             //ammo
-            if (this.TryGetComp<CompRefuelable>() != null)
+            if (fuelComp != null)
             {
-                if (this.TryGetComp<CompRefuelable>().Fuel <= 0)
+                if (fuelComp.Fuel <= 0)
                 {
                     if (!PointDefenseMode && PlayerControlled)
                         Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToAmmo", this.Label), this, MessageTypeDefOf.CautionInput);
@@ -458,12 +459,12 @@ namespace RimWorld
                     ResetCurrentTarget();
                     return;
                 }
-                this.TryGetComp<CompRefuelable>().ConsumeFuel(1);
+                fuelComp.ConsumeFuel(1);
             }
             //draw the same percentage from each cap: needed*current/currenttotal
-            foreach (CompPowerBattery bat in this.TryGetComp<CompPower>().PowerNet.batteryComps)
+            foreach (CompPowerBattery bat in powerComp.PowerNet.batteryComps)
             {
-                bat.DrawPower(Mathf.Min(heatComp.Props.energyToFire * (1 + AmplifierDamageBonus) * bat.StoredEnergy / this.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
+                bat.DrawPower(Mathf.Min(heatComp.Props.energyToFire * (1 + AmplifierDamageBonus) * bat.StoredEnergy / powerComp.PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
             }
             if (heatComp.Props.singleFireSound != null)
             {
@@ -611,15 +612,14 @@ namespace RimWorld
                 else
                     stringBuilder.AppendLine("ShipSpinalCapNotFound".Translate());
             }
-            CompChangeableProjectilePlural compChangeableProjectile = gun.TryGetComp<CompChangeableProjectilePlural>();
-            if (compChangeableProjectile != null)
+            if (torpComp != null)
             {
-                if (compChangeableProjectile.Loaded)
+                if (torpComp.Loaded)
                 {
                     int torp = 0;
                     int torpEMP = 0;
                     int torpAM = 0;
-                    foreach (ThingDef t in compChangeableProjectile.LoadedShells)
+                    foreach (ThingDef t in torpComp.LoadedShells)
                     {
                         if (t == ThingDef.Named("ShipTorpedo_EMP"))
                             torpEMP++;
@@ -774,15 +774,14 @@ namespace RimWorld
             }
             if (CanExtractTorpedo)
             {
-                CompChangeableProjectilePlural compChangeableProjectile = gun.TryGetComp<CompChangeableProjectilePlural>();
                 Command_Action command_Action = new Command_Action
                 {
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandExtractShipTorpedo"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandExtractShipTorpedoDesc"),
-                    icon = compChangeableProjectile.LoadedShells[0].uiIcon,
-                    iconAngle = compChangeableProjectile.LoadedShells[0].uiIconAngle,
-                    iconOffset = compChangeableProjectile.LoadedShells[0].uiIconOffset,
-                    iconDrawScale = GenUI.IconDrawScale(compChangeableProjectile.LoadedShells[0]),
+                    icon = torpComp.LoadedShells[0].uiIcon,
+                    iconAngle = torpComp.LoadedShells[0].uiIconAngle,
+                    iconOffset = torpComp.LoadedShells[0].uiIconOffset,
+                    iconDrawScale = GenUI.IconDrawScale(torpComp.LoadedShells[0]),
                     action = delegate
                     {
                         ExtractShells();
@@ -790,10 +789,9 @@ namespace RimWorld
                 };
                 yield return command_Action;
             }
-            CompChangeableProjectilePlural compChangeableProjectile2 = gun.TryGetComp<CompChangeableProjectilePlural>();
-            if (compChangeableProjectile2 != null)
+            if (torpComp != null)
             {
-                StorageSettings storeSettings = compChangeableProjectile2.GetStoreSettings();
+                StorageSettings storeSettings = torpComp.GetStoreSettings();
                 foreach (Gizmo item in StorageSettingsClipboard.CopyPasteGizmosFor(storeSettings))
                 {
                     yield return item;
@@ -837,7 +835,7 @@ namespace RimWorld
 
         private void ExtractShells()
         {
-            foreach(Thing t in gun.TryGetComp<CompChangeableProjectilePlural>().RemoveShells())
+            foreach(Thing t in torpComp.RemoveShells())
                 GenPlace.TryPlaceThing(t, base.Position, base.Map, ThingPlaceMode.Near);
         }
 
@@ -924,6 +922,7 @@ namespace RimWorld
             {
                 previousThingPos += vec;
                 amp = previousThingPos.GetFirstThingWithComp<CompSpinalMount>(this.Map);
+                CompSpinalMount ampComp = amp.TryGetComp<CompSpinalMount>();
                 if (amp == null || amp.Rotation != this.Rotation)
                 {
                     AmplifierCount = -1;
@@ -933,11 +932,11 @@ namespace RimWorld
                 if (amp.Position == previousThingPos)
                 {
                     AmplifierCount += 1;
-                    ampBoost += amp.TryGetComp<CompSpinalMount>().Props.ampAmount;
-                    amp.TryGetComp<CompSpinalMount>().SetColor(spinalComp.Props.color);
+                    ampBoost += ampComp.Props.ampAmount;
+                    ampComp.SetColor(spinalComp.Props.color);
                 }
                 //found emitter
-                else if (amp.Position == previousThingPos + vec && amp.TryGetComp<CompSpinalMount>().Props.stackEnd)
+                else if (amp.Position == previousThingPos + vec && ampComp.Props.stackEnd)
                 {
                     AmplifierCount += 1;
                     foundNonAmp = true;

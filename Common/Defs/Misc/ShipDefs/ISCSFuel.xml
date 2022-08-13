@@ -116,7 +116,7 @@
 			<li>
 				<key>O</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCooler</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
 				</value>
 			</li>

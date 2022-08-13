@@ -39,11 +39,21 @@ namespace RimWorld
         public override void MapComponentUpdate()
         {
             base.MapComponentUpdate();
-            if (!heatGridDirty || (Find.TickManager.TicksGame % 60 != 0 && loaded)) //Yeah, we only update once a second. Heat nets were re-evaluating too often in combat; this is the lesser evil.
+            //this only gets called when new parts are added but even so should be redone, similar to new ship cache
+            if (!heatGridDirty || (Find.TickManager.TicksGame % 60 != 0 && loaded))
             {
                 return;
             }
-
+            //temp save heat to sinks
+            Log.Message("Recaching all heatnets");
+            foreach (ShipHeatNet net in cachedNets)
+            {
+                foreach (CompShipHeatSink sink in net.Sinks)
+                {
+                    sink.heatStored = net.StorageUsed * sink.Props.heatCapacity / net.StorageCapacity;
+                }
+            }
+            //rebuild all nets on map
             List<ShipHeatNet> list = new List<ShipHeatNet>();
             for (int i = 0; i < grid.Length; i++)
                 grid[i] = -1;
@@ -86,8 +96,7 @@ namespace RimWorld
                     {
                         foreach (Thing t in cell.GetThingList(comp.parent.Map))
                         {
-                            ThingWithComps twc = t as ThingWithComps;
-                            if (twc != null)
+                            if (t is ThingWithComps twc && twc != null)
                             {
                                 CompShipHeat heat = twc.TryGetComp<CompShipHeat>();
                                 if (heat != null)
@@ -176,6 +185,7 @@ namespace RimWorld
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
         public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
+        public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>();
         //SC vars
         public Map ShipCombatOriginMap; //"player" map - initializes combat vars
         public Map ShipCombatMasterMap; //"AI" map - runs all non duplicate code
@@ -485,13 +495,13 @@ namespace RimWorld
         {
             base.MapComponentTick();
             //heatgrid part
-            if (!heatGridDirty)
+            /*if (!heatGridDirty)
             {
                 foreach (ShipHeatNet cachedNet in cachedNets)
                 {
                     cachedNet.Tick();
                 }
-            }
+            }*/
 
             if (InCombat && (this.map == ShipCombatOriginMap || this.map == ShipCombatMasterMap))
             {
@@ -534,7 +544,7 @@ namespace RimWorld
                         //Log.Message("Spawning " + proj.turret + " projectile on player ship at " + proj.target);
                         projectile = (Projectile)GenSpawn.Spawn(proj.spawnProjectile, spawnCell, ShipCombatTargetMap);
                         float forcedMissRadius = 1.9f;
-                        float optRange = proj.turret.TryGetComp<CompShipHeatSource>().Props.optRange;
+                        float optRange = proj.turret.heatComp.Props.optRange;
                         if (optRange != 0 && proj.range > optRange)
                             forcedMissRadius = 1.9f + (proj.range - optRange) / 5;
                         //Log.Message("forcedMissRadius: " + forcedMissRadius);
@@ -601,8 +611,6 @@ namespace RimWorld
             //SCM vars
             float powerCapacity = 0;
             float powerRemaining = 0;
-            float heatCapacity = 0;
-            float heatUsed = 0;
             bool shieldsUp = false;
             bool isPurging = false;
             bool canPurge = false;
@@ -611,31 +619,27 @@ namespace RimWorld
             {
                 if (ShipCombatMaster)//heatpurge
                 {
+                    var bridge = ship.Bridges.FirstOrDefault().heatComp;
                     foreach (var battery in ship.Batteries)
                     {
                         powerCapacity += battery.Props.storedEnergyMax;
                         powerRemaining += battery.StoredEnergy;
                     }
-                    foreach (var sink in ship.HeatSinks)
-                    {
-                        heatCapacity += sink.Props.heatCapacity;
-                        heatUsed += sink.heatStored;
-                    }
                     shieldsUp = ship.CombatShields.Any(shield => !shield.shutDown);
-                    canPurge = ship.HeatPurges.Any(purge => purge.parent.TryGetComp<CompRefuelable>().Fuel > 0);
+                    canPurge = ship.HeatPurges.Any(purge => purge.fuelComp.Fuel > 0);
                     isPurging = ship.HeatPurges.Any(purge => purge.currentlyPurging);
 
                     if (!isPurging)
                     {
-                        if (heatUsed / heatCapacity > 0.8f)
+                        if (bridge.RatioInNetwork() > 0.8f)
                         {
                             if (shieldsUp)
                             {
                                 foreach (var shield in ship.CombatShields)
                                 {
-                                    if (shield.Flickable == null) continue;
+                                    if (shield.flickComp == null) continue;
 
-                                    shield.Flickable.SwitchIsOn = false;
+                                    shield.flickComp.SwitchIsOn = false;
                                 }
                             }
                             if (canPurge)
@@ -646,13 +650,13 @@ namespace RimWorld
                                 }
                             }
                         }
-                        else if (heatUsed / heatCapacity < 0.5f && !shieldsUp)
+                        else if (bridge.RatioInNetwork() < 0.5f && !shieldsUp)
                         {
                             foreach (var shield in ship.CombatShields)
                             {
-                                if (shield.Flickable == null) continue;
+                                if (shield.flickComp == null) continue;
 
-                                shield.Flickable.SwitchIsOn = true;
+                                shield.flickComp.SwitchIsOn = true;
                             }
                         }
                     }
@@ -660,7 +664,7 @@ namespace RimWorld
                 foreach (var turret in ship.Turrets)
                 {
                     TurretNum++;
-                    if (turret.TryGetComp<CompChangeableProjectilePlural>() != null && !turret.TryGetComp<CompChangeableProjectilePlural>().Loaded)
+                    if (turret.torpComp != null && !turret.torpComp.Loaded)
                         continue;
                     totalThreat += turret.heatComp.Props.threat;
                     if (turret.heatComp.Props.maxRange > 150)//long
@@ -1004,31 +1008,6 @@ namespace RimWorld
                 graveMapComp.ShipFaction = OriginMapComp.ShipFaction;
                 graveMapComp.ShipCombatOriginMap = this.map;
                 graveMapComp.ShipCombatMasterMap = graveMapComp.OriginMapComp.ShipCombatMasterMap;
-            }
-        }
-        public void EnginesOffNew()
-        {
-            foreach (ShipCache ship in ShipsOnMap)
-            {
-                foreach (var engine in ship.Engines)
-                {
-                    engine.active = false;
-                }
-                foreach (var turret in ship.Turrets)
-                {
-                    turret.ResetForcedTarget();
-                }
-            }
-        }
-        public void EnginesOffShip(int shipIndex)
-        {
-            foreach (var engine in ShipsOnMap[shipIndex].Engines)
-            {
-                engine.active = false;
-            }
-            foreach (var turret in ShipsOnMap[shipIndex].Turrets)
-            {
-                turret.ResetForcedTarget();
             }
         }
         public void ShipBuildingsOff()

@@ -84,7 +84,7 @@
 			<li>
 				<key>I</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCooler</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
 				</value>
 			</li>

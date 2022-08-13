@@ -9,11 +9,12 @@ using SaveOurShip2;
 
 namespace RimWorld
 {
+    //generates heat per tick
     public class CompShipHeatSource : CompShipHeat
     {
-        private CompFlickable flickComp;
-        private CompPowerTraderOverdrivable overdriveComp;
-        private CompRefuelable refuelComp;
+        public CompFlickable flickComp;
+        public CompPowerTraderOverdrivable overdriveComp;
+        public CompRefuelable refuelComp;
         public override void Initialize(CompProperties props)
         {
             base.Initialize(props);
@@ -21,25 +22,16 @@ namespace RimWorld
             overdriveComp = parent.GetComp<CompPowerTraderOverdrivable>();
             refuelComp = parent.GetComp<CompRefuelable>();
         }
-        public bool AddHeatToNetwork(float amount, bool remove=false)
-        {
-            if (myNet == null)
-                return false;
-            return myNet.AddHeat(amount, remove);
-        }
-
         public override void CompTick()
         {
             base.CompTick();
-            if (Props.heatGeneratedPerTickActive > 0 && (flickComp==null || flickComp.SwitchIsOn) && (refuelComp==null || refuelComp.HasFuel))
+            if (this.parent.IsHashIntervalTick(60) && (flickComp==null || flickComp.SwitchIsOn) && (refuelComp==null || refuelComp.HasFuel))
             {
-                float heatGenerated = Props.heatGeneratedPerTickActive;
+                float heatGenerated = Props.heatPerSecond;
                 if (overdriveComp != null)
-                    heatGenerated *= (1 + Mathf.Pow(overdriveComp.overdriveSetting, 1.5f));
+                    heatGenerated *= 1 + Mathf.Pow(overdriveComp.overdriveSetting, 1.5f);
                 if (!AddHeatToNetwork(heatGenerated))
-                {
-                    GenTemperature.PushHeat(parent, heatGenerated * ShipInteriorMod2.HeatPushMult);
-                }
+                    GenTemperature.PushHeat(parent, heatGenerated);
             }
         }
     }

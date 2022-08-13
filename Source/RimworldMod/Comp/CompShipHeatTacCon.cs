@@ -56,7 +56,7 @@ namespace RimWorld
                     {
                         foreach (var b in myNet.Shields)
                         {
-                            b.Flickable.SwitchIsOn = !anyShieldOn;
+                            b.flickComp.SwitchIsOn = !anyShieldOn;
                         }
                     },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleShields"),
@@ -75,7 +75,7 @@ namespace RimWorld
                 action = delegate
                 {
                     Find.Selector.Deselect(this);
-                    foreach (CompShipHeatSource h in myNet.Turrets)
+                    foreach (CompShipHeat h in myNet.Turrets)
                     {
                         Find.Selector.Deselect(this.parent);
                         Find.Selector.Select(h.parent);
@@ -95,7 +95,7 @@ namespace RimWorld
                 toggleAction = delegate
                 {
                     HoldFire = !HoldFire;
-                    foreach (CompShipHeatSource h in myNet.Turrets)
+                    foreach (CompShipHeat h in myNet.Turrets)
                     {
                         ((Building_ShipTurret)h.parent).holdFire = HoldFire;
                         if (HoldFire)
@@ -110,7 +110,7 @@ namespace RimWorld
                 action = delegate
                 {
                     Find.Selector.Deselect(this);
-                    foreach (CompShipHeatSource h in myNet.Turrets)
+                    foreach (CompShipHeat h in myNet.Turrets)
                     {
                         ((Building_ShipTurret)h.parent).ResetForcedTarget();
                     }
@@ -148,7 +148,7 @@ namespace RimWorld
                     action = delegate
                     {
                         Find.Selector.Deselect(this);
-                        foreach (CompShipHeatSource h in myNet.Turrets.Where(t => t.parent.def == def))
+                        foreach (CompShipHeat h in myNet.Turrets.Where(t => t.parent.def == def))
                         {
                             Find.Selector.Deselect(this.parent);
                             Find.Selector.Select(h.parent);

@@ -68,7 +68,7 @@
 			<li>
 				<key>H</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCooler</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -80,7 +80,7 @@
 			<li>
 				<key>J</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCoolerAdvanced</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 				</value>
 			</li>
 			<li>

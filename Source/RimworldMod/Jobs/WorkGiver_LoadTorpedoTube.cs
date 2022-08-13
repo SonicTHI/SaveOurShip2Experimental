@@ -16,8 +16,8 @@ namespace RimWorld
 
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            Building_ShipTurret building_Tube = t as Building_ShipTurret;
-            if (building_Tube == null || building_Tube.gun.TryGetComp<CompChangeableProjectilePlural>()==null)
+            Building_ShipTurretTorpedo building_Tube = t as Building_ShipTurretTorpedo;
+            if (building_Tube == null || building_Tube.torpComp == null)
             {
                 return false;
             }
@@ -29,7 +29,7 @@ namespace RimWorld
             {
                 return false;
             }
-            if (building_Tube.gun.TryGetComp<CompChangeableProjectilePlural>().FullyLoaded)
+            if (building_Tube.torpComp.FullyLoaded)
             {
                 JobFailReason.Is(Translator.Translate("shipTubeFullyLoaded"), (string)null);
                 return false;
@@ -63,7 +63,7 @@ namespace RimWorld
             return (Job)(object)val2;
         }
 
-        private Thing FindAmmo(Pawn pawn, Building_ShipTurret tube)
+        private Thing FindAmmo(Pawn pawn, Building_ShipTurretTorpedo tube)
         {
             StorageSettings allowedShellsSettings = ThingCompUtility.TryGetComp<CompChangeableProjectilePlural>(tube.gun).allowedShellsSettings;
             ThingRequest val = ThingRequest.ForGroup(ThingRequestGroup.Shell);
@@ -84,8 +84,8 @@ namespace RimWorld
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            if (Building_ShipTurretTorpedo.allTubesOnMap.ContainsKey(pawn.Map))
-                return Building_ShipTurretTorpedo.allTubesOnMap[pawn.Map];
+            if (pawn.Map.GetComponent<ShipHeatMapComp>().TorpedoTubes.Any())
+                return pawn.Map.GetComponent<ShipHeatMapComp>().TorpedoTubes;
             return new List<Thing>();
         }
     }

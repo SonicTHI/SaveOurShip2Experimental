@@ -13,6 +13,7 @@ namespace RimWorld
         public Building shipRoot;
         public IntVec3 bottomLeftPos;
         public byte shipRotNum;
+        public bool includeRock;
         public Map targetMap = null;
         public Faction fac = null;
 
@@ -22,7 +23,7 @@ namespace RimWorld
             if (Find.Selector.SelectedObjects.Count > 1 || !Find.Selector.SelectedObjects.Contains(this))
             {
                 if (InstallBlueprintUtility.ExistingBlueprintFor(this) != null)
-                    ShipInteriorMod2.MoveShip(shipRoot, targetMap, InstallBlueprintUtility.ExistingBlueprintFor(this).Position - bottomLeftPos, fac, shipRotNum);
+                    ShipInteriorMod2.MoveShip(shipRoot, targetMap, InstallBlueprintUtility.ExistingBlueprintFor(this).Position - bottomLeftPos, fac, shipRotNum, includeRock);
                 this.Destroy(DestroyMode.Vanish);
             }
         }

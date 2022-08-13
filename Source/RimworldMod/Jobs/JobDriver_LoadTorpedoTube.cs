@@ -11,12 +11,12 @@ namespace RimWorld
     {
         private const int Duration = 600;
 
-        protected Building_ShipTurret tube
+        private Building_ShipTurretTorpedo tube
         {
             get
             {
                 LocalTargetInfo target = base.job.GetTarget((TargetIndex)1);
-                return (Building_ShipTurret)target;
+                return (Building_ShipTurretTorpedo)target;
             }
         }
 
@@ -31,7 +31,7 @@ namespace RimWorld
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            if(tube.gun.TryGetComp<CompChangeableProjectilePlural>().FullyLoaded)
+            if (tube.torpComp.FullyLoaded)
                 return false;
             return ReservationUtility.Reserve(base.pawn, base.job.targetA, base.job, 1, 1, null, true);
         }
@@ -52,7 +52,7 @@ namespace RimWorld
             Toil val = new Toil();
             val.initAction = delegate
             {
-                tube.gun.TryGetComp<CompChangeableProjectilePlural>().LoadShell(torpedo.def,1);
+                tube.torpComp.LoadShell(torpedo.def,1);
                 torpedo.Destroy(DestroyMode.Vanish);
             };
             val.defaultCompleteMode = (ToilCompleteMode)1;

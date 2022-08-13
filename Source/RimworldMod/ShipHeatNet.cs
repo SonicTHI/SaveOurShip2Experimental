@@ -13,11 +13,11 @@ namespace RimWorld
         public List<CompShipHeatSink> Sinks = new List<CompShipHeatSink>();
         public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
-        public List<CompShipHeatSource> Turrets = new List<CompShipHeatSource>();
-        public List<CompShipHeatSource> Cloaks = new List<CompShipHeatSource>();
+        public List<CompShipHeat> Turrets = new List<CompShipHeat>();
+        public List<CompShipHeat> Cloaks = new List<CompShipHeat>();
         public int GridID;
-        public float StorageCapacity;
-        public float StorageUsed;
+        public float StorageCapacity = 0;
+        public float StorageUsed = 0;
 
         public void Register(CompShipHeat comp)
         {
@@ -25,6 +25,12 @@ namespace RimWorld
             {
                 if (!Sinks.Contains(sink))
                 {
+                    //add to net
+                    //Log.Message("grid: " + GridID + " add:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
+                    StorageUsed += sink.heatStored;
+                    sink.heatStored = 0;
+                    StorageCapacity += sink.Props.heatCapacity;
+                    //Log.Message("grid: "+ GridID +" add:"+ bank.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity);
                     Sinks.Add(sink);
                     if (comp is CompShipHeatPurge purge)
                     {
@@ -32,96 +38,79 @@ namespace RimWorld
                     }
                 }
             }
+            else if (comp.parent is Building_ShipTurret)
+                Turrets.Add(comp);
             else if (comp is CompShipHeatSource source)
             {
                 if (!Sources.Contains(source))
                 {
                     Sources.Add(source);
-                    if (comp is CompShipCombatShield shield)
-                    {
-                        Shields.Add(shield);
-                    }
-                    else if (source.parent is Building_ShipTurret)
-                        Turrets.Add(source);
-                    else if (source.parent is Building_ShipCloakingDevice)
+                    if (source.parent is Building_ShipCloakingDevice)
                         Cloaks.Add(source);
                 }
             }
-            else if(!Connectors.Contains(comp))
+            else if (comp is CompShipCombatShield shield)
+                Shields.Add(shield);
+            else if (!Connectors.Contains(comp))
                 Connectors.Add(comp);
         }
         public void DeRegister(CompShipHeat comp)
         {
             if (comp is CompShipHeatSink sink)
             {
+                //rem from net with a factor
+                sink.heatStored = StorageUsed * sink.Props.heatCapacity / StorageCapacity;
+                StorageUsed -= sink.heatStored;
+                StorageCapacity -= sink.Props.heatCapacity;
+                //Log.Message("grid: " + GridID + " rem:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
                 Sinks.Remove(sink);
                 if (comp is CompShipHeatPurge purge)
                     HeatPurges.Remove(purge);
             }
+            else if (comp.parent is Building_ShipTurret)
+                Turrets.Remove(comp);
             else if (comp is CompShipHeatSource source)
             {
                 Sources.Remove(source);
-                if (comp is CompShipCombatShield shield)
-                    Shields.Remove(shield);
-                else if (source.parent is Building_ShipTurret)
-                    Turrets.Remove(source);
-                else if (source.parent is Building_ShipCloakingDevice)
+                if (source.parent is Building_ShipCloakingDevice)
                     Cloaks.Remove(source);
             }
+            else if (comp is CompShipCombatShield shield)
+                Shields.Remove(shield);
             else
                 Connectors.Remove(comp);
         }
-        public void Tick()
+        public void AddHeat(float amount)
         {
-            StorageCapacity = 0;
-            StorageUsed = 0;
-            foreach(CompShipHeatSink sink in Sinks)
+            StorageUsed += amount;
+        }
+        public void RemoveHeat(float amount)
+        {
+            StorageUsed -= amount;
+            if (StorageUsed < 0)
+                StorageUsed = 0;
+        }
+        public bool AnyShieldOn()
+        {
+            return Shields.Any(s => s.flickComp.SwitchIsOn == true);
+        }
+        public bool AnyCloakOn()
+        {
+            return Cloaks.Any(c => c.parent.TryGetComp<CompFlickable>().SwitchIsOn == true);
+        }
+        public void ShieldsOn()
+        {
+            foreach (var shield in Shields)
             {
-                StorageCapacity += sink.Props.heatCapacity;
-                StorageUsed += sink.heatStored;
+                shield.flickComp.SwitchIsOn = true;
             }
         }
-        public bool AddHeat(float amount, bool remove=false)
+        public void ShieldsOff()
         {
-            int sinkCount = 0;
-            foreach(CompShipHeatSink sink in Sinks)
+            foreach (var shield in Shields)
             {
-                if ((!sink.Props.ventHeatToSpace || sink.notInsideShield))
-                    sinkCount++;
+                shield.flickComp.SwitchIsOn = false;
             }
-            foreach (CompShipHeatSink sink in Sinks)
-            {
-                if (!sink.Props.ventHeatToSpace || sink.notInsideShield)
-                {
-                    float amountToStore = amount / (float)sinkCount;
-                    amount -= amountToStore;
-                    if (remove)
-                    {
-                        if(sink.heatStored >= amountToStore)
-                        {
-                            sink.heatStored -= amountToStore;
-                        }
-                        else
-                        {
-                            amount += amountToStore - sink.heatStored;
-                            sink.heatStored = 0;
-                        }
-                    }
-                    else
-                    {
-                        if ((sink.Props.heatCapacity - sink.heatStored) >= amountToStore)
-                        {
-                            sink.heatStored += amountToStore;
-                        }
-                        else
-                        {
-                            amount += amountToStore - (sink.Props.heatCapacity - sink.heatStored);
-                            sink.heatStored = sink.Props.heatCapacity;
-                        }
-                    }
-                }
-            }
-            return amount < 0.05f; //small fudge factor
         }
         public void TurretsOff()
         {
@@ -130,38 +119,5 @@ namespace RimWorld
                 ((Building_ShipTurret)turret.parent).ResetForcedTarget();
             }
         }
-        public void ShieldsOn()
-        {
-            foreach (var shield in Shields)
-            {
-                shield.Flickable.SwitchIsOn = true;
-            }
-        }
-        public void ShieldsOff()
-        {
-            foreach (var shield in Shields)
-            {
-                shield.Flickable.SwitchIsOn = false;
-            }
-        }
-        public bool AnyShieldOn()
-        {
-            foreach (var shield in Shields)
-            {
-                if (shield.Flickable.SwitchIsOn == true)
-                    return true;
-            }
-            return false;
-        }
-        public bool AnyCloakOn()
-        {
-            foreach (var cloak in Cloaks)
-            {
-                if (cloak.parent.TryGetComp<CompFlickable>().SwitchIsOn == true)
-                    return true;
-            }
-            return false;
-        }
-
     }
 }

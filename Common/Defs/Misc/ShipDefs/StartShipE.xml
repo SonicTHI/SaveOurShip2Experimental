@@ -242,13 +242,13 @@
 			<li>
 				<key>c</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCooler</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>d</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCoolerAdvanced</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -368,7 +368,7 @@
 			<li>
 				<key>w</key>
 				<value>
-					<shapeOrDef>ShipHeatManifold</shapeOrDef>
+					<shapeOrDef>ShipHeatsink</shapeOrDef>
 				</value>
 			</li>
 			<li>

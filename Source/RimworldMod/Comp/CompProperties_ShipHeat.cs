@@ -11,8 +11,6 @@ namespace RimWorld
     {
         public float heatCapacity;
         public float heatPerPulse;
-        public bool ventHeatToSpace = false;
-        public int heatVentTick = 2400;
         public int energyToFire;
         public int threat = 0;
         public float optRange = 0;
@@ -22,9 +20,11 @@ namespace RimWorld
         public bool groundDefense = false;
         public ThingDef groundProjectile;
         public float groundMissRadius = 0;
-        public float heatGeneratedPerTickActive = 0;
+        public float heatPerSecond = 0;
         public SoundDef singleFireSound=null;
         public bool antiEntropic = false;
+        public int heatVent = 0;
+        public int heatLoss = 0;
         public float heatPurge = 0;
         public float heatMultiplier = 1.0f;
         public Color color = Color.white;

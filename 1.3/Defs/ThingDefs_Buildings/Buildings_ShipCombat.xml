@@ -31,6 +31,8 @@
 			</shadowData>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<fillPercent>1</fillPercent>
 		<pathCost>50</pathCost>
 		<tickerType>Normal</tickerType>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -49,8 +51,6 @@
 	<ThingDef ParentName="BaseShipTurretBuilding" Name="ShipTurretBuilding" Abstract="True">
 		<size>(2,2)</size>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<fillPercent>0.4</fillPercent>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<placeWorkers>
 			<li>PlaceWorker_TurretTop</li>
@@ -62,8 +62,6 @@
 		<size>(5,4)</size>
 		<rotatable>true</rotatable>
 		<altitudeLayer>BuildingOnTop</altitudeLayer>
-		<passability>Impassable</passability>
-		<fillPercent>1</fillPercent>
 		<castEdgeShadows>false</castEdgeShadows>
 		<designationHotKey>Misc12</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
@@ -205,10 +203,11 @@
 		<thingClass>Building</thingClass>
 		<category>Building</category>
 		<altitudeLayer>Building</altitudeLayer>
-		<passability>PassThroughOnly</passability>
+		<pathCost>50</pathCost>
+		<passability>Impassable</passability>
 		<blockWind>true</blockWind>
 		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>0.8</fillPercent>
+		<fillPercent>1</fillPercent>
 		<blockLight>true</blockLight>
 		<canOverlapZones>false</canOverlapZones>
 		<rotatable>true</rotatable>
@@ -227,12 +226,13 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsink</defName>
 		<label>heatsink</label>
-		<description>A liquid-cooled heatsink for storing excess heat from weapons fire. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 150\nHeat released: 0.5/s</description>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<description>A heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 100</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatsink</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2.1,4.7)</drawSize>
+			<drawSize>(2,2)</drawSize>
 		</graphicData>
 		<statBases>
 			<MaxHitPoints>800</MaxHitPoints>
@@ -249,13 +249,17 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>150</heatCapacity>
-				<heatVentTick>120</heatVentTick>
+				<heatCapacity>100</heatCapacity>
+				<heatVent>6</heatVent>
+				<heatLoss>4</heatLoss>
 				<threat>2</threat>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
 		<researchPrerequisites>
@@ -265,7 +269,8 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsinkLarge</defName>
 		<label>large heatsink</label>
-		<description>A liquid-cooled heatsink for storing excess heat from weapons fire. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 750\nHeat released: 0.5/s</description>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<description>A large heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 500</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatsinkLarge</texPath>
@@ -287,13 +292,17 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>750</heatCapacity>
-				<heatVentTick>120</heatVentTick>
+				<heatCapacity>500</heatCapacity>
+				<heatVent>24</heatVent>
+				<heatLoss>12</heatLoss>
 				<threat>12</threat>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
 		<researchPrerequisites>
@@ -302,36 +311,66 @@
 	</ThingDef>
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatManifold</defName>
-		<label>heat manifold</label>
-		<description>A specialized heatsink for storing excess heat from weapons fire. Quickly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 120\nHeat released: 2/s</description>
+		<label>coolant tank</label>
+		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 200</description>
 		<size>(2,2)</size>
 		<graphicData>
-			<texPath>Things/Building/Ship/QuickBleedingHeatsink</texPath>
+			<texPath>Things/Building/Ship/Heatbank</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2.1,4.7)</drawSize>
+			<drawSize>(2,2)</drawSize>
 		</graphicData>
 		<statBases>
 			<MaxHitPoints>800</MaxHitPoints>
-			<WorkToBuild>3500</WorkToBuild>
+			<WorkToBuild>1500</WorkToBuild>
 			<Flammability>0.7</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
 		<costList>
 			<Steel>100</Steel>
 			<Plasteel>25</Plasteel>
-			<ComponentSpacer>4</ComponentSpacer>
-			<ComponentIndustrial>4</ComponentIndustrial>
+			<ComponentSpacer>1</ComponentSpacer>
+			<ComponentIndustrial>1</ComponentIndustrial>
 		</costList>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>120</heatCapacity>
-				<heatVentTick>30</heatVentTick>
-				<threat>2</threat>
+				<heatCapacity>400</heatCapacity>
+				<heatLoss>6</heatLoss>
+				<threat>1</threat>
 			</li>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTransmitter</compClass>
-				<transmitsPower>true</transmitsPower>
+		</comps>
+		<researchPrerequisites>
+			<li>ShipHeatManifold</li>
+		</researchPrerequisites>
+	</ThingDef>
+	<ThingDef ParentName="ShipHeatsinkBase">
+		<defName>ShipHeatBankLarge</defName>
+		<label>large coolant tank</label>
+		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 1000</description>
+		<size>(4,4)</size>
+		<graphicData>
+			<texPath>Things/Building/Ship/HeatbankLarge</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(4,4)</drawSize>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>1600</MaxHitPoints>
+			<WorkToBuild>6000</WorkToBuild>
+			<Flammability>0.7</Flammability>
+			<Beauty>-2</Beauty>
+		</statBases>
+		<costList>
+			<Steel>500</Steel>
+			<Plasteel>125</Plasteel>
+			<ComponentSpacer>5</ComponentSpacer>
+			<ComponentIndustrial>5</ComponentIndustrial>
+		</costList>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSink</compClass>
+				<heatCapacity>2000</heatCapacity>
+				<heatLoss>18</heatLoss>
+				<threat>5</threat>
 			</li>
 		</comps>
 		<researchPrerequisites>
@@ -341,7 +380,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipPurgePort</defName>
 		<label>emergency purge port</label>
-		<description>A system for channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.\n\nHeat released: 0.5/s</description>
+		<description>A system for channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/PurgePort</texPath>
@@ -363,8 +402,6 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>
-				<heatCapacity>5</heatCapacity>
-				<heatVentTick>120</heatVentTick>
 				<heatPurge>5</heatPurge>
 				<threat>5</threat>
 			</li>
@@ -395,7 +432,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipPurgePortLarge</defName>
 		<label>large emergency purge port</label>
-		<description>A system for rapidly channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.\n\nHeat released: 0.5/s</description>
+		<description>A system for rapidly channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/PurgePortLarge</texPath>
@@ -417,8 +454,6 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>
-				<heatCapacity>25</heatCapacity>
-				<heatVentTick>120</heatVentTick>
 				<heatPurge>25</heatPurge>
 				<threat>30</threat>
 			</li>
@@ -457,7 +492,7 @@
 		<description>A starship turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range. Can be set to intercept torpedoes rather than firing at the enemy ship.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>2</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>50</optRange>
@@ -633,7 +668,7 @@
 		</graphicData>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>4</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>50</optRange>
@@ -785,7 +820,7 @@
 		</graphicData>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>12</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>50</optRange>
@@ -940,7 +975,7 @@
 		</graphicData>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>10</heatPerPulse>
 				<energyToFire>80</energyToFire>
 				<optRange>50</optRange>
@@ -1119,7 +1154,7 @@
 		</graphicData>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>30</heatPerPulse>
 				<energyToFire>240</energyToFire>
 				<optRange>50</optRange>
@@ -1235,7 +1270,7 @@
 		</graphicData>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>15</heatPerPulse>
 				<energyToFire>50</energyToFire>
 				<optRange>100</optRange>
@@ -1400,7 +1435,7 @@
 		</graphicData>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>45</heatPerPulse>
 				<energyToFire>150</energyToFire>
 				<optRange>100</optRange>
@@ -1534,7 +1569,7 @@
 		<description>A starship turret that accelerates metal slugs to relativistic speeds. Its tracking system excels at striking distant targets, but becomes wildly inaccurate at close range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>5</heatPerPulse>
 				<energyToFire>60</energyToFire>
 				<optRange>150</optRange>
@@ -1687,7 +1722,7 @@
 		<description>A cruiser-sized turret that accelerates metal slugs to relativistic speeds. Its tracking system excels at striking distant targets, but becomes wildly inaccurate at close range.\n\nWill vent heat to the surrounding room if no heatsink capacity is available.</description>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>15</heatPerPulse>
 				<energyToFire>180</energyToFire>
 				<optRange>150</optRange>
@@ -1949,8 +1984,8 @@
 				<color>(0.5,0,0)</color>
 			</li>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
-				<heatPerPulse>60</heatPerPulse>
+				<compClass>CompShipHeat</compClass>
+				<heatPerPulse>90</heatPerPulse>
 				<energyToFire>720</energyToFire>
 				<optRange>50</optRange>
 				<maxRange>100</maxRange>
@@ -2050,8 +2085,8 @@
 				<color>(0,0.5,0)</color>
 			</li>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
-				<heatPerPulse>60</heatPerPulse>
+				<compClass>CompShipHeat</compClass>
+				<heatPerPulse>120</heatPerPulse>
 				<energyToFire>450</energyToFire>
 				<optRange>100</optRange>
 				<maxRange>150</maxRange>
@@ -2171,7 +2206,7 @@
 				<color>(0,0,0.5)</color>
 			</li>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>60</heatPerPulse>
 				<energyToFire>540</energyToFire>
 				<optRange>150</optRange>
@@ -2343,7 +2378,7 @@
 		<size>(3,3)</size>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>1</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>
@@ -2378,7 +2413,7 @@
 		<size>(6,3)</size>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>1</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>
@@ -2408,12 +2443,12 @@
 		<label>torpedo tubes (6)</label>
 		<graphicData>
 			<texPath>Things/Building/Ship/TorpedoTubes</texPath>
-			<drawSize>(6,7)</drawSize>
+			<drawSize>(6,6)</drawSize>
 		</graphicData>
-		<size>(6,7)</size>
+		<size>(6,6)</size>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>1</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>

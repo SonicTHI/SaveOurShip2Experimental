@@ -426,7 +426,7 @@
 			<li>PlaceWorker_Radiator</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<comps>
+		<!--comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>150</basePowerConsumption>
@@ -451,10 +451,6 @@
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>20</heatCapacity>
-				<ventHeatToSpace>true</ventHeatToSpace>
-				<heatVentTick>800</heatVentTick>
 			</li>
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
@@ -462,8 +458,7 @@
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
-		</comps>
-		<designationCategory>Ship</designationCategory>
+		</comps-->
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 		<building>
@@ -552,7 +547,7 @@
 				<archotech>true</archotech>
 			</li>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 			</li>
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
@@ -856,8 +851,8 @@
 				<glowRadius>12</glowRadius>
 				<glowColor>(80,210,80,0)</glowColor>
 			</li>
-			<li Class="CompProperties_HeatPusher">
-				<compClass>CompHeatPusherPowered</compClass>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeatSource</compClass>
 				<heatPerSecond>6</heatPerSecond>
 			</li>
 			<li Class="CompProperties_Explosive">
@@ -883,13 +878,13 @@
 	</ThingDef>
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsinkAntiEntropy</defName>
-		<label>anti-entropic heatsink</label>
-		<description>An advanced heatsink designed by an archotech. Uses exotic physics to convert excess heat back into usable energy.\n\nHeat capacity: 150\nHeat conversion: 0.5/s to 1kW/s</description>
+		<label>anti-entropic heatbank</label>
+		<description>An advanced heatbank designed by an archotech. Uses exotic physics to convert excess heat back into usable energy.\n\nHeat capacity: 100\nHeat conversion: 0.5/s to 1kW/s</description>
 		<size>(2,2)</size>
 		<graphicData>
-			<texPath>Things/Building/Ship/AntiEntropicHeatsink</texPath>
+			<texPath>Things/Building/Ship/HeatbankAntiEntropic</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2.1,4.7)</drawSize>
+			<drawSize>(2,4)</drawSize>
 		</graphicData>
 		<building>
 		</building>
@@ -908,8 +903,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>150</heatCapacity>
-				<heatVentTick>120</heatVentTick>
+				<heatCapacity>100</heatCapacity>
 				<threat>3</threat>
 				<antiEntropic>true</antiEntropic>
 			</li>
@@ -1308,7 +1302,7 @@
 				<destroysHull>false</destroysHull>
 			</li>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>140</heatPerPulse>
 				<energyToFire>4800</energyToFire>
 				<optRange>150</optRange>
@@ -1447,7 +1441,7 @@
 				<color>(0.5,0,0.5)</color>
 			</li>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>140</heatPerPulse>
 				<energyToFire>4800</energyToFire>
 				<optRange>150</optRange>

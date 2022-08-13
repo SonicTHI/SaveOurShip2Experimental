@@ -456,7 +456,7 @@
 			<li>PlaceWorker_Radiator</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<comps>
+		<!--comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>100</basePowerConsumption>
@@ -481,16 +481,11 @@
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>5</heatCapacity>
-				<ventHeatToSpace>true</ventHeatToSpace>
-				<heatVentTick>1200</heatVentTick>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
-		</comps>
-		<designationCategory>Ship</designationCategory>
+		</comps-->
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<researchPrerequisites>
@@ -565,7 +560,7 @@
 			<li>PlaceWorker_Radiator</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<comps>
+		<!--comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>150</basePowerConsumption>
@@ -590,16 +585,11 @@
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>10</heatCapacity>
-				<ventHeatToSpace>true</ventHeatToSpace>
-				<heatVentTick>1000</heatVentTick>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
-		</comps>
-		<designationCategory>Ship</designationCategory>
+		</comps-->
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<researchPrerequisites>
@@ -691,7 +681,7 @@
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
@@ -1304,6 +1294,72 @@
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_Thruster</defName>
+		<label>RCS thruster</label>
+		<designatorDropdown>Ship_Engines</designatorDropdown>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/ShipThruster</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(2.3,2.3)</drawSize>
+		</graphicData>
+		<researchPrerequisites>
+			<li>ShipEngine</li>
+		</researchPrerequisites>
+		<altitudeLayer>WorldClipper</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<WorkToBuild>2000</WorkToBuild>
+			<MaxHitPoints>300</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>A thruster that can move the ship or evade enemy projectiles in battle. Temp - cosmetic only!</description>
+		<size>(1,1)</size>
+		<receivesSignals>true</receivesSignals>
+		<designationCategory>Ship</designationCategory>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Refuelable">
+				<fuelCapacity>100.0</fuelCapacity>
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+				<fuelFilter>
+					<thingDefs>
+						<li>Chemfuel</li>
+					</thingDefs>
+				</fuelFilter>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<autoRefuelPercent>1</autoRefuelPercent>
+				<showFuelGizmo>false</showFuelGizmo>
+				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
+				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<building>
+			<shipPart>true</shipPart>
+		</building>
+		<costList>
+			<Steel>50</Steel>
+			<Plasteel>10</Plasteel>
+			<ComponentIndustrial>3</ComponentIndustrial>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+	</ThingDef>
 	<!-- JTengines -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Engines_Interplanetary</defName>
@@ -1636,6 +1692,71 @@
 		<designationHotKey>Misc3</designationHotKey>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipViewscreen</defName>
+		<label>ship viewscreen</label>
+		<description>A huge, high-tech screen that will keep your bridge crew occupied.</description>
+		<designatorDropdown>Ship_Bridges</designatorDropdown>
+		<graphicData>
+			<texPath>Things/Building/Joy/MegascreenTelevision</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<shadowData>
+				<volume>(2.5, 0.6, 0.1)</volume>
+				<offset>(0, 0, 0.2)</offset>
+			</shadowData>
+			<drawSize>(5,1)</drawSize>
+		</graphicData>
+		<researchPrerequisites>
+			<li>ShipPilotSeat</li>
+		</researchPrerequisites>
+		<designationCategory>Ship</designationCategory>
+		<altitudeLayer>Building</altitudeLayer>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<rotatable>true</rotatable>
+		<socialPropernessMatters>true</socialPropernessMatters>
+		<fillPercent>0.35</fillPercent>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<thingSetMakerTags>
+			<li>RewardStandardLowFreq</li>
+			<li>RewardStandardQualitySuper</li>
+		</thingSetMakerTags>
+		<costList>
+			<Steel>300</Steel>
+			<Plasteel>20</Plasteel>
+			<ComponentIndustrial>10</ComponentIndustrial>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<statBases>
+			<WorkToBuild>80000</WorkToBuild>
+			<MaxHitPoints>85</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Mass>10</Mass>
+			<JoyGainFactor>1.6</JoyGainFactor>
+		</statBases>
+		<pathCost>50</pathCost>
+		<passability>PassThroughOnly</passability>
+		<size>(5,1)</size>
+		<building>
+			<joyKind>Television</joyKind>
+			<spawnedConceptLearnOpportunity>TVForSickPeople</spawnedConceptLearnOpportunity>
+			<boughtConceptLearnOpportunity>TVForSickPeople</boughtConceptLearnOpportunity>
+			<watchBuildingStandDistanceRange>2~9</watchBuildingStandDistanceRange>
+			<watchBuildingStandRectWidth>9</watchBuildingStandRectWidth>
+			<watchBuildingInSameRoom>true</watchBuildingInSameRoom>
+			<effectWatching>WatchingTelevision</effectWatching>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_WatchArea</li>
+		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<shortCircuitInRain>true</shortCircuitInRain>
+				<basePowerConsumption>450</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
@@ -2124,6 +2245,7 @@
 		</researchPrerequisites>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
+		<pathCost>50</pathCost>
 		<blockWind>true</blockWind>
 		<castEdgeShadows>true</castEdgeShadows>
 		<fillPercent>0.9</fillPercent>
@@ -2166,7 +2288,7 @@
 			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>
-				<heatGeneratedPerTickActive>0.005</heatGeneratedPerTickActive>
+				<heatPerSecond>10</heatPerSecond>
 			</li>
 			<li Class="CompProperties_Glower">
 				<glowRadius>8</glowRadius>
@@ -2429,7 +2551,7 @@
 			<li Class="CompProperties_GraphicOnOff"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>
-				<heatGeneratedPerTickActive>0.02</heatGeneratedPerTickActive>
+				<heatPerSecond>1</heatPerSecond>
 			</li>
 		</comps>
 		<placeWorkers>

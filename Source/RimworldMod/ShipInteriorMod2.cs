@@ -31,12 +31,10 @@ namespace SaveOurShip2
 	{
 		public static HugsLib.Utils.ModLogger instLogger;
 
-		public static readonly float HeatPushMult = 50f;
 		public static readonly float crittersleepBodySize = 0.7f;
 		public static bool ArchoStuffEnabled = true;//unassigned???
 		public static bool SoSWin = false;
 		static bool loadedGraphics = false;
-
 												  
 		public static bool AirlockBugFlag = false;//shipmove
 		public static Building shipOriginRoot = null;//used for patched original launch code
@@ -699,22 +697,21 @@ namespace SaveOurShip2
 					CompPowerTrader trader = b.TryGetComp<CompPowerTrader>();
 					trader.PowerOn = true;
 				}
-				if (b is Building_ShipTurret)
-					((Building_ShipTurret)b).burstCooldownTicksLeft = 300;
-				if (b is Building_ShipTurretTorpedo)
+				if (b is Building_ShipTurret turret)
+					turret.burstCooldownTicksLeft = 300;
+				if (b is Building_ShipTurretTorpedo torp)
 				{
-					CompChangeableProjectilePlural torps = ((Building_ShipTurretTorpedo)b).gun.TryGetComp<CompChangeableProjectilePlural>();
-					for (int i = 0; i < torps.Props.maxTorpedoes; i++)
-						torps.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
-					IntVec3 vec;
+					for (int i = 0; i < torp.torpComp.Props.maxTorpedoes; i++)
+						torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
+					/*IntVec3 vec;
 					GenAdj.TryFindRandomAdjacentCell8WayWithRoom(b, out vec);
 					for (int i = 0; i < Rand.RangeInclusive(1, 4); i++)
 					{
 						GenPlace.TryPlaceThing(ThingMaker.MakeThing(ThingDef.Named("ShipTorpedo_HighExplosive")), vec, map, ThingPlaceMode.Near);
-					}
+					}*/
 				}
-				else if (b is Building_ShipBridge)
-					((Building_ShipBridge)b).ShipName = shipDef.label;
+				else if (b is Building_ShipBridge bridge)
+					bridge.ShipName = shipDef.label;
 				else if (!shieldActive && b.TryGetComp<CompShipCombatShield>() != null)
 					b.TryGetComp<CompFlickable>().SwitchIsOn = false;
 			}
@@ -807,12 +804,49 @@ namespace SaveOurShip2
 			border.Add(new IntVec3(pos.z, 0, pos.x * -1));
 			border.Add(new IntVec3(pos.z * -1, 0, pos.x * -1));
 		}
-		public static List<IntVec3> FindAreaAttached(Building root, bool includeNaturalRock)
+		public static List<Building> FindBuildingsAttached(Building root, bool includeRock = false)
 		{
 			if (root == null || root.Destroyed)
+				return new List<Building>();
+
+			var map = root.Map;
+			var containedBuildings = new HashSet<Building>();
+			var cellsTodo = new HashSet<IntVec3>();
+			var cellsDone = new HashSet<IntVec3>();
+			cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
+			cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
+
+			while (cellsTodo.Count > 0)
 			{
-				return new List<IntVec3>();
+				var current = cellsTodo.First();
+				cellsTodo.Remove(current);
+				cellsDone.Add(current);
+
+				var containedThings = current.GetThingList(map);
+				if (!containedThings.Any(t => ((t as Building)?.def.building.shipPart ?? false) || (includeRock && ((t as Building)?.def.building.isNaturalRock ?? false))))
+					continue;
+
+				foreach (var t in containedThings)
+				{
+					if (t is Building b)
+					{
+						if (containedBuildings.Add(b))
+						{
+							cellsTodo.AddRange(
+								GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b))
+									.Where(cell => !cellsDone.Contains(cell))
+							);
+						}
+					}
+				}
 			}
+			return containedBuildings.ToList();
+		}
+		public static List<IntVec3> FindAreaAttached(Building root, bool includeRock = false)
+		{
+			if (root == null || root.Destroyed)
+				return new List<IntVec3>();
+
 			var map = root.Map;
 			var cellsTodo = new HashSet<IntVec3>();
 			var cellsDone = new HashSet<IntVec3>();
@@ -825,16 +859,15 @@ namespace SaveOurShip2
 				cellsTodo.Remove(current);
 				cellsDone.Add(current);
 				var containedThings = current.GetThingList(map);
-				if (!containedThings.Any(thing => ((thing as Building)?.def.building.shipPart ?? false) || (includeNaturalRock && ((thing as Building)?.def.building.isNaturalRock ?? false))))
-				{
+				if (!containedThings.Any(t => ((t as Building)?.def.building.shipPart ?? false) || (includeRock && ((t as Building)?.def.building.isNaturalRock ?? false))))
 					continue;
-				}
-				foreach (var thing in containedThings)
+
+				foreach (var t in containedThings)
 				{
-					if (thing is Building building)
+					if (t is Building b)
 					{
 						cellsTodo.AddRange(
-							GenAdj.CellsOccupiedBy(building).Concat(GenAdj.CellsAdjacentCardinal(building))
+							GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b))
 								.Where(cell => !cellsDone.Contains(cell))
 						);
 					}
@@ -842,10 +875,10 @@ namespace SaveOurShip2
 			}
 			return cellsDone.ToList();
 		}
-		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0)
+		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
 			List<Thing> toSave = new List<Thing>();
-			List<Building> shipParts = ShipUtility.ShipBuildingsAttachedTo(core);
+			List<Building> shipParts = FindBuildingsAttached(core, includeRock);
 			List<Zone> zonesToCopy = new List<Zone>();
 			bool movedZones = false;
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
@@ -914,26 +947,26 @@ namespace SaveOurShip2
 				else if (!thing.Destroyed)
 					thing.Destroy();
 			}
-			//all - save things
-			foreach (Building hullTile in shipParts)
+			//all - save things, terrain
+			foreach (Building shipPart in shipParts)
 			{
-				List<Thing> allTheThings = hullTile.Position.GetThingList(hullTile.Map);
-				foreach (Thing theItem in allTheThings)
+				List<Thing> allTheThings = shipPart.Position.GetThingList(shipPart.Map);
+				foreach (Thing t in allTheThings)
 				{
-					if (theItem.Map.zoneManager.ZoneAt(theItem.Position) != null && !zonesToCopy.Contains(theItem.Map.zoneManager.ZoneAt(theItem.Position)))
+					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zonesToCopy.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
 					{
-						zonesToCopy.Add(theItem.Map.zoneManager.ZoneAt(theItem.Position));
+						zonesToCopy.Add(t.Map.zoneManager.ZoneAt(t.Position));
 					}
-					if (!toSave.Contains(theItem) && !(theItem is Building_SteamGeyser))
+					if (!toSave.Contains(t) && !(t is Building_SteamGeyser))
 					{
-						toSave.Add(theItem);
+						toSave.Add(t);
 					}
-					UnRoofTilesOverThing(theItem);
+					UnRoofTilesOverThing(t);
 				}
-				if (hullTile.Map.terrainGrid.TerrainAt(hullTile.Position).layerable && !(hullTile.Map.terrainGrid.TerrainAt(hullTile.Position) == hullFloorDef) && !(hullTile.Map.terrainGrid.TerrainAt(hullTile.Position) == mechHullFloorDef) && !(hullTile.Map.terrainGrid.TerrainAt(hullTile.Position) == archoHullFloorDef))
+				if (shipPart.Map.terrainGrid.TerrainAt(shipPart.Position).layerable && !(shipPart.Map.terrainGrid.TerrainAt(shipPart.Position) == hullFloorDef) && !(shipPart.Map.terrainGrid.TerrainAt(shipPart.Position) == mechHullFloorDef) && !(shipPart.Map.terrainGrid.TerrainAt(shipPart.Position) == archoHullFloorDef))
 				{
-					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(hullTile.Position, hullTile.Map.terrainGrid.TerrainAt(hullTile.Position)));
-					hullTile.Map.terrainGrid.RemoveTopLayer(hullTile.Position, false);
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(shipPart.Position, shipPart.Map.terrainGrid.TerrainAt(shipPart.Position)));
+					shipPart.Map.terrainGrid.RemoveTopLayer(shipPart.Position, false);
 				}
 			}
 			AirlockBugFlag = true;
@@ -1339,10 +1372,11 @@ namespace SaveOurShip2
 				float baseY = __instance.Size.y + 40 + ShipInteriorMod2.offsetUIy;
 				for (int i = 0; i < playerShipComp.MapRootList.Count; i++)
 				{
-					try
+					try //td rem this once this is 100% safe
 					{
+						var bridge = (Building_ShipBridge)playerShipComp.MapRootList[i];
 						baseY += 45;
-						string str = ((Building_ShipBridge)playerShipComp.MapRootList[i]).ShipName;
+						string str = bridge.ShipName;
 						int strSize = 0;
 						if (playerShipComp.MapRootList.Count > 1)
 						{
@@ -1353,7 +1387,7 @@ namespace SaveOurShip2
 						if (playerShipComp.MapRootList.Count > 1)
 							Widgets.Label(rect2.ContractedBy(7), str);
 
-						PowerNet net = playerShipComp.MapRootList[i].TryGetComp<CompPower>().PowerNet;
+						PowerNet net = bridge.powerComp.PowerNet;
 						float capacity = 0;
 						foreach (CompPowerBattery bat in net.batteryComps)
 							capacity += bat.Props.storedEnergyMax;
@@ -1364,18 +1398,24 @@ namespace SaveOurShip2
 						rect3.y += 7;
 						rect3.x = screenHalf - 615;
 						rect3.height = Text.LineHeight;
-						Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()));
+						if (capacity > 0)
+							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()));
+						else
+							Widgets.Label(rect3, "<color=red>ERROR: no capacitors</color>");
 
-						ShipHeatNet net2 = playerShipComp.MapRootList[i].TryGetComp<CompShipHeat>().myNet;
+						ShipHeatNet net2 = bridge.heatComp.myNet;
 						if (net2 != null)
 						{
 							Rect rect4 = new Rect(screenHalf - 435, baseY - 40, 200, 35);
-							Widgets.FillableBar(rect4.ContractedBy(6), net2.StorageUsed / net2.StorageCapacity,
+							Widgets.FillableBar(rect4.ContractedBy(6), bridge.heatComp.RatioInNetwork(),
 								ShipInteriorMod2.HeatTex);
 							rect4.y += 7;
 							rect4.x = screenHalf - 420;
 							rect4.height = Text.LineHeight;
-							Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed));
+							if (net2.StorageCapacity > 0)
+								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed));
+							else
+								Widgets.Label(rect4, "<color=red>ERROR: no heatbanks</color>");
 						}
 					}
 					catch (Exception e)
@@ -1387,26 +1427,30 @@ namespace SaveOurShip2
 				baseY = __instance.Size.y + 40 + ShipInteriorMod2.offsetUIy;
 				for (int i = 0; i < enemyShipComp.MapRootList.Count; i++)
 				{
-                    try
+					try //td rem this once this is 100% safe
 					{
+						var bridge = (Building_ShipBridge)enemyShipComp.MapRootList[i];
 						baseY += 45;
-						string str = ((Building_ShipBridge)enemyShipComp.MapRootList[i]).ShipName;
+						string str = bridge.ShipName;
 						Rect rect2 = new Rect(screenHalf + 235, baseY - 40, 395, 35);
 						Verse.Widgets.DrawMenuSection(rect2);
 
-						ShipHeatNet net2 = enemyShipComp.MapRootList[i].GetComp<CompShipHeat>().myNet;
+						ShipHeatNet net2 = bridge.heatComp.myNet;
 						if (net2 != null)
 						{
 							Rect rect4 = new Rect(screenHalf + 235, baseY - 40, 200, 35);
-							Widgets.FillableBar(rect4.ContractedBy(6), net2.StorageUsed / net2.StorageCapacity,
+							Widgets.FillableBar(rect4.ContractedBy(6), bridge.heatComp.RatioInNetwork(),
 								ShipInteriorMod2.HeatTex);
 							rect4.y += 7;
 							rect4.x = screenHalf + 255;
 							rect4.height = Text.LineHeight;
-							Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed));
+							if (net2.StorageCapacity > 0)
+								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed));
+							else
+								Widgets.Label(rect4, "<color=red>ERROR: no heatbanks</color>");
 						}
 
-						PowerNet net = enemyShipComp.MapRootList[i].GetComp<CompPower>().PowerNet;
+						PowerNet net = bridge.powerComp.PowerNet;
 						float capacity = 0;
 						foreach (CompPowerBattery bat in net.batteryComps)
 							capacity += bat.Props.storedEnergyMax;
@@ -1417,7 +1461,10 @@ namespace SaveOurShip2
 						rect3.y += 7;
 						rect3.x = screenHalf + 445;
 						rect3.height = Text.LineHeight;
-						Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()));
+						if (capacity > 0)
+							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()));
+						else
+							Widgets.Label(rect3, "<color=red>ERROR: no capacitors</color>");
 					}
 					catch (Exception e)
 					{

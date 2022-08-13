@@ -8,7 +8,7 @@ using Verse;
 namespace RimWorld
 {
     [StaticConstructorOnStartup]
-    class Building_ShipTurretTorpedo : Building_ShipTurret
+    public class Building_ShipTurretTorpedo : Building_ShipTurret
     {
         public static Graphic torpedoBayDoor = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/TorpedoTubeDoor", ShaderDatabase.Cutout, new Vector2(6, 7), Color.white, Color.white);
         public static Graphic torpedoBayDoorSm = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/TorpedoTubeDoor_small", ShaderDatabase.Cutout, new Vector2(6, 3), Color.white, Color.white);
@@ -24,8 +24,6 @@ namespace RimWorld
         int timesFired = 0;
         static Vector3[] TubePos = { new Vector3(-1, 0, -1.5f), new Vector3(1, 0, -1.5f), new Vector3(-1, 0, 0), new Vector3(1, 0, 0), new Vector3(-1, 0, 1.5f), new Vector3(1, 0, 1.5f) };
         static Vector3[] TubePosTwo = { new Vector3(-1, 0, 0), new Vector3(1, 0, 0) };
-
-        public static Dictionary<Map, List<Building_ShipTurretTorpedo>> allTubesOnMap = new Dictionary<Map, List<Building_ShipTurretTorpedo>>();
 		
         public override void Draw()
         {
@@ -76,7 +74,7 @@ namespace RimWorld
             base.Tick();
             if(this.Map.GetComponent<ShipHeatMapComp>().InCombat)
             {
-                if (ticksSinceOpen < TicksToOpenNow && this.TryGetComp<CompPowerTrader>().PowerOn)
+                if (ticksSinceOpen < TicksToOpenNow && powerComp.PowerOn)
                     ticksSinceOpen++;
             }
             else
@@ -102,16 +100,12 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            if (!allTubesOnMap.ContainsKey(Map))
-            {
-                allTubesOnMap.Add(Map, new List<Building_ShipTurretTorpedo>());
-            }
-            allTubesOnMap[Map].Add(this);
+            mapComp.TorpedoTubes.Add(this);
         }
 
         public override void DeSpawn(DestroyMode mode)
         {
-            allTubesOnMap[Map].Remove(this);
+            mapComp.TorpedoTubes.Remove(this);
             base.DeSpawn(mode);
         }
     }

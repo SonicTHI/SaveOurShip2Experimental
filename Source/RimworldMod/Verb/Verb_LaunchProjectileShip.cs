@@ -48,10 +48,10 @@ namespace RimWorld
                 }
                 else
                 {
-                    if (turret.gun.TryGetComp<CompChangeableProjectilePlural>() == null)
+                    if (turret.torpComp == null)
                         RegisterProjectile(turret, this.shipTarget, verbProps.defaultProjectile, turret.SynchronizedBurstLocation);
                     else
-                        RegisterProjectile(turret, this.shipTarget, turret.gun.TryGetComp<CompChangeableProjectilePlural>().Projectile.interactionCellIcon, turret.SynchronizedBurstLocation); //This is a horrible kludge, but it's a way to attach one projectile's ThingDef to another projectile
+                        RegisterProjectile(turret, this.shipTarget, turret.torpComp.Projectile.interactionCellIcon, turret.SynchronizedBurstLocation); //This is a horrible kludge, but it's a way to attach one projectile's ThingDef to another projectile
                 }
             }
             ShootLine resultingLine = new ShootLine(caster.Position, currentTarget.Cell);
@@ -90,9 +90,9 @@ namespace RimWorld
                 }
             }
 
-            if (launcher is Building_ShipTurretTorpedo)
+            if (launcher is Building_ShipTurretTorpedo l)
             {
-                projectile2.Launch(launcher, (drawPos + ((Building_ShipTurretTorpedo)launcher).TorpedoTubePos()), currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
+                projectile2.Launch(launcher, drawPos + l.TorpedoTubePos(), currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
             }
             else
                 projectile2.Launch(launcher, currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
@@ -174,7 +174,6 @@ namespace RimWorld
         public void RegisterProjectile(Building_ShipTurret turret, LocalTargetInfo target, ThingDef spawnProjectile, IntVec3 burstLoc)
         {
             var mapComp = caster.Map.GetComponent<ShipHeatMapComp>();
-            float range = mapComp.ShipCombatMasterMap.GetComponent<ShipHeatMapComp>().Range;
             if (turret.PointDefenseMode) //PD
             {
                 //pods
@@ -187,11 +186,12 @@ namespace RimWorld
                         podsinrange.Add(obj);
                     }
                 }
-                if (mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>().TorpsInRange.Any() && Rand.Chance(0.1f))
+                var targetMapComp = mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>();
+                if (targetMapComp.TorpsInRange.Any() && Rand.Chance(0.1f))
                 {
-                    ShipCombatProjectile projtr = mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>().TorpsInRange.RandomElement();
-                    mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>().Projectiles.Remove(projtr);
-                    mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>().TorpsInRange.Remove(projtr);
+                    ShipCombatProjectile projtr = targetMapComp.TorpsInRange.RandomElement();
+                    targetMapComp.Projectiles.Remove(projtr);
+                    targetMapComp.TorpsInRange.Remove(projtr);
                 }
                 else if (!podsinrange.NullOrEmpty() && Rand.Chance(0.1f))
                 {
@@ -207,10 +207,10 @@ namespace RimWorld
                         }
                         foreach (Thing t in toDestroy)
                         {
-                            if (t is Pawn)
+                            if (t is Pawn p)
                             {
                                 if (ShipInteriorMod2.easyMode && t.Faction == Faction.OfPlayer)
-                                    HealthUtility.DamageUntilDowned((Pawn)t, false);
+                                    HealthUtility.DamageUntilDowned(p, false);
                                 else
                                     t.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
                             }
@@ -235,7 +235,7 @@ namespace RimWorld
                     spawnProjectile = spawnProjectile,
                     //missRadius = this.verbProps.ForcedMissRadius,
                     burstLoc = burstLoc,
-                    speed = turret.TryGetComp<CompShipHeatSource>().Props.projectileSpeed,
+                    speed = turret.heatComp.Props.projectileSpeed,
                     Map = turret.Map
                 };
                 mapComp.Projectiles.Add(proj);

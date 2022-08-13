@@ -14,6 +14,7 @@ namespace RimWorld
     {
         public Building salvageBay;
         public int salvageBayNum;
+        public bool otherMap = true;
         public Map targetMap;
         
         public override void MergeWith(Gizmo other)
@@ -32,7 +33,8 @@ namespace RimWorld
             Building b=null;
             base.ProcessInput(ev);
             SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
-            CameraJumper.TryJump(targetMap.Center, targetMap);
+            if (otherMap)
+                CameraJumper.TryJump(targetMap.Center, targetMap);
             Targeter targeter = Find.Targeter;
             TargetingParameters parms = new TargetingParameters();
             parms.canTargetBuildings = true;
@@ -46,7 +48,7 @@ namespace RimWorld
         {
             if (b == null)
                 return;
-            List<Building> cache = ShipUtility.ShipBuildingsAttachedTo(b);
+            List<Building> cache = ShipInteriorMod2.FindBuildingsAttached(b, true);
             List<IntVec3> positions = new List<IntVec3>();
             IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
             foreach (Building building in cache)
@@ -61,7 +63,7 @@ namespace RimWorld
             foreach (Building building in cache)
             {
                 bCount++;
-                if (building is Building_ShipBridge && !building.Destroyed && !building.Spawned)
+                if (building is Building_ShipBridge && !building.Destroyed)
                 {
                     Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
                     return;
@@ -86,6 +88,7 @@ namespace RimWorld
             Map m = salvageBay.Map;
             MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
             fakeMover.shipRoot = b;
+            fakeMover.includeRock = true;
             fakeMover.shipRotNum = 0;
             fakeMover.bottomLeftPos = lowestCorner;
             ShipInteriorMod2.shipOriginMap = b.Map;

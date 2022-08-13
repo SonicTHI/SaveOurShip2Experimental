@@ -9,7 +9,7 @@ using Verse.Sound;
 namespace RimWorld
 {
     [StaticConstructorOnStartup]
-    class CompPowerTraderOverdrivable : CompPowerPlant
+    public class CompPowerTraderOverdrivable : CompPowerPlant
     {
         public int overdriveSetting = 0;
         public float instability = 0;

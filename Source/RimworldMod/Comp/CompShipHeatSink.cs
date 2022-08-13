@@ -10,105 +10,99 @@ using RimworldMod;
 
 namespace RimWorld
 {
+    [StaticConstructorOnStartup]
     public class CompShipHeatSink : CompShipHeat
     {
-        public float heatStored;
-        public bool notInsideShield;
-        public bool cloaked;
+        public static readonly float HeatPushMult = 15f; //ratio modifier
+        public float heatStored; //used only when a HB is not on a net
+        public bool inSpace;
+        public CompPower powerComp;
+        public bool Disabled = false;
+        ShipHeatMapComp mapComp;
+        IntVec3 pos; //needed because no predestroy
+        Map map; //needed because no predestroy
 
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            powerComp = parent.TryGetComp<CompPower>();
+            inSpace = this.parent.Map.IsSpace();
+            pos = this.parent.Position;
+            map = this.parent.Map;
+            mapComp = map.GetComponent<ShipHeatMapComp>();
+        }
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            float ratio = RatioInNetwork();
+            GenTemperature.PushHeat(pos, map, this.Props.heatCapacity * HeatPushMult * ratio);
+            base.PostDestroy(mode, previousMap);
+        }
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look<float>(ref heatStored, "heatStored");
         }
-
         public override void CompTick()
         {
             base.CompTick();
-            if (!parent.Spawned)
+            if (!parent.Spawned || myNet == null)
             {
                 return;
             }
-
-            if ((Find.TickManager.TicksGame % 60 == 0 && this.Props.ventHeatToSpace) || this is CompShipHeatPurge)
+            if (this.parent.IsHashIntervalTick(120))
             {
-                this.notInsideShield = NotInsideShield();
-            }
-
-            if (this.parent.IsHashIntervalTick(Props.heatVentTick) && heatStored > 0)
-            {
-                if (this.Props.ventHeatToSpace)
+                if (Props.heatVent > 0) //radiates to space
                 {
-                    if (notInsideShield)
+                    IsDisabled();
+                    if (!Disabled)
                     {
-                        heatStored--;
+                        RemHeatFromNetwork(Props.heatVent);
                     }
                 }
-                else if (this.Props.antiEntropic)
+                if (myNet.StorageUsed > 0)
                 {
-                    heatStored--;
-                    if (parent.TryGetComp<CompPower>() != null && parent.GetComp<CompPower>().PowerNet != null && parent.GetComp<CompPower>().PowerNet.batteryComps.Count > 0)
+                    float ratio = RatioInNetwork();
+                    if (ratio > 0.90f)
                     {
-                        IEnumerable<CompPowerBattery> batteries = parent.GetComp<CompPower>().PowerNet.batteryComps.Where(b => b.StoredEnergy <= b.Props.storedEnergyMax - 2);
-                        if (batteries.Any())
-                            batteries.RandomElement().AddEnergy(2);
+                        this.parent.TakeDamage(new DamageInfo(DamageDefOf.Burn, 10));
+                    }
+                    if (this.Props.antiEntropic) //convert heat
+                    {
+                        if (powerComp != null && powerComp.PowerNet != null && powerComp.PowerNet.batteryComps.Count > 0)
+                        {
+                            IEnumerable<CompPowerBattery> batteries = powerComp.PowerNet.batteryComps.Where(b => b.StoredEnergy <= b.Props.storedEnergyMax - 1);
+                            if (batteries.Any())
+                            {
+                                batteries.RandomElement().AddEnergy(1);
+                                RemHeatFromNetwork(2);
+                            }
+                        }
+                    }
+                    else if (inSpace && ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom())) { }
+                    else //push heat to room
+                    {
+                        if (RemHeatFromNetwork(Props.heatLoss))
+                            GenTemperature.PushHeat(this.parent, Props.heatLoss * HeatPushMult * ratio);
                     }
                 }
-                else if (!this.parent.Map.IsSpace() || (this.parent.Map.IsSpace() && !ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom())))
-                {
-                    if (heatStored >= 1)
-                        GenTemperature.PushHeat(this.parent, ShipInteriorMod2.HeatPushMult);
-                    else
-                        GenTemperature.PushHeat(this.parent, ShipInteriorMod2.HeatPushMult * heatStored);
-                    heatStored--;
-                }
             }
-            if (heatStored < 0)
-                heatStored = 0;
         }
-
-        private bool NotInsideShield()
+        private void IsDisabled()
         {
-            cloaked = false;
-            foreach (CompShipCombatShield shield in parent.Map.GetComponent<ShipHeatMapComp>().Shields)
+            if (!mapComp.InCombat && mapComp.Cloaks.Any(c => c.active))
             {
-                if (!shield.shutDown && (parent.DrawPos - shield.parent.DrawPos).magnitude < shield.radius)
-                {
-                    return false;
-                }
+                Disabled = true;
             }
-            if (!this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat)
-            {
-                foreach (Building_ShipCloakingDevice cloak in parent.Map.GetComponent<ShipHeatMapComp>().Cloaks)
-                {
-                    if (cloak.active && cloak.Map == parent.Map)
-                    {
-						cloaked = true;
-                        return false;
-                    }
-                }
-            }
-            return true;
+            Disabled = false;
         }
-
         public override string CompInspectStringExtra()
         {
-            string toReturn = "Stored heat: " + Mathf.Round(heatStored)+"/"+Props.heatCapacity;
-            if(this.Props.ventHeatToSpace && !notInsideShield)
+            string toReturn = base.CompInspectStringExtra();// = "Stored heat: " + Mathf.Round(heatStored)+"/"+Props.heatCapacity;
+            if (Disabled)
             {
-                if (cloaked)
-                    toReturn += "\n<color=red>Cannot vent: Cloaked</color>";
-                else
-                    toReturn += "\n<color=red>Cannot vent: Inside shield</color>";
+                toReturn += "\n<color=red>Cannot vent: Cloaked</color>";
             }
             return toReturn;
-        }
-
-        public override void PostDeSpawn(Map map)
-        {
-            base.PostDeSpawn(map);
-            if (myNet != null)
-                myNet.DeRegister(this);
         }
     }
 }

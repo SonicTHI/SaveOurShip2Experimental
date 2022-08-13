@@ -20,6 +20,8 @@ namespace RimWorld
         public static ThingDef insideDef = ThingDef.Named("ShipAirlockBeamTile");
         public static ThingDef dockDef = ThingDef.Named("ShipAirlockBeam");
 
+        public ShipHeatMapComp mapComp;
+        public UnfoldComponent unfoldComp;
         public bool hacked = false;
         public bool failed = false;
         public bool docked = false;
@@ -84,7 +86,7 @@ namespace RimWorld
             //enemy pawns can pass through their doors if outside or with EVA when player is present
             if (p.Map.IsSpace() && p.Faction != Faction.OfPlayer && this.Outerdoor())
             {
-                if (ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (ShipInteriorMod2.EVAlevel(p)>3 && (!this.Map.GetComponent<ShipHeatMapComp>().InCombat || p.Map.mapPawns.AnyColonistSpawned))) { }
+                if (ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (ShipInteriorMod2.EVAlevel(p)>3 && (!mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned))) { }
                 else return false;
             }
             Lord lord = p.GetLord();
@@ -135,7 +137,7 @@ namespace RimWorld
             //create area after animation
             if (docked)
             {
-                if (startTick > 0 && Find.TickManager.TicksGame > startTick && !this.Map.GetComponent<ShipHeatMapComp>().InCombat)
+                if (startTick > 0 && Find.TickManager.TicksGame > startTick && !mapComp.InCombat)
                 {
                     Dock();
                     startTick = 0;
@@ -145,6 +147,8 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
+            mapComp = this.Map.GetComponent<ShipHeatMapComp>();
+            unfoldComp = this.TryGetComp<UnfoldComponent>();
         }
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
@@ -204,7 +208,7 @@ namespace RimWorld
                             if (!docked)
                             {
                                 startTick = Find.TickManager.TicksGame + 170;
-                                this.TryGetComp<UnfoldComponent>().Target = (dist - 1) * 0.33f;
+                                unfoldComp.Target = (dist - 1) * 0.33f;
                                 docked = true;
                             }
                             else
@@ -219,7 +223,7 @@ namespace RimWorld
                     else
                         toggleDock.icon = ContentFinder<Texture2D>.Get("UI/DockingOff");
 
-                    if (this.Map.GetComponent<ShipHeatMapComp>().InCombat || !this.TryGetComp<CompPowerTrader>().PowerOn || !CanDock(facing, leftSide, rightSide))
+                    if (mapComp.InCombat || !powerComp.PowerOn || !CanDock(facing, leftSide, rightSide))
                     {
                         toggleDock.Disable();
                     }
@@ -333,7 +337,7 @@ namespace RimWorld
                 building.DeSpawn();
             FleckMaker.ThrowDustPuff(loc1, this.Map, 1f);
             FleckMaker.ThrowDustPuff(loc3, this.Map, 1f);
-            this.TryGetComp<UnfoldComponent>().Target = 0.0f;
+            unfoldComp.Target = 0.0f;
             docked = false;
         }
     }

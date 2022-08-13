@@ -1,30 +1,49 @@
 ﻿using UnityEngine;
 using Verse;
+using SaveOurShip2;
 
 namespace RimWorld
 {
     public class Building_Radiator : Building_TempControl
     {
-        private const float HeatOutputMultiplier = 1.25f;
-        private const float EfficiencyLossPerDegreeDifference = 0.007692308f;
-        private const int EVAL_TIME = 60;
-        private int timeTillEval = EVAL_TIME;
+        //private const float HeatOutputMultiplier = 1.25f;
 
-        private UnfoldComponent unfoldComponent;
+        //private UnfoldComponent unfoldComp;
+        //private CompShipHeatSink heatComp;
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            unfoldComponent = GetComp<UnfoldComponent>();
+            //unfoldComp = GetComp<UnfoldComponent>();
+            //heatComp = GetComp<CompShipHeatSink>();
         }
 
         public override void Tick()
         {
             base.Tick();
-            timeTillEval--;
-            if (timeTillEval <= 0)
+            //dynamic replace to wall
+            Map map = this.Map;
+            IntVec3 pos = this.Position;
+            Faction fac = this.Faction;
+            Color col = Color.clear;
+            if (this.TryGetComp<CompColorable>() != null)
+                col = this.TryGetComp<CompColorable>().Color;
+            this.Destroy(DestroyMode.Vanish);
+            ThingDef def;
+            if (this.def.defName.Equals("ShipInside_PassiveCoolerMechanoid"))
+                def = ShipInteriorMod2.beamMechDef;
+            else if (this.def.defName.Equals("ShipInside_PassiveCoolerArchotech"))
+                def = ShipInteriorMod2.beamArchotechDef;
+            else
+                def = ShipInteriorMod2.beamDef;
+            Thing thing = ThingMaker.MakeThing(def);
+            thing.SetFaction(fac);
+            if (col != Color.clear)
+                thing.SetColor(col);
+            GenSpawn.Spawn(thing, pos, map);
+            /*if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (this.compPowerTrader.PowerOn && this.TryGetComp<CompShipHeatSink>().notInsideShield)
+                if (this.compPowerTrader.PowerOn && heatComp.Disabled)
                 {
                     IntVec3 intVec3_1 = this.Position + IntVec3.North.RotatedBy(this.Rotation);
 
@@ -50,7 +69,7 @@ namespace RimWorld
                             intVec3_1.GetRoom(this.Map).Temperature += tempChange;
                             GenTemperature.PushHeat(intVec3_2, this.Map, (-energyLimit * HeatOutputMultiplier));
                         }
-                        else if(GetComp<CompShipHeatSink>().heatStored>0)
+                        else if (heatComp.myNet.StorageUsed > 0)
                         {
                             flag = true;
                         }
@@ -62,15 +81,13 @@ namespace RimWorld
                         this.compPowerTrader.PowerOutput = -props.basePowerConsumption * this.compTempControl.Props.lowPowerConsumptionFactor;
                     this.compTempControl.operatingAtHighPower = flag;
 
-                    unfoldComponent.Target = flag ? 1.0f : 0.0f;
+                    unfoldComp.Target = flag ? 1.0f : 0.0f;
                 }
                 else
                 {
-                    unfoldComponent.Target = 0.0f;
+                    unfoldComp.Target = 0.0f;
                 }
-
-                timeTillEval = EVAL_TIME;
-            }
+            }*/
         }
     }
 }

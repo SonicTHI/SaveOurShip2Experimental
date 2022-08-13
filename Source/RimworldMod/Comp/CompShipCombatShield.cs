@@ -11,7 +11,7 @@ using SaveOurShip2;
 namespace RimWorld
 {
     [StaticConstructorOnStartup]
-    public class CompShipCombatShield : CompShipHeatSource
+    public class CompShipCombatShield : CompShipHeat
     {
         private static readonly Material ShieldMaterial = MaterialPool.MatFrom("Things/Building/Ship/ShieldBubbleSOS", ShaderDatabase.MoteGlow);
         private static readonly Material ConeMaterial = MaterialPool.MatFrom("Other/ForceFieldCone", ShaderDatabase.MoteGlow);
@@ -24,12 +24,16 @@ namespace RimWorld
         private int lastIntercepted = -69;
         private float lastInterceptAngle;
 
-		public CompFlickable Flickable;
+		public CompFlickable flickComp;
+        public CompPowerTrader powerComp;
+        public CompBreakdownable breakComp;
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            Flickable = parent.TryGetComp<CompFlickable>();
+            flickComp = parent.TryGetComp<CompFlickable>();
+            powerComp = parent.TryGetComp<CompPowerTrader>();
+            breakComp = parent.TryGetComp<CompBreakdownable>();
             parent.Map.GetComponent<ShipHeatMapComp>().Shields.Add(this);
         }
         public override void PostDeSpawn(Map map)
@@ -40,14 +44,14 @@ namespace RimWorld
         public override void CompTick()
         {
             base.CompTick();
-            this.shutDown = parent.TryGetComp<CompBreakdownable>().BrokenDown || !parent.TryGetComp<CompPowerTrader>().PowerOn;
+            this.shutDown = breakComp.BrokenDown || !powerComp.PowerOn;
             if (!this.shutDown && Find.TickManager.TicksGame % 60 == 0)
             {
                 if (radiusSet > radius)
                     radius+=1f;
                 else if (radiusSet < radius)
                     radius-=1f;
-                this.parent.TryGetComp<CompPowerTrader>().PowerOutput = radius * -50;
+                powerComp.PowerOutput = radius * -50;
             }
         }
         public override string CompInspectStringExtra()
@@ -90,11 +94,11 @@ namespace RimWorld
                 obj.Attach(parent);
                 GenSpawn.Spawn(obj, proj.DrawPos.ToIntVec3(), proj.Map, 0);
             }
-
-            if (this.AvailableCapacityInNetwork() < heatGenerated)
+            if (!AddHeatToNetwork(heatGenerated))
             {
-                this.AddHeatToNetwork(this.AvailableCapacityInNetwork());
-                parent.TryGetComp<CompBreakdownable>().DoBreakdown();
+                if (myNet != null)
+                    myNet.StorageUsed = myNet.StorageCapacity;
+                breakComp.DoBreakdown();
                 GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);
                 SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent));
 				if (parent.Faction != Faction.OfPlayer)
@@ -102,15 +106,11 @@ namespace RimWorld
                 else
                     Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatShieldBroken"), parent, MessageTypeDefOf.NegativeEvent);
             }
-            else
+            if (powerComp != null && powerComp.PowerNet.CurrentStoredEnergy() > heatGenerated /20)
             {
-                this.AddHeatToNetwork(heatGenerated);
-            }
-            if (parent.TryGetComp<CompPower>() != null && parent.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy() > heatGenerated /20)
-            {
-                foreach (CompPowerBattery bat in parent.TryGetComp<CompPower>().PowerNet.batteryComps)
+                foreach (CompPowerBattery bat in powerComp.PowerNet.batteryComps)
                 {
-                    bat.DrawPower(Mathf.Min((heatGenerated / 40) * bat.StoredEnergy / parent.TryGetComp<CompPower>().PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
+                    bat.DrawPower(Mathf.Min((heatGenerated / 20) * bat.StoredEnergy / powerComp.PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
                 }
             }
 
@@ -211,7 +211,7 @@ namespace RimWorld
                 action = delegate ()
                 {
                     radiusSet = 40f;
-                    this.parent.TryGetComp<CompPowerTrader>().PowerOutput = -1500;
+                    powerComp.PowerOutput = -1500;
                     SoundDefOf.Tick_Tiny.PlayOneShotOnCamera(null);
                 },
                 defaultLabel = "CommandResetShieldRadius".Translate(),

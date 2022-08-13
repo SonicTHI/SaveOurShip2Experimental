@@ -23,17 +23,15 @@ namespace RimWorld
         {
             Predicate<Thing> validator = delegate (Thing t)
             {
-                if (!(t is Building_ShipTurretTorpedo))
+                if (t is Building_ShipTurretTorpedo torp && !torp.torpComp.FullyLoaded)
                 {
-                    return false;
+                    if (!pawn.CanReserve(t))
+                    {
+                        return false;
+                    }
+                    return true;
                 }
-                if (((Building_ShipTurretTorpedo)t).gun.TryGetComp<CompChangeableProjectilePlural>().FullyLoaded)
-                    return false;
-                if (!pawn.CanReserve(t))
-                {
-                    return false;
-                }
-                return true;
+                return false;
             };
             Predicate<Thing> otherValidator = delegate (Thing t)
             {

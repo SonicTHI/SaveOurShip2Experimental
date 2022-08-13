@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>MiniMechSphere2Eng5Turrets</defName>
+		<defName>MiniMechSphere2Eng7Turrets</defName>
 		<label>Small Mechanoid Sphere</label>
 		<combatPoints>120</combatPoints>
-		<randomTurretPoints>50</randomTurretPoints>
+		<randomTurretPoints>70</randomTurretPoints>
 		<mechanoidShip>True</mechanoidShip>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
@@ -68,7 +68,7 @@
 			<li>
 				<key>H</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCooler</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 				</value>
 			</li>
 			<li>

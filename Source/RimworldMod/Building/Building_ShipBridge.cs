@@ -25,6 +25,8 @@ namespace RimWorld
         public float ShipHeat = 0;
         public int shipIndex = -1;
         public bool TacCon = false;
+        public bool rotatable = true;
+        
         bool selected = false;
         IntVec3 LowestCorner;
         List<Building> cachedShipParts;
@@ -34,6 +36,8 @@ namespace RimWorld
         bool ShouldStartCombat = false;
 
         public ShipHeatMapComp mapComp;
+        public CompShipHeat heatComp;
+        public CompPower powerComp;
         private bool CanLaunchNow
 		{
 			get
@@ -111,6 +115,8 @@ namespace RimWorld
                         {
                             cachedPods.Add(b);
                         }
+                        if (b.def.rotatable == false && b.def.size.x != b.def.size.z)
+                            rotatable = false;
                     }
                     fail = InterstellarFailReasons();
                     selected = true;
@@ -155,7 +161,7 @@ namespace RimWorld
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", ShipMass));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", ShipMaxTakeoff));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipEnergy", this.PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", ShipHeat, ShipHeatCap));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatRating", ShipThreat));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatThrust", ShipThrust.ToString("F3")));
@@ -258,7 +264,7 @@ namespace RimWorld
 						{
 							foreach (var b in heatNet.Shields)
 							{
-								b.Flickable.SwitchIsOn = !anyShieldOn;
+								b.flickComp.SwitchIsOn = !anyShieldOn;
 							}
 						},
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleShields"),
@@ -379,7 +385,7 @@ namespace RimWorld
                             action = delegate
                             {
                                 Find.Selector.Deselect(this);
-                                foreach (CompShipHeatSource h in heatNet.Turrets)
+                                foreach (CompShipHeat h in heatNet.Turrets)
                                 {
                                     Find.Selector.Deselect(this);
                                     Find.Selector.Select(h.parent);
@@ -428,6 +434,7 @@ namespace RimWorld
                                 returnToPrevWorld.Disable(fail.First());
                             yield return returnToPrevWorld;
                         }
+
                         Command_Action moveShip = new Command_Action
                         {
                             action = delegate
@@ -462,28 +469,31 @@ namespace RimWorld
                             moveShipFlip.Disable();
                         }
                         yield return moveShipFlip;
-                        if (Prefs.DevMode)
+                        //CCW rot
+                        Command_Action moveShipRot = new Command_Action
                         {
-                            //CCW rot
-                            Command_Action moveShipRot = new Command_Action
+                            action = delegate
                             {
-                                action = delegate
-                                {
-                                    IntVec3 lowestCornerAdj = new IntVec3();
-                                    lowestCornerAdj.x = this.Map.Size.z - LowestCorner.z;
-                                    lowestCornerAdj.z = LowestCorner.x;
-                                    MoveShipSketch(lowestCornerAdj, this, this.Map, 1);
-                                },
-                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRot"),
-                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotDesc"),
-                                icon = ContentFinder<Texture2D>.Get("UI/Rotate_Ship")
-                            };
-                            if (ShipCountdown.CountingDown)
-                            {
-                                moveShipRot.Disable();
-                            }
-                            yield return moveShipRot;
+                                IntVec3 lowestCornerAdj = new IntVec3();
+                                lowestCornerAdj.x = this.Map.Size.z - LowestCorner.z;
+                                lowestCornerAdj.z = LowestCorner.x;
+                                MoveShipSketch(lowestCornerAdj, this, this.Map, 1);
+                            },
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRot"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotDesc"),
+                            icon = ContentFinder<Texture2D>.Get("UI/Rotate_Ship")
+                        };
+                        if (ShipCountdown.CountingDown)
+                        {
+                            moveShipFlip.Disable();
                         }
+                        else if (!rotatable)
+                        {
+                            moveShipRot.Disable();
+                            moveShipRot.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotNo");
+                        }
+                        yield return moveShipRot;
+
                         //land - dev mode can "land" in space with CK enabled
                         List<Map> landableMaps = new List<Map>();
                         foreach (Map m in Find.Maps)
@@ -827,6 +837,8 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
+            this.heatComp = this.GetComp<CompShipHeat>();
+            this.powerComp = this.GetComp<CompPower>();
             this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
             if (!mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Add(this);
@@ -878,7 +890,7 @@ namespace RimWorld
                 TickRare();
         }
 		
-		public void RecalcStats ()
+		public void RecalcStats()
         {
             ShipThreat = 0;
             ShipMass = 0;
@@ -912,12 +924,6 @@ namespace RimWorld
             }
             ShipThrust *= 500f / Mathf.Pow(cachedShipParts.Count, 1.1f);
             ShipThreat += ShipMass / 100;
-            if(this.TryGetComp<CompShipHeat>()!=null)
-            {
-                ShipHeatNet net = this.TryGetComp<CompShipHeat>().myNet;
-                ShipHeat = net.StorageUsed;
-                ShipHeatCap = net.StorageCapacity;
-            }
         }
 
         public void HackMe(Pawn pawn)

@@ -375,7 +375,7 @@
 			<li>PlaceWorker_Radiator</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<comps>
+		<!--comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>150</basePowerConsumption>
@@ -400,12 +400,8 @@
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>10</heatCapacity>
-				<ventHeatToSpace>true</ventHeatToSpace>
-				<heatVentTick>1000</heatVentTick>
 			</li>
-		</comps>
+		</comps-->
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<building>
@@ -492,7 +488,7 @@
 				<mechanoid>true</mechanoid>
 			</li>
 			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+				<compClass>CompShipHeat</compClass>
 			</li>
 		</comps>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>

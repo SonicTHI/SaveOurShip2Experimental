@@ -18,13 +18,22 @@ namespace RimWorld
 
         public bool currentlyPurging = false;
         bool hiss = false;
+        public bool cloaked;
+        public bool notInsideShield;
+        public ShipHeatMapComp mapComp;
+        public CompRefuelable fuelComp;
 
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look<bool>(ref currentlyPurging, "purging");
         }
-
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
+            fuelComp = parent.TryGetComp<CompRefuelable>();
+        }
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             List<Gizmo> giz = new List<Gizmo>();
@@ -39,9 +48,9 @@ namespace RimWorld
                         notInsideShield = true;
                         if (currentlyPurging)
                         {
-                            foreach (CompShipCombatShield shield in parent.Map.GetComponent<ShipHeatMapComp>().Shields)
+                            foreach (CompShipCombatShield shield in mapComp.Shields)
                             {
-                                shield.parent.TryGetComp<CompFlickable>().SwitchIsOn = false;
+                                shield.flickComp.SwitchIsOn = false;
                             }
                             hiss = false;
                         }
@@ -59,12 +68,12 @@ namespace RimWorld
         public override void CompTick()
         {
             base.CompTick();
+            this.notInsideShield = NotInsideShield();
             if (currentlyPurging)
             {
-                if (notInsideShield && myNet != null && parent.TryGetComp<CompRefuelable>().Fuel > 0 && myNet.StorageUsed >= Props.heatPurge * HEAT_PURGE_RATIO)
+                if (notInsideShield && fuelComp.Fuel > 0 && RemHeatFromNetwork(Props.heatPurge * HEAT_PURGE_RATIO))
                 {
-                    parent.TryGetComp<CompRefuelable>().ConsumeFuel(Props.heatPurge);
-                    myNet.AddHeat(Props.heatPurge * HEAT_PURGE_RATIO, remove: true);
+                    fuelComp.ConsumeFuel(Props.heatPurge);
                     FleckMaker.ThrowAirPuffUp(parent.DrawPos + new Vector3(0, 0, 1), parent.Map);
                     if (!hiss)
                     {
@@ -78,6 +87,29 @@ namespace RimWorld
                     hiss = false;
                 }
             }
+        }
+        private bool NotInsideShield()
+        {
+            cloaked = false;
+            foreach (CompShipCombatShield shield in mapComp.Shields)
+            {
+                if (!shield.shutDown && (parent.DrawPos - shield.parent.DrawPos).magnitude < shield.radius)
+                {
+                    return false;
+                }
+            }
+            if (!mapComp.InCombat)
+            {
+                foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)
+                {
+                    if (cloak.active && cloak.Map == parent.Map)
+                    {
+                        cloaked = true;
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

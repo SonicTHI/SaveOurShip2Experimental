@@ -260,7 +260,7 @@
 			<li>
 				<key>d</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCoolerAdvanced</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 					<color>RGBA(0.949, 0.922, 0.780, 1.000)</color>
 				</value>
 			</li>
@@ -326,7 +326,7 @@
 			<li>
 				<key>n</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveCooler</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 					<color>RGBA(0.953, 1.000, 0.886, 1.000)</color>
 				</value>
 			</li>
@@ -460,7 +460,7 @@
 			<li>
 				<key></key>
 				<value>
-					<shapeOrDef>ShipHeatManifold</shapeOrDef>
+					<shapeOrDef>ShipHeatsink</shapeOrDef>
 				</value>
 			</li>
 			<li>

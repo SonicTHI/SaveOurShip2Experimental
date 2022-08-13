@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -35,17 +36,21 @@ namespace RimWorld
         public override string CompInspectStringExtra()
         {
             string output = "";
-            if(myNet!=null)
-                output+= TranslatorFormattedStringExtensions.Translate("ShipHeatStored",Mathf.Round(myNet.StorageUsed),myNet.StorageCapacity);
+            if (myNet != null)
+            {
+                output += TranslatorFormattedStringExtensions.Translate("ShipHeatStored", Mathf.Round(myNet.StorageUsed), myNet.StorageCapacity);
+                output += "\nGrid:" + myNet.GridID + " Ratio:" + RatioInNetwork() + "Temp: " + Mathf.Lerp(0, 200, RatioInNetwork());
+            }
             else
                 output+="Not connected to a thermal network";
+
             if (this.Props.energyToFire > 0)
             {
                 output += "\nEnergy to fire: ";
-                if (this.parent.TryGetComp<CompSpinalMount>() != null)
+                if (this.parent is Building_ShipTurret t && t.spinalComp != null)
                 {
-                    if (((Building_ShipTurret)this.parent).AmplifierCount != -1)
-                        output += this.Props.energyToFire * (1 + ((Building_ShipTurret)this.parent).AmplifierDamageBonus) + " Wd";
+                    if (t.AmplifierCount != -1)
+                        output += this.Props.energyToFire * (1 + t.AmplifierDamageBonus) + " Wd";
                     else
                         output += "N/A";
                 }
@@ -54,15 +59,38 @@ namespace RimWorld
             }
             return output;
         }
-
+        public bool AddHeatToNetwork(float amount)
+        {
+            if (myNet == null || amount > AvailableCapacityInNetwork())
+                return false;
+            myNet.AddHeat(amount);
+            return true;
+        }
+        public bool RemHeatFromNetwork(float amount)
+        {
+            if (myNet == null || amount > myNet.StorageUsed)
+                return false;
+            myNet.RemoveHeat(amount);
+            return true;
+        }
         public float AvailableCapacityInNetwork()
         {
-            if (myNet == null)
+            return myNet.StorageCapacity - myNet.StorageUsed;
+        }
+        public float RatioInNetwork()
+        {
+            if (myNet == null || myNet.StorageCapacity == 0)
             {
                 //Log.Error("Null heatnet for " + parent);
                 return 0;
             }
-            return myNet.StorageCapacity - myNet.StorageUsed;
+            return myNet.StorageUsed / myNet.StorageCapacity;
+        }
+        public override void PostDeSpawn(Map map)
+        {
+            base.PostDeSpawn(map);
+            if (myNet != null)
+                myNet.DeRegister(this);
         }
     }
 }

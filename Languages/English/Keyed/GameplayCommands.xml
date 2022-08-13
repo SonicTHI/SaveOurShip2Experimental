@@ -46,7 +46,8 @@
 	<ShipInsideMoveFlip>Flip ship</ShipInsideMoveFlip>
 	<ShipInsideMoveFlipDesc>Flip the ship horizontally</ShipInsideMoveFlipDesc>
 	<ShipInsideMoveRot>Rotate ship</ShipInsideMoveRot>
-	<ShipInsideMoveRotDesc>Rotate the ship counter clockwise\nWARNING: Non rotatable buildings will not be placed correctly!</ShipInsideMoveRotDesc>
+	<ShipInsideMoveRotNo>Ship has non-rotatable, non-even sided buildings!</ShipInsideMoveRotNo>
+	<ShipInsideMoveRotDesc>Rotate the ship counter clockwise</ShipInsideMoveRotDesc>
 	<ShipInsideLand>Land ship</ShipInsideLand>
 	<ShipInsideLandDesc>Land this ship near </ShipInsideLandDesc>
 	<ShipMoveDesc>Deselect to confirm location</ShipMoveDesc>
@@ -82,6 +83,8 @@
 	<ShipInsideReturnShipDesc>Move this ship back to your stable orbit</ShipInsideReturnShipDesc>
 	<ShipInsideCaptureShip>Capture</ShipInsideCaptureShip>
 	<ShipInsideCaptureShipDesc>Move this ship to your map</ShipInsideCaptureShipDesc>
+	<ShipMoveWreckCommand>Move wreck</ShipMoveWreckCommand>
+	<ShipMoveWreckCommandDesc>Reposition a wreck on your map</ShipMoveWreckCommandDesc>
 	<ShipSalvageCommand>Retrieve wreck</ShipSalvageCommand>
 	<ShipSalvageCommandDesc>Retrieve a wreck from target ship</ShipSalvageCommandDesc>
 	<ShipSalvageDisabled>Disabled while in battle</ShipSalvageDisabled>

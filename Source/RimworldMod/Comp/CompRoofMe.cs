@@ -128,11 +128,18 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
-            if((Find.PlaySettings.showRoofOverlay || parent.Map.fogGrid.fogGrid[parent.Map.cellIndices.CellToIndex(parent.Position)]) && parent.Position.Roofed(parent.Map) && parent.Position.GetFirstThing<Building_ShipTurret>(parent.Map)==null)
+            if ((Find.PlaySettings.showRoofOverlay || parent.Position.Fogged(parent.Map)) && parent.Position.Roofed(parent.Map))
             {
+                foreach (Thing t in parent.Position.GetThingList(parent.Map))
+                {
+                    if (t is Building_ShipTurret || (t.TryGetComp<CompShipHeatSink>() != null && t.def.altitudeLayer == AltitudeLayer.WorldClipper))
+                    {
+                        return;
+                    }
+                }
                 if (isTile)
                 {
-                    Graphics.DrawMesh(material: roofedGraphicTile.MatSingleFor(parent), mesh: roofedGraphicTile.MeshAt(parent.Rotation), position: new UnityEngine.Vector3(parent.DrawPos.x,0,parent.DrawPos.z), rotation: Quaternion.identity, layer: 0);
+                    Graphics.DrawMesh(material: roofedGraphicTile.MatSingleFor(parent), mesh: roofedGraphicTile.MeshAt(parent.Rotation), position: new UnityEngine.Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), rotation: Quaternion.identity, layer: 0);
                 }
                 else if (isMechTile || isArchoTile)
                 {

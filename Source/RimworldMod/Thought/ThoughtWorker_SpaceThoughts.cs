@@ -11,7 +11,7 @@ namespace RimWorld
     {
         protected override ThoughtState CurrentStateInternal(Pawn p)
         {
-            if(p.Map.terrainGrid.TerrainAt(p.Position) == GenerateSpaceSubMesh.spaceTerrain)
+            if(p.Map.terrainGrid.TerrainAt(p.Position) == ShipInteriorMod2.spaceTerrain)
             {
                 if(p.story.traits.HasTrait(TraitDefOf.Undergrounder) || p.story.traits.HasTrait(TraitDef.Named("Wimp"))) {
                     return ThoughtState.ActiveAtStage(3);
@@ -19,7 +19,7 @@ namespace RimWorld
                 {
                     return ThoughtState.ActiveAtStage(2);
                 }
-            } else if(p.Map.terrainGrid.TerrainAt(IntVec3.Zero) == GenerateSpaceSubMesh.spaceTerrain)
+            } else if(p.Map.terrainGrid.TerrainAt(IntVec3.Zero) == ShipInteriorMod2.spaceTerrain)
             {
                 if (p.story.traits.HasTrait(TraitDefOf.Undergrounder) || p.story.traits.HasTrait(TraitDef.Named("Wimp"))) {
                     return ThoughtState.ActiveAtStage(1);

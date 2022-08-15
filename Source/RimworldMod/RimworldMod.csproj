@@ -114,6 +114,7 @@
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
+    <Compile Include="Comp\CompRCSThruster.cs" />
     <Compile Include="Comp\CompProperties_ShipLifeSupport.cs" />
     <Compile Include="Comp\CompProperties_SalvageBay.cs" />
     <Compile Include="Comp\CompAICrewmate.cs" />

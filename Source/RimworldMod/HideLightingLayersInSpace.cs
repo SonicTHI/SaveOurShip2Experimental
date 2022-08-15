@@ -74,7 +74,7 @@ namespace SaveOurShip2
 
         public static void RecalculatePlanetLayer(SectionLayer instance)
         {
-            var mesh = instance.GetSubMesh(RenderPlanetBehindMap.PlanetMaterial);
+            var mesh = instance.GetSubMesh(ShipInteriorMod2.PlanetMaterial);
             Tasks.Add(Task.Factory.StartNew(() => RecalculateMesh(mesh)));
             LayersToDraw.Add(instance);
         }
@@ -213,7 +213,7 @@ namespace SaveOurShip2
             // Draw the layers since we stopped it previously - must be done on main thread to prevent crashes
             foreach (var layer in MeshRecalculateHelper.LayersToDraw)
             {
-                var mesh = layer.GetSubMesh(RenderPlanetBehindMap.PlanetMaterial);
+                var mesh = layer.GetSubMesh(ShipInteriorMod2.PlanetMaterial);
                 if (!mesh.finalized || mesh.disabled) continue;
 
                 Graphics.DrawMesh(mesh.mesh, Vector3.zero, Quaternion.identity, mesh.material, 0);

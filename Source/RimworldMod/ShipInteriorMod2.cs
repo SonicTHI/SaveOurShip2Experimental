@@ -35,7 +35,10 @@ namespace SaveOurShip2
 		public static bool ArchoStuffEnabled = true;//unassigned???
 		public static bool SoSWin = false;
 		static bool loadedGraphics = false;
-												  
+		public const int textureSize = 2048;
+		public const float altitude = 1100f;
+		public static bool renderedThatAlready = false;
+
 		public static bool AirlockBugFlag = false;//shipmove
 		public static Building shipOriginRoot = null;//used for patched original launch code
 		public static Map shipOriginMap = null;//used to check for shipmove map size problem, reset after move
@@ -74,6 +77,9 @@ namespace SaveOurShip2
 		public static Texture2D PowerTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.45f, 0.425f, 0.1f));
 		public static Texture2D HeatTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.5f, 0.1f, 0.1f));
 		public static Texture2D Splash = ContentFinder<Texture2D>.Get("SplashScreen");
+		public static Texture2D virtualPhoto = new Texture2D(textureSize, textureSize, TextureFormat.RGB24, false);
+		public static RenderTexture target = new RenderTexture(textureSize, textureSize, 16);
+		public static Material PlanetMaterial = MaterialPool.MatFrom(virtualPhoto);
 
 		public static ThingDef MechaniteFire = ThingDef.Named("MechaniteFire");
 		public static ThingDef ArchotechSpore = ThingDef.Named("ShipArchotechSpore");
@@ -88,6 +94,7 @@ namespace SaveOurShip2
 		public static ThingDef mechHullPlateDef = ThingDef.Named("ShipHullTileMech");
 		public static ThingDef archoHullPlateDef = ThingDef.Named("ShipHullTileArchotech");
 		public static ThingDef hullFoamDef = ThingDef.Named("ShipHullfoamTile");
+		public static TerrainDef spaceTerrain = TerrainDef.Named("EmptySpace");
 		public static TerrainDef hullFloorDef = TerrainDef.Named("FakeFloorInsideShip");
 		public static TerrainDef mechHullFloorDef = TerrainDef.Named("FakeFloorInsideShipMech");
 		public static TerrainDef archoHullFloorDef = TerrainDef.Named("FakeFloorInsideShipArchotech");
@@ -1627,23 +1634,13 @@ namespace SaveOurShip2
 	[HarmonyPatch(typeof(MapDrawer), "DrawMapMesh", null)]
 	public class RenderPlanetBehindMap
 	{
-		static RenderTexture target = new RenderTexture(textureSize, textureSize, 16);
-		static Texture2D virtualPhoto = new Texture2D(textureSize, textureSize, TextureFormat.RGB24, false);
-		public static Material PlanetMaterial = MaterialPool.MatFrom(virtualPhoto);
-
-		const int textureSize = 2048;
-		const float altitude = 1100f;
-
-		public static bool renderedThatAlready = false;
-		static BiomeDef outerSpaceBiome = DefDatabase<BiomeDef>.GetNamed("OuterSpaceBiome");
-
 		[HarmonyPrefix]
 		public static void PreDraw()
 		{
 			Map map = Find.CurrentMap;
 
 			// if we aren't in space, abort!
-			if ((renderedThatAlready && !ShipInteriorMod2.renderPlanet) || map.Biome != outerSpaceBiome)
+			if ((ShipInteriorMod2.renderedThatAlready && !ShipInteriorMod2.renderPlanet) || map.IsSpace())
 			{
 				return;
 			}
@@ -1654,10 +1651,10 @@ namespace SaveOurShip2
 
 			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.Planet;
 			Find.WorldCameraDriver.JumpTo(Find.CurrentMap.Tile);
-			Find.WorldCameraDriver.altitude = altitude;
+			Find.WorldCameraDriver.altitude = ShipInteriorMod2.altitude;
 			Find.WorldCameraDriver.GetType()
 				.GetField("desiredAltitude", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-				.SetValue(Find.WorldCameraDriver, altitude);
+				.SetValue(Find.WorldCameraDriver, ShipInteriorMod2.altitude);
 
 			float num = (float)UI.screenWidth / (float)UI.screenHeight;
 
@@ -1673,17 +1670,17 @@ namespace SaveOurShip2
                     layer.Render();
             }
             Find.PlaySettings.showWorldFeatures = false;*/
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = target;
+			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = ShipInteriorMod2.target;
 			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.aspect = num;
 			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.Render();
 
-			Find.WorldCamera.targetTexture = target;
+			Find.WorldCamera.targetTexture = ShipInteriorMod2.target;
 			Find.WorldCamera.aspect = num;
 			Find.WorldCamera.Render();
 
-			RenderTexture.active = target;
-			virtualPhoto.ReadPixels(new Rect(0, 0, textureSize, textureSize), 0, 0);
-			virtualPhoto.Apply();
+			RenderTexture.active = ShipInteriorMod2.target;
+			ShipInteriorMod2.virtualPhoto.ReadPixels(new Rect(0, 0, ShipInteriorMod2.textureSize, ShipInteriorMod2.textureSize), 0, 0);
+			ShipInteriorMod2.virtualPhoto.Apply();
 			RenderTexture.active = null;
 
 			Find.WorldCamera.targetTexture = oldTexture;
@@ -1692,14 +1689,13 @@ namespace SaveOurShip2
 			Find.World.renderer.CheckActivateWorldCamera();
 
 			if (!((List<WorldLayer>)typeof(WorldRenderer).GetField("layers", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Find.World.renderer)).FirstOrFallback().ShouldRegenerate)
-				renderedThatAlready = true;
+				ShipInteriorMod2.renderedThatAlready = true;
 		}
 	}
 
 	[HarmonyPatch(typeof(SectionLayer), "FinalizeMesh", null)]
 	public static class GenerateSpaceSubMesh
 	{
-		public static TerrainDef spaceTerrain = TerrainDef.Named("EmptySpace");
 		[HarmonyPrefix]
 		public static bool GenerateMesh(SectionLayer __instance, Section ___section)
 		{
@@ -1710,17 +1706,17 @@ namespace SaveOurShip2
 			foreach (IntVec3 cell in ___section.CellRect.Cells)
 			{
 				TerrainDef terrain1 = ___section.map.terrainGrid.TerrainAt(cell);
-				if (terrain1 == spaceTerrain)
+				if (terrain1 == ShipInteriorMod2.spaceTerrain)
 				{
 					foundSpace = true;
-					Printer_Mesh.PrintMesh(__instance, Matrix4x4.TRS(cell.ToVector3() + new Vector3(0.5f, 0f, 0.5f), Quaternion.identity, Vector3.one), MeshMakerPlanes.NewPlaneMesh(1f), RenderPlanetBehindMap.PlanetMaterial);
+					Printer_Mesh.PrintMesh(__instance, Matrix4x4.TRS(cell.ToVector3() + new Vector3(0.5f, 0f, 0.5f), Quaternion.identity, Vector3.one), MeshMakerPlanes.NewPlaneMesh(1f), ShipInteriorMod2.PlanetMaterial);
 				}
 			}
 			if (!foundSpace)
 			{
 				for (int i = 0; i < __instance.subMeshes.Count; i++)
 				{
-					if (__instance.subMeshes[i].material == RenderPlanetBehindMap.PlanetMaterial)
+					if (__instance.subMeshes[i].material == ShipInteriorMod2.PlanetMaterial)
 					{
 						__instance.subMeshes.RemoveAt(i);
 					}
@@ -1862,7 +1858,7 @@ namespace SaveOurShip2
 		{
 			Room room = (Room)typeof(RoomTempTracker)
 				.GetField("room", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
-			if (room.Map.terrainGrid.TerrainAt(IntVec3.Zero) != GenerateSpaceSubMesh.spaceTerrain)
+			if (room.Map.terrainGrid.TerrainAt(IntVec3.Zero) != ShipInteriorMod2.spaceTerrain)
 				return;
 			if (room.Role != RoomRoleDefOf.None && room.OpenRoofCount > 0)
 				__instance.Temperature = -100f;
@@ -3326,7 +3322,7 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void GoFast(Pawn_PathFollower __instance, Pawn ___pawn)
 		{
-			if (___pawn.Map.terrainGrid.TerrainAt(__instance.nextCell) == GenerateSpaceSubMesh.spaceTerrain &&
+			if (___pawn.Map.terrainGrid.TerrainAt(__instance.nextCell) == ShipInteriorMod2.spaceTerrain &&
 				ShipInteriorMod2.EVAlevel(___pawn)>6)
 			{
 				__instance.nextCellCostLeft /= 4;
@@ -3630,7 +3626,7 @@ namespace SaveOurShip2
 				WorldSwitchUtility.CacheFactions(Current.CreatingWorld.info.name);
 				WorldSwitchUtility.RespawnShip();
 
-				RenderPlanetBehindMap.renderedThatAlready = false;
+				ShipInteriorMod2.renderedThatAlready = false;
 
 				//Prevent forced events from firing during the intervening years
 				foreach (ScenPart part in Find.Scenario.AllParts)

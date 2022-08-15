@@ -67,7 +67,7 @@ namespace SaveOurShip2
                 if (f != Faction.OfPlayer && f.PlayerRelationKind == FactionRelationKind.Ally)
                     alliedFactions.Add(f);
             }
-            if (alliedFactions.Count > 0 && !planetkiller)
+            if (alliedFactions.Any() && !planetkiller)
                 accept.action = delegate { ChooseAllyToTakeColony(action, alliedFactions); };
             else
                 accept.action = delegate { AbandonColony(action); };
@@ -189,7 +189,7 @@ namespace SaveOurShip2
                 }
             }
 
-            RenderPlanetBehindMap.renderedThatAlready = false;
+            ShipInteriorMod2.renderedThatAlready = false;
 
             float EnergyCost = 100000;
             foreach(CompPowerBattery capacitor in bridge.PowerComp.PowerNet.batteryComps)
@@ -678,8 +678,8 @@ namespace SaveOurShip2
         {
             if (Find.TickManager.TicksGame % 600 == 0)
             {
-                Map map = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault())?.Map;
-                if (PlayerFactionBounty > 20 && Find.TickManager.TicksGame-LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(PlayerFactionBounty),60000f) && !map.GetComponent<ShipHeatMapComp>().InCombat)
+                Map map = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault()).Map;
+                if (map != null && PlayerFactionBounty > 20 && Find.TickManager.TicksGame-LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(PlayerFactionBounty),60000f) && !map.GetComponent<ShipHeatMapComp>().InCombat)
                 {
                     LastBountyRaidTick = Find.TickManager.TicksGame;
                     Building_ShipBridge bridge = map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();

@@ -45,7 +45,7 @@ namespace RimWorld
                 return;
             }
             //temp save heat to sinks
-            Log.Message("Recaching all heatnets");
+            //Log.Message("Recaching all heatnets");
             foreach (ShipHeatNet net in cachedNets)
             {
                 foreach (CompShipHeatSink sink in net.Sinks)

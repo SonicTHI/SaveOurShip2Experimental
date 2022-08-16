@@ -182,10 +182,11 @@ namespace SaveOurShip2
                 p.Kill(null);
             foreach(Thing t in shipMap.spawnedThings)
             {
-                if(t is Corpse)
+                if (t is Corpse c)
                 {
-                    if (t.GetRoom() != null && t.GetRoom().Temperature > 0 && ((Corpse)t).GetComp<CompRottable>() != null)
-                        ((Corpse)t).GetComp<CompRottable>().RotProgress = ((Corpse)t).GetComp<CompRottable>().PropsRot.TicksToDessicated;
+                    var compRot = c.GetComp<CompRottable>();
+                    if (t.GetRoom() != null && t.GetRoom().Temperature > 0 && compRot != null)
+                        compRot.RotProgress = compRot.PropsRot.TicksToDessicated;
                 }
             }
 

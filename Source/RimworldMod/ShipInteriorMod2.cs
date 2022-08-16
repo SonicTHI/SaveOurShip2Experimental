@@ -34,9 +34,7 @@ namespace SaveOurShip2
 		public static readonly float crittersleepBodySize = 0.7f;
 		public static bool ArchoStuffEnabled = true;//unassigned???
 		public static bool SoSWin = false;
-		static bool loadedGraphics = false;
-		public const int textureSize = 2048;
-		public const float altitude = 1100f;
+		public static bool loadedGraphics = false;
 		public static bool renderedThatAlready = false;
 
 		public static bool AirlockBugFlag = false;//shipmove
@@ -77,8 +75,8 @@ namespace SaveOurShip2
 		public static Texture2D PowerTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.45f, 0.425f, 0.1f));
 		public static Texture2D HeatTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.5f, 0.1f, 0.1f));
 		public static Texture2D Splash = ContentFinder<Texture2D>.Get("SplashScreen");
-		public static Texture2D virtualPhoto = new Texture2D(textureSize, textureSize, TextureFormat.RGB24, false);
-		public static RenderTexture target = new RenderTexture(textureSize, textureSize, 16);
+		public static Texture2D virtualPhoto = new Texture2D(2048, 2048, TextureFormat.RGB24, false);
+		public static RenderTexture target = new RenderTexture(2048, 2048, 16);
 		public static Material PlanetMaterial = MaterialPool.MatFrom(virtualPhoto);
 
 		public static ThingDef MechaniteFire = ThingDef.Named("MechaniteFire");
@@ -1632,15 +1630,16 @@ namespace SaveOurShip2
 
 	//biome
 	[HarmonyPatch(typeof(MapDrawer), "DrawMapMesh", null)]
-	public class RenderPlanetBehindMap
+	public static class RenderPlanetBehindMap
 	{
+		public const float altitude = 1100f;
 		[HarmonyPrefix]
 		public static void PreDraw()
 		{
 			Map map = Find.CurrentMap;
 
 			// if we aren't in space, abort!
-			if ((ShipInteriorMod2.renderedThatAlready && !ShipInteriorMod2.renderPlanet) || map.IsSpace())
+			if ((ShipInteriorMod2.renderedThatAlready && !ShipInteriorMod2.renderPlanet) || !map.IsSpace())
 			{
 				return;
 			}
@@ -1651,10 +1650,10 @@ namespace SaveOurShip2
 
 			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.Planet;
 			Find.WorldCameraDriver.JumpTo(Find.CurrentMap.Tile);
-			Find.WorldCameraDriver.altitude = ShipInteriorMod2.altitude;
+			Find.WorldCameraDriver.altitude = altitude;
 			Find.WorldCameraDriver.GetType()
 				.GetField("desiredAltitude", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-				.SetValue(Find.WorldCameraDriver, ShipInteriorMod2.altitude);
+				.SetValue(Find.WorldCameraDriver, altitude);
 
 			float num = (float)UI.screenWidth / (float)UI.screenHeight;
 
@@ -1679,7 +1678,7 @@ namespace SaveOurShip2
 			Find.WorldCamera.Render();
 
 			RenderTexture.active = ShipInteriorMod2.target;
-			ShipInteriorMod2.virtualPhoto.ReadPixels(new Rect(0, 0, ShipInteriorMod2.textureSize, ShipInteriorMod2.textureSize), 0, 0);
+			ShipInteriorMod2.virtualPhoto.ReadPixels(new Rect(0, 0, 2048, 2048), 0, 0);
 			ShipInteriorMod2.virtualPhoto.Apply();
 			RenderTexture.active = null;
 

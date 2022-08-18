@@ -49,6 +49,32 @@ namespace RimWorld
             Scribe_Values.Look<Color>(ref color, "color");
         }
     }
+    public struct OffsetShip : IExposable
+    {
+        public string ship;
+        public int offsetX;
+        public int offsetZ;
+
+        public override int GetHashCode()
+        {
+            return (ship + "," + offsetX + "," + offsetZ).GetHashCode();
+        }
+        public override bool Equals(object obj)
+        {
+            if (!(obj is OffsetShip))
+                return false;
+            OffsetShip otherShip = (OffsetShip)obj;
+            return otherShip.ship == ship && otherShip.offsetX == offsetX && otherShip.offsetZ == offsetZ;
+
+        }
+        public void ExposeData()
+        {
+            Scribe_Values.Look<string>(ref ship, "ship");
+            Scribe_Values.Look<int>(ref offsetX, "offsetX");
+            Scribe_Values.Look<int>(ref offsetZ, "offsetZ");
+        }
+
+    }
 
     /*public struct ShipPosRotShape
     {
@@ -70,8 +96,7 @@ namespace RimWorld
         [Unsaved(false)]
         public List<ShipPosRotShape> ShipStructure;*/
         public int saveSysVer = 1;
-        public bool isFleet = false;
-        public List<EnemyShipDef> ships;
+        public List<OffsetShip> ships;
         public int offsetX = 0;
         public int offsetZ = 0;
         public int sizeX = 0;
@@ -147,7 +172,7 @@ namespace RimWorld
         public override void PostLoad()
         {
             base.PostLoad();
-            if(parts==null)
+            if (parts == null)
             {
                 ConvertFromBigString();
                 //ConvertFromSymbolTable();

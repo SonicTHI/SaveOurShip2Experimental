@@ -240,6 +240,7 @@
 			<Flammability>0.7</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
+		<seeThroughFog>true</seeThroughFog>
 		<costList>
 			<Steel>100</Steel>
 			<Plasteel>25</Plasteel>
@@ -283,6 +284,7 @@
 			<Flammability>0.7</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
+		<seeThroughFog>true</seeThroughFog>
 		<costList>
 			<Steel>500</Steel>
 			<Plasteel>125</Plasteel>

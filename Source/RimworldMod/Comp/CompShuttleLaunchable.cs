@@ -367,7 +367,7 @@ namespace RimWorld
                         return true;
                     }
                     //only pods incombat if enemy t/w above
-                    else if (mapComp.InCombat && mapComp.MasterMapComp.EnginePower > 0.2f)
+                    else if (mapComp.InCombat && mapComp.MasterMapComp.MapEnginePower > 0.2f)
                     {
                         foreach (CompTransporter t in this.TransportersInGroup)
                         {

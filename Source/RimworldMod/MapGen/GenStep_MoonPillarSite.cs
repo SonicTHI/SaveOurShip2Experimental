@@ -34,8 +34,8 @@ namespace RimWorld
                 map.terrainGrid.SetTerrain(cell, moonTerrain);
             }
             Lord defendShip = LordMaker.MakeNewLord(Faction.OfMechanoids, new LordJob_DefendShip(Faction.OfMechanoids, map.Center), map);
-            Building core = null;
-            ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("MechanoidMoonBase"), map, null, Faction.OfMechanoids, defendShip, out core);
+            List<Building> cores = new List<Building>();
+            ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("MechanoidMoonBase"), map, null, Faction.OfMechanoids, defendShip, out cores);
         }
     }
 }

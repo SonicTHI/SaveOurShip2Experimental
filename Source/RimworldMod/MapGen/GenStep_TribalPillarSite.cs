@@ -30,8 +30,8 @@ namespace RimWorld
         {
             Faction nastyTribals = Find.FactionManager.AllFactions.Where(fac => fac.def.techLevel == TechLevel.Neolithic && fac.PlayerRelationKind==FactionRelationKind.Hostile).FirstOrDefault();
             Lord defendShip = LordMaker.MakeNewLord(nastyTribals, new LordJob_DefendShip(nastyTribals, map.Center), map);
-            Building core = null;
-            ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("TribalVillageIsNotAShip"), map, null, nastyTribals, defendShip, out core, false, true);
+            List<Building> cores = new List<Building>();
+            ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("TribalVillageIsNotAShip"), map, null, nastyTribals, defendShip, out cores, false, true);
         }
     }
 }

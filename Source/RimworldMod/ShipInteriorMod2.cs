@@ -381,31 +381,58 @@ namespace SaveOurShip2
 			Find.WorldObjects.Add(impactSite);
 		}
 
-		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out Building core, bool shieldActive = true, bool clearArea = false, bool wreckEverything = false)
+		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shieldsActive = true, bool clearArea = false, bool wreckEverything = false, int offsetX = -1, int offsetZ = -1)
 		{
+			cores = new List<Building>();
+			List<IntVec3> cellsToFog = new List<IntVec3>();
+			if (!shipDef.ships.NullOrEmpty())
+            {
+				for (int i = 0; i < shipDef.ships.Count; i++)
+				{
+					Log.Message("Spawning fleet ship:" + i);
+					List<Building> core = new List<Building>();
+					GenerateShip(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out core, shieldsActive, clearArea, wreckEverything, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ);
+					cores.AddRange(core);
+				}
+				PostGenerateShip(map, shipDef, clearArea, cellsToFog);
+				return;
+			}
 			List<ShipShape> partsToGenerate = new List<ShipShape>();
 			List<IntVec3> cargoCells = new List<IntVec3>();
-			List<IntVec3> cellsToFog = new List<IntVec3>();
-			IntVec3 c = map.Center;
-			if (shipDef.saveSysVer == 2)
-				c = new IntVec3(shipDef.offsetX, 0, shipDef.offsetZ);
+			IntVec3 c = new IntVec3(0, 0, 0);
 
-			if (clearArea)
+			if (shipDef.saveSysVer == 2)
+            {
+				if (offsetX < 0 || offsetZ < 0) //unset offset, use offset from shipdef
+					c = new IntVec3(shipDef.offsetX, 0, shipDef.offsetZ);
+				else
+					c = new IntVec3(offsetX, 0, offsetZ);
+			}
+			else //old system, from center
+				c = map.Center;
+
+			if (clearArea) // clear ship area extended by 1
 			{
-				IntVec3 min = new IntVec3(map.Size.x, 0, map.Size.z);
-				IntVec3 max = new IntVec3(0, 0, 0);
-				foreach (ShipShape shape in shipDef.parts)
+				CellRect rect;
+				if (shipDef.saveSysVer == 2)
+					rect = new CellRect(shipDef.offsetX - 1, shipDef.offsetZ - 1, shipDef.offsetX + shipDef.sizeX + 1, shipDef.offsetZ + shipDef.sizeZ + 1);
+				else //V1 legacy
 				{
-					if (shape.x < min.x)
-						min.x = shape.x;
-					if (shape.x > max.x)
-						max.x = shape.x;
-					if (shape.z < min.z)
-						min.z = shape.z;
-					if (shape.z > max.z)
-						max.z = shape.z;
+					IntVec3 min = new IntVec3(map.Size.x, 0, map.Size.z);
+					IntVec3 max = new IntVec3(0, 0, 0);
+					foreach (ShipShape shape in shipDef.parts)
+					{
+						if (shape.x < min.x)
+							min.x = shape.x;
+						if (shape.x > max.x)
+							max.x = shape.x;
+						if (shape.z < min.z)
+							min.z = shape.z;
+						if (shape.z > max.z)
+							max.z = shape.z;
+					}
+					rect = new CellRect(c.x + min.x - 1, c.z + min.z - 1, c.x + max.x - min.x + 1, c.z + max.z - min.z + 1);
 				}
-				CellRect rect = new CellRect(c.x + min.x, c.z + min.z, c.x + max.x - min.x, c.z + max.z - min.z);
 				List<Thing> DestroyTheseThings = new List<Thing>();
 				foreach (IntVec3 pos in rect.Cells)
 				{
@@ -421,10 +448,10 @@ namespace SaveOurShip2
 				}
 			}
 
-			core = (Building)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
-			core.SetFaction(fac);
-			Rot4 corerot = shipDef.core.rot;
-			GenSpawn.Spawn(core, new IntVec3(c.x + shipDef.core.x, 0, c.z + shipDef.core.z), map, corerot);
+			Building bridge = (Building)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
+			bridge.SetFaction(fac);
+			GenSpawn.Spawn(bridge, new IntVec3(c.x + shipDef.core.x, 0, c.z + shipDef.core.z), map, shipDef.core.rot);
+			cores.Add(bridge);
 
 			//check if custom replacers for pawns are set and present in the game
 			bool crewOver = false;
@@ -436,27 +463,15 @@ namespace SaveOurShip2
 				marineOver = true;
 			if (shipDef.marineHeavyDef != null && DefDatabase<PawnKindDef>.GetNamed(shipDef.marineHeavyDef) != null)
 				heavyOver = true;
+			//turrets randomized per ship
+			int randomSmall = Rand.RangeInclusive(1, 3);
+			int randomLarge = Rand.RangeInclusive(1, 3);
+			//generate normal parts
 			foreach (ShipShape shape in shipDef.parts)
 			{
 				try
 				{
-					if (shape.shapeOrDef.Equals("Circle"))
-					{
-						List<IntVec3> border = new List<IntVec3>();
-						List<IntVec3> interior = new List<IntVec3>();
-						CircleUtility(c.x + shape.x, c.z + shape.z, shape.width, ref border, ref interior);
-						GenerateHull(border, interior, fac, map);
-						cellsToFog.AddRange(interior);
-					}
-					else if (shape.shapeOrDef.Equals("Rect"))
-					{
-						List<IntVec3> border = new List<IntVec3>();
-						List<IntVec3> interior = new List<IntVec3>();
-						RectangleUtility(c.x + shape.x, c.z + shape.z, shape.width, shape.height, ref border, ref interior);
-						GenerateHull(border, interior, fac, map);
-						cellsToFog.AddRange(interior);
-					}
-					else if (shape.shapeOrDef.Equals("PawnSpawnerGeneric"))
+					if (shape.shapeOrDef.Equals("PawnSpawnerGeneric"))
 					{
 						PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.stuff), fac);
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
@@ -508,25 +523,53 @@ namespace SaveOurShip2
 								thing.TryGetComp<CompPowerBattery>().AddEnergy(thing.TryGetComp<CompPowerBattery>().AmountCanAccept);
 							if (thing.TryGetComp<CompRefuelable>() != null)
 								thing.TryGetComp<CompRefuelable>().Refuel(thing.TryGetComp<CompRefuelable>().Props.fuelCapacity * Rand.Gaussian(0.5f, 0.125f));
-							if (thing.TryGetComp<CompShipCombatShield>() != null)
-							{
-								thing.TryGetComp<CompShipCombatShield>().radiusSet = 40;
-								thing.TryGetComp<CompShipCombatShield>().radius = 40;
-								if (shape.radius != 0)
-								{
-									thing.TryGetComp<CompShipCombatShield>().radiusSet = shape.radius;
-									thing.TryGetComp<CompShipCombatShield>().radius = shape.radius;
-								}
-							}
 							if (thing.def.stackLimit > 1)
 							{
-								thing.stackCount = (int)Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
+								thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
 								if (thing.stackCount * thing.MarketValue > 500)
 									thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
 							}
 							GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
 							if (shape.shapeOrDef.Equals("ShipHullTile") || shape.shapeOrDef.Equals("ShipHullTileMech") || shape.shapeOrDef.Equals("ShipHullTileArchotech"))
 								cellsToFog.Add(thing.Position);
+							if (thing is Building b)
+							{
+								if (b.TryGetComp<CompPowerTrader>() != null)
+								{
+									CompPowerTrader trader = b.TryGetComp<CompPowerTrader>();
+									trader.PowerOn = true;
+								}
+								if (b is Building_ShipTurret turret)
+								{
+									turret.burstCooldownTicksLeft = 300;
+									if (b is Building_ShipTurretTorpedo torp)
+									{
+										for (int i = 0; i < torp.torpComp.Props.maxTorpedoes; i++)
+										{
+											//td make this random
+											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
+										}
+									}
+								}
+								else if (b is Building_ShipBridge shipBridge)
+									shipBridge.ShipName = shipDef.label;
+								else
+								{
+									var shield = b.TryGetComp<CompShipCombatShield>();
+									if (shield != null)
+									{
+										shield.radiusSet = 40;
+										shield.radius = 40;
+										if (shape.radius != 0)
+										{
+											shield.radiusSet = shape.radius;
+											shield.radius = shape.radius;
+										}
+										if (!shieldsActive)
+											b.TryGetComp<CompFlickable>().SwitchIsOn = false;
+									}
+								}
+							}
 						}
 					}
 					else if (DefDatabase<TerrainDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
@@ -554,6 +597,7 @@ namespace SaveOurShip2
 					Log.Warning("Ship part was not generated properly: "+ shape.shapeOrDef + " at " +  c.x + shape.x + ", " + c.z + shape.z + " Shipdef pos: |"+ shape.x + "," + shape.z + ",0,*|\n" + e);
 				}
 			}
+			//generate SOS2 shapedefs
 			int randomTurretPoints = shipDef.randomTurretPoints;
 			partsToGenerate.Shuffle();
 			foreach (ShipShape shape in partsToGenerate)
@@ -597,9 +641,15 @@ namespace SaveOurShip2
 						thing.SetFaction(fac);
 					GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
 				}
-				else if (!def.defName.Equals("Cargo"))
+				else if (!def.defName.Equals("Cargo")) //everything else
 				{
-					ThingDef thingy = def.things.RandomElement();
+					ThingDef thingy;
+					if (def.defName.Equals("ShipPartTurretSmall"))
+						thingy = def.things[randomSmall];
+					else if (def.defName.Equals("ShipPartTurretLarge"))
+						thingy = def.things[randomLarge];
+					else
+						thingy = def.things.RandomElement();
 					Thing thing;
 					PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(thingy.defName);
 					if (kind != null)
@@ -624,11 +674,13 @@ namespace SaveOurShip2
 						else
 							thing.SetFaction(fac);
 					}
+					if (thing is Building_ShipTurret turret)
+						turret.burstCooldownTicksLeft = 300;
 					if (thing.TryGetComp<CompColorable>() != null)
 						thing.TryGetComp<CompColorable>().SetColor(shape.color);
 					GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
 				}
-				else
+				else //cargo
 				{
 					for (int ecks = c.x + shape.x; ecks <= c.x + shape.x + shape.width; ecks++)
 					{
@@ -679,10 +731,13 @@ namespace SaveOurShip2
 				}
 			}
 
-			//fog
+			//post spawn
+			if (shipDef.ships.NullOrEmpty())
+				PostGenerateShip(map, shipDef, clearArea, cellsToFog);
+		}
+		private static void PostGenerateShip(Map map, EnemyShipDef shipDef, bool clearArea, List<IntVec3> cellsToFog)
+		{
 			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
-			foreach (Room r in map.regionGrid.allRooms)
-				r.Temperature = 21;
 			if (shipDef.defName != "MechanoidMoonBase" && !clearArea)
 			{
 				foreach (IntVec3 cell in cellsToFog)
@@ -691,35 +746,9 @@ namespace SaveOurShip2
 						map.fogGrid.fogGrid[map.cellIndices.CellToIndex(cell)] = true;
 				}
 			}
-			map.mapDrawer.MapMeshDirty(c, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
-			foreach (Thing t in map.listerThings.ThingsInGroup(ThingRequestGroup.BuildingArtificial))
-			{
-				Building b = t as Building;
-				if (b == null)
-					continue;
-				if (b.TryGetComp<CompPowerTrader>() != null)
-				{
-					CompPowerTrader trader = b.TryGetComp<CompPowerTrader>();
-					trader.PowerOn = true;
-				}
-				if (b is Building_ShipTurret turret)
-					turret.burstCooldownTicksLeft = 300;
-				if (b is Building_ShipTurretTorpedo torp)
-				{
-					for (int i = 0; i < torp.torpComp.Props.maxTorpedoes; i++)
-						torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
-					/*IntVec3 vec;
-					GenAdj.TryFindRandomAdjacentCell8WayWithRoom(b, out vec);
-					for (int i = 0; i < Rand.RangeInclusive(1, 4); i++)
-					{
-						GenPlace.TryPlaceThing(ThingMaker.MakeThing(ThingDef.Named("ShipTorpedo_HighExplosive")), vec, map, ThingPlaceMode.Near);
-					}*/
-				}
-				else if (b is Building_ShipBridge bridge)
-					bridge.ShipName = shipDef.label;
-				else if (!shieldActive && b.TryGetComp<CompShipCombatShield>() != null)
-					b.TryGetComp<CompFlickable>().SwitchIsOn = false;
-			}
+			foreach (Room r in map.regionGrid.allRooms)
+				r.Temperature = 21;
+			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
 			if (Current.ProgramState == ProgramState.Playing)
 				map.mapDrawer.RegenerateEverythingNow();
 		}
@@ -985,7 +1014,7 @@ namespace SaveOurShip2
 						//pre move
 						if (spawnThing.TryGetComp<CompEngineTrail>() != null && !spawnThing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ArchotechExoticParticles")))
 						{
-							spawnThing.TryGetComp<CompEngineTrail>().active = false;
+							spawnThing.TryGetComp<CompEngineTrail>().DeActivate();
 							if (targetMap.IsSpace() && !sourceMap.IsSpace())
 							{
 								if (spawnThing.Rotation.AsByte == 0)

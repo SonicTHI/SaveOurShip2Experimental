@@ -21,10 +21,10 @@ namespace RimWorld
             if (WorldSwitchUtility.SelectiveWorldGenFlag)
                 return;
             List<Pawn> startingPawns = Find.GameInitData.startingAndOptionalPawns;
-            Building core = null;
+            List<Building> cores = new List<Building>();
             try
             {
-                ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("AfterlifeVaultStart"), map, null, Faction.OfPlayer, null, out core, true);
+                ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("AfterlifeVaultStart"), map, null, Faction.OfPlayer, null, out cores, true);
             }
             catch(Exception e)
             {

@@ -199,7 +199,7 @@ namespace RimWorld
         public bool BurnUpSet = false; //force terminate map+WO if no player pawns or pods present or in flight to
         public int EngineRot;
 
-        public float EnginePower;
+        public float MapEnginePower;
         public int Heading; //+closer, -apart
         public int BuildingsCount;
         public int totalThreat;
@@ -268,9 +268,9 @@ namespace RimWorld
         public bool launchedBoarders = false;
         public int BoardStartTick = 0;
 
-        public void SpawnEnemyShip(PassingShip passingShip)
+        public List<Building> SpawnEnemyShip(PassingShip passingShip)
         {
-            Building core = null;
+            List<Building> cores = new List<Building>();
             ShipCombatMasterMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), new IntVec3(250, 1, 250), DefDatabase<WorldObjectDef>.GetNamed("ShipEnemy"));
             ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).radius = 150;
             ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta - 0.1f + 0.002f * Rand.Range(0, 20);
@@ -332,7 +332,7 @@ namespace RimWorld
                 enemyshipfac = Faction.OfPirates;
             MasterMapComp.ShipFaction = enemyshipfac;
             MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyshipfac, new LordJob_DefendShip(enemyshipfac, map.Center), map);
-            ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyshipfac, MasterMapComp.ShipLord, out core, !isDerelict);
+            ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyshipfac, MasterMapComp.ShipLord, out cores, !isDerelict);
 
             Log.Message("SOS2 spawned ship: " + shipDef.defName); //keep this on for troubleshooting
             if (isDerelict)
@@ -358,6 +358,8 @@ namespace RimWorld
             {
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
             }
+            Log.Message("Spawned enemy cores:" + cores.Count);
+            return cores; //td dont use this till all pre V2 shipdefs cleared, after throw error/caution if V1 was spawned
         }
         public int MapThreat(Map map)
         {
@@ -447,7 +449,7 @@ namespace RimWorld
             InCombat = true;
             BurnUpSet = false;
             Heading = 0;
-            EnginePower = 0;
+            MapEnginePower = 0;
             Projectiles = new List<ShipCombatProjectile>();
             TorpsInRange = new List<ShipCombatProjectile>();
             //SCM only
@@ -508,13 +510,13 @@ namespace RimWorld
                 if (ShipCombatMaster)
                 {
                     if (OriginMapComp.Heading == 1)
-                        Range -= 0.1f * OriginMapComp.EnginePower;
+                        Range -= 0.1f * OriginMapComp.MapEnginePower;
                     else if (OriginMapComp.Heading == -1)
-                        Range += 0.1f * OriginMapComp.EnginePower;
+                        Range += 0.1f * OriginMapComp.MapEnginePower;
                     if (Heading == 1)
-                        Range -= 0.1f * EnginePower;
+                        Range -= 0.1f * MapEnginePower;
                     else if (Heading == -1)
-                        Range += 0.1f * EnginePower;
+                        Range += 0.1f * MapEnginePower;
                     if (Range > 400)
                         Range = 400;
                     else if (Range < 0)
@@ -606,7 +608,8 @@ namespace RimWorld
             totalThreat = 1;
             threatPerSegment = new[] { 1, 1, 1, 1 };
             int TurretNum = 0;
-            EnginePower = 0;
+            MapEnginePower = 0;
+            bool anyMapEngineCanActivate = false;
             BuildingsCount = 0;
             //SCM vars
             float powerCapacity = 0;
@@ -693,48 +696,39 @@ namespace RimWorld
 
                 foreach (var engine in ship.Engines)
                 {
-					EnginePower += engine.Props.thrust;
-					if (Heading != 0)
-						engine.active = true;
-					else
-						engine.active = false;							 
+                    if (engine.CanActivate())
+                    {
+                        anyMapEngineCanActivate = true;
+                        if (Heading != 0)
+                        {
+                            engine.Activate();
+                            MapEnginePower += engine.Props.thrust;
+                        }
+                        else
+                            engine.DeActivate();
+                    }
+                    else
+                        engine.DeActivate();						 
                 }
                 BuildingsCount += ship.Buildings.Count;
             }
-            //Log.Message("Engine power: " + EnginePower + ", ship size: " + BuildingsCount);
-            EnginePower *= 500f / Mathf.Pow(BuildingsCount, 1.1f);
+            //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);
+            if (anyMapEngineCanActivate)
+                MapEnginePower *= 500f / Mathf.Pow(BuildingsCount, 1.1f);
+            else
+                MapEnginePower = 0;
+            //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);
 
-            //Log.Message("Engine power: " + EnginePower + ", ship size: " + BuildingsCount);
             //SCM only: ship AI and player distance maintain
             if (ShipCombatMaster)
             {
-                if (EnginePower == 0) //all engines gone
-                {
-                    if (threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1)
-                    {
-                        EndBattle(this.map, false);
-                        return;
-                    }
-                    if (warnedAboutAdrift == 0)
-                    {
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipAdrift"), this.map.Parent, MessageTypeDefOf.NegativeEvent);
-                        warnedAboutAdrift = Find.TickManager.TicksGame + Rand.RangeInclusive(60000, 100000);
-                    }
-                    else if (Find.TickManager.TicksGame > warnedAboutAdrift)
-                    {
-                        EndBattle(this.map, false, warnedAboutAdrift - Find.TickManager.TicksGame);
-                        return;
-                    }
-                    Heading = 0;
-                    enemyRetreating = false;
-                }
-                else
+                if (anyMapEngineCanActivate) //set AI heading
                 {
                     //calc ratios
                     float longThreatRel = threatPerSegment[3] / OriginMapComp.threatPerSegment[3];
                     float medThreatRel = threatPerSegment[2] / OriginMapComp.threatPerSegment[2];
                     float shortThreatRel = threatPerSegment[1] / OriginMapComp.threatPerSegment[1];
-                    float cqcThreatRel = threatPerSegment[0]  / OriginMapComp.threatPerSegment[0];
+                    float cqcThreatRel = threatPerSegment[0] / OriginMapComp.threatPerSegment[0];
                     //move to cqc
                     if (cqcThreatRel > shortThreatRel && cqcThreatRel > medThreatRel && cqcThreatRel > longThreatRel)
                     {
@@ -784,6 +778,27 @@ namespace RimWorld
                             warnedAboutRetreat = true;
                         }
                     }
+                }
+                else
+                {
+                    if (threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1)
+                    {
+                        //no turrets to fight with - exit
+                        EndBattle(this.map, false);
+                        return;
+                    }
+                    if (warnedAboutAdrift == 0)
+                    {
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipAdrift"), this.map.Parent, MessageTypeDefOf.NegativeEvent);
+                        warnedAboutAdrift = Find.TickManager.TicksGame + Rand.RangeInclusive(60000, 100000);
+                    }
+                    else if (Find.TickManager.TicksGame > warnedAboutAdrift)
+                    {
+                        EndBattle(this.map, false, warnedAboutAdrift - Find.TickManager.TicksGame);
+                        return;
+                    }
+                    Heading = 0;
+                    enemyRetreating = false;
                 }
                 if (PlayerMaintain)
                 {
@@ -1015,12 +1030,12 @@ namespace RimWorld
             foreach (Building b in ShipCombatOriginMap.listerBuildings.allBuildingsColonist)
             {
                 if (b.TryGetComp<CompEngineTrail>() != null)
-                    b.TryGetComp<CompEngineTrail>().active = false;
+                    b.TryGetComp<CompEngineTrail>().DeActivate();
             }
             foreach (Building b in ShipCombatMasterMap.listerBuildings.allBuildingsNonColonist)
             {
                 if (b.TryGetComp<CompEngineTrail>() != null)
-                    b.TryGetComp<CompEngineTrail>().active = false;
+                    b.TryGetComp<CompEngineTrail>().DeActivate();
                 else if (b.TryGetComp<CompShipCombatShield>() != null)
                     b.TryGetComp<CompFlickable>().SwitchIsOn = false;
             }

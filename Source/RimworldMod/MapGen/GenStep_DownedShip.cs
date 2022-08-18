@@ -28,10 +28,10 @@ namespace RimWorld
 
         protected override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
         {
-            Building core = null;
+            List<Building> cores = new List<Building>();
             try
             {
-                ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.AllDefs.Where(def=>def.spaceSite).RandomElement(), map, null, Faction.OfAncients, null, out core, false, true, true);
+                ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.AllDefs.Where(def=>def.spaceSite).RandomElement(), map, null, Faction.OfAncients, null, out cores, false, true, true);
             }
             catch(Exception e)
             {

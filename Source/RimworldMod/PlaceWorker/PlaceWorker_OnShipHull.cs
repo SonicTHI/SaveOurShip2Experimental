@@ -14,7 +14,7 @@ namespace RimWorld
 				bool hasShipPart = false;
 				foreach (Thing t in vec.GetThingList(map))
 				{
-					if (t.def == ShipInteriorMod2.hullPlateDef || t.def == ShipInteriorMod2.mechHullPlateDef || t.def == ShipInteriorMod2.archoHullPlateDef)
+					if (t.def == ShipInteriorMod2.hullPlateDef || t.def == ShipInteriorMod2.mechHullPlateDef || t.def == ShipInteriorMod2.archoHullPlateDef || t.def.defName.StartsWith("ShipHardpoint"))
 						hasShipPart = true;
 				}
 				if (!hasShipPart)

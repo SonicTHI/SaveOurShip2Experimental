@@ -62,7 +62,7 @@ namespace RimWorld
                     }
                     foreach (IntVec3 pos in positions)
                     {
-                        targetMap.terrainGrid.SetTerrain(pos, TerrainDef.Named("EmptySpace"));
+                        targetMap.terrainGrid.SetTerrain(pos, ShipInteriorMod2.spaceTerrain);
                     }
                 }
                 catch (Exception e)

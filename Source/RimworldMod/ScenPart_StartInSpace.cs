@@ -85,13 +85,13 @@ namespace RimWorld
 			Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
 			((WorldObjectOrbitingShip)spaceMap.Parent).radius = 150;
 			((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
-			Building core = null;
+			List<Building> cores = new List<Building>();
 			Current.ProgramState = ProgramState.MapInitializing;
 			if (this.def.defName.Equals("StartInSpaceDungeon") && this.enemyShipDef.defName == "0")//random dungeon
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
 			else if (this.enemyShipDef.defName == "0")//random ship
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
-			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer,null, out core, false);
+			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer,null, out cores, false);
 
 			Current.ProgramState = ProgramState.Playing;
 			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);

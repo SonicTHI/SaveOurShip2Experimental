@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<EnemyShipDef>
+		<defName>FleetGenCorvette</defName>
+		<saveSysVer>2</saveSysVer>
+		<label>Two corvettes</label>
+		<combatPoints>306</combatPoints>
+		<ships>
+			<li>
+				<ship>GenCorvetteT3Random</ship>
+				<offsetX>108</offsetX>
+				<offsetZ>135</offsetZ>
+			</li>
+			<li>
+				<ship>GenCorvetteT3Random</ship>
+				<offsetX>108</offsetX>
+				<offsetZ>85</offsetZ>
+			</li>
+		</ships>
+		<parts>
+		</parts>
+	</EnemyShipDef>
+</Defs>

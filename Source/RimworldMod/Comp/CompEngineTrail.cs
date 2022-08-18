@@ -25,27 +25,49 @@ namespace RimWorld
         {
             get { return props as CompProperties_EngineTrail; }
         }
-        public bool active = false;
+        private bool active = false;
         int size;
         public ShipHeatMapComp mapComp;
         public CompFlickable Flickable;
         public CompRefuelable Refuelable;
         public CompPowerTrader PowerTrader;
-        public bool CanFire
+        public bool CanActivate()
         {
-            get
+            if (Flickable.SwitchIsOn)
             {
-                if (Flickable.SwitchIsOn && mapComp.EngineRot == parent.Rotation.AsByte)
+                if (Props.energy && PowerTrader.PowerOn)
                 {
-                    if (Props.energy)
-                    {
-                        return active && PowerTrader.PowerOn;
-                    }
-                    else
-                        return active && Refuelable.Fuel > 0;
+                    return true;
                 }
-                return false;
+                else if (Refuelable.Fuel > 0)
+                {
+                    return true;
+                }
             }
+            return false;
+        }
+        public void Activate()
+        {
+            if (Flickable.SwitchIsOn)
+            {
+                if (Props.energy && PowerTrader.PowerOn)
+                {
+                    PowerTrader.PowerOutput = -2000 * Props.thrust;
+                    active = true;
+                }
+                else if (Refuelable.Fuel > 0)
+                {
+                    active = true;
+                }
+            }
+        }
+        public void DeActivate()
+        {
+            if (Props.energy)
+            {
+                PowerTrader.PowerOutput = -200 * Props.thrust;
+            }
+            active = false;
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -72,7 +94,7 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
-            if (CanFire)
+            if (active)
             {
                 if (Props.energy)
                 {
@@ -114,13 +136,9 @@ namespace RimWorld
         public override void CompTick()
         {
             base.CompTick();
-            if (CanFire)
+            if (active)
             {
-                if (Props.energy)
-                {
-                    PowerTrader.PowerOutput = -2000 * Props.thrust;
-                }
-                else if (Find.TickManager.TicksGame % 60 == 0)
+                if (Find.TickManager.TicksGame % 60 == 0)
                 {
                     Refuelable.ConsumeFuel(Props.fuelUse);
                 }
@@ -139,10 +157,6 @@ namespace RimWorld
                             t.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 100));
                     }
                 }
-            }
-            else if (Props.energy)
-            {
-                PowerTrader.PowerOutput = -200 * Props.thrust;
             }
         }
     }

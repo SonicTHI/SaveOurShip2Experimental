@@ -204,13 +204,12 @@
 		<category>Building</category>
 		<altitudeLayer>Building</altitudeLayer>
 		<pathCost>50</pathCost>
-		<passability>Impassable</passability>
 		<blockWind>true</blockWind>
 		<castEdgeShadows>true</castEdgeShadows>
 		<fillPercent>1</fillPercent>
 		<blockLight>true</blockLight>
 		<canOverlapZones>false</canOverlapZones>
-		<rotatable>true</rotatable>
+		<rotatable>false</rotatable>
 		<selectable>true</selectable>
 		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -240,6 +239,7 @@
 			<Flammability>0.7</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
+		<passability>Impassable</passability>
 		<seeThroughFog>true</seeThroughFog>
 		<costList>
 			<Steel>100</Steel>
@@ -284,6 +284,7 @@
 			<Flammability>0.7</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
+		<passability>Impassable</passability>
 		<seeThroughFog>true</seeThroughFog>
 		<costList>
 			<Steel>500</Steel>
@@ -400,7 +401,7 @@
 			<Plasteel>25</Plasteel>
 			<ComponentSpacer>4</ComponentSpacer>
 		</costList>
-		<rotatable>false</rotatable>
+		<passability>Impassable</passability>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>
@@ -452,7 +453,7 @@
 			<Plasteel>150</Plasteel>
 			<ComponentSpacer>20</ComponentSpacer>
 		</costList>
-		<rotatable>false</rotatable>
+		<passability>Impassable</passability>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>

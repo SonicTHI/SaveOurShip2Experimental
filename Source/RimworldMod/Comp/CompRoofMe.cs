@@ -51,8 +51,8 @@ namespace RimWorld
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
             isTile = parent.def == ShipInteriorMod2.hullPlateDef;
-            isMechTile = Props.mechanoid;
-            isArchoTile = Props.archotech;
+            isMechTile = parent.def == ShipInteriorMod2.mechHullPlateDef;
+            isArchoTile = parent.def == ShipInteriorMod2.archoHullPlateDef;
             isFoamTile = parent.def == ShipInteriorMod2.hullFoamDef;
             map = parent.Map;
             positions = new List<IntVec3>();

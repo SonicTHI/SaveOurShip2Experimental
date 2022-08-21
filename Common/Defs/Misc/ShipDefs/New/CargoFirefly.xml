@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>SpcFirefly</defName>
+		<defName>CargoFirefly</defName>
 		<label>Firefly class transport</label>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>85</offsetX>

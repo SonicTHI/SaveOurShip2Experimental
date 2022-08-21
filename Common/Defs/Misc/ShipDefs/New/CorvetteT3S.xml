@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>GenCorvetteT3Spinal</defName>
+		<defName>CorvetteT3S</defName>
 		<label>Corvette</label>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>108</offsetX>

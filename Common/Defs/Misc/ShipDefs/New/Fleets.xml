@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>FleetGenCorvette</defName>
+		<defName>FleetCorvette</defName>
 		<saveSysVer>2</saveSysVer>
 		<label>Two corvettes</label>
 		<combatPoints>306</combatPoints>

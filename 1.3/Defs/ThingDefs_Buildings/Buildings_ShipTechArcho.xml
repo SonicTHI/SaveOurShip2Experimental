@@ -330,7 +330,9 @@
 			</blueprintGraphicData>
 		</building>
 		<comps>
-			<li Class="CompProperties_RoofMe"/>
+			<li Class="CompProperties_RoofMe">
+				<archotech>true</archotech>
+			</li>
 			<li Class="CompProperties_PowerPlantSolarShip">
 				<compClass>CompPowerPlantSolarShip</compClass>
 				<basePowerConsumption>-1</basePowerConsumption>

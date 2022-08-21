@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>GenBomberT2</defName>
-		<label>Bomber</label>
+		<defName>BomberT2</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>112</offsetX>
 		<offsetZ>112</offsetZ>
 		<sizeX>26</sizeX>
 		<sizeZ>26</sizeZ>
+		<label>Bomber</label>
 		<combatPoints>130</combatPoints>
 		<randomTurretPoints>50</randomTurretPoints>
 		<core>

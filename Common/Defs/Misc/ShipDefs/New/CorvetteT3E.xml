@@ -99,7 +99,7 @@
 				<key>L</key>
 				<value>
 					<shapeOrDef>EndTable</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
@@ -125,7 +125,7 @@
 				<key>P</key>
 				<value>
 					<shapeOrDef>DiningChair</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
@@ -210,28 +210,28 @@
 				<key>^</key>
 				<value>
 					<shapeOrDef>Bed</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
 				<key>_</key>
 				<value>
 					<shapeOrDef>Dresser</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
 				<key>`</key>
 				<value>
 					<shapeOrDef>Table1x2c</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
 				<key>a</key>
 				<value>
 					<shapeOrDef>Shelf</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>

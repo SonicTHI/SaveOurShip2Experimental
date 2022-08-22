@@ -86,7 +86,7 @@
 				<key>J</key>
 				<value>
 					<shapeOrDef>EndTable</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
@@ -112,7 +112,7 @@
 				<key>N</key>
 				<value>
 					<shapeOrDef>DiningChair</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
@@ -185,28 +185,28 @@
 				<key>Z</key>
 				<value>
 					<shapeOrDef>Bed</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
 				<key>[</key>
 				<value>
 					<shapeOrDef>Dresser</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
 				<key>\</key>
 				<value>
 					<shapeOrDef>Table1x2c</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>
 				<key>]</key>
 				<value>
 					<shapeOrDef>Shelf</shapeOrDef>
-					<stuff>Steel</stuff>
+					<stuff>Plasteel</stuff>
 				</value>
 			</li>
 			<li>

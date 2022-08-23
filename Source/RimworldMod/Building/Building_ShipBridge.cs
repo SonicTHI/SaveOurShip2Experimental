@@ -80,6 +80,7 @@ namespace RimWorld
 		public override IEnumerable<Gizmo> GetGizmos()
 		{
             var heatNet = this.TryGetComp<CompShipHeat>().myNet;
+            bool ckActive = Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
             if (!TacCon)
             {
                 if (this.Faction != Faction.OfPlayer)
@@ -97,7 +98,8 @@ namespace RimWorld
                         };
                         yield return hackMe;
                     }
-                    yield break;
+                    if (!ckActive)
+                        yield break;
                 }
                 if (!selected)
                 {
@@ -402,7 +404,7 @@ namespace RimWorld
                 else
                 {
                     //space - move, land
-                    if (!mapComp.IsGraveyard)
+                    if (!mapComp.IsGraveyard || ckActive)
                     {
                         Command_Action gotoNewWorld = new Command_Action
                         {
@@ -498,7 +500,7 @@ namespace RimWorld
                         List<Map> landableMaps = new List<Map>();
                         foreach (Map m in Find.Maps)
                         {
-                            if ((!m.IsSpace() && !m.IsTempIncidentMap) || ((Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit"))) && m != this.Map)
+                            if ((!m.IsSpace() && !m.IsTempIncidentMap) || (ckActive && m != this.Map))
                                 landableMaps.Add(m);
                         }
                         foreach (Map m in landableMaps)

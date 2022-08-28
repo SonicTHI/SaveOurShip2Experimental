@@ -447,12 +447,13 @@ namespace SaveOurShip2
 					t.Destroy();
 				}
 			}
-
-			Building bridge = (Building)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
-			bridge.SetFaction(fac);
-			GenSpawn.Spawn(bridge, new IntVec3(c.x + shipDef.core.x, 0, c.z + shipDef.core.z), map, shipDef.core.rot);
-			cores.Add(bridge);
-
+			if (!shipDef.core.shapeOrDef.NullOrEmpty())
+			{
+				Building bridge = (Building)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
+				bridge.SetFaction(fac);
+				GenSpawn.Spawn(bridge, new IntVec3(c.x + shipDef.core.x, 0, c.z + shipDef.core.z), map, shipDef.core.rot);
+				cores.Add(bridge);
+			}
 			//check if custom replacers for pawns are set and present in the game
 			bool crewOver = false;
 			bool marineOver = false;
@@ -519,10 +520,12 @@ namespace SaveOurShip2
 								thing.SetColor(shape.color);
 							if (thing.def.CanHaveFaction && thing.def != wreckedHullPlateDef && thing.def.thingClass != typeof(Building_ArchotechPillar))
 								thing.SetFaction(fac);
-							if (thing.TryGetComp<CompPowerBattery>() != null)
-								thing.TryGetComp<CompPowerBattery>().AddEnergy(thing.TryGetComp<CompPowerBattery>().AmountCanAccept);
-							if (thing.TryGetComp<CompRefuelable>() != null)
-								thing.TryGetComp<CompRefuelable>().Refuel(thing.TryGetComp<CompRefuelable>().Props.fuelCapacity * Rand.Gaussian(0.5f, 0.125f));
+							var compBat = thing.TryGetComp<CompPowerBattery>();
+							if (compBat != null)
+								compBat.AddEnergy(compBat.AmountCanAccept);
+							var compRefuel = thing.TryGetComp<CompRefuelable>();
+							if (compRefuel != null)
+								compRefuel.Refuel(compRefuel.Props.fuelCapacity * Rand.Gaussian(0.5f, 0.125f));
 							if (thing.def.stackLimit > 1)
 							{
 								thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
@@ -678,7 +681,7 @@ namespace SaveOurShip2
 						turret.burstCooldownTicksLeft = 300;
 					if (thing.TryGetComp<CompColorable>() != null)
 						thing.TryGetComp<CompColorable>().SetColor(shape.color);
-					GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
+					GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
 				}
 				else //cargo
 				{

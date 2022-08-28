@@ -17,7 +17,6 @@
 				<offsetZ>85</offsetZ>
 			</li>
 		</ships>
-		<parts>
-		</parts>
+		<parts />
 	</EnemyShipDef>
 </Defs>

@@ -278,35 +278,50 @@ namespace RimWorld
             SpaceNavyDef enemySpaceNavyDef = null;
             EnemyShipDef enemySpaceNavyShipDef = null;
 
-            System.Random s_Random = new System.Random();
-
-            if (s_Random.Next(0, 100) <= ShipInteriorMod2.navyEncounterChance)
+            // If player encounters a space navy
+            if (Rand.Range(0, 100) <= ShipInteriorMod2.navyEncounterChance)
             {
-                // Look through space navies
-                foreach (SpaceNavyDef spaceNavyDef in spaceNavyDefs)
+                Faction spaceNavyFaction = null;
+
+                // Get a SpaceNavyDef of a random enemy faction
+                SpaceNavyDef spaceNavyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(def =>
                 {
-                    Faction spaceNavyFaction = Find.FactionManager.AllFactions.Where(faction => faction.def == spaceNavyDef.factionDef).RandomElement();
+                    // Conditions:
+                    // 1. Matching factionDef
+                    // 2. Faction is hostile to player
+                    // 3. If space navy cannot operate when it's faction is defeated, perform a check
+                    Faction potentialSpaceNavyFaction = Find.FactionManager.AllFactions.Where(faction => faction.def == def.factionDef && faction.PlayerRelationKind == FactionRelationKind.Hostile && (!def.canOperateAfterFactionDefeated ? !faction.defeated : true)).RandomElement();
 
-                    // Check if space navy's faction is hostile to player, check if space navy can operate after it's faction is defeated
-                    if (!spaceNavyFaction.AllyOrNeutralTo(Faction.OfPlayer) && (!spaceNavyDef.canOperateAfterFactionDefeated ? !spaceNavyFaction.defeated : true))
+                    // If no faction matching the criteria is found, return null
+                    if(potentialSpaceNavyFaction == null)
                     {
-                        // Choose a ship from enemy space navy's roster
-
-                        // 0.5-1.5
-                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
-
-                        // 0-1.5
-                        if (enemySpaceNavyShipDef == null)
-                            enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
-
-                        // Last fallback
-                        if (enemySpaceNavyShipDef == null)
-                            enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= 50).RandomElement();
-
-                        // Set the enemy ship's faction to the enemy space navy's faction, and enemy spaceNavyDef
-                        enemyShipFaction = spaceNavyFaction;
-                        enemySpaceNavyDef = spaceNavyDef;
+                        return false;
                     }
+
+                    // If faction is found set the spaceNavyFaction for later use
+                    spaceNavyFaction = potentialSpaceNavyFaction;
+
+                    return true;
+                }).RandomElement();
+
+                if(spaceNavyDef != null)
+                {
+                    // Choose a ship from enemy space navy's roster
+
+                    // 0.5-1.5
+                    enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints >= playerCombatPoints / 2 * ShipInteriorMod2.difficultySoS && def.combatPoints <= playerCombatPoints * 3 / 2 * ShipInteriorMod2.difficultySoS).RandomElement();
+
+                    // 0-1.5
+                    if (enemySpaceNavyShipDef == null)
+                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= playerCombatPoints * 1.5f * ShipInteriorMod2.difficultySoS).RandomElement();
+
+                    // Last fallback
+                    if (enemySpaceNavyShipDef == null)
+                        enemySpaceNavyShipDef = spaceNavyDef.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= 50).RandomElement();
+
+                    // Set the enemy ship's faction to the enemy space navy's faction, and enemy spaceNavyDef
+                    enemyShipFaction = spaceNavyFaction;
+                    enemySpaceNavyDef = spaceNavyDef;
                 }
             }
 

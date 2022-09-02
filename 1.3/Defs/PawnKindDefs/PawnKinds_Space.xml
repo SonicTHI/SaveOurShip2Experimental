@@ -569,12 +569,12 @@
 		<defName>SoSHologramRace</defName>
 		<label>hologram</label>
 		<description>A holographic projection operated by a mind located elsewhere. Despite its humanlike appearance, the avatar could belong to a machine persona with frighteningly alien goals.\n\nIf the projection is destroyed, its emitter will need a day to reestablish coherence, but the mind itself suffers no permanent harm.</description>
-		<comps>
+		<!--comps>
 			<li Class="CompProperties_HologramGlower">
 				<glowRadius>8</glowRadius>
-				<glowColor>(78, 226, 229, 0)</glowColor>
+				<glowColor>(78,226,229,0)</glowColor>
 			</li>
-		</comps>
+		</comps-->
 		<statBases>
 			<MarketValue>0</MarketValue>
 			<MoveSpeed>5.6</MoveSpeed>

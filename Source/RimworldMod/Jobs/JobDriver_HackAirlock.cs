@@ -30,9 +30,9 @@ namespace RimWorld
             };
             hackIt.tickAction = delegate
             {
-                if (ModsConfig.IdeologyActive)
+                /*if (ModsConfig.IdeologyActive)
                     workDone += pawn.GetStatValue(StatDefOf.HackingSpeed);
-                else
+                else*/
                     workDone++;
             };
             hackIt.endConditions = new List<Func<JobCondition>>();

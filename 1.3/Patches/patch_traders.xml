@@ -30,6 +30,16 @@
 					</li>
 				</value>
 			</li>
+			<li Class="PatchOperationAdd">
+			<xpath>/Defs/TraderKindDef[defName="Orbital_CombatSupplier" or defName="Caravan_Outlander_CombatSupplier"]/stockGenerators</xpath>
+				<value>
+					<li Class="StockGenerator_Category">
+						<categoryDef>ShipBlueprints</categoryDef>
+						<thingDefCountRange>0~1</thingDefCountRange>
+						<countRange>0~1</countRange>
+					</li>
+				</value>
+			</li>
 		</operations>
 	</Operation>
 	<Operation Class="PatchOperationFindMod">

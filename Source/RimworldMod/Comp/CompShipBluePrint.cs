@@ -189,13 +189,16 @@ namespace RimWorld
                 if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef).building != null)
                 {
                     ThingDef def = ThingDef.Named(shape.shapeOrDef);
-                    ThingDef stuff = GenStuff.DefaultStuffFor(def);
-                    if (def.MadeFromStuff)
+                    if (def.IsResearchFinished)
                     {
-                        if (shape.stuff != null)
-                            stuff = ThingDef.Named(shape.stuff);
+                        ThingDef stuff = GenStuff.DefaultStuffFor(def);
+                        if (def.MadeFromStuff)
+                        {
+                            if (shape.stuff != null)
+                                stuff = ThingDef.Named(shape.stuff);
+                        }
+                        GenConstruct.PlaceBlueprintForBuild(def, new IntVec3(pos.x + shape.x, 0, pos.z + shape.z), map, shape.rot, Faction.OfPlayer, stuff);
                     }
-                    GenConstruct.PlaceBlueprintForBuild(def, new IntVec3(pos.x + shape.x, 0, pos.z + shape.z), map, shape.rot, Faction.OfPlayer, stuff);
                 }
             }
         }

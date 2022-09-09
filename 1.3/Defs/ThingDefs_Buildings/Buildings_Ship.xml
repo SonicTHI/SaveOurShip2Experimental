@@ -115,11 +115,11 @@
 		<designationCategory>Ship</designationCategory>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -1065,7 +1065,7 @@
 		<graphicData>
 			<texPath>Things/Building/Ship/ShipEngineRocket_Single</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
-			<drawSize>(7,5.5)</drawSize>
+			<drawSize>(8,5.5)</drawSize>
 		</graphicData>
 		<researchPrerequisites>
 			<li>ShipEngine</li>
@@ -1088,7 +1088,6 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1166,7 +1165,6 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1246,7 +1244,6 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1380,7 +1377,6 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>200</basePowerConsumption>
@@ -1447,7 +1443,6 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>600</basePowerConsumption>
@@ -3048,11 +3043,14 @@
 			</blueprintGraphicData>
 			<shipPart>true</shipPart>
 		</building>
-		<comps>
-		</comps>
 		<costList>
 			<HullFoam>1</HullFoam>
 		</costList>
+		<comps>
+			<li Class="CompProperties_RoofMe">
+				<foam>true</foam>
+			</li>
+		</comps>
 		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">

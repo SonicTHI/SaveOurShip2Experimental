@@ -72,7 +72,7 @@ namespace RimWorld
         public override void Tick()
         {
             base.Tick();
-            if(this.Map.GetComponent<ShipHeatMapComp>().InCombat)
+            if (this.mapComp.InCombat)
             {
                 if (ticksSinceOpen < TicksToOpenNow && powerComp.PowerOn)
                     ticksSinceOpen++;
@@ -105,7 +105,7 @@ namespace RimWorld
 
         public override void DeSpawn(DestroyMode mode)
         {
-            mapComp.TorpedoTubes.Remove(this);
+            this.Map.GetComponent<ShipHeatMapComp>().TorpedoTubes.Remove(this);
             base.DeSpawn(mode);
         }
     }

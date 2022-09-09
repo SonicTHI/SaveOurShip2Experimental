@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>FighterWing</defName>
+		<defName>FighterWinged</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>114</offsetX>
 		<offsetZ>110</offsetZ>

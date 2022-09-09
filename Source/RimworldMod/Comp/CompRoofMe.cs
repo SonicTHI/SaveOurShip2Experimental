@@ -75,11 +75,11 @@ namespace RimWorld
                     map.roofGrid.SetRoof(pos, roof);
                 if (!map.terrainGrid.TerrainAt(pos).layerable)
                 {
-                    if (isArchoTile)
+                    if (Props.archotech)
                         map.terrainGrid.SetTerrain(pos, archotechHullTerrain);
-                    else if (isMechTile)
+                    else if (Props.mechanoid)
                         map.terrainGrid.SetTerrain(pos, mechHullTerrain);
-                    else if (isFoamTile)
+                    else if (Props.foam)
                         map.terrainGrid.SetTerrain(pos, hullfoamTerrain);
                     else if (Props.wreckage)
                         map.terrainGrid.SetTerrain(pos, wreckageTerrain);

@@ -343,7 +343,7 @@
 			</li>
 		</comps>
 		<researchPrerequisites>
-			<li>ShipHeatManifold</li>
+			<li>ShipHeatsink</li>
 		</researchPrerequisites>
 	</ThingDef>
 	<ThingDef ParentName="ShipHeatsinkBase">
@@ -377,7 +377,7 @@
 			</li>
 		</comps>
 		<researchPrerequisites>
-			<li>ShipHeatManifold</li>
+			<li>ShipHeatsink</li>
 		</researchPrerequisites>
 	</ThingDef>
 	<ThingDef ParentName="ShipHeatsinkBase">
@@ -429,7 +429,7 @@
 			</li>
 		</comps>
 		<researchPrerequisites>
-			<li>ShipHeatsink</li>
+			<li>ShipHeatManifold</li>
 		</researchPrerequisites>
 	</ThingDef>
 	<ThingDef ParentName="ShipHeatsinkBase">
@@ -481,7 +481,7 @@
 			</li>
 		</comps>
 		<researchPrerequisites>
-			<li>ShipHeatsink</li>
+			<li>ShipHeatManifold</li>
 		</researchPrerequisites>
 	</ThingDef>
 	<!-- cannon -->

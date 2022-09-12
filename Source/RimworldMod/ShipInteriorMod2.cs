@@ -383,13 +383,16 @@ namespace SaveOurShip2
 
 		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shieldsActive = true, bool clearArea = false, bool wreckEverything = false, int offsetX = -1, int offsetZ = -1)
 		{
+			bool unlockedJT = false;
+			if (WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("JTDriveToo"))
+				unlockedJT = true;
 			cores = new List<Building>();
 			List<IntVec3> cellsToFog = new List<IntVec3>();
 			if (!shipDef.ships.NullOrEmpty())
             {
 				for (int i = 0; i < shipDef.ships.Count; i++)
 				{
-					Log.Message("Spawning fleet ship:" + i);
+					Log.Message("Spawning fleet ship nr." + i);
 					List<Building> core = new List<Building>();
 					GenerateShip(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out core, shieldsActive, clearArea, wreckEverything, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ);
 					cores.AddRange(core);
@@ -452,6 +455,7 @@ namespace SaveOurShip2
 				Building bridge = (Building)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
 				bridge.SetFaction(fac);
 				GenSpawn.Spawn(bridge, new IntVec3(c.x + shipDef.core.x, 0, c.z + shipDef.core.z), map, shipDef.core.rot);
+				bridge.TryGetComp<CompPowerTrader>().PowerOn = true;
 				cores.Add(bridge);
 			}
 			//check if custom replacers for pawns are set and present in the game
@@ -501,78 +505,91 @@ namespace SaveOurShip2
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
+						bool isBuilding = false;
 						Thing thing;
 						ThingDef def = ThingDef.Named(shape.shapeOrDef);
-						if (def.defName != "Ship_Engine_Interplanetary" || def.defName != "Ship_Engine_Interplanetary_Large" || WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("JTDriveToo"))
+						if (def.IsBuildingArtificial)
 						{
-							if (wreckEverything && wreckDictionary.ContainsKey(def))
-								thing = ThingMaker.MakeThing(wreckDictionary[def]);
-							else if (def.MadeFromStuff)
-							{
-								if (shape.stuff != null)
-									thing = ThingMaker.MakeThing(def, ThingDef.Named(shape.stuff));
-								else
-									thing = ThingMaker.MakeThing(def, GenStuff.DefaultStuffFor(def));
-							}
+							isBuilding = true;
+							if (!unlockedJT && def.defName.StartsWith("Ship_Engine_Interplanetary"))
+								continue;
+						}
+						if (wreckEverything && isBuilding && wreckDictionary.ContainsKey(def))
+							thing = ThingMaker.MakeThing(wreckDictionary[def]);
+						else if (def.MadeFromStuff)
+						{
+							if (shape.stuff != null)
+								thing = ThingMaker.MakeThing(def, ThingDef.Named(shape.stuff));
 							else
-								thing = ThingMaker.MakeThing(def);
-							if (thing.TryGetComp<CompColorable>() != null && shape.color != Color.clear)
-								thing.SetColor(shape.color);
-							if (thing.def.CanHaveFaction && thing.def != wreckedHullPlateDef && thing.def.thingClass != typeof(Building_ArchotechPillar))
-								thing.SetFaction(fac);
-							var compBat = thing.TryGetComp<CompPowerBattery>();
-							if (compBat != null)
-								compBat.AddEnergy(compBat.AmountCanAccept);
-							var compRefuel = thing.TryGetComp<CompRefuelable>();
-							if (compRefuel != null)
-								compRefuel.Refuel(compRefuel.Props.fuelCapacity * Rand.Gaussian(0.5f, 0.125f));
-							if (thing.def.stackLimit > 1)
+								thing = ThingMaker.MakeThing(def, GenStuff.DefaultStuffFor(def));
+						}
+						else
+							thing = ThingMaker.MakeThing(def);
+						if (thing.TryGetComp<CompColorable>() != null && shape.color != Color.clear)
+							thing.SetColor(shape.color);
+						var batComp = thing.TryGetComp<CompPowerBattery>();
+						if (batComp != null)
+							batComp.AddEnergy(batComp.AmountCanAccept);
+						var refuelComp = thing.TryGetComp<CompRefuelable>();
+						if (refuelComp != null)
+							refuelComp.Refuel(refuelComp.Props.fuelCapacity * Rand.Gaussian(0.5f, 0.125f));
+						if (thing.def.stackLimit > 1)
+						{
+							thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
+							if (thing.stackCount * thing.MarketValue > 500)
+								thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
+						}
+						GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
+						if (isBuilding)
+						{
+							if (thing.def.CanHaveFaction)
 							{
-								thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
-								if (thing.stackCount * thing.MarketValue > 500)
-									thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
+								if (thing.def == hullPlateDef || thing.def == mechHullPlateDef || thing.def == archoHullPlateDef)
+								{
+									cellsToFog.Add(thing.Position);
+									continue;
+								}
+								else if (!(thing.def == wreckedHullPlateDef || thing.def == wreckedAirlockDef || thing.def.thingClass == typeof(Building_ArchotechPillar)))
+									thing.SetFaction(fac);
 							}
-							GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
-							if (shape.shapeOrDef.Equals("ShipHullTile") || shape.shapeOrDef.Equals("ShipHullTileMech") || shape.shapeOrDef.Equals("ShipHullTileArchotech"))
-								cellsToFog.Add(thing.Position);
-							if (thing is Building b)
+							Building b = thing as Building;
+							var powerComp = b.TryGetComp<CompPowerTrader>();
+							if (powerComp != null)
+								powerComp.PowerOn = true;
+							if (b is Building_ShipTurret turret)
 							{
-								if (b.TryGetComp<CompPowerTrader>() != null)
+								turret.burstCooldownTicksLeft = 300;
+								if (b is Building_ShipTurretTorpedo torp)
 								{
-									CompPowerTrader trader = b.TryGetComp<CompPowerTrader>();
-									trader.PowerOn = true;
-								}
-								if (b is Building_ShipTurret turret)
-								{
-									turret.burstCooldownTicksLeft = 300;
-									if (b is Building_ShipTurretTorpedo torp)
+									for (int i = 0; i < torp.torpComp.Props.maxTorpedoes; i++)
 									{
-										for (int i = 0; i < torp.torpComp.Props.maxTorpedoes; i++)
-										{
-											//td make this random
-											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
-										}
-									}
-								}
-								else if (b is Building_ShipBridge shipBridge)
-									shipBridge.ShipName = shipDef.label;
-								else
-								{
-									var shield = b.TryGetComp<CompShipCombatShield>();
-									if (shield != null)
-									{
-										shield.radiusSet = 40;
-										shield.radius = 40;
-										if (shape.radius != 0)
-										{
-											shield.radiusSet = shape.radius;
-											shield.radius = shape.radius;
-										}
-										if (!shieldsActive)
-											b.TryGetComp<CompFlickable>().SwitchIsOn = false;
+										//td make this random
+										torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
 									}
 								}
 							}
+							else if (b is Building_ShipBridge shipBridge)
+								shipBridge.ShipName = shipDef.label;
+							else
+							{
+								var shieldComp = b.TryGetComp<CompShipCombatShield>();
+								if (shieldComp != null)
+								{
+									shieldComp.radiusSet = 40;
+									shieldComp.radius = 40;
+									if (shape.radius != 0)
+									{
+										shieldComp.radiusSet = shape.radius;
+										shieldComp.radius = shape.radius;
+									}
+									if (!shieldsActive)
+										b.TryGetComp<CompFlickable>().SwitchIsOn = false;
+								}
+							}
+						}
+						else if (thing.def.CanHaveFaction)
+						{
+							thing.SetFaction(fac);
 						}
 					}
 					else if (DefDatabase<TerrainDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
@@ -2582,9 +2599,9 @@ namespace SaveOurShip2
 				{
 					hasEngine = true;
 					if (engine.Props.takeOff)
-						fuelHad += engine.Refuelable.Fuel;
-					if (engine.Refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
-						fuelHad += engine.Refuelable.Fuel;
+						fuelHad += engine.refuelComp.Fuel;
+					if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+						fuelHad += engine.refuelComp.Fuel;
 				}
 				else if (!hasPilot && part is Building_ShipBridge bridge && bridge.TryGetComp<CompPowerTrader>().PowerOn)
 				{

@@ -28,18 +28,18 @@ namespace RimWorld
         private bool active = false;
         int size;
         public ShipHeatMapComp mapComp;
-        public CompFlickable Flickable;
-        public CompRefuelable Refuelable;
-        public CompPowerTrader PowerTrader;
+        public CompFlickable flickComp;
+        public CompRefuelable refuelComp;
+        public CompPowerTrader powerComp;
         public bool CanActivate()
         {
-            if (Flickable.SwitchIsOn)
+            if (flickComp.SwitchIsOn)
             {
-                if (Props.energy && PowerTrader.PowerOn)
+                if (Props.energy && powerComp.PowerOn)
                 {
                     return true;
                 }
-                else if (Refuelable.Fuel > 0)
+                else if (refuelComp.Fuel > 0)
                 {
                     return true;
                 }
@@ -48,14 +48,14 @@ namespace RimWorld
         }
         public void Activate()
         {
-            if (Flickable.SwitchIsOn)
+            if (flickComp.SwitchIsOn)
             {
-                if (Props.energy && PowerTrader.PowerOn)
+                if (Props.energy && powerComp.PowerOn)
                 {
-                    PowerTrader.PowerOutput = -2000 * Props.thrust;
+                    powerComp.PowerOutput = -2000 * Props.thrust;
                     active = true;
                 }
-                else if (Refuelable.Fuel > 0)
+                else if (refuelComp.Fuel > 0)
                 {
                     active = true;
                 }
@@ -65,16 +65,16 @@ namespace RimWorld
         {
             if (Props.energy)
             {
-                PowerTrader.PowerOutput = -200 * Props.thrust;
+                powerComp.PowerOutput = -200 * Props.thrust;
             }
             active = false;
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            Flickable = parent.TryGetComp<CompFlickable>();
-            Refuelable = parent.TryGetComp<CompRefuelable>();
-            PowerTrader = parent.TryGetComp<CompPowerTrader>();
+            flickComp = parent.TryGetComp<CompFlickable>();
+            refuelComp = parent.TryGetComp<CompRefuelable>();
+            powerComp = parent.TryGetComp<CompPowerTrader>();
             mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
             size = parent.def.size.x;
             if (size > 3)
@@ -138,9 +138,9 @@ namespace RimWorld
             base.CompTick();
             if (active)
             {
-                if (Find.TickManager.TicksGame % 60 == 0)
+                if (refuelComp != null && Find.TickManager.TicksGame % 60 == 0)
                 {
-                    Refuelable.ConsumeFuel(Props.fuelUse);
+                    refuelComp.ConsumeFuel(Props.fuelUse);
                 }
                 //destroy stuff in plume
                 foreach (IntVec3 cell in rectToKill)

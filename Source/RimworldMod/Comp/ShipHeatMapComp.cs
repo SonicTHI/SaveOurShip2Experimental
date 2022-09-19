@@ -202,7 +202,7 @@ namespace RimWorld
         public int Heading; //+closer, -apart
         public int BuildingsCount;
         public int totalThreat;
-        public int[] threatPerSegment = { 0, 0, 0, 0 };
+        public int[] threatPerSegment = { 1, 1, 1, 1 };
         //SC cache
         public bool BridgeDestroyed = false;//calls CheckForDetach
         public List<ShipCombatProjectile> Projectiles;
@@ -726,53 +726,6 @@ namespace RimWorld
             {
                 if (anyMapEngineCanActivate) //set AI heading
                 {
-                    //calc ratios
-                    float longThreatRel = threatPerSegment[3] / OriginMapComp.threatPerSegment[3];
-                    float medThreatRel = threatPerSegment[2] / OriginMapComp.threatPerSegment[2];
-                    float shortThreatRel = threatPerSegment[1] / OriginMapComp.threatPerSegment[1];
-                    float cqcThreatRel = threatPerSegment[0] / OriginMapComp.threatPerSegment[0];
-                    //move to cqc
-                    if (cqcThreatRel > shortThreatRel && cqcThreatRel > medThreatRel && cqcThreatRel > longThreatRel)
-                    {
-                        Log.Message("Enemy ship moving to close range, threat ratios (LMSC): " + longThreatRel.ToString("F2") + " " + medThreatRel.ToString("F2") + " " + shortThreatRel.ToString("F2") + " " + cqcThreatRel.ToString("F2"));
-                        if (Range > 40)
-                            Heading = 1;
-                        else
-                            Heading = 0;
-                    }
-                    //move to short range
-                    else if (shortThreatRel > medThreatRel && shortThreatRel > longThreatRel)
-                    {
-                        Log.Message("Enemy ship moving to short range, threat ratios (LMSC): " + longThreatRel.ToString("F2") + " " + medThreatRel.ToString("F2") + " " + shortThreatRel.ToString("F2") + " " + cqcThreatRel.ToString("F2"));
-                        if (Range > 90)
-                            Heading = 1;
-                        else if (Range <= 60)
-                            Heading = -1;
-                        else
-                            Heading = 0;
-                    }
-                    //move to medium range
-                    else if (medThreatRel > longThreatRel)
-                    {
-                        Log.Message("Enemy ship moving to medium range, threat ratios (LMSC): " + longThreatRel.ToString("F2") + " " + medThreatRel.ToString("F2") + " " + shortThreatRel.ToString("F2") + " " + cqcThreatRel.ToString("F2"));
-                        if (Range > 140)
-                            Heading = 1;
-                        else if (Range <= 110)
-                            Heading = -1;
-                        else
-                            Heading = 0;
-                    }
-                    //move to long range
-                    else
-                    {
-                        Log.Message("Enemy ship moving to long range, threat ratios (LMSC): " + longThreatRel.ToString("F2") + " " + medThreatRel.ToString("F2") + " " + shortThreatRel.ToString("F2") + " " + cqcThreatRel.ToString("F2"));
-                        if (Range > 190)
-                            Heading = 1;
-                        else if (Range <= 160)
-                            Heading = -1;
-                        else
-                            Heading = 0;
-                    }
                     //retreat
                     if (totalThreat / (OriginMapComp.totalThreat * ShipInteriorMod2.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
                     {
@@ -782,6 +735,54 @@ namespace RimWorld
                         {
                             Messages.Message("EnemyShipRetreating".Translate(), MessageTypeDefOf.ThreatBig);
                             warnedAboutRetreat = true;
+                        }
+                    }
+                    else //move to range
+                    {
+                        //calc ratios
+                        int[] threatRatio = new[] { 0, 0, 0, 0 };
+                        threatRatio[3] = threatPerSegment[3] / OriginMapComp.threatPerSegment[3];
+                        threatRatio[2] = threatPerSegment[2] / OriginMapComp.threatPerSegment[2];
+                        threatRatio[1] = threatPerSegment[1] / OriginMapComp.threatPerSegment[1];
+                        threatRatio[0] = threatPerSegment[0] / OriginMapComp.threatPerSegment[0];
+                        //Log.Message("Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
+                        //move to cqc
+                        if (threatRatio[0] > threatRatio[1] && threatRatio[0] > threatRatio[2] && threatRatio[0] > threatRatio[3])
+                        {
+                            if (Range > 40)
+                                Heading = 1;
+                            else
+                                Heading = 0;
+                        }
+                        //move to short range
+                        else if (threatRatio[1] > threatRatio[2] && threatRatio[1] > threatRatio[3])
+                        {
+                            if (Range > 90)
+                                Heading = 1;
+                            else if (Range <= 60)
+                                Heading = -1;
+                            else
+                                Heading = 0;
+                        }
+                        //move to medium range
+                        else if (threatRatio[2] > threatRatio[3])
+                        {
+                            if (Range > 140)
+                                Heading = 1;
+                            else if (Range <= 110)
+                                Heading = -1;
+                            else
+                                Heading = 0;
+                        }
+                        //move to long range
+                        else
+                        {
+                            if (Range > 190)
+                                Heading = 1;
+                            else if (Range <= 160)
+                                Heading = -1;
+                            else
+                                Heading = 0;
                         }
                     }
                 }

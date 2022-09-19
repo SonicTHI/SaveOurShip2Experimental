@@ -223,7 +223,7 @@
 			<MoveSpeed>3.75</MoveSpeed>
 			<ArmorRating_Blunt>0.18</ArmorRating_Blunt>
 			<ArmorRating_Sharp>0.72</ArmorRating_Sharp>
-			<ComfyTemperatureMin>0</ComfyTemperatureMin>
+			<ComfyTemperatureMin>-50</ComfyTemperatureMin>
 			<MarketValue>100</MarketValue>
 			<LeatherAmount>0</LeatherAmount>
 		</statBases>

@@ -315,7 +315,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatManifold</defName>
 		<label>coolant tank</label>
-		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 200</description>
+		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 400</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatbank</texPath>
@@ -349,7 +349,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatBankLarge</defName>
 		<label>large coolant tank</label>
-		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 1000</description>
+		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 2000</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankLarge</texPath>

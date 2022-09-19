@@ -39,7 +39,10 @@ namespace RimWorld
             if (myNet != null)
             {
                 output += TranslatorFormattedStringExtensions.Translate("ShipHeatStored", Mathf.Round(myNet.StorageUsed), myNet.StorageCapacity);
-                output += "\nGrid:" + myNet.GridID + " Ratio:" + RatioInNetwork().ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, RatioInNetwork()).ToString("F0");
+                if (Prefs.DevMode)
+                {
+                    output += "\nGrid:" + myNet.GridID + " Ratio:" + RatioInNetwork().ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, RatioInNetwork()).ToString("F0");
+                }
             }
             else
                 output+="Not connected to a thermal network";

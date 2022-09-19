@@ -181,7 +181,6 @@ namespace RimWorld
         }
         //td get these into shipcache?
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
-        public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
         public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
@@ -334,7 +333,7 @@ namespace RimWorld
             MasterMapComp.ShipLord = LordMaker.MakeNewLord(enemyshipfac, new LordJob_DefendShip(enemyshipfac, map.Center), map);
             ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, enemyshipfac, MasterMapComp.ShipLord, out cores, !isDerelict);
 
-            Log.Message("SOS2 spawned ship: " + shipDef.defName); //keep this on for troubleshooting
+            Log.Message("SOS2 spawned ship: " + shipDef.defName); //keep this for troubleshooting
             if (isDerelict)
             {
                 int time = Rand.RangeInclusive(120000, 240000);
@@ -358,7 +357,8 @@ namespace RimWorld
             {
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
             }
-            Log.Message("Spawned enemy cores:" + cores.Count);
+            if (cores != null)
+                Log.Message("Spawned enemy cores: " + cores.Count);
             return cores; //td dont use this till all pre V2 shipdefs cleared, after throw error/caution if V1 was spawned
         }
         public int MapThreat(Map map)
@@ -419,6 +419,8 @@ namespace RimWorld
             MasterMapComp.StartBattleCache();
             //set range DL:1-9
             byte detectionLevel = 7;
+            List<Building_ShipAdvSensor> Sensors = Find.World.GetComponent<PastWorldUWO2>().Sensors.Where(s => s.Map == this.map).ToList();
+            List<Building_ShipAdvSensor> SensorsEnemy = Find.World.GetComponent<PastWorldUWO2>().Sensors.Where(s => s.Map == MasterMapComp.map).ToList();
             if (Sensors.Where(sensor => sensor.def.defName.Equals("Ship_SensorClusterAdv") && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
             {
                 ShipCombatMasterMap.fogGrid.ClearAllFog();
@@ -430,9 +432,9 @@ namespace RimWorld
             {
                 if (Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
                     detectionLevel -= 2;
-                if (MasterMapComp.Sensors.Where(sensor => sensor.def.defName.Equals("Ship_SensorClusterAdv") && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
+                if (SensorsEnemy.Where(sensor => sensor.def.defName.Equals("Ship_SensorClusterAdv") && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
                     detectionLevel -= 2;
-                else if (MasterMapComp.Sensors.Any())
+                else if (SensorsEnemy.Any())
                     detectionLevel -= 1;
                 if (MasterMapComp.Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
                     detectionLevel -= 2;
@@ -732,6 +734,7 @@ namespace RimWorld
                     //move to cqc
                     if (cqcThreatRel > shortThreatRel && cqcThreatRel > medThreatRel && cqcThreatRel > longThreatRel)
                     {
+                        Log.Message("Enemy ship moving to close range, threat ratios (LMSC): " + longThreatRel.ToString("F2") + " " + medThreatRel.ToString("F2") + " " + shortThreatRel.ToString("F2") + " " + cqcThreatRel.ToString("F2"));
                         if (Range > 40)
                             Heading = 1;
                         else
@@ -740,6 +743,7 @@ namespace RimWorld
                     //move to short range
                     else if (shortThreatRel > medThreatRel && shortThreatRel > longThreatRel)
                     {
+                        Log.Message("Enemy ship moving to short range, threat ratios (LMSC): " + longThreatRel.ToString("F2") + " " + medThreatRel.ToString("F2") + " " + shortThreatRel.ToString("F2") + " " + cqcThreatRel.ToString("F2"));
                         if (Range > 90)
                             Heading = 1;
                         else if (Range <= 60)
@@ -750,6 +754,7 @@ namespace RimWorld
                     //move to medium range
                     else if (medThreatRel > longThreatRel)
                     {
+                        Log.Message("Enemy ship moving to medium range, threat ratios (LMSC): " + longThreatRel.ToString("F2") + " " + medThreatRel.ToString("F2") + " " + shortThreatRel.ToString("F2") + " " + cqcThreatRel.ToString("F2"));
                         if (Range > 140)
                             Heading = 1;
                         else if (Range <= 110)
@@ -760,6 +765,7 @@ namespace RimWorld
                     //move to long range
                     else
                     {
+                        Log.Message("Enemy ship moving to long range, threat ratios (LMSC): " + longThreatRel.ToString("F2") + " " + medThreatRel.ToString("F2") + " " + shortThreatRel.ToString("F2") + " " + cqcThreatRel.ToString("F2"));
                         if (Range > 190)
                             Heading = 1;
                         else if (Range <= 160)

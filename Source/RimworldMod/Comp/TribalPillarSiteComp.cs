@@ -39,7 +39,7 @@ namespace RimWorld.Planet
                 Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault())?.Map;
                 if (mapPlayer != null)
                 {
-                    foreach (Building_ShipAdvSensor sensor in mapPlayer.GetComponent<ShipHeatMapComp>().Sensors)
+                    foreach (Building_ShipAdvSensor sensor in Find.World.GetComponent<PastWorldUWO2>().Sensors)
                     {
                         if (sensor.observedMap == this.parent)
                         {

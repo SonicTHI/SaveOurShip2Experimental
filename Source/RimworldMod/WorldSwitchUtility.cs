@@ -594,6 +594,7 @@ namespace SaveOurShip2
         private List<string> UnlocksInt = new List<string>();
         public bool startedEndgame;
         public Dictionary<int, byte> PawnsInSpaceCache = new Dictionary<int, byte>();
+        public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
 
         public PastWorldUWO2(World world) : base(world)
         {

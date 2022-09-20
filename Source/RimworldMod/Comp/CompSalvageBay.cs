@@ -97,7 +97,7 @@ namespace RimWorld
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommandDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")
                 };
-                if (mapComp.InCombat || this.parent.Map.mapPawns.AllPawns.Where(p => p.Faction != Faction.OfPlayer && p.Faction.PlayerRelationKind == FactionRelationKind.Hostile && !p.Downed && !p.Dead && !p.IsPrisoner && !p.IsSlave).Any())
+                if (mapComp.InCombat || ShipInteriorMod2.EnemiesOnMap(this.parent.Map))
                 {
                     claim.Disable(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksDisabled"));
                     removeTargetWreck.Disable(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksDisabled"));

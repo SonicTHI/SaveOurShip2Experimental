@@ -57,7 +57,7 @@ namespace RimWorld
 
 		public override void CompTick()
 		{
-			if (!OptimizeMatter || !parent.Spawned || !OptimizationProject.IsFinished || (this.parent.Map.IsSpace() && this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat || this.parent.Map.mapPawns.AllPawns.Where(p => p.Faction != Faction.OfPlayer && p.Faction.PlayerRelationKind == FactionRelationKind.Hostile && !p.Downed && !p.Dead && !p.IsPrisoner && !p.IsSlave).Any()))
+			if (!OptimizeMatter || !parent.Spawned || !OptimizationProject.IsFinished || this.parent.Map.IsSpace() && this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat || ShipInteriorMod2.EnemiesOnMap(this.parent.Map))
 			{
 				return;
 			}

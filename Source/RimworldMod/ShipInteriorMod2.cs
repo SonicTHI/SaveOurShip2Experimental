@@ -1323,10 +1323,15 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(t))
 				t.Map.roofGrid.SetRoof(pos, null);
 		}
-
 		public static bool IsHologram(Pawn pawn)
 		{
 			return pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Any();
+		}
+		public static bool EnemiesOnMap (Map map)
+        {
+			if (map.mapPawns.AllPawns.Where(p => !p.Dead && !p.Downed && p.Faction != Faction.OfPlayer && p.Faction.PlayerRelationKind == FactionRelationKind.Hostile && !p.IsPrisoner && !p.IsSlave).Any())
+				return true;
+			return false;
 		}
 		public static bool ExposedToOutside(Room room)
 		{

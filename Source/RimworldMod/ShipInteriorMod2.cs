@@ -1329,7 +1329,7 @@ namespace SaveOurShip2
 		}
 		public static bool EnemiesOnMap (Map map)
         {
-			if (map.mapPawns.AllPawns.Where(p => !p.Dead && !p.Downed && p.Faction != Faction.OfPlayer && p.Faction.PlayerRelationKind == FactionRelationKind.Hostile && !p.IsPrisoner && !p.IsSlave).Any())
+			if (map.mapPawns.AllPawns.Where(p => !p.Dead && !p.Downed && p.HostileTo(Faction.OfPlayer) && !p.IsPrisoner && !p.IsSlave).Any())
 				return true;
 			return false;
 		}

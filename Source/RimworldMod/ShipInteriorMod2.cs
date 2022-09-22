@@ -23,6 +23,7 @@ using System.Collections;
 using System.Reflection.Emit;
 using UnityEngine.SceneManagement;
 using System.Linq.Expressions;
+using MURWallLight;
 
 namespace SaveOurShip2
 {
@@ -469,8 +470,9 @@ namespace SaveOurShip2
 			if (shipDef.marineHeavyDef != null && DefDatabase<PawnKindDef>.GetNamed(shipDef.marineHeavyDef) != null)
 				heavyOver = true;
 			//turrets randomized per ship
-			int randomSmall = Rand.RangeInclusive(1, 3);
-			int randomLarge = Rand.RangeInclusive(1, 3);
+			int randomSmall = Rand.RangeInclusive(0, 2);
+			int randomLarge = Rand.RangeInclusive(0, 2);
+			int randomSpinal = Rand.RangeInclusive(0, 2);
 			//generate normal parts
 			foreach (ShipShape shape in shipDef.parts)
 			{
@@ -622,62 +624,31 @@ namespace SaveOurShip2
 			partsToGenerate.Shuffle();
 			foreach (ShipShape shape in partsToGenerate)
 			{
-				EnemyShipPartDef def = DefDatabase<EnemyShipPartDef>.GetNamed(shape.shapeOrDef);
-				if (randomTurretPoints >= def.randomTurretPoints)
-					randomTurretPoints -= def.randomTurretPoints;
-				else
-					def = DefDatabase<EnemyShipPartDef>.GetNamed("Cargo");
+                try
+                {
 
-				if (def.defName.Equals("CasketFilled"))
-				{
-					Thing thing = ThingMaker.MakeThing(ThingDefOf.CryptosleepCasket);
-					thing.SetFaction(fac);
-					Pawn sleeper = PawnGenerator.GeneratePawn(new PawnGenerationRequest(PawnKindDefOf.Slave, Faction.OfAncients, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
-					((Building_CryptosleepCasket)thing).TryAcceptThing(sleeper);
-					GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
-				}
-				else if (def.defName.Length > 8 && def.defName.Substring(def.defName.Length - 8) == "_SPAWNER")
-				{
-					Thing thing;
-					PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(def.defName.Substring(0, def.defName.Length - 8));
-					if (kind != null)
-						thing = PawnGenerator.GeneratePawn(kind);
+					EnemyShipPartDef def = DefDatabase<EnemyShipPartDef>.GetNamed(shape.shapeOrDef);
+					if (randomTurretPoints >= def.randomTurretPoints)
+						randomTurretPoints -= def.randomTurretPoints;
 					else
-						thing = ThingMaker.MakeThing(ThingDef.Named(def.defName.Substring(0, def.defName.Length - 8)));
-					if (thing is Pawn p)
-                    {
-						if (p.RaceProps.IsMechanoid)
-							p.SetFactionDirect(Faction.OfMechanoids);
-						else if (p.RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
-							p.SetFactionDirect(Faction.OfInsects);
-						p.ageTracker.AgeBiologicalTicks = 36000000;
-						p.ageTracker.AgeChronologicalTicks = 36000000;
-						if (lord != null)
-							lord.AddPawn(p);
-					}
-					else if (thing is Hive)
-						thing.SetFactionDirect(Faction.OfInsects);
-					else
-						thing.SetFaction(fac);
-					GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
-				}
-				else if (!def.defName.Equals("Cargo")) //everything else
-				{
-					ThingDef thingy;
-					if (def.defName.Equals("ShipPartTurretSmall"))
-						thingy = def.things[randomSmall];
-					else if (def.defName.Equals("ShipPartTurretLarge"))
-						thingy = def.things[randomLarge];
-					else
-						thingy = def.things.RandomElement();
-					Thing thing;
-					PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(thingy.defName);
-					if (kind != null)
-						thing = PawnGenerator.GeneratePawn(kind);
-					else
-						thing = ThingMaker.MakeThing(thingy);
-					if (thing.def.CanHaveFaction)
+						def = DefDatabase<EnemyShipPartDef>.GetNamed("Cargo");
+
+					if (def.defName.Equals("CasketFilled"))
 					{
+						Thing thing = ThingMaker.MakeThing(ThingDefOf.CryptosleepCasket);
+						thing.SetFaction(fac);
+						Pawn sleeper = PawnGenerator.GeneratePawn(new PawnGenerationRequest(PawnKindDefOf.Slave, Faction.OfAncients, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
+						((Building_CryptosleepCasket)thing).TryAcceptThing(sleeper);
+						GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
+					}
+					else if (def.defName.Length > 8 && def.defName.Substring(def.defName.Length - 8) == "_SPAWNER")
+					{
+						Thing thing;
+						PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(def.defName.Substring(0, def.defName.Length - 8));
+						if (kind != null)
+							thing = PawnGenerator.GeneratePawn(kind);
+						else
+							thing = ThingMaker.MakeThing(ThingDef.Named(def.defName.Substring(0, def.defName.Length - 8)));
 						if (thing is Pawn p)
 						{
 							if (p.RaceProps.IsMechanoid)
@@ -693,22 +664,63 @@ namespace SaveOurShip2
 							thing.SetFactionDirect(Faction.OfInsects);
 						else
 							thing.SetFaction(fac);
+						GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
 					}
-					if (thing is Building_ShipTurret turret)
-						turret.burstCooldownTicksLeft = 300;
-					if (thing.TryGetComp<CompColorable>() != null)
-						thing.TryGetComp<CompColorable>().SetColor(shape.color);
-					GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
-				}
-				else //cargo
-				{
-					for (int ecks = c.x + shape.x; ecks <= c.x + shape.x + shape.width; ecks++)
+					else if (!def.defName.Equals("Cargo")) //everything else
 					{
-						for (int zee = c.z + shape.z; zee <= c.z + shape.z + shape.height; zee++)
+						ThingDef thingy;
+						if (def.defName.Equals("ShipPartTurretSmall"))
+							thingy = def.things[randomSmall];
+						else if (def.defName.Equals("ShipPartTurretLarge"))
+							thingy = def.things[randomLarge];
+						else if (def.defName.Equals("ShipPartTurretSpinal"))
+							thingy = def.things[randomSpinal];
+						else
+							thingy = def.things.RandomElement();
+						Thing thing;
+						PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(thingy.defName);
+						if (kind != null)
+							thing = PawnGenerator.GeneratePawn(kind);
+						else
+							thing = ThingMaker.MakeThing(thingy);
+						if (thing.def.CanHaveFaction)
 						{
-							cargoCells.Add(new IntVec3(ecks, 0, zee));
+							if (thing is Pawn p)
+							{
+								if (p.RaceProps.IsMechanoid)
+									p.SetFactionDirect(Faction.OfMechanoids);
+								else if (p.RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
+									p.SetFactionDirect(Faction.OfInsects);
+								p.ageTracker.AgeBiologicalTicks = 36000000;
+								p.ageTracker.AgeChronologicalTicks = 36000000;
+								if (lord != null)
+									lord.AddPawn(p);
+							}
+							else if (thing is Hive)
+								thing.SetFactionDirect(Faction.OfInsects);
+							else
+								thing.SetFaction(fac);
+						}
+						if (thing is Building_ShipTurret turret)
+							turret.burstCooldownTicksLeft = 300;
+						if (thing.TryGetComp<CompColorable>() != null)
+							thing.TryGetComp<CompColorable>().SetColor(shape.color);
+						GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
+					}
+					else //cargo
+					{
+						for (int ecks = c.x + shape.x; ecks <= c.x + shape.x + shape.width; ecks++)
+						{
+							for (int zee = c.z + shape.z; zee <= c.z + shape.z + shape.height; zee++)
+							{
+								cargoCells.Add(new IntVec3(ecks, 0, zee));
+							}
 						}
 					}
+				}
+				catch (Exception e)
+				{
+					Log.Warning("Ship shape was not generated properly: " + shape.shapeOrDef + " at " + c.x + shape.x + ", " + c.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
 				}
 			}
 			if (cargoCells.Any())
@@ -932,6 +944,7 @@ namespace SaveOurShip2
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
 			List<Thing> toSave = new List<Thing>();
+			List<Thing> toRemove = new List<Thing>();
 			List<Building> shipParts = FindBuildingsAttached(core, includeRock);
 			List<Zone> zonesToCopy = new List<Zone>();
 			bool movedZones = false;
@@ -953,6 +966,9 @@ namespace SaveOurShip2
 			{
 				if (saveThing is Building)
 				{
+					var glower = saveThing.TryGetComp<CompGlowerOffset>(); //remove wall light glowers
+					if (glower != null)
+						toRemove.Add(saveThing);
 					//moving to a diff map, remove things from caches
 					if (sourceMap != targetMap)
                     {
@@ -1022,6 +1038,12 @@ namespace SaveOurShip2
 					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(shipPart.Position, shipPart.Map.terrainGrid.TerrainAt(shipPart.Position)));
 					shipPart.Map.terrainGrid.RemoveTopLayer(shipPart.Position, false);
 				}
+			}
+			foreach (Thing t in toRemove)
+			{
+				var glower = t.TryGetComp<CompGlowerOffset>();
+				toSave.Remove(glower.glower);
+				glower.DespawnGlower();
 			}
 			AirlockBugFlag = true;
 			//all - move things
@@ -1326,12 +1348,6 @@ namespace SaveOurShip2
 		public static bool IsHologram(Pawn pawn)
 		{
 			return pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Any();
-		}
-		public static bool EnemiesOnMap (Map map)
-        {
-			if (map.mapPawns.AllPawns.Where(p => !p.Dead && !p.Downed && p.HostileTo(Faction.OfPlayer) && !p.IsPrisoner && !p.IsSlave).Any())
-				return true;
-			return false;
 		}
 		public static bool ExposedToOutside(Room room)
 		{
@@ -5417,6 +5433,20 @@ namespace SaveOurShip2
 				pos = myPos;
 				dist = myDist;
 			}
+		}
+	}
+
+	[HarmonyPatch(typeof(CompAttachableWall), "PostDeSpawn")]
+	public class WallLightPatch //prevents decon of walllights
+	{
+		public static bool Prefix(Map map, CompAttachableWall __instance)
+		{
+			//__instance.base.PostDeSpawn(map);
+			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				return false;
+            }
+			return true;
 		}
 	}
 

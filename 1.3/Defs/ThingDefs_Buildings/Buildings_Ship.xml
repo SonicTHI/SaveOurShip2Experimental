@@ -2410,7 +2410,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Harvests the remains of enemy ships after a battle. Each salvage bay can retrieve one wrecked ship.</description>
+		<description>Moves enemy ships to your map. More bays are required for larger ships. Can also move and get rid of unwanted wrecks.</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2468,12 +2468,14 @@
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
 				<fuelCapacity>50.0</fuelCapacity>
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
 				<fuelFilter>
 					<thingDefs>
 						<li>HullFoam</li>
 					</thingDefs>
 				</fuelFilter>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<autoRefuelPercent>1</autoRefuelPercent>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
 			<li Class="CompProperties_HullFoamDistributor"/>

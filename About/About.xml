@@ -47,6 +47,7 @@
 		<li>ryder.saveourshipsimplified</li>
 		<!-- experimental only -->
 		<li>ceteam.combatextended</li>
+		<li>taranchuk.performanceoptimizer</li>
 	</incompatibleWith>
 	<packageId>kentington.saveourship2</packageId>
 	<description>

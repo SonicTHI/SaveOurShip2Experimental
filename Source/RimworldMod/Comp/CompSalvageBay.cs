@@ -67,7 +67,9 @@ namespace RimWorld
                         foreach (Thing t in this.parent.Map.listerThings.AllThings)
                         {
                             if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
+                            {
                                 buildings.Add(b);
+                            }
                             else if (t is DetachedShipPart)
                                 things.Add(t);
                         }
@@ -75,6 +77,8 @@ namespace RimWorld
                         {
                             foreach (Building b in buildings)
                             {
+                                if (b is Building_Storage s)
+                                    s.settings.filter.SetDisallowAll();
                                 b.SetFaction(Faction.OfPlayer);
                             }
                             Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksSuccess", buildings.Count), parent, MessageTypeDefOf.PositiveEvent);

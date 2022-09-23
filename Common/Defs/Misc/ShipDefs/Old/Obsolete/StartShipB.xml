@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartShipB</defName>
+		<defName>OldStartShipB</defName>
 		<label>Damaged Frigate (High Difficulty)</label>
 		<randomTurretPoints>166</randomTurretPoints>
 		<neverRandom>True</neverRandom>
-		<startingShip>True</startingShip>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<z>-14</z>

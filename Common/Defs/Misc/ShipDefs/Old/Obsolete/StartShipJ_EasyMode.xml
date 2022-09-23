@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartShipJ_EasyMode</defName>
+		<defName>OldStartShipJ_EasyMode</defName>
 		<label>Fast Attack Destroyer (Low Difficulty)</label>
 		<combatPoints>200</combatPoints>
 		<neverRandom>True</neverRandom>
-		<startingShip>True</startingShip>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<x>-1</x>

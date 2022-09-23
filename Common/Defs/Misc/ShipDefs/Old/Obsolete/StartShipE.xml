@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartShipE</defName>
+		<defName>OldStartShipE</defName>
 		<label>Experimental Warship (Easy Mode)</label>
 		<randomTurretPoints>400</randomTurretPoints>
 		<neverRandom>True</neverRandom>
-		<startingShip>True</startingShip>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<x>1</x>

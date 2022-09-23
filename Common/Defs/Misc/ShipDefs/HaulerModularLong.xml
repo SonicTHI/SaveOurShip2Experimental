@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>ModularHaulerLong</defName>
+		<defName>HaulerModularLong</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>63</offsetX>
 		<offsetZ>105</offsetZ>

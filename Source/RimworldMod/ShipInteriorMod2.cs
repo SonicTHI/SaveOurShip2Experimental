@@ -945,12 +945,13 @@ namespace SaveOurShip2
 		{
 			List<Thing> toSave = new List<Thing>();
 			List<Thing> toRemove = new List<Thing>();
-			List<Building> shipParts = FindBuildingsAttached(core, includeRock);
+			List<Thing> toDestroy = new List<Thing>();
+			List<CompPower> toRePower = new List<CompPower>();
 			List<Zone> zonesToCopy = new List<Zone>();
 			bool movedZones = false;
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
 			List<IntVec3> targetArea = new List<IntVec3>();
-			List<IntVec3> sourceArea = new List<IntVec3>();
+			List<IntVec3> sourceArea = FindAreaAttached(core, includeRock);//new List<IntVec3>();
 			List<IntVec3> fireExplosions = new List<IntVec3>();
 			IntVec3 rot = new IntVec3(0, 0, 0);
 			int rotb = 4 - rotNum;
@@ -959,118 +960,133 @@ namespace SaveOurShip2
 			Map sourceMap = core.Map;
 			if (targetMap == null)
 				targetMap = core.Map;
+			bool targetMapIsSpace = targetMap.IsSpace();
+			bool sourceMapIsSpace = sourceMap.IsSpace();
 
 			//clear LZ
-			List<Thing> thingsToDestroy = new List<Thing>();
-			foreach (Thing saveThing in shipParts)
+			foreach (IntVec3 pos in sourceArea)
 			{
-				if (saveThing is Building)
+				targetArea.Add(pos + adjustment);
+				foreach (Thing t in (pos + adjustment).GetThingList(targetMap))
 				{
-					var glower = saveThing.TryGetComp<CompGlowerOffset>(); //remove wall light glowers
-					if (glower != null)
-						toRemove.Add(saveThing);
-					//moving to a diff map, remove things from caches
-					if (sourceMap != targetMap)
-                    {
-						if (saveThing is Building_ShipBridge b)
-						{
-							var mapComp = sourceMap.GetComponent<ShipHeatMapComp>();
-							if (mapComp.MapRootListAll.Contains(saveThing))
-							{
-								//Log.Message("SM-Removed: " + saveThing + " from " + sourceMap);
-								b.mapComp = null;
-								mapComp.MapRootListAll.Remove(saveThing as Building);
-							}
-						}
-						else if (saveThing is Building_ShipTurret t)
-							t.mapComp = null;
-					}
-
-					//area from things, things from pos
-					foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(saveThing))
-					{
-						if (!targetArea.Contains(pos + adjustment))
-						{
-							sourceArea.Add(pos);
-							targetArea.Add(pos + adjustment);
-							foreach (Thing t in (pos + adjustment).GetThingList(targetMap))
-							{
-								if (!thingsToDestroy.Contains(t))
-									thingsToDestroy.Add(t);
-							}
-							if (!targetMap.IsSpace())
-								targetMap.snowGrid.SetDepth(pos + adjustment, 0f);
-						}
-					}
+					if (!toDestroy.Contains(t))
+						toDestroy.Add(t);
 				}
-				toSave.Add(saveThing);
+				if (!targetMapIsSpace)
+					targetMap.snowGrid.SetDepth(pos + adjustment, 0f);
 			}
 			//move live pawns out of target area, destroy non buildings
-			foreach (Thing thing in thingsToDestroy)
+			foreach (Thing thing in toDestroy)
 			{
-				if (thing is Pawn && (!((Pawn)thing).Dead || !((Pawn)thing).Downed))
+				if (thing is Pawn pawn && (!pawn.Dead || !pawn.Downed))
 				{
-					((Pawn)thing).pather.StopDead();
+					pawn.pather.StopDead();
 					while (targetArea.Contains(thing.Position))
-						thing.Position = (CellFinder.RandomClosewalkCellNear(thing.Position, targetMap, 50));
+						thing.Position = CellFinder.RandomClosewalkCellNear(thing.Position, targetMap, 50);
 				}
 				else if (!thing.Destroyed)
 					thing.Destroy();
 			}
-			//all - save things, terrain
-			foreach (Building shipPart in shipParts)
+			//add all things, terrain from area
+			foreach (IntVec3 pos in sourceArea)
 			{
-				List<Thing> allTheThings = shipPart.Position.GetThingList(shipPart.Map);
+				List<Thing> allTheThings = pos.GetThingList(sourceMap);
 				foreach (Thing t in allTheThings)
 				{
 					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zonesToCopy.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
 					{
 						zonesToCopy.Add(t.Map.zoneManager.ZoneAt(t.Position));
 					}
+
+					var glower = t.TryGetComp<CompGlowerOffset>(); //wall lights
+					var engineComp = t.TryGetComp<CompEngineTrail>();
+					var powerComp = t.TryGetComp<CompPower>();
+					if (engineComp != null)
+						engineComp.DeActivate();
+					else if (glower != null)
+						toRemove.Add(t);
+					if (powerComp != null)
+						toRePower.Add(powerComp);
 					if (!toSave.Contains(t) && !(t is Building_SteamGeyser))
 					{
 						toSave.Add(t);
 					}
 					UnRoofTilesOverThing(t);
 				}
-				if (shipPart.Map.terrainGrid.TerrainAt(shipPart.Position).layerable && !(shipPart.Map.terrainGrid.TerrainAt(shipPart.Position) == hullFloorDef) && !(shipPart.Map.terrainGrid.TerrainAt(shipPart.Position) == mechHullFloorDef) && !(shipPart.Map.terrainGrid.TerrainAt(shipPart.Position) == archoHullFloorDef))
+				if (sourceMap.terrainGrid.TerrainAt(pos).layerable && !(sourceMap.terrainGrid.TerrainAt(pos) == hullFloorDef) && !(sourceMap.terrainGrid.TerrainAt(pos) == mechHullFloorDef) && !(sourceMap.terrainGrid.TerrainAt(pos) == archoHullFloorDef))
 				{
-					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(shipPart.Position, shipPart.Map.terrainGrid.TerrainAt(shipPart.Position)));
-					shipPart.Map.terrainGrid.RemoveTopLayer(shipPart.Position, false);
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
+					sourceMap.terrainGrid.RemoveTopLayer(pos, false);
 				}
 			}
+			//remove unwanted things
 			foreach (Thing t in toRemove)
 			{
 				var glower = t.TryGetComp<CompGlowerOffset>();
 				toSave.Remove(glower.glower);
 				glower.DespawnGlower();
 			}
+			//takeoff - draw fuel
+			if (targetMapIsSpace && !sourceMapIsSpace)
+			{
+				float fuelNeeded = 0f;
+				float fuelStored = 0f;
+				//int nukeEngines = 0;
+				List<CompRefuelable> refuelComps = new List<CompRefuelable>();
+
+				foreach (Thing saveThing in toSave)
+				{
+					if (saveThing is Building)
+					{
+						if (saveThing.def == hullPlateDef || saveThing.def == mechHullPlateDef || saveThing.def == archoHullPlateDef)
+							fuelNeeded += 1f;
+						else
+						{
+							var engineComp = saveThing.TryGetComp<CompEngineTrail>();
+							if (engineComp != null && engineComp.Props.takeOff)
+							{
+								if (saveThing.Rotation.AsByte == 0)
+									fireExplosions.Add(saveThing.Position + new IntVec3(0, 0, -3));
+								else if (saveThing.Rotation.AsByte == 1)
+									fireExplosions.Add(saveThing.Position + new IntVec3(-3, 0, 0));
+								else if (saveThing.Rotation.AsByte == 2)
+									fireExplosions.Add(saveThing.Position + new IntVec3(0, 0, 3));
+								else
+									fireExplosions.Add(saveThing.Position + new IntVec3(3, 0, 0));
+								refuelComps.Add(engineComp.refuelComp);
+								fuelStored += engineComp.refuelComp.Fuel;
+								if (engineComp.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+								{
+									fuelStored += engineComp.refuelComp.Fuel;
+									//nukeEngines++;
+								}
+							}
+							fuelNeeded += (saveThing.def.size.x * saveThing.def.size.z) * 3f;
+						}
+					}
+				}
+				foreach (CompRefuelable engine in refuelComps)
+				{
+					engine.ConsumeFuel(fuelNeeded * engine.Fuel / fuelStored);
+				}
+				/*//takeoff - fallout
+				if (nukeEngines>0 && Rand.Chance(0.05f * nukeEngines))
+				{
+					IncidentParms parms = new IncidentParms();
+					parms.target = sourceMap;
+					parms.forced = true;
+					QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ToxicFallout"), null, parms), Find.TickManager.TicksGame);
+					Find.Storyteller.incidentQueue.Add(qi);
+				}*/
+			}
 			AirlockBugFlag = true;
-			//all - move things
+			//move things
 			foreach (Thing spawnThing in toSave)
 			{
 				if (!spawnThing.Destroyed)
 				{
 					try
 					{
-						//pre move
-						if (spawnThing.TryGetComp<CompEngineTrail>() != null && !spawnThing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ArchotechExoticParticles")))
-						{
-							spawnThing.TryGetComp<CompEngineTrail>().DeActivate();
-							if (targetMap.IsSpace() && !sourceMap.IsSpace())
-							{
-								if (spawnThing.Rotation.AsByte == 0)
-									fireExplosions.Add(spawnThing.Position + new IntVec3(0, 0, -3));
-								else if (spawnThing.Rotation.AsByte == 1)
-									fireExplosions.Add(spawnThing.Position + new IntVec3(-3, 0, 0));
-								else if (spawnThing.Rotation.AsByte == 2)
-									fireExplosions.Add(spawnThing.Position + new IntVec3(0, 0, 3));
-								else
-									fireExplosions.Add(spawnThing.Position + new IntVec3(3, 0, 0));
-							}
-						}
-
-						//move
 						if (spawnThing.Spawned)
 							spawnThing.DeSpawn();
 
@@ -1100,9 +1116,9 @@ namespace SaveOurShip2
 								adjx -= 1;
 							if (spawnThing.def.rotatable == false && spawnThing.def.size.x != spawnThing.def.size.z)
 							{
-								if (spawnThing.def.size.z % 2 == 0)//5x2
+								if (spawnThing.def.size.z % 2 == 0) //5x2
 									adjz -= 1;
-								else//6x3,6x7
+								else //6x3,6x7
 									adjz += 1;
 							}
 							rot.x = targetMap.Size.x - spawnThing.Position.z + adjx;
@@ -1129,15 +1145,9 @@ namespace SaveOurShip2
 						//post move
 						if (fac != null && spawnThing is Building && spawnThing.def.CanHaveFaction)
 							spawnThing.SetFaction(fac);
-						if (spawnThing.TryGetComp<CompPower>() != null)
+						if (spawnThing is Pawn pawn)
 						{
-							spawnThing.TryGetComp<CompPower>().ResetPowerVars();
-							//targetMap.mapDrawer.MapMeshDirty(spawnThing.Position, MapMeshFlag.PowerGrid, false, false);
-							//spawnThing.TryGetComp<CompPower>().SetUpPowerVars();
-						}
-						else if (spawnThing is Pawn)
-						{
-							Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.Remove(((Pawn)spawnThing).thingIDNumber);
+							Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.Remove(pawn.thingIDNumber);
 						}
 					}
 					catch (Exception e)
@@ -1150,7 +1160,7 @@ namespace SaveOurShip2
 			AirlockBugFlag = false;
 			if (zonesToCopy.Count != 0)
 				movedZones = true;
-			//all - move zones
+			//move zones
 			foreach (Zone theZone in zonesToCopy)
 			{
 				sourceMap.zoneManager.DeregisterZone(theZone);
@@ -1176,7 +1186,7 @@ namespace SaveOurShip2
 				theZone.cells = newCells;
 				targetMap.zoneManager.RegisterZone(theZone);
 			}
-			//all - move terrain
+			//move terrain
 			foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
 			{
 				if (!targetMap.terrainGrid.TerrainAt(tup.Item1).layerable || targetMap.terrainGrid.TerrainAt(tup.Item1) == hullFloorDef || targetMap.terrainGrid.TerrainAt(tup.Item1) == mechHullFloorDef || targetMap.terrainGrid.TerrainAt(tup.Item1) == archoHullFloorDef)
@@ -1197,11 +1207,21 @@ namespace SaveOurShip2
 			}
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);
-			//normalize temp in ship
-			foreach (Room room in targetMap.regionGrid.allRooms)
+			//to space - normalize temp in ship
+			if (targetMapIsSpace)
 			{
-				if (!ExposedToOutside(room) && room.Temperature < -99f)
-					room.Temperature = 21f;
+				foreach (Room room in targetMap.regionGrid.allRooms)
+				{
+					if (!ExposedToOutside(room))
+						room.Temperature = 21f;
+				}
+			}
+			else if (sourceMap != targetMap && !sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
+			{
+				//landing - remove space map
+				WorldObject oldParent = sourceMap.Parent;
+				Current.Game.DeinitAndRemoveMap(sourceMap);
+				Find.World.worldObjects.Remove(oldParent);
 			}
 			//takeoff - explosions
 			foreach (IntVec3 pos in fireExplosions)
@@ -1209,59 +1229,13 @@ namespace SaveOurShip2
 				GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null, -1, -1f, null, null,
 					null, null, null, 0f, 1, false, null, 0f, 1, 0f, false);
 			}
-			//takeoff - draw fuel
-			if (targetMap.IsSpace() && !sourceMap.IsSpace())
+			if (sourceMap != targetMap)
 			{
-				float fuelNeeded = 0f;
-				float fuelStored = 0f;
-				//int nukeEngines = 0;
-				List<Building> engines = new List<Building>();
-
-				foreach (Thing saveThing in shipParts)
+				foreach (CompPower powerComp in toRePower)
 				{
-					toSave.Add(saveThing);
-					if (saveThing.TryGetComp<CompEngineTrail>() != null && !saveThing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ArchotechExoticParticles")))
-					{
-						engines.Add((Building)saveThing);
-						if (saveThing.TryGetComp<CompRefuelable>() != null)
-							fuelStored += saveThing.TryGetComp<CompRefuelable>().Fuel;
-						if (saveThing.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
-						{
-							fuelStored += saveThing.TryGetComp<CompRefuelable>().Fuel;
-							//nukeEngines++;
-						}
-					}
-					if (saveThing is Building)
-					{
-						if (saveThing.def == hullPlateDef || saveThing.def == mechHullPlateDef || saveThing.def == archoHullPlateDef)
-							fuelNeeded += 1f;
-						else
-							fuelNeeded += (saveThing.def.size.x * saveThing.def.size.z) * 3f;
-					}
+					powerComp.ResetPowerVars();
 				}
-				foreach (Building engine in engines)
-				{
-					engine.GetComp<CompRefuelable>().ConsumeFuel(fuelNeeded * engine.TryGetComp<CompRefuelable>().Fuel / fuelStored);
-				}
-				/*//takeoff - fallout
-				if (nukeEngines>0 && Rand.Chance(0.05f * nukeEngines))
-				{
-					IncidentParms parms = new IncidentParms();
-					parms.target = sourceMap;
-					parms.forced = true;
-					QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ToxicFallout"), null, parms), Find.TickManager.TicksGame);
-					Find.Storyteller.incidentQueue.Add(qi);
-				}*/
-			}
-			//landing - remove space map
-			if (sourceMap != targetMap && !targetMap.IsSpace())
-			{
-				if (!sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
-				{
-					WorldObject oldParent = sourceMap.Parent;
-					Current.Game.DeinitAndRemoveMap(sourceMap);
-					Find.World.worldObjects.Remove(oldParent);
-				}
+				//targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
 			}
 			//regen affected map layers
 			List<Section> sourceSec = new List<Section>();

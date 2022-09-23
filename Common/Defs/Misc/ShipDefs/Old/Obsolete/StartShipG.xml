@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartShipG</defName>
+		<defName>OldStartShipG</defName>
 		<label>Experimental Stealth Vessel</label>
 		<combatPoints>183</combatPoints>
 		<randomTurretPoints>589</randomTurretPoints>
 		<neverRandom>True</neverRandom>
-		<startingShip>True</startingShip>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<z>3</z>

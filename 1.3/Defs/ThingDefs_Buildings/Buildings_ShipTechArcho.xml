@@ -839,9 +839,8 @@
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<fuelConsumptionRate>500</fuelConsumptionRate>
-				<fuelCapacity>1000</fuelCapacity>
-				<fuelMultiplier>50</fuelMultiplier>
+				<fuelConsumptionRate>5</fuelConsumptionRate>
+				<fuelCapacity>500</fuelCapacity>
 				<fuelFilter>
 					<thingDefs>
 						<li>ArchotechExoticParticles</li>

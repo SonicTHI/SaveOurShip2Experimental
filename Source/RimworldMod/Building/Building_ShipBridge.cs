@@ -856,6 +856,12 @@ namespace RimWorld
                 Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
             }
         }
+        public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
+        {
+            if (mapComp.MapRootListAll.Contains(this))
+                mapComp.MapRootListAll.Remove(this);
+            base.DeSpawn(mode);
+        }
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
             if (mapComp.MapRootListAll.Contains(this))

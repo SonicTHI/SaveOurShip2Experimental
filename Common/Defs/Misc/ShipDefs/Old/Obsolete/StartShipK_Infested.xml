@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartShipK_Infested</defName>
+		<defName>OldStartShipK_Infested</defName>
 		<label>Wrecked Colony Ship (Extreme Difficulty)</label>
 		<combatPoints>287</combatPoints>
 		<neverRandom>True</neverRandom>
-		<startingShip>True</startingShip>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<z>-21</z>

@@ -1,11 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartShipK_EasyMode</defName>
+		<defName>OldStartShipK_EasyMode</defName>
 		<label>Colony Ship Start (Low Difficulty)</label>
 		<combatPoints>287</combatPoints>
 		<neverRandom>True</neverRandom>
-		<startingShip>True</startingShip>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<z>-21</z>

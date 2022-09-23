@@ -868,8 +868,9 @@ namespace RimWorld
                     {
                         foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
                         {
-                            if (t.TryGetComp<CompTransporter>().innerContainer.Any || t.TryGetComp<CompTransporter>().AnythingLeftToLoad)
-                                t.TryGetComp<CompTransporter>().CancelLoad();
+                            var transporter = t.TryGetComp<CompTransporter>();
+                            if (transporter.innerContainer.Any || transporter.AnythingLeftToLoad)
+                                transporter.CancelLoad();
                         }
                         startedBoarderLoad = false;
                     }
@@ -1039,6 +1040,9 @@ namespace RimWorld
                 if (b.TryGetComp<CompEngineTrail>() != null)
                     b.TryGetComp<CompEngineTrail>().DeActivate();
             }
+        }
+        public void ShipBuildingsOffEnemy()
+        {
             foreach (Building b in ShipCombatMasterMap.listerBuildings.allBuildingsNonColonist)
             {
                 if (b.TryGetComp<CompEngineTrail>() != null)
@@ -1046,12 +1050,19 @@ namespace RimWorld
                 else if (b.TryGetComp<CompShipCombatShield>() != null)
                     b.TryGetComp<CompFlickable>().SwitchIsOn = false;
             }
+            foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
+            {
+                var transporter = t.TryGetComp<CompTransporter>();
+                if (transporter.innerContainer.Any || transporter.AnythingLeftToLoad)
+                    transporter.CancelLoad();
+            }
         }
         public void EndBattle(Map loser, bool fled, int burnTimeElapsed = 0)
         {
             OriginMapComp.InCombat = false;
             MasterMapComp.InCombat = false;
             OriginMapComp.ShipBuildingsOff();
+            MasterMapComp.ShipBuildingsOffEnemy();
             MasterMapComp.ShipCombatMaster = false;
             if (OriginMapComp.ShipGraveyard != null)
                 OriginMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);

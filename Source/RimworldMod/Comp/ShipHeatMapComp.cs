@@ -698,19 +698,18 @@ namespace RimWorld
 
                 foreach (var engine in ship.Engines)
                 {
-                    if (engine.CanActivate())
+                    if (engine.CanFire(EngineRot))
                     {
                         anyMapEngineCanActivate = true;
-                        if (Heading != 0)
+                        if (Heading != 0 && engine.On())
                         {
-                            engine.Activate();
                             MapEnginePower += engine.Props.thrust;
                         }
                         else
-                            engine.DeActivate();
+                            engine.Off();
                     }
                     else
-                        engine.DeActivate();						 
+                        engine.Off();						 
                 }
                 BuildingsCount += ship.Buildings.Count;
             }
@@ -746,8 +745,18 @@ namespace RimWorld
                         threatRatio[1] = threatPerSegment[1] / OriginMapComp.threatPerSegment[1];
                         threatRatio[0] = threatPerSegment[0] / OriginMapComp.threatPerSegment[0];
                         //Log.Message("Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
+                        int max = 0;
+                        int best = -1;
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (threatRatio[i] > max)
+                            {
+                                max = threatRatio[i];
+                                best = i;
+                            }
+                        }
                         //move to cqc
-                        if (threatRatio[0] > threatRatio[1] && threatRatio[0] > threatRatio[2] && threatRatio[0] > threatRatio[3])
+                        if (best == 0)
                         {
                             if (Range > 40)
                                 Heading = 1;
@@ -755,7 +764,7 @@ namespace RimWorld
                                 Heading = 0;
                         }
                         //move to short range
-                        else if (threatRatio[1] > threatRatio[2] && threatRatio[1] > threatRatio[3])
+                        else if (best == 1)
                         {
                             if (Range > 90)
                                 Heading = 1;
@@ -765,7 +774,7 @@ namespace RimWorld
                                 Heading = 0;
                         }
                         //move to medium range
-                        else if (threatRatio[2] > threatRatio[3])
+                        else if (best == 2)
                         {
                             if (Range > 140)
                                 Heading = 1;
@@ -1038,7 +1047,7 @@ namespace RimWorld
             foreach (Building b in ShipCombatOriginMap.listerBuildings.allBuildingsColonist)
             {
                 if (b.TryGetComp<CompEngineTrail>() != null)
-                    b.TryGetComp<CompEngineTrail>().DeActivate();
+                    b.TryGetComp<CompEngineTrail>().Off();
             }
         }
         public void ShipBuildingsOffEnemy()
@@ -1046,7 +1055,7 @@ namespace RimWorld
             foreach (Building b in ShipCombatMasterMap.listerBuildings.allBuildingsNonColonist)
             {
                 if (b.TryGetComp<CompEngineTrail>() != null)
-                    b.TryGetComp<CompEngineTrail>().DeActivate();
+                    b.TryGetComp<CompEngineTrail>().Off();
                 else if (b.TryGetComp<CompShipCombatShield>() != null)
                     b.TryGetComp<CompFlickable>().SwitchIsOn = false;
             }

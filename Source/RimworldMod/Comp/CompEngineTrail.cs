@@ -31,9 +31,9 @@ namespace RimWorld
         public CompFlickable flickComp;
         public CompRefuelable refuelComp;
         public CompPowerTrader powerComp;
-        public bool CanActivate()
+        public bool CanFire(int rot)
         {
-            if (flickComp.SwitchIsOn)
+            if (flickComp.SwitchIsOn && rot == this.parent.Rotation.AsInt)
             {
                 if (Props.energy && powerComp.PowerOn)
                 {
@@ -46,22 +46,22 @@ namespace RimWorld
             }
             return false;
         }
-        public void Activate()
+        public bool On()
         {
-            if (flickComp.SwitchIsOn)
+            if (Props.energy)
             {
-                if (Props.energy && powerComp.PowerOn)
-                {
-                    powerComp.PowerOutput = -2000 * Props.thrust;
-                    active = true;
-                }
-                else if (refuelComp.Fuel > 0)
-                {
-                    active = true;
-                }
+                powerComp.PowerOutput = -2000 * Props.thrust;
+                active = true;
+                return true;
             }
+            else if (refuelComp.Fuel > 0)
+            {
+                active = true;
+                return true;
+            }
+            return false;
         }
-        public void DeActivate()
+        public void Off()
         {
             if (Props.energy)
             {

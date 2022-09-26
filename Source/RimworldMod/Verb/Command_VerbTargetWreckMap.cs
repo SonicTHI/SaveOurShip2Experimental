@@ -14,7 +14,8 @@ namespace RimWorld
     {
         public Building salvageBay;
         public int salvageBayNum;
-        public bool otherMap = true;
+        public byte rotb = 0;
+        public Map sourceMap;
         public Map targetMap;
         
         public override void MergeWith(Gizmo other)
@@ -33,7 +34,7 @@ namespace RimWorld
             Building b=null;
             base.ProcessInput(ev);
             SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
-            if (otherMap)
+            if (sourceMap != targetMap)
                 CameraJumper.TryJump(targetMap.Center, targetMap);
             Targeter targeter = Find.Targeter;
             TargetingParameters parms = new TargetingParameters();
@@ -58,7 +59,13 @@ namespace RimWorld
                 if (building.Position.z < lowestCorner.z)
                     lowestCorner.z = building.Position.z;
             }
-            Sketch shipSketch = new Sketch();
+            if (rotb == 2)
+            {
+                lowestCorner.x = targetMap.Size.x - lowestCorner.x;
+                lowestCorner.z = targetMap.Size.z - lowestCorner.z;
+            }
+            //gen ship sketch
+            Sketch sketch = new Sketch();
             int bCount = 0;
             foreach (Building building in cache)
             {
@@ -75,21 +82,30 @@ namespace RimWorld
                 }
             }
             Log.Message("Target wreck building count: " + bCount);
-            int bMax = salvageBayNum * CompShipSalvageBay.salvageCapacity;
+            int bMax = targetMap.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null).Count() * CompShipSalvageBay.salvageCapacity;
             if (bCount > bMax)
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", bCount, bMax), MessageTypeDefOf.NeutralEvent);
                 return;
             }
+            IntVec3 rot = new IntVec3(0, 0, 0);
             foreach (IntVec3 pos in positions)
             {
-                shipSketch.AddThing(ThingDef.Named("Ship_FakeBeam"), pos - lowestCorner, Rot4.North);
+                if (rotb == 2)
+                {
+                    rot.x = targetMap.Size.x - pos.x;
+                    rot.z = targetMap.Size.z - pos.z;
+                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+                }
+                else
+                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), pos - lowestCorner, Rot4.North);
             }
+            //move ship sketch
             Map m = salvageBay.Map;
-            MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
+            MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(sketch).TryMakeMinified();
             fakeMover.shipRoot = b;
             fakeMover.includeRock = true;
-            fakeMover.shipRotNum = 0;
+            fakeMover.shipRotNum = rotb;
             fakeMover.bottomLeftPos = lowestCorner;
             ShipInteriorMod2.shipOriginMap = b.Map;
             fakeMover.targetMap = m;

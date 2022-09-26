@@ -19,4 +19,131 @@
 		</ships>
 		<parts />
 	</EnemyShipDef>
+	<!-- trader -->
+	<EnemyShipDef>
+		<defName>FleetISCSCDestroyer</defName>
+		<saveSysVer>2</saveSysVer>
+		<label>Interstellar Cargo Ship</label>
+		<combatPoints>1253</combatPoints>
+		<ships>
+			<li>
+				<ship>ISCSContainer</ship>
+				<offsetX>43</offsetX>
+				<offsetZ>74</offsetZ>
+			</li>
+			<li>
+				<ship>DestroyerT3</ship>
+				<offsetX>74</offsetX>
+				<offsetZ>144</offsetZ>
+			</li>
+		</ships>
+		<parts />
+	</EnemyShipDef>
+	<EnemyShipDef>
+		<defName>FleetISCSCEmptyDestroyer</defName>
+		<saveSysVer>2</saveSysVer>
+		<label>Interstellar Cargo Ship</label>
+		<combatPoints>1253</combatPoints>
+		<neverAttacks>True</neverAttacks>
+		<tradeShip>True</tradeShip>
+		<ships>
+			<li>
+				<ship>ISCSContainer</ship>
+				<offsetX>43</offsetX>
+				<offsetZ>74</offsetZ>
+			</li>
+			<li>
+				<ship>DestroyerT3</ship>
+				<offsetX>74</offsetX>
+				<offsetZ>144</offsetZ>
+			</li>
+		</ships>
+		<parts />
+	</EnemyShipDef>
+	<!-- empire -->
+	<EnemyShipDef>
+		<defName>EmpireFleetCruisers</defName>
+		<saveSysVer>2</saveSysVer>
+		<label>Pair of Imperial Scipio class cruisers</label>
+		<imperialShip>True</imperialShip>
+		<combatPoints>2960</combatPoints>
+		<ships>
+			<li>
+				<ship>EmpireCruiser</ship>
+				<offsetX>45</offsetX>
+				<offsetZ>30</offsetZ>
+			</li>
+			<li>
+				<ship>EmpireCruiser</ship>
+				<offsetX>80</offsetX>
+				<offsetZ>135</offsetZ>
+			</li>
+		</ships>
+		<parts />
+	</EnemyShipDef>
+	<EnemyShipDef>
+		<defName>EmpireFleetDestroyerEscort</defName>
+		<saveSysVer>2</saveSysVer>
+		<label>Imperial Longinus class destroyer with escorts</label>
+		<imperialShip>True</imperialShip>
+		<combatPoints>1617</combatPoints>
+		<ships>
+			<li>
+				<ship>EmpireCorvette</ship>
+				<offsetX>65</offsetX>
+				<offsetZ>40</offsetZ>
+			</li>
+			<li>
+				<ship>EmpireDestroyer</ship>
+				<offsetX>70</offsetX>
+				<offsetZ>100</offsetZ>
+			</li>
+			<li>
+				<ship>EmpireCorvette</ship>
+				<offsetX>125</offsetX>
+				<offsetZ>175</offsetZ>
+			</li>
+		</ships>
+		<parts />
+	</EnemyShipDef>
+	<EnemyShipDef>
+		<defName>EmpireFleetStrikeWing</defName>
+		<saveSysVer>2</saveSysVer>
+		<label>Imperial strike wing</label>
+		<imperialShip>True</imperialShip>
+		<combatPoints>308</combatPoints>
+		<ships>
+			<li>
+				<ship>EmpireFighter</ship>
+				<offsetX>135</offsetX>
+				<offsetZ>50</offsetZ>
+			</li>
+			<li>
+				<ship>EmpireFighter</ship>
+				<offsetX>90</offsetX>
+				<offsetZ>80</offsetZ>
+			</li>
+			<li>
+				<ship>EmpireFighter</ship>
+				<offsetX>60</offsetX>
+				<offsetZ>115</offsetZ>
+			</li>
+			<li>
+				<ship>EmpireFighter</ship>
+				<offsetX>100</offsetX>
+				<offsetZ>160</offsetZ>
+			</li>
+			<li>
+				<ship>EmpireBomber</ship>
+				<offsetX>170</offsetX>
+				<offsetZ>100</offsetZ>
+			</li>
+			<li>
+				<ship>EmpireBomber</ship>
+				<offsetX>150</offsetX>
+				<offsetZ>140</offsetZ>
+			</li>
+		</ships>
+		<parts />
+	</EnemyShipDef>
 </Defs>

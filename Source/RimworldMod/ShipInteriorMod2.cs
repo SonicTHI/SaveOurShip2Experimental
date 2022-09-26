@@ -1002,7 +1002,7 @@ namespace SaveOurShip2
 					var engineComp = t.TryGetComp<CompEngineTrail>();
 					var powerComp = t.TryGetComp<CompPower>();
 					if (engineComp != null)
-						engineComp.DeActivate();
+						engineComp.Off();
 					else if (glower != null)
 						toRemove.Add(t);
 					if (powerComp != null)
@@ -1017,6 +1017,11 @@ namespace SaveOurShip2
 				{
 					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
 					sourceMap.terrainGrid.RemoveTopLayer(pos, false);
+				}
+				else if (includeRock && (sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Slate_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Slate_RoughHewn") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Marble_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Marble_RoughHewn") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Granite_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Granite_RoughHewn")))
+				{
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
+					sourceMap.terrainGrid.SetTerrain(pos,spaceTerrain);
 				}
 			}
 			//remove unwanted things
@@ -1204,6 +1209,13 @@ namespace SaveOurShip2
 					}
 					else
 						targetMap.terrainGrid.SetTerrain(tup.Item1 + adjustment, tup.Item2);
+			}
+			if (includeRock)
+			{
+				foreach (IntVec3 pos in sourceArea)
+				{
+					sourceMap.terrainGrid.SetTerrain(pos, spaceTerrain);
+				}
 			}
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);

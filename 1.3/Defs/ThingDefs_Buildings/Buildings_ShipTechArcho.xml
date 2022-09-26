@@ -839,6 +839,7 @@
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
 				<fuelConsumptionRate>5</fuelConsumptionRate>
 				<fuelCapacity>500</fuelCapacity>
 				<fuelFilter>

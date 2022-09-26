@@ -766,7 +766,6 @@ namespace RimWorld
         {
             Sketch sketch = new Sketch();
             List<IntVec3> positions = new List<IntVec3>();
-            IntVec3 rot = new IntVec3(0, 0, 0);
             foreach (Building building in cachedShipParts)
             {
                 foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(building))
@@ -775,6 +774,7 @@ namespace RimWorld
                         positions.Add(pos);
                 }
             }
+            IntVec3 rot = new IntVec3(0, 0, 0);
             foreach (IntVec3 pos in positions)
             {
                 if (rotb == 1)

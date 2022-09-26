@@ -1773,7 +1773,7 @@
 				<label>shoot slug</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<range>12.9</range>
+				<range>2500</range>
 				<warmupTime>0.5</warmupTime>
 				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>

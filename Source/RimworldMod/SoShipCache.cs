@@ -111,7 +111,7 @@ namespace RimWorld
         {
             foreach (var engine in Engines)
             {
-                engine.DeActivate();
+                engine.Off();
             }
         }
         public void RebuildCorePath(Building core) //run before combat if corePathDirty and in combat after bridge destructio

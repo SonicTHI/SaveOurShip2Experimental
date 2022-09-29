@@ -19,6 +19,30 @@
 		</ships>
 		<parts />
 	</EnemyShipDef>
+	<EnemyShipDef>
+		<defName>FleetDestroyerEscort</defName>
+		<saveSysVer>2</saveSysVer>
+		<label>Destroyer with escorts</label>
+		<combatPoints>1119</combatPoints>
+		<ships>
+			<li>
+				<ship>DestroyerT3</ship>
+				<offsetX>68</offsetX>
+				<offsetZ>110</offsetZ>
+			</li>
+			<li>
+				<ship>CorvetteT3</ship>
+				<offsetX>107</offsetX>
+				<offsetZ>63</offsetZ>
+			</li>
+			<li>
+				<ship>CorvetteT3S</ship>
+				<offsetX>100</offsetX>
+				<offsetZ>183</offsetZ>
+			</li>
+		</ships>
+		<parts />
+	</EnemyShipDef>
 	<!-- trader -->
 	<EnemyShipDef>
 		<defName>FleetISCSCDestroyer</defName>

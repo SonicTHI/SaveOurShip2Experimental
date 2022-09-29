@@ -881,27 +881,21 @@ namespace SaveOurShip2
 			var cellsDone = new HashSet<IntVec3>();
 			cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
 			cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
-
 			while (cellsTodo.Count > 0)
 			{
 				var current = cellsTodo.First();
 				cellsTodo.Remove(current);
 				cellsDone.Add(current);
-
 				var containedThings = current.GetThingList(map);
-				if (!containedThings.Any(t => ((t as Building)?.def.building.shipPart ?? false) || (includeRock && ((t as Building)?.def.building.isNaturalRock ?? false))))
-					continue;
-
-				foreach (var t in containedThings)
+				if (containedThings.Any(t => ((t as Building)?.def.building.shipPart ?? false) || (includeRock && ((t as Building)?.def.building.isNaturalRock ?? false))))
 				{
-					if (t is Building b)
+					foreach (var t in containedThings)
 					{
-						if (containedBuildings.Add(b))
+						if (t is Building b)
 						{
-							cellsTodo.AddRange(
-								GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b))
-									.Where(cell => !cellsDone.Contains(cell))
-							);
+							containedBuildings.Add(b);
+							if (b.def.building.shipPart)
+								cellsTodo.AddRange(GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b)).Where(v => !cellsDone.Contains(v)));
 						}
 					}
 				}
@@ -916,30 +910,21 @@ namespace SaveOurShip2
 			var map = root.Map;
 			var cellsTodo = new HashSet<IntVec3>();
 			var cellsDone = new HashSet<IntVec3>();
+			var cellsFound = new HashSet<IntVec3>();
 			cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
 			cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
-
 			while (cellsTodo.Count > 0)
 			{
 				var current = cellsTodo.First();
 				cellsTodo.Remove(current);
 				cellsDone.Add(current);
-				var containedThings = current.GetThingList(map);
-				if (!containedThings.Any(t => ((t as Building)?.def.building.shipPart ?? false) || (includeRock && ((t as Building)?.def.building.isNaturalRock ?? false))))
-					continue;
-
-				foreach (var t in containedThings)
+				if (current.GetThingList(map).Any(t => ((t as Building)?.def.building.shipPart ?? false) || (includeRock && ((t as Building)?.def.building.isNaturalRock ?? false))))
 				{
-					if (t is Building b)
-					{
-						cellsTodo.AddRange(
-							GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b))
-								.Where(cell => !cellsDone.Contains(cell))
-						);
-					}
+					cellsFound.Add(current);
+					cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v)));
 				}
 			}
-			return cellsDone.ToList();
+			return cellsFound.ToList();
 		}
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
@@ -963,9 +948,9 @@ namespace SaveOurShip2
 			bool targetMapIsSpace = targetMap.IsSpace();
 			bool sourceMapIsSpace = sourceMap.IsSpace();
 
-			//clear LZ
 			foreach (IntVec3 pos in sourceArea)
 			{
+				//clear LZ
 				targetArea.Add(pos + adjustment);
 				foreach (Thing t in (pos + adjustment).GetThingList(targetMap))
 				{
@@ -974,22 +959,7 @@ namespace SaveOurShip2
 				}
 				if (!targetMapIsSpace)
 					targetMap.snowGrid.SetDepth(pos + adjustment, 0f);
-			}
-			//move live pawns out of target area, destroy non buildings
-			foreach (Thing thing in toDestroy)
-			{
-				if (thing is Pawn pawn && (!pawn.Dead || !pawn.Downed))
-				{
-					pawn.pather.StopDead();
-					while (targetArea.Contains(thing.Position))
-						thing.Position = CellFinder.RandomClosewalkCellNear(thing.Position, targetMap, 50);
-				}
-				else if (!thing.Destroyed)
-					thing.Destroy();
-			}
-			//add all things, terrain from area
-			foreach (IntVec3 pos in sourceArea)
-			{
+				//add all things, terrain from area
 				List<Thing> allTheThings = pos.GetThingList(sourceMap);
 				foreach (Thing t in allTheThings)
 				{
@@ -1023,6 +993,18 @@ namespace SaveOurShip2
 					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
 					sourceMap.terrainGrid.SetTerrain(pos,spaceTerrain);
 				}
+			}
+			//move live pawns out of target area, destroy non buildings
+			foreach (Thing thing in toDestroy)
+			{
+				if (thing is Pawn pawn && (!pawn.Dead || !pawn.Downed))
+				{
+					pawn.pather.StopDead();
+					while (targetArea.Contains(thing.Position))
+						thing.Position = CellFinder.RandomClosewalkCellNear(thing.Position, targetMap, 50);
+				}
+				else if (!thing.Destroyed)
+					thing.Destroy();
 			}
 			//remove unwanted things
 			foreach (Thing t in toRemove)

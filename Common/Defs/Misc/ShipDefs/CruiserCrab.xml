@@ -3,7 +3,7 @@
 	<EnemyShipDef>
 		<defName>CruiserCrab</defName>
 		<saveSysVer>2</saveSysVer>
-		<offsetX>60</offsetX>
+		<offsetX>77</offsetX>
 		<offsetZ>84</offsetZ>
 		<sizeX>95</sizeX>
 		<sizeZ>70</sizeZ>

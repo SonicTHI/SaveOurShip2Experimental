@@ -14,8 +14,15 @@ namespace RimWorld
 				bool hasShipPart = false;
 				foreach (Thing t in vec.GetThingList(map))
 				{
-					if (t.def == ShipInteriorMod2.hullPlateDef || t.def == ShipInteriorMod2.mechHullPlateDef || t.def == ShipInteriorMod2.archoHullPlateDef || t.def.defName.StartsWith("ShipHardpoint"))
-						hasShipPart = true;
+					if (t is Building b)
+					{
+						var shipPart = b.TryGetComp<CompSoShipPart>();
+						if (shipPart != null && shipPart.Props.isPlating)
+						{
+							hasShipPart = true;
+							break;
+						}
+					}
 				}
 				if (!hasShipPart)
 					return new AcceptanceReport(TranslatorFormattedStringExtensions.Translate("MustPlaceOnShipHull"));

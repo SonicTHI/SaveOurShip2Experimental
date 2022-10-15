@@ -680,7 +680,10 @@ namespace SaveOurShip2
         {
             if (Find.TickManager.TicksGame % 600 == 0)
             {
-                Map map = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault()).Map;
+                var check = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault());
+                if (check == null)
+                    return;
+                Map map = check.Map;
                 if (map != null && PlayerFactionBounty > 20 && Find.TickManager.TicksGame-LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(PlayerFactionBounty),60000f) && !map.GetComponent<ShipHeatMapComp>().InCombat)
                 {
                     LastBountyRaidTick = Find.TickManager.TicksGame;

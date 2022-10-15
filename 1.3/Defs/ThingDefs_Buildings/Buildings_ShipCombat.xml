@@ -1981,6 +1981,7 @@
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart"/>
 			<li Class="CompProperties_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>
@@ -2082,6 +2083,7 @@
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart"/>
 			<li Class="CompProperties_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>
@@ -2203,6 +2205,7 @@
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart"/>
 			<li Class="CompProperties_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>

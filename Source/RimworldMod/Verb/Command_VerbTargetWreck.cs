@@ -41,7 +41,7 @@ namespace RimWorld
 
         public void AfterTarget(Building b)
         {
-            List<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true);
+            List<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true).ToList();
             if (positions.NullOrEmpty())
                 return;
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmAbandonWreck", delegate

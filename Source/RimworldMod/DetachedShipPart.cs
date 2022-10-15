@@ -27,12 +27,13 @@ namespace RimWorld
 
         public override void Tick()
         {
-            List<Building> p = this.Map.GetComponent<ShipHeatMapComp>().MapRootList;
-            if(p != null && p.Count>0)
-                drawOffset += (this.DrawPos - p[0].DrawPos).normalized * 0.005f * (int)Find.TickManager.CurTimeSpeed;
+            var mapComp = this.Map.GetComponent<ShipHeatMapComp>();
+            Vector3 adj = new Vector3(0, 0, mapComp.MapEnginePower).RotatedBy(mapComp.EngineRot * 90f);
+            drawOffset += (this.DrawPos - adj).normalized * 0.005f * (int)Find.TickManager.CurTimeSpeed;
             if (drawOffset.x > this.Map.Size.x || drawOffset.x * -1 > this.Map.Size.x || drawOffset.z > this.Map.Size.z || drawOffset.z * -1 > this.Map.Size.z)
                 Destroy();
-            EmitSmokeAndFlame();
+            if (Find.TickManager.TicksGame % 60 == 0)
+                EmitSmokeAndFlame();
         }
 
         void EmitSmokeAndFlame()

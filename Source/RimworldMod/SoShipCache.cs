@@ -28,12 +28,14 @@ namespace RimWorld
         //other buildings: +-for count, mass if on shipPart
 
         public string Name = "Unnamed Ship";
-        public Building Core;
+        public Building_ShipBridge Core; //if null, this is a wreck
         //public bool corePathDirty = true; //false after recache, repath, true after merge
         public int Mass = 0;
         public float MaxTakeoff = 0;
         public int BuildingCount = 0;
         public int ThreatRaw = 0;
+        public bool Rotatable = true; //td better check on move
+        public bool PathDirty = true; //td
         public int Threat
         {
             get
@@ -65,7 +67,7 @@ namespace RimWorld
                 return lowestCorner;
             }
         }
-        public List<Thing> ThingsOnShip()
+        public List<Thing> ThingsOnShip() //dep
         {
             List<Thing> things = new List<Thing>();
             foreach (IntVec3 v in Area)
@@ -78,8 +80,11 @@ namespace RimWorld
             }
             return things;
         }
-        public List<Building> BuildingsOnShip()
+        public List<Building> BuildingsOnShip() //dep
         {
+            if (Buildings.Any())
+                return Buildings.ToList();
+
             List<Building> buildings = new List<Building>();
             foreach (IntVec3 v in Area)
             {
@@ -93,7 +98,8 @@ namespace RimWorld
         }
 
         public HashSet<IntVec3> Area = new HashSet<IntVec3>(); //shipParts add to area
-        public List<Building> Parts = new List<Building>(); //shipParts only
+        public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
+        public HashSet<Building> Buildings = new HashSet<Building>(); //all
         public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
         public List<CompCryptoLaunchable> Pods = new List<CompCryptoLaunchable>();
         public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
@@ -119,6 +125,7 @@ namespace RimWorld
             if (core == null || !(core is Building_ShipBridge) || core.Destroyed)
                 return;
 
+            Core = core as Building_ShipBridge;
             var map = core.Map;
             var mapComp = map.GetComponent<ShipHeatMapComp>();
             var coreShipPart = core.TryGetComp<CompSoShipPart>();
@@ -127,13 +134,10 @@ namespace RimWorld
             var cellsDone = new HashSet<IntVec3>();
             cellsTodo.Add(core.Position);
 
-            //do
             //find parts cardinal to all prev.pos, exclude prev.pos, if found part, set corePath to i, shipIndex to core.shipIndex
-            //till no more parts
             int i = 0;
             while (cellsTodo.Count > 0)
             {
-
                 List<IntVec3> current = cellsTodo.ToList();
                 foreach (IntVec3 vec in current) //do all of the current corePath
                 {
@@ -156,14 +160,16 @@ namespace RimWorld
                 }
                 i++;
             }
+            PathDirty = false;
+            Log.Message("New bridge: " + Core);
             Log.Message("Rebuilt corePath for ship: " + core);
         }
-        public void RebuildCache(Building core) //full rebuild, only call on load, shipspawn, ooc detach with a bridge
+        public void RebuildCache(Building core, Building exclude = null) //full rebuild, only call on load, shipspawn, ooc detach with a bridge
         {
             if (core == null || !(core is Building_ShipBridge) || core.Destroyed)
                 return;
 
-            Core = core;
+            Core = core as Building_ShipBridge;
             Name = ((Building_ShipBridge)core).ShipName;
             var map = core.Map;
             var mapComp = map.GetComponent<ShipHeatMapComp>();
@@ -172,18 +178,18 @@ namespace RimWorld
             coreShipPart.shipIndex = core.thingIDNumber;
             var cellsTodo = new HashSet<IntVec3>();
             var cellsDone = new HashSet<IntVec3>();
+            if (exclude != null)
+                cellsDone.AddRange(GenAdj.CellsOccupiedBy(exclude).ToList());
             cellsTodo.Add(core.Position);
 
-            //do
             //find parts cardinal to all prev.pos, exclude prev.pos, if found part, set corePath to i, shipIndex to core.shipIndex, set corePath
-            //till no more parts
             int i = 0;
             while (cellsTodo.Count > 0)
             {
                 List<IntVec3> current = cellsTodo.ToList();
                 foreach (IntVec3 vec in current) //do all of the current corePath
                 {
-                    List<Building> otherBuildings = new List<Building>();
+                    HashSet<Building> otherBuildings = new HashSet<Building>();
                     bool partFound = false;
                     foreach (Thing t in vec.GetThingList(map))
                     {
@@ -209,11 +215,13 @@ namespace RimWorld
                     {
                         foreach (Building b in otherBuildings)
                         {
-                            BuildingCount++;
-                            Mass += (b.def.Size.x * b.def.Size.z) * 3;
+                            if (Buildings.Add(b))
+                            {
+                                BuildingCount++;
+                                Mass += b.def.Size.x * b.def.Size.z * 3;
+                            }
                         }
                     }
-
                     cellsTodo.Remove(vec);
                     cellsDone.Add(vec);
                 }
@@ -224,6 +232,7 @@ namespace RimWorld
                 i++;
                 //Log.Message("parts at i: "+ current.Count + "/" + i);
             }
+            PathDirty = false;
             Log.Message("Rebuilt cache for ship: " + Core);
             Log.Message("Parts: " + Parts.Count);
             Log.Message("Bridges: " + Bridges.Count);
@@ -231,118 +240,119 @@ namespace RimWorld
         }
         public void AddToCache(Building b)
         {
-            if (Parts.Contains(b))
+            if (Parts.Add(b))
             {
-                return;
-            }
-            BuildingCount++;
-            Parts.Add(b);
-            var shipComp = b.TryGetComp<CompSoShipPart>();
-            if (b.def.building.shipPart)
-            {
-                foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
+                Buildings.Add(b);
+                BuildingCount++;
+                var shipComp = b.TryGetComp<CompSoShipPart>();
+                if (b.def.building.shipPart)
                 {
-                    Area.Add(v);
-                }
-                if (shipComp.Props.isPlating)
-                {
-                    Mass += 1;
-                    return;
-                }
-                if (b.TryGetComp<CompEngineTrail>() != null)
-                {
-                    var refuelable = b.TryGetComp<CompRefuelable>();
-                    ThrustRaw += b.TryGetComp<CompEngineTrail>().Props.thrust;
-                    if (refuelable != null)
+                    foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
                     {
-                        if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
-                            MaxTakeoff += refuelable.Props.fuelCapacity * 2;
-                        else
-                            MaxTakeoff += refuelable.Props.fuelCapacity;
+                        Area.Add(v);
                     }
-                    Engines.Add(b.TryGetComp<CompEngineTrail>());
+                    if (shipComp.Props.isPlating)
+                    {
+                        Mass += 1;
+                        return;
+                    }
+                    if (b.TryGetComp<CompEngineTrail>() != null)
+                    {
+                        var refuelable = b.TryGetComp<CompRefuelable>();
+                        ThrustRaw += b.TryGetComp<CompEngineTrail>().Props.thrust;
+                        if (refuelable != null)
+                        {
+                            MaxTakeoff += refuelable.Props.fuelCapacity;
+                            if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+                                MaxTakeoff += refuelable.Props.fuelCapacity;
+                        }
+                        Engines.Add(b.TryGetComp<CompEngineTrail>());
+                    }
                 }
-            }
-            else
-            {
-                if (b.TryGetComp<CompCryptoLaunchable>() != null)
-                    Pods.Add(b.GetComp<CompCryptoLaunchable>());
-                else if (b is Building_ShipBridge bridge)
+                else
                 {
-                    Bridges.Add(bridge);
-                    bridge.ShipName = Name;
+                    if (b.TryGetComp<CompCryptoLaunchable>() != null)
+                        Pods.Add(b.GetComp<CompCryptoLaunchable>());
+                    else if (b is Building_ShipBridge bridge)
+                    {
+                        Bridges.Add(bridge);
+                        bridge.ShipName = Name;
+                        if (Core.DestroyedOrNull())
+                        {
+                            Core = bridge;
+                        }
+                    }
+                    else if (b is Building_ShipAdvSensor sensor)
+                        Sensors.Add(sensor);
+                    else if (b.TryGetComp<CompHullFoamDistributor>() != null)
+                        FoamDistributors.Add(b.GetComp<CompHullFoamDistributor>());
+                    else if (b.TryGetComp<CompShipLifeSupport>() != null)
+                        LifeSupports.Add(b.GetComp<CompShipLifeSupport>());
                 }
-                else if (b is Building_ShipAdvSensor sensor)
-                    Sensors.Add(sensor);
-                else if (b.TryGetComp<CompHullFoamDistributor>() != null)
-                    FoamDistributors.Add(b.GetComp<CompHullFoamDistributor>());
-                else if (b.TryGetComp<CompShipLifeSupport>() != null)
-                    LifeSupports.Add(b.GetComp<CompShipLifeSupport>());
+                if (b.TryGetComp<CompShipHeat>() != null)
+                    ThreatRaw += b.TryGetComp<CompShipHeat>().Props.threat;
+                else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
+                    ThreatRaw += 5;
+                Mass += b.def.Size.x * b.def.Size.z * 3;
             }
-            if (b.TryGetComp<CompShipHeat>() != null)
-                ThreatRaw += b.TryGetComp<CompShipHeat>().Props.threat;
-            else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
-                ThreatRaw += 5;
-            Mass += (b.def.Size.x * b.def.Size.z) * 3;
         }
         public void RemoveFromCache(Building b)
         {
-            if (!Parts.Contains(b))
+            if (Parts.Contains(b))
             {
-                return;
-            }
-            BuildingCount--;
-            Parts.Remove(b);
-            var shipComp = b.TryGetComp<CompSoShipPart>();
-            shipComp.shipIndex = -1;
-            if (b.def.building.shipPart)
-            {
-                shipComp.corePath = 0;
-                foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
+                BuildingCount--;
+                Buildings.Remove(b);
+                Parts.Remove(b);
+                var shipComp = b.TryGetComp<CompSoShipPart>();
+                shipComp.shipIndex = -1;
+                if (b.def.building.shipPart)
                 {
-                    if (Area.Contains(v) && v.GetThingList(b.Map).Any(u => u != b && u.TryGetComp<CompSoShipPart>() != null))
-                        Area.Remove(v);
-                }
-                if (shipComp.Props.isPlating)
-                {
-                    Mass -= 1;
-                    return;
-                }
-                if (b.TryGetComp<CompEngineTrail>() != null)
-                {
-                    var refuelable = b.TryGetComp<CompRefuelable>();
-                    ThrustRaw -= b.TryGetComp<CompEngineTrail>().Props.thrust;
-                    if (refuelable != null)
+                    shipComp.corePath = -1;
+                    foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
                     {
-                        if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
-                            MaxTakeoff -= refuelable.Props.fuelCapacity * 2;
-                        else
-                            MaxTakeoff -= refuelable.Props.fuelCapacity;
+                        if (Area.Contains(v) && v.GetThingList(b.Map).Any(u => u != b && u.TryGetComp<CompSoShipPart>() != null))
+                            Area.Remove(v);
                     }
-                    Engines.Remove(b.TryGetComp<CompEngineTrail>());
+                    if (shipComp.Props.isPlating)
+                    {
+                        Mass -= 1;
+                        return;
+                    }
+                    if (b.TryGetComp<CompEngineTrail>() != null)
+                    {
+                        var refuelable = b.TryGetComp<CompRefuelable>();
+                        ThrustRaw -= b.TryGetComp<CompEngineTrail>().Props.thrust;
+                        if (refuelable != null)
+                        {
+                            MaxTakeoff -= refuelable.Props.fuelCapacity;
+                            if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+                                MaxTakeoff -= refuelable.Props.fuelCapacity;
+                        }
+                        Engines.Remove(b.TryGetComp<CompEngineTrail>());
+                    }
                 }
-            }
-            else
-            {
-                if (b.TryGetComp<CompCryptoLaunchable>() != null)
-                    Pods.Remove(b.GetComp<CompCryptoLaunchable>());
-                else if (b is Building_ShipBridge bridge)
+                else
                 {
-                    Bridges.Remove(bridge);
-                    bridge.ShipName = "Unnamed Ship";
+                    if (b.TryGetComp<CompCryptoLaunchable>() != null)
+                        Pods.Remove(b.GetComp<CompCryptoLaunchable>());
+                    else if (b is Building_ShipBridge bridge)
+                    {
+                        Bridges.Remove(bridge);
+                        bridge.ShipName = "Unnamed Ship";
+                    }
+                    else if (b is Building_ShipAdvSensor sensor)
+                        Sensors.Remove(sensor);
+                    else if (b.TryGetComp<CompHullFoamDistributor>() != null)
+                        FoamDistributors.Remove(b.GetComp<CompHullFoamDistributor>());
+                    else if (b.TryGetComp<CompShipLifeSupport>() != null)
+                        LifeSupports.Remove(b.GetComp<CompShipLifeSupport>());
                 }
-                else if (b is Building_ShipAdvSensor sensor)
-                    Sensors.Remove(sensor);
-                else if (b.TryGetComp<CompHullFoamDistributor>() != null)
-                    FoamDistributors.Remove(b.GetComp<CompHullFoamDistributor>());
-                else if (b.TryGetComp<CompShipLifeSupport>() != null)
-                    LifeSupports.Remove(b.GetComp<CompShipLifeSupport>());
+                if (b.TryGetComp<CompShipHeat>() != null)
+                    ThreatRaw -= b.TryGetComp<CompShipHeat>().Props.threat;
+                else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
+                    ThreatRaw -= 5;
+                Mass -= b.def.Size.x * b.def.Size.z * 3;
             }
-            if (b.TryGetComp<CompShipHeat>() != null)
-                ThreatRaw -= b.TryGetComp<CompShipHeat>().Props.threat;
-            else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
-                ThreatRaw -= 5;
-            Mass -= (b.def.Size.x * b.def.Size.z) * 3;
         }
     }
 }

@@ -15,17 +15,5 @@ namespace RimWorld
                 return (CompProperties_HullFoamDistributor)props;
             }
         }
-
-        public override void PostSpawnSetup(bool respawningAfterLoad)
-        {
-            base.PostSpawnSetup(respawningAfterLoad);
-            parent.Map.GetComponent<ShipHeatMapComp>().HullFoamDistributors.Add(this);
-        }
-
-        public override void PostDeSpawn(Map map)
-        {
-            map.GetComponent<ShipHeatMapComp>().HullFoamDistributors.Remove(this);
-            base.PostDeSpawn(map);
-        }
     }
 }

@@ -64,7 +64,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="WallLight">
-      <HintPath>..\..\..\1423699208 Wall Light\CURRENT\Assemblies\WallLight.dll</HintPath>
+      <HintPath>..\..\..\1423699208 Wall Light\1.3\Assemblies\WallLight.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

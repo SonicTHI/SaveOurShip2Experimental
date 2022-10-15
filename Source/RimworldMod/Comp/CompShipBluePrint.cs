@@ -68,7 +68,7 @@ namespace RimWorld
                 if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
                 {
                     ThingDef def = ThingDef.Named(shape.shapeOrDef);
-                    if (def.building != null && def.building.shipPart)
+                    if (def.building != null && def.building.shipPart && def.IsResearchFinished)
                     {
                         IntVec3 pos =  new IntVec3(shape.x, 0, shape.z);
                         if (def.Size.x > 1 || def.Size.z > 1)
@@ -153,7 +153,7 @@ namespace RimWorld
                 if (done)
                 {
                     this.Destroy(DestroyMode.Vanish);
-                    parent.Destroy(DestroyMode.Vanish);
+                    //parent.Destroy(DestroyMode.Vanish);
                 }
                 else if (InstallBlueprintUtility.ExistingBlueprintFor(this) != null)
                 {

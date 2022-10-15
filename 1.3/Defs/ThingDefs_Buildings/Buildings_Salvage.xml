@@ -39,6 +39,7 @@
 		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
+			<li Class="CompProperties_SoShipPart"/>
 			<li Class="CompProperties_RoofMe">
 				<wreckage>true</wreckage>
 				<roof>false</roof>
@@ -94,6 +95,7 @@
 			<Plasteel>1</Plasteel>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart"/>
 			<li Class="CompProperties_RoofMe">
 				<wreckage>true</wreckage>
 				<roof>false</roof>
@@ -133,6 +135,7 @@
 			<Plasteel>12</Plasteel>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>50</basePowerConsumption>

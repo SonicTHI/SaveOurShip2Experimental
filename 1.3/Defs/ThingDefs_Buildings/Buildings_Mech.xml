@@ -40,6 +40,9 @@
 		<description>The outer structural elements of a mechanoid ship's hull. Does not include conduits for power or coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+			</li>
 			<li Class="CompProperties_RoofMe">
 				<mechanoid>true</mechanoid>
 			</li>
@@ -105,6 +108,9 @@
 		<description>The outer structural elements of a mechanoid ship's hull. Includes conduits for power and coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -140,6 +146,9 @@
 	<!-- corners -->
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerMech" Abstract="True">
 		<description>Angled armor for a ship's outer hull.</description>
+		<comps>
+			<li Class="CompProperties_SoShipPart"/>
+		</comps>
 	</ThingDef>
 	<ThingDef ParentName="ShipCornerMech">
 		<defName>Ship_Corner_OneOne_Mech</defName>
@@ -288,6 +297,9 @@
 			</blueprintGraphicData>
 		</building>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+			</li>
 			<li Class="CompProperties_RoofMe">
 				<mechanoid>true</mechanoid>
 			</li>
@@ -473,6 +485,9 @@
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>150</basePowerConsumption>
@@ -530,6 +545,9 @@
 			<Plasteel>25</Plasteel>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>50</basePowerConsumption>
@@ -611,6 +629,9 @@
 			<Plasteel>1</Plasteel>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isPlating>true</isPlating>
+			</li>
 			<li Class="CompProperties_RoofMe">
 				<mechanoid>true</mechanoid>
 			</li>

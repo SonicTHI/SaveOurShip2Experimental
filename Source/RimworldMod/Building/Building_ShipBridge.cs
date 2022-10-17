@@ -906,17 +906,11 @@ namespace RimWorld
 		public void HackMe(Pawn pawn)
         {
             if (Rand.Chance(0.05f * pawn.skills.GetSkill(SkillDefOf.Intellectual).levelInt))
-            {
                 Success(pawn);
-            }
             else if (Rand.Chance(0.05f * (20 - pawn.skills.GetSkill(SkillDefOf.Intellectual).levelInt)))
-            {
                 CriticalFailure(pawn);
-            }
             else
-            {
                 Failure(pawn);
-            }
         }
         private void Success(Pawn pawn)
         {

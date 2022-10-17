@@ -153,7 +153,7 @@ namespace SaveOurShip2
                     {
                         GenPlace.TryPlaceThing(container[i], __instance.Position, __instance.Map, ThingPlaceMode.Near, delegate (Thing thing, int count) {
                             PawnUtility.RecoverFromUnwalkablePositionOrKill(thing.Position, thing.Map);
-                            if (thing.Faction != Faction.OfPlayer && mapComp.InCombat && mapComp.ShipCombatOriginMap.GetComponent<ShipHeatMapComp>().ShipLord != null)
+                            if (thing.Faction != Faction.OfPlayer && mapComp.ShipCombatOriginMap.GetComponent<ShipHeatMapComp>().ShipLord != null)
                                 mapComp.ShipCombatOriginMap.GetComponent<ShipHeatMapComp>().ShipLord.AddPawn((Pawn)thing);
                             if (thing.TryGetComp<CompShuttleCosmetics>() != null)
                                 CompShuttleCosmetics.ChangeShipGraphics((Pawn)thing, ((Pawn)thing).TryGetComp<CompShuttleCosmetics>().Props);

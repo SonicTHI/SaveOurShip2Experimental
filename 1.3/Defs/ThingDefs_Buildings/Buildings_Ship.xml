@@ -3098,6 +3098,9 @@
 			<HullFoam>1</HullFoam>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+			</li>
 			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
 			</li>
@@ -3141,6 +3144,9 @@
 			<HullFoam>1</HullFoam>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isPlating>true</isPlating>
+			</li>
 			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
 			</li>

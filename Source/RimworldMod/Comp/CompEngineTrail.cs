@@ -143,19 +143,18 @@ namespace RimWorld
                     refuelComp.ConsumeFuel(Props.fuelUse);
                 }
                 //destroy stuff in plume
+                HashSet<Thing> toBurn = new HashSet<Thing>();
                 foreach (IntVec3 cell in rectToKill)
                 {
-                    List<Thing> toBurn = new List<Thing>();
                     foreach (Thing t in cell.GetThingList(parent.Map))
                     {
-                        if (t.def.useHitPoints)
+                        if ((t.def.useHitPoints || t is Pawn) && t.def.altitudeLayer != AltitudeLayer.Terrain)
                             toBurn.Add(t);
                     }
-                    foreach (Thing t in toBurn)
-                    {
-                        if (t.def.altitudeLayer != AltitudeLayer.Terrain)
-                            t.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 100));
-                    }
+                }
+                foreach (Thing t in toBurn)
+                {
+                    t.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 100));
                 }
             }
         }

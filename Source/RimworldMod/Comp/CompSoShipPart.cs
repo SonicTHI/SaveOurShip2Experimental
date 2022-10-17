@@ -14,12 +14,11 @@ namespace RimWorld
     public class CompSoShipPart : ThingComp
     {
         //CompSoShipPart types that are cached:
-        //shipPart (xml tagged building shipPart): anything attachable: walls, plating, engines, corners, hardpoints, spinal barrels
-        //shipPart hull (props isHull): walls and wall likes, corners, hullfoam fills these if destroyed
-        //shipPart plating (props isPlating): can not be placed under buildings
-        //part: parts that require to be placed on plating - not attached, no corePath
-
-        //not shipPart hull airlock extenders - //td
+        //xml tagged building shipPart only: never merge, only hold air - extenders
+        //shipPart + xml tagged building shipPart: anything attachable - walls, plating, engines, corners, hardpoints, spinal barrels
+        //shipPart hull (props isHull): walls, corners, hullfoam fills these if destroyed, wrecks form from these
+        //shipPart plating (props isPlating): can not be placed under buildings, wrecks form from these
+        //shipPart: other parts that are cached - not attached, no corePath
 
         public int shipIndex = -1; //main bridge thingid
         public int corePath = -1; //how far away the main bridge is
@@ -218,13 +217,13 @@ namespace RimWorld
                 //Log.Message("parts at i: "+ current.Count + "/" + i);
             }
         }
-        public void PreDeSpawn(Map map) //called in building.destroy, before comps get removed
+        public void PreDeSpawn(Map map, bool detach) //called in building.destroy, before comps get removed
         {
             if (shipIndex == -1)
             {
                 return;
             }
-            if (this.parent.def.building.shipPart)
+            if (this.parent.def.building.shipPart && detach)
             {
                 HashSet<Building> toDeindex = new HashSet<Building>();
                 List<IntVec3> toCheck = FindAreaToDetach(this.parent as Building);
@@ -285,7 +284,7 @@ namespace RimWorld
             var cellsDone = GenAdj.CellsOccupiedBy(root).ToList();
 
             //add only adjacent cells that have a shipPart part and a higher corePath
-            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root).Where(v => v.GetThingList(map).Any(t => t is Building b && !b.Destroyed && b.def.building.shipPart && b != root && b.TryGetComp<CompSoShipPart>().corePath > corePath)));
+            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root).Where(v => v.GetThingList(map).Any(t => t is Building b && !b.Destroyed && b.def.building.shipPart && b != root && b.TryGetComp<CompSoShipPart>() != null && b.GetComp<CompSoShipPart>().corePath > corePath)));
             //check cells till you find lower than root core, if not return all found cells
             while (cellsTodo.Count > 0)
             {

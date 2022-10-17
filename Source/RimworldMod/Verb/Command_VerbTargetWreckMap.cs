@@ -50,36 +50,32 @@ namespace RimWorld
             if (b == null)
                 return;
             List<Building> cache = ShipInteriorMod2.FindBuildingsAttached(b, true);
-            List<IntVec3> positions = new List<IntVec3>();
+            HashSet<IntVec3> positions = new HashSet<IntVec3>();
             IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
-            foreach (Building building in cache)
-            {
-                if (building.Position.x < lowestCorner.x)
-                    lowestCorner.x = building.Position.x;
-                if (building.Position.z < lowestCorner.z)
-                    lowestCorner.z = building.Position.z;
-            }
-            if (rotb == 2)
-            {
-                lowestCorner.x = targetMap.Size.x - lowestCorner.x;
-                lowestCorner.z = targetMap.Size.z - lowestCorner.z;
-            }
             //gen ship sketch
             Sketch sketch = new Sketch();
             int bCount = 0;
             foreach (Building building in cache)
             {
-                bCount++;
                 if (building is Building_ShipBridge && !building.Destroyed)
                 {
                     Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
                     return;
                 }
+                bCount++;
+                if (building.Position.x < lowestCorner.x)
+                    lowestCorner.x = building.Position.x;
+                if (building.Position.z < lowestCorner.z)
+                    lowestCorner.z = building.Position.z;
                 foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(building))
                 {
-                    if (!positions.Contains(pos))
-                        positions.Add(pos);
+                    positions.Add(pos);
                 }
+            }
+            if (rotb == 2)
+            {
+                lowestCorner.x = targetMap.Size.x - lowestCorner.x;
+                lowestCorner.z = targetMap.Size.z - lowestCorner.z;
             }
             Log.Message("Target wreck building count: " + bCount);
             int bMax = sourceMap.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null).Count() * CompShipSalvageBay.salvageCapacity;

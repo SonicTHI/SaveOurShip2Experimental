@@ -145,9 +145,10 @@ namespace RimWorld
                     {
                         if (t is Building b)
                         {
-                            if (b.def.building.shipPart)
+                            var shipPart = b.TryGetComp<CompSoShipPart>();
+                            if (shipPart != null && b.def.building.shipPart)
                             {
-                                b.TryGetComp<CompSoShipPart>().corePath = i;
+                                shipPart.corePath = i;
                             }
                         }
                     }
@@ -227,7 +228,7 @@ namespace RimWorld
                 }
                 foreach (IntVec3 vec in current) //find parts cardinal to all prev.pos, exclude prev.pos
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1,1)).Where(v => !cellsDone.Contains(v) && v.GetThingList(map).Any(t => t is Building b && b.def.building.shipPart)));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1,1)).Where(v => !cellsDone.Contains(v) && v.GetThingList(map).Any(t => t is Building b && b.def.building.shipPart && b.TryGetComp<CompSoShipPart>() != null)));
                 }
                 i++;
                 //Log.Message("parts at i: "+ current.Count + "/" + i);

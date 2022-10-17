@@ -309,10 +309,7 @@
     <Compile Include="Quest\QuestNode_GenerateSpaceSite.cs" />
     <Compile Include="Quest\QuestNode_GenerateThingSetArchotech.cs" />
     <Compile Include="Quest\QuestPart_ArchotechSpawn.cs" />
-    <Compile Include="Obsolete\RoomRoleWorker_ShipInside.cs" />
     <Compile Include="Obsolete\PlaceWorker_InsideStarship.cs" />
-    <Compile Include="Obsolete\PlaceWorker_InsideShipRoom.cs" />
-    <Compile Include="Obsolete\RoomRoleWorker_ShipFramework.cs" />
     <Compile Include="Comp\CompRoofMe.cs" />
     <Compile Include="Comp\CompProperties_RoofMe.cs" />
     <Compile Include="ScenPart_StartInSpace.cs" />

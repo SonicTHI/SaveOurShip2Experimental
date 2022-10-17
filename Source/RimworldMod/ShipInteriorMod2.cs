@@ -2539,7 +2539,7 @@ namespace SaveOurShip2
 	}
 
 	//ship
-	[HarmonyPatch(typeof(ShipUtility), "ShipBuildingsAttachedTo")]
+	[HarmonyPatch(typeof(ShipUtility), "ShipBuildingsAttachedTo")] //obsolete
 	public static class FindAllTheShipParts
 	{
 		[HarmonyPrefix]
@@ -2954,79 +2954,66 @@ namespace SaveOurShip2
 			if (__instance is Frame || ShipInteriorMod2.AirlockBugFlag)
 				return true;
 
-			var shipComp = __instance.TryGetComp<CompSoShipPart>();
-			if (shipComp != null)
-				shipComp.PreDeSpawn(__instance.Map);
-			else
+			var shipPart = __instance.TryGetComp<CompSoShipPart>();
+			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
+			if (shipPart != null && shipPart.shipIndex > -1) //shipPart if hull/plating replace with foam else place blueprint
 			{
-				//rems normal building weight/count to ship
+				if (mode != DestroyMode.Deconstruct)
+				{
+					var ship = mapComp.ShipsOnMap[shipPart.shipIndex];
+					if ((shipPart.Props.isHull || shipPart.Props.isPlating) && ship.FoamDistributors.Any())
+					{
+						foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
+						{
+							if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
+							{
+								dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
+								__state = new Tuple<IntVec3, Faction, Map>(__instance.Position, __instance.Faction, __instance.Map);
+								shipPart.PreDeSpawn(__instance.Map, false);
+								return true;
+							}
+						}
+					}
+					if (__instance.Faction == Faction.OfPlayer)
+						GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
+						__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
+				}
+				shipPart.PreDeSpawn(__instance.Map, true);
+			}
+			else //other buildings - rem weight/count from ship, if player IC place blueprint
+			{
 				if (!__instance.Position.GetTerrain(__instance.Map).layerable)
 					return true;
 				foreach (Thing t in __instance.Position.GetThingList(__instance.Map))
 				{
 					if (t is Building u)
 					{
-						var shipPart = u.TryGetComp<CompSoShipPart>();
-						if (shipPart != null && shipPart.shipIndex > -1)
+						var shipPartUnder = u.TryGetComp<CompSoShipPart>();
+						if (shipPartUnder != null && shipPartUnder.shipIndex > -1)
 						{
-							var ship = u.Map.GetComponent<ShipHeatMapComp>().ShipsOnMap[shipPart.shipIndex];
+							var ship = u.Map.GetComponent<ShipHeatMapComp>().ShipsOnMap[shipPartUnder.shipIndex];
 							if (ship.Buildings.Remove(__instance))
 							{
 								ship.BuildingCount--;
 								ship.Mass -= __instance.def.Size.x * __instance.def.Size.z * 3;
-								return true;
-							}
-						}
-					}
-				}
-			}/*
-			if ((mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct) || !__instance.def.CanHaveFaction)
-				return true;
-			if (mode != DestroyMode.Deconstruct && __instance.def.blueprintDef != null)
-			{
-				var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-				//either is/on shipPart
-				SoShipCache ship = null;
-				if (shipComp != null && shipComp.shipIndex > -1)
-				{
-					ship = mapComp.ShipsOnMap[shipComp.shipIndex];
-				}
-				else
-				{
-					foreach (Thing t in __instance.Position.GetThingList(__instance.Map))
-					{
-						if (t is Building b)
-						{
-							var shipPartB = b.TryGetComp<CompSoShipPart>();
-							if (shipPartB != null && shipPartB.shipIndex > -1)
-							{
-								ship = mapComp.ShipsOnMap[shipPartB.shipIndex];
+								if (mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct) //wd
+									break;
+								if (mapComp.InCombat && mode != DestroyMode.Deconstruct && __instance.def.blueprintDef != null && __instance.Faction == Faction.OfPlayer)
+								{
+									GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
+									__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
+								}
 								break;
 							}
 						}
 					}
 				}
-				if (ship != null && !ship.FoamDistributors.NullOrEmpty() && __instance.def.building.shipPart && shipComp.Props.isHull)
-				{
-					foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
-					{
-						if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
-						{
-							dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
-							__state = new Tuple<IntVec3, Faction, Map>(__instance.Position, __instance.Faction, __instance.Map);
-							return true;
-						}
-					}
-				}
-				if (__instance.Faction == Faction.OfPlayer)
-					GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
-					__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
-			}*/
+			}
 			return true;
 		}
 
 		[HarmonyPostfix]
-		public static void ReplaceShipPart(Tuple<IntVec3, Faction, Map> __state)
+		public static void ReplaceShipPart(Building __instance, Tuple<IntVec3, Faction, Map> __state)
 		{
 			if (__state != null)
 			{

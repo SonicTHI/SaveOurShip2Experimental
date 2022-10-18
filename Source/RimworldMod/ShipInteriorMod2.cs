@@ -2409,7 +2409,7 @@ namespace SaveOurShip2
 
 	//comms
 	[HarmonyPatch(typeof(Building_CommsConsole), "GetFailureReason")]
-	public class NoCommsWhenCloaked
+	public static class NoCommsWhenCloaked
 	{
 		public static void Postfix(Pawn myPawn, ref FloatMenuOption __result)
 		{
@@ -2917,7 +2917,7 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void OnSpawn(Building __instance, Map map, bool respawningAfterLoad)
 		{
-			if (respawningAfterLoad || map.GetComponent<ShipHeatMapComp>().CacheOff || !__instance.Position.GetTerrain(map).layerable || __instance.TryGetComp<CompSoShipPart>() != null)
+			if (!__instance.Map.regionAndRoomUpdater.Enabled || respawningAfterLoad || map.GetComponent<ShipHeatMapComp>().CacheOff || __instance.TryGetComp<CompSoShipPart>() != null)
 				return;
 			foreach (Thing t in __instance.Position.GetThingList(map))
 			{
@@ -2951,7 +2951,7 @@ namespace SaveOurShip2
 			//disable when moving/detach
 
 			__state = null;
-			if (__instance is Frame || ShipInteriorMod2.AirlockBugFlag)
+			if (__instance is Frame || ShipInteriorMod2.AirlockBugFlag || !__instance.Map.regionAndRoomUpdater.Enabled)
 				return true;
 
 			var shipPart = __instance.TryGetComp<CompSoShipPart>();

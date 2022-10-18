@@ -383,7 +383,6 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_PassiveCoolerArchotech</defName>
 		<label>archotech ship radiator</label>
-		<designatorDropdown>Ship_Radiators</designatorDropdown>
 		<description>Vents heat into the void at a physically-implausible rate, rapidly cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
 		<thingClass>Building_Radiator</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
@@ -474,7 +473,6 @@
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 		<building>
-			<shipPart>true</shipPart>
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>

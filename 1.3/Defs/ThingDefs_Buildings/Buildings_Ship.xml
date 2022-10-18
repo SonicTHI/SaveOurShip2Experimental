@@ -407,13 +407,11 @@
 			<ChunkSlagSteel>1</ChunkSlagSteel>
 		</killedLeavings>
 	</ThingDef>
-	<DesignatorDropdownGroupDef>
-		<defName>Ship_Radiators</defName>
-	</DesignatorDropdownGroupDef>
+
+	<!-- obsolete -->
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_PassiveCooler</defName>
 		<label>ship radiator</label>
-		<designatorDropdown>Ship_Radiators</designatorDropdown>
 		<description>Radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
 		<thingClass>Building_Radiator</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
@@ -498,12 +496,7 @@
 		</comps-->
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
-		<researchPrerequisites>
-			<li>ShipBasics</li>
-			<li>AirConditioning</li>
-		</researchPrerequisites>
 		<building>
-			<shipPart>true</shipPart>
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
@@ -516,7 +509,6 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_PassiveCoolerAdvanced</defName>
 		<label>advanced ship radiator</label>
-		<designatorDropdown>Ship_Radiators</designatorDropdown>
 		<description>Quickly radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
 		<thingClass>Building_Radiator</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
@@ -602,11 +594,7 @@
 		</comps-->
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
-		<researchPrerequisites>
-			<li>ShipAdvRadiator</li>
-		</researchPrerequisites>
 		<building>
-			<shipPart>true</shipPart>
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
@@ -616,6 +604,7 @@
 			<ChunkSlagSteel>1</ChunkSlagSteel>
 		</killedLeavings>
 	</ThingDef>
+
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Vents</defName>
 	</DesignatorDropdownGroupDef>
@@ -1706,7 +1695,7 @@
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<!--ThingDef ParentName="BuildingBase">
 		<defName>ShipViewscreen</defName>
 		<label>ship viewscreen</label>
 		<description>A huge, high-tech screen that will keep your bridge crew occupied.</description>
@@ -1770,7 +1759,7 @@
 			</li>
 			<li Class="CompProperties_Flickable"/>
 		</comps>
-	</ThingDef>
+	</ThingDef-->
 
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipPilotSeat</defName>

@@ -385,7 +385,7 @@
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipShields</defName>
 		<label>ship shields</label>
-		<description>Protect your ship with a momentum-repulsor field. Be aware that while shields are up, radiators canot disperse heat.</description>
+		<description>Protect your ship with a momentum-repulsor field.</description>
 		<baseCost>3000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
@@ -517,25 +517,11 @@
 		<researchViewX>6</researchViewX>
 		<researchViewY>7</researchViewY>
 	</ResearchProjectDef>
-
-	<ResearchProjectDef ParentName="ShipResearchProjectBase">
-		<defName>ShipAdvRadiator</defName>
-		<label>active radiator</label>
-		<description>Utilize quantum phenomena to more quickly vent heat into space.</description>
-		<baseCost>4000</baseCost>
-		<techLevel>Spacer</techLevel>
-		<prerequisites>
-			<li>ShipTurretLarge</li>
-		</prerequisites>
-		<tab>ResearchTabShip</tab>
-		<researchViewX>4</researchViewX>
-		<researchViewY>6</researchViewY>
-	</ResearchProjectDef>
 	
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipHeatManifold</defName>
-		<label>heat manifold</label>
-		<description>Construct a specialized heatsink which rapidly bleeds stored heat into the surrounding room.</description>
+		<label>purge ports</label>
+		<description>Construct a specialized heatsink which rapidly bleeds stored heat by dumping silver.</description>
 		<baseCost>2000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>

@@ -10,6 +10,8 @@
 		<label>Imperial Gladius fighter</label>
 		<combatPoints>28</combatPoints>
 		<imperialShip>True</imperialShip>
+		<marineDef>Empire_Fighter_Marine_Space</marineDef>
+		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>2</x>

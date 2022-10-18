@@ -212,7 +212,7 @@
   <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
     <defName>ArchotechHeatsink</defName>
     <label>anti-entropics</label>
-    <description>Utilize exotic particles to construct heatsinks which eliminate heat altogether, rather than venting it into your ship.</description>
+    <description>Utilize exotic particles to construct heat converters which eliminate heat altogether, rather than radiating it out to space.</description>
     <baseCost>9000</baseCost>
 	<prerequisites>
 		<li>ArchotechShields</li>

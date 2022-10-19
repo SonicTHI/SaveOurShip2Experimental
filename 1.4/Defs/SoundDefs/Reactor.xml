@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Defs>
+  <SoundDef>
+    <defName>ShipReactor_Radiation</defName>  
+    <context>MapOnly</context>
+    <maxSimultaneous>5</maxSimultaneous>  
+    <subSounds>
+      <li>   
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Ship/Geigerfast</clipPath>
+          </li>
+        </grains>      
+        <volumeRange>20~20</volumeRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+  
+  <SoundDef>
+    <defName>ShipReactor_Ambience_Start</defName>
+    <context>MapOnly</context>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Folder">
+            <clipFolderPath>Ship/Reactor_Power_Up</clipFolderPath>
+          </li>
+        </grains>
+        <volumeRange>14~14</volumeRange>
+        <pitchRange>0.9082353~1.114706</pitchRange>
+        <distRange>0~50</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+  
+  <SoundDef>
+    <defName>ShipReactor_Ambience_Stop</defName>
+    <context>MapOnly</context>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Folder">
+            <clipFolderPath>Ship/Reactor_Power_Down</clipFolderPath>
+          </li>
+        </grains>
+        <volumeRange>14~14</volumeRange>
+        <pitchRange>0.9082353~1.114706</pitchRange>
+        <distRange>0~50</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>ShipReactor_Ambience</defName>  
+    <sustain>True</sustain>  
+    <context>MapOnly</context>
+    <priorityMode>PrioritizeNearest</priorityMode>  
+    <sustainStartSound>ShipReactor_Ambience_Start</sustainStartSound>  
+    <sustainStopSound>ShipReactor_Ambience_Stop</sustainStopSound>  
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>      
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Ship/ReactorOnLowLoop</clipPath>
+          </li>
+        </grains>      
+        <volumeRange>15~15</volumeRange>      
+        <pitchRange>1~1.015</pitchRange>      
+        <distRange>0~30</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+  
+  <SoundDef>
+    <defName>ShipReactor_Ambience_Medium</defName>  
+    <sustain>True</sustain>  
+    <context>MapOnly</context>
+    <priorityMode>PrioritizeNearest</priorityMode>  
+    <sustainStartSound>ShipReactor_Ambience_Start</sustainStartSound>  
+    <sustainStopSound>ShipReactor_Ambience_Stop</sustainStopSound>  
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>      
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Ship/ReactorOnMediumLoop</clipPath>
+          </li>
+        </grains>      
+        <volumeRange>15~15</volumeRange>      
+        <pitchRange>1~1.015</pitchRange>      
+        <distRange>0~30</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+  
+  <SoundDef>
+    <defName>ShipReactor_Ambience_High</defName>  
+    <sustain>True</sustain>  
+    <context>MapOnly</context>
+    <priorityMode>PrioritizeNearest</priorityMode>  
+    <sustainStartSound>ShipReactor_Ambience_Start</sustainStartSound>  
+    <sustainStopSound>ShipReactor_Ambience_Stop</sustainStopSound>  
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>      
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Ship/ReactorOnHighLoop</clipPath>
+          </li>
+        </grains>      
+        <volumeRange>15~15</volumeRange>      
+        <pitchRange>1~1.015</pitchRange>      
+        <distRange>0~30</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>ShipReactor_Ambience_Unstable</defName>  
+    <sustain>True</sustain>  
+    <context>MapOnly</context>
+    <priorityMode>PrioritizeNearest</priorityMode>  
+    <sustainStartSound>ShipReactor_Ambience_Start</sustainStartSound>  
+    <sustainStopSound>ShipReactor_Ambience_Stop</sustainStopSound>  
+    <subSounds>
+      <li>
+        <muteWhenPaused>True</muteWhenPaused>      
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Ship/ReactorOnUnstableLoop</clipPath>
+          </li>
+        </grains>      
+        <volumeRange>15~15</volumeRange>      
+        <pitchRange>1~1.015</pitchRange>      
+        <distRange>0~30</distRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+</Defs>

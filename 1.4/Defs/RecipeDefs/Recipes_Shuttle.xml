@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+  <RecipeDef>
+    <defName>MakeShuttleFuelPods</defName>
+    <label>make uranium fuel pods</label>
+    <description>Craft 100 uranium fuel pods.</description>
+    <jobString>Making uranium fuel pods.</jobString>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <allowMixingIngredients>true</allowMixingIngredients>
+    <workAmount>1200</workAmount>
+    <targetCountAdjustment>5</targetCountAdjustment>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Uranium</li>
+          </thingDefs>
+        </filter>
+        <count>7</count>
+      </li>
+			<li>
+				<filter>
+          <thingDefs>
+            <li>Steel</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+			</li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Uranium</li>
+				<li>Steel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <ShuttleFuelPods>100</ShuttleFuelPods>
+    </products>
+    <workSkill>Crafting</workSkill>
+	<recipeUsers>
+		<li>TableMachining</li>
+	</recipeUsers>
+    <researchPrerequisites><li>ShipReactor</li></researchPrerequisites>
+  </RecipeDef>
+</Defs>

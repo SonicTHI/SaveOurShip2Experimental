@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+		<Operation Class="PatchOperationAdd">
+			<xpath>//IncidentDef[defName = "OrbitalTraderArrival"]/targetTags</xpath>
+			<order>Append</order>
+			<value>
+				<li>Map_SpaceHome</li>
+			</value>
+		</Operation>
+</Patch>

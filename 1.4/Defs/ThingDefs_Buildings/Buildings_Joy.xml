@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>Holodeck_Basic</defName>
+    <label>basic holodeck</label>
+    <description>A makeshift hologram emitter connected to a gaming PC. Capable of only simple simulations. Users will slowly gain skill points depending on the chosen sim.</description>
+	<drawerType>MapMeshAndRealTime</drawerType>
+    <graphicData>
+      <texPath>Things/Building/Ship/BasicHolodeck</texPath>
+      <graphicClass>Graphic_SingleOnOff</graphicClass>
+      <shadowData>
+        <volume>(0.6, 0.6, 0.1)</volume>
+        <offset>(0, 0, 0.2)</offset>
+      </shadowData>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+    <rotatable>false</rotatable>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <socialPropernessMatters>true</socialPropernessMatters>
+    <fillPercent>0.35</fillPercent>
+    <researchPrerequisites><li>Holodeck_Basic</li></researchPrerequisites>
+    <thingCategories>
+      <li>BuildingsJoy</li>
+    </thingCategories>
+    <thingSetMakerTags>
+      <li>RewardStandardLowFreq</li>
+      <li>RewardStandardQualitySuper</li>
+    </thingSetMakerTags>
+    <costList>
+      <Steel>150</Steel>
+      <ComponentIndustrial>18</ComponentIndustrial>
+    </costList>
+    <statBases>
+      <WorkToBuild>60000</WorkToBuild>
+      <MaxHitPoints>85</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <Mass>10</Mass>
+      <JoyGainFactor>1.0</JoyGainFactor>
+    </statBases>
+	<tickerType>Rare</tickerType>
+    <pathCost>50</pathCost>
+    <passability>PassThroughOnly</passability>
+    <size>(1,1)</size>
+    <building>
+      <joyKind>Holodeck</joyKind>
+      <watchBuildingStandDistanceRange>-2~2</watchBuildingStandDistanceRange>
+      <watchBuildingStandRectWidth>5</watchBuildingStandRectWidth>
+      <watchBuildingInSameRoom>true</watchBuildingInSameRoom>
+    </building>
+    <placeWorkers>
+      <li>PlaceWorker_WatchArea</li>
+    </placeWorkers>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <shortCircuitInRain>true</shortCircuitInRain>
+        <basePowerConsumption>450</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_Holodeck"/>
+      <li Class="CompProperties_Glower">
+        <glowRadius>6</glowRadius>
+        <glowColor>(217,217,208,0)</glowColor>
+      </li>
+    </comps>
+    <tradeTags>
+      <li>Television</li>
+    </tradeTags>
+    <designationCategory>Joy</designationCategory>
+  </ThingDef>
+  
+  <ThingDef ParentName="BuildingBase">
+    <defName>Holodeck_Standard</defName>
+    <label>advanced holodeck</label>
+    <description>A state-of-the-art holoprojector equipped with a wide range of simulations. Very entertaining. The user will gain skill points depending on the chosen sim.</description>
+	<drawerType>MapMeshAndRealTime</drawerType>
+    <graphicData>
+      <texPath>Things/Building/Ship/Holodeck</texPath>
+      <graphicClass>Graphic_SingleOnOff</graphicClass>
+      <shadowData>
+        <volume>(0.6, 0.6, 0.1)</volume>
+        <offset>(0, 0, 0.2)</offset>
+      </shadowData>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+    <rotatable>false</rotatable>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <socialPropernessMatters>true</socialPropernessMatters>
+    <fillPercent>0.35</fillPercent>
+    <researchPrerequisites><li>Holodeck_Standard</li></researchPrerequisites>
+    <thingCategories>
+      <li>BuildingsJoy</li>
+    </thingCategories>
+    <thingSetMakerTags>
+      <li>RewardStandardLowFreq</li>
+      <li>RewardStandardQualitySuper</li>
+    </thingSetMakerTags>
+    <costList>
+      <Steel>250</Steel>
+      <ComponentSpacer>6</ComponentSpacer>
+    </costList>
+    <statBases>
+      <WorkToBuild>80000</WorkToBuild>
+      <MaxHitPoints>85</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <Mass>10</Mass>
+      <JoyGainFactor>1.5</JoyGainFactor>
+    </statBases>
+	<tickerType>Rare</tickerType>
+    <pathCost>50</pathCost>
+    <passability>PassThroughOnly</passability>
+    <size>(1,1)</size>
+    <building>
+      <joyKind>Holodeck</joyKind>
+      <watchBuildingStandDistanceRange>-3~3</watchBuildingStandDistanceRange>
+      <watchBuildingStandRectWidth>7</watchBuildingStandRectWidth>
+      <watchBuildingInSameRoom>true</watchBuildingInSameRoom>
+    </building>
+    <placeWorkers>
+      <li>PlaceWorker_WatchArea</li>
+    </placeWorkers>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <shortCircuitInRain>true</shortCircuitInRain>
+        <basePowerConsumption>800</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_Holodeck"/>
+      <li Class="CompProperties_Glower">
+        <glowRadius>8</glowRadius>
+        <glowColor>(217,217,208,0)</glowColor>
+      </li>
+    </comps>
+    <tradeTags>
+      <li>Television</li>
+    </tradeTags>
+    <designationCategory>Joy</designationCategory>
+  </ThingDef>
+  
+  <ThingDef ParentName="BuildingBase">
+    <defName>Holodeck_AI</defName>
+    <label>sapient holodeck</label>
+    <description>A state-of-the-art holoprojector controlled by an AI. Its creativity allows for endless entertainment, customized to the user's tastes. The user will quickly gain skill points depending on the chosen sim.</description>
+	<drawerType>MapMeshAndRealTime</drawerType>
+    <graphicData>
+      <texPath>Things/Building/Ship/SapientHolodeck</texPath>
+      <graphicClass>Graphic_SingleOnOff</graphicClass>
+      <shadowData>
+        <volume>(0.6, 0.6, 0.1)</volume>
+        <offset>(0, 0, 0.2)</offset>
+      </shadowData>
+      <drawSize>(1,1)</drawSize>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+    <rotatable>false</rotatable>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <socialPropernessMatters>true</socialPropernessMatters>
+    <fillPercent>0.35</fillPercent>
+    <researchPrerequisites><li>Holodeck_AI</li></researchPrerequisites>
+    <thingCategories>
+      <li>BuildingsJoy</li>
+    </thingCategories>
+    <costList>
+      <Plasteel>120</Plasteel>
+      <ComponentSpacer>4</ComponentSpacer>
+	  <AIPersonaCore>1</AIPersonaCore>
+    </costList>
+    <statBases>
+      <WorkToBuild>80000</WorkToBuild>
+      <MaxHitPoints>185</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <Mass>10</Mass>
+      <JoyGainFactor>2.0</JoyGainFactor>
+    </statBases>
+	<tickerType>Rare</tickerType>
+    <pathCost>50</pathCost>
+    <passability>PassThroughOnly</passability>
+    <size>(1,1)</size>
+    <building>
+      <joyKind>Holodeck</joyKind>
+      <watchBuildingStandDistanceRange>-4~4</watchBuildingStandDistanceRange>
+      <watchBuildingStandRectWidth>9</watchBuildingStandRectWidth>
+      <watchBuildingInSameRoom>true</watchBuildingInSameRoom>
+    </building>
+    <placeWorkers>
+      <li>PlaceWorker_WatchArea</li>
+    </placeWorkers>
+    <comps>
+      <li Class="CompProperties_Power">
+        <compClass>CompPowerTrader</compClass>
+        <shortCircuitInRain>true</shortCircuitInRain>
+        <basePowerConsumption>1000</basePowerConsumption>
+      </li>
+      <li Class="CompProperties_Flickable"/>
+      <li Class="CompProperties_Holodeck"/>
+      <li Class="CompProperties_Glower">
+        <glowRadius>10</glowRadius>
+        <glowColor>(217,217,208,0)</glowColor>
+      </li>
+    </comps>
+    <tradeTags>
+      <li>Television</li>
+    </tradeTags>
+    <designationCategory>Joy</designationCategory>
+  </ThingDef>
+  
+  <ThingDef ParentName="BuildingBase">
+    <defName>TelescopeSpace</defName>
+    <label>space telescope</label>
+    <description>An advanced telescope for doing amateur astronomy. It's a relaxing hobby for a certain kind of person. Includes its own reinforced window slot so it can be used under ship roofs.</description>
+    <graphicData>
+      <texPath>Things/Building/Joy/Telescope</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawRotated>false</drawRotated>
+      <shadowData>
+        <volume>(0.3, 0.7, 0.3)</volume>
+    <offset>(-0.03,0,-0.35)</offset>
+      </shadowData>
+    </graphicData>
+    <canBeUsedUnderRoof>true</canBeUsedUnderRoof>
+    <fillPercent>0.15</fillPercent>
+    <altitudeLayer>Building</altitudeLayer>
+    <hasInteractionCell>true</hasInteractionCell>
+    <interactionCellOffset>(0,0,1)</interactionCellOffset>
+    <passability>PassThroughOnly</passability>
+    <pathCost>30</pathCost>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <socialPropernessMatters>true</socialPropernessMatters>
+    <thingCategories>
+      <li>BuildingsJoy</li>
+    </thingCategories>
+    <building>
+      <joyKind>TelescopeSpace</joyKind>
+    </building>
+    <costList>
+      <Plasteel>25</Plasteel>
+      <ComponentSpacer>1</ComponentSpacer>
+    </costList>
+    <statBases>
+      <MaxHitPoints>75</MaxHitPoints>
+      <Flammability>1.0</Flammability>
+      <MarketValue>600</MarketValue>
+      <Mass>7.5</Mass>
+      <JoyGainFactor>1.5</JoyGainFactor>
+    </statBases>
+    <designationCategory>Joy</designationCategory>
+  </ThingDef>
+</Defs>

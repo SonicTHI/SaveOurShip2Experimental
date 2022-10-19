@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Royalty</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/ThingDef[@Name="ApparelArmorReconBase" or @Name="ApparelArmorCataphractBase" or @Name="ApparelArmorHelmetCataphractBase"]/apparel</xpath>
+					<value><tags><li>EVA</li></tags></value></li>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/ThingDef[@Name="ApparelArmorReconBase"]/statBases/Insulation_Cold</xpath>
+					<value><Insulation_Cold>80</Insulation_Cold></value></li>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/ThingDef[@Name="ApparelArmorCataphractBase"]/statBases/Insulation_Cold</xpath>
+					<value><Insulation_Cold>100</Insulation_Cold></value></li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationSequence">
+		<operations>
+			<li Class="PatchOperationAdd">
+				<xpath>/Defs/ThingDef[@Name="ApparelArmorPowerBase" or @Name="ApparelArmorHelmetPowerBase"]/apparel</xpath>
+				<value><tags><li>EVA</li></tags></value></li>
+			<li Class="PatchOperationReplace">
+				<xpath>/Defs/ThingDef[@Name="ApparelArmorPowerBase"]/statBases/Insulation_Cold</xpath>
+				<value><Insulation_Cold>90</Insulation_Cold></value></li>
+		</operations>
+	</Operation>
+</Patch>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <QuestScriptDef>
+    <defName>ArchotechGiftQuest</defName>
+    <defaultChallengeRating>1</defaultChallengeRating>
+    <isRootSpecial>true</isRootSpecial>
+    <questNameRules>
+      <rulesStrings>
+        <li>questName->[quest_name]</li>
+      </rulesStrings>
+    </questNameRules>
+    <questDescriptionRules>
+      <rulesStrings>
+        <li>questDescription->[archotech_name] warmly embraces your minds, offering its human progenitors a choice of gifts.</li>
+      </rulesStrings>
+    </questDescriptionRules>
+    <root Class="QuestNode_Sequence">
+      <nodes>
+        <li Class="QuestNode_MultiplyRange">
+          <range>0.7~1.3</range>
+          <value>$value</value>
+          <storeAs>itemPodsTotalMarketValueRange</storeAs>
+        </li>
+        <li Class="QuestNode_GenerateThingSetArchotech">
+          <totalMarketValueRange>$itemPodsTotalMarketValueRange</totalMarketValueRange>
+          <qualityGenerator>Reward</qualityGenerator>
+        </li>
+      </nodes>
+    </root>
+  </QuestScriptDef>
+  
+</Defs>

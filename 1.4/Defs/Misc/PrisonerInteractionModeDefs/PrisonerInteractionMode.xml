@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <PrisonerInteractionModeDef>
+    <defName>SacrificeToArchotech</defName>
+    <label>sacrifice to archotech spore</label>
+    <listOrder>39</listOrder>
+  </PrisonerInteractionModeDef>
+</Defs>

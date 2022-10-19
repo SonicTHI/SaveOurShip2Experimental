@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ThingDef ParentName="BaseFilth">
+    <defName>Filth_SpaceBones</defName>
+    <label>bones</label>
+    <graphicData>
+      <texPath>Things/Filth/Bones</texPath>
+      <graphicClass>Graphic_Cluster</graphicClass>
+    </graphicData>
+	<statBases>
+      <Beauty>-50</Beauty>
+      <Cleanliness>-20</Cleanliness>
+    </statBases>
+    <filth>
+      <cleaningWorkToReduceThickness>35</cleaningWorkToReduceThickness>
+      <canFilthAttach>false</canFilthAttach>
+    </filth>
+  </ThingDef>
+  
+  <ThingDef ParentName="BaseFilth">
+    <defName>Filth_SpaceReactorAsh</defName>
+    <label>radioactive ash</label>
+    <graphicData>
+      <texPath>Things/Filth/ReactorDebris</texPath>
+      <graphicClass>Graphic_Cluster</graphicClass>
+    </graphicData>
+	<statBases>
+      <Beauty>-50</Beauty>
+      <Cleanliness>-20</Cleanliness>
+    </statBases>
+    <filth>
+      <cleaningWorkToReduceThickness>100</cleaningWorkToReduceThickness>
+      <canFilthAttach>true</canFilthAttach>
+    </filth>
+  </ThingDef>
+
+</Defs>

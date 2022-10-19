@@ -1,0 +1,408 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>RimworldMod</RootNamespace>
+    <AssemblyName>ShipsHaveInsides</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\..\1.3\Assemblies\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\2009463077 Harmony\Current\Assemblies\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HugsLib">
+      <HintPath>..\..\..\818773962 HugsLib\v1.3\Assemblies\HugsLib.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="WallLight">
+      <HintPath>..\..\..\1423699208 Wall Light\1.3\Assemblies\WallLight.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Alert_ArchotechSporeMoodLow.cs" />
+    <Compile Include="Alert_MechanitesInHomeArea.cs" />
+    <Compile Include="ApparelHolographic.cs" />
+    <Compile Include="ApparelSpaceBelt.cs" />
+    <Compile Include="ArchotechGiftDef.cs" />
+    <Compile Include="AttackableShip.cs" />
+    <Compile Include="Building\Building_ArchotechPillar.cs" />
+    <Compile Include="Building\Building_Radiator.cs" />
+    <Compile Include="Building\Building_SatelliteCore.cs" />
+    <Compile Include="Building\Building_ArchotechSpore.cs" />
+    <Compile Include="Building\Building_ShipAdvSensor.cs" />
+    <Compile Include="Building\Building_ShipAirlock.cs" />
+    <Compile Include="Building\Building_ShipBridge.cs" />
+    <Compile Include="Building\Building_ShipCapacitor.cs" />
+    <Compile Include="Building\Building_ShipCloakingDevice.cs" />
+    <Compile Include="Building\Building_ShipConduit.cs" />
+    <Compile Include="Building\Building_ShipTurret.cs" />
+    <Compile Include="Building\Building_ShipTurretTorpedo.cs" />
+    <Compile Include="Building\Building_ShipVent.cs" />
+    <Compile Include="ArrivalAction\CaravanArrivalAction_VisitTribalPillarSite.cs" />
+    <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
+    <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
+    <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
+    <Compile Include="Comp\CompProperties_ShipBlueprint.cs" />
+    <Compile Include="Comp\CompRCSThruster.cs" />
+    <Compile Include="Comp\CompProperties_ShipLifeSupport.cs" />
+    <Compile Include="Comp\CompProperties_SalvageBay.cs" />
+    <Compile Include="Comp\CompAICrewmate.cs" />
+    <Compile Include="Comp\CompArchoHullConversion.cs" />
+    <Compile Include="Comp\CompBecomeBuilding.cs" />
+    <Compile Include="Comp\CompBecomePawn.cs" />
+    <Compile Include="Comp\CompBlackBoxConsole.cs" />
+    <Compile Include="Comp\CompBlackBoxAI.cs" />
+    <Compile Include="Comp\CompBuildingConsciousness.cs" />
+    <Compile Include="Comp\CompChangeableProjectilePlural.cs" />
+    <Compile Include="Comp\CompEngineTrail.cs" />
+    <Compile Include="Comp\CompExplosivePlant.cs" />
+    <Compile Include="Comp\CompGraphicOnOff.cs" />
+    <Compile Include="Comp\CompDamagedReactor.cs" />
+    <Compile Include="Comp\CompHibernatableSoS.cs" />
+    <Compile Include="Comp\CompHolodeck.cs" />
+    <Compile Include="Comp\CompHologramGlower.cs" />
+    <Compile Include="Comp\CompHologramRelay.cs" />
+    <Compile Include="Comp\CompHullFoamDistributor.cs" />
+    <Compile Include="Comp\CompLongRangeMineralScannerSpace.cs" />
+    <Compile Include="Comp\CompLongRangeMineralScannerSpaceAI.cs" />
+    <Compile Include="Comp\CompPowerPlantSolarShip.cs" />
+    <Compile Include="Comp\CompPowerTraderOverdrivable.cs" />
+    <Compile Include="Comp\CompProperties_ArchoHullConversion.cs" />
+    <Compile Include="Comp\CompProperties_Archolife.cs" />
+    <Compile Include="Comp\CompProperties_BuildingConsciousness.cs" />
+    <Compile Include="Comp\CompProperties_EngineTrail.cs" />
+    <Compile Include="Comp\CompProperties_BecomeBuilding.cs" />
+    <Compile Include="Comp\CompProperties_BecomePawn.cs" />
+    <Compile Include="Comp\CompProperties_ChangeableProjectilePlural.cs" />
+    <Compile Include="Comp\CompProperties_GraphicOnOff.cs" />
+    <Compile Include="Comp\CompProperties_BlackBoxAI.cs" />
+    <Compile Include="Comp\CompProperties_BlackBoxConsole.cs" />
+    <Compile Include="Comp\CompProperties_DamagedReactor.cs" />
+    <Compile Include="Comp\CompProperties_HibernatableSoS.cs" />
+    <Compile Include="Comp\CompProperties_Holodeck.cs" />
+    <Compile Include="Comp\CompProperties_HologramGlower.cs" />
+    <Compile Include="Comp\CompProperties_HologramRelay.cs" />
+    <Compile Include="Comp\CompProperties_LongRangeMineralScannerSpaceAI.cs" />
+    <Compile Include="Comp\CompProperties_LongRangeMineralScannerSpace.cs" />
+    <Compile Include="Comp\CompProperties_Overlay.cs" />
+    <Compile Include="Comp\CompProperties_AICrewmate.cs" />
+    <Compile Include="Comp\CompProperties_HullFoamDistributor.cs" />
+    <Compile Include="Comp\CompProperties_PowerPlantSolarShip.cs" />
+    <Compile Include="Comp\CompProperties_ShuttleCosmetics.cs" />
+    <Compile Include="Comp\CompProperties_CryptoLaunchable.cs" />
+    <Compile Include="Comp\CompProperties_SoShipPart.cs" />
+    <Compile Include="Comp\CompProperties_SpinalMount.cs" />
+    <Compile Include="Comp\CompProperties_ShipHeat.cs" />
+    <Compile Include="Comp\CompProperties_SoSUnlock.cs" />
+    <Compile Include="Comp\CompProperties_ShuttleLaunchable.cs" />
+    <Compile Include="Comp\CompProperties_Unfold.cs" />
+    <Compile Include="Comp\CompRefuelableOverdrivable.cs" />
+    <Compile Include="Comp\CompSalvageBay.cs" />
+    <Compile Include="Comp\CompShipCombatShield.cs" />
+    <Compile Include="Comp\CompShipHeatTacCon.cs" />
+    <Compile Include="Comp\CompShipHeatPurge.cs" />
+    <Compile Include="Comp\CompShipHeatSink.cs" />
+    <Compile Include="Comp\CompShipHeatSource.cs" />
+    <Compile Include="Comp\CompShipHeat.cs" />
+    <Compile Include="Comp\CompShipLifeSupport.cs" />
+    <Compile Include="Comp\CompArcholife.cs" />
+    <Compile Include="Comp\CompShuttleCosmetics.cs" />
+    <Compile Include="Comp\CompCryptoLaunchable.cs" />
+    <Compile Include="Comp\CompSoShipPart.cs" />
+    <Compile Include="Comp\CompSpinalMount.cs" />
+    <Compile Include="Comp\CompSoSUnlock.cs" />
+    <Compile Include="Comp\CompShuttleLaunchable.cs" />
+    <Compile Include="Comp\CompTargetable_DamagedItem.cs" />
+    <Compile Include="Comp\CompTargetEffect_RepairItem.cs" />
+    <Compile Include="Comp\CompUseEffect_WeatherCancel.cs" />
+    <Compile Include="Comp\CompShipBluePrint.cs" />
+    <Compile Include="Comp\HediffComp_Bubble.cs" />
+    <Compile Include="Comp\HediffCompProperties_Bubble.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_ShipBlueprint.cs" />
+    <Compile Include="SoShipCache.cs" />
+    <Compile Include="DamageWorker_Mechanite.cs" />
+    <Compile Include="DamageWorker_PsychicFlayer.cs" />
+    <Compile Include="DeathActionWorker_AntigrainExplosion.cs" />
+    <Compile Include="DerelictShip.cs" />
+    <Compile Include="Designator_Ship.cs" />
+    <Compile Include="DetachedShipPart.cs" />
+    <Compile Include="Dialog_NameAI.cs" />
+    <Compile Include="Dialog_NameShip.cs" />
+    <Compile Include="Dialog_Pirate.cs" />
+    <Compile Include="Jobs\LordJob_AssaultShip.cs" />
+    <Compile Include="Jobs\JobGiver_AIBreachAirlock.cs" />
+    <Compile Include="Jobs\LordToil_AssaultShip.cs" />
+    <Compile Include="Obsolete\Dialog_SalvageShip.cs" />
+    <Compile Include="EnemyShipDef.cs" />
+    <Compile Include="EnemyShipPartDef.cs" />
+    <Compile Include="Comp\EnvironmentCachingUtility.cs" />
+    <Compile Include="MapGen\GenStep_EverythingIsRocks.cs" />
+    <Compile Include="MapGen\GenStep_HackableSatellite.cs" />
+    <Compile Include="MapGen\GenStep_BlackBoxMission.cs" />
+    <Compile Include="MapGen\GenStep_InsectPillarCaves.cs" />
+    <Compile Include="MapGen\GenStep_LoadShip.cs" />
+    <Compile Include="MapGen\GenStep_MoonPillarSite.cs" />
+    <Compile Include="MapGen\GenStep_DownedShip.cs" />
+    <Compile Include="MapGen\GenStep_TribalPillarSite.cs" />
+    <Compile Include="MapGen\GenStep_ShipEngineImpactSite.cs" />
+    <Compile Include="MapGen\GenStep_ValuableAsteroids.cs" />
+    <Compile Include="MapGen\GenStep_ShipDebris.cs" />
+    <Compile Include="Gizmo_EnergyShieldStatusArcholife.cs" />
+    <Compile Include="Graphic\GraphicShipHeatPipe_Overlay.cs" />
+    <Compile Include="Graphic\GraphicShipHeatPipe.cs" />
+    <Compile Include="Graphic\Graphic_256.cs" />
+    <Compile Include="Graphic\Graphic_256_Wreckage.cs" />
+    <Compile Include="Graphic\Graphic_LinkedShipConduit.cs" />
+    <Compile Include="Graphic\Graphic_Linked_Fake.cs" />
+    <Compile Include="Graphic\Graphic_MultiOnOff.cs" />
+    <Compile Include="Graphic\Graphic_SingleOnOffEmpty.cs" />
+    <Compile Include="Graphic\Graphic_SingleOnOff.cs" />
+    <Compile Include="Comp\HediffCompOnlyInSpace.cs" />
+    <Compile Include="Comp\HediffCompProperties_GiveSubPart.cs" />
+    <Compile Include="Comp\HediffCompProperties_OnlyInSpace.cs" />
+    <Compile Include="Comp\HediffComp_GiveSubPart.cs" />
+    <Compile Include="HediffPawnIsHologram.cs" />
+    <Compile Include="Hediff_AddedPartNoRemoveSubparts.cs" />
+    <Compile Include="HideLightingLayersInSpace.cs" />
+    <Compile Include="H_Vacuum_PathFinder.cs" />
+    <Compile Include="Comp\InsectPillarSiteComp.cs" />
+    <Compile Include="Jobs\JobDriver_FleeVacuum.cs" />
+    <Compile Include="Jobs\JobDriver_InstallConsciousness.cs" />
+    <Compile Include="Jobs\JobDriver_MergeWithSpore.cs" />
+    <Compile Include="Jobs\JobDriver_ResurrectHologram.cs" />
+    <Compile Include="Jobs\JobGiver_RepairShields.cs" />
+    <Compile Include="MoonBase.cs" />
+    <Compile Include="Comp\MoonPillarSiteComp.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_ShipHull.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_OnShipHull.cs" />
+    <Compile Include="ScenPart_AfterlifeVault.cs" />
+    <Compile Include="Thought\ThoughtWorker_AmArchotechSpore.cs" />
+    <Compile Include="Thought\ThoughtWorker_IsArchotechSpore.cs" />
+    <Compile Include="Thought\ThoughtWorker_IsHologram.cs" />
+    <Compile Include="Thought\Thought_IsArchotechSpore.cs" />
+    <Compile Include="ArrivalAction\TransportPodsArrivalAction_MoonBase.cs" />
+    <Compile Include="Comp\TribalPillarSiteComp.cs" />
+    <Compile Include="Comp\ImpactSiteComp.cs" />
+    <Compile Include="IncidentWorker_FreeEntanglement.cs" />
+    <Compile Include="IncidentWorker_ShipCombat.cs" />
+    <Compile Include="Jobs\JobDriver_BreachAirlock.cs" />
+    <Compile Include="Jobs\JobDriver_HackAirlock.cs" />
+    <Compile Include="Jobs\JobDriver_HackShipBridge.cs" />
+    <Compile Include="Jobs\JobDriver_HackLabConsole.cs" />
+    <Compile Include="Jobs\JobDriver_Holodeck.cs" />
+    <Compile Include="Jobs\JobDriver_LoadTorpedoTube.cs" />
+    <Compile Include="Jobs\JobDriver_ManShipBridge.cs" />
+    <Compile Include="Jobs\JobDriver_PersuadeAI.cs" />
+    <Compile Include="Jobs\JobDriver_RepairItemWithGel.cs" />
+    <Compile Include="Jobs\JobDriver_RepairSatellite.cs" />
+    <Compile Include="Jobs\JobDriver_HackSatellite.cs" />
+    <Compile Include="Jobs\JobDriver_OperateScannerSpace.cs" />
+    <Compile Include="Jobs\JobDriver_SacrificeToArchotech.cs" />
+    <Compile Include="Jobs\JobGiver_AIDefendShip.cs" />
+    <Compile Include="Jobs\JobGiver_FightMechanitesNearPoint.cs" />
+    <Compile Include="Jobs\JobGiver_LoadTorpedoes.cs" />
+    <Compile Include="Jobs\JobGiver_ManShipBridge.cs" />
+    <Compile Include="Jobs\LordJob_DefendShip.cs" />
+    <Compile Include="Jobs\LordToil_DefendShip.cs" />
+    <Compile Include="MechaniteFire.cs" />
+    <Compile Include="MechaniteSpark.cs" />
+    <Compile Include="MinifiedThingShipMove.cs" />
+    <Compile Include="Comp\OverlayComponent.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_MoveShip.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_NeedsSpinalMountPort.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_NotOnBuilding.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_NotOnChunk.cs" />
+    <Compile Include="PlaceWorker\Placeworker_Radiator.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_ShipEngine.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_ShipHeatConduit.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_ShipProjectileInterceptorRadius.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_ShipVent.cs" />
+    <Compile Include="PlaceWorker\Placeworker_SolarShip.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_SpinalMountPort.cs" />
+    <Compile Include="PreviousWorld.cs" />
+    <Compile Include="Projectile\Bullet_HologramLaser.cs" />
+    <Compile Include="Projectile\Projectile_SoSFake.cs" />
+    <Compile Include="Projectile\Projectile_ExplosiveShipCombat.cs" />
+    <Compile Include="Projectile\Projectile_ExplosiveShipCombatPsychic.cs" />
+    <Compile Include="Projectile\Projectile_ExplosiveShipCombatLaser.cs" />
+    <Compile Include="Projectile\Projectile_ExplosiveShipCombatAntigrain.cs" />
+    <Compile Include="Projectile\Projectile_ExplosiveShipCombatPlasmaXL.cs" />
+    <Compile Include="Projectile\Projectile_TorpedoShipCombat.cs" />
+    <Compile Include="Projectile\ShipCombatProjectile.cs" />
+    <Compile Include="Quest\QuestNode_ArchotechSpawn.cs" />
+    <Compile Include="Quest\QuestNode_GenerateSpaceSite.cs" />
+    <Compile Include="Quest\QuestNode_GenerateThingSetArchotech.cs" />
+    <Compile Include="Quest\QuestPart_ArchotechSpawn.cs" />
+    <Compile Include="Obsolete\PlaceWorker_InsideStarship.cs" />
+    <Compile Include="Comp\CompRoofMe.cs" />
+    <Compile Include="Comp\CompProperties_RoofMe.cs" />
+    <Compile Include="ScenPart_StartInSpace.cs" />
+    <Compile Include="SectionLayer_ShipHeat.cs" />
+    <Compile Include="Obsolete\ShipCombatManager.cs" />
+    <Compile Include="Comp\ShipHeatMapComp.cs" />
+    <Compile Include="ShipHeatNet.cs" />
+    <Compile Include="ShipMoveBlueprint.cs" />
+    <Compile Include="ShuttleCaravanUtility.cs" />
+    <Compile Include="ShuttleMod.cs" />
+    <Compile Include="SpaceSite.cs" />
+    <Compile Include="MapGen\SymbolResolver_DebrisEdgeStreet.cs" />
+    <Compile Include="MapGen\SymbolResolver_DebrisClump.cs" />
+    <Compile Include="MapGen\SymbolResolver_DebrisStreet.cs" />
+    <Compile Include="MapGen\SymbolResolver_EdgeDebris.cs" />
+    <Compile Include="MapGen\SymbolResolver_EdgeSlag.cs" />
+    <Compile Include="MapGen\SymbolResolver_ExtraShipDoor.cs" />
+    <Compile Include="MapGen\SymbolResolver_FillWithThingsNoClear.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_Cannibal_Barracks.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_Black_Box.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_Lab_Triangle.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_Salvage_Triangle.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_Security_Triangle.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_Meltdown_Reactor.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_SpaceCrypto.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_SpaceMechsAndTurrets.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_SpaceDanger.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_SpaceEmpty.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_SpaceLab.cs" />
+    <Compile Include="MapGen\SymbolResolver_BlackBoxMission.cs" />
+    <Compile Include="MapGen\SymbolResolver_Interior_StorageTriangle.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebris.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors_Leaf_Empty.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors_Leaf_Danger.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipEdgeWallsTriangle1.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipEdgeWallsTriangle2.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipEdgeWalls.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisEdgeWalls.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipEmptyRoomTriangle1.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipEmptyRoomTriangle2.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipEmptyRoom.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisEmptyRoom.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipFloorTriangle1.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipFloorTriangle2.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipRoomTriangle1.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipRoomTriangle2.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipRoom.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDoors.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors_Division_Split.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors_Leaf_Barracks.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors_Leaf_Crypto.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors_Leaf_DiningRoom.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors_Leaf_Laboratory.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Indoors_Leaf_Storage.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Outdoors.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Outdoors_Division_Grid.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Outdoors_Division_Split.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Outdoors_LeafDecorated_EdgeStreet.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Outdoors_LeafDecorated_RandomInnerRect.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Outdoors_LeafPossiblyDecorated.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Outdoors_Leaf_Building.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisPart_Outdoors_Leaf_Empty.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipDebrisRoom.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipEnsureCanReachMapEdge.cs" />
+    <Compile Include="MapGen\SymbolResolver_ShipFloorFill.cs" />
+    <Compile Include="MapGen\SymbolResolver_Ship_Pregen_New.cs" />
+    <Compile Include="ThingSetMaker_ArchotechGift.cs" />
+    <Compile Include="Thing_ArcholifePod.cs" />
+    <Compile Include="Thought\ThoughtWorker_SpaceThoughts.cs" />
+    <Compile Include="Comp\TimedForcedExitShip.cs" />
+    <Compile Include="Comp\UnfoldComponent.cs" />
+    <Compile Include="Verb\Command_VerbTargetWreckMap.cs" />
+    <Compile Include="Verb\Command_VerbTargetWreck.cs" />
+    <Compile Include="Verb\Command_VerbTargetShip.cs" />
+    <Compile Include="Verb\Verb_LaunchProjectileShip.cs" />
+    <Compile Include="Jobs\WorkGiver_FightMechanites.cs" />
+    <Compile Include="Jobs\WorkGiver_InstallConsciousness.cs" />
+    <Compile Include="Jobs\WorkGiver_LoadTorpedoTube.cs" />
+    <Compile Include="Jobs\WorkGiver_OperateScannerSpace.cs" />
+    <Compile Include="Jobs\WorkGiver_Warden_SacrificeToArchotech.cs" />
+    <Compile Include="Comp\WorldObjectCompProperties_InsectPillarSite.cs" />
+    <Compile Include="Comp\WorldObjectCompProperties_MoonPillarSite.cs" />
+    <Compile Include="Comp\WorldObjectCompProperties_TribalPillarSite.cs" />
+    <Compile Include="Comp\WorldObjectCompProperties_ShipEngineImpactSite.cs" />
+    <Compile Include="Comp\WorldObjectCompProperties_TimedForcedExitShip.cs" />
+    <Compile Include="WorldObjectOrbitingShip.cs" />
+    <Compile Include="ShipInteriorMod2.cs" />
+    <Compile Include="MapGen\GenStep_EmptySpace.cs" />
+    <Compile Include="BiomeWorker_OuterSpace.cs" />
+    <Compile Include="WeatherEvent_VacuumDamage.cs" />
+    <Compile Include="WorldSwitchUtility.cs" />
+    <Compile Include="Jobs\JobDriver_CarryToCryptonest.cs" />
+  </ItemGroup>
+  <ItemGroup />
+</Project>

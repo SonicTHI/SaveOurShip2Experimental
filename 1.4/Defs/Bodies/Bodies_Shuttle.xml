@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <BodyDef>
+    <defName>SoSShuttlecraft</defName>
+    <label>shuttle</label>
+    <corePart>
+      <def>ShuttleBody</def>
+      <height>Middle</height>
+      <depth>Outside</depth>
+      <coverage>1</coverage>
+      <parts>
+      </parts>
+    </corePart>
+  </BodyDef>
+  
+  <BodyPartDef ParentName="MechanicalCentipedeRingBase">
+    <defName>ShuttleBody</defName>
+    <label>Hull</label>
+    <hitPoints>200</hitPoints>
+	<frostbiteVulnerability>0.1</frostbiteVulnerability>
+  </BodyPartDef>
+</Defs>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <JoyKindDef>
+    <defName>Holodeck</defName>
+    <label>holodeck simulation</label>
+  </JoyKindDef>
+  
+  <JoyKindDef>
+    <defName>TelescopeSpace</defName>
+    <label>advanced astronomical observation</label>
+  </JoyKindDef>
+
+</Defs>

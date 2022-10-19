@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31402.337
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RimworldMod", "RimworldMod.csproj", "{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}.Debug|x86.ActiveCfg = Debug|x86
+		{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}.Debug|x86.Build.0 = Debug|x86
+		{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}.Release|x86.ActiveCfg = Release|x86
+		{D6ACD814-1171-42A6-B4C0-4D74A8ECACDC}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4A014C8B-79FB-4E78-831F-516AEEAEBB1D}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		outputpath = ..\..\Assemblies
+	EndGlobalSection
+EndGlobal

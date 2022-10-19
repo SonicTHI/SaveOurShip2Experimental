@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationAdd">
+		<xpath>/Defs/StorytellerDef[defName="Randy"]/comps/li[1]/allowedTargetTags</xpath>
+		<value><li>Map_SpaceHome</li></value>
+	</Operation>
+</Patch>

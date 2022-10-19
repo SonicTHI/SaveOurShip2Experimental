@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	
+  <RecipeDef>
+    <defName>MakeHullFoam</defName>
+    <label>make hullfoam canister</label>
+    <description>Craft a canister of hullfoam.</description>
+    <jobString>Making hullfoam.</jobString>
+    <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+    <effectWorking>Cook</effectWorking>
+    <soundWorking>Recipe_Machining</soundWorking>
+    <allowMixingIngredients>true</allowMixingIngredients>
+    <workAmount>800</workAmount>
+    <targetCountAdjustment>5</targetCountAdjustment>
+    <ingredients>
+			<li>
+				<filter>
+          <thingDefs>
+            <li>Steel</li>
+          </thingDefs>
+        </filter>
+        <count>10</count>
+			</li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+				<li>Steel</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <HullFoam>1</HullFoam>
+    </products>
+    <researchPrerequisite>HullFoam</researchPrerequisite>
+    <workSkill>Crafting</workSkill>
+	<recipeUsers>
+		<li>TableMachining</li>
+	</recipeUsers>
+  </RecipeDef>
+</Defs>

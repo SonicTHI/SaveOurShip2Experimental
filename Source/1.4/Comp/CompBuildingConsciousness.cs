@@ -56,7 +56,7 @@ namespace RimWorld
                 {
                     foreach (Pawn p in PawnsFinder.All_AliveOrDead)
                     {
-                        if (ShipInteriorMod2.IsHologram(p) && p.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().consciousnessSource == parent)
+                        if (ShipInteriorMod2.IsHologram(p) && p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource == parent)
                         {
                             Consciousness = p;
                             Log.Message("Fixed duplicate consciousness bug");
@@ -77,9 +77,9 @@ namespace RimWorld
         }
         public void GenerateAIPawn()
         {
-            PawnGenerationRequest req = new PawnGenerationRequest(PawnKindDef.Named("SoSHologram"), Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, false, true, false, false, false, true, 0, false, false, false, false, false, false, false, true, 0, 0, forceNoIdeo: true, forbidAnyTitle: true);
+            PawnGenerationRequest req = new PawnGenerationRequest(PawnKindDef.Named("SoSHologram"), Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, false, true, false, false, false, 0, true, false, false, false, false, false, false, false, true, 0, 0, forceNoIdeo: true, forbidAnyTitle: true);
             Pawn p = PawnGenerator.GeneratePawn(req);
-            p.story.childhood = ShipInteriorMod2.hologramBackstory;
+            p.story.Childhood = ShipInteriorMod2.hologramBackstory;
             p.Name = new NameTriple("", AIName, "");
             p.Position = parent.Position;
             p.relations = new Pawn_RelationsTracker(p);
@@ -151,7 +151,7 @@ namespace RimWorld
                 HologramColor = colors[2];
             else //AI
                 HologramColor = colors[1];
-            Consciousness.story.hairColor = HologramColor;
+            Consciousness.story.HairColor = HologramColor;
             Consciousness.story.skinColorOverride = HologramColor;
             if(graphicsDirty)
                 Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
@@ -193,8 +193,8 @@ namespace RimWorld
             }
             if (Consciousness.CarriedBy != null)
                 Consciousness.CarriedBy.carryTracker.DestroyCarriedThing();
-            Thing relay = Consciousness.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().relay;
-            Consciousness.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().relay = null;
+            Thing relay = Consciousness.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().relay;
+            Consciousness.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().relay = null;
             if(relay!=null)
                 relay.TryGetComp<CompHologramRelay>().StopRelaying(false);
         }
@@ -276,7 +276,7 @@ namespace RimWorld
                                 options.Add(new FloatMenuOption(name, delegate
                                 {
                                     this.HologramColor = colors[colorNames.FirstIndexOf(colorname => colorname == name)];
-                                    Consciousness.story.hairColor = HologramColor;
+                                    Consciousness.story.HairColor = HologramColor;
                                     Consciousness.story.skinColorOverride = HologramColor;
                                     Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
                                     PortraitsCache.SetDirty(Consciousness);
@@ -552,7 +552,7 @@ namespace RimWorld
             }
             Consciousness.needs.AddOrRemoveNeedsAsAppropriate();
             HologramColor = new Color(HologramColor.r, HologramColor.g, HologramColor.b, 1);
-            Consciousness.story.hairColor = HologramColor;
+            Consciousness.story.HairColor = HologramColor;
             Consciousness.story.skinColorOverride = null;
             Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
             Consciousness.kindDef = PawnKindDefOf.Colonist;
@@ -586,7 +586,7 @@ namespace RimWorld
                 Consciousness.Tick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (Consciousness !=null && Consciousness.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Count() == 0)
+                if (Consciousness !=null && Consciousness.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
                 {
                     HediffPawnIsHologram hologramHediff = (HediffPawnIsHologram)Consciousness.health.AddHediff(Props.holoHediff);
                     hologramHediff.consciousnessSource = (Building)parent;
@@ -622,7 +622,7 @@ namespace RimWorld
             Apparel belt = null;
             foreach(Apparel app in Consciousness.apparel.WornApparel)
             {
-                if(app is ShieldBelt)
+                if (app.TryGetComp<CompShield>() != null)
                 {
                     belt = app;
                     break;

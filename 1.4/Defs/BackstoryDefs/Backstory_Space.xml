@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<BackstoryDef>
+		<defName>SoSHologram</defName>
+		<ignoreIllegalLabelCharacterConfigError>False</ignoreIllegalLabelCharacterConfigError>
+		<identifier>SoSHologram</identifier>
+		<slot>Childhood</slot>
+		<title>machine persona</title>
+		<titleShort>persona</titleShort>
+		<baseDesc>[PAWN_nameDef] is a machine persona. [PAWN_pronoun] interacts with the world via a hologram, which cannot leave the map where [PAWN_possessive] core resides.</baseDesc>
+		<bodyTypeMale>Male</bodyTypeMale>
+		<bodyTypeFemale>Female</bodyTypeFemale>
+		<shuffleable>False</shuffleable>
+	</BackstoryDef>
+</Defs>

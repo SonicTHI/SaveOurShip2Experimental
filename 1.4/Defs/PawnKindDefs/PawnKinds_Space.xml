@@ -5,7 +5,6 @@
 		<label>space cannibal</label>
 		<race>Human</race>
 		<combatPower>100</combatPower>
-		<baseRecruitDifficulty>0.30</baseRecruitDifficulty>
 		<backstoryCategories>
 			<li>Civil</li>
 		</backstoryCategories>
@@ -81,7 +80,6 @@
 		<label>light marine</label>
 		<race>Human</race>
 		<combatPower>100</combatPower>
-		<baseRecruitDifficulty>0.30</baseRecruitDifficulty>
 		<defaultFactionType>AncientsHostile</defaultFactionType>
 		<maxGenerationAge>55</maxGenerationAge>
 		<backstoryCryptosleepCommonality>1</backstoryCryptosleepCommonality>
@@ -141,7 +139,6 @@
 		<label>heavy marine</label>
 		<race>Human</race>
 		<combatPower>200</combatPower>
-		<baseRecruitDifficulty>0.30</baseRecruitDifficulty>
 		<defaultFactionType>AncientsHostile</defaultFactionType>
 		<maxGenerationAge>55</maxGenerationAge>
 		<backstoryCryptosleepCommonality>1</backstoryCryptosleepCommonality>
@@ -703,7 +700,6 @@
 		<label>holographic avatar</label>
 		<race>SoSHologramRace</race>
 		<combatPower>999999</combatPower>
-		<baseRecruitDifficulty>0</baseRecruitDifficulty>
 		<backstoryCategories>
 			<li>SoSHologram</li>
 		</backstoryCategories>
@@ -831,7 +827,7 @@
 		<defName>HologramShield</defName>
 		<label>hologram barrier</label>
 		<description>A hologram can project some of its substance to form a protective barrier of hardlight. This shield is subject to all of the same restrictions as a conventional shield belt.</description>
-		<thingClass>ShieldBelt</thingClass>
+		<thingClass>Apparel</thingClass>
 		<graphicData>
 			<texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -860,6 +856,9 @@
 				<li>HologramGear</li>
 			</tags>
 		</apparel>
+		<comps>
+			<li Class="CompProperties_Shield" />
+		</comps>
 	</ThingDef>
 	<ThingDef ParentName="BaseGun">
 		<defName>HologramLaserArchotech</defName>
@@ -996,7 +995,7 @@
 		<defName>HologramShieldArchotech</defName>
 		<label>archobarrier</label>
 		<description>An archotech spore's hologram can project some of its substance to form a protective barrier of hardlight. This shield is subject to all of the same restrictions as a conventional shield belt, but offers vastly superior defense.</description>
-		<thingClass>ShieldBelt</thingClass>
+		<thingClass>Apparel</thingClass>
 		<graphicData>
 			<texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1026,6 +1025,9 @@
 			</tags>
 		</apparel>
 	</ThingDef>
+	<comps>
+		<li Class="CompProperties_Shield" />
+	</comps>
 	<WeaponClassDef>
 		<defName>HologramGear</defName>
 		<label>holographic</label>

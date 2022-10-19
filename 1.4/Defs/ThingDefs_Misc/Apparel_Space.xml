@@ -1,54 +1,53 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
-  <ThingDef ParentName="ArmorMachineableBase">
-    <defName>Apparel_SpaceSuitBody</defName>
-    <label>EVA suit</label>
-    <description>A suit designed to keep the occupant alive in outer space. Includes small thrusters for movement.</description>
-    <techLevel>Spacer</techLevel>
-    <recipeMaker>
-      <unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
-      <researchPrerequisite>ShipSpaceSuits</researchPrerequisite>
-      <recipeUsers Inherit="False">
-        <li>FabricationBench</li>
-      </recipeUsers>
-    </recipeMaker>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Lite</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>CutoutComplex</shaderType>
-    </graphicData>
-    <statBases>
-      <WorkToMake>17000</WorkToMake>
-      <MaxHitPoints>340</MaxHitPoints>
-      <Mass>10</Mass>
-      <ArmorRating_Blunt>0.4</ArmorRating_Blunt>
-      <ArmorRating_Sharp>0.4</ArmorRating_Sharp>
-      <ArmorRating_Heat>0.75</ArmorRating_Heat>
-      <Insulation_Cold>100</Insulation_Cold>
-      <Insulation_Heat>25</Insulation_Heat>
-    </statBases>
-    <equippedStatOffsets>
-      <MoveSpeed>-0.25</MoveSpeed>
-      <WorkSpeedGlobal>-0.075</WorkSpeedGlobal>
-    </equippedStatOffsets>
-    <thingCategories>
-      <li>ApparelArmor</li>
-    </thingCategories>
-	<stuffCategories>
-      <li>Fabric</li>
-      <li>Leathery</li>
-    </stuffCategories>
-	<costStuffCount>70</costStuffCount>
-    <costList>
-      <ComponentSpacer>2</ComponentSpacer>
-      <Plasteel>10</Plasteel>
-    </costList>
+	<ThingDef ParentName="ArmorMachineableBase">
+		<defName>Apparel_SpaceSuitBody</defName>
+		<label>EVA suit</label>
+		<description>A suit designed to keep the occupant alive in outer space. Includes small thrusters for movement.</description>
+		<techLevel>Spacer</techLevel>
+		<recipeMaker>
+			<unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
+			<researchPrerequisite>ShipSpaceSuits</researchPrerequisite>
+			<recipeUsers Inherit="False">
+				<li>FabricationBench</li>
+			</recipeUsers>
+		</recipeMaker>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Lite</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+		</graphicData>
+		<statBases>
+			<WorkToMake>17000</WorkToMake>
+			<MaxHitPoints>340</MaxHitPoints>
+			<Mass>10</Mass>
+			<ArmorRating_Blunt>0.4</ArmorRating_Blunt>
+			<ArmorRating_Sharp>0.4</ArmorRating_Sharp>
+			<ArmorRating_Heat>0.75</ArmorRating_Heat>
+			<Insulation_Cold>100</Insulation_Cold>
+			<Insulation_Heat>25</Insulation_Heat>
+		</statBases>
+		<equippedStatOffsets>
+			<MoveSpeed>-0.25</MoveSpeed>
+			<WorkSpeedGlobal>-0.075</WorkSpeedGlobal>
+		</equippedStatOffsets>
+		<thingCategories>
+			<li>ApparelArmor</li>
+		</thingCategories>
+		<stuffCategories>
+			<li>Fabric</li>
+			<li>Leathery</li>
+		</stuffCategories>
+		<costStuffCount>70</costStuffCount>
+		<costList>
+			<ComponentSpacer>2</ComponentSpacer>
+			<Plasteel>10</Plasteel>
+		</costList>
 		<generateCommonality>2</generateCommonality>
 		<apparel>
 			<bodyPartGroups>
 				<li>Torso</li>
-        <li>Neck</li>
+				<li>Neck</li>
 				<li>Shoulders</li>
 				<li>Arms</li>
 				<li>Legs</li>
@@ -62,53 +61,52 @@
 				<li>Shell</li>
 			</layers>
 			<tags>
-        <li>Spacer</li>
-        <li>EVA</li>
-      </tags>
-      <defaultOutfitTags>
+				<li>Spacer</li>
+				<li>EVA</li>
+			</tags>
+			<defaultOutfitTags>
       </defaultOutfitTags>
-    </apparel>
-  </ThingDef>
-  
+		</apparel>
+	</ThingDef>
 	<ThingDef ParentName="HatMakeableBase">
-    <defName>Apparel_SpaceSuitHelmet</defName>
-    <label>EVA helmet</label>
-    <description>A helmet designed to keep the occupant alive in outer space. Recycles oxygen and provides resistance to toxic airborne particulates.</description>
-    <techLevel>Spacer</techLevel>
-    <recipeMaker>
-      <unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
-      <researchPrerequisite>ShipSpaceSuits</researchPrerequisite>
-      <recipeUsers Inherit="False">
-        <li>FabricationBench</li>
-      </recipeUsers>
-    </recipeMaker>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Helmet</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>CutoutComplex</shaderType>
-    </graphicData>
-    <statBases>
-      <WorkToMake>16000</WorkToMake>
-      <MaxHitPoints>160</MaxHitPoints>
-      <Mass>2.7</Mass>
-      <ArmorRating_Blunt>0.4</ArmorRating_Blunt>
-      <ArmorRating_Sharp>0.4</ArmorRating_Sharp>
-      <ArmorRating_Heat>0.75</ArmorRating_Heat>
-      <Insulation_Cold>50</Insulation_Cold>
-      <Insulation_Heat>25</Insulation_Heat>
-    </statBases>
-    <equippedStatOffsets>
-      <MoveSpeed>-0.04</MoveSpeed>
-	  <ToxicSensitivity>-0.5</ToxicSensitivity>
-    </equippedStatOffsets>
-    <thingCategories>
-      <li>ArmorHeadgear</li>
-    </thingCategories>
-    <costList>
-      <ComponentSpacer>1</ComponentSpacer>
-      <Plasteel>15</Plasteel>
-	  <Gold>1</Gold>
-    </costList>
+		<defName>Apparel_SpaceSuitHelmet</defName>
+		<label>EVA helmet</label>
+		<description>A helmet designed to keep the occupant alive in outer space. Recycles oxygen and provides resistance to toxic airborne particulates.</description>
+		<techLevel>Spacer</techLevel>
+		<recipeMaker>
+			<unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
+			<researchPrerequisite>ShipSpaceSuits</researchPrerequisite>
+			<recipeUsers Inherit="False">
+				<li>FabricationBench</li>
+			</recipeUsers>
+		</recipeMaker>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Helmet</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+		</graphicData>
+		<statBases>
+			<WorkToMake>16000</WorkToMake>
+			<MaxHitPoints>160</MaxHitPoints>
+			<Mass>2.7</Mass>
+			<ArmorRating_Blunt>0.4</ArmorRating_Blunt>
+			<ArmorRating_Sharp>0.4</ArmorRating_Sharp>
+			<ArmorRating_Heat>0.75</ArmorRating_Heat>
+			<Insulation_Cold>50</Insulation_Cold>
+			<Insulation_Heat>25</Insulation_Heat>
+		</statBases>
+		<equippedStatOffsets>
+			<MoveSpeed>-0.04</MoveSpeed>
+			<ToxicResistance>0.5</ToxicResistance>
+		</equippedStatOffsets>
+		<thingCategories>
+			<li>ArmorHeadgear</li>
+		</thingCategories>
+		<costList>
+			<ComponentSpacer>1</ComponentSpacer>
+			<Plasteel>15</Plasteel>
+			<Gold>1</Gold>
+		</costList>
 		<generateCommonality>2</generateCommonality>
 		<apparel>
 			<bodyPartGroups>
@@ -120,61 +118,60 @@
 				<li>Overhead</li>
 			</layers>
 			<tags>
-        <li>Spacer</li>
-        <li>EVA</li>
-      </tags>
-      <defaultOutfitTags>
+				<li>Spacer</li>
+				<li>EVA</li>
+			</tags>
+			<defaultOutfitTags>
       </defaultOutfitTags>
-    </apparel>
-  </ThingDef>
-  
-  <ThingDef ParentName="ArmorMachineableBase">
-    <defName>Apparel_SpaceSuitBodyHeavy</defName>
-    <label>heavy EVA suit</label>
-    <description>A pressure-sealed suit of powered armor, designed to keep the occupant alive in outer space. Includes small thrusters for movement.</description>
-    <techLevel>Spacer</techLevel>
-    <recipeMaker>
-      <unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
-      <researchPrerequisite>ShipSpaceSuitsHeavy</researchPrerequisite>
-      <skillRequirements>
-        <Crafting>11</Crafting>
-      </skillRequirements>
-      <recipeUsers Inherit="False">
-        <li>FabricationBench</li>
-      </recipeUsers>
-    </recipeMaker>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Heavy</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <statBases>
-      <WorkToMake>70000</WorkToMake>
-      <MaxHitPoints>340</MaxHitPoints>
-      <Mass>20</Mass>
-      <ArmorRating_Blunt>0.45</ArmorRating_Blunt>
-      <ArmorRating_Sharp>1.08</ArmorRating_Sharp>
-      <ArmorRating_Heat>0.75</ArmorRating_Heat>
-      <Insulation_Cold>100</Insulation_Cold>
-      <Insulation_Heat>25</Insulation_Heat>
-      <EquipDelay>15</EquipDelay>
-    </statBases>
-    <equippedStatOffsets>
-      <MoveSpeed>-0.4</MoveSpeed>
-      <WorkSpeedGlobal>-0.1</WorkSpeedGlobal>
-    </equippedStatOffsets>
-    <thingCategories>
-      <li>ApparelArmor</li>
-    </thingCategories>
-    <costList>
-      <ComponentSpacer>6</ComponentSpacer>
-      <Plasteel>100</Plasteel>
-      <Uranium>20</Uranium>
-    </costList>
+		</apparel>
+	</ThingDef>
+	<ThingDef ParentName="ArmorMachineableBase">
+		<defName>Apparel_SpaceSuitBodyHeavy</defName>
+		<label>heavy EVA suit</label>
+		<description>A pressure-sealed suit of powered armor, designed to keep the occupant alive in outer space. Includes small thrusters for movement.</description>
+		<techLevel>Spacer</techLevel>
+		<recipeMaker>
+			<unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
+			<researchPrerequisite>ShipSpaceSuitsHeavy</researchPrerequisite>
+			<skillRequirements>
+				<Crafting>11</Crafting>
+			</skillRequirements>
+			<recipeUsers Inherit="False">
+				<li>FabricationBench</li>
+			</recipeUsers>
+		</recipeMaker>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Heavy</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<WorkToMake>70000</WorkToMake>
+			<MaxHitPoints>340</MaxHitPoints>
+			<Mass>20</Mass>
+			<ArmorRating_Blunt>0.45</ArmorRating_Blunt>
+			<ArmorRating_Sharp>1.08</ArmorRating_Sharp>
+			<ArmorRating_Heat>0.75</ArmorRating_Heat>
+			<Insulation_Cold>100</Insulation_Cold>
+			<Insulation_Heat>25</Insulation_Heat>
+			<EquipDelay>15</EquipDelay>
+		</statBases>
+		<equippedStatOffsets>
+			<MoveSpeed>-0.4</MoveSpeed>
+			<WorkSpeedGlobal>-0.1</WorkSpeedGlobal>
+		</equippedStatOffsets>
+		<thingCategories>
+			<li>ApparelArmor</li>
+		</thingCategories>
+		<costList>
+			<ComponentSpacer>6</ComponentSpacer>
+			<Plasteel>100</Plasteel>
+			<Uranium>20</Uranium>
+		</costList>
 		<generateCommonality>2</generateCommonality>
 		<apparel>
 			<bodyPartGroups>
 				<li>Torso</li>
-        <li>Neck</li>
+				<li>Neck</li>
 				<li>Shoulders</li>
 				<li>Arms</li>
 				<li>Legs</li>
@@ -187,76 +184,75 @@
 				<li>Shell</li>
 			</layers>
 			<tags>
-        <li>Spacer</li>
-        <li>EVA</li>
-      </tags>
-      <defaultOutfitTags>
+				<li>Spacer</li>
+				<li>EVA</li>
+			</tags>
+			<defaultOutfitTags>
       </defaultOutfitTags>
-    </apparel>
-    <colorGenerator Class="ColorGenerator_Options">
-      <options>
-        <li>
-          <weight>10</weight>
-          <only>RGBA(0.33,0.33,0.33,1)</only>
-        </li>
-        <li>
-          <weight>10</weight>
-          <only>RGBA(0.65,0.65,0.65,1)</only>
-        </li>
-        <li>
-          <weight>6</weight>
-          <min>RGBA(0.3,0.3,0.3,1)</min>
-          <max>RGBA(0.5,0.5,0.5,1)</max>
-        </li>
-        <li>
-          <weight>10</weight>
-          <only>RGBA(0.9,0.9,0.9,1)</only>
-        </li>
-      </options>
-    </colorGenerator>
-  </ThingDef>
-  
-  <ThingDef ParentName="ArmorHelmetMakeableBase">
-    <defName>Apparel_SpaceSuitHelmetHeavy</defName>
-    <label>Heavy EVA helmet</label>
-    <description>A pressure-sealed power armor helmet, designed to keep the occupant alive in outer space. Recycles oxygen and provides resistance to toxic airborne particulates.</description>
-    <techLevel>Spacer</techLevel>
-    <recipeMaker>
-      <unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
-      <researchPrerequisite>ShipSpaceSuitsHeavy</researchPrerequisite>
-      <skillRequirements>
-        <Crafting>11</Crafting>
-      </skillRequirements>
-      <recipeUsers Inherit="False">
-        <li>FabricationBench</li>
-      </recipeUsers>
-    </recipeMaker>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Heavy_Helmet</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <shaderType>CutoutComplex</shaderType>
-    </graphicData>
-	<statBases>
-      <WorkToMake>21000</WorkToMake>
-      <MaxHitPoints>150</MaxHitPoints>
-      <Mass>1.5</Mass>
-      <Flammability>0.4</Flammability>
-      <ArmorRating_Sharp>1.06</ArmorRating_Sharp>
-      <ArmorRating_Blunt>0.45</ArmorRating_Blunt>
-      <ArmorRating_Heat>0.54</ArmorRating_Heat>
-      <Insulation_Cold>50</Insulation_Cold>
-      <Insulation_Heat>25</Insulation_Heat>
-      <EquipDelay>4</EquipDelay>
-	</statBases>
-    <equippedStatOffsets>
-      <MoveSpeed>-0.04</MoveSpeed>
-	  <ToxicSensitivity>-0.5</ToxicSensitivity>
-    </equippedStatOffsets>
-    <costList>
-      <ComponentSpacer>2</ComponentSpacer>
-      <Plasteel>45</Plasteel>
-	  <Gold>2</Gold>
-    </costList>
+		</apparel>
+		<colorGenerator Class="ColorGenerator_Options">
+			<options>
+				<li>
+					<weight>10</weight>
+					<only>RGBA(0.33,0.33,0.33,1)</only>
+				</li>
+				<li>
+					<weight>10</weight>
+					<only>RGBA(0.65,0.65,0.65,1)</only>
+				</li>
+				<li>
+					<weight>6</weight>
+					<min>RGBA(0.3,0.3,0.3,1)</min>
+					<max>RGBA(0.5,0.5,0.5,1)</max>
+				</li>
+				<li>
+					<weight>10</weight>
+					<only>RGBA(0.9,0.9,0.9,1)</only>
+				</li>
+			</options>
+		</colorGenerator>
+	</ThingDef>
+	<ThingDef ParentName="ArmorHelmetMakeableBase">
+		<defName>Apparel_SpaceSuitHelmetHeavy</defName>
+		<label>Heavy EVA helmet</label>
+		<description>A pressure-sealed power armor helmet, designed to keep the occupant alive in outer space. Recycles oxygen and provides resistance to toxic airborne particulates.</description>
+		<techLevel>Spacer</techLevel>
+		<recipeMaker>
+			<unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
+			<researchPrerequisite>ShipSpaceSuitsHeavy</researchPrerequisite>
+			<skillRequirements>
+				<Crafting>11</Crafting>
+			</skillRequirements>
+			<recipeUsers Inherit="False">
+				<li>FabricationBench</li>
+			</recipeUsers>
+		</recipeMaker>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Heavy_Helmet</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+		</graphicData>
+		<statBases>
+			<WorkToMake>21000</WorkToMake>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Mass>1.5</Mass>
+			<Flammability>0.4</Flammability>
+			<ArmorRating_Sharp>1.06</ArmorRating_Sharp>
+			<ArmorRating_Blunt>0.45</ArmorRating_Blunt>
+			<ArmorRating_Heat>0.54</ArmorRating_Heat>
+			<Insulation_Cold>50</Insulation_Cold>
+			<Insulation_Heat>25</Insulation_Heat>
+			<EquipDelay>4</EquipDelay>
+		</statBases>
+		<equippedStatOffsets>
+			<MoveSpeed>-0.04</MoveSpeed>
+			<ToxicResistance>0.5</ToxicResistance>
+		</equippedStatOffsets>
+		<costList>
+			<ComponentSpacer>2</ComponentSpacer>
+			<Plasteel>45</Plasteel>
+			<Gold>2</Gold>
+		</costList>
 		<generateCommonality>2</generateCommonality>
 		<apparel>
 			<bodyPartGroups>
@@ -268,309 +264,306 @@
 				<li>Overhead</li>
 			</layers>
 			<tags>
-        <li>Spacer</li>
-        <li>EVA</li>
-      </tags>
-      <defaultOutfitTags>
+				<li>Spacer</li>
+				<li>EVA</li>
+			</tags>
+			<defaultOutfitTags>
       </defaultOutfitTags>
-    </apparel>
-  </ThingDef>
-  
-  <ThingDef ParentName="ApparelBase">
-    <defName>Apparel_SpaceSurvivalBelt</defName>
-    <label>survival belt</label>
-    <description>An emergency survival belt used by starship crews. It remains dormant so long as air pressure is maintained. Once exposed to vacuum, the belt releases a semi-liquid membrane over the user's body and begins generating breathable air. For the next three hours, the user can survive exposure to vacuum, although their movements are slowed. The belt is single-use.</description>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <techLevel>Spacer</techLevel>
-	<generateAllowChance>0</generateAllowChance>
-    <statBases>
-      <Mass>3</Mass>
-      <WorkToMake>1400</WorkToMake>
-      <Flammability>0.4</Flammability>
-      <EquipDelay>2</EquipDelay>
-    </statBases>
-    <thingSetMakerTags>
-    </thingSetMakerTags>
-    <costList>
-      <ComponentIndustrial>2</ComponentIndustrial>
-      <Steel>20</Steel>
-    </costList>
-    <recipeMaker>
-      <unfinishedThingDef>UnfinishedBelt</unfinishedThingDef>
-      <researchPrerequisite>ShipSpaceSuits</researchPrerequisite>
-      <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
-      <workSkill>Crafting</workSkill>
-      <effectWorking>Smith</effectWorking>
-      <soundWorking>Recipe_Machining</soundWorking>
-      <recipeUsers>
-        <li>TableMachining</li>
-      </recipeUsers>
-      <skillRequirements>
-        <Crafting>6</Crafting>
-      </skillRequirements>
-    </recipeMaker>
-    <thingCategories>
-      <li>ApparelArmor</li>
-    </thingCategories>
-    <apparel>
-      <careIfWornByCorpse>false</careIfWornByCorpse>
-      <bodyPartGroups>
-        <li>Waist</li>
-      </bodyPartGroups>
-      <layers>
-        <li>Belt</li>
-      </layers>
-      <tags>
-        <li>BeltDefenseVacuum</li>
-      </tags>
-    </apparel>
-  </ThingDef>
-  
-  <ThingDef ParentName="ApparelBase">
-    <defName>Apparel_SpaceSurvivalBeltDummy</defName>
-    <thingClass>ApparelSpaceBelt</thingClass>
-    <label>survival belt (activated)</label>
-    <description>An emergency survival belt used by starship crews. It has released a semi-liquid membrane over the user's body and is actively generating breathable air. For the next three hours, the user can survive exposure to vacuum, although their movements are slowed. The belt is single-use.</description>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <techLevel>Spacer</techLevel>
-    <tickerType>Rare</tickerType>
-	<generateAllowChance>0</generateAllowChance>
-    <statBases>
-      <Mass>3</Mass>
-      <Flammability>0.4</Flammability>
-      <EquipDelay>2</EquipDelay>
-    </statBases>
-    <apparel>
-      <bodyPartGroups>
-        <li>Waist</li>
-      </bodyPartGroups>
-      <layers>
-        <li>Belt</li>
-      </layers>
-    </apparel>
-  </ThingDef>
-  
-  <ThingDef ParentName="ApparelBase">
-    <defName>Apparel_HologramRelay</defName>
-    <label>portable hologram relay</label>
-    <description>A miniaturized hologram relay worn on the back. It allows the user to project a friendly hologram whose consciousness is located far away. Due to its small size, special disposable lenses must be used, requiring a component to be replaced after each activation.\n\nIn glitterworld militaries, fallen soldiers are routinely revived as holograms so that their training and experience can continue to serve the cause. Elite "Valkyrie" specialists train alongside a team of holographic partners - when one is destroyed, the Valkyrie simply projects another.</description>
-    <techLevel>Spacer</techLevel>
-    <comps>
-      <li Class="CompProperties_Reloadable">
-        <maxCharges>3</maxCharges>
-        <ammoDef>ComponentIndustrial</ammoDef>
-        <ammoCountPerCharge>1</ammoCountPerCharge>
-        <baseReloadTicks>60</baseReloadTicks>
-        <soundReload>Standard_Reload</soundReload>
-        <hotKey>Misc4</hotKey>
-        <chargeNoun>projection</chargeNoun>
-        <displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted>
-      </li>
-		<li Class="CompProperties_HologramRelay"/>
-    </comps>
-    <recipeMaker>
-      <unfinishedThingDef>UnfinishedPack</unfinishedThingDef>
-      <researchPrerequisite>ShipHologramRepeater</researchPrerequisite>
-      <recipeUsers>
-        <li>FabricationBench</li>
-      </recipeUsers>
-      <useIngredientsForColor>false</useIngredientsForColor>
-      <workSpeedStat>GeneralLaborSpeed</workSpeedStat>
-      <workSkill>Crafting</workSkill>
-      <effectWorking>Smith</effectWorking>
-      <soundWorking>Recipe_Smith</soundWorking>
-      <skillRequirements>
-        <Crafting>12</Crafting>
-      </skillRequirements>
-    </recipeMaker>
-    <costList>
-      <ComponentIndustrial>8</ComponentIndustrial>
-	  <ComponentSpacer>2</ComponentSpacer>
-      <Plasteel>20</Plasteel>
-    </costList>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/HoloRelay/PortableHoloEmitter</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-	  <drawSize>(2,2)</drawSize>
-    </graphicData>
-    <tickerType>Normal</tickerType>
-    <statBases>
-      <WorkToMake>3600</WorkToMake>
-      <Mass>5</Mass>
-      <Flammability>0.4</Flammability>
-      <EquipDelay>2</EquipDelay>
-    </statBases>
-    <thingCategories>
-      <li>ApparelUtility</li>
-    </thingCategories>
-    <generateAllowChance>0</generateAllowChance>
-    <apparel>
-      <countsAsClothingForNudity>false</countsAsClothingForNudity>
-      <careIfWornByCorpse>false</careIfWornByCorpse>
-      <careIfDamaged>false</careIfDamaged>
-	  <wornGraphicPath>Things/Pawn/Humanlike/Apparel/HoloRelay/PortableHoloEmitter</wornGraphicPath>
-      <wearPerDay>0</wearPerDay>
-	  <shellCoversHead>true</shellCoversHead>
-      <bodyPartGroups>
-        <li>Waist</li>
-      </bodyPartGroups>
-      <layers>
-        <li>Shell</li>
-      </layers>
-    </apparel>
-  </ThingDef>
-  
-  <ThingDef ParentName="ApparelBase">
-    <defName>Apparel_HologramDummyPants</defName>
-    <label>holographic pants</label>
-    <description>Holographic pants which provide no defensive value.</description>
-	<thingClass>ApparelHolographic</thingClass>
-    <techLevel>Spacer</techLevel>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/Pants/Pants</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <statBases>
-      <Mass>0</Mass>
-      <Flammability>0</Flammability>
-      <EquipDelay>0</EquipDelay>
-    </statBases>
-    <thingCategories>
-      <li>Apparel</li>
-    </thingCategories>
-    <generateAllowChance>0</generateAllowChance>
-    <apparel>
-      <countsAsClothingForNudity>true</countsAsClothingForNudity>
-      <careIfWornByCorpse>false</careIfWornByCorpse>
-      <careIfDamaged>false</careIfDamaged>
-      <wearPerDay>0</wearPerDay>
-      <bodyPartGroups>
-        <li>Legs</li>
-      </bodyPartGroups>
-      <layers>
-        <li>OnSkin</li>
-      </layers>
-      <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
-    </apparel>
-    <destroyOnDrop>true</destroyOnDrop>
-    <tradeability>None</tradeability>
-  </ThingDef>
-  
-  <ThingDef ParentName="ApparelBase">
-    <defName>Apparel_HologramDummyShirt</defName>
-    <label>holographic shirt</label>
-    <description>A holographic shirt which provides no defensive value.</description>
-	<thingClass>ApparelHolographic</thingClass>
-    <techLevel>Spacer</techLevel>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/ShirtBasic/ShirtBasic</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-    </graphicData>
-    <thingCategories>
-      <li>Apparel</li>
-    </thingCategories>
-    <statBases>
-      <Mass>0</Mass>
-      <Flammability>0</Flammability>
-      <EquipDelay>0</EquipDelay>
-    </statBases>
-    <generateAllowChance>0</generateAllowChance>
-    <apparel>
-      <countsAsClothingForNudity>true</countsAsClothingForNudity>
-      <careIfWornByCorpse>false</careIfWornByCorpse>
-      <careIfDamaged>false</careIfDamaged>
-      <wearPerDay>0</wearPerDay>
-      <bodyPartGroups>
-        <li>Torso</li>
-        <li>Shoulders</li>
-      </bodyPartGroups>
-      <wornGraphicPath>Things/Pawn/Humanlike/Apparel/ShirtBasic/ShirtBasic</wornGraphicPath>
-      <layers>
-        <li>OnSkin</li>
-      </layers>
-      <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
-    </apparel>
-    <destroyOnDrop>true</destroyOnDrop>
-    <tradeability>None</tradeability>
-  </ThingDef>
-  
-  <ThingDef ParentName="ApparelBase">
-    <defName>Apparel_HologramDummyShell</defName>
-    <description>A holographic coat which provides no defensive value.</description>
-	<thingClass>ApparelHolographic</thingClass>
-    <label>holographic coat</label>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/Duster/Duster</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <drawSize>1.05</drawSize>
-    </graphicData>
-    <thingCategories>
-      <li>Apparel</li>
-    </thingCategories>
-    <statBases>
-      <Mass>0</Mass>
-      <Flammability>0</Flammability>
-      <EquipDelay>0</EquipDelay>
-    </statBases>
-    <generateAllowChance>0</generateAllowChance>
-    <apparel>
-      <countsAsClothingForNudity>true</countsAsClothingForNudity>
-      <careIfWornByCorpse>false</careIfWornByCorpse>
-      <careIfDamaged>false</careIfDamaged>
-      <wearPerDay>0</wearPerDay>
-      <bodyPartGroups>
-        <li>Torso</li>
-        <li>Neck</li>
-        <li>Shoulders</li>
-        <li>Arms</li>
-        <li>Legs</li>
-      </bodyPartGroups>
-      <wornGraphicPath>Things/Pawn/Humanlike/Apparel/Duster/Duster</wornGraphicPath>
-      <layers>
-        <li>Shell</li>
-      </layers>
-      <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
-    </apparel>
-    <destroyOnDrop>true</destroyOnDrop>
-    <tradeability>None</tradeability>
-  </ThingDef>
-  
-  <ThingDef ParentName="HatBase">
-    <defName>Apparel_HologramDummyHat</defName>
-    <label>holographic hat</label>
-    <description>A holographic hat which provides no defensive value.</description>
-	<thingClass>ApparelHolographic</thingClass>
-    <graphicData>
-      <texPath>Things/Pawn/Humanlike/Apparel/CowboyHat/CowboyHat</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <drawSize>(0.9, 0.9)</drawSize>
-    </graphicData>
-    <statBases>
-      <Mass>0</Mass>
-      <Flammability>0</Flammability>
-      <EquipDelay>0</EquipDelay>
-    </statBases>
-    <generateAllowChance>0</generateAllowChance>
-    <apparel>
-      <careIfWornByCorpse>false</careIfWornByCorpse>
-      <careIfDamaged>false</careIfDamaged>
-      <wearPerDay>0</wearPerDay>
-      <countsAsClothingForNudity>false</countsAsClothingForNudity>
-      <bodyPartGroups>
-        <li>UpperHead</li>
-      </bodyPartGroups>
-      <wornGraphicPath>Things/Pawn/Humanlike/Apparel/CowboyHat/CowboyHat</wornGraphicPath>
-      <layers>
-        <li>Overhead</li>
-      </layers>
-    </apparel>
-    <destroyOnDrop>true</destroyOnDrop>
-    <tradeability>None</tradeability>
-  </ThingDef>
+		</apparel>
+	</ThingDef>
+	<ThingDef ParentName="ApparelBase">
+		<defName>Apparel_SpaceSurvivalBelt</defName>
+		<label>survival belt</label>
+		<description>An emergency survival belt used by starship crews. It remains dormant so long as air pressure is maintained. Once exposed to vacuum, the belt releases a semi-liquid membrane over the user's body and begins generating breathable air. For the next three hours, the user can survive exposure to vacuum, although their movements are slowed. The belt is single-use.</description>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<techLevel>Spacer</techLevel>
+		<generateAllowChance>0</generateAllowChance>
+		<statBases>
+			<Mass>3</Mass>
+			<WorkToMake>1400</WorkToMake>
+			<Flammability>0.4</Flammability>
+			<EquipDelay>2</EquipDelay>
+		</statBases>
+		<thingSetMakerTags>
+		</thingSetMakerTags>
+		<costList>
+			<ComponentIndustrial>2</ComponentIndustrial>
+			<Steel>20</Steel>
+		</costList>
+		<recipeMaker>
+			<unfinishedThingDef>UnfinishedBelt</unfinishedThingDef>
+			<researchPrerequisite>ShipSpaceSuits</researchPrerequisite>
+			<workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+			<workSkill>Crafting</workSkill>
+			<effectWorking>Smith</effectWorking>
+			<soundWorking>Recipe_Machining</soundWorking>
+			<recipeUsers>
+				<li>TableMachining</li>
+			</recipeUsers>
+			<skillRequirements>
+				<Crafting>6</Crafting>
+			</skillRequirements>
+		</recipeMaker>
+		<thingCategories>
+			<li>ApparelArmor</li>
+		</thingCategories>
+		<apparel>
+			<careIfWornByCorpse>false</careIfWornByCorpse>
+			<bodyPartGroups>
+				<li>Waist</li>
+			</bodyPartGroups>
+			<layers>
+				<li>Belt</li>
+			</layers>
+			<tags>
+				<li>BeltDefenseVacuum</li>
+			</tags>
+		</apparel>
+	</ThingDef>
+	<ThingDef ParentName="ApparelBase">
+		<defName>Apparel_SpaceSurvivalBeltDummy</defName>
+		<thingClass>ApparelSpaceBelt</thingClass>
+		<label>survival belt (activated)</label>
+		<description>An emergency survival belt used by starship crews. It has released a semi-liquid membrane over the user's body and is actively generating breathable air. For the next three hours, the user can survive exposure to vacuum, although their movements are slowed. The belt is single-use.</description>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<techLevel>Spacer</techLevel>
+		<tickerType>Rare</tickerType>
+		<generateAllowChance>0</generateAllowChance>
+		<statBases>
+			<Mass>3</Mass>
+			<Flammability>0.4</Flammability>
+			<EquipDelay>2</EquipDelay>
+		</statBases>
+		<costList>
+			<ComponentIndustrial>2</ComponentIndustrial>
+			<Steel>20</Steel>
+		</costList>
+		<apparel>
+			<bodyPartGroups>
+				<li>Waist</li>
+			</bodyPartGroups>
+			<layers>
+				<li>Belt</li>
+			</layers>
+		</apparel>
+	</ThingDef>
+	<ThingDef ParentName="ApparelBase">
+		<defName>Apparel_HologramRelay</defName>
+		<label>portable hologram relay</label>
+		<description>A miniaturized hologram relay worn on the back. It allows the user to project a friendly hologram whose consciousness is located far away. Due to its small size, special disposable lenses must be used, requiring a component to be replaced after each activation.\n\nIn glitterworld militaries, fallen soldiers are routinely revived as holograms so that their training and experience can continue to serve the cause. Elite "Valkyrie" specialists train alongside a team of holographic partners - when one is destroyed, the Valkyrie simply projects another.</description>
+		<techLevel>Spacer</techLevel>
+		<comps>
+			<li Class="CompProperties_Reloadable">
+				<maxCharges>3</maxCharges>
+				<ammoDef>ComponentIndustrial</ammoDef>
+				<ammoCountPerCharge>1</ammoCountPerCharge>
+				<baseReloadTicks>60</baseReloadTicks>
+				<soundReload>Standard_Reload</soundReload>
+				<hotKey>Misc4</hotKey>
+				<chargeNoun>projection</chargeNoun>
+				<displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted>
+			</li>
+			<li Class="CompProperties_HologramRelay"/>
+		</comps>
+		<recipeMaker>
+			<unfinishedThingDef>UnfinishedPack</unfinishedThingDef>
+			<researchPrerequisite>ShipHologramRepeater</researchPrerequisite>
+			<recipeUsers>
+				<li>FabricationBench</li>
+			</recipeUsers>
+			<useIngredientsForColor>false</useIngredientsForColor>
+			<workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+			<workSkill>Crafting</workSkill>
+			<effectWorking>Smith</effectWorking>
+			<soundWorking>Recipe_Smith</soundWorking>
+			<skillRequirements>
+				<Crafting>12</Crafting>
+			</skillRequirements>
+		</recipeMaker>
+		<costList>
+			<ComponentIndustrial>8</ComponentIndustrial>
+			<ComponentSpacer>2</ComponentSpacer>
+			<Plasteel>20</Plasteel>
+		</costList>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/HoloRelay/PortableHoloEmitter</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<WorkToMake>3600</WorkToMake>
+			<Mass>5</Mass>
+			<Flammability>0.4</Flammability>
+			<EquipDelay>2</EquipDelay>
+		</statBases>
+		<thingCategories>
+			<li>ApparelUtility</li>
+		</thingCategories>
+		<generateAllowChance>0</generateAllowChance>
+		<apparel>
+			<countsAsClothingForNudity>false</countsAsClothingForNudity>
+			<careIfWornByCorpse>false</careIfWornByCorpse>
+			<careIfDamaged>false</careIfDamaged>
+			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/HoloRelay/PortableHoloEmitter</wornGraphicPath>
+			<wearPerDay>0</wearPerDay>
+			<shellCoversHead>true</shellCoversHead>
+			<bodyPartGroups>
+				<li>Waist</li>
+			</bodyPartGroups>
+			<layers>
+				<li>Shell</li>
+			</layers>
+		</apparel>
+	</ThingDef>
+	<ThingDef ParentName="ApparelBase">
+		<defName>Apparel_HologramDummyPants</defName>
+		<label>holographic pants</label>
+		<description>Holographic pants which provide no defensive value.</description>
+		<thingClass>ApparelHolographic</thingClass>
+		<techLevel>Spacer</techLevel>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/Pants/Pants</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<Mass>0</Mass>
+			<Flammability>0</Flammability>
+			<EquipDelay>0</EquipDelay>
+		</statBases>
+		<thingCategories>
+			<li>Apparel</li>
+		</thingCategories>
+		<generateAllowChance>0</generateAllowChance>
+		<apparel>
+			<countsAsClothingForNudity>true</countsAsClothingForNudity>
+			<careIfWornByCorpse>false</careIfWornByCorpse>
+			<careIfDamaged>false</careIfDamaged>
+			<wearPerDay>0</wearPerDay>
+			<bodyPartGroups>
+				<li>Legs</li>
+			</bodyPartGroups>
+			<layers>
+				<li>OnSkin</li>
+			</layers>
+			<canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+		</apparel>
+		<destroyOnDrop>true</destroyOnDrop>
+		<tradeability>None</tradeability>
+	</ThingDef>
+	<ThingDef ParentName="ApparelBase">
+		<defName>Apparel_HologramDummyShirt</defName>
+		<label>holographic shirt</label>
+		<description>A holographic shirt which provides no defensive value.</description>
+		<thingClass>ApparelHolographic</thingClass>
+		<techLevel>Spacer</techLevel>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/ShirtBasic/ShirtBasic</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<thingCategories>
+			<li>Apparel</li>
+		</thingCategories>
+		<statBases>
+			<Mass>0</Mass>
+			<Flammability>0</Flammability>
+			<EquipDelay>0</EquipDelay>
+		</statBases>
+		<generateAllowChance>0</generateAllowChance>
+		<apparel>
+			<countsAsClothingForNudity>true</countsAsClothingForNudity>
+			<careIfWornByCorpse>false</careIfWornByCorpse>
+			<careIfDamaged>false</careIfDamaged>
+			<wearPerDay>0</wearPerDay>
+			<bodyPartGroups>
+				<li>Torso</li>
+				<li>Shoulders</li>
+			</bodyPartGroups>
+			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/ShirtBasic/ShirtBasic</wornGraphicPath>
+			<layers>
+				<li>OnSkin</li>
+			</layers>
+			<canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+		</apparel>
+		<destroyOnDrop>true</destroyOnDrop>
+		<tradeability>None</tradeability>
+	</ThingDef>
+	<ThingDef ParentName="ApparelBase">
+		<defName>Apparel_HologramDummyShell</defName>
+		<description>A holographic coat which provides no defensive value.</description>
+		<thingClass>ApparelHolographic</thingClass>
+		<label>holographic coat</label>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/Duster/Duster</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>1.05</drawSize>
+		</graphicData>
+		<thingCategories>
+			<li>Apparel</li>
+		</thingCategories>
+		<statBases>
+			<Mass>0</Mass>
+			<Flammability>0</Flammability>
+			<EquipDelay>0</EquipDelay>
+		</statBases>
+		<generateAllowChance>0</generateAllowChance>
+		<apparel>
+			<countsAsClothingForNudity>true</countsAsClothingForNudity>
+			<careIfWornByCorpse>false</careIfWornByCorpse>
+			<careIfDamaged>false</careIfDamaged>
+			<wearPerDay>0</wearPerDay>
+			<bodyPartGroups>
+				<li>Torso</li>
+				<li>Neck</li>
+				<li>Shoulders</li>
+				<li>Arms</li>
+				<li>Legs</li>
+			</bodyPartGroups>
+			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/Duster/Duster</wornGraphicPath>
+			<layers>
+				<li>Shell</li>
+			</layers>
+			<canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+		</apparel>
+		<destroyOnDrop>true</destroyOnDrop>
+		<tradeability>None</tradeability>
+	</ThingDef>
+	<ThingDef ParentName="HatBase">
+		<defName>Apparel_HologramDummyHat</defName>
+		<label>holographic hat</label>
+		<description>A holographic hat which provides no defensive value.</description>
+		<thingClass>ApparelHolographic</thingClass>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/CowboyHat/CowboyHat</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(0.9, 0.9)</drawSize>
+		</graphicData>
+		<statBases>
+			<Mass>0</Mass>
+			<Flammability>0</Flammability>
+			<EquipDelay>0</EquipDelay>
+		</statBases>
+		<generateAllowChance>0</generateAllowChance>
+		<apparel>
+			<careIfWornByCorpse>false</careIfWornByCorpse>
+			<careIfDamaged>false</careIfDamaged>
+			<wearPerDay>0</wearPerDay>
+			<countsAsClothingForNudity>false</countsAsClothingForNudity>
+			<bodyPartGroups>
+				<li>UpperHead</li>
+			</bodyPartGroups>
+			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/CowboyHat/CowboyHat</wornGraphicPath>
+			<layers>
+				<li>Overhead</li>
+			</layers>
+		</apparel>
+		<destroyOnDrop>true</destroyOnDrop>
+		<tradeability>None</tradeability>
+	</ThingDef>
 </Defs>

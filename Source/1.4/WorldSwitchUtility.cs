@@ -175,7 +175,7 @@ namespace SaveOurShip2
             List<Pawn> toKill = new List<Pawn>();
             foreach (Pawn p in shipMap.mapPawns.AllPawns)
             {
-                if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!ShipInteriorMod2.IsHologram(p) || p.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().consciousnessSource.Map!=shipMap))
+                if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!ShipInteriorMod2.IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map!=shipMap))
                     toKill.Add(p);
             }
             foreach (Pawn p in toKill)

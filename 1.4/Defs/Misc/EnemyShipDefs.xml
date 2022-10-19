@@ -30,7 +30,8 @@
 			<li>Mech_Pikeman</li>
 			<li>Mech_Scyther</li>
 			<li>Mech_Lancer</li>
-			<li>Mech_Centipede</li>
+			<li>Mech_CentipedeGunner</li>
+			<li>Mech_CentipedeBurner</li>
 		</things>
 	</EnemyShipPartDef>
 	

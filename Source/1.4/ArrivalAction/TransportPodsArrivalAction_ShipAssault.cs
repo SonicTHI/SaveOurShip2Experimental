@@ -75,7 +75,7 @@ namespace RimWorld.Planet
 					foreach (IntVec3 intVec in GenAdj.CellsAdjacent8Way(validCells[i], Rot4.North, new IntVec2(7, 7)))
 					{
 						Room room = intVec.GetRoom(map);
-						if (intVec.InBounds(map) && intVec.Standable(map) && room != null && !room.TouchesMapEdge && !room.IsDoorway && !(room.ContainsThing(ThingDef.Named("ShipPilotSeatMini")) || room.ContainsThing(ThingDef.Named("ShipPilotSeat")) || room.ContainsThing(ThingDef.Named("Ship_ComputerCore"))))
+						if (intVec.InBounds(map) && intVec.Standable(map) && room != null && !room.TouchesMapEdge && !room.IsDoorway && !(room.ContainsThing(ThingDef.Named("ShipPilotSeatMini")) || room.ContainsThing(ThingDef.Named("ShipPilotSeat")) || room.ContainsThing(ThingDef.Named("ShipConsoleTactical")) || room.ContainsThing(ThingDef.Named("ShipArchotechSpore"))))
 						{
 							bool prevent = false;
 							List<Thing> thingList = intVec.GetThingList(map);

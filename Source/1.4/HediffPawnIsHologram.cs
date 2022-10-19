@@ -33,7 +33,7 @@ namespace RimWorld
             base.Tick();
             if(Find.TickManager.TicksGame % 1000 == 0)
             {
-                IEnumerable<Hediff> missingBits = pawn.health.hediffSet.GetHediffs<Hediff_MissingPart>();
+                IEnumerable<Hediff> missingBits = GetHediffs<Hediff_MissingPart>();
                 foreach(Hediff missingBit in missingBits)
                 {
                     BodyPartRecord part = missingBit.Part;
@@ -42,7 +42,7 @@ namespace RimWorld
                     wound.Severity = part.def.GetMaxHealth(pawn) - 1;
                     pawn.health.AddHediff(wound, part);
                 }
-                IEnumerable<Hediff_Injury> injuries = pawn.health.hediffSet.GetHediffs<Hediff_Injury>();
+                IEnumerable<Hediff_Injury> injuries = GetHediffs<Hediff_Injury>();
                 foreach(Hediff injury in injuries)
                 {
                     if (injury.IsPermanent())
@@ -57,6 +57,20 @@ namespace RimWorld
                 if (pawn.Map != consciousnessSource.Map && relay==null && pawn.CarriedBy==null && !pawn.InContainerEnclosed && !pawn.IsPrisoner)
                     consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramDestroyed(false);
             }
+        }
+        public IEnumerable<T> GetHediffs<T>() where T : Hediff //1.4 more removed shit, thx TY
+        {
+            int num;
+            for (int i = 0; i < pawn.health.hediffSet.hediffs.Count; i = num)
+            {
+                T t = pawn.health.hediffSet.hediffs[i] as T;
+                if (t != null)
+                {
+                    yield return t;
+                }
+                num = i + 1;
+            }
+            yield break;
         }
 
         public override IEnumerable<Gizmo> GetGizmos()

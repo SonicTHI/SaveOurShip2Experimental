@@ -10,7 +10,7 @@ namespace RimWorld
 {
     class Bullet_HologramLaser : Bullet
     {
-        protected override void Impact(Thing hitThing)
+        protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             base.Impact(hitThing);
             ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
@@ -19,7 +19,7 @@ namespace RimWorld
                 obj.destination = hitThing.DrawPos;
             else
                 obj.destination = this.DrawPos;
-            obj.color = ((Pawn)this.launcher).health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramColor;
+            obj.color = ((Pawn)this.launcher).health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramColor;
             obj.tiny = true;
             obj.Attach(hitThing);
             if (hitThing != null)

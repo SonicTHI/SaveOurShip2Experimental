@@ -18,6 +18,6 @@ namespace RimWorld
             Scribe_Defs.Look<ThingDef>(ref apparelToMimic, "apparelToMimic");
         }
 
-        public override Color DrawColor => (Wearer != null ? Wearer.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramColor : base.DrawColor);
+        public override Color DrawColor => (Wearer != null ? Wearer.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramColor : base.DrawColor);
     }
 }

@@ -28,7 +28,7 @@ namespace RimWorld
                     int damage = Rand.RangeInclusive(3, 5);
                     p.TakeDamage(new DamageInfo(DamageDefOf.Burn, damage));
                     float num = 0.01f;
-                    num *= p.GetStatValue(StatDefOf.ToxicSensitivity, true);
+                    num *= (1 - p.GetStatValue(StatDefOf.ToxicResistance, true));
                     if (num != 0f)
                     {
                         HealthUtility.AdjustSeverity(p, HediffDefOf.ToxicBuildup, num);

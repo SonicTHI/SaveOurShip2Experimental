@@ -383,9 +383,10 @@ namespace RimWorld
                 this.ResetCurrentTarget();
                 return;
             }
-            if (this.def.building.turretBurstWarmupTime > 0f)
+            float randomInRange = this.def.building.turretBurstWarmupTime.RandomInRange;
+            if (randomInRange > 0f)
             {
-                this.burstWarmupTicksLeft = this.def.building.turretBurstWarmupTime.SecondsToTicks();
+                this.burstWarmupTicksLeft = randomInRange.SecondsToTicks();
                 return;
             }
             if (canBeginBurstImmediately)

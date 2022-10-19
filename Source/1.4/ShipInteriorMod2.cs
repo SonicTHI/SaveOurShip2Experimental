@@ -106,7 +106,7 @@ namespace SaveOurShip2
 		public static HediffDef ArchoSkin = HediffDef.Named("SoSArchotechSkin");
 		public static HediffDef bubbleHediff = HediffDef.Named("SpaceBeltBubbleHediff");
 		public static HediffDef SoSHologramArchotech = HediffDef.Named("SoSHologramArchotech");
-		public static Backstory hologramBackstory;
+		public static BackstoryDef hologramBackstory;
 		public static MemeDef Archism = DefDatabase<MemeDef>.GetNamed("Structure_Archist", false);
 		public static BiomeDef OuterSpaceBiome = DefDatabase<BiomeDef>.GetNamed("OuterSpaceBiome");
 		public static StorytellerDef Sara = DefDatabase<StorytellerDef>.GetNamed("Sara");
@@ -118,22 +118,6 @@ namespace SaveOurShip2
 
 		static ShipInteriorMod2()
 		{
-			hologramBackstory = new Backstory();
-            hologramBackstory.identifier = "SoSHologram";
-            hologramBackstory.slot = BackstorySlot.Childhood;
-            hologramBackstory.title = "machine persona";
-            hologramBackstory.titleFemale = "machine persona";
-            hologramBackstory.titleShort = "persona";
-            hologramBackstory.titleShortFemale = "persona";
-            hologramBackstory.baseDesc = "{PAWN_nameDef} is a machine persona. {PAWN_pronoun} interacts with the world via a hologram, which cannot leave the map where {PAWN_possessive} core resides.";
-            hologramBackstory.shuffleable = false;
-            typeof(Backstory).GetField("bodyTypeFemaleResolved", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(hologramBackstory, BodyTypeDefOf.Female);
-            typeof(Backstory).GetField("bodyTypeMaleResolved", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(hologramBackstory, BodyTypeDefOf.Male);
-            hologramBackstory.spawnCategories = new List<string>();
-            hologramBackstory.spawnCategories.Add("SoSHologram");
-			hologramBackstory.requiredWorkTags = WorkTags.AllWork;
-			hologramBackstory.shuffleable = true;
-			BackstoryDatabase.AddBackstory(hologramBackstory);
 		}
 
 		public override string ModIdentifier
@@ -146,7 +130,8 @@ namespace SaveOurShip2
 			// Must be manually patched as SectionLayer_Terrain is internal
 			var regenerateMethod = AccessTools.TypeByName("SectionLayer_Terrain").GetMethod("Regenerate");
 			var regeneratePostfix = typeof(SectionRegenerateHelper).GetMethod("Postfix");
-			HarmonyInst.Patch(regenerateMethod, postfix: new HarmonyMethod(regeneratePostfix));
+			Harmony pat = new Harmony("");
+			pat.Patch(regenerateMethod, postfix: new HarmonyMethod(regeneratePostfix));
 
 			//Similarly, with firefighting
 			//TODO - temporarily disabled until we can figure out why we're getting "invalid IL" errors
@@ -994,7 +979,7 @@ namespace SaveOurShip2
 						zonesToCopy.Add(t.Map.zoneManager.ZoneAt(t.Position));
 					}
 
-					var glower = t.TryGetComp<CompGlowerOffset>(); //wall lights
+					var glower = t.TryGetComp<CompOffsetGlow>(); //wall lights
 					var engineComp = t.TryGetComp<CompEngineTrail>();
 					var powerComp = t.TryGetComp<CompPower>();
 					if (engineComp != null)
@@ -1035,7 +1020,7 @@ namespace SaveOurShip2
 			//remove unwanted things
 			foreach (Thing t in toRemove)
 			{
-				var glower = t.TryGetComp<CompGlowerOffset>();
+				var glower = t.TryGetComp<CompOffsetGlow>();
 				toSave.Remove(glower.glower);
 				glower.DespawnGlower();
 			}
@@ -1246,8 +1231,7 @@ namespace SaveOurShip2
 			//takeoff - explosions
 			foreach (IntVec3 pos in fireExplosions)
 			{
-				GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null, -1, -1f, null, null,
-					null, null, null, 0f, 1, false, null, 0f, 1, 0f, false);
+				GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null);
 			}
 			if (sourceMap != targetMap)
 			{
@@ -1347,7 +1331,7 @@ namespace SaveOurShip2
 		}
 		public static bool IsHologram(Pawn pawn)
 		{
-			return pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Any();
+			return pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null;
 		}
 		public static bool ExposedToOutside(Room room)
 		{
@@ -3637,15 +3621,15 @@ namespace SaveOurShip2
 		{
 			if (filthDef.defName.Equals("Filth_SpaceReactorAsh"))
 			{
-				Pawn pawn = (Pawn)typeof(Pawn_FilthTracker)
+				Pawn p = (Pawn)typeof(Pawn_FilthTracker)
 					.GetField("pawn", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
 				int damage = Rand.RangeInclusive(1, 2);
-				pawn.TakeDamage(new DamageInfo(DamageDefOf.Burn, damage));
+				p.TakeDamage(new DamageInfo(DamageDefOf.Burn, damage));
 				float num = 0.025f;
-				num *= pawn.GetStatValue(StatDefOf.ToxicSensitivity, true);
+				num *= (1 - p.GetStatValue(StatDefOf.ToxicResistance, true));
 				if (num != 0f)
 				{
-					HealthUtility.AdjustSeverity(pawn, HediffDefOf.ToxicBuildup, num);
+					HealthUtility.AdjustSeverity(p, HediffDefOf.ToxicBuildup, num);
 				}
 			}
 		}
@@ -3840,14 +3824,14 @@ namespace SaveOurShip2
 		}
 
 		[HarmonyPostfix]
-		public static void Replace(Dictionary<FactionDef, int> factionCounts)
+		public static void Replace(Dictionary<FactionDef, int> factions)
 		{
 			if (WorldSwitchUtility.SelectiveWorldGenFlag)
 			{
 				int i = 0;
 				foreach (FactionDef current in DefDatabase<FactionDef>.AllDefs)
 				{
-					for (int j = 0; j < ((factionCounts != null && factionCounts.ContainsKey(current)) ? factionCounts[current] : current.requiredCountAtGameStart); j++)
+					for (int j = 0; j < ((factions != null && factions.ContainsKey(current)) ? factions[current] : current.requiredCountAtGameStart); j++)
 					{
 						if (!current.hidden)
 						{
@@ -4653,7 +4637,7 @@ namespace SaveOurShip2
             {
 				if(__instance.Corpse!=null)
 					__instance.Corpse.Destroy();
-				if(!__instance.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().consciousnessSource.Destroyed)
+				if(!__instance.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Destroyed)
 				ResurrectionUtility.Resurrect(__instance);
             }
         }
@@ -4942,7 +4926,7 @@ namespace SaveOurShip2
 			if (ShipInteriorMod2.IsHologram(__instance.pawn))
 			{
 				__result = true;
-				sourceHediff = __instance.pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault();
+				sourceHediff = __instance.pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>();
 			}
         }
     }
@@ -5125,7 +5109,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ThingStuffPair pair, Pawn pawn, ref bool __result)
 		{
-			if (pair.thing.IsApparel && pair.thing.apparel.tags != null && pair.thing.apparel.tags.Contains("HologramGear") && pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Count() == 0)
+			if (pair.thing.IsApparel && pair.thing.apparel.tags != null && pair.thing.apparel.tags.Contains("HologramGear") && pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
 			{
 				__result = false;
 			}
@@ -5139,7 +5123,7 @@ namespace SaveOurShip2
 
 		public static void Postfix(ThingStuffPair pair, Pawn pawn, ref float __result)
 		{
-			if (pair.thing.IsWeapon && pair.thing.weaponClasses != null && pair.thing.weaponClasses.Contains(hologramClass) && pawn.health.hediffSet.GetHediffs<HediffPawnIsHologram>().Count() == 0)
+			if (pair.thing.IsWeapon && pair.thing.weaponClasses != null && pair.thing.weaponClasses.Contains(hologramClass) && pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
 			{
 				__result = 0f;
 			}
@@ -5504,10 +5488,10 @@ namespace SaveOurShip2
 		}
 	}*/
 
-	[HarmonyPatch(typeof(CompAttachableWall), "PostDeSpawn")]
+	[HarmonyPatch(typeof(CompWallFixture), "PostDeSpawn")]
 	public class WallLightPatch //prevents decon of walllights
 	{
-		public static bool Prefix(Map map, CompAttachableWall __instance)
+		public static bool Prefix(Map map, CompWallFixture __instance)
 		{
 			//__instance.base.PostDeSpawn(map);
 			if (ShipInteriorMod2.AirlockBugFlag)

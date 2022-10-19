@@ -39,7 +39,7 @@ namespace RimWorld
                           List<FloatMenuOption> options = new List<FloatMenuOption>();
                           foreach (Pawn hologram in PawnsFinder.AllMaps_FreeColonists)
                           {
-                              if (hologram.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault()?.consciousnessSource.Map!=ParentMap() && ShipInteriorMod2.IsHologram(hologram))
+                              if (hologram.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>()?.consciousnessSource.Map!=ParentMap() && ShipInteriorMod2.IsHologram(hologram))
                               {
                                   options.Add(new FloatMenuOption(hologram.LabelShort, delegate
                                   {
@@ -77,7 +77,7 @@ namespace RimWorld
 
         void RelayHologram(Pawn hologram, LocalTargetInfo info)
         {
-            ThingWithComps relay = hologram.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().relay;
+            ThingWithComps relay = hologram.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().relay;
             if(relay!=null)
                 relay.TryGetComp<CompHologramRelay>().StopRelaying(false);
             if(hologram.Spawned)
@@ -87,7 +87,7 @@ namespace RimWorld
             FleckMaker.Static(info.Cell, ParentMap(), FleckDefOf.PsycastAreaEffect,5f);
             SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
             relaying = hologram;
-            hologram.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().relay = parent;
+            hologram.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().relay = parent;
             if (parent.TryGetComp<CompReloadable>() != null)
                 parent.TryGetComp<CompReloadable>().UsedOnce();
         }
@@ -96,7 +96,7 @@ namespace RimWorld
         {
             if (relaying != null)
             {
-                CompBuildingConsciousness buildingConsc = relaying.health.hediffSet.GetHediffs<HediffPawnIsHologram>().FirstOrDefault().consciousnessSource.TryGetComp<CompBuildingConsciousness>();
+                CompBuildingConsciousness buildingConsc = relaying.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.TryGetComp<CompBuildingConsciousness>();
                 buildingConsc.HologramDestroyed(false);
                 if (respawn && Find.TickManager.TicksGame > buildingConsc.HologramRespawnTick)
                 {

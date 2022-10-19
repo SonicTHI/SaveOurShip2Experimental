@@ -33,7 +33,7 @@ namespace RimWorld
 			return damageResult;
 		}
 
-        public override IEnumerable<IntVec3> ExplosionCellsToHit(IntVec3 center, Map map, float radius, IntVec3? needLOSToCell1 = null, IntVec3? needLOSToCell2 = null)
+        public override IEnumerable<IntVec3> ExplosionCellsToHit(IntVec3 center, Map map, float radius, IntVec3? needLOSToCell1 = null, IntVec3? needLOSToCell2 = null, FloatRange? affectedAngle = null)
         {
 			List<IntVec3> cells = new List<IntVec3>();
 			float sqrRad = radius * radius;

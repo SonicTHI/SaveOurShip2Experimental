@@ -2974,7 +2974,7 @@ namespace SaveOurShip2
 							}
 						}
 					}
-					if (__instance.Faction == Faction.OfPlayer)
+					if (!(mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct) && __instance.Faction == Faction.OfPlayer)
 						GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
 						__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
 				}
@@ -2996,7 +2996,7 @@ namespace SaveOurShip2
 							{
 								ship.BuildingCount--;
 								ship.Mass -= __instance.def.Size.x * __instance.def.Size.z * 3;
-								if (mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct) //wd
+								if (mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct)
 									break;
 								if (mapComp.InCombat && mode != DestroyMode.Deconstruct && __instance.def.blueprintDef != null && __instance.Faction == Faction.OfPlayer)
 								{

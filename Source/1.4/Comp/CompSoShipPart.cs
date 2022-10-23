@@ -19,7 +19,7 @@ namespace RimWorld
         //shipPart hull (props isHull): walls, corners, hullfoam fills these if destroyed, wrecks form from these
         //shipPart plating (props isPlating): can not be placed under buildings, wrecks form from these
         //shipPart: other parts that are cached - not attached, no corePath
-
+        
         public int shipIndex = -1; //main bridge thingid
         public int corePath = -1; //how far away the main bridge is
         public ShipHeatMapComp mapComp;
@@ -30,7 +30,7 @@ namespace RimWorld
                 return (CompProperties_SoShipPart)props;
             }
         }
-
+        /*
         public override string CompInspectStringExtra()
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -342,13 +342,6 @@ namespace RimWorld
                 //Log.Message("Detaching location " + at);
                 foreach (Thing t in at.GetThingList(map).Where(t => t.def.destroyable && !t.Destroyed))
                 {
-                    /*if (t is Building_ShipBridge && mapComp.ShipsOnMap.Keys.Contains(t.thingIDNumber)) //stopgap for invalid state bug
-                    {
-                        Log.Message("Tried removing primary bridge from ship, aborting detach.");
-                        ShipInteriorMod2.AirlockBugFlag = false;
-                        mapComp.RemoveShipFromBattle(shipIndex);
-                        return;
-                    }*/
                     if (t is Pawn p)
                     {
                         if (p.Faction != Faction.OfPlayer && Rand.Chance(0.75f))
@@ -412,5 +405,6 @@ namespace RimWorld
             if (map == mapComp.ShipCombatOriginMap)
                 mapComp.hasAnyPlayerPartDetached = true;
         }
+        */
     }
 }

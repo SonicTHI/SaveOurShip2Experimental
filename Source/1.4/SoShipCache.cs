@@ -26,7 +26,7 @@ namespace RimWorld
         //possible split: ooc - check for bridge, ic - detach, ooc - RebuildCache for each dcon bridge, -1 to rest
 
         //other buildings: +-for count, mass if on shipPart
-
+        /*
         public string Name = "Unnamed Ship";
         public Building_ShipBridge Core; //if null, this is a wreck
         //public bool corePathDirty = true; //false after recache, repath, true after merge
@@ -354,6 +354,6 @@ namespace RimWorld
                     ThreatRaw -= 5;
                 Mass -= b.def.Size.x * b.def.Size.z * 3;
             }
-        }
+        }*/
     }
 }

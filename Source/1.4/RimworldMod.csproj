@@ -60,7 +60,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="HugsLib">
-      <HintPath>..\..\..\818773962 HugsLib\Assemblies\HugsLib.dll</HintPath>
+      <HintPath>..\..\..\818773962 HugsLib\v1.4\Assemblies\HugsLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="WallLight">

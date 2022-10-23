@@ -516,12 +516,6 @@ namespace RimWorld
 
             if (InCombat && (this.map == ShipCombatOriginMap || this.map == ShipCombatMasterMap))
             {
-												 
-				 
-																		  
-											   
-						   
-				 
                 if (ShipCombatMaster)
                 {
                     if (OriginMapComp.Heading == 1)
@@ -635,15 +629,9 @@ namespace RimWorld
             //threat and engine power calcs
             foreach (ShipCache ship in ShipsOnMap)
             {
-                var bridge = ship.Bridges.FirstOrDefault().heatComp;
-                if (bridge == null)
-                    continue;
-
-                var heatNet = bridge.myNet;
                 if (ShipCombatMaster)//heatpurge
                 {
-																		
-																								  
+					var bridge = ship.Bridges.FirstOrDefault().heatComp;			  
                     foreach (var battery in ship.Batteries)
                     {
                         powerCapacity += battery.Props.storedEnergyMax;
@@ -685,32 +673,32 @@ namespace RimWorld
                         }
                     }
                 }
-                foreach (var turret in heatNet.Turrets)
+                foreach (var turret in ship.Turrets)
                 {
                     TurretNum++;
-                    if (turret.parent.TryGetComp<CompChangeableProjectilePlural>() != null && !turret.parent.TryGetComp<CompChangeableProjectilePlural>().Loaded)
+                    if (turret.TryGetComp<CompChangeableProjectilePlural>() != null && !turret.TryGetComp<CompChangeableProjectilePlural>().Loaded)
                         continue;
-                    totalThreat += turret.Props.threat;
-                    if (turret.Props.maxRange > 150)//long
+                    totalThreat += turret.heatComp.Props.threat;
+                    if (turret.heatComp.Props.maxRange > 150)//long
                     {
-                        threatPerSegment[0] += turret.Props.threat / 6;
-                        threatPerSegment[1] += turret.Props.threat / 4;
-                        threatPerSegment[2] += turret.Props.threat / 2;
-                        threatPerSegment[3] += turret.Props.threat;
+                        threatPerSegment[0] += turret.heatComp.Props.threat / 6;
+                        threatPerSegment[1] += turret.heatComp.Props.threat / 4;
+                        threatPerSegment[2] += turret.heatComp.Props.threat / 2;
+                        threatPerSegment[3] += turret.heatComp.Props.threat;
                     }
-                    else if (turret.Props.maxRange > 100)//med
+                    else if (turret.heatComp.Props.maxRange > 100)//med
                     {
-                        threatPerSegment[0] += turret.Props.threat / 4;
-                        threatPerSegment[1] += turret.Props.threat / 2;
-                        threatPerSegment[2] += turret.Props.threat;
+                        threatPerSegment[0] += turret.heatComp.Props.threat / 4;
+                        threatPerSegment[1] += turret.heatComp.Props.threat / 2;
+                        threatPerSegment[2] += turret.heatComp.Props.threat;
                     }
-                    else if (turret.Props.maxRange > 50)//short
+                    else if (turret.heatComp.Props.maxRange > 50)//short
                     {
-                        threatPerSegment[0] += turret.Props.threat / 2;
-                        threatPerSegment[1] += turret.Props.threat;
+                        threatPerSegment[0] += turret.heatComp.Props.threat / 2;
+                        threatPerSegment[1] += turret.heatComp.Props.threat;
                     }
                     else //cqc
-                        threatPerSegment[0] += turret.Props.threat;
+                        threatPerSegment[0] += turret.heatComp.Props.threat;
                 }
                 if (ship.Engines.FirstOrDefault() != null)
                     EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
@@ -1019,8 +1007,7 @@ namespace RimWorld
                     if (ShipGraveyard == null)
                         SpawnGraveyard();
                     ShipInteriorMod2.MoveShip(b, ShipGraveyard, new IntVec3(0, 0, 0), fac);
-                }
-																							   
+                }						   
             }
             else if (fac != null)//last ship hacked
             {
@@ -1028,14 +1015,7 @@ namespace RimWorld
                 {
                     if (building.def.CanHaveFaction)
                         building.SetFaction(Faction.OfPlayer);
-                }
-													
-									  
-			 
-									  
-			 
-													
-									  
+                }					  
             }
             MapRootList.RemoveAt(shipIndex);
             ShipsOnMap.Remove(ShipsOnMap[shipIndex]);

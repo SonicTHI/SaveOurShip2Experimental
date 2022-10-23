@@ -569,7 +569,7 @@
 		<thingClass>Hive</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Natural/Hive</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
+			<graphicClass>Graphic_Random</graphicClass>
 			<drawSize>1.6</drawSize>
 		</graphicData>
 		<uiIconScale>0.65</uiIconScale>

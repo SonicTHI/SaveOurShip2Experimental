@@ -23,7 +23,6 @@ using System.Collections;
 using System.Reflection.Emit;
 using UnityEngine.SceneManagement;
 using System.Linq.Expressions;
-using MURWallLight;
 
 namespace SaveOurShip2
 {
@@ -919,7 +918,6 @@ namespace SaveOurShip2
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
 			List<Thing> toSave = new List<Thing>();
-			List<Thing> toRemove = new List<Thing>();
 			List<Thing> toDestroy = new List<Thing>();
 			List<CompPower> toRePower = new List<CompPower>();
 			List<Zone> zonesToCopy = new List<Zone>();
@@ -957,14 +955,10 @@ namespace SaveOurShip2
 					{
 						zonesToCopy.Add(t.Map.zoneManager.ZoneAt(t.Position));
 					}
-
-					var glower = t.TryGetComp<CompOffsetGlow>(); //wall lights
 					var engineComp = t.TryGetComp<CompEngineTrail>();
 					var powerComp = t.TryGetComp<CompPower>();
 					if (engineComp != null)
 						engineComp.Off();
-					else if (glower != null)
-						toRemove.Add(t);
 					if (powerComp != null)
 						toRePower.Add(powerComp);
 					if (!toSave.Contains(t) && !(t is Building_SteamGeyser))
@@ -995,13 +989,6 @@ namespace SaveOurShip2
 				}
 				else if (!thing.Destroyed)
 					thing.Destroy();
-			}
-			//remove unwanted things
-			foreach (Thing t in toRemove)
-			{
-				var glower = t.TryGetComp<CompOffsetGlow>();
-				toSave.Remove(glower.glower);
-				glower.DespawnGlower();
 			}
 			//takeoff - draw fuel
 			if (targetMapIsSpace && !sourceMapIsSpace)
@@ -5380,20 +5367,6 @@ namespace SaveOurShip2
 				pos = myPos;
 				dist = myDist;
 			}
-		}
-	}
-
-	[HarmonyPatch(typeof(CompWallFixture), "PostDeSpawn")]
-	public class WallLightPatch //prevents decon of walllights
-	{
-		public static bool Prefix(Map map, CompWallFixture __instance)
-		{
-			//__instance.base.PostDeSpawn(map);
-			if (ShipInteriorMod2.AirlockBugFlag)
-			{
-				return false;
-            }
-			return true;
 		}
 	}
 

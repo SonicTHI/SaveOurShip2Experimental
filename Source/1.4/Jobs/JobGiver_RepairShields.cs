@@ -11,7 +11,7 @@ namespace RimWorld
 {
     public class JobGiver_RepairShields : ThinkNode
     {
-		static WorkGiver_FixBrokenDownBuilding fixGiver = new WorkGiver_FixBrokenDownBuilding();
+		WorkGiver_FixBrokenDownBuilding fixGiver = new WorkGiver_FixBrokenDownBuilding();
 
         public override float GetPriority(Pawn pawn)
         {
@@ -20,14 +20,14 @@ namespace RimWorld
 
         public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
-			if (pawn.RaceProps.IsMechanoid || (!pawn.skills.GetSkill(SkillDefOf.Construction).TotallyDisabled && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) > 0))
+            var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
+            if (mapComp.Shields.NullOrEmpty() || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) == 0)
+                return ThinkResult.NoJob;
+            if (pawn.RaceProps.IsMechanoid || !pawn.skills.GetSkill(SkillDefOf.Construction).TotallyDisabled)
             {
-				foreach(CompShipCombatShield shield in pawn.Map.GetComponent<ShipHeatMapComp>().Shields)
+				foreach (CompShipCombatShield shield in mapComp.Shields.Where(s => s.breakComp.BrokenDown && pawn.CanReserveAndReach(s.parent, PathEndMode.ClosestTouch, Danger.Deadly)))
                 {
-					if(shield.breakComp.BrokenDown && pawn.CanReserveAndReach(shield.parent,PathEndMode.ClosestTouch,Danger.Deadly))
-                    {
-						return new ThinkResult(fixGiver.JobOnThing(pawn, shield.parent), this);
-                    }
+                    return new ThinkResult(fixGiver.JobOnThing(pawn, shield.parent), this);
                 }
             }
 			return ThinkResult.NoJob;

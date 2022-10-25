@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>BomberASREV</defName>
+		<defName>BomberLight</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>113</offsetX>
 		<offsetZ>116</offsetZ>
 		<sizeX>24</sizeX>
 		<sizeZ>18</sizeZ>
-		<label>ASREV</label>
+		<label>Light bomber</label>
 		<combatPoints>58</combatPoints>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>

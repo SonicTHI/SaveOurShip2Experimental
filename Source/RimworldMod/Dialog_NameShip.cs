@@ -24,9 +24,10 @@ namespace SaveOurShip2
 
             bridge.ShipName = name;
 
-            foreach(Building_ShipBridge b in bridge.mapComp.ShipsOnMap[bridge.GetComp<CompSoShipPart>().shipIndex].Bridges)
+            foreach (Building b in ShipUtility.ShipBuildingsAttachedTo(bridge))
             {
-                b.ShipName = name;
+                if (b is Building_ShipBridge bridge)
+                    bridge.ShipName = name;
             }
         }
     }

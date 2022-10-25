@@ -210,7 +210,6 @@ namespace RimWorld
         public List<Building> MapRootListAll = new List<Building>();//all bridges on map
         public List<Building> MapRootList;//primary bridges
 
-        public Dictionary<int, SoShipCache> ShipsOnMapNew = new Dictionary<int, SoShipCache>();//bridgeId, ship
         public List<ShipCache> shipsOnMap;
         List<Building> cores = new List<Building>();
         public List<ShipCache> ShipsOnMap//rebuild shipsOnMap cache if it is null

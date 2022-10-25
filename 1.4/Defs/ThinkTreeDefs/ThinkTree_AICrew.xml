@@ -33,7 +33,16 @@
             <li Class="ThinkNode_Tagger">
               <tagToGive>SatisfyingNeeds</tagToGive>
               <subNodes>
-                <li Class="JobGiver_GetJoyInBed" />
+                <li Class="ThinkNode_PrioritySorter">
+                  <subNodes>
+                    <li Class="ThinkNode_Priority_GetJoy">
+                      <subNodes>
+                        <li Class="JobGiver_GetJoyInBed" />
+                      </subNodes>
+                    </li>
+                    <li Class="JobGiver_MeditateInBed"/>
+                  </subNodes>
+                </li>
               </subNodes>
             </li>
             
@@ -164,12 +173,20 @@
               <subNodes>
                 <li Class="ThinkNode_PrioritySorter">
                   <subNodes>
+                    <li Class="JobGiver_Autofeed" MayRequire="Ludeon.RimWorld.Biotech" />
+                    <li Class="JobGiver_GetFood"/>
+                    <li Class="JobGiver_GetRest"/>
+                    <li Class="JobGiver_SatisfyChemicalNeed"/>
+                    <li Class="JobGiver_SatifyChemicalDependency" MayRequire="Ludeon.RimWorld.Biotech" />
+                    <li Class="JobGiver_GetHemogen" MayRequire="Ludeon.RimWorld.Biotech" />
+                    <li Class="JobGiver_GetDeathrest" MayRequire="Ludeon.RimWorld.Biotech" />
                     <li Class="ThinkNode_Priority_GetJoy">
                       <subNodes>
                         <li Class="JobGiver_GetJoy"/>
                         <li Class="JobGiver_GetJoyInBed"/>
                       </subNodes>
                     </li>
+                    <li Class="JobGiver_Meditate"/>
                   </subNodes>
                 </li>
               </subNodes>
@@ -241,6 +258,11 @@
                   <treeDef>LordDuty</treeDef>
                 </li>
               </subNodes>
+            </li>
+
+            <!-- Pick up a weapon dropped while previously downed -->
+            <li Class="JobGiver_PickupDroppedWeapon">
+              <ignoreForbidden>true</ignoreForbidden>
             </li>
             
             <!-- Optimize apparel -->

@@ -6,7 +6,6 @@
 		<combatPoints>94</combatPoints>
 		<randomTurretPoints>94</randomTurretPoints>
 		<neverRandom>True</neverRandom>
-		<startingShip>True</startingShip>
 		<core>
 			<shapeOrDef>ShipPilotSeat</shapeOrDef>
 			<x>-6</x>

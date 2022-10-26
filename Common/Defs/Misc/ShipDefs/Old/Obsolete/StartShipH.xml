@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartShipH</defName>
+		<defName>OldStartShipH</defName>
 		<label>Civilian Garden Vessel (Mild Difficulty)</label>
 		<combatPoints>94</combatPoints>
 		<randomTurretPoints>94</randomTurretPoints>

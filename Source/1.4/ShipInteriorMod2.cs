@@ -5296,7 +5296,7 @@ namespace SaveOurShip2
 			}
 		}
 	}
-
+	/* disabled till fixed
 	[HarmonyPatch(typeof(DamageWorker))]
 	[HarmonyPatch("ExplosionCellsToHit", new Type[] { typeof(IntVec3), typeof(Map), typeof(float), typeof(IntVec3), typeof(IntVec3) })]
 	public static class FasterExplosions
@@ -5369,7 +5369,7 @@ namespace SaveOurShip2
 			}
 		}
 	}
-
+	*/
 	[HarmonyPatch(typeof(MapPawns), "DeRegisterPawn")]
 	public class MapPawnRegisterPatch //PsiTech "patch"
 	{

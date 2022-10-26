@@ -196,7 +196,7 @@
 	</PawnKindDef>
 	<ThingDef Abstract="True" ParentName="AnimalThingBase" Name="BaseInsectSpace">
 		<statBases>
-			<ToxicSensitivity>0</ToxicSensitivity>
+			<ToxicResistance>1</ToxicResistance>
 			<ComfyTemperatureMax>20</ComfyTemperatureMax>
 			<ComfyTemperatureMin>-100</ComfyTemperatureMin>
 		</statBases>
@@ -575,7 +575,7 @@
 		<statBases>
 			<MarketValue>0</MarketValue>
 			<MoveSpeed>5.6</MoveSpeed>
-			<ToxicSensitivity>0</ToxicSensitivity>
+			<ToxicResistance>1</ToxicResistance>
 			<Flammability>0</Flammability>
 			<ComfyTemperatureMin>-100</ComfyTemperatureMin>
 			<ComfyTemperatureMax>250</ComfyTemperatureMax>

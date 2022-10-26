@@ -420,19 +420,28 @@
     <defName>HumanlikeConstant</defName>
     <thinkRoot Class="ThinkNode_Priority">
       <subNodes>
+        <!-- Despawned -->
+        <li Class="ThinkNode_Subtree">
+          <treeDef>Despawned</treeDef>
+        </li>
+
         <li Class="ThinkNode_ConditionalCanDoConstantThinkTreeJobNow">
           <subNodes>
             <!-- Flee explosion -->
             <li Class="JobGiver_FleePotentialExplosion" />
-        
+
             <!-- Join auto joinable caravan -->
             <li Class="ThinkNode_Subtree">
               <treeDef>JoinAutoJoinableCaravan</treeDef>
             </li>
-            
+
             <!-- Hostility response -->
             <li Class="JobGiver_ConfigurableHostilityResponse" />
-            
+          </subNodes>
+        </li>
+
+        <li Class="ThinkNode_ConditionalCanDoLordJobNow">
+          <subNodes>
             <!-- Lord directives -->
             <li Class="ThinkNode_Subtree">
               <treeDef>LordDutyConstant</treeDef>

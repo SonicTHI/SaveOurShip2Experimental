@@ -48,6 +48,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe">
 				<archotech>true</archotech>
@@ -126,6 +127,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
@@ -172,7 +174,9 @@
 		<designatorDropdown>Ship_Beams_Archotech</designatorDropdown>
 		<description>Angled armor for a ship's outer hull, designed by an archotech.</description>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
@@ -339,6 +343,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe">
 				<archotech>true</archotech>
@@ -542,6 +547,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -613,6 +619,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -706,6 +713,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe">
 				<archotech>true</archotech>
@@ -764,7 +772,9 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1316,6 +1326,9 @@
 			<ArchotechPsychicCore>1</ArchotechPsychicCore>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>
@@ -1456,6 +1469,9 @@
 			<ArchotechMechaniteCore>1</ArchotechMechaniteCore>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>

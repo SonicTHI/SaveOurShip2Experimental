@@ -539,7 +539,7 @@ namespace SaveOurShip2
                     List<Thing> thingList = c.GetThingList(___map);
                     for (int i = 0; i < thingList.Count; i++)
                     {
-                        if ((!(thingList[i] is Pawn) && (thingList[i].def.Fillage != FillCategory.None || thingList[i].def.IsEdifice() || thingList[i] is Skyfaller)) && (!thingList[i].def.defName.Equals("ShipShuttleBay") && !thingList[i].def.defName.Equals("ShipShuttleBayLarge") && thingList[i].def != ShipInteriorMod2.hullPlateDef && thingList[i].def != ShipInteriorMod2.mechHullPlateDef && thingList[i].def != ShipInteriorMod2.archoHullPlateDef))
+                        if ((!(thingList[i] is Pawn) && (thingList[i].def.Fillage != FillCategory.None || thingList[i].def.IsEdifice() || thingList[i] is Skyfaller)) && (!thingList[i].def.defName.Equals("ShipShuttleBay") && !thingList[i].def.defName.Equals("ShipShuttleBayLarge") && !(thingList[i].TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)))
                         {
                             ___firstBlockingThing = thingList[i];
                             return false;

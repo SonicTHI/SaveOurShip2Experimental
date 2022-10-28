@@ -47,6 +47,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 			<li>
@@ -120,6 +121,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
@@ -203,7 +205,9 @@
 		<designatorDropdown>Ship_Beams</designatorDropdown>
 		<description>Angled armor for a ship's outer hull.</description>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
@@ -366,6 +370,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_PowerPlantSolarShip">
@@ -667,6 +672,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -739,6 +745,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -856,6 +863,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
@@ -932,6 +940,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe"/>
 		</comps>
@@ -1102,7 +1111,9 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1180,7 +1191,9 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1260,7 +1273,9 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1395,7 +1410,9 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>200</basePowerConsumption>
@@ -1462,7 +1479,9 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>600</basePowerConsumption>
@@ -3089,6 +3108,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
@@ -3135,6 +3155,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
@@ -3325,9 +3346,11 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
-			<shipPart>true</shipPart>
 		</building>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -3352,7 +3375,6 @@
 			<ai_chillDestination>false</ai_chillDestination>
 			<isInert>true</isInert>
 			<isEdifice>false</isEdifice>
-			<shipPart>true</shipPart>
 			<blueprintGraphicData>
 				<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			</blueprintGraphicData>
@@ -3367,6 +3389,9 @@
 		</statBases>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
 			</li>

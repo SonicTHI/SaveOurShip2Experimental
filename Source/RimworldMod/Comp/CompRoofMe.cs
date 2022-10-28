@@ -24,6 +24,10 @@ namespace RimWorld
         public static TerrainDef archotechHullTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShipArchotech");
         public static TerrainDef wreckageTerrain = DefDatabase<TerrainDef>.GetNamed("ShipWreckageTerrain");
         public static TerrainDef hullfoamTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShipFoam");
+        public static ThingDef hullPlateDef = ThingDef.Named("ShipHullTile");
+        public static ThingDef mechHullPlateDef = ThingDef.Named("ShipHullTileMech");
+        public static ThingDef archoHullPlateDef = ThingDef.Named("ShipHullTileArchotech");
+        public static ThingDef hullFoamDef = ThingDef.Named("ShipHullfoamTile");
 
         static CompRoofMe()
         {
@@ -50,10 +54,10 @@ namespace RimWorld
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
-            isTile = parent.def == ShipInteriorMod2.hullPlateDef;
-            isMechTile = parent.def == ShipInteriorMod2.mechHullPlateDef;
-            isArchoTile = parent.def == ShipInteriorMod2.archoHullPlateDef;
-            isFoamTile = parent.def == ShipInteriorMod2.hullFoamDef;
+            isTile = parent.def == hullPlateDef;
+            isMechTile = parent.def == mechHullPlateDef;
+            isArchoTile = parent.def == archoHullPlateDef;
+            isFoamTile = parent.def == hullFoamDef;
             map = parent.Map;
             positions = new List<IntVec3>();
             foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(parent))

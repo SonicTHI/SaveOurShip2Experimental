@@ -7,6 +7,7 @@ namespace RimWorld
 	{
 		public bool isPlating = false;
 		public bool isHull = false;
+		public bool hermetic = false;
 
 		public CompProperties_SoShipPart()
 		{

@@ -84,15 +84,10 @@ namespace SaveOurShip2
 		public static ThingDef ArchotechSpore = ThingDef.Named("ShipArchotechSpore");
 		public static ThingDef HoloEmitterDef = ThingDef.Named("Apparel_HologramRelay");
 		public static ThingDef beamDef = ThingDef.Named("Ship_Beam");
-		public static ThingDef beamMechDef = ThingDef.Named("Ship_BeamMech");
-		public static ThingDef beamArchotechDef = ThingDef.Named("Ship_BeamArchotech");
 		public static ThingDef wreckedBeamDef = ThingDef.Named("Ship_Beam_Wrecked");
 		public static ThingDef wreckedAirlockDef = ThingDef.Named("ShipAirlockWrecked");
 		public static ThingDef wreckedHullPlateDef = ThingDef.Named("ShipHullTileWrecked");
 		public static ThingDef hullPlateDef = ThingDef.Named("ShipHullTile");
-		public static ThingDef mechHullPlateDef = ThingDef.Named("ShipHullTileMech");
-		public static ThingDef archoHullPlateDef = ThingDef.Named("ShipHullTileArchotech");
-		public static ThingDef hullFoamDef = ThingDef.Named("ShipHullfoamTile");
 		public static TerrainDef spaceTerrain = TerrainDef.Named("EmptySpace");
 		public static TerrainDef hullFloorDef = TerrainDef.Named("FakeFloorInsideShip");
 		public static TerrainDef mechHullFloorDef = TerrainDef.Named("FakeFloorInsideShipMech");
@@ -552,7 +547,7 @@ namespace SaveOurShip2
 						{
 							if (thing.def.CanHaveFaction)
 							{
-								if (thing.def == hullPlateDef || thing.def == mechHullPlateDef || thing.def == archoHullPlateDef)
+								if (thing.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
 								{
 									cellsToFog.Add(thing.Position);
 									continue;
@@ -793,7 +788,7 @@ namespace SaveOurShip2
 		{
 			foreach (IntVec3 vec in border)
 			{
-				if (!GenSpawn.WouldWipeAnythingWith(vec, Rot4.South, beamDef, map, (Thing x) => x.def.category == ThingCategory.Building) && !vec.GetThingList(map).Where(t => t.def == hullPlateDef || t.def == mechHullPlateDef || t.def == archoHullPlateDef).Any())
+				if (!GenSpawn.WouldWipeAnythingWith(vec, Rot4.South, beamDef, map, (Thing x) => x.def.category == ThingCategory.Building) && !vec.GetThingList(map).Where(t => t.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false).Any())
 				{
 					Thing wall = ThingMaker.MakeThing(beamDef);
 					wall.SetFaction(fac);
@@ -892,7 +887,7 @@ namespace SaveOurShip2
 				cellsTodo.Remove(current);
 				cellsDone.Add(current);
 				var containedThings = current.GetThingList(map);
-				if (containedThings.Any(t => ((t as Building)?.def.building.shipPart ?? false) || (includeRock && ((t as Building)?.def.building.isNaturalRock ?? false))))
+				if (containedThings.Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))))
 				{
 					foreach (var t in containedThings)
 					{
@@ -923,7 +918,7 @@ namespace SaveOurShip2
 				var current = cellsTodo.First();
 				cellsTodo.Remove(current);
 				cellsDone.Add(current);
-				if (current.GetThingList(map).Any(t => ((t as Building)?.def.building.shipPart ?? false) || (includeRock && ((t as Building)?.def.building.isNaturalRock ?? false))))
+				if (current.GetThingList(map).Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))))
 				{
 					cellsFound.Add(current);
 					cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v)));
@@ -968,6 +963,10 @@ namespace SaveOurShip2
 				List<Thing> allTheThings = pos.GetThingList(sourceMap);
 				foreach (Thing t in allTheThings)
 				{
+					if (t is Building_ShipAirlock a && a.docked)
+					{
+						a.UnDock();
+					}
 					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zonesToCopy.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
 					{
 						zonesToCopy.Add(t.Map.zoneManager.ZoneAt(t.Position));
@@ -1030,7 +1029,7 @@ namespace SaveOurShip2
 				{
 					if (saveThing is Building)
 					{
-						if (saveThing.def == hullPlateDef || saveThing.def == mechHullPlateDef || saveThing.def == archoHullPlateDef)
+						if (saveThing.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
 							fuelNeeded += 1f;
 						else
 						{
@@ -1827,27 +1826,30 @@ namespace SaveOurShip2
 		{
 			if (__state && __result == 0 && __instance.Map.IsSpace() && !__instance.TouchesMapEdge && !__instance.IsDoorway)
 			{
-				foreach (IntVec3 vec in __instance.BorderCells)
+				foreach (IntVec3 tile in __instance.Cells)
 				{
-					bool hasShipPart = false;
-					foreach (Thing t in vec.GetThingList(__instance.Map))
-					{
-						if (t is Building)
-						{
-							Building b = t as Building;
-							if (b.def.building.shipPart)
-								hasShipPart = true;
-						}
-					}
-					if (!hasShipPart)
+					if (tile.GetRoof(__instance.Map) != ShipInteriorMod2.shipRoofDef)
 					{
 						___cachedOpenRoofCount = 1;
 						return ___cachedOpenRoofCount;
 					}
 				}
-				foreach (IntVec3 tile in __instance.Cells)
+				foreach (IntVec3 vec in __instance.BorderCells)
 				{
-					if (tile.GetRoof(__instance.Map) != ShipInteriorMod2.shipRoofDef)
+					bool hasShipPart = false;
+					foreach (Thing t in vec.GetThingList(__instance.Map))
+					{
+						if (t is Building b)
+						{
+							var shipPart = b.TryGetComp<CompSoShipPart>();
+							if (shipPart != null && shipPart.Props.hermetic)
+							{
+								hasShipPart = true;
+								break;
+							}
+						}
+					}
+					if (!hasShipPart)
 					{
 						___cachedOpenRoofCount = 1;
 						return ___cachedOpenRoofCount;
@@ -2596,7 +2598,7 @@ namespace SaveOurShip2
 				else if (part is Building_ShipAdvSensor)
 					hasSensor = true;
 
-				if (part.def != ShipInteriorMod2.hullPlateDef && part.def != ShipInteriorMod2.archoHullPlateDef && part.def != ShipInteriorMod2.mechHullPlateDef)
+				if (!part.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
 					fuelNeeded += (part.def.size.x * part.def.size.z) * 3f;
 				else
 					fuelNeeded += 1f;
@@ -2753,7 +2755,7 @@ namespace SaveOurShip2
 				return true;
 			foreach (Thing t in c.GetThingList(___map))
 			{
-				if (t.def == ShipInteriorMod2.hullPlateDef || t.def == ShipInteriorMod2.archoHullPlateDef || t.def == ShipInteriorMod2.mechHullPlateDef)
+				if (t.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
 				{
 					if (___roofGrid[___map.cellIndices.CellToIndex(c)] == def)
 					{
@@ -2888,7 +2890,7 @@ namespace SaveOurShip2
 			mapComp.DirtyShip(__instance);
 			if (mode != DestroyMode.Deconstruct && __instance.def.blueprintDef != null)
 			{
-				if (mapComp.HullFoamDistributors.Count > 0 && (__instance.def == ShipInteriorMod2.beamDef || __instance.def.defName == "Ship_Beam_Unpowered" || __instance.def.defName == "ShipInside_PassiveCooler" || __instance.def.defName == "ShipInside_SolarGenerator"))
+				if (mapComp.HullFoamDistributors.Count > 0 && (__instance.TryGetComp<CompSoShipPart>()?.Props.isHull ?? false))
 				{
 					foreach (CompHullFoamDistributor dist in mapComp.HullFoamDistributors)
 					{

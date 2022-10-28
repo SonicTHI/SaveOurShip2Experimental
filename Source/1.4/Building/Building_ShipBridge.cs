@@ -906,7 +906,7 @@ namespace RimWorld
             ShipThrust = 0;
             foreach (Building b in cachedShipParts)
             {
-                if (b.def == ShipInteriorMod2.hullPlateDef || b.def == ShipInteriorMod2.archoHullPlateDef || b.def == ShipInteriorMod2.mechHullPlateDef)
+                if (b.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
                     ShipMass += 1;
                 else
                 {
@@ -951,6 +951,11 @@ namespace RimWorld
         }
         private void Success(Pawn pawn)
         {
+            if (this.ShipName == "Psychic Amplifier")
+            {
+                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCaptured"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCapturedDesc"), LetterDefOf.PositiveEvent);
+                WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechSpore");
+            }
             if (pawn != null)
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
             if (mapComp.InCombat)
@@ -965,11 +970,6 @@ namespace RimWorld
                     if (b.def.CanHaveFaction)
                         b.SetFaction(Faction.OfPlayer);
                 }
-            }
-            if (this.ShipName == "Psychic Amplifier")
-            {
-                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCaptured"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCapturedDesc"), LetterDefOf.PositiveEvent);
-                WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechSpore");
             }
         }
         private void Failure(Pawn pawn)

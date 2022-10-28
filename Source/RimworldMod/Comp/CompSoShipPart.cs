@@ -14,14 +14,22 @@ namespace RimWorld
     public class CompSoShipPart : ThingComp
     {
         //CompSoShipPart types that are cached:
+        //xml tagged building shipPart: anything attachable - walls, hullfoam, plating, engines, corners, hardpoints, spinal barrels
+        //SoShipPart isHull (props isHull): walls, corners, hullfoam fills these if destroyed, wrecks form from these
+        //SoShipPart isPlating (props isPlating): can not be placed under buildings, wrecks form from these
+        //SoShipPart hermetic: hold air in vacuum - walls, corners, engines, hullfoam, extenders, spinal barrels
+        //SoShipPart: other parts that are cached - not attached, no corePath
+
+
+        //old - commented code  here and in SoShipCache refers to this, change to above
         //xml tagged building shipPart only: never merge, only hold air - extenders
         //shipPart + xml tagged building shipPart: anything attachable - walls, plating, engines, corners, hardpoints, spinal barrels
         //shipPart hull (props isHull): walls, corners, hullfoam fills these if destroyed, wrecks form from these
         //shipPart plating (props isPlating): can not be placed under buildings, wrecks form from these
         //shipPart: other parts that are cached - not attached, no corePath
-        
-        public int shipIndex = -1; //main bridge thingid
-        public int corePath = -1; //how far away the main bridge is
+
+        //public int shipIndex = -1; //main bridge thingid
+        //public int corePath = -1; //how far away the main bridge is
         public ShipHeatMapComp mapComp;
         public CompProperties_SoShipPart Props
         {

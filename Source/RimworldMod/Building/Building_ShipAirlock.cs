@@ -19,6 +19,7 @@ namespace RimWorld
         public static ThingDef dockWallDef = ThingDef.Named("ShipAirlockBeamWall");
         public static ThingDef insideDef = ThingDef.Named("ShipAirlockBeamTile");
         public static ThingDef dockDef = ThingDef.Named("ShipAirlockBeam");
+        List<Building> extenders = new List<Building>();
 
         public ShipHeatMapComp mapComp;
         public UnfoldComponent unfoldComp;
@@ -106,8 +107,7 @@ namespace RimWorld
         }
         public override string GetInspectString()
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            string inspectString = base.GetInspectString();
+            StringBuilder stringBuilder = new StringBuilder(base.GetInspectString());
             if (Prefs.DevMode)
             {
                 if (this.Outerdoor())
@@ -130,19 +130,7 @@ namespace RimWorld
             Scribe_Values.Look<bool>(ref docked, "docked", false);
             Scribe_Values.Look<int>(ref dist, "dist", 0);
             Scribe_Values.Look<int>(ref startTick, "startTick", 0);
-        }
-        public override void Tick()
-        {
-            base.Tick();
-            //create area after animation
-            if (docked)
-            {
-                if (startTick > 0 && Find.TickManager.TicksGame > startTick && !mapComp.InCombat)
-                {
-                    Dock();
-                    startTick = 0;
-                }
-            }
+            Scribe_Collections.Look<Building>(ref extenders, "extenders", LookMode.Reference);
         }
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
@@ -150,30 +138,26 @@ namespace RimWorld
             mapComp = this.Map.GetComponent<ShipHeatMapComp>();
             unfoldComp = this.TryGetComp<UnfoldComponent>();
         }
+        //docking - doors dont have proper rot, this could be remade but would need components for extenders, etc.
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
             if (docked)
             {
-                IntVec3 facing;
-                IntVec3 leftSide;
-                IntVec3 rightSide;
-                if (this.Rotation.AsByte == 0)
-                {
-                    facing = IntVec3.North;
-                    leftSide = IntVec3.West;
-                    rightSide = IntVec3.East;
-                }
-                else
-                {
-                    facing = IntVec3.East;
-                    leftSide = IntVec3.North;
-                    rightSide = IntVec3.South;
-                }
-                UnDock(this.Position, facing, leftSide, rightSide);
+                UnDock();
             }
             base.Destroy(mode);
         }
-        //docking - doors dont have proper rot
+        public override void Tick()
+        {
+            base.Tick();
+            //create area after animation
+            if (startTick > 0 && Find.TickManager.TicksGame > startTick)
+            {
+                startTick = 0;
+                if (!mapComp.InCombat)
+                    Dock();
+            }
+        }
         public override IEnumerable<Gizmo> GetGizmos()
         {
             foreach (Gizmo g in base.GetGizmos())
@@ -209,10 +193,9 @@ namespace RimWorld
                             {
                                 startTick = Find.TickManager.TicksGame + 170;
                                 unfoldComp.Target = (dist - 1) * 0.33f;
-                                docked = true;
                             }
                             else
-                                UnDock(this.Position, facing, leftSide, rightSide);
+                                UnDock();
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleDock"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleDockDesc"),
@@ -223,7 +206,7 @@ namespace RimWorld
                     else
                         toggleDock.icon = ContentFinder<Texture2D>.Get("UI/DockingOff");
 
-                    if (mapComp.InCombat || !powerComp.PowerOn || !CanDock(facing, leftSide, rightSide))
+                    if (startTick > 0 || mapComp.InCombat || !powerComp.PowerOn || !CanDock(facing, leftSide, rightSide))
                     {
                         toggleDock.Disable();
                     }
@@ -278,7 +261,6 @@ namespace RimWorld
         public void Dock()
         {
             //place fake walls, floor, extend
-            IntVec3 me = this.Position;
             IntVec3 facing;
             IntVec3 leftSide;
             IntVec3 rightSide;
@@ -299,46 +281,36 @@ namespace RimWorld
             IntVec3 loc3;
             for (int i = 1; i < dist; i++)
             {
-                loc1 = me + facing * i * polarity + leftSide;
-                loc2 = me + facing * i * polarity;
-                loc3 = me + facing * i * polarity + rightSide;
-                GenSpawn.Spawn(dockWallDef, loc1, this.Map).SetFaction(this.Faction);
-                GenSpawn.Spawn(insideDef, loc2, this.Map).SetFaction(this.Faction);
-                GenSpawn.Spawn(dockWallDef, loc3, this.Map).SetFaction(this.Faction);
+                loc1 = this.Position + facing * i * polarity + leftSide;
+                loc2 = this.Position + facing * i * polarity;
+                loc3 = this.Position + facing * i * polarity + rightSide;
+                Thing thing;
+                thing = ThingMaker.MakeThing(dockWallDef);
+                GenSpawn.Spawn(thing, loc1, this.Map);
+                extenders.Add(thing as Building);
+                thing = ThingMaker.MakeThing(insideDef);
+                GenSpawn.Spawn(thing, loc2, this.Map);
+                extenders.Add(thing as Building);
+                thing = ThingMaker.MakeThing(dockWallDef);
+                GenSpawn.Spawn(thing, loc3, this.Map);
+                extenders.Add(thing as Building);
             }
+            docked = true;
         }
-        public void UnDock(IntVec3 me, IntVec3 facing, IntVec3 leftSide, IntVec3 rightSide)
+        public void UnDock()
         {
-            List<Building> toRemove = new List<Building>();
-            IntVec3 loc1 = new IntVec3(0, 0, 0);
-            IntVec3 loc2;
-            IntVec3 loc3 = new IntVec3(0, 0, 0);
-            for (int i = 1; i < dist; i++)
+            if (extenders.Any())
             {
-                loc1 = me + facing * i * polarity + leftSide;
-                loc2 = me + facing * i * polarity;
-                loc3 = me + facing * i * polarity + rightSide;
-                if (loc2.GetFirstBuilding(this.Map) is Building_ShipAirlock)
+                FleckMaker.ThrowDustPuff(extenders[extenders.Count - 1].Position, this.Map, 1f);
+                FleckMaker.ThrowDustPuff(extenders[extenders.Count - 3].Position, this.Map, 1f);
+                foreach (Building building in extenders)
                 {
-                    break;
+                    if (building.Spawned)
+                        building.DeSpawn();
                 }
-                Building b;
-                b = loc1.GetFirstBuilding(this.Map);
-                if (b != null && b.def == dockWallDef)
-                    toRemove.Add(b);
-                b = loc2.GetFirstBuilding(this.Map);
-                if (b != null && b.def == insideDef)
-                    toRemove.Add(b);
-                b = loc3.GetFirstBuilding(this.Map);
-                if (b != null && b.def == dockWallDef)
-                    toRemove.Add(b);
+                unfoldComp.Target = 0.0f;
+                docked = false;
             }
-            foreach (Building building in toRemove)
-                building.DeSpawn();
-            FleckMaker.ThrowDustPuff(loc1, this.Map, 1f);
-            FleckMaker.ThrowDustPuff(loc3, this.Map, 1f);
-            unfoldComp.Target = 0.0f;
-            docked = false;
         }
     }
 }

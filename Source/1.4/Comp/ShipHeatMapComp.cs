@@ -367,7 +367,7 @@ namespace RimWorld
             int ShipMass = 0;
             foreach (Building b in map.spawnedThings.Where(b => b is Building))
             {
-                if (b.def == ShipInteriorMod2.hullPlateDef || b.def == ShipInteriorMod2.mechHullPlateDef || b.def == ShipInteriorMod2.archoHullPlateDef)
+                if (b.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
                     ShipMass += 1;
                 else
                 {

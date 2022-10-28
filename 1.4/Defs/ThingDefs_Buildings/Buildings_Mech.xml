@@ -42,6 +42,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe">
 				<mechanoid>true</mechanoid>
@@ -110,6 +111,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
@@ -147,7 +149,9 @@
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerMech" Abstract="True">
 		<description>Angled armor for a ship's outer hull.</description>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
 		</comps>
 	</ThingDef>
 	<ThingDef ParentName="ShipCornerMech">
@@ -299,6 +303,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe">
 				<mechanoid>true</mechanoid>
@@ -419,7 +424,6 @@
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<building>
-			<shipPart>true</shipPart>
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
@@ -487,6 +491,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -547,6 +552,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -631,6 +637,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
+				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_RoofMe">
 				<mechanoid>true</mechanoid>

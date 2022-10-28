@@ -459,6 +459,7 @@ namespace SaveOurShip2
 				GenSpawn.Spawn(bridge, new IntVec3(c.x + shipDef.core.x, 0, c.z + shipDef.core.z), map, shipDef.core.rot);
 				bridge.TryGetComp<CompPowerTrader>().PowerOn = true;
 				cores.Add(bridge);
+				((Building_ShipBridge)bridge).ShipName = shipDef.label;
 			}
 			//check if custom replacers for pawns are set and present in the game
 			bool crewOver = false;

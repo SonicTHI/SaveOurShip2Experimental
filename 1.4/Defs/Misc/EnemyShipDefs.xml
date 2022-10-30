@@ -9,7 +9,7 @@
 	</EnemyShipPartDef>
 	
 	<EnemyShipPartDef>
-		<defName>Mech_Centipede_SPAWNER</defName>
+		<defName>Mech_CentipedeGunner_SPAWNER</defName>
 	</EnemyShipPartDef>
 	
 	<EnemyShipPartDef>

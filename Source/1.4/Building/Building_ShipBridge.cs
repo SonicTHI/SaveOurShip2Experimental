@@ -546,9 +546,9 @@ namespace RimWorld
                                 {
                                     action = delegate
                                     {
-                                        AttackableShip station = new AttackableShip();
-                                        station.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge");
-                                        mapComp.StartShipEncounter(this, station);
+                                        AttackableShip attacker = new AttackableShip();
+                                        attacker.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge");
+                                        mapComp.StartShipEncounter(this, attacker);
                                         MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
                                     },
                                     icon = ContentFinder<Texture2D>.Get("UI/Moon_Icon_Quest"),

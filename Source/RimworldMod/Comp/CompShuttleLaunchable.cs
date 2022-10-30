@@ -316,6 +316,7 @@ namespace RimWorld
                 return true;
             }
 			MapParent targetMapParent = target.WorldObject as MapParent;
+            //target has world object and open map
             if (targetMapParent != null && targetMapParent.HasMap)
 			{
                 //to orbiting ship
@@ -323,17 +324,7 @@ namespace RimWorld
                 {
                     var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
                     IntVec3 shuttleBayPos = FirstShuttleBayOpen(targetMapParent.Map, parent.def);
-                    if (this.parent.Map.Parent is SpaceSite)
-                    {
-                        if (shuttleBayPos == IntVec3.Zero)
-                        {
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("NeedOpenShuttleBay"), MessageTypeDefOf.RejectInput);
-                            return false;
-                        }
-                        this.TryLaunch(targetMapParent, new TransportPodsArrivalAction_LandInSpecificCell(targetMapParent, shuttleBayPos));
-                        return true;
-                    }
-                    else if (this.parent.Map.Parent is MoonBase)
+                    if (this.parent.Map.Parent is SpaceSite || this.parent.Map.Parent is MoonBase)
                     {
                         if (shuttleBayPos == IntVec3.Zero)
                         {
@@ -386,7 +377,7 @@ namespace RimWorld
                         return true;
                     }
                 }
-                else
+                else //not orbiting				
                 {
                     //ship to ground
                     if (this.parent.Map.Parent.def.defName.Equals("ShipOrbiting"))
@@ -415,6 +406,17 @@ namespace RimWorld
                 }
 			}
 			bool flag=false;
+            //moon with no map
+            if (target.WorldObject != null && target.WorldObject.def.defName.Equals("MoonPillarSite"))
+            {
+                if (this.parent.TryGetComp<CompRefuelable>() != null && this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax < 0.25f)
+                {
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToLand"), MessageTypeDefOf.RejectInput);
+                    return false;
+                }
+                this.TryLaunch(target, new TransportPodsArrivalAction_MoonBase(targetMapParent));
+                return true;
+            }
             //ship to ground
             if (targetMapParent != null && !(this.parent.Map.Parent is WorldObjectOrbitingShip) && !(targetMapParent is WorldObjectOrbitingShip))
             {

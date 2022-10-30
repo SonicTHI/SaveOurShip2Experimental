@@ -547,7 +547,7 @@ namespace RimWorld
                                     action = delegate
                                     {
                                         AttackableShip station = new AttackableShip();
-                                        station.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechShipMegaRing");
+                                        station.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge");
                                         mapComp.StartShipEncounter(this, station);
                                         MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
                                     },

@@ -962,6 +962,21 @@ namespace SaveOurShip2
 			}
 			return cellsFound;
 		}
+
+		public static bool IsRock(TerrainDef def)
+		{
+			return def == TerrainDef.Named("Slate_Rough")
+				|| def == TerrainDef.Named("Slate_RoughHewn")
+				|| def == TerrainDef.Named("Marble_Rough")
+				|| def == TerrainDef.Named("Marble_RoughHewn")
+				|| def == TerrainDef.Named("Granite_Rough")
+				|| def == TerrainDef.Named("Granite_RoughHewn");
+		}
+
+		public static bool IsHull(TerrainDef def)
+		{
+			return def == hullFloorDef || def == mechHullFloorDef || def == archoHullFloorDef;
+		}
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
 			List<Thing> toSave = new List<Thing>();
@@ -970,11 +985,24 @@ namespace SaveOurShip2
 			List<Zone> zonesToCopy = new List<Zone>();
 			bool movedZones = false;
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
+			List<Tuple<IntVec3, RoofDef>> roofToCopy = new List<Tuple<IntVec3, RoofDef>>();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
-			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);//new List<IntVec3>();
+			// source area of the ship.
+			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);
+
+			HashSet<IntVec3> unroofTiles = new HashSet<IntVec3>();
 			List<IntVec3> fireExplosions = new List<IntVec3>();
 			IntVec3 rot = IntVec3.Zero;
 			int rotb = 4 - rotNum;
+
+			// Transforms vector from initial position to final according to desired movement/rotation.
+			Func<IntVec3, IntVec3> Transform;
+			if (rotb == 2)
+				Transform = (IntVec3 from) => new IntVec3(targetMap.Size.x - from.x, 0, targetMap.Size.z - from.z) + adjustment;
+			else if (rotb == 3)
+				Transform = (IntVec3 from) => new IntVec3(targetMap.Size.x - from.z, 0, from.x) + adjustment;
+			else
+				Transform = (IntVec3 from) => from + adjustment;
 
 			shipOriginMap = null;
 			Map sourceMap = core.Map;
@@ -1017,20 +1045,36 @@ namespace SaveOurShip2
 					{
 						toSave.Add(t);
 					}
-					UnRoofTilesOverThing(t);
+
+					foreach (IntVec3 thingPos in GenAdj.CellsOccupiedBy(t))
+						unroofTiles.Add(thingPos);
 				}
-				if (sourceMap.terrainGrid.TerrainAt(pos).layerable && !(sourceMap.terrainGrid.TerrainAt(pos) == hullFloorDef) && !(sourceMap.terrainGrid.TerrainAt(pos) == mechHullFloorDef) && !(sourceMap.terrainGrid.TerrainAt(pos) == archoHullFloorDef))
+
+				var sourceTerrain = sourceMap.terrainGrid.TerrainAt(pos);
+				if (sourceTerrain.layerable && !IsHull(sourceTerrain))
 				{
-					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceTerrain));
 					sourceMap.terrainGrid.RemoveTopLayer(pos, false);
 				}
-				else if (includeRock && (sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Slate_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Slate_RoughHewn") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Marble_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Marble_RoughHewn") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Granite_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Granite_RoughHewn")))
+				else if (includeRock && IsRock(sourceTerrain))
 				{
-					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
-					sourceMap.terrainGrid.SetTerrain(pos,spaceTerrain);
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceTerrain));
+					sourceMap.terrainGrid.SetTerrain(pos, spaceTerrain);
+				}
+
+				var sourceRoof = sourceMap.roofGrid.RoofAt(pos);
+				if (IsRoofDefAirtight(sourceRoof))
+				{
+					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(pos, sourceRoof));
 				}
 				sourceMap.areaManager.Home[pos] = false;
 			}
+
+			foreach (IntVec3 pos in unroofTiles)
+			{
+				sourceMap.roofGrid.SetRoof(pos, null);
+			}
+
 			//move live pawns out of target area, destroy non buildings
 			foreach (Thing thing in toDestroy)
 			{
@@ -1184,44 +1228,29 @@ namespace SaveOurShip2
 				theZone.zoneManager = targetMap.zoneManager;
 				List<IntVec3> newCells = new List<IntVec3>();
 				foreach (IntVec3 cell in theZone.cells)
-				{
-					if (rotb == 2)
-					{
-						rot.x = targetMap.Size.x - cell.x;
-						rot.z = targetMap.Size.z - cell.z;
-						newCells.Add(rot + adjustment);
-					}
-					else if (rotb == 3)
-					{
-						rot.x = targetMap.Size.x - cell.z;
-						rot.z = cell.x;
-						newCells.Add(rot + adjustment);
-					}
-					else
-						newCells.Add(cell + adjustment);
-				}
+					newCells.Add(Transform(cell));
 				theZone.cells = newCells;
 				targetMap.zoneManager.RegisterZone(theZone);
 			}
 			//move terrain
 			foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
 			{
-				if (!targetMap.terrainGrid.TerrainAt(tup.Item1).layerable || targetMap.terrainGrid.TerrainAt(tup.Item1) == hullFloorDef || targetMap.terrainGrid.TerrainAt(tup.Item1) == mechHullFloorDef || targetMap.terrainGrid.TerrainAt(tup.Item1) == archoHullFloorDef)
-					if (rotb == 2)
-					{
-						rot.x = targetMap.Size.x - tup.Item1.x;
-						rot.z = targetMap.Size.z - tup.Item1.z;
-						targetMap.terrainGrid.SetTerrain(rot + adjustment, tup.Item2);
-					}
-					else if (rotb == 3)
-					{
-						rot.x = targetMap.Size.x - tup.Item1.z;
-						rot.z = tup.Item1.x;
-						targetMap.terrainGrid.SetTerrain(rot + adjustment, tup.Item2);
-					}
-					else
-						targetMap.terrainGrid.SetTerrain(tup.Item1 + adjustment, tup.Item2);
+				var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
+				if (!targetTile.layerable || IsHull(targetTile))
+				{
+					var targetPos = Transform(tup.Item1);
+					targetMap.terrainGrid.SetTerrain(targetPos, tup.Item2);
+				}
 			}
+
+			// Move roofs.
+			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
+			{
+				var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
+				var targetPos = Transform(tup.Item1);
+				targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
+			}
+
 			if (includeRock)
 			{
 				foreach (IntVec3 pos in sourceArea)
@@ -1252,14 +1281,18 @@ namespace SaveOurShip2
 			{
 				GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null);
 			}
+
 			if (sourceMap != targetMap)
 			{
 				foreach (CompPower powerComp in toRePower)
 				{
 					powerComp.ResetPowerVars();
 				}
-				//targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
 			}
+			// Power consumers become upnowered without this update.
+			if (toRePower.Count > 0)
+				targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
+
 			//regen affected map layers
 			List<Section> sourceSec = new List<Section>();
 			foreach (IntVec3 pos in sourceArea)
@@ -1337,11 +1370,7 @@ namespace SaveOurShip2
 				}
 			}*/
 		}
-		public static void UnRoofTilesOverThing(Thing t)
-		{
-			foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(t))
-				t.Map.roofGrid.SetRoof(pos, null);
-		}
+		
 		public static bool IsHologram(Pawn pawn)
 		{
 			return pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null;

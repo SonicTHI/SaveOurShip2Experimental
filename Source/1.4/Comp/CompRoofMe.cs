@@ -64,10 +64,17 @@ namespace RimWorld
             {
                 positions.Add(pos);
             }
-            foreach (IntVec3 pos in positions)
+            if (Props.roof)
             {
-                if (Props.roof && map.roofGrid.Roofed(pos) && map.roofGrid.RoofAt(pos)!=roof)
-                    map.roofGrid.SetRoof(pos, roof);
+                foreach (IntVec3 pos in positions)
+                {
+                    if (map.roofGrid.Roofed(pos))
+                    {
+                        var oldRoof = map.roofGrid.RoofAt(pos);
+                        if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
+                            map.roofGrid.SetRoof(pos, roof);
+                    }
+                }
             }
             if (respawningAfterLoad)
             {
@@ -75,8 +82,12 @@ namespace RimWorld
             }
             foreach (IntVec3 pos in positions)
             {
-                if (Props.roof)
-                    map.roofGrid.SetRoof(pos, roof);
+                if (map.roofGrid.Roofed(pos))
+                {
+                    var oldRoof = map.roofGrid.RoofAt(pos);
+                    if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
+                        map.roofGrid.SetRoof(pos, roof);
+                }
                 if (!map.terrainGrid.TerrainAt(pos).layerable)
                 {
                     if (Props.archotech)

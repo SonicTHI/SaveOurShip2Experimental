@@ -94,6 +94,8 @@ namespace SaveOurShip2
 		public static TerrainDef wreckedHullFloorDef = TerrainDef.Named("ShipWreckageTerrain");
 		public static TerrainDef hullFoamFloorDef = TerrainDef.Named("FakeFloorInsideShipFoam");
 		public static RoofDef shipRoofDef = DefDatabase<RoofDef>.GetNamed("RoofShip");
+		// Additional array of compatible RoofDefs from other mods.
+		public static RoofDef[] compatibleAirtightRoofs;
 
 		public static HediffDef hypoxia = HediffDef.Named("SpaceHypoxia");
 		public static HediffDef ArchoLung = HediffDef.Named("SoSArchotechLung");
@@ -214,6 +216,24 @@ namespace SaveOurShip2
 			wreckDictionary.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockWrecked"));
 			wreckDictionary.Add(ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockWrecked"));
 
+			var compatibleRoofs = new List<RoofDef>();
+			// Compatibility tricks for Roofs Extended.
+			RoofDef roof = DefDatabase<RoofDef>.GetNamed("RoofTransparent", false);
+			if (roof != null)
+				compatibleRoofs.Add(roof);
+			roof = DefDatabase<RoofDef>.GetNamed("RoofSolar", false);
+			if (roof != null)
+				compatibleRoofs.Add(roof);
+
+			compatibleAirtightRoofs = new RoofDef[compatibleRoofs.Count];
+			for (int i = 0; i < compatibleRoofs.Count; i++)
+			{
+#if DEBUG
+				Log.Message(string.Format("Registering compatible roof {0}", compatibleRoofs[i].defName));
+#endif
+				compatibleAirtightRoofs[i] = compatibleRoofs[i];
+			}
+
 			/*foreach (TraitDef AITrait in DefDatabase<TraitDef>.AllDefs.Where(t => t.exclusionTags.Contains("AITrait")))
             {
                 typeof(TraitDef).GetField("commonality", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(AITrait, 0);
@@ -303,6 +323,30 @@ namespace SaveOurShip2
 				loadedGraphics = true;
 			}
 		}
+
+		/// <summary>
+		/// Checks if specified RoofDef is properly airtight.
+		/// </summary>
+		/// <param name="roof"></param>
+		/// <returns></returns>
+		public static bool IsRoofDefAirtight(RoofDef roof)
+		{
+			if (roof == null)
+				return false;
+			if (roof == shipRoofDef)
+				return true;
+			if (compatibleAirtightRoofs != null)
+			{
+				// I do not expect a lot of values here.
+				foreach (var r in compatibleAirtightRoofs)
+				{
+					if (roof == r)
+						return true;
+				}
+			}
+			return false;
+		}
+
 		public static int FindWorldTile()
 		{
 			for (int i = 0; i < 420; i++)//Find.World.grid.TilesCount
@@ -1809,7 +1853,8 @@ namespace SaveOurShip2
 			{
 				foreach (IntVec3 tile in __instance.Cells)
 				{
-					if (tile.GetRoof(__instance.Map) != ShipInteriorMod2.shipRoofDef)
+					var roof = tile.GetRoof(__instance.Map);
+					if (!ShipInteriorMod2.IsRoofDefAirtight(roof))
 					{
 						___cachedOpenRoofCount = 1;
 						return ___cachedOpenRoofCount;
@@ -2724,7 +2769,9 @@ namespace SaveOurShip2
 			{
 				if (t.TryGetComp<CompRoofMe>() != null)
 				{
-					map.roofGrid.SetRoof(c, ShipInteriorMod2.shipRoofDef);
+					var existingRoof = map.roofGrid.RoofAt(c);
+					if (!ShipInteriorMod2.IsRoofDefAirtight(existingRoof))
+						map.roofGrid.SetRoof(c, ShipInteriorMod2.shipRoofDef);
 					if (!map.terrainGrid.TerrainAt(c).layerable)
 					{
 						if (!t.TryGetComp<CompRoofMe>().Props.archotech)
@@ -2750,11 +2797,18 @@ namespace SaveOurShip2
 			{
 				if (t.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
 				{
-					if (___roofGrid[___map.cellIndices.CellToIndex(c)] == def)
+					var cellIndex = ___map.cellIndices.CellToIndex(c);
+					if (___roofGrid[cellIndex] == def)
 					{
 						return false;
 					}
-					___roofGrid[___map.cellIndices.CellToIndex(c)] = ShipInteriorMod2.shipRoofDef;
+
+					if (ShipInteriorMod2.IsRoofDefAirtight(def))
+						return true;
+#if DEBUG
+					Log.Message(String.Format("Overriding roof at {0}. Set shipRoofDef instead of {1}", cellIndex, def.defName));
+#endif
+					___roofGrid[cellIndex] = ShipInteriorMod2.shipRoofDef;
 					___map.glowGrid.MarkGlowGridDirty(c);
 					Region validRegionAt_NoRebuild = ___map.regionGrid.GetValidRegionAt_NoRebuild(c);
 					if (validRegionAt_NoRebuild != null)
@@ -2780,6 +2834,9 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void ShipRoofIsDestroyed(IEnumerable<IntVec3> cells, Map map)
 		{
+#if DEBUG
+			Log.Message("SoS2 sealing holes");
+#endif
 			foreach (IntVec3 cell in cells)
 			{
 				if (map.IsSpace() && !cell.Roofed(map))
@@ -2793,7 +2850,9 @@ namespace SaveOurShip2
 							{
 								dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
 								map.roofGrid.SetRoof(cell, ShipInteriorMod2.shipRoofDef);
-								//Log.Message("rebuilt roof at:" + cell);
+#if DEBUG
+								Log.Message("rebuilt roof at:" + cell);
+#endif
 								break;
 							}
 						}

@@ -131,6 +131,9 @@ namespace RimWorld
                         {
                             Thing thing = ThingMaker.MakeThing(thingDefCountClass.thingDef);
                             thing.stackCount = num;
+#if DEBUG
+                            Log.Message(string.Format("Spawning wrecs {0} at {1}", thing.def.defName, pos));
+#endif
                             GenPlace.TryPlaceThing(thing, pos, map, ThingPlaceMode.Near);
                         }
                     }

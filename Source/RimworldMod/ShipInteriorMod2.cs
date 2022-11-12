@@ -2582,11 +2582,10 @@ namespace SaveOurShip2
 			foreach (Building part in shipParts)
 			{
 				var engine = part.TryGetComp<CompEngineTrail>();
-				if (engine != null)
+				if (engine != null && engine.Props.takeOff)
 				{
 					hasEngine = true;
-					if (engine.Props.takeOff)
-						fuelHad += engine.refuelComp.Fuel;
+					fuelHad += engine.refuelComp.Fuel;
 					if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
 						fuelHad += engine.refuelComp.Fuel;
 				}
@@ -2953,8 +2952,9 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(ref DamageInfo dinfo, Building_Turret __instance)
 		{
-			if (__instance.Position.GetFirstThingWithComp<CompShipPart>(__instance.Map) != null)
-				dinfo.SetAmount(dinfo.Amount / 4);
+			ThingWithComps t = __instance.Position.GetFirstThingWithComp<CompRoofMe>(__instance.Map);
+			if (t != null && !t.GetComp<CompRoofMe>().Props.roof)
+				dinfo.SetAmount(dinfo.Amount / 2);
 			return true;
 		}
 	}
@@ -5214,7 +5214,7 @@ namespace SaveOurShip2
 				{
 					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
 					AttackableShip ship = new AttackableShip();
-					ship.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("PsychicAmplifier");
+					ship.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
 					spaceMap.passingShipManager.passingShips.Add(ship);
 				}
 			}

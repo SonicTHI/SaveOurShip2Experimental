@@ -366,6 +366,9 @@ namespace SaveOurShip2
 			bool unlockedJT = false;
 			if (WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("JTDriveToo"))
 				unlockedJT = true;
+			bool ideoActive = false;
+			if (ModsConfig.IdeologyActive && (fac != Faction.OfAncientsHostile || fac != Faction.OfAncients))
+				ideoActive = true;
 			cores = new List<Building>();
 			List<IntVec3> cellsToFog = new List<IntVec3>();
 			if (!shipDef.ships.NullOrEmpty())
@@ -544,7 +547,11 @@ namespace SaveOurShip2
 							var powerComp = b.TryGetComp<CompPowerTrader>();
 							if (powerComp != null)
 								powerComp.PowerOn = true;
-							if (b is Building_ShipTurret turret)
+							if (ideoActive && b.def.CanBeStyled() && fac.ideos.PrimaryIdeo.style.StyleForThingDef(thing.def) != null)
+                            {
+								b.SetStyleDef(fac.ideos.PrimaryIdeo.GetStyleFor(thing.def));
+                            }
+							else if (b is Building_ShipTurret turret)
 							{
 								turret.burstCooldownTicksLeft = 300;
 								if (b is Building_ShipTurretTorpedo torp)
@@ -1965,6 +1972,19 @@ namespace SaveOurShip2
 		}
 	}
 
+	[HarmonyPatch(typeof(PollutionGrid), "SetPolluted")]
+	public static class DoNotPolluteSpace
+	{
+		[HarmonyPrefix]
+		public static bool Abort(IntVec3 cell, Map ___map)
+		{
+			if (___map.terrainGrid.TerrainAt(cell) == ShipInteriorMod2.spaceTerrain)
+            {
+				return false;
+			}
+			return true;
+		}
+	}
 	//map
 	[HarmonyPatch(typeof(CompShipPart), "CompGetGizmosExtra")]
 	public static class NoGizmoInSpace
@@ -2553,11 +2573,10 @@ namespace SaveOurShip2
 			foreach (Building part in shipParts)
 			{
 				var engine = part.TryGetComp<CompEngineTrail>();
-				if (engine != null)
+				if (engine != null && engine.Props.takeOff)
 				{
 					hasEngine = true;
-					if (engine.Props.takeOff)
-						fuelHad += engine.refuelComp.Fuel;
+					fuelHad += engine.refuelComp.Fuel;
 					if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
 						fuelHad += engine.refuelComp.Fuel;
 				}
@@ -2924,8 +2943,9 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(ref DamageInfo dinfo, Building_Turret __instance)
 		{
-			if (__instance.Position.GetFirstThingWithComp<CompShipPart>(__instance.Map) != null)
-				dinfo.SetAmount(dinfo.Amount / 4);
+			ThingWithComps t = __instance.Position.GetFirstThingWithComp<CompRoofMe>(__instance.Map);
+			if (t != null && !t.GetComp<CompRoofMe>().Props.roof)
+				dinfo.SetAmount(dinfo.Amount / 2);
 			return true;
 		}
 	}
@@ -5185,7 +5205,7 @@ namespace SaveOurShip2
 				{
 					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
 					AttackableShip ship = new AttackableShip();
-					ship.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("PsychicAmplifier");
+					ship.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
 					spaceMap.passingShipManager.passingShips.Add(ship);
 				}
 			}

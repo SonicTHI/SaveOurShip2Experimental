@@ -12,7 +12,8 @@ using Verse;
 namespace RimWorld
 {
     class ScenPart_StartInSpace : ScenPart
-    {
+	{
+		List<Building> spawns = new List<Building>();
 		public override bool CanCoexistWith(ScenPart other)
 		{
 			return !(other is ScenPart_AfterlifeVault);
@@ -107,7 +108,6 @@ namespace RimWorld
 					}
 				}
 			}
-			List<IntVec3> cryptoPos = GetAllCryptoCells(spaceMap);
             foreach (Pawn p in startingPawns)
             {
 				if (p.InContainerEnclosed)
@@ -149,33 +149,27 @@ namespace RimWorld
 					}
 				}
 			}
-			foreach(List<Thing> thingies in list)
+			List<IntVec3> spawnPos = GetSpawnCells(spaceMap);
+			foreach (List<Thing> thingies in list)
 			{
-				IntVec3 casketPos;
-				if (!cryptoPos.NullOrEmpty())
-				{
-					casketPos = cryptoPos.RandomElement();
-					cryptoPos.Remove(casketPos);
-					if (cryptoPos.Count == 0)
-						cryptoPos = GetAllCryptoCells(spaceMap); //Out of caskets, time to start double-dipping
-				}
-                else //no caskets, fallback - bay, bridge
-                {
-					Building bay = spaceMap.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompShipSalvageBay>() != null).FirstOrDefault();
-					if (bay != null)
-						casketPos = bay.Position;
-					else
-						casketPos = spaceMap.listerBuildings.allBuildingsColonist.Where(b => b is Building_ShipBridge).FirstOrDefault().Position;
-				}
+				IntVec3 casketPos = spaceMap.Center;
+				casketPos = spawnPos.RandomElement();
+				spawnPos.Remove(casketPos);
+				if (spawnPos.Count == 0)
+					spawnPos = GetSpawnCells(spaceMap); //time to start double-dipping
 
-				foreach(Thing thingy in thingies)
+				foreach (Thing thingy in thingies)
                 {
 					thingy.SetForbidden(true, false);
 					GenPlace.TryPlaceThing(thingy, casketPos, spaceMap, ThingPlaceMode.Near);
                 }
 				if (this.def.defName.Equals("StartInSpaceDungeon"))
-					FloodFillerFog.FloodUnfog(casketPos, spaceMap);								
-            }
+					FloodFillerFog.FloodUnfog(casketPos, spaceMap);
+			}
+			foreach (Building b in spawns)
+			{
+				b.Destroy();
+			}
 			if (!this.def.defName.Equals("StartInSpaceDungeon"))
 				spaceMap.fogGrid.ClearAllFog();
 			Current.Game.DeinitAndRemoveMap(Find.CurrentMap);
@@ -190,15 +184,52 @@ namespace RimWorld
 			AccessExtensions.Utility.RecacheSpaceMaps();
         }
 
-		List<IntVec3> GetAllCryptoCells(Map spaceMap)
-        {
-			List<IntVec3> toReturn = new List<IntVec3>();
-			foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist.Where(b => b is Building_CryptosleepCasket))
+		List<IntVec3> GetSpawnCells(Map spaceMap) //spawn placer > crypto > salvbay > bridge
+		{
+			List<IntVec3> spawncells = new List<IntVec3>();
+			foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist.Where(b => b.def.defName.Equals("PawnSpawnerStart")))
 			{
-				if(!((Building_CryptosleepCasket)b).HasAnyContents)
-					toReturn.Add(b.InteractionCell);
+				spawncells.Add(b.InteractionCell);
+				spawns.Add(b);
 			}
-			return toReturn;
-        }
+			if (spawncells.Any())
+			{
+				return spawncells;
+			}
+			//backups
+			List<IntVec3> salvBayCells = new List<IntVec3>();
+			List<IntVec3> bridgeCells = new List<IntVec3>();
+			foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist)
+			{
+				if (b is Building_CryptosleepCasket c && !c.HasAnyContents)
+				{
+					spawncells.Add(b.InteractionCell);
+				}
+				else if (b.TryGetComp<CompShipSalvageBay>() != null)
+				{
+					salvBayCells.AddRange(b.OccupiedRect().ToList());
+				}
+				else if (b is Building_ShipBridge && b.def.hasInteractionCell && b.GetRoom() != null)
+				{
+					bridgeCells.AddRange(b.GetRoom().Cells.ToList());
+				}
+			}
+			if (spawncells.Any())
+			{
+				foreach (Building b in spawns)
+				{
+					b.Destroy();
+				}
+				return spawncells;
+			}
+			else if (spawncells.Any())
+				return spawncells;
+			else if (salvBayCells.Any())
+				return salvBayCells;
+			else if (bridgeCells.Any())
+				return bridgeCells;
+			spawncells.Add(spaceMap.Center);
+			return spawncells;
+		}
     }
 }

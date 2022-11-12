@@ -30,6 +30,7 @@
 		<li>Ludeon.RimWorld</li>
 		<li>Ludeon.RimWorld.Royalty</li>
 		<li>Ludeon.RimWorld.Ideology</li>
+		<li>Ludeon.RimWorld.Biotech</li>
 		<li>UnlimitedHugs.HugsLib</li>
 	</loadAfter>
 	<incompatibleWith>
@@ -43,6 +44,7 @@
 		<li>neronix17.tweaksgalore</li>
 		<li>powerlunatic.flawlesselectronics</li>
 		<li>ryder.saveourshipsimplified</li>
+		<li>m00nl1ght.geologicallandforms.biometransitions</li>
 		<!-- experimental only -->
 		<li>ceteam.combatextended</li>
 		<li>taranchuk.performanceoptimizer</li>

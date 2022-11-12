@@ -12,6 +12,8 @@ namespace RimWorld
 			CellRect occupiedRect = GenAdj.OccupiedRect(loc, rot, def.Size);
 			foreach (IntVec3 vec in occupiedRect)
 			{
+				if (map.roofGrid.RoofAt(loc) == RoofDefOf.RoofRockThick)
+					return false;
 				foreach (Thing t in vec.GetThingList(map))
 				{
 					if (t is Building && ((Building)t).def.passability == Traversability.Impassable || t is Building_Door || t.def.defName.StartsWith("ShipHardpoint"))

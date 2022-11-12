@@ -796,8 +796,8 @@
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
 			<li Class="CompProperties_EngineTrail">
-				<thrust>36</thrust>
-				<fuelUse>2</fuelUse>
+				<thrust>18</thrust>
+				<fuelUse>1</fuelUse>
 			</li>
 		</comps>
 		<placeWorkers>

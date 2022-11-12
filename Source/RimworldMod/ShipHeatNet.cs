@@ -60,7 +60,7 @@ namespace RimWorld
             {
                 //rem from net with a factor
                 sink.heatStored = StorageUsed * sink.Props.heatCapacity / StorageCapacity;
-                StorageUsed -= sink.heatStored;
+                RemoveHeat(sink.heatStored);
                 StorageCapacity -= sink.Props.heatCapacity;
                 //Log.Message("grid: " + GridID + " rem:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
                 Sinks.Remove(sink);

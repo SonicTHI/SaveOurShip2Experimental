@@ -950,6 +950,7 @@ namespace SaveOurShip2
 				}
 				if (!targetMapIsSpace)
 					targetMap.snowGrid.SetDepth(pos + adjustment, 0f);
+				targetMap.areaManager.Home[pos + adjustment] = true;
 				//add all things, terrain from area
 				List<Thing> allTheThings = pos.GetThingList(sourceMap);
 				foreach (Thing t in allTheThings)
@@ -984,6 +985,7 @@ namespace SaveOurShip2
 					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
 					sourceMap.terrainGrid.SetTerrain(pos,spaceTerrain);
 				}
+				sourceMap.areaManager.Home[pos] = false;
 			}
 			//move live pawns out of target area, destroy non buildings
 			foreach (Thing thing in toDestroy)
@@ -991,8 +993,8 @@ namespace SaveOurShip2
 				if (thing is Pawn pawn && (!pawn.Dead || !pawn.Downed))
 				{
 					pawn.pather.StopDead();
-					while (targetArea.Contains(thing.Position))
-						thing.Position = CellFinder.RandomClosewalkCellNear(thing.Position, targetMap, 50);
+					thing.Position = CellFinder.RandomClosewalkCellNear(thing.Position, targetMap, 50, (IntVec3 x) => !targetArea.Contains(x));
+					pawn.pather.nextCell = pawn.Position.RandomAdjacentCell8Way();
 				}
 				else if (!thing.Destroyed)
 					thing.Destroy();
@@ -3041,6 +3043,19 @@ namespace SaveOurShip2
 		{
 			if (__instance.parent.Map.IsSpace())
 				return false;
+			return __result;
+		}
+	}
+
+	[HarmonyPatch(typeof(Building))]
+	[HarmonyPatch("MaxItemsInCell", MethodType.Getter)]
+	public static class DisableForMove
+	{
+		[HarmonyPostfix]
+		public static int Postfix(int __result, Building __instance)
+		{
+			if (__result > 1 && ShipInteriorMod2.AirlockBugFlag)
+				return 1;
 			return __result;
 		}
 	}

@@ -11,6 +11,7 @@
       <ComfyTemperatureMax>250</ComfyTemperatureMax>
       <MeatAmount>0</MeatAmount>
       <ArmorRating_Heat>2.00</ArmorRating_Heat>
+      <ToxicEnvironmentResistance MayRequire="Ludeon.RimWorld.Biotech">1</ToxicEnvironmentResistance>
     </statBases>
     <race>
       <fleshType>Mechanoid</fleshType>
@@ -102,6 +103,7 @@
 	<isFighter>false</isFighter>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>
+    <canStrip>false</canStrip>
     <lifeStages>
       <li>
         <bodyGraphicData>
@@ -202,6 +204,7 @@
 	<isFighter>false</isFighter>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>
+    <canStrip>false</canStrip>
     <lifeStages>
       <li>
         <bodyGraphicData>
@@ -302,6 +305,7 @@
 	<isFighter>false</isFighter>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>
+    <canStrip>false</canStrip>
     <lifeStages>
       <li>
         <bodyGraphicData>
@@ -545,6 +549,7 @@
 	<isFighter>false</isFighter>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>
+    <canStrip>false</canStrip>
     <lifeStages>
       <li>
         <bodyGraphicData>

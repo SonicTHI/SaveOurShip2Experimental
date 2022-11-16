@@ -132,6 +132,7 @@
 	<ShipReactorOverdrive3>Overdrive III</ShipReactorOverdrive3>
 	<ShipReactorOverdrive3Desc>Vastly increase reactor output, at the cost of increased heat production and fuel consumption. Increases instability, risking fire and radiation leaks.</ShipReactorOverdrive3Desc>
 	
+	<ShipBlueprintDisabled>Requires starflight basics research</ShipBlueprintDisabled>
 	<SelectEverything>Select Everything</SelectEverything>
 	<SelectEverythingDesc>Select everything.</SelectEverythingDesc>
 	<!-- holo/spore -->

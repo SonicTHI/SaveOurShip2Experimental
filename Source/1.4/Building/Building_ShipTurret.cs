@@ -29,8 +29,8 @@ namespace RimWorld
         public CompChangeableProjectilePlural torpComp;
         protected CompInitiatable initiatableComp;
         protected Effecter progressBarEffecter;
-
         protected LocalTargetInfo currentTargetInt = LocalTargetInfo.Invalid;
+        LocalTargetInfo shipTarget = LocalTargetInfo.Invalid;
         public int[] SegmentPower = new int[3];
         public int burstCooldownTicksLeft;
         protected int burstWarmupTicksLeft;
@@ -43,6 +43,9 @@ namespace RimWorld
         public bool GroundDefenseMode;
         public bool useOptimalRange;
         static int lastPDTick = 0;
+public CompEquippable GunCompEq => gun.TryGetComp<CompEquippable>();
+        public override LocalTargetInfo CurrentTarget => currentTargetInt;
+        public override Verb AttackVerb => GunCompEq.PrimaryVerb;
 
         public bool Active
         {
@@ -55,7 +58,17 @@ namespace RimWorld
                 return false;
             }
         }
-
+        public bool PlayerControlled
+        {
+            get
+            {
+                if (base.Faction == Faction.OfPlayer)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
         private bool CanExtractTorpedo
         {
             get
@@ -65,24 +78,6 @@ namespace RimWorld
                     return false;
                 }
                 return torpComp?.Loaded ?? false;
-            }
-        }
-
-        public CompEquippable GunCompEq => gun.TryGetComp<CompEquippable>();
-        public override LocalTargetInfo CurrentTarget => currentTargetInt;
-        public override Verb AttackVerb => GunCompEq.PrimaryVerb;
-
-        LocalTargetInfo shipTarget=LocalTargetInfo.Invalid;
-
-        private bool PlayerControlled
-        {
-            get
-            {
-                if (base.Faction == Faction.OfPlayer)
-                {
-                    return true;
-                }
-                return false;
             }
         }
         private bool CanSetForcedTarget
@@ -119,19 +114,16 @@ namespace RimWorld
                 ResetForcedTarget();
             }
         }
-
         public override void PostMake()
         {
             base.PostMake();
             MakeGun();
         }
-
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
             base.DeSpawn(mode);
             ResetCurrentTarget();
         }
-
         public override void ExposeData()
         {
             base.ExposeData();
@@ -270,7 +262,7 @@ namespace RimWorld
                         if ((this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0 && IncomingPtDefTargetsInRange()) && (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense)))
                         {
                             if (Find.TickManager.TicksGame > lastPDTick + 10 && !holdFire)
-                                BeginBurst(true);
+                                BeginBurst();
                         }
                         //check if we are in range
                         else
@@ -341,8 +333,7 @@ namespace RimWorld
             }
             else
             {
-                if (spinalComp != null)
-                    RecalcStats();
+                SpinalRecalc();
                 if (!base.Spawned || (holdFire && CanToggleHoldFire) || !AttackVerb.Available() || PointDefenseMode || !mapComp.InCombat || (spinalComp != null && AmplifierCount == -1))
                 {
                     ResetCurrentTarget();
@@ -357,17 +348,7 @@ namespace RimWorld
                 }
                 if (shipTarget.IsValid)
                 {
-                    //fire same as engine direction or opposite if retreating
-                    int rotA = mapComp.EngineRot;
-                    int rotB = mapComp.Heading;
-                    if ((rotA == 0 && rotB != -1) || (rotA == 2 && rotB == -1)) //north
-                        currentTargetInt = new LocalTargetInfo(new IntVec3(Rand.RangeInclusive(this.Position.x - 5, this.Position.x + 5), 0, this.Map.Size.z - 1));
-                    else if ((rotA == 1 && rotB != -1) || (rotA == 3 && rotB == -1)) //east
-                        currentTargetInt = new LocalTargetInfo(new IntVec3(this.Map.Size.x - 1, 0, Rand.RangeInclusive(this.Position.z - 5, this.Position.z + 5)));
-                    else if ((rotA == 2 && rotB != -1) || (rotA == 0 && rotB == -1)) //south
-                        currentTargetInt = new LocalTargetInfo(new IntVec3(Rand.RangeInclusive(this.Position.x - 5, this.Position.x + 5), 0, 0));
-                    else//west
-                        currentTargetInt = new LocalTargetInfo(new IntVec3(0, 0, Rand.RangeInclusive(this.Position.z - 5, this.Position.z + 5)));
+                    currentTargetInt = MapEdgeCell(5);
                 }
                 else
                 {
@@ -396,6 +377,30 @@ namespace RimWorld
             }
             this.burstWarmupTicksLeft = 1;
         }
+        private LocalTargetInfo MapEdgeCell (int miss)
+        {
+            if (miss > 0)
+                miss = Rand.RangeInclusive(-miss, miss);
+            //fire same as engine direction or opposite if retreating
+            IntVec3 v;
+            if ((mapComp.EngineRot == 0 && mapComp.Heading != -1) || (mapComp.EngineRot == 2 && mapComp.Heading == -1)) //north
+                v = new IntVec3(Position.x + miss, 0, Map.Size.z - 1);
+            else if ((mapComp.EngineRot == 1 && mapComp.Heading != -1) || (mapComp.EngineRot == 3 && mapComp.Heading == -1)) //east
+                v = new IntVec3(Map.Size.x - 1, 0, Position.z + miss);
+            else if ((mapComp.EngineRot == 2 && mapComp.Heading != -1) || (mapComp.EngineRot == 0 && mapComp.Heading == -1)) //south
+                v = new IntVec3(Position.x + miss, 0, 0);
+            else//west
+                v = new IntVec3(0, 0, Position.z + miss);
+            if (v.x < 0)
+                v.x = 0; 
+            else if (v.x >= Map.Size.x)
+                v.x = Map.Size.x -1;
+            if (v.z < 0)
+                v.z = 0;
+            else if (v.z >= Map.Size.z)
+                v.z = Map.Size.z;
+            return new LocalTargetInfo(v);
+        }
 
         protected LocalTargetInfo TryFindNewTarget()
         {
@@ -408,12 +413,10 @@ namespace RimWorld
             else
                 return LocalTargetInfo.Invalid;
         }
-
         private IAttackTargetSearcher TargSearcher()
         {
             return this;
         }
-
         private bool IsValidTarget(Thing t)
         {
             Pawn pawn = t as Pawn;
@@ -427,7 +430,7 @@ namespace RimWorld
             return true;
         }
 
-        protected void BeginBurst(bool isPtDefBurst = false)
+        protected void BeginBurst()
         {
             //check if we have power to fire
             if (powerComp != null && heatComp != null && powerComp.PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + AmplifierDamageBonus))
@@ -479,17 +482,19 @@ namespace RimWorld
             }
             else
             {
-                //PD mode
-                if (isPtDefBurst || shipTarget == null)
+                if (shipTarget == null)
                     this.shipTarget = LocalTargetInfo.Invalid;
+                if (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense))
+                {
+                    currentTargetInt = MapEdgeCell(20);
+                    lastPDTick = Find.TickManager.TicksGame;
+                }
                 //sync
-                ((Verb_LaunchProjectileShip)AttackVerb).shipTarget = shipTarget;
+                ((Verb_LaunchProjectileShip)AttackVerb).shipTarget = this.shipTarget;
                 if (this.AttackVerb.verbProps.burstShotCount > 0 && mapComp.ShipCombatTargetMap != null)
                     SynchronizedBurstLocation = mapComp.FindClosestEdgeCell(mapComp.ShipCombatTargetMap, shipTarget.Cell);
                 else
                     SynchronizedBurstLocation = IntVec3.Invalid;
-                if (PointDefenseMode)
-                    lastPDTick = Find.TickManager.TicksGame;
                 //spinal weapons fire straight
                 if (spinalComp != null)
                 {
@@ -693,7 +698,7 @@ namespace RimWorld
         {
             if (!selected)
             {
-                RecalcStats();
+                SpinalRecalc();
                 selected = true;
             }
             foreach (Gizmo gizmo in base.GetGizmos())
@@ -839,7 +844,6 @@ namespace RimWorld
             foreach(Thing t in torpComp.RemoveShells())
                 GenPlace.TryPlaceThing(t, base.Position, base.Map, ThingPlaceMode.Near);
         }
-
         public void ResetForcedTarget()
         {
             if (GroundDefenseMode)
@@ -852,19 +856,16 @@ namespace RimWorld
                 TryStartShootSomething(false);
             }
         }
-
         private void ResetCurrentTarget()
         {
             currentTargetInt = LocalTargetInfo.Invalid;
             burstWarmupTicksLeft = 0;
         }
-
         public void MakeGun()
         {
             gun = ThingMaker.MakeThing(def.building.turretGunDef);
             UpdateGunVerbs();
         }
-
         private void UpdateGunVerbs()
         {
             List<Verb> allVerbs = gun.TryGetComp<CompEquippable>().AllVerbs;
@@ -875,7 +876,6 @@ namespace RimWorld
                 verb.castCompleteCallback = BurstComplete;
             }
         }
-
         public void SetTarget(LocalTargetInfo target)
         {
             this.shipTarget = target;
@@ -894,8 +894,10 @@ namespace RimWorld
             }
             return false;
         }
-        public void RecalcStats()
+        public void SpinalRecalc()
         {
+            if (spinalComp == null)
+                return;
             AmplifierCount = -1;
             float ampBoost = 0;
             bool foundNonAmp = false;

@@ -21,8 +21,9 @@ namespace RimWorld
             {
                 yield return gizmo;
             }
-            Command_Action rename = new Command_Action
+            Command_Action place = new Command_Action
             {
+
                 action = delegate
                 {
                     Sketch shipSketch = GenerateBlueprintSketch(this.parent.Position, Props.shipDef);
@@ -46,7 +47,11 @@ namespace RimWorld
                 defaultDesc = "Place ship blueprint",
                 icon = ContentFinder<Texture2D>.Get("UI/SalvageMove")
             };
-            yield return rename;
+            if (!ResearchProjectDef.Named("ShipBasics").IsFinished)
+            {
+                place.Disable(TranslatorFormattedStringExtensions.Translate("ShipBlueprintDisabled"));
+            }
+            yield return place;
         }
         private Sketch GenerateBlueprintSketch(IntVec3 lowestCorner, EnemyShipDef shipDef)
         {

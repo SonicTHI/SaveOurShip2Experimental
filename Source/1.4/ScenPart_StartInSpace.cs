@@ -88,7 +88,8 @@ namespace RimWorld
 			((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
 			List<Building> cores = new List<Building>();
 			Current.ProgramState = ProgramState.MapInitializing;
-			if (this.def.defName.Equals("StartInSpaceDungeon") && this.enemyShipDef.defName == "0")//random dungeon
+			bool station = this.def.defName.Equals("StartInSpaceDungeon");
+			if (station && this.enemyShipDef.defName == "0")//random dungeon
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
 			else if (this.enemyShipDef.defName == "0")//random ship
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
@@ -156,22 +157,31 @@ namespace RimWorld
 				casketPos = spawnPos.RandomElement();
 				spawnPos.Remove(casketPos);
 				if (spawnPos.Count == 0)
-					spawnPos = GetSpawnCells(spaceMap); //time to start double-dipping
+					spawnPos = GetSpawnCells(spaceMap); //reuse spawns
 
 				foreach (Thing thingy in thingies)
                 {
 					thingy.SetForbidden(true, false);
 					GenPlace.TryPlaceThing(thingy, casketPos, spaceMap, ThingPlaceMode.Near);
                 }
-				if (this.def.defName.Equals("StartInSpaceDungeon"))
+				if (station)
 					FloodFillerFog.FloodUnfog(casketPos, spaceMap);
 			}
-			foreach (Building b in spawns)
+			foreach (Building b in spawns) //remove spawn points
 			{
 				b.Destroy();
 			}
-			if (!this.def.defName.Equals("StartInSpaceDungeon"))
+			if (!station) //defog and homezone ships
+			{
 				spaceMap.fogGrid.ClearAllFog();
+				foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist)
+                {
+					foreach (IntVec3 v in b.OccupiedRect())
+                    {
+						spaceMap.areaManager.Home[v] = true;
+					}
+                }
+			}
 			Current.Game.DeinitAndRemoveMap(Find.CurrentMap);
             CameraJumper.TryJump(spaceMap.Center, spaceMap);
 			spaceMap.weatherManager.curWeather = WeatherDef.Named("OuterSpaceWeather");

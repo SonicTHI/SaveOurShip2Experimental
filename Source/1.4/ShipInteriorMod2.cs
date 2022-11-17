@@ -1053,16 +1053,17 @@ namespace SaveOurShip2
 
 			foreach (IntVec3 pos in sourceArea)
 			{
+				IntVec3 adjustedPos = Transform(pos);
 				//clear LZ
-				targetArea.Add(pos + adjustment);
-				foreach (Thing t in (pos + adjustment).GetThingList(targetMap))
+				targetArea.Add(adjustedPos);
+				foreach (Thing t in adjustedPos.GetThingList(targetMap))
 				{
 					if (!toDestroy.Contains(t))
 						toDestroy.Add(t);
 				}
 				if (!targetMapIsSpace)
-					targetMap.snowGrid.SetDepth(pos + adjustment, 0f);
-				targetMap.areaManager.Home[pos + adjustment] = true;
+					targetMap.snowGrid.SetDepth(adjustedPos, 0f);
+				targetMap.areaManager.Home[adjustedPos] = true;
 				//add all things, terrain from area
 				List<Thing> allTheThings = pos.GetThingList(sourceMap);
 				foreach (Thing t in allTheThings)

@@ -96,6 +96,8 @@ namespace SaveOurShip2
 		public static RoofDef shipRoofDef = DefDatabase<RoofDef>.GetNamed("RoofShip");
 		// Additional array of compatible RoofDefs from other mods.
 		public static RoofDef[] compatibleAirtightRoofs;
+		// Contains terrain types that are considered a "rock".
+		private static TerrainDef[] rockTerrains;
 
 		public static HediffDef hypoxia = HediffDef.Named("SpaceHypoxia");
 		public static HediffDef ArchoLung = HediffDef.Named("SoSArchotechLung");
@@ -178,7 +180,7 @@ namespace SaveOurShip2
 			if (useSplashScreen)
 				((UI_BackgroundMain)UIMenuBackgroundManager.background).overrideBGImage = Splash;
 
-			foreach(ThingDef drug in DefDatabase<ThingDef>.AllDefsListForReading)
+			foreach (ThingDef drug in DefDatabase<ThingDef>.AllDefsListForReading)
 			{
 				if (drug.category == ThingCategory.Item && drug.IsDrug && drug.IsPleasureDrug)
 				{
@@ -187,14 +189,14 @@ namespace SaveOurShip2
 			}
 			CompBuildingConsciousness.drugs.Add(ThingDef.Named("Meat_Human"));
 
-			foreach(ThingDef apparel in DefDatabase<ThingDef>.AllDefsListForReading)
-            {
-				if(apparel.IsApparel && apparel.thingClass!=typeof(ApparelHolographic))
-                {
+			foreach (ThingDef apparel in DefDatabase<ThingDef>.AllDefsListForReading)
+			{
+				if (apparel.IsApparel && apparel.thingClass != typeof(ApparelHolographic))
+				{
 					if (apparel.apparel.layers.Contains(ApparelLayerDefOf.Overhead) || apparel.apparel.layers.Contains(ApparelLayerDefOf.Shell) || (apparel.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) && (apparel.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) || apparel.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs))))
 						CompBuildingConsciousness.apparel.Add(apparel);
-                }
-            }
+				}
+			}
 
 			wreckDictionary.Add(ThingDef.Named("ShipHullTile"), ThingDef.Named("ShipHullTileWrecked"));
 			wreckDictionary.Add(ThingDef.Named("ShipHullTileMech"), ThingDef.Named("ShipHullTileWrecked"));
@@ -233,6 +235,16 @@ namespace SaveOurShip2
 #endif
 				compatibleAirtightRoofs[i] = compatibleRoofs[i];
 			}
+
+			rockTerrains = new TerrainDef[]
+			{
+				TerrainDef.Named("Slate_Rough"),
+				TerrainDef.Named("Slate_RoughHewn"),
+				TerrainDef.Named("Marble_Rough"),
+				TerrainDef.Named("Marble_RoughHewn"),
+				TerrainDef.Named("Granite_Rough"),
+				TerrainDef.Named("Granite_RoughHewn"),
+			};
 
 			/*foreach (TraitDef AITrait in DefDatabase<TraitDef>.AllDefs.Where(t => t.exclusionTags.Contains("AITrait")))
             {
@@ -993,12 +1005,7 @@ namespace SaveOurShip2
 
 		public static bool IsRock(TerrainDef def)
 		{
-			return def == TerrainDef.Named("Slate_Rough")
-				|| def == TerrainDef.Named("Slate_RoughHewn")
-				|| def == TerrainDef.Named("Marble_Rough")
-				|| def == TerrainDef.Named("Marble_RoughHewn")
-				|| def == TerrainDef.Named("Granite_Rough")
-				|| def == TerrainDef.Named("Granite_RoughHewn");
+			return rockTerrains.Contains(def);
 		}
 
 		public static bool IsHull(TerrainDef def)
@@ -1378,7 +1385,9 @@ namespace SaveOurShip2
 			watch.Record("finalize");
 
 			Log.Message("Moved ship with building " + core);
+#if DEBUG
 			Log.Message("Timing report:\n" + watch.MakeReport());
+#endif
 			/*Things = 1,
 			FogOfWar = 2,
 			Buildings = 4,

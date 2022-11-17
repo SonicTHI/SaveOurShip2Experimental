@@ -94,6 +94,10 @@ namespace SaveOurShip2
 		public static TerrainDef wreckedHullFloorDef = TerrainDef.Named("ShipWreckageTerrain");
 		public static TerrainDef hullFoamFloorDef = TerrainDef.Named("FakeFloorInsideShipFoam");
 		public static RoofDef shipRoofDef = DefDatabase<RoofDef>.GetNamed("RoofShip");
+		// Additional array of compatible RoofDefs from other mods.
+		public static RoofDef[] compatibleAirtightRoofs;
+		// Contains terrain types that are considered a "rock".
+		private static TerrainDef[] rockTerrains;
 
 		public static HediffDef hypoxia = HediffDef.Named("SpaceHypoxia");
 		public static HediffDef ArchoLung = HediffDef.Named("SoSArchotechLung");
@@ -176,7 +180,7 @@ namespace SaveOurShip2
 			if (useSplashScreen)
 				((UI_BackgroundMain)UIMenuBackgroundManager.background).overrideBGImage = Splash;
 
-			foreach(ThingDef drug in DefDatabase<ThingDef>.AllDefsListForReading)
+			foreach (ThingDef drug in DefDatabase<ThingDef>.AllDefsListForReading)
 			{
 				if (drug.category == ThingCategory.Item && drug.IsDrug && drug.IsPleasureDrug)
 				{
@@ -185,14 +189,14 @@ namespace SaveOurShip2
 			}
 			CompBuildingConsciousness.drugs.Add(ThingDef.Named("Meat_Human"));
 
-			foreach(ThingDef apparel in DefDatabase<ThingDef>.AllDefsListForReading)
-            {
-				if(apparel.IsApparel && apparel.thingClass!=typeof(ApparelHolographic))
-                {
+			foreach (ThingDef apparel in DefDatabase<ThingDef>.AllDefsListForReading)
+			{
+				if (apparel.IsApparel && apparel.thingClass != typeof(ApparelHolographic))
+				{
 					if (apparel.apparel.layers.Contains(ApparelLayerDefOf.Overhead) || apparel.apparel.layers.Contains(ApparelLayerDefOf.Shell) || (apparel.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) && (apparel.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso) || apparel.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs))))
 						CompBuildingConsciousness.apparel.Add(apparel);
-                }
-            }
+				}
+			}
 
 			wreckDictionary.Add(ThingDef.Named("ShipHullTile"), ThingDef.Named("ShipHullTileWrecked"));
 			wreckDictionary.Add(ThingDef.Named("ShipHullTileMech"), ThingDef.Named("ShipHullTileWrecked"));
@@ -213,6 +217,34 @@ namespace SaveOurShip2
 			wreckDictionary.Add(ThingDef.Named("ShipAirlockArchotech"), ThingDef.Named("ShipAirlockWrecked"));
 			wreckDictionary.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockWrecked"));
 			wreckDictionary.Add(ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockWrecked"));
+
+			var compatibleRoofs = new List<RoofDef>();
+			// Compatibility tricks for Roofs Extended.
+			RoofDef roof = DefDatabase<RoofDef>.GetNamed("RoofTransparent", false);
+			if (roof != null)
+				compatibleRoofs.Add(roof);
+			roof = DefDatabase<RoofDef>.GetNamed("RoofSolar", false);
+			if (roof != null)
+				compatibleRoofs.Add(roof);
+
+			compatibleAirtightRoofs = new RoofDef[compatibleRoofs.Count];
+			for (int i = 0; i < compatibleRoofs.Count; i++)
+			{
+#if DEBUG
+				Log.Message(string.Format("Registering compatible roof {0}", compatibleRoofs[i].defName));
+#endif
+				compatibleAirtightRoofs[i] = compatibleRoofs[i];
+			}
+
+			rockTerrains = new TerrainDef[]
+			{
+				TerrainDef.Named("Slate_Rough"),
+				TerrainDef.Named("Slate_RoughHewn"),
+				TerrainDef.Named("Marble_Rough"),
+				TerrainDef.Named("Marble_RoughHewn"),
+				TerrainDef.Named("Granite_Rough"),
+				TerrainDef.Named("Granite_RoughHewn"),
+			};
 
 			/*foreach (TraitDef AITrait in DefDatabase<TraitDef>.AllDefs.Where(t => t.exclusionTags.Contains("AITrait")))
             {
@@ -303,6 +335,30 @@ namespace SaveOurShip2
 				loadedGraphics = true;
 			}
 		}
+
+		/// <summary>
+		/// Checks if specified RoofDef is properly airtight.
+		/// </summary>
+		/// <param name="roof"></param>
+		/// <returns></returns>
+		public static bool IsRoofDefAirtight(RoofDef roof)
+		{
+			if (roof == null)
+				return false;
+			if (roof == shipRoofDef)
+				return true;
+			if (compatibleAirtightRoofs != null)
+			{
+				// I do not expect a lot of values here.
+				foreach (var r in compatibleAirtightRoofs)
+				{
+					if (roof == r)
+						return true;
+				}
+			}
+			return false;
+		}
+
 		public static int FindWorldTile()
 		{
 			for (int i = 0; i < 420; i++)//Find.World.grid.TilesCount
@@ -918,20 +974,76 @@ namespace SaveOurShip2
 			}
 			return cellsFound;
 		}
+
+		public class TimeHelper
+		{
+			private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+			public struct TimeMeasure
+			{
+				public string name;
+				public TimeSpan time;
+			}
+
+			public List<TimeMeasure> measures = new List<TimeMeasure>();
+
+			public void Record(string name)
+			{
+				measures.Add(new TimeMeasure { name = name, time = watch.Elapsed });
+				watch.Restart();
+			}
+
+			public string MakeReport()
+			{
+				var sb = new StringBuilder();
+				foreach (var r in measures)
+				{
+					sb.AppendFormat("{0}={1}ms\n", r.name, r.time.TotalMilliseconds);
+				}
+				return sb.ToString();
+			}
+		}
+
+		public static bool IsRock(TerrainDef def)
+		{
+			return rockTerrains.Contains(def);
+		}
+
+		public static bool IsHull(TerrainDef def)
+		{
+			return def == hullFloorDef || def == mechHullFloorDef || def == archoHullFloorDef;
+		}
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
+#if DEBUG
+			var watch = new TimeHelper();
+#endif
 			List<Thing> toSave = new List<Thing>();
 			List<Thing> toDestroy = new List<Thing>();
 			List<CompPower> toRePower = new List<CompPower>();
 			List<Zone> zonesToCopy = new List<Zone>();
 			bool movedZones = false;
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
+			List<Tuple<IntVec3, RoofDef>> roofToCopy = new List<Tuple<IntVec3, RoofDef>>();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
-			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);//new List<IntVec3>();
+			// source area of the ship.
+			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);
+
+			HashSet<IntVec3> unroofTiles = new HashSet<IntVec3>();
 			List<IntVec3> fireExplosions = new List<IntVec3>();
 			IntVec3 rot = IntVec3.Zero;
 			int rotb = 4 - rotNum;
 
+			// Transforms vector from initial position to final according to desired movement/rotation.
+			Func<IntVec3, IntVec3> Transform;
+			if (rotb == 2)
+				Transform = (IntVec3 from) => new IntVec3(targetMap.Size.x - from.x, 0, targetMap.Size.z - from.z) + adjustment;
+			else if (rotb == 3)
+				Transform = (IntVec3 from) => new IntVec3(targetMap.Size.x - from.z, 0, from.x) + adjustment;
+			else
+				Transform = (IntVec3 from) => from + adjustment;
+#if DEBUG
+			watch.Record("prepare");
+#endif
 			shipOriginMap = null;
 			Map sourceMap = core.Map;
 			if (targetMap == null)
@@ -941,16 +1053,17 @@ namespace SaveOurShip2
 
 			foreach (IntVec3 pos in sourceArea)
 			{
+				IntVec3 adjustedPos = Transform(pos);
 				//clear LZ
-				targetArea.Add(pos + adjustment);
-				foreach (Thing t in (pos + adjustment).GetThingList(targetMap))
+				targetArea.Add(adjustedPos);
+				foreach (Thing t in adjustedPos.GetThingList(targetMap))
 				{
 					if (!toDestroy.Contains(t))
 						toDestroy.Add(t);
 				}
 				if (!targetMapIsSpace)
-					targetMap.snowGrid.SetDepth(pos + adjustment, 0f);
-				targetMap.areaManager.Home[pos + adjustment] = true;
+					targetMap.snowGrid.SetDepth(adjustedPos, 0f);
+				targetMap.areaManager.Home[adjustedPos] = true;
 				//add all things, terrain from area
 				List<Thing> allTheThings = pos.GetThingList(sourceMap);
 				foreach (Thing t in allTheThings)
@@ -973,20 +1086,38 @@ namespace SaveOurShip2
 					{
 						toSave.Add(t);
 					}
-					UnRoofTilesOverThing(t);
+
+					foreach (IntVec3 thingPos in GenAdj.CellsOccupiedBy(t))
+						unroofTiles.Add(thingPos);
 				}
-				if (sourceMap.terrainGrid.TerrainAt(pos).layerable && !(sourceMap.terrainGrid.TerrainAt(pos) == hullFloorDef) && !(sourceMap.terrainGrid.TerrainAt(pos) == mechHullFloorDef) && !(sourceMap.terrainGrid.TerrainAt(pos) == archoHullFloorDef))
+
+				var sourceTerrain = sourceMap.terrainGrid.TerrainAt(pos);
+				if (sourceTerrain.layerable && !IsHull(sourceTerrain))
 				{
-					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceTerrain));
 					sourceMap.terrainGrid.RemoveTopLayer(pos, false);
 				}
-				else if (includeRock && (sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Slate_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Slate_RoughHewn") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Marble_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Marble_RoughHewn") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Granite_Rough") || sourceMap.terrainGrid.TerrainAt(pos) == TerrainDef.Named("Granite_RoughHewn")))
+				else if (includeRock && IsRock(sourceTerrain))
 				{
-					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceMap.terrainGrid.TerrainAt(pos)));
-					sourceMap.terrainGrid.SetTerrain(pos,spaceTerrain);
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceTerrain));
+					sourceMap.terrainGrid.SetTerrain(pos, spaceTerrain);
+				}
+
+				var sourceRoof = sourceMap.roofGrid.RoofAt(pos);
+				if (IsRoofDefAirtight(sourceRoof))
+				{
+					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(pos, sourceRoof));
 				}
 				sourceMap.areaManager.Home[pos] = false;
 			}
+#if DEBUG
+			watch.Record("processSourceArea");
+#endif
+			foreach (IntVec3 pos in unroofTiles)
+			{
+				sourceMap.roofGrid.SetRoof(pos, null);
+			}
+
 			//move live pawns out of target area, destroy non buildings
 			foreach (Thing thing in toDestroy)
 			{
@@ -999,6 +1130,9 @@ namespace SaveOurShip2
 				else if (!thing.Destroyed)
 					thing.Destroy();
 			}
+#if DEBUG
+			watch.Record("destroySource");
+#endif
 			//takeoff - draw fuel
 			if (targetMapIsSpace && !sourceMapIsSpace)
 			{
@@ -1051,6 +1185,9 @@ namespace SaveOurShip2
 					QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ToxicFallout"), null, parms), Find.TickManager.TicksGame);
 					Find.Storyteller.incidentQueue.Add(qi);
 				}*/
+#if DEBUG
+				watch.Record("takeoffEngineEffects");
+#endif
 			}
 			AirlockBugFlag = true;
 			//move things
@@ -1130,6 +1267,9 @@ namespace SaveOurShip2
 					}
 				}
 			}
+#if DEBUG
+			watch.Record("moveThings");
+#endif
 			AirlockBugFlag = false;
 			if (zonesToCopy.Count != 0)
 				movedZones = true;
@@ -1140,44 +1280,24 @@ namespace SaveOurShip2
 				theZone.zoneManager = targetMap.zoneManager;
 				List<IntVec3> newCells = new List<IntVec3>();
 				foreach (IntVec3 cell in theZone.cells)
-				{
-					if (rotb == 2)
-					{
-						rot.x = targetMap.Size.x - cell.x;
-						rot.z = targetMap.Size.z - cell.z;
-						newCells.Add(rot + adjustment);
-					}
-					else if (rotb == 3)
-					{
-						rot.x = targetMap.Size.x - cell.z;
-						rot.z = cell.x;
-						newCells.Add(rot + adjustment);
-					}
-					else
-						newCells.Add(cell + adjustment);
-				}
+					newCells.Add(Transform(cell));
 				theZone.cells = newCells;
 				targetMap.zoneManager.RegisterZone(theZone);
 			}
+#if DEBUG
+			watch.Record("moveZones");
+#endif
 			//move terrain
 			foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
 			{
-				if (!targetMap.terrainGrid.TerrainAt(tup.Item1).layerable || targetMap.terrainGrid.TerrainAt(tup.Item1) == hullFloorDef || targetMap.terrainGrid.TerrainAt(tup.Item1) == mechHullFloorDef || targetMap.terrainGrid.TerrainAt(tup.Item1) == archoHullFloorDef)
-					if (rotb == 2)
-					{
-						rot.x = targetMap.Size.x - tup.Item1.x;
-						rot.z = targetMap.Size.z - tup.Item1.z;
-						targetMap.terrainGrid.SetTerrain(rot + adjustment, tup.Item2);
-					}
-					else if (rotb == 3)
-					{
-						rot.x = targetMap.Size.x - tup.Item1.z;
-						rot.z = tup.Item1.x;
-						targetMap.terrainGrid.SetTerrain(rot + adjustment, tup.Item2);
-					}
-					else
-						targetMap.terrainGrid.SetTerrain(tup.Item1 + adjustment, tup.Item2);
+				var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
+				if (!targetTile.layerable || IsHull(targetTile))
+				{
+					var targetPos = Transform(tup.Item1);
+					targetMap.terrainGrid.SetTerrain(targetPos, tup.Item2);
+				}
 			}
+
 			if (includeRock)
 			{
 				foreach (IntVec3 pos in sourceArea)
@@ -1185,6 +1305,19 @@ namespace SaveOurShip2
 					sourceMap.terrainGrid.SetTerrain(pos, spaceTerrain);
 				}
 			}
+#if DEBUG
+			watch.Record("moveTerrain");
+#endif
+			// Move roofs.
+			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
+			{
+				var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
+				var targetPos = Transform(tup.Item1);
+				targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
+			}
+#if DEBUG
+			watch.Record("moveRoof");
+#endif
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);
 			//to space - normalize temp in ship
@@ -1208,14 +1341,18 @@ namespace SaveOurShip2
 			{
 				GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null);
 			}
+
 			if (sourceMap != targetMap)
 			{
 				foreach (CompPower powerComp in toRePower)
 				{
 					powerComp.ResetPowerVars();
 				}
-				//targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
 			}
+			// Power consumers become upnowered without this update.
+			if (toRePower.Count > 0)
+				targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
+
 			//regen affected map layers
 			List<Section> sourceSec = new List<Section>();
 			foreach (IntVec3 pos in sourceArea)
@@ -1234,24 +1371,26 @@ namespace SaveOurShip2
 					sec.RegenerateLayers(MapMeshFlag.Zone);
 				}
 			}
-			List<Section> targetSec = new List<Section>();
-			foreach (IntVec3 pos in targetArea)
+			if (movedZones)
 			{
-				if (movedZones)
+				List<Section> targetSec = new List<Section>();
+				foreach (IntVec3 pos in targetArea)
 				{
 					var sec = targetMap.mapDrawer.SectionAt(pos);
 					if (!targetSec.Contains(sec))
 						targetSec.Add(sec);
 				}
-			}
-			foreach (Section sec in targetSec)
-			{
-				if (movedZones)
+				foreach (Section sec in targetSec)
 				{
 					sec.RegenerateLayers(MapMeshFlag.Zone);
 				}
 			}
+#if DEBUG
+			watch.Record("finalize");
+
 			Log.Message("Moved ship with building " + core);
+			Log.Message("Timing report:\n" + watch.MakeReport());
+#endif
 			/*Things = 1,
 			FogOfWar = 2,
 			Buildings = 4,
@@ -1293,11 +1432,7 @@ namespace SaveOurShip2
 				}
 			}*/
 		}
-		public static void UnRoofTilesOverThing(Thing t)
-		{
-			foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(t))
-				t.Map.roofGrid.SetRoof(pos, null);
-		}
+		
 		public static bool IsHologram(Pawn pawn)
 		{
 			return pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null;
@@ -1809,7 +1944,8 @@ namespace SaveOurShip2
 			{
 				foreach (IntVec3 tile in __instance.Cells)
 				{
-					if (tile.GetRoof(__instance.Map) != ShipInteriorMod2.shipRoofDef)
+					var roof = tile.GetRoof(__instance.Map);
+					if (!ShipInteriorMod2.IsRoofDefAirtight(roof))
 					{
 						___cachedOpenRoofCount = 1;
 						return ___cachedOpenRoofCount;
@@ -2724,7 +2860,9 @@ namespace SaveOurShip2
 			{
 				if (t.TryGetComp<CompRoofMe>() != null)
 				{
-					map.roofGrid.SetRoof(c, ShipInteriorMod2.shipRoofDef);
+					var existingRoof = map.roofGrid.RoofAt(c);
+					if (!ShipInteriorMod2.IsRoofDefAirtight(existingRoof))
+						map.roofGrid.SetRoof(c, ShipInteriorMod2.shipRoofDef);
 					if (!map.terrainGrid.TerrainAt(c).layerable)
 					{
 						if (!t.TryGetComp<CompRoofMe>().Props.archotech)
@@ -2750,11 +2888,18 @@ namespace SaveOurShip2
 			{
 				if (t.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
 				{
-					if (___roofGrid[___map.cellIndices.CellToIndex(c)] == def)
+					var cellIndex = ___map.cellIndices.CellToIndex(c);
+					if (___roofGrid[cellIndex] == def)
 					{
 						return false;
 					}
-					___roofGrid[___map.cellIndices.CellToIndex(c)] = ShipInteriorMod2.shipRoofDef;
+
+					if (ShipInteriorMod2.IsRoofDefAirtight(def))
+						return true;
+#if DEBUG
+					Log.Message(String.Format("Overriding roof at {0}. Set shipRoofDef instead of {1}", cellIndex, def.defName));
+#endif
+					___roofGrid[cellIndex] = ShipInteriorMod2.shipRoofDef;
 					___map.glowGrid.MarkGlowGridDirty(c);
 					Region validRegionAt_NoRebuild = ___map.regionGrid.GetValidRegionAt_NoRebuild(c);
 					if (validRegionAt_NoRebuild != null)
@@ -2780,6 +2925,9 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void ShipRoofIsDestroyed(IEnumerable<IntVec3> cells, Map map)
 		{
+#if DEBUG
+			Log.Message("SoS2 sealing holes");
+#endif
 			foreach (IntVec3 cell in cells)
 			{
 				if (map.IsSpace() && !cell.Roofed(map))
@@ -2793,7 +2941,9 @@ namespace SaveOurShip2
 							{
 								dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
 								map.roofGrid.SetRoof(cell, ShipInteriorMod2.shipRoofDef);
-								//Log.Message("rebuilt roof at:" + cell);
+#if DEBUG
+								Log.Message("rebuilt roof at:" + cell);
+#endif
 								break;
 							}
 						}

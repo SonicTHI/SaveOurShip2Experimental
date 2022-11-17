@@ -54,6 +54,9 @@ namespace RimWorld
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
+#if DEBUG
+            Log.Message("SoS2.CompRoofMe.PostSpawnSetup");
+#endif
             isTile = parent.def == hullPlateDef;
             isMechTile = parent.def == mechHullPlateDef;
             isArchoTile = parent.def == archoHullPlateDef;
@@ -64,10 +67,17 @@ namespace RimWorld
             {
                 positions.Add(pos);
             }
-            foreach (IntVec3 pos in positions)
+            if (Props.roof)
             {
-                if (Props.roof && map.roofGrid.Roofed(pos) && map.roofGrid.RoofAt(pos)!=roof)
-                    map.roofGrid.SetRoof(pos, roof);
+                foreach (IntVec3 pos in positions)
+                {
+                    if (map.roofGrid.Roofed(pos))
+                    {
+                        var oldRoof = map.roofGrid.RoofAt(pos);
+                        if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
+                            map.roofGrid.SetRoof(pos, roof);
+                    }
+                }
             }
             if (respawningAfterLoad)
             {

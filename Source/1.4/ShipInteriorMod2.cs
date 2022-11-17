@@ -1014,7 +1014,9 @@ namespace SaveOurShip2
 		}
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
+#if DEBUG
 			var watch = new TimeHelper();
+#endif
 			List<Thing> toSave = new List<Thing>();
 			List<Thing> toDestroy = new List<Thing>();
 			List<CompPower> toRePower = new List<CompPower>();
@@ -1039,9 +1041,9 @@ namespace SaveOurShip2
 				Transform = (IntVec3 from) => new IntVec3(targetMap.Size.x - from.z, 0, from.x) + adjustment;
 			else
 				Transform = (IntVec3 from) => from + adjustment;
-
+#if DEBUG
 			watch.Record("prepare");
-
+#endif
 			shipOriginMap = null;
 			Map sourceMap = core.Map;
 			if (targetMap == null)
@@ -1107,9 +1109,9 @@ namespace SaveOurShip2
 				}
 				sourceMap.areaManager.Home[pos] = false;
 			}
-
+#if DEBUG
 			watch.Record("processSourceArea");
-
+#endif
 			foreach (IntVec3 pos in unroofTiles)
 			{
 				sourceMap.roofGrid.SetRoof(pos, null);
@@ -1127,8 +1129,9 @@ namespace SaveOurShip2
 				else if (!thing.Destroyed)
 					thing.Destroy();
 			}
-
+#if DEBUG
 			watch.Record("destroySource");
+#endif
 			//takeoff - draw fuel
 			if (targetMapIsSpace && !sourceMapIsSpace)
 			{
@@ -1181,7 +1184,9 @@ namespace SaveOurShip2
 					QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ToxicFallout"), null, parms), Find.TickManager.TicksGame);
 					Find.Storyteller.incidentQueue.Add(qi);
 				}*/
+#if DEBUG
 				watch.Record("takeoffEngineEffects");
+#endif
 			}
 			AirlockBugFlag = true;
 			//move things
@@ -1261,8 +1266,9 @@ namespace SaveOurShip2
 					}
 				}
 			}
-
+#if DEBUG
 			watch.Record("moveThings");
+#endif
 			AirlockBugFlag = false;
 			if (zonesToCopy.Count != 0)
 				movedZones = true;
@@ -1277,9 +1283,9 @@ namespace SaveOurShip2
 				theZone.cells = newCells;
 				targetMap.zoneManager.RegisterZone(theZone);
 			}
-
+#if DEBUG
 			watch.Record("moveZones");
-
+#endif
 			//move terrain
 			foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
 			{
@@ -1298,9 +1304,9 @@ namespace SaveOurShip2
 					sourceMap.terrainGrid.SetTerrain(pos, spaceTerrain);
 				}
 			}
-
+#if DEBUG
 			watch.Record("moveTerrain");
-
+#endif
 			// Move roofs.
 			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
 			{
@@ -1308,9 +1314,9 @@ namespace SaveOurShip2
 				var targetPos = Transform(tup.Item1);
 				targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
 			}
-
+#if DEBUG
 			watch.Record("moveRoof");
-
+#endif
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);
 			//to space - normalize temp in ship
@@ -1364,28 +1370,24 @@ namespace SaveOurShip2
 					sec.RegenerateLayers(MapMeshFlag.Zone);
 				}
 			}
-			List<Section> targetSec = new List<Section>();
-			foreach (IntVec3 pos in targetArea)
+			if (movedZones)
 			{
-				if (movedZones)
+				List<Section> targetSec = new List<Section>();
+				foreach (IntVec3 pos in targetArea)
 				{
 					var sec = targetMap.mapDrawer.SectionAt(pos);
 					if (!targetSec.Contains(sec))
 						targetSec.Add(sec);
 				}
-			}
-			foreach (Section sec in targetSec)
-			{
-				if (movedZones)
+				foreach (Section sec in targetSec)
 				{
 					sec.RegenerateLayers(MapMeshFlag.Zone);
 				}
 			}
-
+#if DEBUG
 			watch.Record("finalize");
 
 			Log.Message("Moved ship with building " + core);
-#if DEBUG
 			Log.Message("Timing report:\n" + watch.MakeReport());
 #endif
 			/*Things = 1,

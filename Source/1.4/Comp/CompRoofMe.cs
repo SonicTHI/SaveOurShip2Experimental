@@ -64,16 +64,13 @@ namespace RimWorld
             {
                 positions.Add(pos);
             }
-            if (Props.roof)
+            if (Props.roof && !ShipInteriorMod2.AirlockBugFlag) //MoveShip copies roof
             {
                 foreach (IntVec3 pos in positions)
                 {
-                    if (map.roofGrid.Roofed(pos))
-                    {
-                        var oldRoof = map.roofGrid.RoofAt(pos);
-                        if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
-                            map.roofGrid.SetRoof(pos, roof);
-                    }
+                    var oldRoof = map.roofGrid.RoofAt(pos);
+                    if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
+                        map.roofGrid.SetRoof(pos, roof);
                 }
             }
             if (respawningAfterLoad)
@@ -82,12 +79,6 @@ namespace RimWorld
             }
             foreach (IntVec3 pos in positions)
             {
-                if (map.roofGrid.Roofed(pos))
-                {
-                    var oldRoof = map.roofGrid.RoofAt(pos);
-                    if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
-                        map.roofGrid.SetRoof(pos, roof);
-                }
                 if (!map.terrainGrid.TerrainAt(pos).layerable)
                 {
                     if (Props.archotech)
@@ -131,9 +122,7 @@ namespace RimWorld
                         {
                             Thing thing = ThingMaker.MakeThing(thingDefCountClass.thingDef);
                             thing.stackCount = num;
-#if DEBUG
-                            Log.Message(string.Format("Spawning wrecs {0} at {1}", thing.def.defName, pos));
-#endif
+                            //Log.Message(string.Format("Spawning wrecks {0} at {1}", thing.def.defName, pos));
                             GenPlace.TryPlaceThing(thing, pos, map, ThingPlaceMode.Near);
                         }
                     }

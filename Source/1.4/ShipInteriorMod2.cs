@@ -230,9 +230,7 @@ namespace SaveOurShip2
 			compatibleAirtightRoofs = new RoofDef[compatibleRoofs.Count];
 			for (int i = 0; i < compatibleRoofs.Count; i++)
 			{
-#if DEBUG
-				Log.Message(string.Format("Registering compatible roof {0}", compatibleRoofs[i].defName));
-#endif
+				Log.Message(string.Format("SOS2: Registering compatible roof {0}", compatibleRoofs[i].defName));
 				compatibleAirtightRoofs[i] = compatibleRoofs[i];
 			}
 
@@ -1014,9 +1012,12 @@ namespace SaveOurShip2
 		}
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
-#if DEBUG
+			bool devMode = false;
 			var watch = new TimeHelper();
-#endif
+			if (Prefs.DevMode)
+            {
+				devMode = true;
+			}
 			List<Thing> toSave = new List<Thing>();
 			List<Thing> toDestroy = new List<Thing>();
 			List<CompPower> toRePower = new List<CompPower>();
@@ -1030,6 +1031,7 @@ namespace SaveOurShip2
 
 			HashSet<IntVec3> unroofTiles = new HashSet<IntVec3>();
 			List<IntVec3> fireExplosions = new List<IntVec3>();
+			List<CompEngineTrail> nukeExplosions = new List<CompEngineTrail>();
 			IntVec3 rot = IntVec3.Zero;
 			int rotb = 4 - rotNum;
 
@@ -1041,9 +1043,9 @@ namespace SaveOurShip2
 				Transform = (IntVec3 from) => new IntVec3(targetMap.Size.x - from.z, 0, from.x) + adjustment;
 			else
 				Transform = (IntVec3 from) => from + adjustment;
-#if DEBUG
-			watch.Record("prepare");
-#endif
+			if (devMode)
+				watch.Record("prepare");
+
 			shipOriginMap = null;
 			Map sourceMap = core.Map;
 			if (targetMap == null)
@@ -1110,9 +1112,9 @@ namespace SaveOurShip2
 				}
 				sourceMap.areaManager.Home[pos] = false;
 			}
-#if DEBUG
-			watch.Record("processSourceArea");
-#endif
+			if (devMode)
+				watch.Record("processSourceArea");
+
 			foreach (IntVec3 pos in unroofTiles)
 			{
 				sourceMap.roofGrid.SetRoof(pos, null);
@@ -1130,15 +1132,14 @@ namespace SaveOurShip2
 				else if (!thing.Destroyed)
 					thing.Destroy();
 			}
-#if DEBUG
-			watch.Record("destroySource");
-#endif
+			if (devMode)
+				watch.Record("destroySource");
+
 			//takeoff - draw fuel
-			if (targetMapIsSpace && !sourceMapIsSpace)
+			if (!sourceMapIsSpace)
 			{
 				float fuelNeeded = 0f;
 				float fuelStored = 0f;
-				//int nukeEngines = 0;
 				List<CompRefuelable> refuelComps = new List<CompRefuelable>();
 
 				foreach (Thing saveThing in toSave)
@@ -1165,7 +1166,11 @@ namespace SaveOurShip2
 								if (engineComp.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
 								{
 									fuelStored += engineComp.refuelComp.Fuel;
-									//nukeEngines++;
+									if (ModsConfig.BiotechActive)
+									{
+										foreach (IntVec3 v in engineComp.rectToKill)
+											v.Pollute(sourceMap, true);
+									}
 								}
 							}
 							fuelNeeded += (saveThing.def.size.x * saveThing.def.size.z) * 3f;
@@ -1176,18 +1181,9 @@ namespace SaveOurShip2
 				{
 					engine.ConsumeFuel(fuelNeeded * engine.Fuel / fuelStored);
 				}
-				/*//takeoff - fallout
-				if (nukeEngines>0 && Rand.Chance(0.05f * nukeEngines))
-				{
-					IncidentParms parms = new IncidentParms();
-					parms.target = sourceMap;
-					parms.forced = true;
-					QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ToxicFallout"), null, parms), Find.TickManager.TicksGame);
-					Find.Storyteller.incidentQueue.Add(qi);
-				}*/
-#if DEBUG
-				watch.Record("takeoffEngineEffects");
-#endif
+				if (devMode)
+					watch.Record("takeoffEngineEffects");
+
 			}
 			AirlockBugFlag = true;
 			//move things
@@ -1267,9 +1263,9 @@ namespace SaveOurShip2
 					}
 				}
 			}
-#if DEBUG
-			watch.Record("moveThings");
-#endif
+			if (devMode)
+				watch.Record("moveThings");
+
 			AirlockBugFlag = false;
 			if (zonesToCopy.Count != 0)
 				movedZones = true;
@@ -1284,9 +1280,9 @@ namespace SaveOurShip2
 				theZone.cells = newCells;
 				targetMap.zoneManager.RegisterZone(theZone);
 			}
-#if DEBUG
-			watch.Record("moveZones");
-#endif
+			if (devMode)
+				watch.Record("moveZones");
+
 			//move terrain
 			foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
 			{
@@ -1305,19 +1301,18 @@ namespace SaveOurShip2
 					sourceMap.terrainGrid.SetTerrain(pos, spaceTerrain);
 				}
 			}
-#if DEBUG
-			watch.Record("moveTerrain");
-#endif
+			if (devMode)
+				watch.Record("moveTerrain");
+
 			// Move roofs.
 			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
 			{
-				var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
 				var targetPos = Transform(tup.Item1);
 				targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
 			}
-#if DEBUG
-			watch.Record("moveRoof");
-#endif
+			if (devMode)
+				watch.Record("moveRoof");
+
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);
 			//to space - normalize temp in ship
@@ -1336,12 +1331,13 @@ namespace SaveOurShip2
 				Current.Game.DeinitAndRemoveMap(sourceMap);
 				Find.World.worldObjects.Remove(oldParent);
 			}
-			//takeoff - explosions
-			foreach (IntVec3 pos in fireExplosions)
+			if (!sourceMapIsSpace) //takeoff - explosions
 			{
-				GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null);
+				foreach (IntVec3 pos in fireExplosions)
+				{
+					GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null);
+				}
 			}
-
 			if (sourceMap != targetMap)
 			{
 				foreach (CompPower powerComp in toRePower)
@@ -1385,12 +1381,13 @@ namespace SaveOurShip2
 					sec.RegenerateLayers(MapMeshFlag.Zone);
 				}
 			}
-#if DEBUG
-			watch.Record("finalize");
+			if (devMode)
+			{
+				watch.Record("finalize");
+				Log.Message("Timing report:\n" + watch.MakeReport());
+				Log.Message("Moved ship with building " + core);
+			}
 
-			Log.Message("Moved ship with building " + core);
-			Log.Message("Timing report:\n" + watch.MakeReport());
-#endif
 			/*Things = 1,
 			FogOfWar = 2,
 			Buildings = 4,
@@ -2858,17 +2855,21 @@ namespace SaveOurShip2
 				.GetValue(__instance);
 			foreach (Thing t in map.thingGrid.ThingsAt(c))
 			{
-				if (t.TryGetComp<CompRoofMe>() != null)
+				var roofComp = t.TryGetComp<CompRoofMe>();
+				if (roofComp != null)
 				{
-					var existingRoof = map.roofGrid.RoofAt(c);
-					if (!ShipInteriorMod2.IsRoofDefAirtight(existingRoof))
-						map.roofGrid.SetRoof(c, ShipInteriorMod2.shipRoofDef);
 					if (!map.terrainGrid.TerrainAt(c).layerable)
 					{
-						if (!t.TryGetComp<CompRoofMe>().Props.archotech)
-							map.terrainGrid.SetTerrain(c, CompRoofMe.hullTerrain);
-						else
+						if (roofComp.Props.archotech)
 							map.terrainGrid.SetTerrain(c, CompRoofMe.archotechHullTerrain);
+						else if (roofComp.Props.mechanoid)
+							map.terrainGrid.SetTerrain(c, CompRoofMe.mechHullTerrain);
+						else if (roofComp.Props.foam)
+							map.terrainGrid.SetTerrain(c, CompRoofMe.hullfoamTerrain);
+						else if (roofComp.Props.wreckage)
+							map.terrainGrid.SetTerrain(c, CompRoofMe.wreckageTerrain);
+						else
+							map.terrainGrid.SetTerrain(c, CompRoofMe.hullTerrain);
 					}
 					break;
 				}
@@ -2886,7 +2887,7 @@ namespace SaveOurShip2
 				return true;
 			foreach (Thing t in c.GetThingList(___map))
 			{
-				if (t.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
+				if (t.TryGetComp<CompRoofMe>()?.Props.roof ?? false)
 				{
 					var cellIndex = ___map.cellIndices.CellToIndex(c);
 					if (___roofGrid[cellIndex] == def)
@@ -2896,9 +2897,7 @@ namespace SaveOurShip2
 
 					if (ShipInteriorMod2.IsRoofDefAirtight(def))
 						return true;
-#if DEBUG
-					Log.Message(String.Format("Overriding roof at {0}. Set shipRoofDef instead of {1}", cellIndex, def.defName));
-#endif
+					//Log.Message(String.Format("Overriding roof at {0}. Set shipRoofDef instead of {1}", cellIndex, def.defName));
 					___roofGrid[cellIndex] = ShipInteriorMod2.shipRoofDef;
 					___map.glowGrid.MarkGlowGridDirty(c);
 					Region validRegionAt_NoRebuild = ___map.regionGrid.GetValidRegionAt_NoRebuild(c);
@@ -2925,9 +2924,6 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void ShipRoofIsDestroyed(IEnumerable<IntVec3> cells, Map map)
 		{
-#if DEBUG
-			Log.Message("SoS2 sealing holes");
-#endif
 			foreach (IntVec3 cell in cells)
 			{
 				if (map.IsSpace() && !cell.Roofed(map))
@@ -2941,9 +2937,7 @@ namespace SaveOurShip2
 							{
 								dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
 								map.roofGrid.SetRoof(cell, ShipInteriorMod2.shipRoofDef);
-#if DEBUG
-								Log.Message("rebuilt roof at:" + cell);
-#endif
+								//Log.Message("rebuilt roof at:" + cell);
 								break;
 							}
 						}

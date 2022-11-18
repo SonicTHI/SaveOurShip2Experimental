@@ -43,7 +43,7 @@ namespace RimWorld
         public bool GroundDefenseMode;
         public bool useOptimalRange;
         static int lastPDTick = 0;
-public CompEquippable GunCompEq => gun.TryGetComp<CompEquippable>();
+        public CompEquippable GunCompEq => gun.TryGetComp<CompEquippable>();
         public override LocalTargetInfo CurrentTarget => currentTargetInt;
         public override Verb AttackVerb => GunCompEq.PrimaryVerb;
 

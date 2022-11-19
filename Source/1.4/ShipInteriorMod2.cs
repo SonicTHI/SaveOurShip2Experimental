@@ -2846,31 +2846,20 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(TerrainGrid), "DoTerrainChangedEffects")]
-	public static class RecreateShipTile
+	public static class RecreateShipTile //restores ship terrain after tile removal
 	{
 		[HarmonyPostfix]
 		public static void NoClearTilesPlease(TerrainGrid __instance, IntVec3 c)
 		{
-			Map map = (Map)typeof(TerrainGrid).GetField("map", BindingFlags.Instance | BindingFlags.NonPublic)
-				.GetValue(__instance);
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return;
+			Map map = (Map)typeof(TerrainGrid).GetField("map", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
 			foreach (Thing t in map.thingGrid.ThingsAt(c))
 			{
 				var roofComp = t.TryGetComp<CompRoofMe>();
 				if (roofComp != null)
 				{
-					if (!map.terrainGrid.TerrainAt(c).layerable)
-					{
-						if (roofComp.Props.archotech)
-							map.terrainGrid.SetTerrain(c, CompRoofMe.archotechHullTerrain);
-						else if (roofComp.Props.mechanoid)
-							map.terrainGrid.SetTerrain(c, CompRoofMe.mechHullTerrain);
-						else if (roofComp.Props.foam)
-							map.terrainGrid.SetTerrain(c, CompRoofMe.hullfoamTerrain);
-						else if (roofComp.Props.wreckage)
-							map.terrainGrid.SetTerrain(c, CompRoofMe.wreckageTerrain);
-						else
-							map.terrainGrid.SetTerrain(c, CompRoofMe.hullTerrain);
-					}
+					roofComp.SetShipTerrain(c);
 					break;
 				}
 			}

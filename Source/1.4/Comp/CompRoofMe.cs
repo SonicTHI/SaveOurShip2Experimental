@@ -77,24 +77,27 @@ namespace RimWorld
             {
                 return;
             }
-            foreach (IntVec3 pos in positions)
+            foreach (IntVec3 v in positions)
             {
-                if (!map.terrainGrid.TerrainAt(pos).layerable)
-                {
-                    if (Props.archotech)
-                        map.terrainGrid.SetTerrain(pos, archotechHullTerrain);
-                    else if (Props.mechanoid)
-                        map.terrainGrid.SetTerrain(pos, mechHullTerrain);
-                    else if (Props.foam)
-                        map.terrainGrid.SetTerrain(pos, hullfoamTerrain);
-                    else if (Props.wreckage)
-                        map.terrainGrid.SetTerrain(pos, wreckageTerrain);
-                    else
-                        map.terrainGrid.SetTerrain(pos, hullTerrain);
-                }
+                SetShipTerrain(v);
             }
         }
-
+        public void SetShipTerrain(IntVec3 v)
+        {
+            if (!map.terrainGrid.TerrainAt(v).layerable)
+            {
+                if (Props.archotech)
+                    map.terrainGrid.SetTerrain(v, archotechHullTerrain);
+                else if (Props.mechanoid)
+                    map.terrainGrid.SetTerrain(v, mechHullTerrain);
+                else if (Props.foam)
+                    map.terrainGrid.SetTerrain(v, hullfoamTerrain);
+                else if (Props.wreckage)
+                    map.terrainGrid.SetTerrain(v, wreckageTerrain);
+                else
+                    map.terrainGrid.SetTerrain(v, hullTerrain);
+            }
+        }
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);

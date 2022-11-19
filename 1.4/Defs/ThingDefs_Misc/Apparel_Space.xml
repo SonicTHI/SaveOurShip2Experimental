@@ -280,6 +280,7 @@
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<techLevel>Spacer</techLevel>
+		<generateCommonality>0</generateCommonality>
 		<generateAllowChance>0</generateAllowChance>
 		<statBases>
 			<Mass>3</Mass>
@@ -334,6 +335,7 @@
 		</graphicData>
 		<techLevel>Spacer</techLevel>
 		<tickerType>Rare</tickerType>
+		<generateCommonality>0</generateCommonality>
 		<generateAllowChance>0</generateAllowChance>
 		<statBases>
 			<Mass>3</Mass>
@@ -440,6 +442,7 @@
 		<thingCategories>
 			<li>Apparel</li>
 		</thingCategories>
+		<generateCommonality>0</generateCommonality>
 		<generateAllowChance>0</generateAllowChance>
 		<apparel>
 			<countsAsClothingForNudity>true</countsAsClothingForNudity>
@@ -475,6 +478,7 @@
 			<Flammability>0</Flammability>
 			<EquipDelay>0</EquipDelay>
 		</statBases>
+		<generateCommonality>0</generateCommonality>
 		<generateAllowChance>0</generateAllowChance>
 		<apparel>
 			<countsAsClothingForNudity>true</countsAsClothingForNudity>
@@ -512,6 +516,7 @@
 			<Flammability>0</Flammability>
 			<EquipDelay>0</EquipDelay>
 		</statBases>
+		<generateCommonality>0</generateCommonality>
 		<generateAllowChance>0</generateAllowChance>
 		<apparel>
 			<countsAsClothingForNudity>true</countsAsClothingForNudity>
@@ -549,6 +554,7 @@
 			<Flammability>0</Flammability>
 			<EquipDelay>0</EquipDelay>
 		</statBases>
+		<generateCommonality>0</generateCommonality>
 		<generateAllowChance>0</generateAllowChance>
 		<apparel>
 			<careIfWornByCorpse>false</careIfWornByCorpse>

@@ -49,4 +49,24 @@
 	  <researchPrerequisite>ArchotechAntimatter</researchPrerequisite>
       </recipeMaker></value>
 	</Operation>
+
+	<!-- Vanilla Psycasts adds ModExtension to any medidation focuses. -->
+	<Operation Class="PatchOperationFindMod">
+        <mods>
+            <li>Vanilla Psycasts Expanded</li>
+        </mods>
+        <match Class="PatchOperationSequence">
+        	<success>Always</success>
+            <operations>
+            	<li Class="PatchOperationAddModExtension">
+                    <xpath>/Defs/MeditationFocusDef[defName="Archotech"]</xpath>
+                    <value>
+                        <li Class="VanillaPsycastsExpanded.MeditationFocusExtension">
+                            <icon>UI/PsyfocusIcons/PsyfocusArchotechnology</icon>
+                        </li>
+                    </value>
+                </li>
+            </operations>
+        </match>
+    </Operation>
 </Patch>

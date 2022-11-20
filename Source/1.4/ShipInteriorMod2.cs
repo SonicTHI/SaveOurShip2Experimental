@@ -131,6 +131,17 @@ namespace SaveOurShip2
 			Harmony pat = new Harmony("ShipInteriorMod2");
 			pat.Patch(regenerateMethod, postfix: new HarmonyMethod(regeneratePostfix));
 
+			
+			if (ModLister.HasActiveModWithName("RT Fuse"))
+			{
+				Log.Message("SOS2: Enabling compatibility with RT Fuze");
+			} else {
+				var doShortCircuitMethod = typeof(ShortCircuitUtility).GetMethod("DoShortCircuit");
+				var prefix = typeof(NoShortCircuitCapacitors).GetMethod("disableEventQuestionMark");
+				var postfix = typeof(NoShortCircuitCapacitors).GetMethod("tellThePlayerTheDayWasSaved");
+				pat.Patch(doShortCircuitMethod, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
+			}
+
 			//Similarly, with firefighting
 			//TODO - temporarily disabled until we can figure out why we're getting "invalid IL" errors
 			/*var FirefightMethod = AccessTools.TypeByName("JobGiver_FightFiresNearPoint").GetMethod("TryGiveJob", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -3118,7 +3129,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(ShortCircuitUtility), "DoShortCircuit")]
+	// This patch is applied manually in ShipInteriorMod2.Initialize.
 	public static class NoShortCircuitCapacitors
 	{
 		[HarmonyPrefix]

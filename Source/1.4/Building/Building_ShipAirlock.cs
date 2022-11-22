@@ -268,17 +268,13 @@ namespace RimWorld
                 extenders.Add(thing as Building);
             }
             docked = true;
-#if DEBUG
-            Log.Message($"Dock R={Rotation} F={facing} polarity={polarity} dist={dist} spawned={extenders.Count}");
-#endif
+            //Log.Message($"Dock R={Rotation} F={facing} polarity={polarity} dist={dist} spawned={extenders.Count}");
         }
         public void UnDock()
         {
             if (extenders.Any())
             {
-#if DEBUG
-                Log.Message($"UnDock R={Rotation} polarity={polarity} dist={dist} spawned={extenders.Count}");
-#endif
+                //Log.Message($"UnDock R={Rotation} polarity={polarity} dist={dist} spawned={extenders.Count}");
                 if (extenders.Count > 3)
                 {
                     FleckMaker.ThrowDustPuff(extenders[extenders.Count - 1].Position, this.Map, 1f);

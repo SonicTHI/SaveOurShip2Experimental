@@ -166,22 +166,10 @@ namespace RimWorld
             }
             if (this.Faction == Faction.OfPlayer && (Outerdoor() || docked))
             {
-                IntVec3 facing;
-                IntVec3 leftSide;
-                IntVec3 rightSide;
-                if (this.Rotation.AsByte == 0)
-                {
-                    facing = IntVec3.North;
-                    leftSide = IntVec3.West;
-                    rightSide = IntVec3.East;
-                }
-                else
-                {
-                    facing = IntVec3.East;
-                    leftSide = IntVec3.North;
-                    rightSide = IntVec3.South;
-                }
-                Building b1 = (this.Position + leftSide).GetFirstBuilding(this.Map);
+                IntVec3 facing = this.Rotation.FacingCell;
+                IntVec3 rightSide = this.Rotation.RighthandCell;
+
+                Building b1 = (this.Position - rightSide).GetFirstBuilding(this.Map);
                 Building b2 = (this.Position + rightSide).GetFirstBuilding(this.Map);
                 if (HasDocking(b1, b2))
                 {
@@ -206,7 +194,7 @@ namespace RimWorld
                     else
                         toggleDock.icon = ContentFinder<Texture2D>.Get("UI/DockingOff");
 
-                    if (startTick > 0 || mapComp.InCombat || !powerComp.PowerOn || !CanDock(facing, leftSide, rightSide))
+                    if (startTick > 0 || mapComp.InCombat || !powerComp.PowerOn || !CanDock(facing, rightSide))
                     {
                         toggleDock.Disable();
                     }
@@ -214,18 +202,21 @@ namespace RimWorld
                 }
             }
         }
+        // Checks if airlock is surrounded by docking beams.
         public bool HasDocking(Building b1, Building b2)
         {
             //check LR for extender, same rot
             if (b1 != null && b2 != null && b1.def == dockDef && b2.def == dockDef)
             {
                 polarity = 0;
-                if ((this.Rotation.AsByte == 0 && b1.Rotation.AsByte == 0 && b2.Rotation.AsByte == 0) || (this.Rotation.AsByte == 1 && b1.Rotation.AsByte == 1 && b2.Rotation.AsByte == 1))
+                var r1 = b1.Rotation.AsByte;
+                var r2 = b2.Rotation.AsByte;
+                if ((this.Rotation.AsByte == 0 && r1 == 0 && r2 == 0) || (this.Rotation.AsByte == 1 && r1 == 1 && r2 == 1))
                 {
                     polarity = -1;
                     return true;
                 }
-                else if ((this.Rotation.AsByte == 0 && b1.Rotation.AsByte == 2 && b2.Rotation.AsByte == 2) || (this.Rotation.AsByte == 1 && b1.Rotation.AsByte == 3 && b2.Rotation.AsByte == 3))
+                else if ((this.Rotation.AsByte == 0 && r1 == 2 && r2 == 2) || (this.Rotation.AsByte == 1 && r1 == 3 && r2 == 3))
                 {
                     polarity = 1;
                     return true;
@@ -233,21 +224,19 @@ namespace RimWorld
             }
             return false;
         }
-        public bool CanDock(IntVec3 facing, IntVec3 leftSide, IntVec3 rightSide)
+        public bool CanDock(IntVec3 facing, IntVec3 rightSide)
         {
             //check if all clear, set dist
             if (docked)
                 return true;
-            IntVec3 loc1;
-            IntVec3 loc2;
-            IntVec3 loc3;
             dist = 0;
             for (int i = 1; i < 4; i++)
             {
-                loc1 = this.Position + facing * i * polarity + leftSide;
-                loc2 = this.Position + facing * i * polarity;
-                loc3 = this.Position + facing * i * polarity + rightSide;
-                if (this.Map.thingGrid.ThingsAt(loc1).Any() || this.Map.thingGrid.ThingsAt(loc2).Any() || this.Map.thingGrid.ThingsAt(loc3).Any())
+                IntVec3 center = this.Position + facing * i * polarity;
+                IntVec3 loc1 = center - rightSide;
+                IntVec3 loc3 = center + rightSide;
+                var grid = this.Map.thingGrid;
+                if (grid.ThingsAt(loc1).Any() || grid.ThingsAt(center).Any() || grid.ThingsAt(loc3).Any())
                 {
                     if (i == 1)
                         return false;
@@ -261,55 +250,48 @@ namespace RimWorld
         public void Dock()
         {
             //place fake walls, floor, extend
-            IntVec3 facing;
-            IntVec3 leftSide;
-            IntVec3 rightSide;
-            if (this.Rotation.AsByte == 0)
-            {
-                facing = IntVec3.North;
-                leftSide = IntVec3.West;
-                rightSide = IntVec3.East;
-            }
-            else
-            {
-                facing = IntVec3.East;
-                leftSide = IntVec3.North;
-                rightSide = IntVec3.South;
-            }
-            IntVec3 loc1;
-            IntVec3 loc2;
-            IntVec3 loc3;
+            IntVec3 facing = this.Rotation.FacingCell;
+            IntVec3 rightSide = this.Rotation.RighthandCell;
+            
             for (int i = 1; i < dist; i++)
             {
-                loc1 = this.Position + facing * i * polarity + leftSide;
-                loc2 = this.Position + facing * i * polarity;
-                loc3 = this.Position + facing * i * polarity + rightSide;
+                IntVec3 center = this.Position + facing * i * polarity;
                 Thing thing;
                 thing = ThingMaker.MakeThing(dockWallDef);
-                GenSpawn.Spawn(thing, loc1, this.Map);
+                GenSpawn.Spawn(thing, center - rightSide, this.Map);
                 extenders.Add(thing as Building);
                 thing = ThingMaker.MakeThing(insideDef);
-                GenSpawn.Spawn(thing, loc2, this.Map);
+                GenSpawn.Spawn(thing, center, this.Map);
                 extenders.Add(thing as Building);
                 thing = ThingMaker.MakeThing(dockWallDef);
-                GenSpawn.Spawn(thing, loc3, this.Map);
+                GenSpawn.Spawn(thing, center + rightSide, this.Map);
                 extenders.Add(thing as Building);
             }
             docked = true;
+#if DEBUG
+            Log.Message($"Dock R={Rotation} F={facing} polarity={polarity} dist={dist} spawned={extenders.Count}");
+#endif
         }
         public void UnDock()
         {
             if (extenders.Any())
             {
-                FleckMaker.ThrowDustPuff(extenders[extenders.Count - 1].Position, this.Map, 1f);
-                FleckMaker.ThrowDustPuff(extenders[extenders.Count - 3].Position, this.Map, 1f);
+#if DEBUG
+                Log.Message($"UnDock R={Rotation} polarity={polarity} dist={dist} spawned={extenders.Count}");
+#endif
+                if (extenders.Count > 3)
+                {
+                    FleckMaker.ThrowDustPuff(extenders[extenders.Count - 1].Position, this.Map, 1f);
+                    FleckMaker.ThrowDustPuff(extenders[extenders.Count - 3].Position, this.Map, 1f);
+                }
                 foreach (Building building in extenders)
                 {
-                    if (building.Spawned)
+                    if (building != null && building.Spawned)
                         building.DeSpawn();
                 }
                 unfoldComp.Target = 0.0f;
                 docked = false;
+                extenders.Clear();
             }
         }
     }

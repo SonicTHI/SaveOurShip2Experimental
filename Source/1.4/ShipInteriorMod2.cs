@@ -5365,7 +5365,7 @@ namespace SaveOurShip2
 					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
 					AttackableShip ship = new AttackableShip();
 					ship.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
-					spaceMap.passingShipManager.passingShips.Add(ship);
+					spaceMap.passingShipManager.AddShip(ship);
 				}
 			}
 		}

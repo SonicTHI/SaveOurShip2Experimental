@@ -237,7 +237,7 @@
       <li>BuildingsJoy</li>
     </thingCategories>
     <building>
-      <joyKind>TelescopeSpace</joyKind>
+      <joyKind>Telescope</joyKind>
     </building>
     <costList>
       <Plasteel>25</Plasteel>

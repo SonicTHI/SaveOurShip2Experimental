@@ -5,10 +5,4 @@
     <defName>Holodeck</defName>
     <label>holodeck simulation</label>
   </JoyKindDef>
-  
-  <JoyKindDef>
-    <defName>TelescopeSpace</defName>
-    <label>advanced astronomical observation</label>
-  </JoyKindDef>
-
 </Defs>

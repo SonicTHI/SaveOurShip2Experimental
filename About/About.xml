@@ -49,7 +49,5 @@
 		<li>taranchuk.performanceoptimizer</li>
 	</incompatibleWith>
 	<packageId>kentington.saveourship2</packageId>
-	<description>
-		A comprehensive overhaul of spaceflight.
-	</description>
+	<description>A comprehensive overhaul of spaceflight.</description>
 </ModMetaData>

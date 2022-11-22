@@ -126,7 +126,7 @@ namespace RimWorld
         }
         public void PointDefense(Building_ShipTurret turret) // PD removes from target map
         {
-            var mapComp = caster.Map.GetComponent<ShipHeatMapComp>();
+            var mapComp = turret.Map.GetComponent<ShipHeatMapComp>();
             //pods
             List<TravelingTransportPods> podsinrange = new List<TravelingTransportPods>();
             foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
@@ -137,12 +137,15 @@ namespace RimWorld
                     podsinrange.Add(obj);
                 }
             }
-            var targetMapComp = mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>();
-            if (targetMapComp.TorpsInRange.Any() && Rand.Chance(0.1f))
+            if (mapComp.ShipCombatTargetMap != null)
             {
-                ShipCombatProjectile projtr = targetMapComp.TorpsInRange.RandomElement();
-                targetMapComp.Projectiles.Remove(projtr);
-                targetMapComp.TorpsInRange.Remove(projtr);
+                var targetMapComp = mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>();
+                if (targetMapComp.TorpsInRange.Any() && Rand.Chance(0.1f))
+                {
+                    ShipCombatProjectile projtr = targetMapComp.TorpsInRange.RandomElement();
+                    targetMapComp.Projectiles.Remove(projtr);
+                    targetMapComp.TorpsInRange.Remove(projtr);
+                }
             }
             else if (!podsinrange.NullOrEmpty() && Rand.Chance(0.1f))
             {

@@ -138,6 +138,8 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
+            if (!Props.roof)
+                return;
             if ((Find.PlaySettings.showRoofOverlay || parent.Position.Fogged(parent.Map)) && parent.Position.Roofed(parent.Map))
             {
                 foreach (Thing t in parent.Position.GetThingList(parent.Map))

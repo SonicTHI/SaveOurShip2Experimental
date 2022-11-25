@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
+	<!-- hull -->
 	<ThingDef ParentName="BuildingBase">
-		<defName>Ship_Beam_Wrecked_Fake</defName>
+		<defName>Ship_Beam_Wrecked</defName>
 		<label>wrecked hull</label>
 		<thingClass>Building</thingClass>
 		<graphicData>
@@ -23,6 +24,7 @@
 				<edgeRight>Damage/Edge</edgeRight>
 			</damageData>
 		</graphicData>
+		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>Impassable</passability>
 		<blockWind>true</blockWind>
@@ -39,14 +41,15 @@
 		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
 			<li Class="CompProperties_RoofMe">
 				<wreckage>true</wreckage>
 				<roof>false</roof>
 			</li>
 		</comps>
-		<placeWorkers>
-		</placeWorkers>
 		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>
@@ -60,57 +63,14 @@
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipHullTileWrecked</defName>
-		<label>hull wreckage</label>
-		<thingClass>Building</thingClass>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<building>
-			<shipPart>true</shipPart>
-			<ai_chillDestination>false</ai_chillDestination>
-			<isInert>true</isInert>
-			<isEdifice>false</isEdifice>
-		</building>
-		<coversFloor>true</coversFloor>
-		<altitudeLayer>Floor</altitudeLayer>
-		<passability>Standable</passability>
-		<placingDraggableDimensions>2</placingDraggableDimensions>
-		<statBases>
-			<MaxHitPoints>200</MaxHitPoints>
-			<WorkToBuild>100</WorkToBuild>
-			<Flammability>0.0</Flammability>
-			<Beauty>-1</Beauty>
-		</statBases>
-		<description>Wreckage of a ship's hull. No longer spaceworthy.</description>
-		<costList>
-			<Steel>1</Steel>
-			<Plasteel>1</Plasteel>
-		</costList>
-		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_RoofMe">
-				<wreckage>true</wreckage>
-				<roof>false</roof>
-			</li>
-		</comps>
-		<rotatable>false</rotatable>
-		<selectable>false</selectable>
-		<neverMultiSelect>true</neverMultiSelect>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<constructEffect>ConstructMetal</constructEffect>
-		<fillPercent>0.0</fillPercent>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-	</ThingDef>
-	<!-- beam misc -->
+	<!-- hull misc -->
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipAirlockWrecked</defName>
 		<label>damaged airlock</label>
@@ -144,6 +104,7 @@
 			<li Class="CompProperties_Forbiddable"/>
 			<li Class="CompProperties_RoofMe">
 				<wreckage>true</wreckage>
+				<roof>false</roof>
 			</li>
 		</comps>
 		<designationHotKey>Misc2</designationHotKey>
@@ -175,23 +136,29 @@
 			<blueprintClass>Blueprint_Door</blueprintClass>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
 	</ThingDef>
-	<!-- hull -->
+	<!-- plating -->
 	<ThingDef ParentName="BuildingBase">
-		<defName>ShipHullTileWreckedFake</defName>
+		<defName>ShipHullTileWrecked</defName>
 		<label>hull wreckage</label>
 		<thingClass>Building</thingClass>
+		<!--drawerType>MapMeshAndRealTime</drawerType-->
 		<category>Building</category>
 		<graphicData>
-			<texPath>Terrain/Surfaces/TileWreckage</texPath>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<building>
 			<ai_chillDestination>false</ai_chillDestination>
 			<isInert>true</isInert>
 			<isEdifice>false</isEdifice>
+			<shipPart>true</shipPart>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Ship/HullPlate</texPath>
+			</blueprintGraphicData>
 		</building>
+		<!--coversFloor>false</coversFloor>
+		<altitudeLayer>LowPlant</altitudeLayer-->
 		<coversFloor>true</coversFloor>
 		<altitudeLayer>Floor</altitudeLayer>
 		<passability>Standable</passability>
@@ -208,11 +175,15 @@
 			<Plasteel>1</Plasteel>
 		</costList>
 		<comps>
+			<li Class="CompProperties_SoShipPart"/>
 			<li Class="CompProperties_RoofMe">
 				<wreckage>true</wreckage>
 				<roof>false</roof>
 			</li>
 		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_ShipHull</li>
+		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>
 		<neverMultiSelect>true</neverMultiSelect>
@@ -550,8 +521,6 @@
 				<incidentTargetWhileStarting>Map_RaidBeacon</incidentTargetWhileStarting>
 			</li>
 		</comps>
-		<placeWorkers>
-		</placeWorkers>
 		<costList>
 			<Steel>100</Steel>
 			<Plasteel>200</Plasteel>
@@ -641,8 +610,9 @@
 			</li>
 		</comps>
 	</ThingDef>
+	<!-- floating -->
 	<ThingDef ParentName="BuildingBase">
-		<defName>Ship_Beam_Wrecked</defName>
+		<defName>Ship_Beam_Wrecked_Fake</defName>
 		<label>wrecked hull</label>
 		<thingClass>Building</thingClass>
 		<graphicData>
@@ -664,7 +634,6 @@
 				<edgeRight>Damage/Edge</edgeRight>
 			</damageData>
 		</graphicData>
-		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>Impassable</passability>
 		<blockWind>true</blockWind>
@@ -681,17 +650,11 @@
 		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTransmitter</compClass>
-				<transmitsPower>true</transmitsPower>
-			</li>
 			<li Class="CompProperties_RoofMe">
 				<wreckage>true</wreckage>
 				<roof>false</roof>
 			</li>
 		</comps>
-		<placeWorkers>
-		</placeWorkers>
 		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>
@@ -705,9 +668,52 @@
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipHullTileWreckedFake</defName>
+		<label>hull wreckage</label>
+		<thingClass>Building</thingClass>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Terrain/Surfaces/TileWreckage</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<isInert>true</isInert>
+			<isEdifice>false</isEdifice>
+		</building>
+		<coversFloor>true</coversFloor>
+		<altitudeLayer>Floor</altitudeLayer>
+		<passability>Standable</passability>
+		<placingDraggableDimensions>2</placingDraggableDimensions>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToBuild>100</WorkToBuild>
+			<Flammability>0.0</Flammability>
+			<Beauty>-1</Beauty>
+		</statBases>
+		<description>Wreckage of a ship's hull. No longer spaceworthy.</description>
+		<costList>
+			<Steel>1</Steel>
+			<Plasteel>1</Plasteel>
+		</costList>
+		<comps>
+			<li Class="CompProperties_RoofMe">
+				<wreckage>true</wreckage>
+				<roof>false</roof>
+			</li>
+		</comps>
+		<rotatable>false</rotatable>
+		<selectable>false</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<constructEffect>ConstructMetal</constructEffect>
+		<fillPercent>0.0</fillPercent>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>
 </Defs>

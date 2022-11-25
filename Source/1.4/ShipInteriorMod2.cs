@@ -2849,7 +2849,8 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void CheckShipFloor(Blueprint blue, ref bool __result)
 		{
-			if (blue.Map.terrainGrid.TerrainAt(blue.Position) == CompRoofMe.hullTerrain || blue.Map.terrainGrid.TerrainAt(blue.Position) == CompRoofMe.archotechHullTerrain)
+			var t = blue.Map.terrainGrid.TerrainAt(blue.Position);
+			if (t == CompRoofMe.hullTerrain || t == CompRoofMe.archotechHullTerrain || t == CompRoofMe.mechHullTerrain)
 			{
 				__result = false;
 			}
@@ -3090,7 +3091,7 @@ namespace SaveOurShip2
 		public static bool Prefix(ref DamageInfo dinfo, Building_Turret __instance)
 		{
 			ThingWithComps t = __instance.Position.GetFirstThingWithComp<CompRoofMe>(__instance.Map);
-			if (t != null && !t.GetComp<CompRoofMe>().Props.roof)
+			if (t != null && !t.GetComp<CompRoofMe>().Props.roof && !t.GetComp<CompRoofMe>().Props.wreckage)
 				dinfo.SetAmount(dinfo.Amount / 2);
 			return true;
 		}

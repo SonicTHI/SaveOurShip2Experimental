@@ -8,12 +8,13 @@
 		<sizeX>159</sizeX>
 		<sizeZ>40</sizeZ>
 		<label>Interstellar Fuel Tanker</label>
-		<combatPoints>444</combatPoints>
+		<combatPoints>442</combatPoints>
+		<cargoValue>300</cargoValue>
 		<neverAttacks>True</neverAttacks>
 		<core>
-			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
-			<x>51</x>
-			<z>16</z>
+			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<x>59</x>
+			<z>18</z>
 		</core>
 		<symbolTable>
 			<li>
@@ -49,490 +50,251 @@
 			<li>
 				<key>D</key>
 				<value>
-					<shapeOrDef>ShuttleFuelPods</shapeOrDef>
+					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
+					<stuff>Leather_Panthera</stuff>
 				</value>
 			</li>
 			<li>
 				<key>E</key>
 				<value>
 					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
-					<stuff>Leather_Panthera</stuff>
+					<stuff>Leather_Patch</stuff>
 				</value>
 			</li>
 			<li>
 				<key>F</key>
 				<value>
-					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
-					<stuff>Leather_Patch</stuff>
+					<shapeOrDef>Apparel_SpaceSuitHelmet</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>G</key>
 				<value>
-					<shapeOrDef>Apparel_SpaceSuitHelmet</shapeOrDef>
+					<shapeOrDef>HullFoam</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>H</key>
 				<value>
-					<shapeOrDef>HullFoam</shapeOrDef>
+					<shapeOrDef>Chemfuel</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>I</key>
 				<value>
-					<shapeOrDef>Chemfuel</shapeOrDef>
+					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
+					<stuff>Leather_Human</stuff>
 				</value>
 			</li>
 			<li>
 				<key>J</key>
 				<value>
-					<shapeOrDef>Ship_Beam_Unpowered</shapeOrDef>
-					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
+					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
+					<stuff>Leather_Elephant</stuff>
 				</value>
 			</li>
 			<li>
 				<key>K</key>
 				<value>
-					<shapeOrDef>Ship_Beam_Unpowered</shapeOrDef>
+					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
+					<stuff>Leather_Fox</stuff>
 				</value>
 			</li>
 			<li>
 				<key>L</key>
 				<value>
-					<shapeOrDef>ShipHullTile</shapeOrDef>
+					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
+					<stuff>Leather_Light</stuff>
 				</value>
 			</li>
 			<li>
 				<key>M</key>
 				<value>
-					<shapeOrDef>Ship_Beam</shapeOrDef>
+					<shapeOrDef>Ship_Beam_Unpowered</shapeOrDef>
 					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
 				</value>
 			</li>
 			<li>
 				<key>N</key>
 				<value>
-					<shapeOrDef>Ship_Beam</shapeOrDef>
+					<shapeOrDef>Ship_Beam_Unpowered</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>O</key>
 				<value>
-					<shapeOrDef>ShipAirlock</shapeOrDef>
+					<shapeOrDef>ShipHullTile</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>P</key>
 				<value>
-					<shapeOrDef>ShipAirlock</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
 				</value>
 			</li>
 			<li>
 				<key>Q</key>
 				<value>
-					<shapeOrDef>ShipHeatConduit</shapeOrDef>
+					<shapeOrDef>Ship_Beam</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>R</key>
 				<value>
-					<shapeOrDef>PowerConduit</shapeOrDef>
+					<shapeOrDef>ShipAirlock</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>S</key>
 				<value>
-					<shapeOrDef>Ship_Corner_OneOneFlip</shapeOrDef>
+					<shapeOrDef>ShipAirlock</shapeOrDef>
+					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
 				</value>
 			</li>
 			<li>
 				<key>T</key>
 				<value>
-					<shapeOrDef>Ship_Corner_OneOne</shapeOrDef>
+					<shapeOrDef>ShipHeatConduit</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>U</key>
+				<value>
+					<shapeOrDef>PowerConduit</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>V</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneOneFlip</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>W</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneOne</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>X</key>
 				<value>
 					<shapeOrDef>Ship_Beam</shapeOrDef>
 					<color>RGBA(1.000, 0.804, 0.404, 1.000)</color>
 				</value>
 			</li>
 			<li>
-				<key>V</key>
+				<key>Y</key>
 				<value>
 					<shapeOrDef>Ship_Beam</shapeOrDef>
 					<color>RGBA(0.961, 0.745, 0.302, 1.000)</color>
 				</value>
 			</li>
 			<li>
-				<key>W</key>
+				<key>Z</key>
 				<value>
 					<shapeOrDef>ShipLandingBeacon</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>X</key>
+				<key>[</key>
 				<value>
 					<shapeOrDef>FirefoamPopper</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>Y</key>
+				<key>\</key>
 				<value>
 					<shapeOrDef>Ship_Corner_OneOneFlip</shapeOrDef>
 					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
 				</value>
 			</li>
 			<li>
-				<key>Z</key>
+				<key>]</key>
 				<value>
 					<shapeOrDef>Ship_Corner_OneOne</shapeOrDef>
 					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
 				</value>
 			</li>
 			<li>
-				<key>[</key>
+				<key>^</key>
 				<value>
 					<shapeOrDef>DiningChair</shapeOrDef>
 					<stuff>Steel</stuff>
 				</value>
 			</li>
 			<li>
-				<key>\</key>
+				<key>_</key>
 				<value>
 					<shapeOrDef>EndTable</shapeOrDef>
 					<stuff>Steel</stuff>
 				</value>
 			</li>
 			<li>
-				<key>]</key>
+				<key>`</key>
 				<value>
 					<shapeOrDef>ShipInside_PassiveVent</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>^</key>
+				<key>a</key>
 				<value>
 					<shapeOrDef>ShipInside_PassiveVent</shapeOrDef>
 					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
 				</value>
 			</li>
 			<li>
-				<key>_</key>
+				<key>b</key>
 				<value>
 					<shapeOrDef>VitalsMonitor</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>`</key>
+				<key>c</key>
 				<value>
 					<shapeOrDef>ChessTable</shapeOrDef>
 					<stuff>Steel</stuff>
 				</value>
 			</li>
 			<li>
-				<key>a</key>
+				<key>d</key>
 				<value>
 					<shapeOrDef>Armchair</shapeOrDef>
 					<stuff>Cloth</stuff>
 				</value>
 			</li>
 			<li>
-				<key>b</key>
+				<key>e</key>
 				<value>
 					<shapeOrDef>SpaceCrew</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>c</key>
+				<key>f</key>
 				<value>
 					<shapeOrDef>SpaceCrewMarine</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>d</key>
+				<key>g</key>
 				<value>
 					<shapeOrDef>SpaceCrewMarineHeavy</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>e</key>
+				<key>h</key>
 				<value>
 					<shapeOrDef>Ship_SensorCluster</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>f</key>
+				<key>i</key>
 				<value>
 					<shapeOrDef>OrbitalTradeBeacon</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>g</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
-					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
-				</value>
-			</li>
-			<li>
-				<key>h</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>i</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneTwo</shapeOrDef>
-				</value>
-			</li>
-			<li>
 				<key>j</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneTwo</shapeOrDef>
-					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
-				</value>
-			</li>
-			<li>
-				<key>k</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
-					<color>RGBA(1.000, 0.737, 0.404, 1.000)</color>
-				</value>
-			</li>
-			<li>
-				<key>l</key>
-				<value>
-					<shapeOrDef>Shelf</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>m</key>
-				<value>
-					<shapeOrDef>FlatscreenTelevision</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>n</key>
-				<value>
-					<shapeOrDef>Bed</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>o</key>
-				<value>
-					<shapeOrDef>Dresser</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>p</key>
-				<value>
-					<shapeOrDef>Ship_CryptosleepCasket</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>q</key>
-				<value>
-					<shapeOrDef>HospitalBed</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>r</key>
-				<value>
-					<shapeOrDef>Table1x2c</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>s</key>
-				<value>
-					<shapeOrDef>ToolCabinet</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>t</key>
-				<value>
-					<shapeOrDef>ShipCapacitorSmall</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>u</key>
-				<value>
-					<shapeOrDef>DoubleBed</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>v</key>
-				<value>
-					<shapeOrDef>PokerTable</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>w</key>
-				<value>
-					<shapeOrDef>ShipTurret_Laser</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>x</key>
-				<value>
-					<shapeOrDef>ShipPurgePort</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>y</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>z</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>{</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
-					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
-				</value>
-			</li>
-			<li>
-				<key>}</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
-					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
-				</value>
-			</li>
-			<li>
-				<key>~</key>
-				<value>
-					<shapeOrDef>ElectricStove</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ElectricSmelter</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>TableMachining</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>CommsConsole</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipCombatShieldGenerator</shapeOrDef>
-					<radius>45</radius>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipCombatShieldGenerator</shapeOrDef>
-					<radius>50</radius>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>CargoShuttle</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Ship_LifeSupport</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipTurret_Kinetic_Large</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>HullFoamDistributor</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Table2x4c</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>FabricationBench</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipHeatsinkLarge</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipCapacitor</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipShuttleBay</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipSalvageBay</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Ship_Reactor</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Ship_Engine_Large</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Ship_ComputerCore</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
 				<value>
 					<shapeOrDef>Cargo</shapeOrDef>
 					<width>3</width>
@@ -540,101 +302,335 @@
 				</value>
 			</li>
 			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipHeatBankLarge</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Ship_Engine_Interplanetary_Large</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
+				<key>k</key>
 				<value>
 					<shapeOrDef>ShipAirlockBeam</shapeOrDef>
 					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
 				</value>
 			</li>
 			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>MegascreenTelevision</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>ShipConsoleScience</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
+				<key>l</key>
 				<value>
 					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
-					<stuff>Leather_Human</stuff>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
-					<stuff>Leather_Elephant</stuff>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
-					<stuff>Leather_Fox</stuff>
-				</value>
-			</li>
-			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>Apparel_SpaceSuitBody</shapeOrDef>
-					<stuff>Leather_Light</stuff>
-				</value>
-			</li>
-			<li>
-				<key></key>
+				<key>m</key>
 				<value>
 					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
+					<color>RGBA(0.353, 0.353, 0.353, 1.000)</color>
 				</value>
 			</li>
 			<li>
-				<key></key>
-				<value>
-					<shapeOrDef>HydroponicsBasin</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key></key>
+				<key>n</key>
 				<value>
 					<shapeOrDef>Ship_Thruster</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key> </key>
+				<key>o</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
+					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
+				</value>
+			</li>
+			<li>
+				<key>p</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>q</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneTwo</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>r</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneTwo</shapeOrDef>
+					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
+				</value>
+			</li>
+			<li>
+				<key>s</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
+					<color>RGBA(1.000, 0.737, 0.404, 1.000)</color>
+				</value>
+			</li>
+			<li>
+				<key>t</key>
+				<value>
+					<shapeOrDef>Shelf</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key>u</key>
+				<value>
+					<shapeOrDef>FlatscreenTelevision</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>v</key>
+				<value>
+					<shapeOrDef>Bed</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key>w</key>
+				<value>
+					<shapeOrDef>Dresser</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key>x</key>
+				<value>
+					<shapeOrDef>Ship_CryptosleepCasket</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>y</key>
+				<value>
+					<shapeOrDef>HospitalBed</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key>z</key>
+				<value>
+					<shapeOrDef>Table1x2c</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key>{</key>
+				<value>
+					<shapeOrDef>ToolCabinet</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>}</key>
+				<value>
+					<shapeOrDef>ShipCapacitorSmall</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>~</key>
+				<value>
+					<shapeOrDef>DoubleBed</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>PokerTable</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipTurret_Laser</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipPurgePort</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
+					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
+					<color>RGBA(1.000, 0.776, 0.404, 1.000)</color>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ElectricStove</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ElectricSmelter</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>TableMachining</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>MegascreenTelevision</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipConsoleScience</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>CommsConsole</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>HydroponicsBasin</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipCombatShieldGenerator</shapeOrDef>
+					<radius>45</radius>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipCombatShieldGenerator</shapeOrDef>
+					<radius>50</radius>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>CargoShuttle</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Ship_LifeSupport</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipTurret_Kinetic_Large</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>HullFoamDistributor</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Table2x4c</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>FabricationBench</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipHeatsinkLarge</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipHeatBankLarge</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipCapacitor</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipShuttleBay</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShipSalvageBay</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Ship_Engine_Large</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Ship_Engine_Interplanetary_Large</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>Ship_Reactor</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
+				<value>
+					<shapeOrDef>ShuttleFuelPods</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key></key>
 				<value>
 					<shapeOrDef>SterileTile</shapeOrDef>
 				</value>
 			</li>
 		</symbolTable>
-		<bigString>48,20,0,?|80,15,0,?|56,11,0,@|53,8,0,@|48,30,0,A|46,30,0,A|41,24,0,A|45,23,0,B|44,23,0,B|128,15,0,C|127,15,0,C|127,25,0,C|154,24,0,D|153,24,0,D|153,32,0,D|146,32,0,D|147,16,0,D|147,8,0,D|153,8,0,D|154,16,0,D|153,16,0,D|154,8,0,D|146,24,0,D|146,8,0,D|117,18,0,E|119,22,0,F|119,18,0,G|120,18,0,G|132,18,0,H|120,22,0,H|139,18,0,?|117,22,0,?|94,13,0,I|91,14,0,I|89,13,0,I|89,11,0,I|90,9,0,I|93,8,0,I|95,9,0,I|95,11,0,I|94,12,0,I|92,12,0,I|90,12,0,I|91,11,0,I|92,10,0,I|94,10,0,I|91,8,0,I|91,7,0,I|89,9,0,I|89,10,0,I|88,12,0,I|93,14,0,I|96,13,0,I|96,12,0,I|96,10,0,I|94,14,0,I|92,15,0,I|91,15,0,I|103,11,0,I|105,13,0,I|107,14,0,I|106,14,0,I|104,12,0,I|105,10,0,I|106,8,0,I|108,8,0,I|110,10,0,I|110,12,0,I|109,13,0,I|108,13,0,I|108,12,0,I|108,9,0,I|106,9,0,I|104,9,0,I|104,8,0,I|106,6,0,I|107,6,0,I|110,7,0,I|111,9,0,I|112,10,0,I|111,12,0,I|110,14,0,I|109,15,0,I|105,15,0,I|104,14,0,I|106,12,0,I|105,11,0,I|103,10,0,I|105,26,0,I|104,28,0,I|103,30,0,I|104,31,0,I|105,32,0,I|108,32,0,I|110,31,0,I|110,29,0,I|109,27,0,I|106,26,0,I|105,29,0,I|106,31,0,I|108,31,0,I|108,28,0,I|106,27,0,I|105,27,0,I|108,25,0,I|111,26,0,I|112,28,0,I|112,30,0,I|111,31,0,I|110,33,0,I|108,34,0,I|106,34,0,I|104,33,0,I|103,32,0,I|102,30,0,I|102,28,0,I|103,27,0,I|105,25,0,I|106,24,0,I|108,24,0,I|94,26,0,I|90,26,0,I|89,27,0,I|88,30,0,I|88,31,0,I|91,34,0,I|92,34,0,I|94,33,0,I|96,32,0,I|96,30,0,I|96,29,0,I|95,28,0,I|93,26,0,I|92,26,0,I|92,24,0,I|91,25,0,I|89,26,0,I|88,27,0,I|87,28,0,I|87,29,0,I|89,29,0,I|89,28,0,I|92,27,0,I|95,27,0,I|96,26,0,I|94,25,0,I|90,27,0,I|90,28,0,I|90,30,0,I|90,32,0,I|91,33,0,I|92,31,0,I|94,30,0,I|94,29,0,I|95,31,0,I|97,30,0,I|97,29,0,I|97,28,0,I|94,32,0,I|93,32,0,I|91,32,0,I|89,32,0,I|89,14,0,I|88,13,0,I|87,12,0,I|87,11,0,I|86,10,0,I|88,8,0,I|88,7,0,I|92,6,0,I|91,5,0,I|94,6,0,I|95,7,0,I|96,8,0,I|94,8,0,I|98,10,0,I|97,11,0,I|98,11,0,I|96,14,0,I|94,15,0,I|101,11,0,I|112,12,0,I|113,11,0,I|113,10,0,I|109,10,0,I|109,9,0,I|109,8,0,I|108,7,0,I|107,7,0,I|105,7,0,I|111,13,0,I|109,14,0,I|107,15,0,I|109,24,0,I|110,26,0,I|111,27,0,I|111,29,0,I|110,30,0,I|109,30,0,I|108,29,0,I|94,27,0,I|90,25,0,I|104,26,0,I|107,33,0,I|107,35,0,I|106,35,0,I|112,32,0,I|101,29,0,I|87,26,0,I|89,34,0,I|88,33,0,I|97,31,0,I|97,13,0,I|89,15,0,I|89,16,0,I|88,14,0,I|102,14,0,I|102,13,0,I|102,12,0,I|103,7,0,I|106,5,0,I|107,5,0,I|106,16,0,I|105,16,0,I|93,16,0,I|92,16,0,I|107,27,0,I|106,28,0,I|102,31,0,I|113,29,0,I|113,30,0,I|109,32,0,I|111,11,0,I|110,8,0,I|115,3,0,J|115,4,0,J|115,5,0,J|115,6,0,J|115,7,0,J|115,8,0,J|115,9,0,J|115,10,0,J|115,11,0,J|115,12,0,J|115,13,0,J|115,14,0,J|115,15,0,J|115,16,0,J|126,2,0,K|127,2,0,K|128,2,0,K|129,2,0,K|130,2,0,K|131,2,0,K|132,2,0,K|133,2,0,K|134,2,0,K|135,2,0,K|138,1,0,J|139,1,0,J|140,1,0,J|141,1,0,J|136,2,0,K|126,3,0,J|114,20,0,L|116,18,0,L|116,19,0,L|117,18,0,L|117,19,0,L|117,20,0,L|118,18,0,L|118,19,0,L|118,20,0,L|119,18,0,L|119,19,0,L|119,20,0,L|120,18,0,L|120,19,0,L|122,18,0,L|122,19,0,L|122,20,0,L|123,18,0,L|123,19,0,L|123,20,0,L|124,18,0,L|124,19,0,L|124,20,0,L|125,18,0,L|125,19,0,L|125,20,0,L|126,18,0,L|126,19,0,L|127,19,0,L|127,20,0,L|128,18,0,L|128,19,0,L|128,20,0,L|129,19,0,L|129,20,0,L|130,18,0,L|130,19,0,L|130,20,0,L|131,18,0,L|131,19,0,L|131,20,0,L|132,18,0,L|132,19,0,L|132,20,0,L|133,18,0,L|133,19,0,L|133,20,0,L|134,18,0,L|134,19,0,L|134,20,0,L|135,18,0,L|135,19,0,L|135,20,0,L|136,18,0,L|136,19,0,L|136,20,0,L|137,19,0,L|137,20,0,L|138,18,0,L|138,19,0,L|138,20,0,L|139,18,0,L|139,19,0,L|139,20,0,L|140,18,0,L|140,19,0,L|140,20,0,L|141,18,0,L|141,19,0,L|141,20,0,L|125,13,0,L|125,14,0,L|125,15,0,L|125,16,0,L|126,10,0,L|126,11,0,L|126,12,0,L|126,13,0,L|126,14,0,L|126,15,0,L|126,16,0,L|127,7,0,L|127,8,0,L|127,9,0,L|127,10,0,L|127,11,0,L|127,12,0,L|127,13,0,L|127,14,0,L|127,15,0,L|127,16,0,L|128,4,0,L|128,5,0,L|128,6,0,L|128,7,0,L|128,8,0,L|128,9,0,L|128,10,0,L|128,11,0,L|128,12,0,L|128,13,0,L|128,14,0,L|128,15,0,L|128,16,0,L|129,4,0,L|129,5,0,L|129,6,0,L|129,7,0,L|129,8,0,L|129,9,0,L|129,10,0,L|129,11,0,L|129,12,0,L|129,13,0,L|129,14,0,L|129,15,0,L|129,16,0,L|130,4,0,L|130,5,0,L|130,6,0,L|130,7,0,L|130,8,0,L|130,9,0,L|130,10,0,L|130,11,0,L|130,12,0,L|130,13,0,L|130,14,0,L|130,15,0,L|130,16,0,L|131,4,0,L|131,5,0,L|131,6,0,L|131,7,0,L|131,8,0,L|131,9,0,L|131,10,0,L|131,11,0,L|131,12,0,L|131,13,0,L|131,14,0,L|131,15,0,L|131,16,0,L|132,4,0,L|132,5,0,L|132,6,0,L|132,7,0,L|132,8,0,L|132,9,0,L|132,10,0,L|132,11,0,L|132,12,0,L|132,13,0,L|132,14,0,L|132,15,0,L|132,16,0,L|133,4,0,L|133,5,0,L|133,6,0,L|133,7,0,L|133,8,0,L|133,9,0,L|133,10,0,L|133,11,0,L|133,12,0,L|133,13,0,L|133,14,0,L|133,15,0,L|133,16,0,L|134,4,0,L|134,5,0,L|134,6,0,L|134,7,0,L|134,8,0,L|134,9,0,L|134,10,0,L|134,11,0,L|134,12,0,L|134,13,0,L|134,14,0,L|134,15,0,L|134,16,0,L|135,4,0,L|135,5,0,L|135,6,0,L|135,7,0,L|135,8,0,L|135,9,0,L|135,10,0,L|135,11,0,L|135,12,0,L|135,13,0,L|135,14,0,L|135,15,0,L|135,16,0,L|136,4,0,L|136,5,0,L|136,6,0,L|136,7,0,L|136,8,0,L|136,9,0,L|136,10,0,L|136,11,0,L|136,12,0,L|136,13,0,L|136,14,0,L|136,15,0,L|136,16,0,L|137,4,0,L|137,5,0,L|137,6,0,L|137,7,0,L|137,8,0,L|137,9,0,L|137,10,0,L|137,11,0,L|137,12,0,L|137,13,0,L|137,14,0,L|137,15,0,L|137,16,0,L|138,4,0,L|138,5,0,L|138,6,0,L|138,7,0,L|138,8,0,L|138,9,0,L|138,10,0,L|138,11,0,L|138,12,0,L|138,13,0,L|138,14,0,L|138,15,0,L|138,16,0,L|139,4,0,L|139,5,0,L|139,6,0,L|139,7,0,L|139,8,0,L|139,9,0,L|139,10,0,L|139,11,0,L|139,12,0,L|139,13,0,L|139,14,0,L|139,15,0,L|139,16,0,L|140,4,0,L|140,5,0,L|140,6,0,L|140,7,0,L|140,8,0,L|140,9,0,L|140,10,0,L|140,11,0,L|140,12,0,L|140,13,0,L|140,14,0,L|140,15,0,L|140,16,0,L|141,4,0,L|141,5,0,L|141,6,0,L|141,7,0,L|141,8,0,L|141,9,0,L|141,10,0,L|141,11,0,L|141,12,0,L|141,13,0,L|141,14,0,L|141,15,0,L|141,16,0,L|138,3,0,L|139,3,0,L|140,3,0,L|141,3,0,L|137,2,0,K|138,2,0,J|139,2,0,J|140,2,0,J|141,2,0,J|114,19,0,M|115,19,0,M|121,17,0,N|121,18,0,M|115,17,0,M|116,17,0,N|117,17,0,N|118,17,0,N|119,17,0,N|120,17,0,N|115,18,0,M|122,17,0,N|123,17,0,N|124,17,0,N|125,17,0,N|127,17,0,N|128,17,0,N|129,17,0,N|130,17,0,N|131,17,0,N|132,17,0,N|133,17,0,N|134,17,0,N|135,17,0,N|136,17,0,N|137,17,0,N|138,17,0,N|139,17,0,N|140,17,0,N|141,17,0,N|127,5,1,M|127,4,1,M|125,11,1,M|125,10,1,M|126,8,1,M|126,7,1,M|126,6,0,M|127,6,0,M|125,9,0,M|126,9,0,M|124,12,0,M|125,12,0,M|122,16,0,M|126,17,0,O|116,3,0,J|117,3,0,J|118,3,0,J|119,3,0,J|115,37,0,J|116,37,0,J|117,37,0,J|118,37,0,J|119,37,0,J|115,36,0,J|115,35,0,J|115,34,0,J|115,33,0,J|115,32,0,J|115,31,0,J|115,30,0,J|115,29,0,J|115,28,0,J|115,27,0,J|115,26,0,J|115,25,0,J|115,24,0,J|117,23,0,N|118,23,0,N|119,23,0,N|124,28,0,M|125,28,0,M|125,29,1,M|125,30,1,M|125,31,0,M|126,31,0,M|126,32,1,M|126,33,1,M|126,34,0,M|127,34,0,M|127,35,1,M|127,36,1,M|126,37,0,J|126,38,0,K|127,38,0,K|128,38,0,K|129,38,0,K|130,38,0,K|131,38,0,K|132,38,0,K|133,38,0,K|134,38,0,K|135,38,0,K|138,39,0,J|139,39,0,J|140,39,0,J|141,39,0,J|141,37,0,L|140,37,0,L|139,37,0,L|138,37,0,L|136,36,0,L|134,34,0,L|135,34,0,L|135,33,0,L|134,36,0,L|134,35,0,L|134,33,0,L|133,36,0,L|133,35,0,L|133,34,0,L|133,33,0,L|135,36,0,L|136,35,0,L|137,36,0,L|138,34,0,L|140,32,0,L|138,30,0,L|140,31,0,L|139,32,0,L|138,32,0,L|137,32,0,L|140,35,0,L|140,34,0,L|140,33,0,L|139,35,0,L|139,34,0,L|139,33,0,L|138,35,0,L|138,33,0,L|138,36,0,L|139,36,0,L|140,36,0,L|141,36,0,L|141,28,0,L|141,27,0,L|140,27,0,L|138,26,0,L|138,27,0,L|138,25,0,L|137,27,0,L|137,26,0,L|137,25,0,L|139,27,0,L|140,26,0,L|141,26,0,L|141,24,0,L|141,23,0,N|140,23,0,N|139,23,0,N|138,23,0,N|138,22,0,L|138,21,0,L|139,22,0,L|140,22,0,L|140,21,0,L|141,21,0,L|141,22,0,L|141,38,0,J|140,38,0,J|139,38,0,J|138,38,0,J|137,38,0,K|136,38,0,K|131,36,0,L|130,34,0,L|128,33,0,L|128,32,0,L|129,30,0,L|127,30,0,L|132,31,0,L|133,30,0,L|133,29,0,L|133,31,0,L|132,30,0,L|132,29,0,L|131,28,0,L|129,26,0,L|129,25,0,L|128,27,0,L|128,26,0,L|128,25,0,L|131,27,0,L|130,28,0,L|129,28,0,L|128,28,0,L|131,31,0,L|131,30,0,L|131,29,0,L|130,31,0,L|130,30,0,L|130,29,0,L|129,31,0,L|129,29,0,L|128,30,0,L|128,29,0,L|128,31,0,L|132,32,0,L|131,32,0,L|130,32,0,L|129,32,0,L|131,34,0,L|131,33,0,L|130,35,0,L|130,33,0,L|129,36,0,L|129,35,0,L|129,34,0,L|129,33,0,L|130,36,0,L|131,35,0,L|128,36,0,L|128,35,0,L|128,34,0,L|127,33,0,L|127,32,0,L|127,31,0,L|126,30,0,L|126,29,0,L|126,28,0,L|126,27,0,L|126,26,0,L|125,26,0,L|125,24,0,L|126,24,0,L|127,24,0,L|127,23,0,N|128,23,0,N|129,23,0,N|130,23,0,N|131,23,0,N|132,23,0,N|132,24,0,L|133,24,0,L|133,25,0,L|133,26,0,L|135,24,0,L|136,24,0,L|136,23,0,N|136,22,0,L|135,22,0,L|134,22,0,L|132,21,0,L|129,21,0,L|128,21,0,L|127,21,0,L|126,21,0,L|125,21,0,L|126,22,0,L|133,21,0,L|131,21,0,L|130,21,0,L|133,22,0,L|134,23,0,N|134,21,0,L|135,21,0,L|136,21,0,L|135,23,0,N|135,27,0,L|135,26,0,L|135,25,0,L|134,27,0,L|134,26,0,L|133,27,0,L|134,25,0,L|134,24,0,L|133,23,0,N|132,22,0,L|131,22,0,L|130,22,0,L|129,22,0,L|128,22,0,L|127,22,0,L|126,23,0,O|125,23,0,N|124,23,0,N|124,22,0,L|123,22,0,L|122,22,0,L|121,22,0,M|120,22,0,L|120,21,0,L|119,21,0,L|118,21,0,L|117,21,0,L|116,21,0,L|115,21,0,M|115,22,0,M|116,22,0,L|121,21,0,M|122,23,0,N|122,21,0,L|123,21,0,L|123,23,0,N|123,24,0,L|124,24,0,L|125,25,0,L|126,25,0,L|125,27,0,L|122,24,0,M|121,23,0,N|120,23,0,N|119,22,0,L|118,22,0,L|117,22,0,L|116,23,0,N|115,23,0,M|135,35,0,L|136,33,0,L|136,34,0,L|133,32,0,L|134,32,0,L|135,32,0,L|136,32,0,L|137,33,0,L|137,34,0,L|137,35,0,L|132,36,0,L|132,35,0,L|132,34,0,L|132,33,0,L|141,33,0,L|141,34,0,L|141,35,0,L|141,32,0,L|137,29,0,L|137,30,0,L|137,31,0,L|138,29,0,L|138,31,0,L|139,29,0,L|139,30,0,L|139,31,0,L|140,29,0,L|140,30,0,L|137,28,0,L|138,28,0,L|139,28,0,L|140,28,0,L|141,29,0,L|141,30,0,L|141,31,0,L|136,31,0,L|136,30,0,L|136,29,0,L|139,25,0,L|139,26,0,L|140,25,0,L|137,24,0,L|138,24,0,L|139,24,0,L|140,24,0,L|141,25,0,L|136,28,0,L|136,27,0,L|136,26,0,L|136,25,0,L|137,23,0,N|137,22,0,L|139,21,0,L|137,21,0,L|127,29,0,L|134,29,0,L|134,30,0,L|134,31,0,L|135,29,0,L|135,30,0,L|135,31,0,L|132,28,0,L|133,28,0,L|134,28,0,L|135,28,0,L|129,27,0,L|130,25,0,L|130,26,0,L|130,27,0,L|131,25,0,L|131,26,0,L|128,24,0,L|129,24,0,L|130,24,0,L|131,24,0,L|132,25,0,L|132,26,0,L|132,27,0,L|127,28,0,L|127,27,0,L|127,26,0,L|127,25,0,L|125,22,0,L|124,21,0,L|115,20,1,P|121,20,1,P|116,20,0,L|120,20,0,L|122,21,0,Q|122,19,0,R|52,19,0,L|53,20,0,L|52,20,0,L|52,21,0,L|53,19,0,L|53,21,0,L|54,19,0,L|54,20,0,L|54,21,0,L|52,18,0,L|51,18,0,L|50,18,0,L|49,18,0,N|48,18,0,L|48,18,0,N|47,18,0,L|47,19,0,L|47,20,0,L|48,20,0,L|49,20,0,N|50,20,0,L|50,21,0,L|50,22,0,L|51,22,0,L|51,23,0,L|52,23,0,L|53,23,0,L|54,23,0,L|55,23,0,L|55,22,0,L|56,22,0,L|57,20,0,L|56,21,0,L|47,17,0,L|46,14,0,L|47,16,0,L|49,15,0,N|49,10,0,L|49,8,0,K|48,19,0,L|48,17,0,L|49,17,0,N|50,19,0,L|50,17,0,L|51,17,0,L|51,16,0,L|52,16,0,L|53,16,0,L|53,17,0,L|54,17,0,L|55,17,0,L|55,16,0,L|56,16,0,L|57,16,0,L|58,16,0,L|59,16,0,L|59,15,0,L|59,14,0,L|59,13,0,L|58,15,0,L|57,15,0,L|57,14,0,L|56,14,0,L|55,14,0,L|55,13,0,L|55,10,0,L|55,9,0,L|55,8,0,L|55,7,0,K|56,13,0,L|57,13,0,L|58,8,0,K|58,7,0,K|58,6,0,K|57,10,0,L|56,15,0,L|55,15,0,L|54,15,0,L|54,16,0,L|53,15,0,L|53,14,0,L|52,14,0,L|51,14,0,L|51,13,0,L|53,10,0,L|52,10,0,L|51,10,0,L|51,9,0,L|52,9,0,L|52,8,0,K|53,9,0,L|52,13,0,L|53,13,0,L|52,15,0,L|51,15,0,L|52,17,0,L|53,18,0,L|54,18,0,L|55,19,0,L|55,20,0,L|55,21,0,L|54,22,0,L|53,22,0,L|52,22,0,L|51,21,0,L|51,20,0,L|51,19,0,L|46,18,0,L|46,18,0,N|45,18,0,L|45,18,0,N|44,18,0,L|44,18,0,N|43,18,0,L|43,18,0,N|42,18,0,L|41,18,0,L|40,18,0,L|39,18,0,L|38,18,0,L|37,18,0,L|36,18,0,L|35,18,0,L|34,18,0,L|34,17,0,L|34,16,0,L|34,15,0,L|34,14,0,L|34,13,0,L|34,12,0,K|35,19,0,L|35,20,0,L|35,21,0,L|36,21,0,L|37,21,0,L|37,20,0,L|38,20,0,L|39,20,0,L|40,20,0,L|41,20,0,L|42,20,0,L|43,20,0,L|36,20,0,L|35,17,0,L|36,19,0,L|36,17,0,L|36,16,0,L|37,16,0,L|38,16,0,L|39,16,0,L|40,16,0,L|40,15,0,L|40,14,0,L|40,13,0,L|40,12,0,L|39,15,0,L|38,15,0,L|38,14,0,L|37,14,0,L|36,14,0,L|36,13,0,L|36,12,0,K|37,12,0,L|37,11,0,K|37,13,0,L|38,13,0,L|37,15,0,L|36,15,0,L|37,19,0,L|37,17,0,L|38,19,0,L|38,17,0,L|39,19,0,L|39,17,0,L|40,19,0,L|40,17,0,L|41,19,0,L|42,19,0,L|42,17,0,L|44,14,0,L|43,14,0,L|43,19,0,L|44,19,0,L|45,19,0,L|46,19,0,L|47,21,0,L|46,21,0,L|46,22,0,L|46,22,0,N|45,22,0,L|45,22,0,N|45,23,0,L|44,23,0,L|43,23,0,L|42,23,0,L|41,23,0,L|40,23,0,L|39,23,0,L|38,23,0,L|37,23,0,L|36,23,0,L|35,23,0,L|34,23,0,L|33,23,0,L|32,23,0,L|31,23,0,L|31,22,0,L|31,21,0,L|31,20,0,L|31,19,0,L|31,18,0,L|31,17,0,L|31,16,0,L|31,15,0,L|31,14,0,L|31,13,0,K|32,24,0,L|32,25,0,L|32,26,0,L|33,26,0,L|34,26,0,L|34,25,0,L|35,25,0,L|36,25,0,L|37,25,0,L|38,25,0,L|39,25,0,L|40,25,0,L|41,25,0,L|42,25,0,L|43,25,0,L|44,25,0,L|45,25,0,L|46,25,0,L|46,24,0,L|47,24,0,L|47,23,0,L|48,23,0,L|48,22,0,L|48,22,0,N|33,25,0,L|32,22,0,L|33,24,0,L|33,22,0,L|33,21,0,L|33,20,0,L|33,19,0,L|34,24,0,L|34,22,0,L|35,24,0,L|36,24,0,L|37,24,0,L|38,24,0,L|38,22,0,L|39,24,0,L|39,22,0,L|40,24,0,L|40,22,0,L|41,24,0,L|41,22,0,L|42,24,0,L|43,24,0,L|44,24,0,L|45,24,0,L|46,23,0,L|47,22,0,L|47,22,0,N|46,20,0,L|48,21,0,L|49,21,0,N|50,23,0,L|50,24,0,L|49,25,0,N|48,25,0,L|48,26,0,L|47,26,0,L|47,27,0,L|46,27,0,L|45,27,0,L|44,27,0,L|43,27,0,L|42,27,0,L|41,27,0,L|40,27,0,L|39,27,0,L|38,27,0,L|37,27,0,L|36,27,0,L|35,27,0,L|35,28,0,K|34,28,0,K|33,28,0,K|31,27,0,K|30,27,0,K|29,27,0,K|28,26,0,K|28,25,0,L|29,25,0,L|29,24,0,L|29,23,0,L|29,22,0,L|29,21,0,L|29,20,0,L|29,19,0,L|29,18,0,L|29,17,0,L|29,16,0,L|29,15,0,L|29,13,0,K|28,24,0,L|27,24,0,L|26,24,0,L|26,23,0,L|26,22,0,L|26,21,0,L|26,20,0,L|26,19,0,L|26,18,0,L|26,17,0,L|26,16,0,L|26,15,0,L|27,15,0,L|27,23,0,L|27,26,0,K|26,26,0,K|25,26,0,K|22,25,0,K|22,24,0,L|22,23,0,L|22,22,0,L|22,21,0,L|22,20,0,L|22,19,0,L|22,18,0,L|22,17,0,L|22,16,0,L|22,15,0,K|30,26,0,L|36,29,0,K|37,29,0,K|44,29,0,L|45,29,0,L|46,29,0,L|47,29,0,L|48,29,0,L|48,28,0,L|50,27,0,L|50,26,0,L|51,26,0,L|51,25,0,L|52,25,0,L|53,25,0,L|54,25,0,L|55,25,0,L|56,25,0,L|56,24,0,L|57,24,0,L|58,24,0,L|59,24,0,L|59,23,0,L|60,23,0,L|60,22,0,L|60,21,0,L|60,20,0,L|60,19,0,L|60,18,0,L|60,17,0,L|61,17,0,L|61,16,0,L|61,15,0,L|61,14,0,L|60,13,0,L|61,13,0,L|42,29,0,L|41,29,0,L|39,29,0,K|38,29,0,K|36,28,0,K|37,28,0,L|38,28,0,L|39,28,0,L|40,28,0,L|41,28,0,L|42,28,0,L|43,28,0,L|44,28,0,L|45,28,0,L|46,28,0,L|47,28,0,L|48,27,0,L|50,25,0,L|49,22,0,N|51,24,0,L|52,24,0,L|53,24,0,L|54,24,0,L|56,23,0,L|55,24,0,L|57,22,0,L|56,18,0,L|56,19,0,L|56,20,0,L|57,18,0,L|57,19,0,L|57,21,0,L|58,18,0,L|58,19,0,L|58,20,0,L|58,21,0,L|58,22,0,L|56,17,0,L|57,17,0,L|58,17,0,L|59,18,0,L|59,19,0,L|59,20,0,L|59,21,0,L|59,22,0,L|58,23,0,L|57,23,0,L|55,18,0,L|47,15,0,L|47,14,0,L|45,14,0,L|48,8,0,K|50,16,0,L|50,15,0,L|50,14,0,L|50,13,0,L|50,10,0,L|50,9,0,L|50,8,0,K|52,7,0,K|51,8,0,K|60,16,0,L|59,17,0,L|60,15,0,L|60,14,0,L|58,14,0,L|58,13,0,L|54,14,0,L|54,13,0,L|56,10,0,L|54,10,0,L|56,9,0,L|54,9,0,L|56,8,0,L|54,8,0,L|56,7,0,K|54,7,0,K|56,6,0,K|53,7,0,K|57,9,0,L|57,8,0,L|57,7,0,K|57,6,0,K|60,5,0,K|34,19,0,L|33,18,0,L|33,17,0,L|35,16,0,L|33,16,0,L|35,15,0,L|33,15,0,L|35,14,0,L|33,14,0,L|35,13,0,L|35,12,0,K|33,12,0,K|36,11,0,K|34,20,0,L|35,22,0,L|34,21,0,L|36,22,0,L|38,21,0,L|37,22,0,L|39,21,0,L|40,21,0,L|41,21,0,L|42,21,0,L|43,21,0,L|44,20,0,L|44,21,0,L|45,20,0,L|45,21,0,L|44,22,0,L|44,22,0,N|43,22,0,L|43,22,0,N|42,22,0,L|39,14,0,L|39,13,0,L|39,12,0,L|39,11,0,K|38,12,0,L|38,11,0,K|31,24,0,L|30,23,0,L|30,22,0,L|32,21,0,L|30,21,0,L|32,20,0,L|30,20,0,L|32,19,0,L|30,19,0,L|32,18,0,L|30,18,0,L|32,17,0,L|30,17,0,L|32,16,0,L|30,16,0,L|32,15,0,L|30,15,0,L|32,14,0,L|30,14,0,L|32,13,0,K|30,13,0,K|31,25,0,L|32,27,0,K|31,26,0,L|35,26,0,L|34,27,0,L|36,26,0,L|37,26,0,L|38,26,0,L|39,26,0,L|40,26,0,L|41,26,0,L|42,26,0,L|43,26,0,L|44,26,0,L|45,26,0,L|47,25,0,L|46,26,0,L|48,24,0,L|49,23,0,N|27,25,0,L|30,25,0,L|30,24,0,L|28,23,0,L|28,22,0,L|28,21,0,L|28,20,0,L|28,19,0,L|28,18,0,L|28,17,0,L|28,16,0,L|28,15,0,L|28,14,0,K|27,14,0,K|26,14,0,K|26,25,0,L|25,24,0,L|24,24,0,L|24,23,0,L|24,22,0,L|24,21,0,L|24,20,0,L|24,19,0,L|24,18,0,L|24,17,0,L|24,16,0,L|25,23,0,L|27,22,0,L|25,22,0,L|27,21,0,L|25,21,0,L|27,20,0,L|25,20,0,L|27,19,0,L|25,19,0,L|27,18,0,L|25,18,0,L|27,17,0,L|25,17,0,L|27,16,0,L|25,16,0,L|23,25,0,K|24,25,0,K|21,25,0,K|20,23,0,L|19,23,0,L|18,23,0,L|12,21,0,L|11,21,0,L|10,21,0,L|8,21,0,K|7,21,0,K|6,21,0,K|4,20,0,K|6,19,0,K|7,19,0,K|8,19,0,K|10,19,0,L|11,19,0,L|12,19,0,L|13,19,0,L|13,20,0,L|14,20,0,L|14,21,0,L|15,21,0,L|16,21,0,L|17,21,0,L|18,21,0,L|19,21,0,L|20,21,0,L|20,20,0,L|20,19,0,L|19,19,0,L|18,19,0,L|17,19,0,L|16,19,0,L|15,19,0,L|15,18,0,L|14,18,0,L|18,17,0,L|19,17,0,L|20,17,0,L|16,18,0,L|17,18,0,L|18,18,0,L|19,18,0,L|20,18,0,L|19,20,0,L|18,20,0,L|17,20,0,L|16,20,0,L|15,20,0,L|14,19,0,L|11,18,0,K|10,18,0,K|9,18,0,K|9,22,0,K|10,20,0,L|11,20,0,L|13,21,0,L|12,20,0,L|11,22,0,K|10,22,0,K|14,22,0,L|15,22,0,L|16,22,0,L|17,22,0,L|18,22,0,L|19,22,0,L|20,22,0,L|23,24,0,L|23,23,0,L|21,23,0,L|23,22,0,L|21,22,0,L|23,21,0,L|21,21,0,L|23,20,0,L|21,20,0,L|23,19,0,L|21,19,0,L|23,18,0,L|21,18,0,L|23,17,0,L|21,17,0,L|23,16,0,L|23,15,0,K|21,15,0,K|25,14,0,K|24,15,0,K|48,32,0,K|49,32,0,K|52,33,0,K|53,33,0,K|56,34,0,K|57,34,0,K|60,35,0,K|58,34,0,K|58,33,0,K|58,32,0,K|57,32,0,L|56,32,0,L|55,32,0,L|54,32,0,L|54,31,0,L|53,31,0,L|52,31,0,L|51,31,0,L|50,31,0,L|50,30,0,L|49,30,0,L|55,30,0,L|56,30,0,L|57,30,0,L|58,29,0,N|56,27,0,L|55,27,0,L|54,27,0,L|53,27,0,L|52,27,0,L|57,27,0,L|57,26,0,L|58,26,0,L|59,26,0,L|59,27,0,L|60,26,0,L|60,27,0,L|66,25,0,N|67,25,0,M|71,28,0,L|71,29,0,L|72,29,0,L|73,29,0,L|74,29,0,M|75,29,0,M|75,28,0,M|75,27,0,M|74,27,0,L|73,27,0,L|72,27,0,L|72,26,0,L|71,26,0,L|69,25,0,M|69,24,0,L|68,24,0,L|68,23,0,L|67,23,0,L|66,23,0,N|65,23,0,L|64,23,0,L|63,23,0,L|62,23,0,L|62,24,0,L|61,24,0,L|62,22,0,L|62,21,0,L|63,21,0,L|64,21,0,L|65,21,0,L|67,21,0,L|68,21,0,L|69,21,0,L|71,20,0,L|68,18,0,L|67,18,0,L|66,18,0,N|65,18,0,L|64,18,0,L|63,18,0,L|62,18,0,L|62,19,0,L|63,19,0,L|63,17,0,L|63,16,0,L|64,16,0,L|65,16,0,L|66,16,0,N|67,16,0,L|68,16,0,L|69,16,0,L|70,16,0,L|71,16,0,L|72,16,0,L|73,16,0,L|74,16,0,L|74,17,0,L|75,17,0,L|75,18,0,L|75,19,0,L|75,20,0,L|75,21,0,L|75,22,0,L|75,23,0,L|74,23,0,L|74,24,0,L|73,24,0,L|72,24,0,L|71,24,0,L|73,25,0,M|74,25,0,M|75,25,0,M|76,25,0,N|77,25,0,N|78,25,0,M|78,26,0,M|79,26,0,M|80,26,0,M|80,27,0,J|81,29,0,J|82,31,0,J|83,33,0,J|84,35,0,J|85,37,0,J|86,37,0,J|87,37,0,J|88,37,0,J|89,37,0,J|90,37,0,J|91,37,0,J|92,37,0,J|93,37,0,J|94,37,0,J|95,37,0,J|96,37,0,J|97,37,0,J|98,37,0,J|99,37,0,J|100,37,0,J|101,37,0,J|102,37,0,J|103,37,0,J|104,37,0,J|105,37,0,J|106,37,0,J|107,37,0,J|108,37,0,J|109,37,0,J|110,37,0,J|111,37,0,J|112,37,0,J|113,37,0,J|114,37,0,J|112,35,0,S|113,34,1,T|112,31,0,L|111,31,0,L|110,31,0,L|109,31,0,L|108,31,0,L|107,31,0,L|106,31,0,L|105,31,0,L|104,31,0,L|103,31,0,L|102,31,0,L|97,31,0,L|96,31,0,L|95,31,0,L|94,31,0,L|93,31,0,L|92,31,0,L|91,31,0,L|90,31,0,L|89,31,0,L|88,31,0,L|87,31,0,L|86,34,3,S|87,35,0,T|91,35,0,L|92,35,0,L|93,35,0,L|97,35,0,S|98,34,1,T|101,34,3,S|102,35,0,T|106,35,0,L|107,35,0,L|108,35,0,L|109,34,0,L|110,34,0,L|110,33,0,L|111,33,0,L|109,33,0,L|108,33,0,L|107,33,0,L|106,33,0,L|105,33,0,L|104,33,0,L|103,33,0,L|108,34,0,L|107,34,0,L|106,34,0,L|105,34,0,L|104,34,0,L|103,34,0,L|102,33,0,L|97,33,0,L|96,33,0,L|95,33,0,L|94,33,0,L|93,33,0,L|92,33,0,L|91,33,0,L|90,33,0,L|89,33,0,L|88,33,0,L|96,34,0,L|95,34,0,L|94,34,0,L|93,34,0,L|92,34,0,L|91,34,0,L|90,34,0,L|89,34,0,L|88,34,0,L|87,33,0,L|86,29,0,L|87,29,0,L|88,29,0,L|89,29,0,L|90,29,0,L|91,29,0,L|92,29,0,L|93,29,0,L|94,29,0,L|95,29,0,L|96,29,0,L|97,29,0,L|98,29,0,L|101,29,0,L|102,29,0,L|103,29,0,L|104,29,0,L|105,29,0,L|106,29,0,L|107,29,0,L|108,29,0,L|109,29,0,L|110,29,0,L|111,29,0,L|112,29,0,L|113,29,0,L|112,27,0,L|111,27,0,L|110,27,0,L|109,27,0,L|108,27,0,L|107,27,0,L|106,27,0,L|105,27,0,L|104,27,0,L|103,27,0,L|102,27,0,L|97,27,0,L|96,27,0,L|96,26,0,L|96,25,0,L|96,24,0,L|97,26,0,L|98,24,1,S|102,26,0,L|102,25,0,L|103,25,0,L|104,25,0,L|105,25,0,L|106,25,0,L|107,25,0,L|108,25,0,L|108,24,0,L|108,23,0,L|108,22,0,N|108,21,0,L|108,20,0,L|108,19,0,L|108,18,0,N|108,16,0,L|108,15,0,L|108,14,0,L|108,13,0,L|108,12,0,L|108,11,0,L|108,10,0,L|108,9,0,L|108,8,0,L|108,7,0,L|108,6,0,L|108,5,0,L|108,3,0,J|107,24,0,L|106,24,0,L|106,23,0,L|106,21,0,L|106,20,0,L|106,19,0,L|106,18,0,N|106,17,0,L|106,16,0,L|106,15,0,L|106,14,0,L|106,13,0,L|106,12,0,L|106,11,0,L|106,10,0,L|106,9,0,L|106,8,0,L|106,7,0,L|106,6,0,L|106,5,0,L|106,3,0,J|105,20,0,L|104,20,0,L|103,20,0,L|105,24,0,L|104,24,0,L|103,24,0,L|101,24,3,T|102,23,2,S|103,26,0,L|104,26,0,L|105,26,0,L|106,26,0,L|107,26,0,L|108,26,0,L|109,26,0,L|110,26,0,L|110,25,0,L|111,25,0,L|112,25,0,L|113,24,1,S|112,23,2,T|113,20,0,L|113,19,0,M|112,19,0,M|111,19,0,M|110,19,0,M|110,20,0,L|112,17,0,S|113,16,1,T|113,12,0,L|113,11,0,L|113,10,0,L|113,6,1,S|112,15,0,L|111,15,0,L|110,15,0,L|110,14,0,L|110,13,0,L|110,12,0,L|110,11,0,L|110,10,0,L|110,9,0,L|110,8,0,L|110,7,0,L|110,6,0,L|111,14,0,L|111,16,0,L|112,20,0,L|111,20,0,L|111,24,0,L|110,24,0,L|111,26,0,L|112,26,0,L|113,28,0,L|112,28,0,L|111,28,0,L|110,28,0,L|109,28,0,L|108,28,0,L|107,28,0,L|106,28,0,L|105,28,0,L|104,28,0,L|103,28,0,L|102,28,0,L|101,28,0,L|98,28,0,L|97,28,0,L|96,28,0,L|95,28,0,L|94,28,0,L|94,27,0,L|93,27,0,L|92,27,0,L|91,27,0,L|90,27,0,L|89,27,0,L|88,27,0,L|87,27,0,L|84,25,0,M|83,25,0,M|82,25,0,M|81,25,0,L|81,24,0,L|80,24,0,L|79,24,0,L|79,23,0,L|78,23,0,L|77,23,0,L|77,22,0,L|77,21,0,L|78,21,0,L|80,20,0,L|81,22,0,L|81,21,0,L|81,20,0,L|81,19,0,L|81,18,0,L|80,22,0,L|80,21,0,L|80,19,0,L|80,18,0,L|79,20,0,L|79,19,0,L|79,18,0,L|78,19,0,L|78,18,0,L|79,21,0,L|78,20,0,L|77,20,0,L|78,22,0,L|79,22,0,L|80,23,0,L|81,23,0,L|82,26,0,M|82,24,0,L|83,24,0,L|83,23,0,L|84,23,0,M|84,20,1,P|84,19,0,M|85,19,0,M|86,19,0,M|86,20,0,L|87,20,0,L|87,23,2,S|86,24,3,T|87,25,0,L|88,25,0,L|89,25,0,L|90,25,0,L|91,25,0,L|92,25,0,L|93,25,0,L|94,25,0,L|94,24,0,L|93,23,0,L|92,23,0,L|91,22,0,N|91,21,0,L|90,21,0,M|90,20,0,L|89,20,0,L|89,19,0,M|88,19,0,M|88,16,0,L|88,15,0,L|88,14,0,L|88,13,0,L|88,12,0,L|88,11,0,L|88,10,0,L|88,9,0,L|88,8,0,L|88,7,0,L|88,6,0,L|90,19,0,M|91,19,0,L|92,19,0,L|93,19,0,L|93,18,0,N|93,17,0,L|93,16,0,L|93,15,0,L|93,14,0,L|93,13,0,L|93,12,0,L|93,11,0,L|93,10,0,L|93,9,0,L|93,8,0,L|93,7,0,L|93,6,0,L|93,5,0,L|93,3,0,J|92,18,0,O|91,18,0,N|91,17,0,L|90,16,0,L|90,15,0,L|91,15,0,L|91,14,0,L|91,13,0,L|91,12,0,L|91,11,0,L|91,10,0,L|91,9,0,L|91,8,0,L|91,7,0,L|91,6,0,L|91,5,0,L|91,3,0,J|90,14,0,L|91,16,0,L|92,21,0,L|93,21,0,L|94,21,0,M|94,20,0,L|95,20,0,L|96,20,0,L|97,20,0,L|98,20,0,L|96,16,0,L|96,15,0,L|96,14,0,L|96,13,0,L|96,12,0,L|96,11,0,L|96,10,0,L|96,9,0,L|96,8,0,L|96,7,0,L|96,6,0,L|91,20,0,L|92,22,0,O|93,24,0,L|92,24,0,L|91,24,0,L|90,24,0,L|89,24,0,L|88,24,0,L|90,22,0,N|88,20,0,L|87,19,0,M|84,17,0,M|83,17,0,L|83,16,0,L|82,16,0,L|81,16,0,L|80,16,0,L|79,16,0,L|78,16,0,L|77,16,0,L|76,16,0,N|76,15,0,N|75,15,0,M|75,14,0,M|73,14,0,L|72,14,0,L|71,14,0,L|68,10,0,M|71,12,0,L|72,12,0,L|72,11,0,L|71,11,0,L|71,13,0,L|72,13,0,L|73,13,0,L|74,13,0,L|74,12,0,L|75,12,0,U|75,11,0,M|74,10,0,M|74,11,0,M|75,13,0,M|77,17,0,L|77,15,0,N|78,15,0,V|78,14,0,M|79,14,0,M|80,14,0,M|81,14,0,M|82,14,0,M|84,15,0,M|86,16,3,S|86,12,0,L|86,11,0,L|81,12,0,J|81,11,0,J|82,9,0,J|83,7,0,J|81,13,0,J|80,13,0,J|79,15,0,L|80,15,0,L|81,15,0,L|82,15,0,M|83,15,0,M|84,16,0,M|84,18,0,M|85,20,0,L|84,22,0,M|84,24,0,M|87,26,0,L|88,26,0,L|89,26,0,L|90,26,0,L|91,26,0,L|92,26,0,L|93,26,0,L|94,26,0,L|93,28,0,L|92,28,0,L|91,28,0,L|90,28,0,L|89,28,0,L|88,28,0,L|87,28,0,L|86,28,0,L|86,30,0,L|87,32,0,L|87,30,0,L|88,32,0,L|88,30,0,L|89,32,0,L|89,30,0,L|90,32,0,L|90,30,0,L|91,32,0,L|91,30,0,L|92,32,0,L|92,30,0,L|93,32,0,L|93,30,0,L|94,32,0,L|94,30,0,L|95,32,0,L|95,30,0,L|96,32,0,L|96,30,0,L|97,32,0,L|97,30,0,L|98,30,0,L|101,30,0,L|102,32,0,L|102,30,0,L|103,32,0,L|103,30,0,L|104,32,0,L|104,30,0,L|105,32,0,L|105,30,0,L|106,32,0,L|106,30,0,L|107,32,0,L|107,30,0,L|108,32,0,L|108,30,0,L|109,32,0,L|109,30,0,L|110,32,0,L|110,30,0,L|111,32,0,L|111,30,0,L|112,32,0,L|112,30,0,L|113,30,0,L|112,33,0,L|111,34,0,L|81,28,0,J|81,27,0,J|81,26,0,M|80,25,0,L|79,25,0,L|78,24,0,L|77,24,0,L|76,24,0,N|75,24,0,L|76,23,0,N|76,22,0,N|76,21,0,N|76,20,1,O|76,18,0,N|76,17,0,N|75,16,0,L|74,15,0,M|73,15,0,M|70,15,0,M|69,15,0,M|67,15,0,M|66,15,0,N|63,15,0,L|64,19,0,L|64,17,0,L|65,19,0,L|65,17,0,L|66,19,0,N|66,17,0,N|67,19,0,L|67,17,0,L|68,17,0,L|68,19,0,L|70,23,0,L|71,23,0,L|72,23,0,L|73,23,0,L|74,22,0,L|74,21,0,L|74,20,0,L|74,19,0,L|74,18,0,L|73,17,0,L|72,17,0,L|71,17,0,L|70,17,0,L|69,17,0,L|73,22,0,L|73,21,0,L|73,20,0,L|73,19,0,L|73,18,0,L|72,22,0,L|72,21,0,L|72,20,0,L|72,19,0,L|72,18,0,L|71,22,0,L|71,21,0,L|71,19,0,L|71,18,0,L|70,22,0,L|70,20,0,L|70,19,0,L|70,18,0,L|69,19,0,L|69,18,0,L|69,22,0,L|70,21,0,L|69,20,0,L|68,20,0,L|67,20,0,L|66,20,1,O|65,20,0,L|64,20,0,L|63,20,0,L|62,20,0,L|63,24,0,L|63,22,0,L|64,22,0,L|65,22,0,L|66,22,0,N|67,22,0,L|68,22,0,L|70,24,0,L|69,23,0,L|70,25,0,M|73,26,0,L|75,26,0,M|74,28,0,L|73,28,0,L|72,28,0,L|71,27,0,L|74,30,0,M|68,30,0,M|67,24,0,L|66,24,0,N|65,24,0,L|64,24,0,L|63,25,0,L|62,25,0,L|61,25,0,L|60,25,0,L|61,27,0,L|61,26,0,L|58,27,0,L|51,30,0,L|52,30,0,L|53,30,0,L|54,30,0,L|55,31,0,L|56,31,0,L|57,31,0,L|57,33,0,K|56,33,0,K|55,33,0,K|54,33,0,K|52,32,0,K|51,32,0,K|50,32,0,K|45,30,0,L|43,29,0,L|46,30,0,L|47,30,0,L|48,30,0,L|51,27,0,L|52,26,0,L|53,26,0,L|54,26,0,L|55,26,0,L|57,25,0,L|56,26,0,L|58,25,0,L|60,24,0,L|59,25,0,L|61,23,0,L|61,22,0,L|61,21,0,L|61,20,0,L|61,19,0,L|61,18,0,L|62,17,0,L|62,16,0,L|62,15,0,L|95,27,0,L|95,26,0,L|97,25,0,L|95,25,0,L|95,24,0,L|97,23,2,T|95,21,0,M|96,21,0,M|109,25,0,L|109,24,0,L|107,23,0,L|109,22,0,N|107,22,0,O|109,21,0,M|107,21,0,L|109,20,0,L|107,20,0,L|109,19,0,M|107,19,0,L|109,18,0,N|107,18,0,O|107,17,0,L|109,16,0,L|107,16,0,L|109,15,0,L|107,15,0,L|109,14,0,L|107,14,0,L|109,13,0,L|107,13,0,L|109,12,0,L|107,12,0,L|109,11,0,L|107,11,0,L|109,10,0,L|107,10,0,L|109,9,0,L|107,9,0,L|109,8,0,L|107,8,0,L|109,7,0,L|107,7,0,L|109,6,0,L|107,6,0,L|107,5,0,L|109,3,0,J|107,3,0,J|103,21,0,M|102,21,0,M|101,21,0,M|100,21,0,M|99,21,0,M|100,20,0,L|101,20,0,L|104,21,0,M|105,19,0,M|105,18,0,N|105,16,0,L|104,16,0,L|103,16,0,L|101,16,3,S|98,12,0,L|101,12,0,L|102,13,0,L|102,14,0,L|103,14,0,L|104,14,0,L|104,13,0,L|104,12,0,L|103,12,0,L|103,11,0,L|102,11,0,L|102,10,0,L|101,10,0,L|98,10,0,L|102,8,0,L|103,8,0,L|103,9,0,L|104,9,0,L|104,10,0,L|104,8,0,L|104,7,0,L|104,6,0,L|103,6,0,L|101,6,3,T|102,5,2,S|104,3,0,J|103,3,0,J|102,3,0,J|101,3,0,J|100,3,0,J|99,3,0,J|98,3,0,J|97,3,0,J|103,7,0,L|102,7,0,L|98,6,1,S|102,9,0,L|103,10,0,L|104,11,0,L|103,13,0,L|102,12,0,L|101,11,0,L|98,11,0,L|98,16,1,T|102,17,0,T|102,15,0,L|103,15,0,L|104,15,0,L|105,15,0,L|105,14,0,L|105,13,0,L|105,12,0,L|105,11,0,L|105,10,0,L|105,9,0,L|105,8,0,L|105,7,0,L|105,6,0,L|105,3,0,J|102,20,0,L|112,14,0,L|112,13,0,L|112,12,0,L|112,11,0,L|112,10,0,L|112,9,0,L|112,8,0,L|112,7,0,L|112,5,2,T|110,16,0,L|111,13,0,L|111,12,0,L|111,11,0,L|111,10,0,L|111,9,0,L|111,8,0,L|111,7,0,L|111,6,0,L|110,3,0,J|111,3,0,J|112,3,0,J|113,3,0,J|114,3,0,J|82,18,0,L|82,19,0,L|82,20,0,L|82,21,0,L|82,22,0,L|78,17,0,L|79,17,0,L|80,17,0,L|81,17,0,L|82,17,0,L|83,18,0,L|83,19,0,L|83,20,0,L|83,21,0,L|83,22,0,L|82,23,0,L|77,19,0,L|77,18,0,L|90,18,0,N|87,17,0,T|89,16,0,L|89,15,0,L|87,15,0,L|89,14,0,L|87,14,0,L|89,13,0,L|87,13,0,L|89,12,0,L|87,12,0,L|89,11,0,L|87,11,0,L|89,10,0,L|87,10,0,L|89,9,0,L|87,9,0,L|89,8,0,L|87,8,0,L|89,7,0,L|87,7,0,L|89,6,0,L|86,6,3,T|87,5,2,S|88,3,0,J|87,3,0,J|86,3,0,J|85,3,0,J|89,3,0,J|92,20,0,L|94,19,0,M|93,20,0,L|94,18,0,N|92,17,0,L|94,16,0,L|92,16,0,L|94,15,0,L|92,15,0,L|94,14,0,L|92,14,0,L|94,13,0,L|92,13,0,L|94,12,0,L|92,12,0,L|94,11,0,L|92,11,0,L|94,10,0,L|92,10,0,L|94,9,0,L|92,9,0,L|94,8,0,L|92,8,0,L|94,7,0,L|92,7,0,L|94,6,0,L|92,6,0,L|92,5,0,L|94,3,0,J|92,3,0,J|90,13,0,L|90,12,0,L|90,11,0,L|90,10,0,L|90,9,0,L|90,8,0,L|90,7,0,L|90,6,0,L|90,3,0,J|97,21,0,M|99,20,0,L|98,21,0,M|97,17,0,S|95,16,0,L|97,15,0,L|95,15,0,L|97,14,0,L|95,14,0,L|97,13,0,L|95,13,0,L|97,12,0,L|95,12,0,L|97,11,0,L|95,11,0,L|97,10,0,L|95,10,0,L|97,9,0,L|95,9,0,L|97,8,0,L|95,8,0,L|97,7,0,L|95,7,0,L|95,6,0,L|97,5,2,T|95,3,0,J|96,3,0,J|73,12,0,L|73,11,0,L|86,10,0,L|84,5,0,J|58,11,0,N|49,28,0,N|59,12,0,L|59,28,0,L|60,12,0,L|60,28,0,L|61,12,0,L|61,28,0,L|43,19,0,N|43,20,0,N|43,21,0,N|53,8,0,L|75,16,0,W|75,24,0,W|67,24,0,W|67,16,0,W|49,19,0,N|47,21,0,X|47,18,0,O|90,20,0,Q|105,20,0,Q|94,20,0,R|109,20,0,R|95,19,0,J|96,19,0,J|97,19,0,J|98,19,0,J|99,19,0,J|100,19,0,J|101,19,0,J|102,19,0,J|103,19,0,J|104,19,0,J|93,22,0,N|94,22,0,N|105,22,0,N|106,22,0,N|85,21,0,J|86,21,0,J|87,21,0,J|88,21,0,J|89,21,0,J|110,21,0,J|111,21,0,J|112,21,0,J|113,21,0,J|114,21,0,J|127,3,0,M|128,3,0,N|129,3,0,N|130,3,0,N|131,3,0,N|132,3,0,N|133,3,0,N|134,3,0,N|135,3,0,N|136,3,0,N|137,3,0,N|127,37,0,M|128,37,0,N|129,37,0,N|130,37,0,N|131,37,0,N|132,37,0,N|133,37,0,N|134,37,0,N|135,37,0,N|136,37,0,N|137,37,0,N|49,16,0,N|49,24,0,N|32,28,0,K|28,27,0,K|24,26,0,K|20,25,0,K|8,22,0,K|8,18,0,K|20,15,0,K|24,14,0,K|28,13,0,K|32,12,0,K|4,19,0,K|4,21,0,K|3,20,0,K|9,19,0,L|9,20,0,L|9,21,0,L|13,18,0,L|13,22,0,L|17,17,0,L|17,23,0,L|21,16,0,L|21,24,0,L|25,15,0,L|25,25,0,L|29,14,0,L|29,26,0,L|33,27,0,L|33,13,0,L|57,20,1,O|61,15,1,O|61,25,1,O|57,16,0,N|58,16,0,N|59,16,0,N|60,16,0,N|61,16,0,N|50,15,0,N|51,15,0,N|52,15,0,N|54,15,0,N|55,15,0,N|56,15,0,N|57,17,0,N|57,18,0,N|61,17,0,N|61,18,0,N|61,19,0,N|61,20,0,N|61,21,0,N|61,22,0,N|61,23,0,N|61,24,0,N|57,24,0,N|58,24,0,N|59,24,0,N|60,24,0,N|50,25,0,N|51,25,0,N|52,25,0,N|54,25,0,N|55,25,0,N|56,25,0,N|57,21,0,N|57,22,0,N|57,23,0,N|61,26,0,N|61,14,0,N|53,25,0,O|53,15,0,O|24,18,0,N|27,18,0,N|28,18,0,N|31,18,0,N|32,18,0,N|35,18,0,N|36,18,0,N|39,18,0,N|40,18,0,N|40,12,0,N|40,13,0,N|40,14,0,N|40,15,0,N|40,16,0,N|40,17,0,N|36,13,0,N|36,14,0,N|36,15,0,N|36,16,0,N|36,17,0,N|32,14,0,N|32,15,0,N|32,16,0,N|32,17,0,N|28,15,0,N|28,16,0,N|28,17,0,N|24,16,0,N|24,17,0,N|40,22,0,N|40,23,0,N|40,24,0,N|40,25,0,N|40,26,0,N|40,27,0,N|40,28,0,N|36,22,0,N|36,23,0,N|36,24,0,N|36,25,0,N|36,26,0,N|36,27,0,N|32,22,0,N|32,23,0,N|32,24,0,N|32,25,0,N|32,26,0,N|28,22,0,N|28,23,0,N|28,24,0,N|28,25,0,N|24,22,0,N|27,22,0,N|31,22,0,N|35,22,0,N|39,22,0,N|41,22,0,N|41,18,0,N|24,23,0,N|24,24,0,N|114,4,3,Y|114,36,3,Z|82,27,0,J|82,28,0,J|82,29,0,J|82,30,0,J|82,10,0,J|82,11,0,J|82,12,0,J|82,13,0,J|83,8,0,J|83,32,0,J|42,18,0,O|42,22,0,O|37,18,0,O|37,22,0,O|33,22,0,O|33,18,0,O|29,18,0,O|29,22,0,O|25,22,0,O|25,18,0,O|43,29,2,[|44,29,2,[|45,29,2,[|42,29,2,[|42,26,0,[|43,26,0,[|44,26,0,[|45,26,0,[|49,12,0,N|50,12,0,N|51,12,0,N|52,12,0,N|56,12,0,N|57,12,0,N|58,12,0,N|50,28,0,N|51,28,0,N|52,28,0,N|56,28,0,N|57,28,0,N|58,28,0,N|49,11,0,L|49,29,0,L|50,11,0,L|50,29,0,L|51,11,0,L|51,29,0,L|52,11,0,L|52,29,0,L|53,11,0,L|53,29,0,L|54,11,0,L|54,29,0,L|55,11,0,L|55,29,0,L|56,11,0,L|56,29,0,L|57,11,0,L|57,29,0,L|58,9,0,K|58,31,0,K|20,18,0,N|21,18,0,N|23,18,0,N|20,17,0,N|20,22,0,N|21,22,0,N|23,22,0,N|20,23,0,N|12,21,0,N|12,19,0,N|12,20,1,O|12,23,0,N|13,23,0,N|14,23,0,N|15,23,0,N|16,24,0,N|17,24,0,N|18,24,0,N|19,24,0,N|20,24,0,N|16,23,0,N|12,22,0,N|12,18,0,N|12,17,0,N|13,17,0,N|14,17,0,N|15,17,0,N|16,17,0,N|16,16,0,N|17,16,0,N|18,16,0,N|19,16,0,N|20,16,0,N|20,20,1,O|22,22,0,O|22,18,0,O|49,14,1,O|49,26,1,O|27,16,3,\|27,24,3,\|35,26,3,\|39,27,3,\|39,24,3,\|39,16,3,\|39,13,3,\|35,14,3,\|22,16,0,\|22,24,2,\|30,26,2,\|30,14,0,\|38,22,0,]|34,22,0,]|30,22,0,]|26,22,0,]|26,18,2,]|30,18,2,]|34,18,2,]|38,18,2,]|84,21,3,^|121,19,3,^|20,21,1,]|20,19,3,]|57,19,3,]|49,27,3,]|49,13,3,]|76,19,3,]|72,15,2,^|72,25,0,^|116,4,1,Z|116,36,1,Y|66,21,3,]|56,8,0,_|50,10,3,_|53,12,0,O|53,28,0,O|57,25,0,]|57,15,2,]|123,9,3,Z|124,6,3,Z|124,34,3,Y|123,31,3,Y|50,31,2,[|50,29,0,[|50,30,0,`|55,32,2,[|56,32,2,[|57,31,3,[|57,30,3,[|56,29,0,[|54,30,1,[|53,32,0,L|56,17,2,[|55,17,2,[|54,16,1,[|55,22,0,a|105,21,2,^|124,13,1,M|124,14,1,M|124,27,1,M|124,26,1,M|122,25,0,M|123,25,0,M|124,25,0,M|122,15,0,M|123,15,0,M|124,15,0,M|123,16,0,L|124,16,0,L|127,31,0,Q|127,9,0,Q|122,28,3,Y|122,12,3,Z|125,6,0,J|124,9,0,J|123,12,0,J|124,31,0,J|123,28,0,J|125,34,0,J|116,16,0,J|117,16,0,J|118,16,0,J|119,16,0,J|120,16,0,J|121,16,0,J|116,24,0,J|117,24,0,J|118,24,0,J|119,24,0,J|120,24,0,J|121,24,0,J|121,25,3,Y|121,15,3,Z|53,18,0,b|53,10,0,b|43,24,0,b|34,20,0,b|79,23,0,c|126,21,0,c|72,27,0,d|137,20,0,b|52,30,0,c|46,25,0,c|34,23,0,b|46,14,0,b|72,23,0,c|139,19,0,c|107,20,0,c|82,17,0,c|47,27,0,c|56,22,0,e|68,18,0,d|141,18,0,N|141,22,0,N|141,20,1,O|141,21,3,]|125,18,0,R|125,22,0,Q|149,8,0,L|150,8,0,L|151,8,0,L|149,7,0,L|149,7,0,N|148,7,0,L|148,7,0,N|147,7,0,L|147,7,0,N|147,8,0,L|146,8,0,L|147,9,0,L|148,9,0,L|148,10,0,L|150,12,0,L|149,10,0,L|147,6,0,L|146,6,0,L|146,5,0,L|146,4,0,L|146,3,0,L|146,2,0,J|146,1,0,J|147,5,0,L|148,5,0,L|149,5,0,L|149,4,0,L|149,3,0,L|149,2,0,L|148,4,0,L|148,6,0,L|149,6,0,L|150,6,0,L|151,6,0,L|152,6,0,L|152,7,0,L|152,7,0,N|153,7,0,L|153,7,0,N|154,7,0,L|154,7,0,N|154,6,0,L|154,5,0,L|153,6,0,L|152,5,0,L|152,4,0,L|151,4,0,L|152,3,0,L|151,2,0,L|151,1,0,K|152,2,0,L|151,5,0,L|150,7,0,L|150,7,0,N|151,7,0,L|151,7,0,N|152,8,0,L|151,9,0,L|150,9,0,L|149,9,0,L|148,8,0,L|146,7,0,L|146,7,0,N|145,7,0,L|145,7,0,N|144,7,0,L|143,7,0,L|142,7,0,L|142,8,0,L|142,9,0,L|142,10,0,L|142,11,0,L|142,12,0,L|142,13,0,L|142,14,0,L|142,15,0,L|143,15,0,L|144,15,0,L|144,14,0,L|144,13,0,L|144,12,0,L|144,11,0,L|144,10,0,L|144,9,0,L|145,9,0,L|145,9,0,N|143,14,0,L|143,13,0,L|143,12,0,L|143,11,0,L|143,10,0,L|143,9,0,L|142,6,0,L|142,5,0,L|143,5,0,L|144,5,0,L|144,4,0,L|144,3,0,L|143,3,0,L|142,3,0,L|142,2,0,J|142,1,0,J|143,1,0,J|144,1,0,J|143,2,0,J|144,2,0,J|143,4,0,L|142,4,0,L|143,8,0,L|143,6,0,L|144,8,0,L|144,6,0,L|146,9,0,L|146,10,0,L|146,11,0,L|146,12,0,L|146,13,0,L|146,14,0,L|146,15,0,L|146,16,0,L|147,16,0,L|147,17,0,N|147,18,0,L|146,18,0,L|145,18,0,L|144,18,0,L|143,18,0,L|142,17,0,N|144,19,0,L|145,20,0,L|143,20,0,L|144,20,0,L|145,19,0,L|145,17,0,N|146,19,0,L|147,19,0,L|148,18,0,L|149,18,0,L|149,19,0,L|151,20,0,L|151,19,0,L|150,21,0,L|150,20,0,L|149,21,0,L|149,20,0,L|150,19,0,L|150,18,0,L|151,17,0,N|152,17,0,N|153,17,0,N|154,17,0,N|154,18,0,L|155,18,0,N|155,17,0,N|155,16,0,N|155,15,0,N|154,15,0,L|153,15,0,L|154,14,0,L|154,13,0,L|154,13,0,R|154,12,0,L|154,11,0,L|154,11,0,Q|155,11,0,N|155,10,0,N|155,9,1,O|155,8,0,N|154,10,0,L|154,16,0,L|153,16,0,L|152,16,0,L|151,16,0,L|151,16,0,R|150,16,0,L|149,16,0,L|149,16,0,Q|149,17,0,N|148,17,0,N|148,16,0,L|145,16,0,L|145,16,0,N|146,17,0,N|147,15,0,L|145,8,0,L|145,8,0,N|147,10,0,L|148,11,0,L|148,12,0,L|148,13,0,L|148,14,0,L|149,11,0,L|149,12,0,L|149,13,0,L|149,14,0,L|150,10,0,L|150,11,0,L|150,13,0,L|150,14,0,L|151,10,0,L|151,11,0,L|151,12,0,L|151,13,0,L|151,14,0,L|152,10,0,L|152,11,0,L|152,12,0,L|152,13,0,L|152,14,0,L|152,9,0,L|153,9,0,L|153,10,0,L|153,11,0,L|153,11,0,Q|153,12,0,L|153,13,0,L|153,13,0,R|153,14,0,L|152,15,0,L|151,15,0,L|151,15,0,R|150,15,0,L|149,15,0,L|149,15,0,Q|148,15,0,L|147,14,0,L|147,13,0,L|147,12,0,L|147,11,0,L|145,6,0,L|145,5,0,L|147,4,0,L|145,4,0,L|147,3,0,L|145,3,0,L|147,2,0,J|145,2,0,J|147,1,0,J|148,1,0,K|145,1,0,J|148,0,0,K|149,0,0,K|150,5,0,L|150,4,0,L|150,3,0,L|148,3,0,L|148,2,0,L|150,2,0,L|149,1,0,K|151,3,0,L|153,8,0,L|155,7,0,N|154,8,0,L|153,5,0,L|153,4,0,L|153,3,0,L|153,1,0,K|153,0,0,K|151,0,0,K|142,16,0,L|143,16,0,L|145,15,0,L|145,15,0,N|144,16,0,L|145,14,0,L|145,14,0,N|145,13,0,L|145,13,0,N|145,12,0,L|145,11,0,L|145,11,0,N|145,10,0,L|145,10,0,N|143,19,0,L|142,18,0,L|143,21,0,L|144,21,0,L|145,21,0,L|146,20,0,L|146,21,0,L|147,20,0,L|147,21,0,L|148,19,0,L|148,19,0,R|148,20,0,L|148,21,0,L|148,21,0,R|148,22,0,L|148,23,0,N|147,23,0,N|146,23,0,N|145,23,0,N|142,23,0,N|142,24,0,L|142,25,0,L|142,26,0,L|142,27,0,L|142,28,0,L|142,29,0,L|142,30,0,L|142,31,0,L|142,32,0,L|142,33,0,L|142,34,0,L|142,35,0,L|142,36,0,L|142,37,0,L|142,38,0,J|142,39,0,J|143,39,0,J|144,39,0,J|145,39,0,J|148,40,0,K|149,40,0,K|151,40,0,K|153,40,0,K|152,38,0,L|151,37,0,L|150,37,0,L|149,37,0,L|148,37,0,L|147,38,0,J|146,38,0,J|146,37,0,L|145,37,0,L|144,37,0,L|144,36,0,L|144,35,0,L|145,35,0,L|146,35,0,L|147,35,0,L|147,36,0,L|148,35,0,L|149,35,0,L|150,35,0,L|151,35,0,L|152,35,0,L|153,35,0,L|153,36,0,L|156,34,0,K|154,34,0,L|154,33,0,L|154,33,0,N|153,33,0,L|153,33,0,N|152,33,0,L|152,33,0,N|151,33,0,L|151,33,0,N|150,33,0,L|150,33,0,N|149,33,0,L|149,33,0,N|148,33,0,L|148,33,0,N|147,33,0,L|147,33,0,N|146,33,0,L|146,33,0,N|145,33,0,L|145,33,0,N|144,33,0,L|144,32,0,L|144,31,0,L|145,31,0,L|145,31,0,N|146,31,0,L|147,31,0,L|148,31,0,L|149,31,0,L|150,31,0,L|151,31,0,L|152,31,0,L|153,31,0,L|154,31,0,L|155,31,1,O|155,32,0,N|155,30,0,N|154,30,0,L|154,29,0,L|154,29,0,Q|153,29,0,L|153,29,0,Q|152,29,0,L|150,28,0,L|147,26,0,L|146,26,0,L|146,25,0,L|145,25,0,L|145,25,0,N|144,25,0,L|144,26,0,L|144,27,0,L|145,27,0,L|145,27,0,N|145,28,0,L|146,28,0,L|146,29,0,L|147,25,0,L|147,27,0,L|147,28,0,L|147,29,0,L|153,27,0,L|153,27,0,R|154,27,0,L|154,27,0,R|154,26,0,L|154,25,0,L|153,25,0,L|153,24,0,L|154,23,0,N|155,23,0,N|154,22,0,L|152,24,0,L|151,24,0,L|151,24,0,R|150,24,0,L|149,24,0,L|149,24,0,Q|151,23,0,N|152,23,0,N|153,23,0,N|154,24,0,L|153,26,0,L|152,25,0,L|151,25,0,L|151,25,0,R|150,25,0,L|149,25,0,L|149,25,0,Q|148,25,0,L|152,27,0,L|152,26,0,L|151,28,0,L|151,27,0,L|151,26,0,L|150,29,0,L|150,27,0,L|150,26,0,L|149,29,0,L|149,28,0,L|149,27,0,L|149,26,0,L|148,29,0,L|148,28,0,L|148,27,0,L|148,26,0,L|151,29,0,L|152,28,0,L|153,28,0,L|154,28,0,L|153,30,0,L|152,30,0,L|151,30,0,L|150,30,0,L|149,30,0,L|148,30,0,L|147,30,0,L|146,30,0,L|145,30,0,L|145,30,0,N|144,30,0,L|144,29,0,L|145,32,0,L|145,32,0,N|146,32,0,L|147,32,0,L|148,32,0,L|149,32,0,L|150,32,0,L|151,32,0,L|152,32,0,L|153,32,0,L|154,32,0,L|155,33,0,N|154,35,0,L|153,34,0,L|152,34,0,L|151,34,0,L|150,34,0,L|149,34,0,L|148,34,0,L|147,34,0,L|146,34,0,L|145,34,0,L|144,34,0,L|145,36,0,L|146,36,0,L|147,37,0,L|148,36,0,L|148,38,0,L|149,36,0,L|149,38,0,L|150,36,0,L|150,38,0,L|152,36,0,L|151,36,0,L|151,38,0,L|152,37,0,L|153,37,0,L|153,39,0,K|151,39,0,K|149,39,0,K|148,39,0,K|147,39,0,J|146,39,0,J|145,38,0,J|144,38,0,J|143,38,0,J|143,37,0,L|143,36,0,L|143,35,0,L|143,34,0,L|143,33,0,L|143,32,0,L|143,31,0,L|143,30,0,L|143,29,0,L|143,28,0,L|143,27,0,L|143,26,0,L|143,25,0,L|142,22,0,L|143,24,0,L|144,24,0,L|145,24,0,L|145,24,0,N|146,24,0,L|147,24,0,L|148,24,0,L|149,23,0,N|147,22,0,L|146,22,0,L|145,22,0,L|144,22,0,L|143,22,0,L|142,21,0,L|142,21,0,R|142,20,0,L|142,19,0,L|142,19,0,R|151,21,0,L|152,19,0,L|152,20,0,L|152,21,0,L|153,19,0,L|153,20,0,L|153,21,0,L|151,18,0,L|151,18,0,R|152,18,0,L|153,18,0,L|154,19,0,L|154,19,0,R|154,20,0,L|154,21,0,L|154,21,0,R|153,22,0,L|152,22,0,L|151,22,0,L|151,22,0,R|150,22,0,L|149,22,0,L|155,19,0,N|156,17,0,K|157,17,0,K|158,17,0,K|159,17,0,K|159,23,0,K|158,23,0,K|157,23,0,K|156,23,0,K|155,22,0,N|155,21,0,N|155,20,1,O|155,14,1,O|155,13,0,N|155,12,0,N|154,9,0,L|156,6,0,K|155,29,0,N|155,28,0,N|155,27,0,N|155,26,1,O|155,25,0,N|155,24,0,N|146,27,0,L|145,26,0,L|145,26,0,N|144,28,0,L|145,29,0,L|145,29,0,N|143,17,0,O|143,23,0,O|145,28,1,O|145,12,1,O|142,3,0,N|142,4,0,N|142,5,0,N|142,6,0,N|142,7,0,N|142,8,0,N|142,9,0,N|142,10,0,N|142,11,0,N|142,12,0,N|142,13,0,N|142,14,0,N|142,15,0,N|142,16,0,N|142,24,0,N|142,25,0,N|142,26,0,N|142,27,0,N|142,28,0,N|142,29,0,N|142,30,0,N|142,31,0,N|142,32,0,N|142,33,0,N|142,34,0,N|142,35,0,N|142,36,0,N|142,37,0,N|126,12,0,Q|126,28,0,Q|128,31,0,Q|128,9,0,Q|137,12,0,Q|137,28,0,Q|129,24,0,R|129,16,0,R|128,30,0,X|128,10,0,X|145,18,0,R|145,22,0,R|92,11,0,f|90,17,0,N|90,23,0,N|94,23,0,N|94,17,0,N|105,17,0,N|109,17,0,N|109,23,0,N|105,23,0,N|107,11,0,f|107,29,0,f|92,29,0,f|62,20,0,f|74,16,0,f|68,24,0,f|141,33,0,X|141,7,0,X|145,6,0,Q|145,34,0,Q|149,31,0,Q|149,32,0,Q|149,9,0,Q|149,8,0,Q|151,9,0,R|151,8,0,R|151,31,0,R|151,32,0,R|145,6,0,R|145,34,0,R|149,4,0,Q|149,5,0,Q|149,6,0,Q|149,34,0,Q|149,35,0,Q|149,36,0,Q|151,34,0,R|151,35,0,R|151,36,0,R|151,4,0,R|151,5,0,R|151,6,0,R|153,2,0,K|154,2,0,K|154,3,0,K|155,4,0,K|155,5,0,K|155,6,0,K|154,4,0,K|155,34,0,K|155,35,0,K|155,36,0,K|154,36,0,K|154,37,0,K|154,38,0,K|153,38,0,K|129,18,0,L|137,18,0,L|127,20,0,X|126,20,0,L|144,17,2,]|144,23,0,]|150,23,0,]|150,17,2,]|141,19,1,]|127,18,0,L|65,22,0,c|114,17,0,g|125,2,0,h|125,37,0,i|114,22,0,j|59,6,1,i|60,34,3,h|80,28,0,j|81,30,0,j|82,32,0,j|83,34,0,j|84,36,0,j|110,36,1,i|114,33,2,h|85,32,0,i|99,33,2,h|100,32,0,i|96,22,3,h|99,26,2,i|100,25,0,h|104,22,3,i|103,18,1,h|114,26,2,i|111,22,3,h|110,18,1,i|111,4,3,h|85,25,0,h|83,26,1,j|85,23,2,g|89,22,3,i|88,18,1,h|89,4,3,i|95,18,1,i|96,4,3,h|85,18,2,j|84,14,3,g|85,14,0,i|85,7,0,h|80,11,0,g|81,9,0,g|83,5,0,g|82,7,0,g|103,36,1,h|95,36,1,i|88,36,1,h|85,36,2,j|100,14,0,i|99,15,2,h|99,8,2,i|100,7,0,h|104,4,3,i|114,15,2,h|114,8,2,i|84,3,0,g|85,5,2,k|80,15,0,l|81,25,2,l|120,22,2,l|117,22,2,l|119,18,0,l|116,18,0,l|48,19,3,l|48,28,3,m|46,30,2,l|48,30,2,l|44,23,0,l|41,24,1,l|39,17,3,n|39,12,3,n|35,13,3,n|35,27,3,n|39,23,3,n|39,25,3,n|39,26,3,n|39,28,3,n|39,15,3,n|39,14,3,n|27,23,3,n|27,17,3,n|25,15,0,o|26,25,2,o|23,24,2,n|23,16,0,n|17,17,0,p|19,18,2,p|19,23,2,p|17,22,0,p|29,14,0,n|31,14,0,n|31,26,2,n|29,26,2,n|31,17,2,o|30,23,0,o|15,19,2,p|15,22,2,p|13,21,0,p|13,18,0,p|16,21,0,p|50,11,1,q|50,9,1,q|57,8,0,q|55,8,0,q|53,8,0,l|57,11,2,l|39,21,1,p|35,21,1,p|27,21,1,p|40,19,3,p|36,19,3,p|28,19,3,p|32,19,3,p|31,21,1,p|23,21,1,p|24,19,3,p|55,16,1,r|116,15,2,j|116,26,2,g|76,26,1,h|77,14,3,i|139,22,2,s|139,18,0,l|146,8,0,l|154,1,2,i|147,16,2,l|154,16,2,l|148,2,0,t|156,5,2,i|155,3,2,i|154,40,2,h|148,37,0,t|155,38,2,h|156,36,2,h|153,24,0,l|147,32,2,l|154,32,2,l|146,24,0,l|153,8,0,l|128,15,2,l|127,25,0,l|146,37,1,t|146,3,1,t|132,18,0,l|35,15,3,u|35,24,3,u|55,30,0,v|149,2,0,w|151,2,0,w|151,37,0,w|149,37,0,w|127,27,0,x|127,12,0,x|136,1,3,y|136,39,1,z|46,8,3,y|50,7,3,y|54,6,3,y|58,5,3,y|34,11,3,{|38,10,3,y|42,9,3,y|34,29,1,}|38,30,1,z|42,31,1,z|62,5,1,y|62,4,3,y|46,32,1,z|50,33,1,z|54,34,1,z|58,35,1,z|62,35,3,z|62,36,1,z|30,12,3,{|26,13,3,{|22,14,3,{|18,15,3,{|14,16,3,{|10,17,3,{|30,28,1,}|26,27,1,}|22,26,1,}|18,25,1,}|14,24,1,}|10,23,1,}|83,10,2,}|83,30,2,{|84,33,2,{|84,7,2,}|47,23,2,~|146,0,3,{|146,40,1,}|158,34,1,y|158,6,3,z|133,22,0,|136,22,0,|55,24,2,|124,20,0,|45,20,0,|71,20,3,|59,22,0,|10,20,0,|144,4,0,|144,36,0,|129,20,0,|43,28,1,|136,19,2,|134,34,0,|130,34,0,|130,5,0,|134,5,0,|134,9,0,|134,13,0,|134,30,0,|134,26,0,|130,30,0,|130,26,0,|130,13,0,|130,9,0,|145,20,1,|151,20,1,|71,20,0,|80,20,0,|150,12,0,|158,14,3,|158,9,3,|158,31,3,|158,26,3,|150,28,0,|108,17,0,L|91,23,0,L|79,15,0,f|79,25,0,f|59,18,0,|62,18,0,|139,13,0,|139,9,0,|139,4,0,|139,26,0,|139,30,0,|139,35,0,|158,20,3,|2,19,3,{|2,21,1,}|0,20,0,K|1,20,0,K|2,20,0,K|126,4,0,h|125,7,0,h|124,10,0,h|123,13,0,h|124,29,0,i|123,26,0,i|125,32,0,i|126,35,0,i|58,10,0,N|59,10,0,M|60,10,0,M|61,10,0,M|62,10,0,M|63,10,0,M|64,10,0,M|65,10,0,M|66,10,0,M|67,10,0,M|58,30,0,N|59,30,0,M|60,30,0,M|61,30,0,M|62,30,0,M|63,30,0,M|64,30,0,M|65,30,0,M|66,30,0,M|67,30,0,M|59,11,0,L|59,29,0,L|60,11,0,L|60,29,0,L|61,11,0,L|61,29,0,L|62,11,0,L|62,12,0,L|62,13,0,L|62,14,0,L|62,26,0,L|62,27,0,L|62,28,0,L|62,29,0,L|63,11,0,L|63,12,0,L|63,13,0,L|63,14,0,L|63,26,0,L|63,27,0,L|63,28,0,L|63,29,0,L|64,11,0,L|64,12,0,L|64,13,0,L|64,14,0,L|64,15,0,L|64,25,0,L|64,26,0,L|64,27,0,L|64,28,0,L|64,29,0,L|65,11,0,L|65,12,0,L|65,13,0,L|65,27,0,L|65,28,0,L|65,29,0,L|66,11,0,L|66,12,0,L|66,13,0,L|66,27,0,L|66,28,0,L|66,29,0,L|59,11,0,w|59,28,0,w|61,11,0,N|61,12,0,N|61,13,0,N|61,27,0,N|61,28,0,N|61,29,0,N|65,14,0,L|65,26,0,L|65,15,0,L|65,25,0,L|67,11,0,L|67,12,0,L|67,13,0,L|67,14,0,L|67,26,0,L|67,27,0,L|67,28,0,L|67,29,0,L|68,11,0,L|68,12,0,L|68,13,0,L|68,14,0,L|68,26,0,L|68,27,0,L|68,28,0,L|68,29,0,L|69,11,0,L|69,12,0,L|69,13,0,L|69,14,0,L|69,26,0,L|69,27,0,L|69,28,0,L|69,29,0,L|70,11,0,L|70,12,0,L|70,13,0,L|70,14,0,L|70,26,0,L|70,27,0,L|70,28,0,L|70,29,0,L|74,14,0,L|74,26,0,L|70,13,0,M|70,14,0,M|70,11,0,M|70,26,0,M|70,27,0,M|70,29,0,M|62,26,0,N|64,26,0,N|65,26,0,N|62,14,0,N|64,14,0,N|65,14,0,N|68,15,0,P|68,25,0,P|63,14,0,O|63,26,0,O|65,25,2,l|64,15,0,l|71,15,0,M|71,25,0,M|70,28,1,P|70,12,1,P|69,10,0,M|70,10,0,M|69,30,0,M|70,30,0,M|72,10,0,P|72,30,0,P|71,10,0,|73,10,0,|71,30,2,|73,30,2,|74,12,3,l|74,27,3,l|72,14,2,l|71,26,0,l|62,29,1,l|62,12,1,l|67,11,0,l|65,11,0,l|66,29,2,l|68,29,2,l|50,20,1,|51,20,1,|51,24,2,|51,17,2,a|52,20,3,a|55,20,3,a|51,23,0,a|53,19,0,b|53,20,0,b|54,21,0,b|50,21,0,Q|50,19,0,R|55,12,2,]|55,28,0,]|54,28,0,N|54,12,0,N|54,12,2,|71,25,2,|80,26,2,|80,14,0,|71,15,0,|70,13,1,|70,27,1,|54,25,2,|54,28,0,|54,15,0,|49,20,3,|61,20,3,|40,25,3,|40,15,3,|36,16,3,|32,16,3,|28,16,3,|24,16,3,|24,24,3,|28,24,3,|32,24,3,|36,24,3,|20,21,3,|12,19,1,|58,28,2,|58,12,0,|66,14,0,L|66,26,0,L|66,14,1,]|66,26,1,]|66,14,2,|66,26,0,|61,17,1,|61,23,1,|90,19,0,|109,19,0,|24,18,0,|32,22,2,|38,18,0,|49,15,3,|49,25,3,|40,26,1,|40,14,1,|52,15,2,|52,25,0,|100,21,2,|121,21,3,|150,33,2,|142,33,3,|142,7,3,|150,7,0,|137,3,0,|126,9,1,|126,31,1,|128,17,2,|145,29,3,|145,11,3,|128,23,0,|137,23,0,|137,17,2,|141,19,3,|149,7,2,|149,17,2,|149,23,0,|149,33,0,|151,17,0,|121,19,1,|141,21,1,|131,23,2,|100,9,0,N|100,10,0,N|100,11,0,N|100,12,0,N|100,13,0,N|101,13,0,N|101,14,0,N|101,15,0,N|102,15,0,N|102,16,0,N|103,16,0,N|103,17,0,N|104,17,0,N|89,17,0,N|88,17,0,N|87,16,0,N|88,16,0,N|86,15,0,N|87,15,0,N|86,13,0,N|86,14,0,N|85,9,0,N|85,10,0,N|85,11,0,N|85,12,0,N|85,13,0,N|86,7,0,N|86,8,0,N|86,9,0,N|87,6,0,N|87,7,0,N|88,5,0,N|88,6,0,N|89,5,0,N|90,5,0,N|90,4,0,N|91,4,0,N|92,4,0,N|93,4,0,N|94,4,0,N|94,5,0,N|95,5,0,N|96,5,0,N|96,6,0,N|97,6,0,N|97,7,0,N|98,7,0,N|98,8,0,N|98,9,0,N|99,9,0,N|99,10,0,N|99,11,0,N|99,12,0,N|99,13,0,N|98,13,0,N|98,14,0,N|98,15,0,N|97,15,0,N|97,16,0,N|96,16,0,N|96,17,0,N|95,17,0,N|110,17,0,N|111,17,0,N|111,16,0,N|112,16,0,N|112,15,0,N|113,15,0,N|113,13,0,N|113,14,0,N|114,9,0,N|114,10,0,N|114,11,0,N|114,12,0,N|114,13,0,N|113,7,0,N|113,8,0,N|113,9,0,N|112,6,0,N|112,7,0,N|111,6,0,N|109,5,0,N|110,5,0,N|111,5,0,N|105,4,0,N|106,4,0,N|107,4,0,N|108,4,0,N|109,4,0,N|103,5,0,N|104,5,0,N|105,5,0,N|102,6,0,N|103,6,0,N|102,7,0,N|101,7,0,N|101,8,0,N|101,9,0,N|100,27,0,N|100,28,0,N|100,29,0,N|100,30,0,N|100,31,0,N|99,27,0,N|99,28,0,N|99,29,0,N|99,30,0,N|99,31,0,N|98,25,0,N|98,26,0,N|98,27,0,N|97,24,0,N|97,25,0,N|96,23,0,N|96,24,0,N|95,23,0,N|104,23,0,N|103,23,0,N|103,24,0,N|102,24,0,N|102,25,0,N|101,25,0,N|101,26,0,N|101,27,0,N|85,27,0,N|85,28,0,N|85,29,0,N|85,30,0,N|85,31,0,N|86,31,0,N|86,32,0,N|86,33,0,N|87,33,0,N|87,34,0,N|88,34,0,N|88,35,0,N|89,35,0,N|90,35,0,N|90,36,0,N|91,36,0,N|92,36,0,N|93,36,0,N|94,36,0,N|94,35,0,N|95,35,0,N|96,35,0,N|96,34,0,N|97,34,0,N|86,25,0,N|86,26,0,N|86,27,0,N|87,24,0,N|87,25,0,N|88,23,0,N|88,24,0,N|89,23,0,N|98,31,0,N|98,32,0,N|98,33,0,N|97,33,0,N|102,33,0,N|102,34,0,N|103,34,0,N|103,35,0,N|101,31,0,N|101,32,0,N|101,33,0,N|114,27,0,N|114,28,0,N|114,29,0,N|114,30,0,N|114,31,0,N|113,31,0,N|113,32,0,N|113,33,0,N|112,33,0,N|112,34,0,N|111,34,0,N|111,35,0,N|109,35,0,N|110,35,0,N|105,36,0,N|106,36,0,N|107,36,0,N|108,36,0,N|109,36,0,N|104,35,0,N|105,35,0,N|113,25,0,N|113,26,0,N|113,27,0,N|112,24,0,N|112,25,0,N|111,24,0,N|110,23,0,N|111,23,0,N|107,4,0,|92,4,0,|85,11,1,|107,36,2,|92,36,2,|99,29,3,|114,29,3,|114,11,3,|99,11,3,|100,11,1,|100,29,1,|85,29,1,|93,18,2,|108,18,2,|106,22,0,|91,22,0,|65,11,0,|67,11,0,|66,29,0,|67,29,0,|68,11,0,G|62,12,0,G|65,29,0,G|62,28,0,G|43,18,2,|41,11,0,L|41,12,0,L|41,13,0,L|41,14,0,L|41,15,0,L|41,16,0,L|41,17,0,L|42,11,0,L|42,12,0,L|42,13,0,L|42,14,0,L|42,15,0,L|42,16,0,L|43,11,0,L|43,12,0,L|43,13,0,L|43,15,0,L|43,16,0,L|43,17,0,L|44,11,0,L|44,12,0,L|44,13,0,L|44,15,0,L|44,16,0,L|44,17,0,L|45,10,0,L|45,11,0,L|45,12,0,L|45,13,0,L|45,15,0,L|45,16,0,L|45,17,0,L|46,10,0,L|46,11,0,L|46,12,0,L|46,13,0,L|46,15,0,L|46,16,0,L|46,17,0,L|47,10,0,L|47,11,0,L|47,12,0,L|47,13,0,L|48,10,0,L|48,11,0,L|48,12,0,L|48,13,0,L|48,14,0,L|48,15,0,L|48,16,0,L|41,16,2,|44,10,0,|47,12,2,|46,12,2,|43,12,3,|43,13,3,|45,16,3,|45,15,3,|44,9,0,N|45,9,0,N|46,9,0,N|47,9,0,N|48,9,0,N|49,9,0,N|49,10,0,N|49,11,0,N|40,10,0,N|41,10,0,N|42,10,0,N|43,10,0,N|44,10,0,N|40,11,0,N|44,31,0,N|45,31,0,N|46,31,0,N|47,31,0,N|48,31,0,N|49,31,0,N|40,30,0,N|41,30,0,N|42,30,0,N|43,30,0,N|44,30,0,N|40,29,0,N|49,29,0,N|49,30,0,N|52,13,0,b|38,20,0,b|64,19,0,c|63,16,0,c|37,16,0,b|33,20,0,b|45,25,0,b|48,16,3,l|59,13,1,t|59,27,1,t|7,18,3,j|6,22,1,g|5,19,0,|5,21,2,|5,20,0,N|6,20,0,N|7,20,0,N|8,20,0,N|152,0,0,|150,0,0,|152,40,2,|150,40,2,|150,1,0,N|152,1,0,N|152,39,0,N|150,39,0,N|53,8,0, |54,8,0, |55,8,0, |56,8,0, |57,8,0, |50,9,0, |51,9,0, |52,9,0, |53,9,0, |54,9,0, |55,9,0, |56,9,0, |57,9,0, |50,10,0, |51,10,0, |52,10,0, |53,10,0, |54,10,0, |55,10,0, |56,10,0, |57,10,0, |50,11,0, |51,11,0, |52,11,0, |53,11,0, |54,11,0, |55,11,0, |56,11,0, |57,11,0, |46,23,0, |47,23,0, |48,23,0, |46,24,0, |47,24,0, |48,24,0, </bigString>
+		<bigString>48,20,0,?|80,15,0,?|56,11,0,@|53,8,0,@|48,30,0,A|46,30,0,A|41,24,0,A|45,23,0,B|44,23,0,B|128,15,0,C|127,15,0,C|127,25,0,C|117,18,0,D|119,22,0,E|119,18,0,F|120,18,0,F|132,18,0,G|120,22,0,G|139,18,0,?|117,22,0,?|94,13,0,H|91,14,0,H|89,13,0,H|89,11,0,H|90,9,0,H|93,8,0,H|95,9,0,H|95,11,0,H|94,12,0,H|92,12,0,H|90,12,0,H|91,11,0,H|92,10,0,H|94,10,0,H|91,8,0,H|91,7,0,H|89,9,0,H|89,10,0,H|88,12,0,H|93,14,0,H|96,13,0,H|96,12,0,H|96,10,0,H|94,14,0,H|92,15,0,H|91,15,0,H|103,11,0,H|105,13,0,H|107,14,0,H|106,14,0,H|104,12,0,H|105,10,0,H|106,8,0,H|108,8,0,H|110,10,0,H|110,12,0,H|109,13,0,H|108,13,0,H|108,12,0,H|108,9,0,H|106,9,0,H|104,9,0,H|104,8,0,H|106,6,0,H|107,6,0,H|110,7,0,H|111,9,0,H|112,10,0,H|111,12,0,H|110,14,0,H|109,15,0,H|105,15,0,H|104,14,0,H|106,12,0,H|105,11,0,H|103,10,0,H|105,26,0,H|104,28,0,H|103,30,0,H|104,31,0,H|105,32,0,H|108,32,0,H|110,31,0,H|110,29,0,H|109,27,0,H|106,26,0,H|105,29,0,H|106,31,0,H|108,31,0,H|108,28,0,H|106,27,0,H|105,27,0,H|108,25,0,H|111,26,0,H|112,28,0,H|112,30,0,H|111,31,0,H|110,33,0,H|108,34,0,H|106,34,0,H|104,33,0,H|103,32,0,H|102,30,0,H|102,28,0,H|103,27,0,H|105,25,0,H|106,24,0,H|108,24,0,H|94,26,0,H|90,26,0,H|89,27,0,H|88,30,0,H|88,31,0,H|91,34,0,H|92,34,0,H|94,33,0,H|96,32,0,H|96,30,0,H|96,29,0,H|95,28,0,H|93,26,0,H|92,26,0,H|92,24,0,H|91,25,0,H|89,26,0,H|88,27,0,H|87,28,0,H|87,29,0,H|89,29,0,H|89,28,0,H|92,27,0,H|95,27,0,H|96,26,0,H|94,25,0,H|90,27,0,H|90,28,0,H|90,30,0,H|90,32,0,H|91,33,0,H|92,31,0,H|94,30,0,H|94,29,0,H|95,31,0,H|97,30,0,H|97,29,0,H|97,28,0,H|94,32,0,H|93,32,0,H|91,32,0,H|89,32,0,H|89,14,0,H|88,13,0,H|87,12,0,H|87,11,0,H|86,10,0,H|88,8,0,H|88,7,0,H|92,6,0,H|91,5,0,H|94,6,0,H|95,7,0,H|96,8,0,H|94,8,0,H|98,10,0,H|97,11,0,H|98,11,0,H|96,14,0,H|94,15,0,H|101,11,0,H|112,12,0,H|113,11,0,H|113,10,0,H|109,10,0,H|109,9,0,H|109,8,0,H|108,7,0,H|107,7,0,H|105,7,0,H|111,13,0,H|109,14,0,H|107,15,0,H|109,24,0,H|110,26,0,H|111,27,0,H|111,29,0,H|110,30,0,H|109,30,0,H|108,29,0,H|94,27,0,H|90,25,0,H|104,26,0,H|107,33,0,H|107,35,0,H|106,35,0,H|112,32,0,H|101,29,0,H|87,26,0,H|89,34,0,H|88,33,0,H|97,31,0,H|97,13,0,H|89,15,0,H|89,16,0,H|88,14,0,H|102,14,0,H|102,13,0,H|102,12,0,H|103,7,0,H|106,5,0,H|107,5,0,H|106,16,0,H|105,16,0,H|93,16,0,H|92,16,0,H|107,27,0,H|106,28,0,H|102,31,0,H|113,29,0,H|113,30,0,H|109,32,0,H|111,11,0,H|110,8,0,H|65,11,0,I|67,11,0,J|66,29,0,K|67,29,0,L|68,11,0,F|62,12,0,F|65,29,0,F|62,28,0,F|115,3,0,M|115,4,0,M|115,5,0,M|115,6,0,M|115,7,0,M|115,8,0,M|115,9,0,M|115,10,0,M|115,11,0,M|115,12,0,M|115,13,0,M|115,14,0,M|115,15,0,M|115,16,0,M|126,2,0,N|127,2,0,N|128,2,0,N|129,2,0,N|130,2,0,N|131,2,0,N|132,2,0,N|133,2,0,N|134,2,0,N|135,2,0,N|138,1,0,M|139,1,0,M|140,1,0,M|141,1,0,M|136,2,0,N|126,3,0,M|114,20,0,O|116,18,0,O|116,19,0,O|117,18,0,O|117,19,0,O|117,20,0,O|118,18,0,O|118,19,0,O|118,20,0,O|119,18,0,O|119,19,0,O|119,20,0,O|120,18,0,O|120,19,0,O|122,18,0,O|122,19,0,O|122,20,0,O|123,18,0,O|123,19,0,O|123,20,0,O|124,18,0,O|124,19,0,O|124,20,0,O|125,18,0,O|125,19,0,O|125,20,0,O|126,18,0,O|126,19,0,O|127,19,0,O|127,20,0,O|128,18,0,O|128,19,0,O|128,20,0,O|129,19,0,O|129,20,0,O|130,18,0,O|130,19,0,O|130,20,0,O|131,18,0,O|131,19,0,O|131,20,0,O|132,18,0,O|132,19,0,O|132,20,0,O|133,18,0,O|133,19,0,O|133,20,0,O|134,18,0,O|134,19,0,O|134,20,0,O|135,18,0,O|135,19,0,O|135,20,0,O|136,18,0,O|136,19,0,O|136,20,0,O|137,19,0,O|137,20,0,O|138,18,0,O|138,19,0,O|138,20,0,O|139,18,0,O|139,19,0,O|139,20,0,O|140,18,0,O|140,19,0,O|140,20,0,O|141,18,0,O|141,19,0,O|141,20,0,O|125,13,0,O|125,14,0,O|125,15,0,O|125,16,0,O|126,10,0,O|126,11,0,O|126,12,0,O|126,13,0,O|126,14,0,O|126,15,0,O|126,16,0,O|127,7,0,O|127,8,0,O|127,9,0,O|127,10,0,O|127,11,0,O|127,12,0,O|127,13,0,O|127,14,0,O|127,15,0,O|127,16,0,O|128,4,0,O|128,5,0,O|128,6,0,O|128,7,0,O|128,8,0,O|128,9,0,O|128,10,0,O|128,11,0,O|128,12,0,O|128,13,0,O|128,14,0,O|128,15,0,O|128,16,0,O|129,4,0,O|129,5,0,O|129,6,0,O|129,7,0,O|129,8,0,O|129,9,0,O|129,10,0,O|129,11,0,O|129,12,0,O|129,13,0,O|129,14,0,O|129,15,0,O|129,16,0,O|130,4,0,O|130,5,0,O|130,6,0,O|130,7,0,O|130,8,0,O|130,9,0,O|130,10,0,O|130,11,0,O|130,12,0,O|130,13,0,O|130,14,0,O|130,15,0,O|130,16,0,O|131,4,0,O|131,5,0,O|131,6,0,O|131,7,0,O|131,8,0,O|131,9,0,O|131,10,0,O|131,11,0,O|131,12,0,O|131,13,0,O|131,14,0,O|131,15,0,O|131,16,0,O|132,4,0,O|132,5,0,O|132,6,0,O|132,7,0,O|132,8,0,O|132,9,0,O|132,10,0,O|132,11,0,O|132,12,0,O|132,13,0,O|132,14,0,O|132,15,0,O|132,16,0,O|133,4,0,O|133,5,0,O|133,6,0,O|133,7,0,O|133,8,0,O|133,9,0,O|133,10,0,O|133,11,0,O|133,12,0,O|133,13,0,O|133,14,0,O|133,15,0,O|133,16,0,O|134,4,0,O|134,5,0,O|134,6,0,O|134,7,0,O|134,8,0,O|134,9,0,O|134,10,0,O|134,11,0,O|134,12,0,O|134,13,0,O|134,14,0,O|134,15,0,O|134,16,0,O|135,4,0,O|135,5,0,O|135,6,0,O|135,7,0,O|135,8,0,O|135,9,0,O|135,10,0,O|135,11,0,O|135,12,0,O|135,13,0,O|135,14,0,O|135,15,0,O|135,16,0,O|136,4,0,O|136,5,0,O|136,6,0,O|136,7,0,O|136,8,0,O|136,9,0,O|136,10,0,O|136,11,0,O|136,12,0,O|136,13,0,O|136,14,0,O|136,15,0,O|136,16,0,O|137,4,0,O|137,5,0,O|137,6,0,O|137,7,0,O|137,8,0,O|137,9,0,O|137,10,0,O|137,11,0,O|137,12,0,O|137,13,0,O|137,14,0,O|137,15,0,O|137,16,0,O|138,4,0,O|138,5,0,O|138,6,0,O|138,7,0,O|138,8,0,O|138,9,0,O|138,10,0,O|138,11,0,O|138,12,0,O|138,13,0,O|138,14,0,O|138,15,0,O|138,16,0,O|139,4,0,O|139,5,0,O|139,6,0,O|139,7,0,O|139,8,0,O|139,9,0,O|139,10,0,O|139,11,0,O|139,12,0,O|139,13,0,O|139,14,0,O|139,15,0,O|139,16,0,O|140,4,0,O|140,5,0,O|140,6,0,O|140,7,0,O|140,8,0,O|140,9,0,O|140,10,0,O|140,11,0,O|140,12,0,O|140,13,0,O|140,14,0,O|140,15,0,O|140,16,0,O|141,4,0,O|141,5,0,O|141,6,0,O|141,7,0,O|141,8,0,O|141,9,0,O|141,10,0,O|141,11,0,O|141,12,0,O|141,13,0,O|141,14,0,O|141,15,0,O|141,16,0,O|138,3,0,O|139,3,0,O|140,3,0,O|141,3,0,O|137,2,0,N|138,2,0,M|139,2,0,M|140,2,0,M|141,2,0,M|114,19,0,P|115,19,0,P|121,17,0,Q|121,18,0,P|115,17,0,P|116,17,0,Q|117,17,0,Q|118,17,0,Q|119,17,0,Q|120,17,0,Q|115,18,0,P|122,17,0,Q|123,17,0,Q|124,17,0,Q|125,17,0,Q|127,17,0,Q|128,17,0,Q|129,17,0,Q|130,17,0,Q|131,17,0,Q|132,17,0,Q|133,17,0,Q|134,17,0,Q|135,17,0,Q|136,17,0,Q|137,17,0,Q|138,17,0,Q|139,17,0,Q|140,17,0,Q|127,5,1,P|127,4,1,P|125,11,1,P|125,10,1,P|126,8,1,P|126,7,1,P|126,6,0,P|127,6,0,P|125,9,0,P|126,9,0,P|124,12,0,P|125,12,0,P|122,16,0,P|126,17,0,R|116,3,0,M|117,3,0,M|118,3,0,M|119,3,0,M|115,37,0,M|116,37,0,M|117,37,0,M|118,37,0,M|119,37,0,M|115,36,0,M|115,35,0,M|115,34,0,M|115,33,0,M|115,32,0,M|115,31,0,M|115,30,0,M|115,29,0,M|115,28,0,M|115,27,0,M|115,26,0,M|115,25,0,M|115,24,0,M|117,23,0,Q|118,23,0,Q|119,23,0,Q|124,28,0,P|125,28,0,P|125,29,1,P|125,30,1,P|125,31,0,P|126,31,0,P|126,32,1,P|126,33,1,P|126,34,0,P|127,34,0,P|127,35,1,P|127,36,1,P|126,37,0,M|126,38,0,N|127,38,0,N|128,38,0,N|129,38,0,N|130,38,0,N|131,38,0,N|132,38,0,N|133,38,0,N|134,38,0,N|135,38,0,N|138,39,0,M|139,39,0,M|140,39,0,M|141,39,0,M|141,37,0,O|140,37,0,O|139,37,0,O|138,37,0,O|136,36,0,O|134,34,0,O|135,34,0,O|135,33,0,O|134,36,0,O|134,35,0,O|134,33,0,O|133,36,0,O|133,35,0,O|133,34,0,O|133,33,0,O|135,36,0,O|136,35,0,O|137,36,0,O|138,34,0,O|140,32,0,O|138,30,0,O|140,31,0,O|139,32,0,O|138,32,0,O|137,32,0,O|140,35,0,O|140,34,0,O|140,33,0,O|139,35,0,O|139,34,0,O|139,33,0,O|138,35,0,O|138,33,0,O|138,36,0,O|139,36,0,O|140,36,0,O|141,36,0,O|141,28,0,O|141,27,0,O|140,27,0,O|138,26,0,O|138,27,0,O|138,25,0,O|137,27,0,O|137,26,0,O|137,25,0,O|139,27,0,O|140,26,0,O|141,26,0,O|141,24,0,O|140,23,0,Q|139,23,0,Q|138,23,0,Q|138,22,0,O|138,21,0,O|139,22,0,O|140,22,0,O|140,21,0,O|141,21,0,O|141,22,0,O|141,38,0,M|140,38,0,M|139,38,0,M|138,38,0,M|137,38,0,N|136,38,0,N|131,36,0,O|130,34,0,O|128,33,0,O|128,32,0,O|129,30,0,O|127,30,0,O|132,31,0,O|133,30,0,O|133,29,0,O|133,31,0,O|132,30,0,O|132,29,0,O|131,28,0,O|129,26,0,O|129,25,0,O|128,27,0,O|128,26,0,O|128,25,0,O|131,27,0,O|130,28,0,O|129,28,0,O|128,28,0,O|131,31,0,O|131,30,0,O|131,29,0,O|130,31,0,O|130,30,0,O|130,29,0,O|129,31,0,O|129,29,0,O|128,30,0,O|128,29,0,O|128,31,0,O|132,32,0,O|131,32,0,O|130,32,0,O|129,32,0,O|131,34,0,O|131,33,0,O|130,35,0,O|130,33,0,O|129,36,0,O|129,35,0,O|129,34,0,O|129,33,0,O|130,36,0,O|131,35,0,O|128,36,0,O|128,35,0,O|128,34,0,O|127,33,0,O|127,32,0,O|127,31,0,O|126,30,0,O|126,29,0,O|126,28,0,O|126,27,0,O|126,26,0,O|125,26,0,O|125,24,0,O|126,24,0,O|127,24,0,O|127,23,0,Q|128,23,0,Q|129,23,0,Q|130,23,0,Q|131,23,0,Q|132,23,0,Q|132,24,0,O|133,24,0,O|133,25,0,O|133,26,0,O|135,24,0,O|136,24,0,O|136,23,0,Q|136,22,0,O|135,22,0,O|134,22,0,O|132,21,0,O|129,21,0,O|128,21,0,O|127,21,0,O|126,21,0,O|125,21,0,O|126,22,0,O|133,21,0,O|131,21,0,O|130,21,0,O|133,22,0,O|134,23,0,Q|134,21,0,O|135,21,0,O|136,21,0,O|135,23,0,Q|135,27,0,O|135,26,0,O|135,25,0,O|134,27,0,O|134,26,0,O|133,27,0,O|134,25,0,O|134,24,0,O|133,23,0,Q|132,22,0,O|131,22,0,O|130,22,0,O|129,22,0,O|128,22,0,O|127,22,0,O|126,23,0,R|125,23,0,Q|124,23,0,Q|124,22,0,O|123,22,0,O|122,22,0,O|121,22,0,P|120,22,0,O|120,21,0,O|119,21,0,O|118,21,0,O|117,21,0,O|116,21,0,O|115,21,0,P|115,22,0,P|116,22,0,O|121,21,0,P|122,23,0,Q|122,21,0,O|123,21,0,O|123,23,0,Q|123,24,0,O|124,24,0,O|125,25,0,O|126,25,0,O|125,27,0,O|122,24,0,P|121,23,0,Q|120,23,0,Q|119,22,0,O|118,22,0,O|117,22,0,O|116,23,0,Q|115,23,0,P|135,35,0,O|136,33,0,O|136,34,0,O|133,32,0,O|134,32,0,O|135,32,0,O|136,32,0,O|137,33,0,O|137,34,0,O|137,35,0,O|132,36,0,O|132,35,0,O|132,34,0,O|132,33,0,O|141,33,0,O|141,34,0,O|141,35,0,O|141,32,0,O|137,29,0,O|137,30,0,O|137,31,0,O|138,29,0,O|138,31,0,O|139,29,0,O|139,30,0,O|139,31,0,O|140,29,0,O|140,30,0,O|137,28,0,O|138,28,0,O|139,28,0,O|140,28,0,O|141,29,0,O|141,30,0,O|141,31,0,O|136,31,0,O|136,30,0,O|136,29,0,O|139,25,0,O|139,26,0,O|140,25,0,O|137,24,0,O|138,24,0,O|139,24,0,O|140,24,0,O|141,25,0,O|136,28,0,O|136,27,0,O|136,26,0,O|136,25,0,O|137,23,0,Q|137,22,0,O|139,21,0,O|137,21,0,O|127,29,0,O|134,29,0,O|134,30,0,O|134,31,0,O|135,29,0,O|135,30,0,O|135,31,0,O|132,28,0,O|133,28,0,O|134,28,0,O|135,28,0,O|129,27,0,O|130,25,0,O|130,26,0,O|130,27,0,O|131,25,0,O|131,26,0,O|128,24,0,O|129,24,0,O|130,24,0,O|131,24,0,O|132,25,0,O|132,26,0,O|132,27,0,O|127,28,0,O|127,27,0,O|127,26,0,O|127,25,0,O|125,22,0,O|124,21,0,O|115,20,1,S|121,20,1,S|116,20,0,O|120,20,0,O|122,21,0,T|122,19,0,U|52,19,0,O|53,20,0,O|52,20,0,O|52,21,0,O|53,19,0,O|53,21,0,O|54,19,0,O|54,20,0,O|54,21,0,O|52,18,0,O|51,18,0,O|50,18,0,O|49,18,0,Q|48,18,0,O|48,18,0,Q|47,18,0,O|47,19,0,O|47,20,0,O|48,20,0,O|49,20,0,Q|50,20,0,O|50,21,0,O|50,22,0,O|51,22,0,O|51,23,0,O|52,23,0,O|53,23,0,O|54,23,0,O|55,23,0,O|55,22,0,O|56,22,0,O|57,20,0,O|56,21,0,O|47,17,0,O|46,14,0,O|47,16,0,O|49,15,0,Q|49,10,0,O|49,8,0,N|48,19,0,O|48,17,0,O|49,17,0,Q|50,19,0,O|50,17,0,O|51,17,0,O|51,16,0,O|52,16,0,O|53,16,0,O|53,17,0,O|54,17,0,O|55,17,0,O|55,16,0,O|56,16,0,O|57,16,0,O|58,16,0,O|59,16,0,O|59,15,0,O|59,14,0,O|59,13,0,O|58,15,0,O|57,15,0,O|57,14,0,O|56,14,0,O|55,14,0,O|55,13,0,O|55,10,0,O|55,9,0,O|55,8,0,O|55,7,0,N|56,13,0,O|57,13,0,O|58,8,0,N|58,7,0,N|58,6,0,N|57,10,0,O|56,15,0,O|55,15,0,O|54,15,0,O|54,16,0,O|53,15,0,O|53,14,0,O|52,14,0,O|51,14,0,O|51,13,0,O|53,10,0,O|52,10,0,O|51,10,0,O|51,9,0,O|52,9,0,O|52,8,0,N|53,9,0,O|52,13,0,O|53,13,0,O|52,15,0,O|51,15,0,O|52,17,0,O|53,18,0,O|54,18,0,O|55,19,0,O|55,20,0,O|55,21,0,O|54,22,0,O|53,22,0,O|52,22,0,O|51,21,0,O|51,20,0,O|51,19,0,O|46,18,0,O|46,18,0,Q|45,18,0,O|45,18,0,Q|44,18,0,O|44,18,0,Q|43,18,0,O|43,18,0,Q|42,18,0,O|41,18,0,O|40,18,0,O|39,18,0,O|38,18,0,O|37,18,0,O|36,18,0,O|35,18,0,O|34,18,0,O|34,17,0,O|34,16,0,O|34,15,0,O|34,14,0,O|34,13,0,O|34,12,0,N|35,19,0,O|35,20,0,O|35,21,0,O|36,21,0,O|37,21,0,O|37,20,0,O|38,20,0,O|39,20,0,O|40,20,0,O|41,20,0,O|42,20,0,O|43,20,0,O|36,20,0,O|35,17,0,O|36,19,0,O|36,17,0,O|36,16,0,O|37,16,0,O|38,16,0,O|39,16,0,O|40,16,0,O|40,15,0,O|40,14,0,O|40,13,0,O|40,12,0,O|39,15,0,O|38,15,0,O|38,14,0,O|37,14,0,O|36,14,0,O|36,13,0,O|36,12,0,N|37,12,0,O|37,11,0,N|37,13,0,O|38,13,0,O|37,15,0,O|36,15,0,O|37,19,0,O|37,17,0,O|38,19,0,O|38,17,0,O|39,19,0,O|39,17,0,O|40,19,0,O|40,17,0,O|41,19,0,O|42,19,0,O|42,17,0,O|44,14,0,O|43,14,0,O|43,19,0,O|44,19,0,O|45,19,0,O|46,19,0,O|47,21,0,O|46,21,0,O|46,22,0,O|46,22,0,Q|45,22,0,O|45,22,0,Q|45,23,0,O|44,23,0,O|43,23,0,O|42,23,0,O|41,23,0,O|40,23,0,O|39,23,0,O|38,23,0,O|37,23,0,O|36,23,0,O|35,23,0,O|34,23,0,O|33,23,0,O|32,23,0,O|31,23,0,O|31,22,0,O|31,21,0,O|31,20,0,O|31,19,0,O|31,18,0,O|31,17,0,O|31,16,0,O|31,15,0,O|31,14,0,O|31,13,0,N|32,24,0,O|32,25,0,O|32,26,0,O|33,26,0,O|34,26,0,O|34,25,0,O|35,25,0,O|36,25,0,O|37,25,0,O|38,25,0,O|39,25,0,O|40,25,0,O|41,25,0,O|42,25,0,O|43,25,0,O|44,25,0,O|45,25,0,O|46,25,0,O|46,24,0,O|47,24,0,O|47,23,0,O|48,23,0,O|48,22,0,O|48,22,0,Q|33,25,0,O|32,22,0,O|33,24,0,O|33,22,0,O|33,21,0,O|33,20,0,O|33,19,0,O|34,24,0,O|34,22,0,O|35,24,0,O|36,24,0,O|37,24,0,O|38,24,0,O|38,22,0,O|39,24,0,O|39,22,0,O|40,24,0,O|40,22,0,O|41,24,0,O|41,22,0,O|42,24,0,O|43,24,0,O|44,24,0,O|45,24,0,O|46,23,0,O|47,22,0,O|47,22,0,Q|46,20,0,O|48,21,0,O|49,21,0,Q|50,23,0,O|50,24,0,O|49,25,0,Q|48,25,0,O|48,26,0,O|47,26,0,O|47,27,0,O|46,27,0,O|45,27,0,O|44,27,0,O|43,27,0,O|42,27,0,O|41,27,0,O|40,27,0,O|39,27,0,O|38,27,0,O|37,27,0,O|36,27,0,O|35,27,0,O|35,28,0,N|34,28,0,N|33,28,0,N|31,27,0,N|30,27,0,N|29,27,0,N|28,26,0,N|28,25,0,O|29,25,0,O|29,24,0,O|29,23,0,O|29,22,0,O|29,21,0,O|29,20,0,O|29,19,0,O|29,18,0,O|29,17,0,O|29,16,0,O|29,15,0,O|29,13,0,N|28,24,0,O|27,24,0,O|26,24,0,O|26,23,0,O|26,22,0,O|26,21,0,O|26,20,0,O|26,19,0,O|26,18,0,O|26,17,0,O|26,16,0,O|26,15,0,O|27,15,0,O|27,23,0,O|27,26,0,N|26,26,0,N|25,26,0,N|22,25,0,N|22,24,0,O|22,23,0,O|22,22,0,O|22,21,0,O|22,20,0,O|22,19,0,O|22,18,0,O|22,17,0,O|22,16,0,O|22,15,0,N|30,26,0,O|36,29,0,N|37,29,0,N|44,29,0,O|45,29,0,O|46,29,0,O|47,29,0,O|48,29,0,O|48,28,0,O|50,27,0,O|50,26,0,O|51,26,0,O|51,25,0,O|52,25,0,O|53,25,0,O|54,25,0,O|55,25,0,O|56,25,0,O|56,24,0,O|57,24,0,O|58,24,0,O|59,24,0,O|59,23,0,O|60,23,0,O|60,22,0,O|60,21,0,O|60,20,0,O|60,19,0,O|60,18,0,O|60,17,0,O|61,17,0,O|61,16,0,O|61,15,0,O|61,14,0,O|60,13,0,O|61,13,0,O|42,29,0,O|41,29,0,O|39,29,0,N|38,29,0,N|36,28,0,N|37,28,0,O|38,28,0,O|39,28,0,O|40,28,0,O|41,28,0,O|42,28,0,O|43,28,0,O|44,28,0,O|45,28,0,O|46,28,0,O|47,28,0,O|48,27,0,O|50,25,0,O|49,22,0,Q|51,24,0,O|52,24,0,O|53,24,0,O|54,24,0,O|56,23,0,O|55,24,0,O|57,22,0,O|56,18,0,O|56,19,0,O|56,20,0,O|57,18,0,O|57,19,0,O|57,21,0,O|58,18,0,O|58,19,0,O|58,20,0,O|58,21,0,O|58,22,0,O|56,17,0,O|57,17,0,O|58,17,0,O|59,18,0,O|59,19,0,O|59,20,0,O|59,21,0,O|59,22,0,O|58,23,0,O|57,23,0,O|55,18,0,O|47,15,0,O|47,14,0,O|45,14,0,O|48,8,0,N|50,16,0,O|50,15,0,O|50,14,0,O|50,13,0,O|50,10,0,O|50,9,0,O|50,8,0,N|52,7,0,N|51,8,0,N|60,16,0,O|59,17,0,O|60,15,0,O|60,14,0,O|58,14,0,O|58,13,0,O|54,14,0,O|54,13,0,O|56,10,0,O|54,10,0,O|56,9,0,O|54,9,0,O|56,8,0,O|54,8,0,O|56,7,0,N|54,7,0,N|56,6,0,N|53,7,0,N|57,9,0,O|57,8,0,O|57,7,0,N|57,6,0,N|60,5,0,N|34,19,0,O|33,18,0,O|33,17,0,O|35,16,0,O|33,16,0,O|35,15,0,O|33,15,0,O|35,14,0,O|33,14,0,O|35,13,0,O|35,12,0,N|33,12,0,N|36,11,0,N|34,20,0,O|35,22,0,O|34,21,0,O|36,22,0,O|38,21,0,O|37,22,0,O|39,21,0,O|40,21,0,O|41,21,0,O|42,21,0,O|43,21,0,O|44,20,0,O|44,21,0,O|45,20,0,O|45,21,0,O|44,22,0,O|44,22,0,Q|43,22,0,O|43,22,0,Q|42,22,0,O|39,14,0,O|39,13,0,O|39,12,0,O|39,11,0,N|38,12,0,O|38,11,0,N|31,24,0,O|30,23,0,O|30,22,0,O|32,21,0,O|30,21,0,O|32,20,0,O|30,20,0,O|32,19,0,O|30,19,0,O|32,18,0,O|30,18,0,O|32,17,0,O|30,17,0,O|32,16,0,O|30,16,0,O|32,15,0,O|30,15,0,O|32,14,0,O|30,14,0,O|32,13,0,N|30,13,0,N|31,25,0,O|32,27,0,N|31,26,0,O|35,26,0,O|34,27,0,O|36,26,0,O|37,26,0,O|38,26,0,O|39,26,0,O|40,26,0,O|41,26,0,O|42,26,0,O|43,26,0,O|44,26,0,O|45,26,0,O|47,25,0,O|46,26,0,O|48,24,0,O|49,23,0,Q|27,25,0,O|30,25,0,O|30,24,0,O|28,23,0,O|28,22,0,O|28,21,0,O|28,20,0,O|28,19,0,O|28,18,0,O|28,17,0,O|28,16,0,O|28,15,0,O|28,14,0,N|27,14,0,N|26,14,0,N|26,25,0,O|25,24,0,O|24,24,0,O|24,23,0,O|24,22,0,O|24,21,0,O|24,20,0,O|24,19,0,O|24,18,0,O|24,17,0,O|24,16,0,O|25,23,0,O|27,22,0,O|25,22,0,O|27,21,0,O|25,21,0,O|27,20,0,O|25,20,0,O|27,19,0,O|25,19,0,O|27,18,0,O|25,18,0,O|27,17,0,O|25,17,0,O|27,16,0,O|25,16,0,O|23,25,0,N|24,25,0,N|21,25,0,N|20,23,0,O|19,23,0,O|18,23,0,O|12,21,0,O|11,21,0,O|10,21,0,O|8,21,0,N|7,21,0,N|6,21,0,N|4,20,0,N|6,19,0,N|7,19,0,N|8,19,0,N|10,19,0,O|11,19,0,O|12,19,0,O|13,19,0,O|13,20,0,O|14,20,0,O|14,21,0,O|15,21,0,O|16,21,0,O|17,21,0,O|18,21,0,O|19,21,0,O|20,21,0,O|20,20,0,O|20,19,0,O|19,19,0,O|18,19,0,O|17,19,0,O|16,19,0,O|15,19,0,O|15,18,0,O|14,18,0,O|18,17,0,O|19,17,0,O|20,17,0,O|16,18,0,O|17,18,0,O|18,18,0,O|19,18,0,O|20,18,0,O|19,20,0,O|18,20,0,O|17,20,0,O|16,20,0,O|15,20,0,O|14,19,0,O|11,18,0,N|10,18,0,N|9,18,0,N|9,22,0,N|10,20,0,O|11,20,0,O|13,21,0,O|12,20,0,O|11,22,0,N|10,22,0,N|14,22,0,O|15,22,0,O|16,22,0,O|17,22,0,O|18,22,0,O|19,22,0,O|20,22,0,O|23,24,0,O|23,23,0,O|21,23,0,O|23,22,0,O|21,22,0,O|23,21,0,O|21,21,0,O|23,20,0,O|21,20,0,O|23,19,0,O|21,19,0,O|23,18,0,O|21,18,0,O|23,17,0,O|21,17,0,O|23,16,0,O|23,15,0,N|21,15,0,N|25,14,0,N|24,15,0,N|48,32,0,N|49,32,0,N|52,33,0,N|53,33,0,N|56,34,0,N|57,34,0,N|60,35,0,N|58,34,0,N|58,33,0,N|58,32,0,N|57,32,0,O|56,32,0,O|55,32,0,O|54,32,0,O|54,31,0,O|53,31,0,O|52,31,0,O|51,31,0,O|50,31,0,O|50,30,0,O|49,30,0,O|55,30,0,O|56,30,0,O|57,30,0,O|58,29,0,Q|56,27,0,O|55,27,0,O|54,27,0,O|53,27,0,O|52,27,0,O|57,27,0,O|57,26,0,O|58,26,0,O|59,26,0,O|59,27,0,O|60,26,0,O|60,27,0,O|66,25,0,Q|67,25,0,P|71,28,0,O|71,29,0,O|72,29,0,O|73,29,0,O|74,29,0,P|75,29,0,P|75,28,0,P|75,27,0,P|74,27,0,O|73,27,0,O|72,27,0,O|72,26,0,O|71,26,0,O|69,25,0,P|69,24,0,O|68,24,0,O|68,23,0,O|67,23,0,O|66,23,0,Q|65,23,0,O|64,23,0,O|63,23,0,O|62,23,0,O|62,24,0,O|61,24,0,O|62,22,0,O|62,21,0,O|63,21,0,O|64,21,0,O|65,21,0,O|67,21,0,O|68,21,0,O|69,21,0,O|71,20,0,O|68,18,0,O|67,18,0,O|66,18,0,Q|65,18,0,O|64,18,0,O|63,18,0,O|62,18,0,O|62,19,0,O|63,19,0,O|63,17,0,O|63,16,0,O|64,16,0,O|65,16,0,O|66,16,0,Q|67,16,0,O|68,16,0,O|69,16,0,O|70,16,0,O|71,16,0,O|72,16,0,O|73,16,0,O|74,16,0,O|74,17,0,O|75,17,0,O|75,18,0,O|75,19,0,O|75,20,0,O|75,21,0,O|75,22,0,O|75,23,0,O|74,23,0,O|74,24,0,O|73,24,0,O|72,24,0,O|71,24,0,O|73,25,0,P|74,25,0,P|75,25,0,P|76,25,0,Q|77,25,0,Q|78,25,0,P|78,26,0,P|79,26,0,P|80,26,0,P|80,27,0,M|81,29,0,M|82,31,0,M|83,33,0,M|84,35,0,M|85,37,0,M|86,37,0,M|87,37,0,M|88,37,0,M|89,37,0,M|90,37,0,M|91,37,0,M|92,37,0,M|93,37,0,M|94,37,0,M|95,37,0,M|96,37,0,M|97,37,0,M|98,37,0,M|99,37,0,M|100,37,0,M|101,37,0,M|102,37,0,M|103,37,0,M|104,37,0,M|105,37,0,M|106,37,0,M|107,37,0,M|108,37,0,M|109,37,0,M|110,37,0,M|111,37,0,M|112,37,0,M|113,37,0,M|114,37,0,M|112,35,0,V|113,34,1,W|112,31,0,O|111,31,0,O|110,31,0,O|109,31,0,O|108,31,0,O|107,31,0,O|106,31,0,O|105,31,0,O|104,31,0,O|103,31,0,O|102,31,0,O|97,31,0,O|96,31,0,O|95,31,0,O|94,31,0,O|93,31,0,O|92,31,0,O|91,31,0,O|90,31,0,O|89,31,0,O|88,31,0,O|87,31,0,O|86,34,3,V|87,35,0,W|91,35,0,O|92,35,0,O|93,35,0,O|97,35,0,V|98,34,1,W|101,34,3,V|102,35,0,W|106,35,0,O|107,35,0,O|108,35,0,O|109,34,0,O|110,34,0,O|110,33,0,O|111,33,0,O|109,33,0,O|108,33,0,O|107,33,0,O|106,33,0,O|105,33,0,O|104,33,0,O|103,33,0,O|108,34,0,O|107,34,0,O|106,34,0,O|105,34,0,O|104,34,0,O|103,34,0,O|102,33,0,O|97,33,0,O|96,33,0,O|95,33,0,O|94,33,0,O|93,33,0,O|92,33,0,O|91,33,0,O|90,33,0,O|89,33,0,O|88,33,0,O|96,34,0,O|95,34,0,O|94,34,0,O|93,34,0,O|92,34,0,O|91,34,0,O|90,34,0,O|89,34,0,O|88,34,0,O|87,33,0,O|86,29,0,O|87,29,0,O|88,29,0,O|89,29,0,O|90,29,0,O|91,29,0,O|92,29,0,O|93,29,0,O|94,29,0,O|95,29,0,O|96,29,0,O|97,29,0,O|98,29,0,O|101,29,0,O|102,29,0,O|103,29,0,O|104,29,0,O|105,29,0,O|106,29,0,O|107,29,0,O|108,29,0,O|109,29,0,O|110,29,0,O|111,29,0,O|112,29,0,O|113,29,0,O|112,27,0,O|111,27,0,O|110,27,0,O|109,27,0,O|108,27,0,O|107,27,0,O|106,27,0,O|105,27,0,O|104,27,0,O|103,27,0,O|102,27,0,O|97,27,0,O|96,27,0,O|96,26,0,O|96,25,0,O|96,24,0,O|97,26,0,O|98,24,1,V|102,26,0,O|102,25,0,O|103,25,0,O|104,25,0,O|105,25,0,O|106,25,0,O|107,25,0,O|108,25,0,O|108,24,0,O|108,23,0,O|108,21,0,O|108,20,0,O|108,19,0,O|108,18,0,Q|108,16,0,O|108,15,0,O|108,14,0,O|108,13,0,O|108,12,0,O|108,11,0,O|108,10,0,O|108,9,0,O|108,8,0,O|108,7,0,O|108,6,0,O|108,5,0,O|108,3,0,M|107,24,0,O|106,24,0,O|106,23,0,O|106,21,0,O|106,20,0,O|106,19,0,O|106,17,0,O|106,16,0,O|106,15,0,O|106,14,0,O|106,13,0,O|106,12,0,O|106,11,0,O|106,10,0,O|106,9,0,O|106,8,0,O|106,7,0,O|106,6,0,O|106,5,0,O|106,3,0,M|105,20,0,O|104,20,0,O|103,20,0,O|105,24,0,O|104,24,0,O|103,24,0,O|101,24,3,W|102,23,2,V|103,26,0,O|104,26,0,O|105,26,0,O|106,26,0,O|107,26,0,O|108,26,0,O|109,26,0,O|110,26,0,O|110,25,0,O|111,25,0,O|112,25,0,O|113,24,1,V|112,23,2,W|113,20,0,O|113,19,0,P|112,19,0,P|111,19,0,P|110,19,0,P|110,20,0,O|112,17,0,V|113,16,1,W|113,12,0,O|113,11,0,O|113,10,0,O|113,6,1,V|112,15,0,O|111,15,0,O|110,15,0,O|110,14,0,O|110,13,0,O|110,12,0,O|110,11,0,O|110,10,0,O|110,9,0,O|110,8,0,O|110,7,0,O|110,6,0,O|111,14,0,O|111,16,0,O|112,20,0,O|111,20,0,O|111,24,0,O|110,24,0,O|111,26,0,O|112,26,0,O|113,28,0,O|112,28,0,O|111,28,0,O|110,28,0,O|109,28,0,O|108,28,0,O|107,28,0,O|106,28,0,O|105,28,0,O|104,28,0,O|103,28,0,O|102,28,0,O|101,28,0,O|98,28,0,O|97,28,0,O|96,28,0,O|95,28,0,O|94,28,0,O|94,27,0,O|93,27,0,O|92,27,0,O|91,27,0,O|90,27,0,O|89,27,0,O|88,27,0,O|87,27,0,O|84,25,0,P|83,25,0,P|82,25,0,P|81,25,0,O|81,24,0,O|80,24,0,O|79,24,0,O|79,23,0,O|78,23,0,O|77,23,0,O|77,22,0,O|77,21,0,O|78,21,0,O|80,20,0,O|81,22,0,O|81,21,0,O|81,20,0,O|81,19,0,O|81,18,0,O|80,22,0,O|80,21,0,O|80,19,0,O|80,18,0,O|79,20,0,O|79,19,0,O|79,18,0,O|78,19,0,O|78,18,0,O|79,21,0,O|78,20,0,O|77,20,0,O|78,22,0,O|79,22,0,O|80,23,0,O|81,23,0,O|82,26,0,P|82,24,0,O|83,24,0,O|83,23,0,O|84,23,0,P|84,20,1,S|84,19,0,P|85,19,0,P|86,19,0,P|86,20,0,O|87,20,0,O|87,23,2,V|86,24,3,W|87,25,0,O|88,25,0,O|89,25,0,O|90,25,0,O|91,25,0,O|92,25,0,O|93,25,0,O|94,25,0,O|94,24,0,O|93,23,0,O|92,23,0,O|91,22,0,Q|91,21,0,O|90,21,0,P|90,20,0,O|89,20,0,O|89,19,0,P|88,19,0,P|88,16,0,O|88,15,0,O|88,14,0,O|88,13,0,O|88,12,0,O|88,11,0,O|88,10,0,O|88,9,0,O|88,8,0,O|88,7,0,O|88,6,0,O|90,19,0,P|91,19,0,O|92,19,0,O|93,19,0,O|93,18,0,Q|93,17,0,O|93,16,0,O|93,15,0,O|93,14,0,O|93,13,0,O|93,12,0,O|93,11,0,O|93,10,0,O|93,9,0,O|93,8,0,O|93,7,0,O|93,6,0,O|93,5,0,O|93,3,0,M|92,18,0,R|91,17,0,O|90,16,0,O|90,15,0,O|91,15,0,O|91,14,0,O|91,13,0,O|91,12,0,O|91,11,0,O|91,10,0,O|91,9,0,O|91,8,0,O|91,7,0,O|91,6,0,O|91,5,0,O|91,3,0,M|90,14,0,O|91,16,0,O|92,21,0,O|93,21,0,O|94,21,0,P|94,20,0,O|95,20,0,O|96,20,0,O|97,20,0,O|98,20,0,O|96,16,0,O|96,15,0,O|96,14,0,O|96,13,0,O|96,12,0,O|96,11,0,O|96,10,0,O|96,9,0,O|96,8,0,O|96,7,0,O|96,6,0,O|91,20,0,O|92,22,0,R|93,24,0,O|92,24,0,O|91,24,0,O|90,24,0,O|89,24,0,O|88,24,0,O|90,22,0,Q|88,20,0,O|87,19,0,P|84,17,0,P|83,17,0,O|83,16,0,O|82,16,0,O|81,16,0,O|80,16,0,O|79,16,0,O|78,16,0,O|77,16,0,O|76,16,0,Q|76,15,0,Q|75,15,0,P|75,14,0,P|73,14,0,O|72,14,0,O|71,14,0,O|68,10,0,P|71,12,0,O|72,12,0,O|72,11,0,O|71,11,0,O|71,13,0,O|72,13,0,O|73,13,0,O|74,13,0,O|74,12,0,O|75,12,0,X|75,11,0,P|74,10,0,P|74,11,0,P|75,13,0,P|77,17,0,O|77,15,0,Q|78,15,0,Y|78,14,0,P|79,14,0,P|80,14,0,P|81,14,0,P|82,14,0,P|84,15,0,P|86,16,3,V|86,12,0,O|86,11,0,O|81,12,0,M|81,11,0,M|82,9,0,M|83,7,0,M|81,13,0,M|80,13,0,M|79,15,0,O|80,15,0,O|81,15,0,O|82,15,0,P|83,15,0,P|84,16,0,P|84,18,0,P|85,20,0,O|84,22,0,P|84,24,0,P|87,26,0,O|88,26,0,O|89,26,0,O|90,26,0,O|91,26,0,O|92,26,0,O|93,26,0,O|94,26,0,O|93,28,0,O|92,28,0,O|91,28,0,O|90,28,0,O|89,28,0,O|88,28,0,O|87,28,0,O|86,28,0,O|86,30,0,O|87,32,0,O|87,30,0,O|88,32,0,O|88,30,0,O|89,32,0,O|89,30,0,O|90,32,0,O|90,30,0,O|91,32,0,O|91,30,0,O|92,32,0,O|92,30,0,O|93,32,0,O|93,30,0,O|94,32,0,O|94,30,0,O|95,32,0,O|95,30,0,O|96,32,0,O|96,30,0,O|97,32,0,O|97,30,0,O|98,30,0,O|101,30,0,O|102,32,0,O|102,30,0,O|103,32,0,O|103,30,0,O|104,32,0,O|104,30,0,O|105,32,0,O|105,30,0,O|106,32,0,O|106,30,0,O|107,32,0,O|107,30,0,O|108,32,0,O|108,30,0,O|109,32,0,O|109,30,0,O|110,32,0,O|110,30,0,O|111,32,0,O|111,30,0,O|112,32,0,O|112,30,0,O|113,30,0,O|112,33,0,O|111,34,0,O|81,28,0,M|81,27,0,M|81,26,0,P|80,25,0,O|79,25,0,O|78,24,0,O|77,24,0,O|76,24,0,Q|75,24,0,O|76,23,0,Q|76,22,0,Q|76,21,0,Q|76,20,1,R|76,18,0,Q|76,17,0,Q|75,16,0,O|74,15,0,P|73,15,0,P|70,15,0,P|69,15,0,P|67,15,0,P|66,15,0,Q|63,15,0,O|64,19,0,O|64,17,0,O|65,19,0,O|65,17,0,O|66,19,0,Q|66,17,0,Q|67,19,0,O|67,17,0,O|68,17,0,O|68,19,0,O|70,23,0,O|71,23,0,O|72,23,0,O|73,23,0,O|74,22,0,O|74,21,0,O|74,20,0,O|74,19,0,O|74,18,0,O|73,17,0,O|72,17,0,O|71,17,0,O|70,17,0,O|69,17,0,O|73,22,0,O|73,21,0,O|73,20,0,O|73,19,0,O|73,18,0,O|72,22,0,O|72,21,0,O|72,20,0,O|72,19,0,O|72,18,0,O|71,22,0,O|71,21,0,O|71,19,0,O|71,18,0,O|70,22,0,O|70,20,0,O|70,19,0,O|70,18,0,O|69,19,0,O|69,18,0,O|69,22,0,O|70,21,0,O|69,20,0,O|68,20,0,O|67,20,0,O|66,20,1,R|65,20,0,O|64,20,0,O|63,20,0,O|62,20,0,O|63,24,0,O|63,22,0,O|64,22,0,O|65,22,0,O|66,22,0,Q|67,22,0,O|68,22,0,O|70,24,0,O|69,23,0,O|70,25,0,P|73,26,0,O|75,26,0,P|74,28,0,O|73,28,0,O|72,28,0,O|71,27,0,O|74,30,0,P|68,30,0,P|67,24,0,O|66,24,0,Q|65,24,0,O|64,24,0,O|63,25,0,O|62,25,0,O|61,25,0,O|60,25,0,O|61,27,0,O|61,26,0,O|58,27,0,O|51,30,0,O|52,30,0,O|53,30,0,O|54,30,0,O|55,31,0,O|56,31,0,O|57,31,0,O|57,33,0,N|56,33,0,N|55,33,0,N|54,33,0,N|52,32,0,N|51,32,0,N|50,32,0,N|45,30,0,O|43,29,0,O|46,30,0,O|47,30,0,O|48,30,0,O|51,27,0,O|52,26,0,O|53,26,0,O|54,26,0,O|55,26,0,O|57,25,0,O|56,26,0,O|58,25,0,O|60,24,0,O|59,25,0,O|61,23,0,O|61,22,0,O|61,21,0,O|61,20,0,O|61,19,0,O|61,18,0,O|62,17,0,O|62,16,0,O|62,15,0,O|95,27,0,O|95,26,0,O|97,25,0,O|95,25,0,O|95,24,0,O|97,23,2,W|95,21,0,P|96,21,0,P|109,25,0,O|109,24,0,O|107,23,0,O|109,22,0,Q|107,22,0,R|109,21,0,P|107,21,0,O|109,20,0,O|107,20,0,O|109,19,0,P|107,19,0,O|109,18,0,Q|107,18,0,R|107,17,0,O|109,16,0,O|107,16,0,O|109,15,0,O|107,15,0,O|109,14,0,O|107,14,0,O|109,13,0,O|107,13,0,O|109,12,0,O|107,12,0,O|109,11,0,O|107,11,0,O|109,10,0,O|107,10,0,O|109,9,0,O|107,9,0,O|109,8,0,O|107,8,0,O|109,7,0,O|107,7,0,O|109,6,0,O|107,6,0,O|107,5,0,O|109,3,0,M|107,3,0,M|103,21,0,P|102,21,0,P|101,21,0,P|100,21,0,P|99,21,0,P|100,20,0,O|101,20,0,O|104,21,0,P|105,19,0,P|105,18,0,Q|105,16,0,O|104,16,0,O|103,16,0,O|101,16,3,V|98,12,0,O|101,12,0,O|102,13,0,O|102,14,0,O|103,14,0,O|104,14,0,O|104,13,0,O|104,12,0,O|103,12,0,O|103,11,0,O|102,11,0,O|102,10,0,O|101,10,0,O|98,10,0,O|102,8,0,O|103,8,0,O|103,9,0,O|104,9,0,O|104,10,0,O|104,8,0,O|104,7,0,O|104,6,0,O|103,6,0,O|101,6,3,W|102,5,2,V|104,3,0,M|103,3,0,M|102,3,0,M|101,3,0,M|100,3,0,M|99,3,0,M|98,3,0,M|97,3,0,M|103,7,0,O|102,7,0,O|98,6,1,V|102,9,0,O|103,10,0,O|104,11,0,O|103,13,0,O|102,12,0,O|101,11,0,O|98,11,0,O|98,16,1,W|102,17,0,W|102,15,0,O|103,15,0,O|104,15,0,O|105,15,0,O|105,14,0,O|105,13,0,O|105,12,0,O|105,11,0,O|105,10,0,O|105,9,0,O|105,8,0,O|105,7,0,O|105,6,0,O|105,3,0,M|102,20,0,O|112,14,0,O|112,13,0,O|112,12,0,O|112,11,0,O|112,10,0,O|112,9,0,O|112,8,0,O|112,7,0,O|112,5,2,W|110,16,0,O|111,13,0,O|111,12,0,O|111,11,0,O|111,10,0,O|111,9,0,O|111,8,0,O|111,7,0,O|111,6,0,O|110,3,0,M|111,3,0,M|112,3,0,M|113,3,0,M|114,3,0,M|82,18,0,O|82,19,0,O|82,20,0,O|82,21,0,O|82,22,0,O|78,17,0,O|79,17,0,O|80,17,0,O|81,17,0,O|82,17,0,O|83,18,0,O|83,19,0,O|83,20,0,O|83,21,0,O|83,22,0,O|82,23,0,O|77,19,0,O|77,18,0,O|90,18,0,Q|87,17,0,W|89,16,0,O|89,15,0,O|87,15,0,O|89,14,0,O|87,14,0,O|89,13,0,O|87,13,0,O|89,12,0,O|87,12,0,O|89,11,0,O|87,11,0,O|89,10,0,O|87,10,0,O|89,9,0,O|87,9,0,O|89,8,0,O|87,8,0,O|89,7,0,O|87,7,0,O|89,6,0,O|86,6,3,W|87,5,2,V|88,3,0,M|87,3,0,M|86,3,0,M|85,3,0,M|89,3,0,M|92,20,0,O|94,19,0,P|93,20,0,O|94,18,0,Q|92,17,0,O|94,16,0,O|92,16,0,O|94,15,0,O|92,15,0,O|94,14,0,O|92,14,0,O|94,13,0,O|92,13,0,O|94,12,0,O|92,12,0,O|94,11,0,O|92,11,0,O|94,10,0,O|92,10,0,O|94,9,0,O|92,9,0,O|94,8,0,O|92,8,0,O|94,7,0,O|92,7,0,O|94,6,0,O|92,6,0,O|92,5,0,O|94,3,0,M|92,3,0,M|90,13,0,O|90,12,0,O|90,11,0,O|90,10,0,O|90,9,0,O|90,8,0,O|90,7,0,O|90,6,0,O|90,3,0,M|97,21,0,P|99,20,0,O|98,21,0,P|97,17,0,V|95,16,0,O|97,15,0,O|95,15,0,O|97,14,0,O|95,14,0,O|97,13,0,O|95,13,0,O|97,12,0,O|95,12,0,O|97,11,0,O|95,11,0,O|97,10,0,O|95,10,0,O|97,9,0,O|95,9,0,O|97,8,0,O|95,8,0,O|97,7,0,O|95,7,0,O|95,6,0,O|97,5,2,W|95,3,0,M|96,3,0,M|73,12,0,O|73,11,0,O|86,10,0,O|84,5,0,M|58,11,0,Q|49,28,0,Q|59,12,0,O|59,28,0,O|60,12,0,O|60,28,0,O|61,12,0,O|61,28,0,O|43,19,0,Q|43,20,0,Q|43,21,0,Q|53,8,0,O|75,16,0,Z|75,24,0,Z|67,24,0,Z|67,16,0,Z|49,19,0,Q|47,21,0,[|47,18,0,R|90,20,0,T|105,20,0,T|94,20,0,U|109,20,0,U|95,19,0,M|96,19,0,M|97,19,0,M|98,19,0,M|99,19,0,M|100,19,0,M|101,19,0,M|102,19,0,M|103,19,0,M|104,19,0,M|94,22,0,Q|105,22,0,Q|106,22,0,Q|85,21,0,M|86,21,0,M|87,21,0,M|88,21,0,M|89,21,0,M|110,21,0,M|111,21,0,M|112,21,0,M|113,21,0,M|114,21,0,M|127,3,0,P|128,3,0,Q|129,3,0,Q|130,3,0,Q|131,3,0,Q|132,3,0,Q|133,3,0,Q|134,3,0,Q|135,3,0,Q|136,3,0,Q|137,3,0,Q|127,37,0,P|128,37,0,Q|129,37,0,Q|130,37,0,Q|131,37,0,Q|132,37,0,Q|133,37,0,Q|134,37,0,Q|135,37,0,Q|136,37,0,Q|137,37,0,Q|49,16,0,Q|49,24,0,Q|32,28,0,N|28,27,0,N|24,26,0,N|20,25,0,N|8,22,0,N|8,18,0,N|20,15,0,N|24,14,0,N|28,13,0,N|32,12,0,N|4,19,0,N|4,21,0,N|3,20,0,N|9,19,0,O|9,20,0,O|9,21,0,O|13,18,0,O|13,22,0,O|17,17,0,O|17,23,0,O|21,16,0,O|21,24,0,O|25,15,0,O|25,25,0,O|29,14,0,O|29,26,0,O|33,27,0,O|33,13,0,O|57,20,1,R|61,15,1,R|61,25,1,R|57,16,0,Q|58,16,0,Q|59,16,0,Q|60,16,0,Q|61,16,0,Q|50,15,0,Q|51,15,0,Q|52,15,0,Q|54,15,0,Q|55,15,0,Q|56,15,0,Q|57,17,0,Q|57,18,0,Q|61,17,0,Q|61,18,0,Q|61,19,0,Q|61,20,0,Q|61,21,0,Q|61,22,0,Q|61,23,0,Q|61,24,0,Q|57,24,0,Q|58,24,0,Q|59,24,0,Q|60,24,0,Q|50,25,0,Q|51,25,0,Q|52,25,0,Q|54,25,0,Q|55,25,0,Q|56,25,0,Q|57,21,0,Q|57,22,0,Q|57,23,0,Q|61,26,0,Q|61,14,0,Q|53,25,0,R|53,15,0,R|24,18,0,Q|27,18,0,Q|28,18,0,Q|31,18,0,Q|32,18,0,Q|35,18,0,Q|36,18,0,Q|39,18,0,Q|40,18,0,Q|40,12,0,Q|40,13,0,Q|40,14,0,Q|40,15,0,Q|40,16,0,Q|40,17,0,Q|36,13,0,Q|36,14,0,Q|36,15,0,Q|36,16,0,Q|36,17,0,Q|32,14,0,Q|32,15,0,Q|32,16,0,Q|32,17,0,Q|28,15,0,Q|28,16,0,Q|28,17,0,Q|24,16,0,Q|24,17,0,Q|40,22,0,Q|40,23,0,Q|40,24,0,Q|40,25,0,Q|40,26,0,Q|40,27,0,Q|40,28,0,Q|36,22,0,Q|36,23,0,Q|36,24,0,Q|36,25,0,Q|36,26,0,Q|36,27,0,Q|32,22,0,Q|32,23,0,Q|32,24,0,Q|32,25,0,Q|32,26,0,Q|28,22,0,Q|28,23,0,Q|28,24,0,Q|28,25,0,Q|24,22,0,Q|27,22,0,Q|31,22,0,Q|35,22,0,Q|39,22,0,Q|41,22,0,Q|41,18,0,Q|24,23,0,Q|24,24,0,Q|114,4,3,\|114,36,3,]|82,27,0,M|82,28,0,M|82,29,0,M|82,30,0,M|82,10,0,M|82,11,0,M|82,12,0,M|82,13,0,M|83,8,0,M|83,32,0,M|42,18,0,R|42,22,0,R|37,18,0,R|37,22,0,R|33,22,0,R|33,18,0,R|29,18,0,R|29,22,0,R|25,22,0,R|25,18,0,R|43,29,2,^|44,29,2,^|45,29,2,^|42,29,2,^|42,26,0,^|43,26,0,^|44,26,0,^|45,26,0,^|49,12,0,Q|50,12,0,Q|51,12,0,Q|52,12,0,Q|56,12,0,Q|57,12,0,Q|58,12,0,Q|50,28,0,Q|51,28,0,Q|52,28,0,Q|56,28,0,Q|57,28,0,Q|58,28,0,Q|49,11,0,O|49,29,0,O|50,11,0,O|50,29,0,O|51,11,0,O|51,29,0,O|52,11,0,O|52,29,0,O|53,11,0,O|53,29,0,O|54,11,0,O|54,29,0,O|55,11,0,O|55,29,0,O|56,11,0,O|56,29,0,O|57,11,0,O|57,29,0,O|58,9,0,N|58,31,0,N|20,18,0,Q|23,18,0,Q|20,17,0,Q|20,22,0,Q|23,22,0,Q|20,23,0,Q|12,21,0,Q|12,19,0,Q|12,20,1,R|12,23,0,Q|13,23,0,Q|14,23,0,Q|15,23,0,Q|16,24,0,Q|17,24,0,Q|18,24,0,Q|19,24,0,Q|20,24,0,Q|16,23,0,Q|12,22,0,Q|12,18,0,Q|12,17,0,Q|13,17,0,Q|14,17,0,Q|15,17,0,Q|16,17,0,Q|16,16,0,Q|17,16,0,Q|18,16,0,Q|19,16,0,Q|20,16,0,Q|20,20,1,R|22,22,0,R|22,18,0,R|49,14,1,R|49,26,1,R|27,16,3,_|27,24,3,_|35,26,3,_|39,27,3,_|39,24,3,_|39,16,3,_|39,13,3,_|35,14,3,_|22,16,0,_|22,24,2,_|30,26,2,_|30,14,0,_|38,22,0,`|34,22,0,`|30,22,0,`|26,22,0,`|26,18,2,`|30,18,2,`|34,18,2,`|38,18,2,`|84,21,3,a|121,19,3,a|20,21,1,`|20,19,3,`|57,19,3,`|49,27,3,`|49,13,3,`|76,19,3,`|72,15,2,a|72,25,0,a|116,4,1,]|116,36,1,\|66,21,3,`|56,8,0,b|50,10,3,b|53,12,0,R|53,28,0,R|57,25,0,`|57,15,2,`|123,9,3,]|124,6,3,]|124,34,3,\|123,31,3,\|50,31,2,^|50,29,0,^|50,30,0,c|55,32,2,^|56,32,2,^|57,31,3,^|57,30,3,^|56,29,0,^|54,30,1,^|53,32,0,O|56,17,2,^|55,17,2,^|54,16,1,^|55,22,0,d|105,21,2,a|124,13,1,P|124,14,1,P|124,27,1,P|124,26,1,P|122,25,0,P|123,25,0,P|124,25,0,P|122,15,0,P|123,15,0,P|124,15,0,P|123,16,0,O|124,16,0,O|127,31,0,T|127,9,0,T|122,28,3,\|122,12,3,]|125,6,0,M|124,9,0,M|123,12,0,M|124,31,0,M|123,28,0,M|125,34,0,M|116,16,0,M|117,16,0,M|118,16,0,M|119,16,0,M|120,16,0,M|121,16,0,M|116,24,0,M|117,24,0,M|118,24,0,M|119,24,0,M|120,24,0,M|121,24,0,M|121,25,3,\|121,15,3,]|53,18,0,e|53,10,0,e|43,24,0,e|34,20,0,e|79,23,0,f|126,21,0,f|72,27,0,g|137,20,0,e|52,30,0,f|46,25,0,f|34,23,0,e|46,14,0,e|72,23,0,f|139,19,0,f|107,20,0,f|82,17,0,f|47,27,0,f|56,22,0,h|68,18,0,g|141,18,0,Q|141,22,0,Q|141,20,1,R|141,21,3,`|125,18,0,U|125,22,0,T|149,8,0,O|150,8,0,O|151,8,0,O|147,8,0,O|146,8,0,O|146,5,0,O|146,4,0,O|146,3,0,O|146,2,0,M|146,1,0,M|147,5,0,O|148,5,0,O|149,3,0,O|149,2,0,O|148,4,0,O|154,5,0,O|152,5,0,O|152,4,0,O|151,4,0,O|152,3,0,O|151,2,0,O|151,1,0,N|152,2,0,O|151,5,0,O|152,8,0,O|151,9,0,O|148,8,0,O|144,7,0,O|143,7,0,O|142,7,0,O|142,8,0,O|142,9,0,O|142,10,0,O|142,11,0,O|142,12,0,O|142,13,0,O|142,14,0,O|142,15,0,O|143,15,0,O|144,15,0,O|144,14,0,O|144,13,0,O|144,12,0,O|144,11,0,O|144,10,0,O|144,9,0,O|145,9,0,O|145,9,0,Q|143,14,0,O|143,13,0,O|143,12,0,O|143,11,0,O|143,10,0,O|143,9,0,O|142,6,0,O|142,5,0,O|143,5,0,O|144,5,0,O|144,4,0,O|144,3,0,O|143,3,0,O|142,3,0,O|142,2,0,M|142,1,0,M|143,1,0,M|144,1,0,M|143,2,0,M|144,2,0,M|143,4,0,O|142,4,0,O|143,8,0,O|143,6,0,O|144,8,0,O|144,6,0,O|147,17,0,Q|147,18,0,O|146,18,0,O|145,18,0,O|144,18,0,O|143,18,0,O|142,17,0,Q|144,19,0,O|145,20,0,O|143,20,0,O|144,20,0,O|145,19,0,O|145,17,0,Q|146,19,0,O|147,19,0,O|148,18,0,O|149,18,0,O|149,19,0,O|151,20,0,O|151,19,0,O|150,21,0,O|150,20,0,O|149,21,0,O|149,20,0,O|150,19,0,O|150,18,0,O|154,17,0,Q|154,18,0,O|155,18,0,Q|155,17,0,Q|155,16,0,Q|155,15,0,Q|155,11,0,Q|155,10,0,Q|155,9,1,R|155,8,0,Q|154,10,0,O|152,16,0,O|151,16,0,O|149,17,0,Q|145,16,0,O|145,16,0,Q|146,17,0,Q|145,8,0,O|151,10,0,O|151,11,0,O|151,12,0,O|151,13,0,O|151,14,0,O|152,10,0,O|152,11,0,O|152,12,0,O|152,13,0,O|152,14,0,O|152,9,0,O|153,9,0,O|153,10,0,O|152,15,0,O|151,15,0,O|145,5,0,O|147,4,0,O|145,4,0,O|147,3,0,O|145,3,0,O|147,2,0,M|145,2,0,M|147,1,0,M|148,1,0,N|145,1,0,M|148,0,0,N|149,0,0,N|150,5,0,O|150,4,0,O|150,3,0,O|148,3,0,O|148,2,0,O|150,2,0,O|149,1,0,N|151,3,0,O|153,8,0,O|155,7,0,Q|154,8,0,O|153,5,0,O|153,4,0,O|153,3,0,O|153,1,0,N|153,0,0,N|151,0,0,N|142,16,0,O|143,16,0,O|145,15,0,O|144,16,0,O|145,14,0,O|145,14,0,Q|145,13,0,O|145,13,0,Q|145,12,0,O|145,11,0,O|145,11,0,Q|145,10,0,O|145,10,0,Q|143,19,0,O|142,18,0,O|143,21,0,O|144,21,0,O|145,21,0,O|146,20,0,O|146,21,0,O|147,20,0,O|147,21,0,O|148,19,0,O|148,20,0,O|148,21,0,O|148,22,0,O|147,23,0,Q|146,23,0,Q|145,23,0,Q|142,23,0,Q|142,24,0,O|142,25,0,O|142,26,0,O|142,27,0,O|142,28,0,O|142,29,0,O|142,30,0,O|142,31,0,O|142,32,0,O|142,33,0,O|142,34,0,O|142,35,0,O|142,36,0,O|142,37,0,O|142,38,0,M|142,39,0,M|143,39,0,M|144,39,0,M|145,39,0,M|148,40,0,N|149,40,0,N|151,40,0,N|153,40,0,N|152,38,0,O|151,37,0,O|150,37,0,O|149,37,0,O|148,37,0,O|147,38,0,M|146,38,0,M|146,37,0,O|145,37,0,O|144,37,0,O|144,36,0,O|144,35,0,O|145,35,0,O|146,35,0,O|147,35,0,O|147,36,0,O|148,35,0,O|150,35,0,O|151,35,0,O|152,35,0,O|153,35,0,O|153,36,0,O|156,34,0,N|144,33,0,O|144,32,0,O|144,31,0,O|145,31,0,O|145,31,0,Q|151,31,0,O|152,31,0,O|153,31,0,O|154,31,0,O|155,31,1,R|155,32,0,Q|155,30,0,Q|154,30,0,O|145,25,0,O|144,25,0,O|144,26,0,O|144,27,0,O|145,27,0,O|145,27,0,Q|145,28,0,O|154,23,0,Q|155,23,0,Q|154,22,0,O|151,24,0,O|151,23,0,Q|151,25,0,O|151,28,0,O|151,27,0,O|151,26,0,O|151,29,0,O|153,30,0,O|152,30,0,O|151,30,0,O|145,30,0,O|145,30,0,Q|144,30,0,O|144,29,0,O|145,32,0,O|146,32,0,O|147,32,0,O|148,32,0,O|149,32,0,O|150,32,0,O|151,32,0,O|152,32,0,O|153,32,0,O|154,32,0,O|155,33,0,Q|154,35,0,O|144,34,0,O|145,36,0,O|146,36,0,O|147,37,0,O|148,36,0,O|148,38,0,O|149,38,0,O|150,36,0,O|150,38,0,O|152,36,0,O|151,36,0,O|151,38,0,O|152,37,0,O|153,37,0,O|153,39,0,N|151,39,0,N|149,39,0,N|148,39,0,N|147,39,0,M|146,39,0,M|145,38,0,M|144,38,0,M|143,38,0,M|143,37,0,O|143,36,0,O|143,35,0,O|143,34,0,O|143,33,0,O|143,32,0,O|143,31,0,O|143,30,0,O|143,29,0,O|143,28,0,O|143,27,0,O|143,26,0,O|143,25,0,O|142,22,0,O|143,24,0,O|144,24,0,O|145,24,0,O|145,24,0,Q|149,23,0,Q|147,22,0,O|146,22,0,O|145,22,0,O|144,22,0,O|143,22,0,O|142,21,0,O|142,20,0,O|142,19,0,O|151,21,0,O|152,19,0,O|152,20,0,O|152,21,0,O|153,19,0,O|153,20,0,O|153,21,0,O|151,18,0,O|152,18,0,O|153,18,0,O|154,19,0,O|154,20,0,O|154,21,0,O|153,22,0,O|152,22,0,O|151,22,0,O|150,22,0,O|149,22,0,O|155,19,0,Q|156,17,0,N|157,17,0,N|158,17,0,N|159,17,0,N|159,23,0,N|158,23,0,N|157,23,0,N|156,23,0,N|155,22,0,Q|155,20,1,R|155,14,1,R|155,13,0,Q|155,12,0,Q|154,9,0,O|156,6,0,N|155,29,0,Q|155,28,0,Q|155,27,0,Q|155,26,1,R|155,25,0,Q|155,24,0,Q|145,26,0,O|145,26,0,Q|144,28,0,O|145,29,0,O|145,29,0,Q|143,17,0,R|143,23,0,R|142,3,0,Q|142,4,0,Q|142,5,0,Q|142,6,0,Q|142,7,0,Q|142,8,0,Q|142,9,0,Q|142,10,0,Q|142,11,0,Q|142,12,0,Q|142,13,0,Q|142,14,0,Q|142,15,0,Q|142,16,0,Q|142,24,0,Q|142,25,0,Q|142,26,0,Q|142,27,0,Q|142,28,0,Q|142,29,0,Q|142,30,0,Q|142,31,0,Q|142,32,0,Q|142,33,0,Q|142,34,0,Q|142,35,0,Q|142,36,0,Q|142,37,0,Q|126,12,0,T|126,28,0,T|128,31,0,T|128,9,0,T|137,12,0,T|137,28,0,T|129,24,0,U|129,16,0,U|128,30,0,[|128,10,0,[|92,11,0,i|90,17,0,Q|90,23,0,Q|94,23,0,Q|94,17,0,Q|105,17,0,Q|109,17,0,Q|109,23,0,Q|105,23,0,Q|107,11,0,i|107,29,0,i|92,29,0,i|62,20,0,i|74,16,0,i|68,24,0,i|141,33,0,[|141,7,0,[|129,18,0,O|137,18,0,O|127,20,0,[|126,20,0,O|144,17,2,`|144,23,0,`|141,19,1,`|127,18,0,O|108,17,0,O|91,23,0,O|79,15,0,i|79,25,0,i|62,18,0,j|0,20,0,N|1,20,0,N|2,20,0,N|58,10,0,Q|59,10,0,P|60,10,0,P|61,10,0,P|62,10,0,P|63,10,0,P|64,10,0,P|65,10,0,P|66,10,0,P|67,10,0,P|58,30,0,Q|59,30,0,P|60,30,0,P|61,30,0,P|62,30,0,P|63,30,0,P|64,30,0,P|65,30,0,P|66,30,0,P|67,30,0,P|59,11,0,O|59,29,0,O|60,11,0,O|60,29,0,O|61,11,0,O|61,29,0,O|62,11,0,O|62,12,0,O|62,13,0,O|62,14,0,O|62,26,0,O|62,27,0,O|62,28,0,O|62,29,0,O|63,11,0,O|63,12,0,O|63,13,0,O|63,14,0,O|63,26,0,O|63,27,0,O|63,28,0,O|63,29,0,O|64,11,0,O|64,12,0,O|64,13,0,O|64,14,0,O|64,15,0,O|64,25,0,O|64,26,0,O|64,27,0,O|64,28,0,O|64,29,0,O|65,11,0,O|65,12,0,O|65,13,0,O|65,27,0,O|65,28,0,O|65,29,0,O|66,11,0,O|66,12,0,O|66,13,0,O|66,27,0,O|66,28,0,O|66,29,0,O|61,11,0,Q|61,12,0,Q|61,13,0,Q|61,27,0,Q|61,28,0,Q|61,29,0,Q|65,14,0,O|65,26,0,O|65,15,0,O|65,25,0,O|67,11,0,O|67,12,0,O|67,13,0,O|67,14,0,O|67,26,0,O|67,27,0,O|67,28,0,O|67,29,0,O|68,11,0,O|68,12,0,O|68,13,0,O|68,14,0,O|68,26,0,O|68,27,0,O|68,28,0,O|68,29,0,O|69,11,0,O|69,12,0,O|69,13,0,O|69,14,0,O|69,26,0,O|69,27,0,O|69,28,0,O|69,29,0,O|70,11,0,O|70,12,0,O|70,13,0,O|70,14,0,O|70,26,0,O|70,27,0,O|70,28,0,O|70,29,0,O|74,14,0,O|74,26,0,O|70,13,0,P|70,14,0,P|70,11,0,P|70,26,0,P|70,27,0,P|70,29,0,P|62,26,0,Q|64,26,0,Q|65,26,0,Q|62,14,0,Q|64,14,0,Q|65,14,0,Q|68,15,0,S|68,25,0,S|63,14,0,R|63,26,0,R|71,15,0,P|71,25,0,P|70,28,1,S|70,12,1,S|69,10,0,P|70,10,0,P|69,30,0,P|70,30,0,P|72,10,0,S|72,30,0,S|71,10,0,k|73,10,0,k|71,30,2,k|73,30,2,k|51,17,2,d|52,20,3,d|55,20,3,d|51,23,0,d|53,19,0,e|53,20,0,e|54,21,0,e|50,21,0,T|50,19,0,U|55,12,2,`|55,28,0,`|54,28,0,Q|54,12,0,Q|54,12,2,l|71,25,2,l|80,26,2,l|80,14,0,l|71,15,0,l|70,13,1,l|70,27,1,l|54,25,2,l|54,28,0,l|54,15,0,l|49,20,3,l|61,20,3,l|40,25,3,l|40,15,3,l|36,16,3,l|32,16,3,l|28,16,3,l|24,16,3,l|24,24,3,l|28,24,3,l|32,24,3,l|36,24,3,l|20,21,3,l|12,19,1,l|58,28,2,l|58,12,0,l|66,14,0,O|66,26,0,O|66,14,1,`|66,26,1,`|66,14,2,l|66,26,0,l|61,17,1,l|61,23,1,l|90,19,0,l|109,19,0,l|24,18,0,l|32,22,2,l|38,18,0,l|49,15,3,l|49,25,3,l|40,26,1,l|40,14,1,l|52,15,2,l|52,25,0,l|100,21,2,l|121,21,3,l|142,33,3,l|142,7,3,l|137,3,0,l|126,9,1,l|126,31,1,l|128,17,2,l|145,29,3,l|145,11,3,l|128,23,0,l|137,23,0,l|137,17,2,l|141,19,3,l|149,17,2,l|149,23,0,l|121,19,1,l|141,21,1,l|131,23,2,l|100,9,0,Q|100,10,0,Q|100,11,0,Q|100,12,0,Q|100,13,0,Q|101,13,0,Q|101,14,0,Q|101,15,0,Q|102,15,0,Q|102,16,0,Q|103,16,0,Q|103,17,0,Q|104,17,0,Q|89,17,0,Q|88,17,0,Q|87,16,0,Q|88,16,0,Q|86,15,0,Q|87,15,0,Q|86,13,0,Q|86,14,0,Q|85,9,0,Q|85,10,0,Q|85,11,0,Q|85,12,0,Q|85,13,0,Q|86,7,0,Q|86,8,0,Q|86,9,0,Q|87,6,0,Q|87,7,0,Q|88,5,0,Q|88,6,0,Q|89,5,0,Q|90,5,0,Q|90,4,0,Q|91,4,0,Q|92,4,0,Q|93,4,0,Q|94,4,0,Q|94,5,0,Q|95,5,0,Q|96,5,0,Q|96,6,0,Q|97,6,0,Q|97,7,0,Q|98,7,0,Q|98,8,0,Q|98,9,0,Q|99,9,0,Q|99,10,0,Q|99,11,0,Q|99,12,0,Q|99,13,0,Q|98,13,0,Q|98,14,0,Q|98,15,0,Q|97,15,0,Q|97,16,0,Q|96,16,0,Q|96,17,0,Q|95,17,0,Q|110,17,0,Q|111,17,0,Q|111,16,0,Q|112,16,0,Q|112,15,0,Q|113,15,0,Q|113,13,0,Q|113,14,0,Q|114,9,0,Q|114,10,0,Q|114,11,0,Q|114,12,0,Q|114,13,0,Q|113,7,0,Q|113,8,0,Q|113,9,0,Q|112,6,0,Q|112,7,0,Q|111,6,0,Q|109,5,0,Q|110,5,0,Q|111,5,0,Q|105,4,0,Q|106,4,0,Q|107,4,0,Q|108,4,0,Q|109,4,0,Q|103,5,0,Q|104,5,0,Q|105,5,0,Q|102,6,0,Q|103,6,0,Q|102,7,0,Q|101,7,0,Q|101,8,0,Q|101,9,0,Q|100,27,0,Q|100,28,0,Q|100,29,0,Q|100,30,0,Q|100,31,0,Q|99,27,0,Q|99,28,0,Q|99,29,0,Q|99,30,0,Q|99,31,0,Q|98,25,0,Q|98,26,0,Q|98,27,0,Q|97,24,0,Q|97,25,0,Q|96,23,0,Q|96,24,0,Q|95,23,0,Q|104,23,0,Q|103,23,0,Q|103,24,0,Q|102,24,0,Q|102,25,0,Q|101,25,0,Q|101,26,0,Q|101,27,0,Q|85,27,0,Q|85,28,0,Q|85,29,0,Q|85,30,0,Q|85,31,0,Q|86,31,0,Q|86,32,0,Q|86,33,0,Q|87,33,0,Q|87,34,0,Q|88,34,0,Q|88,35,0,Q|89,35,0,Q|90,35,0,Q|90,36,0,Q|91,36,0,Q|92,36,0,Q|93,36,0,Q|94,36,0,Q|94,35,0,Q|95,35,0,Q|96,35,0,Q|96,34,0,Q|97,34,0,Q|86,25,0,Q|86,26,0,Q|86,27,0,Q|87,24,0,Q|87,25,0,Q|88,23,0,Q|88,24,0,Q|89,23,0,Q|98,31,0,Q|98,32,0,Q|98,33,0,Q|97,33,0,Q|102,33,0,Q|102,34,0,Q|103,34,0,Q|103,35,0,Q|101,31,0,Q|101,32,0,Q|101,33,0,Q|114,27,0,Q|114,28,0,Q|114,29,0,Q|114,30,0,Q|114,31,0,Q|113,31,0,Q|113,32,0,Q|113,33,0,Q|112,33,0,Q|112,34,0,Q|111,34,0,Q|111,35,0,Q|109,35,0,Q|110,35,0,Q|105,36,0,Q|106,36,0,Q|107,36,0,Q|108,36,0,Q|109,36,0,Q|104,35,0,Q|105,35,0,Q|113,25,0,Q|113,26,0,Q|113,27,0,Q|112,24,0,Q|112,25,0,Q|111,24,0,Q|110,23,0,Q|111,23,0,Q|107,4,0,l|92,4,0,l|85,11,1,l|107,36,2,l|92,36,2,l|99,29,3,l|114,29,3,l|114,11,3,l|99,11,3,l|100,11,1,l|100,29,1,l|85,29,1,l|93,18,2,l|108,18,2,l|106,22,0,l|91,22,0,l|43,18,2,m|41,11,0,O|41,12,0,O|41,13,0,O|41,14,0,O|41,15,0,O|41,16,0,O|41,17,0,O|42,11,0,O|42,12,0,O|42,13,0,O|42,14,0,O|42,15,0,O|42,16,0,O|43,11,0,O|43,12,0,O|43,13,0,O|43,15,0,O|43,16,0,O|43,17,0,O|44,11,0,O|44,12,0,O|44,13,0,O|44,15,0,O|44,16,0,O|44,17,0,O|45,10,0,O|45,11,0,O|45,12,0,O|45,13,0,O|45,15,0,O|45,16,0,O|45,17,0,O|46,10,0,O|46,11,0,O|46,12,0,O|46,13,0,O|46,15,0,O|46,16,0,O|46,17,0,O|47,10,0,O|47,11,0,O|47,12,0,O|47,13,0,O|48,10,0,O|48,11,0,O|48,12,0,O|48,13,0,O|48,14,0,O|48,15,0,O|48,16,0,O|44,10,0,m|44,9,0,Q|45,9,0,Q|46,9,0,Q|47,9,0,Q|48,9,0,Q|49,9,0,Q|49,10,0,Q|49,11,0,Q|40,10,0,Q|41,10,0,Q|42,10,0,Q|43,10,0,Q|44,10,0,Q|40,11,0,Q|44,31,0,Q|45,31,0,Q|46,31,0,Q|47,31,0,Q|48,31,0,Q|49,31,0,Q|40,30,0,Q|41,30,0,Q|42,30,0,Q|43,30,0,Q|44,30,0,Q|40,29,0,Q|49,29,0,Q|49,30,0,Q|52,13,0,e|38,20,0,e|64,19,0,f|63,16,0,f|37,16,0,e|33,20,0,e|45,25,0,e|5,19,0,n|5,21,2,n|5,20,0,Q|6,20,0,Q|7,20,0,Q|8,20,0,Q|152,0,0,n|150,0,0,n|152,40,2,n|150,40,2,n|150,1,0,Q|152,1,0,Q|152,39,0,Q|150,39,0,Q|21,22,0,`|21,18,2,`|141,23,0,`|141,17,2,`|108,22,0,`|93,22,0,`|91,18,2,`|106,18,2,`|153,38,0,Q|154,36,0,Q|154,37,0,Q|154,38,0,Q|155,34,0,Q|155,35,0,Q|155,36,0,Q|155,4,0,Q|155,5,0,Q|155,6,0,Q|154,2,0,Q|154,3,0,Q|153,2,0,Q|154,4,0,Q|145,18,0,Q|145,19,0,Q|145,20,0,Q|145,21,0,Q|145,22,0,Q|145,15,1,R|145,25,1,R|153,23,0,R|153,17,0,R|146,8,0,Q|147,8,0,Q|148,8,0,Q|149,8,0,Q|150,8,0,Q|151,8,0,Q|152,8,0,Q|153,8,0,Q|154,8,0,Q|146,32,0,Q|147,32,0,Q|148,32,0,Q|149,32,0,Q|150,32,0,Q|151,32,0,Q|152,32,0,Q|153,32,0,Q|154,32,0,Q|151,24,0,Q|151,26,0,Q|151,27,0,Q|151,28,0,Q|151,29,0,Q|151,30,0,Q|151,31,0,Q|151,9,0,Q|151,10,0,Q|151,11,0,Q|151,12,0,Q|151,13,0,Q|151,14,0,Q|151,16,0,Q|145,6,0,O|145,7,0,O|146,6,0,O|146,7,0,O|146,9,0,O|146,10,0,O|146,11,0,O|146,12,0,O|146,13,0,O|146,14,0,O|146,15,0,O|146,16,0,O|147,6,0,O|147,7,0,O|147,9,0,O|147,10,0,O|147,11,0,O|147,12,0,O|147,13,0,O|147,14,0,O|147,15,0,O|147,16,0,O|148,6,0,O|148,7,0,O|148,9,0,O|148,10,0,O|148,11,0,O|148,12,0,O|148,13,0,O|148,14,0,O|148,15,0,O|148,16,0,O|149,4,0,O|149,5,0,O|149,6,0,O|149,7,0,O|149,9,0,O|149,10,0,O|149,11,0,O|149,12,0,O|149,13,0,O|149,14,0,O|149,15,0,O|149,16,0,O|150,6,0,O|150,7,0,O|150,9,0,O|150,10,0,O|150,11,0,O|150,12,0,O|150,13,0,O|150,14,0,O|150,15,0,O|150,16,0,O|151,6,0,O|151,7,0,O|152,6,0,O|152,7,0,O|153,6,0,O|153,7,0,O|153,11,0,O|153,12,0,O|153,13,0,O|153,14,0,O|153,15,0,O|153,16,0,O|154,6,0,O|154,7,0,O|154,11,0,O|154,12,0,O|154,13,0,O|154,14,0,O|154,15,0,O|154,16,0,O|145,33,0,O|145,34,0,O|146,24,0,O|146,25,0,O|146,26,0,O|146,27,0,O|146,28,0,O|146,29,0,O|146,30,0,O|146,31,0,O|146,33,0,O|146,34,0,O|147,24,0,O|147,25,0,O|147,26,0,O|147,27,0,O|147,28,0,O|147,29,0,O|147,30,0,O|147,31,0,O|147,33,0,O|147,34,0,O|148,24,0,O|148,25,0,O|148,26,0,O|148,27,0,O|148,28,0,O|148,29,0,O|148,30,0,O|148,31,0,O|148,33,0,O|148,34,0,O|149,24,0,O|149,25,0,O|149,26,0,O|149,27,0,O|149,28,0,O|149,29,0,O|149,30,0,O|149,31,0,O|149,33,0,O|149,34,0,O|149,35,0,O|149,36,0,O|150,24,0,O|150,25,0,O|150,26,0,O|150,27,0,O|150,28,0,O|150,29,0,O|150,30,0,O|150,31,0,O|150,33,0,O|150,34,0,O|151,33,0,O|151,34,0,O|152,24,0,O|152,25,0,O|152,26,0,O|152,27,0,O|152,28,0,O|152,29,0,O|152,33,0,O|152,34,0,O|153,24,0,O|153,25,0,O|153,26,0,O|153,27,0,O|153,28,0,O|153,29,0,O|153,33,0,O|153,34,0,O|154,24,0,O|154,25,0,O|154,26,0,O|154,27,0,O|154,28,0,O|154,29,0,O|154,33,0,O|154,34,0,O|151,17,0,Q|145,28,0,Q|145,12,0,Q|151,15,1,R|151,25,1,R|149,8,2,l|149,32,0,l|151,12,1,l|151,28,1,l|152,17,2,`|152,23,0,`|148,23,0,`|150,17,0,Q|150,23,0,Q|148,17,2,`|144,8,0,Q|144,32,0,Q|143,8,0,R|143,32,0,R|145,32,0,`|145,8,2,`|155,21,3,`|155,19,3,l|114,17,0,o|125,2,0,p|125,37,0,q|114,22,0,r|59,6,1,q|60,34,3,p|80,28,0,r|81,30,0,r|82,32,0,r|83,34,0,r|84,36,0,r|110,36,1,q|114,33,2,p|85,32,0,q|99,33,2,p|100,32,0,q|96,22,3,p|99,26,2,q|100,25,0,p|104,22,3,q|103,18,1,p|114,26,2,q|111,22,3,p|110,18,1,q|111,4,3,p|85,25,0,p|83,26,1,r|85,23,2,o|89,22,3,q|88,18,1,p|89,4,3,q|95,18,1,q|96,4,3,p|85,18,2,r|84,14,3,o|85,14,0,q|85,7,0,p|80,11,0,o|81,9,0,o|83,5,0,o|82,7,0,o|103,36,1,p|95,36,1,q|88,36,1,p|85,36,2,r|100,14,0,q|99,15,2,p|99,8,2,q|100,7,0,p|104,4,3,q|114,15,2,p|114,8,2,q|84,3,0,o|85,5,2,s|80,15,0,t|81,25,2,t|120,22,2,t|117,22,2,t|119,18,0,t|116,18,0,t|48,19,3,t|48,28,3,u|46,30,2,t|48,30,2,t|44,23,0,t|41,24,1,t|39,17,3,v|39,12,3,v|35,13,3,v|35,27,3,v|39,23,3,v|39,25,3,v|39,26,3,v|39,28,3,v|39,15,3,v|39,14,3,v|27,23,3,v|27,17,3,v|25,15,0,w|26,25,2,w|23,24,2,v|23,16,0,v|17,17,0,x|19,18,2,x|19,23,2,x|17,22,0,x|29,14,0,v|31,14,0,v|31,26,2,v|29,26,2,v|31,17,2,w|30,23,0,w|15,19,2,x|15,22,2,x|13,21,0,x|13,18,0,x|16,21,0,x|50,11,1,y|50,9,1,y|57,8,0,y|55,8,0,y|53,8,0,t|57,11,2,t|39,21,1,x|35,21,1,x|27,21,1,x|40,19,3,x|36,19,3,x|28,19,3,x|32,19,3,x|31,21,1,x|23,21,1,x|24,19,3,x|55,16,1,z|116,15,2,r|116,26,2,o|76,26,1,p|77,14,3,q|139,22,2,{|139,18,0,t|154,1,2,q|148,2,0,}|156,5,2,q|155,3,2,q|154,40,2,p|148,37,0,}|155,38,2,p|156,36,2,p|128,15,2,t|127,25,0,t|146,37,1,}|146,3,1,}|132,18,0,t|126,4,0,p|125,7,0,p|124,10,0,p|123,13,0,p|124,29,0,q|123,26,0,q|125,32,0,q|126,35,0,q|65,25,2,t|64,15,0,t|74,12,3,t|74,27,3,t|72,14,2,t|71,26,0,t|62,29,1,t|62,12,1,t|67,11,0,t|65,11,0,t|66,29,2,t|68,29,2,t|48,16,3,t|59,13,1,}|59,27,1,}|7,18,3,r|6,22,1,o|65,17,3,t|65,22,3,t|150,16,2,t|149,24,0,t|146,24,0,t|152,31,1,t|152,29,1,t|152,10,1,t|152,12,1,t|154,11,3,t|154,15,3,t|154,24,3,t|154,28,3,t|154,21,3,t|154,18,3,t|146,14,1,}|149,14,1,}|149,26,1,}|146,26,1,}|151,22,1,}|151,18,1,}|147,16,2,t|35,15,3,~|35,24,3,~|55,30,0,|149,2,0,|151,2,0,|151,37,0,|149,37,0,|127,27,0,|127,12,0,|59,11,0,|59,28,0,|136,1,3,|136,39,1,|46,8,3,|50,7,3,|54,6,3,|58,5,3,|34,11,3,|38,10,3,|42,9,3,|34,29,1,|38,30,1,|42,31,1,|62,5,1,|62,4,3,|46,32,1,|50,33,1,|54,34,1,|58,35,1,|62,35,3,|62,36,1,|30,12,3,|26,13,3,|22,14,3,|18,15,3,|14,16,3,|10,17,3,|30,28,1,|26,27,1,|22,26,1,|18,25,1,|14,24,1,|10,23,1,|83,10,2,|83,30,2,|84,33,2,|84,7,2,|47,23,2,|146,0,3,|146,40,1,|158,34,1,|158,6,3,|133,22,0,|136,22,0,|2,19,3,|2,21,1,|50,20,1,|51,20,1,|51,24,2,|51,16,0,|55,24,2,|41,16,2,|47,12,2,|46,12,2,|43,12,3,|43,13,3,|45,16,3,|45,15,3,|124,20,0,|45,20,0,|71,20,3,|59,22,0,|10,20,0,|144,4,0,|144,36,0,|129,20,0,|43,28,1,|136,19,2,|134,34,0,|130,34,0,|130,5,0,|134,5,0,|134,9,0,|134,13,0,|134,30,0,|134,26,0,|130,30,0,|130,26,0,|130,13,0,|130,9,0,|139,13,0,|139,9,0,|139,4,0,|139,26,0,|139,30,0,|139,35,0,|152,34,1,|152,6,1,|71,20,0,|80,20,0,|158,14,3,|158,9,3,|158,31,3,|158,26,3,|158,20,3,|148,20,0,|148,11,0,|148,29,0,|154,16,0,|154,15,0,|150,16,0,|147,16,0,|149,24,0,|150,24,0,|152,28,0,|152,29,0,|152,30,0,|154,28,0,|154,25,0,|154,24,0,|152,11,0,|152,10,0,|154,11,0,|154,18,0,|154,19,0,|154,22,0,|53,8,0,|54,8,0,|55,8,0,|56,8,0,|57,8,0,|50,9,0,|51,9,0,|52,9,0,|53,9,0,|54,9,0,|55,9,0,|56,9,0,|57,9,0,|50,10,0,|51,10,0,|52,10,0,|53,10,0,|54,10,0,|55,10,0,|56,10,0,|57,10,0,|50,11,0,|51,11,0,|52,11,0,|53,11,0,|54,11,0,|55,11,0,|56,11,0,|57,11,0,|46,23,0,|47,23,0,|48,23,0,|46,24,0,|47,24,0,|48,24,0,</bigString>
 	</EnemyShipDef>
 </Defs>

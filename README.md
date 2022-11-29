@@ -20,7 +20,6 @@ An updated version of the Creation kit is also [available](https://github.com/So
 
 Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2PACX-1vT1tWMpG9R7bU6asg5ICf6AmQGzUHmxnL8OPOWFzV1o4L_Dsli6OQbHfFXY4CTxX6vpCEvJjycMPniB/pubhtml) for general SOS2 info, FAQs and mod compatibility. Note that some mods that do work with the STEAM build might not with SOS2EXP - particularly mods that alter, extend or otherwise interact with SOS2.
 
-
 **MAJOR FEATURE LIST:**
 
 * **Continue playing or start fresh:** the new release is backwards compatible but your ship might require some maintenance such as replacing large bridges with consoles, adding coolant tanks for more capacity or making more room for a larger crew. Making a save out of combat is recommend just in case. If however you plan to start on a ship you can pick from a varied selection of rebuilt options by customizing your starting scenario.
@@ -51,4 +50,4 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Creation kit:** now includes new tools for fleet and blueprint creation as well as improvements to existing ones.
 
-**For more details read the [feature list](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0)** It also includes other info that you might find useful.
+**For more details read the [full change list](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0)** It also includes other info that you might find useful.

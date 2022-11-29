@@ -226,7 +226,7 @@
 		<defName>ShipHeatsink</defName>
 		<label>heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 100</description>
+		<description>A heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 200</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatsink</texPath>
@@ -250,7 +250,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>100</heatCapacity>
+				<heatCapacity>200</heatCapacity>
 				<heatVent>6</heatVent>
 				<heatLoss>4</heatLoss>
 				<threat>2</threat>
@@ -271,7 +271,7 @@
 		<defName>ShipHeatsinkLarge</defName>
 		<label>large heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A large heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 500</description>
+		<description>A large heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 1000</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatsinkLarge</texPath>
@@ -295,7 +295,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>500</heatCapacity>
+				<heatCapacity>1000</heatCapacity>
 				<heatVent>24</heatVent>
 				<heatLoss>12</heatLoss>
 				<threat>12</threat>
@@ -315,7 +315,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatManifold</defName>
 		<label>coolant tank</label>
-		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 400</description>
+		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 800</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatbank</texPath>
@@ -337,7 +337,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>400</heatCapacity>
+				<heatCapacity>800</heatCapacity>
 				<heatLoss>6</heatLoss>
 				<threat>1</threat>
 			</li>
@@ -349,7 +349,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatBankLarge</defName>
 		<label>large coolant tank</label>
-		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 2000</description>
+		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 4000</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankLarge</texPath>
@@ -371,7 +371,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>2000</heatCapacity>
+				<heatCapacity>4000</heatCapacity>
 				<heatLoss>18</heatLoss>
 				<threat>5</threat>
 			</li>

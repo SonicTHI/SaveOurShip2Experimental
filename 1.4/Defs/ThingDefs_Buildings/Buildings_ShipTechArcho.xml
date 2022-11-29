@@ -781,7 +781,7 @@
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<fuelCapacity>100.0</fuelCapacity>
+				<fuelCapacity>200.0</fuelCapacity>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
 				<fuelFilter>
 					<thingDefs>
@@ -909,7 +909,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsinkAntiEntropy</defName>
 		<label>anti-entropic heatbank</label>
-		<description>An advanced heatbank designed by an archotech. Uses exotic physics to convert excess heat back into usable energy.\n\nHeat capacity: 100\nHeat conversion: 0.5/s to 1kW/s</description>
+		<description>An advanced heatbank designed by an archotech. Uses exotic physics to convert excess heat back into usable energy.\n\nHeat capacity: 200\nHeat conversion: 0.5/s to 1kW/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankAntiEntropic</texPath>
@@ -933,7 +933,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
-				<heatCapacity>100</heatCapacity>
+				<heatCapacity>200</heatCapacity>
 				<threat>3</threat>
 				<antiEntropic>true</antiEntropic>
 			</li>

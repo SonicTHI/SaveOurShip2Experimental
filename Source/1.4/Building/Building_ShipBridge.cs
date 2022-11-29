@@ -28,8 +28,7 @@ namespace RimWorld
         public bool rotatable = true;
         
         bool selected = false;
-        IntVec3 LowestCorner;
-        List<Building> cachedShipParts;
+        public List<Building> cachedShipParts;
         List<Building> cachedPods;
         List<string> fail;
 
@@ -106,13 +105,8 @@ namespace RimWorld
                     Log.Message("recached: " + this);
                     cachedShipParts = ShipUtility.ShipBuildingsAttachedTo(this);
                     cachedPods = new List<Building>();
-                    LowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
                     foreach (Building b in cachedShipParts)
                     {
-                        if (b.Position.x < LowestCorner.x)
-                            LowestCorner.x = b.Position.x;
-                        if (b.Position.z < LowestCorner.z)
-                            LowestCorner.z = b.Position.z;
                         if (b.TryGetComp<CompCryptoLaunchable>() != null)
                         {
                             cachedPods.Add(b);
@@ -436,50 +430,33 @@ namespace RimWorld
                                 returnToPrevWorld.Disable(fail.First());
                             yield return returnToPrevWorld;
                         }
-
                         Command_Action moveShip = new Command_Action
                         {
                             action = delegate
                             {
-                                MoveShipSketch(LowestCorner, this, this.Map);
+                                ShipInteriorMod2.MoveShipSketch(this, this.Map);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMove"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Land_Ship")
                         };
-                        if (ShipCountdown.CountingDown)
-                        {
-                            moveShip.Disable();
-                        }
-                        yield return moveShip;
                         //flip
                         Command_Action moveShipFlip = new Command_Action
                         {
                             action = delegate
                             {
-                                IntVec3 lowestCornerAdj = new IntVec3();
-                                lowestCornerAdj.x = this.Map.Size.x - LowestCorner.x;
-                                lowestCornerAdj.z = this.Map.Size.z - LowestCorner.z;
-                                MoveShipSketch(lowestCornerAdj, this, this.Map, 2);
+                                ShipInteriorMod2.MoveShipSketch(this, this.Map, 2);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFlip"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFlipDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Flip_Ship")
                         };
-                        if (ShipCountdown.CountingDown)
-                        {
-                            moveShipFlip.Disable();
-                        }
-                        yield return moveShipFlip;
                         //CCW rot
                         Command_Action moveShipRot = new Command_Action
                         {
                             action = delegate
                             {
-                                IntVec3 lowestCornerAdj = new IntVec3();
-                                lowestCornerAdj.x = this.Map.Size.z - LowestCorner.z;
-                                lowestCornerAdj.z = LowestCorner.x;
-                                MoveShipSketch(lowestCornerAdj, this, this.Map, 1);
+                                ShipInteriorMod2.MoveShipSketch(this, this.Map, 1);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRot"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotDesc"),
@@ -487,13 +464,17 @@ namespace RimWorld
                         };
                         if (ShipCountdown.CountingDown)
                         {
+                            moveShip.Disable();
                             moveShipFlip.Disable();
+                            moveShipRot.Disable();
                         }
                         else if (!rotatable)
                         {
                             moveShipRot.Disable();
                             moveShipRot.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotNo");
                         }
+                        yield return moveShip;
+                        yield return moveShipFlip;
                         yield return moveShipRot;
 
                         //land - dev mode can "land" in space with CK enabled
@@ -509,7 +490,7 @@ namespace RimWorld
                             {
                                 action = delegate
                                 {
-                                    MoveShipSketch(LowestCorner, this, m, 0);
+                                    ShipInteriorMod2.MoveShipSketch(this, m, 0);
                                 },
                                 defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand") + " (" + m.Parent.Label + ")",
                                 defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideLandDesc") + m.Parent.Label,
@@ -671,7 +652,7 @@ namespace RimWorld
                                     else
                                         ShipInteriorMod2.GeneratePlayerShipMap(this.Map.Size, this.Map);
                                 }
-                                MoveShipSketch(LowestCorner, this, mapComp.ShipCombatOriginMap, 0);
+                                ShipInteriorMod2.MoveShipSketch(this, mapComp.ShipCombatOriginMap, 0);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShip"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShipDesc"),
@@ -741,60 +722,6 @@ namespace RimWorld
             }*/
             //TODO add "solar system" option
         }
-
-        public void MoveShipSketch(IntVec3 lowestCorner, Building b, Map m, byte rotb = 0)
-        {
-            Sketch shipSketch = GenerateShipSketch(lowestCorner, rotb);
-            MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
-            fakeMover.shipRoot = b;
-            fakeMover.shipRotNum = rotb;
-            fakeMover.bottomLeftPos = lowestCorner;
-            ShipInteriorMod2.shipOriginMap = b.Map;
-            fakeMover.targetMap = m;
-            fakeMover.Position = b.Position;
-            fakeMover.SpawnSetup(m, false);
-            List<object> selected = new List<object>();
-            foreach (object ob in Find.Selector.SelectedObjects)
-                selected.Add(ob);
-            foreach (object ob in selected)
-                Find.Selector.Deselect(ob);
-            Current.Game.CurrentMap = m;
-            Find.Selector.Select(fakeMover);
-            InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
-        }
-        private Sketch GenerateShipSketch(IntVec3 lowestCorner, byte rotb = 0)
-        {
-            Sketch sketch = new Sketch();
-            List<IntVec3> positions = new List<IntVec3>();
-            foreach (Building building in cachedShipParts)
-            {
-                foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(building))
-                {
-                    if (!positions.Contains(pos))
-                        positions.Add(pos);
-                }
-            }
-            IntVec3 rot = new IntVec3(0, 0, 0);
-            foreach (IntVec3 pos in positions)
-            {
-                if (rotb == 1)
-                {
-                    rot.x = this.Map.Size.x - pos.z;
-                    rot.z = pos.x;
-                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
-                }
-                else if (rotb == 2)
-                {
-                    rot.x = this.Map.Size.x - pos.x;
-                    rot.z = this.Map.Size.z - pos.z;
-                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
-                }
-                else
-                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), pos - lowestCorner, Rot4.North);
-            }
-            return sketch;
-        }
-
 		private void TryLaunch()
 		{
 			if (this.CanLaunchNow)
@@ -809,7 +736,7 @@ namespace RimWorld
                         ShipCountdown.InitiateCountdown(this);
                         return;
                     }
-                    MoveShipSketch(LowestCorner, this, m, 0);
+                    ShipInteriorMod2.MoveShipSketch(this, m, 0);
                 }
                 else
                 {

@@ -70,9 +70,6 @@
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<researchPrerequisites>
-			<li>UltraMechtech</li>
-		</researchPrerequisites>
 		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
@@ -154,9 +151,6 @@
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<researchPrerequisites>
-			<li>UltraMechtech</li>
-		</researchPrerequisites>
 		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
@@ -178,9 +172,6 @@
 			</li>
 		</comps>
 		<designationCategory>Ship</designationCategory>
-		<researchPrerequisites>
-			<li>UltraMechtech</li>
-		</researchPrerequisites>
 	</ThingDef>
 	<ThingDef ParentName="ShipCornerMech">
 		<defName>Ship_Corner_OneOne_Mech</defName>
@@ -368,7 +359,6 @@
 		<researchPrerequisites>
 			<li>Electricity</li>
 			<li>SolarPanels</li>
-			<li>UltraMechtech</li>
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
@@ -559,7 +549,6 @@
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<researchPrerequisites>
 			<li>AirConditioning</li>
-			<li>UltraMechtech</li>
 		</researchPrerequisites>
 		<building>
 			<shipPart>true</shipPart>
@@ -620,9 +609,6 @@
 			</li>
 		</comps>
 		<designationHotKey>Misc2</designationHotKey>
-		<researchPrerequisites>
-			<li>UltraMechtech</li>
-		</researchPrerequisites>
 		<statBases>
 			<WorkToBuild>1200</WorkToBuild>
 			<MaxHitPoints>500</MaxHitPoints>

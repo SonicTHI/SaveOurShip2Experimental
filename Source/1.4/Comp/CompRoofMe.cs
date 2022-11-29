@@ -15,10 +15,6 @@ namespace RimWorld
         public static Graphic roofedGraphicTile;
         public static Graphic roofedGraphicTileMech;
         public static RoofDef roof = DefDatabase<RoofDef>.GetNamed("RoofShip");
-        bool isTile;
-        bool isMechTile;
-        bool isArchoTile;
-        bool isFoamTile;
         public static TerrainDef hullTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShip");
         public static TerrainDef mechHullTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShipMech");
         public static TerrainDef archotechHullTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShipArchotech");
@@ -28,6 +24,10 @@ namespace RimWorld
         public static ThingDef mechHullPlateDef = ThingDef.Named("ShipHullTileMech");
         public static ThingDef archoHullPlateDef = ThingDef.Named("ShipHullTileArchotech");
         public static ThingDef hullFoamDef = ThingDef.Named("ShipHullfoamTile");
+        bool isTile;
+        bool isMechTile;
+        bool isArchoTile;
+        bool isFoamTile;
 
         static CompRoofMe()
         {

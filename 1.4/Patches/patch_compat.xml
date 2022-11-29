@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Rimefeller</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/ThingDef[defName="Ship_Engine" or defName="Ship_Engine_Small"]/comps</xpath>
+					<value>
+						<li Class="Rimefeller.CompProperties_Pipe"/>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Psycasts Expanded</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Always</success>
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/MeditationFocusDef[defName="Archotech"]</xpath>
+					<value>
+						<li Class="VanillaPsycastsExpanded.MeditationFocusExtension">
+							<icon>UI/PsyfocusIcons/PsyfocusArchotechnology</icon>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>RT Fuse</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/ThingDef[defName="ShipCapacitorSmall"]/comps</xpath>
+					<value>
+						<li Class="RT_Fuse.CompProperties_RTFuse">
+							<compClass>RT_Fuse.CompRTFuse</compClass>
+							<surgeMitigation>1000</surgeMitigation>
+							<breakdownOnTrip>false</breakdownOnTrip>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/ThingDef[defName="ShipCapacitor"]/comps</xpath>
+					<value>
+						<li Class="RT_Fuse.CompProperties_RTFuse">
+							<compClass>RT_Fuse.CompRTFuse</compClass>
+							<surgeMitigation>10000</surgeMitigation>
+							<breakdownOnTrip>false</breakdownOnTrip>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Factions Expanded - Pirates</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketPartBase"]/apparel</xpath>
+					<value>
+						<tags>
+							<li>EVA</li>
+						</tags>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Humanoid Alien Races</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAttributeSet">
+					<xpath>Defs/ThingDef[defName="SoSHologramRace"]</xpath>
+					<attribute>Class</attribute>
+					<value>AlienRace.ThingDef_AlienRace</value>
+				</li>
+				<li Class="PatchOperationAttributeSet">
+					<xpath>Defs/ThingDef[defName="SoSHologramRace"]</xpath>
+					<attribute>Name</attribute>
+					<value>HologramRace</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="SoSHologramRace"]</xpath>
+					<value>
+						<alienRace>
+							<generalSettings>
+								<alienPartGenerator>
+									<bodyAddons/>
+								</alienPartGenerator>
+							</generalSettings>
+						</alienRace>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>LWM's Deep Storage</li>
+		</mods>
+		<match Class="PatchOperationAdd">
+			<xpath>/Defs/ThingDef[defName="LWM_Pallet_Covered"]/building/fixedStorageSettings/filter/categories</xpath>
+			<value>
+				<li>SpaceTorpedoes</li>
+			</value>
+		</match>
+	</Operation>
+</Patch>

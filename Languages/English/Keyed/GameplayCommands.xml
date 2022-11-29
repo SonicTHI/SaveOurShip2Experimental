@@ -85,8 +85,10 @@
 	<ShipInsideCaptureShipDesc>Move this ship to your map</ShipInsideCaptureShipDesc>
 	<ShipMoveWreckCommand>Move wreck</ShipMoveWreckCommand>
 	<ShipMoveWreckCommandDesc>Reposition a wreck on your map</ShipMoveWreckCommandDesc>
-	<ShipMoveWreckRotCommand>Flip wreck</ShipMoveWreckRotCommand>
-	<ShipMoveWreckRotCommandDesc>Reposition and flip a wreck on your map</ShipMoveWreckRotCommandDesc>
+	<ShipMoveWreckFlipCommand>Flip wreck</ShipMoveWreckFlipCommand>
+	<ShipMoveWreckFlipCommandDesc>Reposition and flip a wreck on your map</ShipMoveWreckFlipCommandDesc>
+	<ShipMoveWreckRotCommand>Rotate wreck</ShipMoveWreckRotCommand>
+	<ShipMoveWreckRotCommandDesc>Reposition and rotate a wreck clockwise on your map</ShipMoveWreckRotCommandDesc>
 	<ShipSalvageCommand>Retrieve wreck</ShipSalvageCommand>
 	<ShipSalvageCommandDesc>Retrieve a wreck from target ship</ShipSalvageCommandDesc>
 	<ShipSalvageDisabled>Disabled while in battle</ShipSalvageDisabled>

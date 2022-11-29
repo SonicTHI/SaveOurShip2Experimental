@@ -54,12 +54,22 @@ namespace RimWorld
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckCommandDesc")
                 };
-                Command_VerbTargetWreckMap moveWreckRot = new Command_VerbTargetWreckMap
+                Command_VerbTargetWreckMap moveWreckFlip = new Command_VerbTargetWreckMap
                 {
                     salvageBay = (Building)this.parent,
                     sourceMap = this.parent.Map,
                     targetMap = this.parent.Map,
                     rotb = 2,
+                    icon = ContentFinder<Texture2D>.Get("UI/SalvageMoveFlip"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckFlipCommand"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckFlipCommandDesc")
+                };
+                Command_VerbTargetWreckMap moveWreckRot = new Command_VerbTargetWreckMap
+                {
+                    salvageBay = (Building)this.parent,
+                    sourceMap = this.parent.Map,
+                    targetMap = this.parent.Map,
+                    rotb = 1,
                     icon = ContentFinder<Texture2D>.Get("UI/SalvageMoveRot"),
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckRotCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckRotCommandDesc")
@@ -110,11 +120,13 @@ namespace RimWorld
                 if (mapComp.InCombat || this.parent.Map.mapPawns.AllPawns.Where(p => p.HostileTo(Faction.OfPlayer)).Any())
                 {
                     moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+                    moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
                     moveWreckRot.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
                     claim.Disable(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksDisabled"));
                     removeTargetWreck.Disable(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksDisabled"));
                 }
                 yield return moveWreck;
+                yield return moveWreckFlip;
                 yield return moveWreckRot;
                 yield return claim;
                 yield return removeTargetWreck;

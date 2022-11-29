@@ -23,7 +23,7 @@ namespace RimWorld
 
 		public float CurrentRadius => Props.radiusPerDayCurve.Evaluate(AgeDays);
 
-		Dictionary<ThingDef, Tuple<ThingDef, bool, bool>> Conversions = new Dictionary<ThingDef, Tuple<ThingDef,bool, bool>>();
+		Dictionary<ThingDef, ThingDef> Conversions = new Dictionary<ThingDef, ThingDef>();
 
 		ResearchProjectDef OptimizationProject = ResearchProjectDef.Named("ArchotechHullConversion");
 
@@ -39,20 +39,30 @@ namespace RimWorld
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostPostMake();
-			Conversions.Add(ThingDef.Named("Ship_Beam_Unpowered"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("Ship_BeamArchotech_Unpowered"),false,false));
-			Conversions.Add(ThingDef.Named("Ship_Beam"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("Ship_BeamArchotech"),false, false));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("Ship_Corner_Archo_OneOne"), false, false));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneOneFlip"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("Ship_Corner_Archo_OneOneFlip"), false, false));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwo"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("Ship_Corner_Archo_OneTwo"), false, false));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwoFlip"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("Ship_Corner_Archo_OneTwoFlip"), true, true));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneThree"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("Ship_Corner_Archo_OneThree"), false, false));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneThreeFlip"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("Ship_Corner_Archo_OneThreeFlip"), true, false));
-			Conversions.Add(ThingDef.Named("ShipInside_SolarGenerator"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("ShipInside_SolarGeneratorArchotech"), false, false));
-			Conversions.Add(ThingDef.Named("ShipInside_PassiveCooler"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("ShipInside_PassiveCoolerArchotech"), false, false));
-			Conversions.Add(ThingDef.Named("ShipInside_PassiveCoolerAdvanced"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("ShipInside_PassiveCoolerArchotech"), false, false));
-			Conversions.Add(ThingDef.Named("ShipInside_PassiveVent"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("ShipInside_PassiveVentArchotech"), false, false));
-			Conversions.Add(ThingDef.Named("ShipAirlock"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("ShipAirlockArchotech"), false, false));
-			Conversions.Add(ThingDef.Named("ShipHullTile"), new Tuple<ThingDef, bool, bool>(ThingDef.Named("ShipHullTileArchotech"), false, false));
+			Conversions.Add(ThingDef.Named("Ship_Beam_Unpowered"), ThingDef.Named("Ship_BeamArchotech_Unpowered"));
+			Conversions.Add(ThingDef.Named("Ship_Beam"), ThingDef.Named("Ship_BeamArchotech"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne"), ThingDef.Named("Ship_Corner_Archo_OneOne"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneOneFlip"), ThingDef.Named("Ship_Corner_Archo_OneOneFlip"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwo"), ThingDef.Named("Ship_Corner_Archo_OneTwo"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwoFlip"), ThingDef.Named("Ship_Corner_Archo_OneTwoFlip"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneThree"), ThingDef.Named("Ship_Corner_Archo_OneThree"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneThreeFlip"),ThingDef.Named("Ship_Corner_Archo_OneThreeFlip"));
+			Conversions.Add(ThingDef.Named("ShipInside_SolarGenerator"), ThingDef.Named("ShipInside_SolarGeneratorArchotech"));
+			Conversions.Add(ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("ShipInside_PassiveVentArchotech"));
+			Conversions.Add(ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockArchotech"));
+			Conversions.Add(ThingDef.Named("ShipHullTile"), ThingDef.Named("ShipHullTileArchotech"));
+			Conversions.Add(ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_BeamArchotech_Unpowered"));
+			Conversions.Add(ThingDef.Named("Ship_Beams_Mech"), ThingDef.Named("Ship_BeamArchotech"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne_Mech"), ThingDef.Named("Ship_Corner_Archo_OneOne"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne_MechFlip"), ThingDef.Named("Ship_Corner_Archo_OneOneFlip"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwo_Mech"), ThingDef.Named("Ship_Corner_Archo_OneTwo"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwoFlip_Mech"), ThingDef.Named("Ship_Corner_Archo_OneTwoFlip"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneThree_Mech"), ThingDef.Named("Ship_Corner_Archo_OneThree"));
+			Conversions.Add(ThingDef.Named("Ship_Corner_OneThreeFlip_Mech"), ThingDef.Named("Ship_Corner_Archo_OneThreeFlip"));
+			Conversions.Add(ThingDef.Named("ShipInside_SolarGeneratorMech"), ThingDef.Named("ShipInside_SolarGeneratorArchotech"));
+			Conversions.Add(ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("ShipInside_PassiveVentArchotech"));
+			Conversions.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockArchotech"));
+			Conversions.Add(ThingDef.Named("ShipHullTileMech"), ThingDef.Named("ShipHullTileArchotech"));
 		}
 
 		public override void CompTick()
@@ -99,9 +109,9 @@ namespace RimWorld
             {
 				if(Conversions.ContainsKey(t.def))
                 {
-					Thing replacement = ThingMaker.MakeThing(Conversions[t.def].Item1);
-					replacement.Rotation = Conversions[t.def].Item2 ? t.Rotation.Opposite : t.Rotation;
-					replacement.Position = t.Position + (Conversions[t.def].Item3 ? IntVec3.South.RotatedBy(replacement.Rotation) : IntVec3.Zero);
+					Thing replacement = ThingMaker.MakeThing(Conversions[t.def]);
+					replacement.Rotation = t.Rotation;
+					replacement.Position = t.Position;
 					replacement.SetFaction(Faction.OfPlayer);
 					toDestroy.Add(t);
 					toSpawn.Add(replacement);
@@ -111,8 +121,10 @@ namespace RimWorld
 			{
 				TerrainDef terrain = parent.Map.terrainGrid.TerrainAt(c);
 				parent.Map.terrainGrid.RemoveTopLayer(c, false);
+				ShipInteriorMod2.AirlockBugFlag = true; //prevent wall light destruction
 				foreach (Thing t in toDestroy)
 					t.Destroy();
+				ShipInteriorMod2.AirlockBugFlag = false;
 				foreach (Thing replacement in toSpawn)
 				{
 					replacement.SpawnSetup(parent.Map, false);

@@ -232,6 +232,30 @@ namespace SaveOurShip2
         }
     }
 
+    //1.4
+    [HarmonyPatch(typeof(Pawn))]
+    [HarmonyPatch("IsColonyMech", MethodType.Getter)]
+    public static class MechGizmoFix
+    {
+        [HarmonyPostfix]
+        public static void ShuttlesArentMechs(Pawn __instance, ref bool __result)
+        {
+            if (__instance.TryGetComp<CompBecomeBuilding>() != null)
+                __result = false;
+        }
+    }
+    [HarmonyPatch(typeof(Pawn_DraftController))]
+    [HarmonyPatch("ShowDraftGizmo", MethodType.Getter)]
+    public static class GizmoFix
+    {
+        [HarmonyPostfix]
+        public static void ShowTheDamnGizmo(Pawn_DraftController __instance, ref bool __result)
+        {
+            if (__instance.pawn.TryGetComp<CompBecomeBuilding>() != null)
+                __result = true;
+        }
+    }
+
     [HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
     public static class OrderFix
     {

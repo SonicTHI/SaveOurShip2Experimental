@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>Save Our Ship 2</name>
+	<packageId>kentington.saveourship2</packageId>
 	<author>Kentington, Thain, SonicTHI</author>
+	<name>Save Our Ship 2</name>
+	<description>A comprehensive overhaul of spaceflight.</description>
 	<url/>
 	<supportedVersions>
 		<li>1.3</li>
@@ -40,14 +42,10 @@
 		<li>lukakama.rimworldrealfow</li>
 		<li>storm.sos2ex</li>
 		<li>drzhivago.docworld</li>
-		<li>neronix17.tweaksgalore</li>
 		<li>powerlunatic.flawlesselectronics</li>
 		<li>ryder.saveourshipsimplified</li>
 		<li>m00nl1ght.geologicallandforms.biometransitions</li>
-		<!-- experimental only -->
 		<li>ceteam.combatextended</li>
 		<li>taranchuk.performanceoptimizer</li>
 	</incompatibleWith>
-	<packageId>kentington.saveourship2</packageId>
-	<description>A comprehensive overhaul of spaceflight.</description>
 </ModMetaData>

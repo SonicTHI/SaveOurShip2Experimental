@@ -588,7 +588,7 @@ namespace SaveOurShip2
 							batComp.AddEnergy(batComp.AmountCanAccept);
 						var refuelComp = thing.TryGetComp<CompRefuelable>();
 						if (refuelComp != null)
-							refuelComp.Refuel(refuelComp.Props.fuelCapacity * Rand.Gaussian(0.5f, 0.125f));
+							refuelComp.Refuel(refuelComp.Props.fuelCapacity * Rand.Gaussian(0.6f, 0.25f));
 						if (thing.def.stackLimit > 1)
 						{
 							thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
@@ -1016,10 +1016,98 @@ namespace SaveOurShip2
 		{
 			return rockTerrains.Contains(def);
 		}
-
 		public static bool IsHull(TerrainDef def)
 		{
 			return def == hullFloorDef || def == mechHullFloorDef || def == archoHullFloorDef;
+		}
+		public static Sketch GenerateShipSketch(HashSet<IntVec3> positions, Map map, IntVec3 lowestCorner, byte rotb = 0)
+		{
+			Sketch sketch = new Sketch();
+			IntVec3 rot = new IntVec3(0, 0, 0);
+			foreach (IntVec3 pos in positions)
+			{
+				if (rotb == 1)
+				{
+					rot.x = map.Size.x - pos.z;
+					rot.z = pos.x;
+					sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+				}
+				else if (rotb == 2)
+				{
+					rot.x = map.Size.x - pos.x;
+					rot.z = map.Size.z - pos.z;
+					sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+				}
+				else
+					sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), pos - lowestCorner, Rot4.North);
+			}
+			return sketch;
+		}
+		public static void MoveShipSketch(Building b, Map targetMap, byte rotb = 0, bool salvage = false, int bMax = 0, bool includeRock = false)
+		{
+			if (b == null)
+				return;
+			List<Building> cachedParts;
+			if (b is Building_ShipBridge bridge)
+				cachedParts = bridge.cachedShipParts;
+			else
+				cachedParts = FindBuildingsAttached(b, includeRock);
+
+			IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
+			HashSet<IntVec3> positions = new HashSet<IntVec3>();
+			int bCount = 0;
+			foreach (Building building in cachedParts)
+			{
+				if (salvage && building is Building_ShipBridge && !building.Destroyed)
+				{
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
+					cachedParts.Clear();
+					positions.Clear();
+					return;
+				}
+				bCount++;
+				if (b.Position.x < lowestCorner.x)
+					lowestCorner.x = b.Position.x;
+				if (b.Position.z < lowestCorner.z)
+					lowestCorner.z = b.Position.z;
+				foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(building))
+					positions.Add(pos);
+			}
+			if (rotb == 1)
+			{
+				lowestCorner.x = b.Map.Size.z - lowestCorner.z;
+				lowestCorner.z = lowestCorner.x;
+			}
+			else if (rotb == 2)
+			{
+				lowestCorner.x = b.Map.Size.x - lowestCorner.x;
+				lowestCorner.z = b.Map.Size.z - lowestCorner.z;
+			}
+			if (salvage && bCount > bMax)
+			{
+				Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", bCount, bMax), MessageTypeDefOf.NeutralEvent);
+				cachedParts.Clear();
+				positions.Clear();
+				return;
+			}
+			Sketch shipSketch = GenerateShipSketch(positions, b.Map, lowestCorner, rotb);
+			MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
+			fakeMover.shipRoot = b;
+			fakeMover.includeRock = includeRock;
+			fakeMover.shipRotNum = rotb;
+			fakeMover.bottomLeftPos = lowestCorner;
+			shipOriginMap = b.Map;
+			fakeMover.targetMap = targetMap;
+			fakeMover.Position = b.Position;
+			fakeMover.SpawnSetup(targetMap, false);
+			List<object> selected = new List<object>();
+			foreach (object ob in Find.Selector.SelectedObjects)
+				selected.Add(ob);
+			foreach (object ob in selected)
+				Find.Selector.Deselect(ob);
+			Current.Game.CurrentMap = targetMap;
+			Find.Selector.Select(fakeMover);
+			InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
 		}
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
@@ -1063,6 +1151,7 @@ namespace SaveOurShip2
 				targetMap = core.Map;
 			bool targetMapIsSpace = targetMap.IsSpace();
 			bool sourceMapIsSpace = sourceMap.IsSpace();
+			bool playerMove = core.Faction == Faction.OfPlayer;
 
 			foreach (IntVec3 pos in sourceArea)
 			{
@@ -1076,7 +1165,6 @@ namespace SaveOurShip2
 				}
 				if (!targetMapIsSpace)
 					targetMap.snowGrid.SetDepth(adjustedPos, 0f);
-				targetMap.areaManager.Home[adjustedPos] = true;
 				//add all things, terrain from area
 				List<Thing> allTheThings = pos.GetThingList(sourceMap);
 				foreach (Thing t in allTheThings)
@@ -1121,7 +1209,11 @@ namespace SaveOurShip2
 				{
 					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(pos, sourceRoof));
 				}
-				sourceMap.areaManager.Home[pos] = false;
+				if (playerMove)
+				{
+					sourceMap.areaManager.Home[pos] = false;
+					targetMap.areaManager.Home[adjustedPos] = true;
+				}
 			}
 			if (devMode)
 				watch.Record("processSourceArea");

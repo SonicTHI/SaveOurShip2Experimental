@@ -52,7 +52,7 @@ namespace RimWorld
 			Conversions.Add(ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockArchotech"));
 			Conversions.Add(ThingDef.Named("ShipHullTile"), ThingDef.Named("ShipHullTileArchotech"));
 			Conversions.Add(ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_BeamArchotech_Unpowered"));
-			Conversions.Add(ThingDef.Named("Ship_Beams_Mech"), ThingDef.Named("Ship_BeamArchotech"));
+			Conversions.Add(ThingDef.Named("Ship_BeamMech"), ThingDef.Named("Ship_BeamArchotech"));
 			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne_Mech"), ThingDef.Named("Ship_Corner_Archo_OneOne"));
 			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne_MechFlip"), ThingDef.Named("Ship_Corner_Archo_OneOneFlip"));
 			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwo_Mech"), ThingDef.Named("Ship_Corner_Archo_OneTwo"));

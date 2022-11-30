@@ -5,6 +5,7 @@
 		<label>Mechanoid Hijacked Leviathan</label>
 		<combatPoints>7076</combatPoints>
 		<mechanoidShip>True</mechanoidShip>
+		<neverRandom>True</neverRandom>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>2</x>

@@ -14,7 +14,7 @@ SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamco
 
 When updating to a new SOS2EXP version: Make sure to delete the old folder then extract the new one.
 
-You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - make sure to read the server rules and mention that you are using the experimental build. Check the feature list before reporting and if possible try replicating the bug with only the required mods installed.
+You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - **read the server rules and mention that you are using the experimental build**. **Make sure you are on the latest version, check the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) before reporting and if possible try replicating the bug with only the required mods installed**.
 
 An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2EXP.
 
@@ -50,4 +50,4 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Creation kit:** now includes new tools for fleet and blueprint creation as well as improvements to existing ones.
 
-**For more details read the [full change list](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0)** It also includes other info that you might find useful.
+**For more details read the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0)** It also includes other info that you might find useful.

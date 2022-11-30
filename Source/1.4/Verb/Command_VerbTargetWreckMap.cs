@@ -48,7 +48,7 @@ namespace RimWorld
         public void AfterTarget(Building b)
         {
             int bMax = sourceMap.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null).Count() * CompShipSalvageBay.salvageCapacity;
-            ShipInteriorMod2.MoveShipSketch(b, targetMap, rotb, true, bMax, true);
+            ShipInteriorMod2.MoveShipSketch(b, sourceMap, rotb, true, bMax, true);
         }
     }
 }

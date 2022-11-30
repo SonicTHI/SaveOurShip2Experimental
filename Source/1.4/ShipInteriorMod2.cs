@@ -1090,7 +1090,7 @@ namespace SaveOurShip2
 				positions.Clear();
 				return;
 			}
-			Sketch shipSketch = GenerateShipSketch(positions, b.Map, lowestCorner, rotb);
+			Sketch shipSketch = GenerateShipSketch(positions, targetMap, lowestCorner, rotb);
 			MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
 			fakeMover.shipRoot = b;
 			fakeMover.includeRock = includeRock;

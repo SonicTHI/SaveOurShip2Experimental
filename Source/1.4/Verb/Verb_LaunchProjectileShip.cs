@@ -41,14 +41,14 @@ namespace RimWorld
             Building_ShipTurret turret = this.caster as Building_ShipTurret;
             if (turret != null)
             {
-                if (turret.PointDefenseMode || (!turret.PlayerControlled && turret.heatComp.Props.pointDefense)) //remove registered torps/pods in range
-                {
-                    PointDefense(turret);
-                }
-                else if (turret.GroundDefenseMode) //swap projectile for ground
+                if (turret.GroundDefenseMode) //swap projectile for ground
                 {
                     if (turret.heatComp.Props.groundProjectile != null)
                         projectile = turret.heatComp.Props.groundProjectile;
+                }
+                else if (turret.PointDefenseMode || (!turret.PlayerControlled && turret.heatComp.Props.pointDefense)) //remove registered torps/pods in range
+                {
+                    PointDefense(turret);
                 }
                 else //register projectile on mapComp
                 {

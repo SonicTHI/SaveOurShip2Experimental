@@ -588,7 +588,12 @@ namespace SaveOurShip2
 							batComp.AddEnergy(batComp.AmountCanAccept);
 						var refuelComp = thing.TryGetComp<CompRefuelable>();
 						if (refuelComp != null)
-							refuelComp.Refuel(refuelComp.Props.fuelCapacity * Rand.Gaussian(0.6f, 0.25f));
+						{
+							refuelComp.Refuel(refuelComp.Props.fuelCapacity * Rand.Gaussian(0.7f, 0.2f));
+							var reactorComp = thing.TryGetComp<CompPowerTraderOverdrivable>();
+							if (reactorComp != null && shieldsActive)
+								reactorComp.overdriveSetting = 1;
+						}
 						if (thing.def.stackLimit > 1)
 						{
 							thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
@@ -3112,13 +3117,16 @@ namespace SaveOurShip2
 		public static bool ShipPartIsDestroyed(Building __instance, DestroyMode mode, out Tuple<IntVec3, Faction, Map> __state)
 		{
 			__state = null;
-			if (!__instance.def.CanHaveFaction || (mode != DestroyMode.KillFinalize && mode != DestroyMode.Deconstruct) || __instance is Frame)
+			//only print or foam if destroyed normally
+			if (!(mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly))
+				return true;
+			if (!__instance.def.CanHaveFaction || __instance is Frame)
 				return true;
 			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
 			if (!mapComp.InCombat)
 				return true;
 			mapComp.DirtyShip(__instance);
-			if (mode != DestroyMode.Deconstruct && __instance.def.blueprintDef != null)
+			if (__instance.def.blueprintDef != null)
 			{
 				if (mapComp.HullFoamDistributors.Count > 0 && (__instance.TryGetComp<CompSoShipPart>()?.Props.isHull ?? false))
 				{

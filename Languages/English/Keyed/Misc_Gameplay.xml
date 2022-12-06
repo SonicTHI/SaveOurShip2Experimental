@@ -12,7 +12,7 @@
 	<ShipReportInterReady>Ready for interstellar travel.</ShipReportInterReady>
 	<ShipReportInterNotReady>Not ready for interstellar travel:</ShipReportInterNotReady>
 	<ShipReportNeedPilot>Ship requires either a pilot or an AI core.</ShipReportNeedPilot>
-	<ShipNeedsMoreFuel>Ship has {0} units of fuel, but requires {1}.</ShipNeedsMoreFuel>
+	<ShipNeedsMoreFuel>Ship has {0} units of fuel, but requires {1} in engine fuel tanks.</ShipNeedsMoreFuel>
 	<ShipNeedsMorePower>Ship requires {0} Wd of stored power.</ShipNeedsMorePower>
 	<ShipNeedsMoreJTEngines>Ship requires more JT engines due to its size.</ShipNeedsMoreJTEngines>
 	<ShipPlanetLeave>Go to new planet</ShipPlanetLeave>

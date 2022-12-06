@@ -998,6 +998,9 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_ShipHull</li>
+		</placeWorkers>
 		<rotatable>false</rotatable>
 		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>

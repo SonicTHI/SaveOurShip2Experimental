@@ -1282,7 +1282,7 @@
 				<threat>10</threat>
 				<groundDefense>true</groundDefense>
 				<groundProjectile>Bullet_Ground_Plasma</groundProjectile>
-				<groundMissRadius>2</groundMissRadius>
+				<groundMissRadius>3</groundMissRadius>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -1384,7 +1384,7 @@
 		<projectile>
 			<damageDef>ShipPlasmaSmall</damageDef>
 			<speed>200</speed>
-			<explosionRadius>6.9</explosionRadius>
+			<explosionRadius>4.9</explosionRadius>
 			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -1685,7 +1685,7 @@
 		<projectile>
 			<damageDef>BombKinetic</damageDef>
 			<speed>500</speed>
-			<explosionRadius>3.9</explosionRadius>
+			<explosionRadius>2.9</explosionRadius>
 			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>

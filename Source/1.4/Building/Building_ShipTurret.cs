@@ -342,7 +342,7 @@ namespace RimWorld
                 if (!this.PlayerControlled && mapComp.ShipCombatMaster)
                 {
                     if (spinalComp == null || spinalComp.Props.destroysHull || mapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.Count == 0)
-                        shipTarget = mapComp.ShipCombatOriginMap.listerThings.AllThings.RandomElement();
+                        shipTarget = mapComp.ShipCombatOriginMap.listerBuildings.allBuildingsColonist.RandomElement();
                     else //Target pawn with the Psychic Flayer
                         shipTarget = mapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.RandomElement();
                 }
@@ -408,7 +408,7 @@ namespace RimWorld
             {
                 IAttackTargetSearcher attackTargetSearcher = this.TargSearcher();
                 TargetScanFlags targetScanFlags = TargetScanFlags.NeedThreat | TargetScanFlags.NeedAutoTargetable |  TargetScanFlags.NeedNotUnderThickRoof;
-                return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, targetScanFlags, new Predicate<Thing>(this.IsValidTarget), 0f, 9999f);
+                return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, targetScanFlags, new Predicate<Thing>(this.IsValidTarget), this.AttackVerb.verbProps.minRange, this.AttackVerb.verbProps.range);
             }
             else
                 return LocalTargetInfo.Invalid;
@@ -419,12 +419,16 @@ namespace RimWorld
         }
         private bool IsValidTarget(Thing t)
         {
-            Pawn pawn = t as Pawn;
-            if (pawn != null)
+            if (t is Pawn p)
             {
-                if (pawn.RaceProps.Animal && pawn.Faction == Faction.OfPlayer)
+                if (p.Faction == Faction.OfPlayer)
                 {
                     return false;
+                }
+                foreach (Thing thing in t.Position.GetThingList(Map))
+                {
+                    if (thing is Building b && b.def.building.shipPart)
+                        return false;
                 }
             }
             return true;
@@ -435,12 +439,14 @@ namespace RimWorld
             //check if we have power to fire
             if (powerComp != null && heatComp != null && powerComp.PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + AmplifierDamageBonus))
             {
-                //Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToPower",this.Label), this, MessageTypeDefOf.CautionInput);
-                //this.shipTarget = LocalTargetInfo.Invalid;
+                if (!PointDefenseMode && PlayerControlled)
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToPower",this.Label), this, MessageTypeDefOf.CautionInput);
+                this.shipTarget = LocalTargetInfo.Invalid;
+                ResetCurrentTarget();
                 return;
             }
             //if we do not have enough heatcap, vent heat to room/fail to fire in vacuum
-            if (!heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus)))
+            if (!heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus) * 3))
             {
                 if (!GroundDefenseMode && ShipInteriorMod2.ExposedToOutside(this.GetRoom()))
                 {

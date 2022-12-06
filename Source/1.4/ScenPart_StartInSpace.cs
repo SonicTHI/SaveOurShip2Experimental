@@ -93,7 +93,7 @@ namespace RimWorld
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
 			else if (this.enemyShipDef.defName == "0")//random ship
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
-			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer,null, out cores, false);
+			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false);
 
 			Current.ProgramState = ProgramState.Playing;
 			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
@@ -153,21 +153,21 @@ namespace RimWorld
 			List<IntVec3> spawnPos = GetSpawnCells(spaceMap);
 			foreach (List<Thing> thingies in list)
 			{
-				IntVec3 casketPos = spaceMap.Center;
-				casketPos = spawnPos.RandomElement();
-				spawnPos.Remove(casketPos);
+				IntVec3 nextPos = spaceMap.Center;
+				nextPos = spawnPos.RandomElement();
+				spawnPos.Remove(nextPos);
 				if (spawnPos.Count == 0)
 					spawnPos = GetSpawnCells(spaceMap); //reuse spawns
 
 				foreach (Thing thingy in thingies)
                 {
 					thingy.SetForbidden(true, false);
-					GenPlace.TryPlaceThing(thingy, casketPos, spaceMap, ThingPlaceMode.Near);
+					GenPlace.TryPlaceThing(thingy, nextPos, spaceMap, ThingPlaceMode.Near);
                 }
 				if (station)
-					FloodFillerFog.FloodUnfog(casketPos, spaceMap);
+					FloodFillerFog.FloodUnfog(nextPos, spaceMap);
 			}
-			foreach (Building b in spawns) //remove spawn points
+			foreach (Building b in spawns.Where(b => !b.Destroyed)) //remove spawn points
 			{
 				b.Destroy();
 			}
@@ -199,7 +199,7 @@ namespace RimWorld
 			List<IntVec3> spawncells = new List<IntVec3>();
 			foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist.Where(b => b.def.defName.Equals("PawnSpawnerStart")))
 			{
-				spawncells.Add(b.InteractionCell);
+				spawncells.Add(b.Position);
 				spawns.Add(b);
 			}
 			if (spawncells.Any())
@@ -225,14 +225,6 @@ namespace RimWorld
 				}
 			}
 			if (spawncells.Any())
-			{
-				foreach (Building b in spawns)
-				{
-					b.Destroy();
-				}
-				return spawncells;
-			}
-			else if (spawncells.Any())
 				return spawncells;
 			else if (salvBayCells.Any())
 				return salvBayCells;

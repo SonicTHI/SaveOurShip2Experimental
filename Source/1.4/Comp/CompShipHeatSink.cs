@@ -56,7 +56,14 @@ namespace RimWorld
                     IsDisabled();
                     if (!Disabled)
                     {
-                        RemHeatFromNetwork(Props.heatVent);
+                        if (map.IsSpace())
+                            RemHeatFromNetwork(Props.heatVent);
+                        else
+                        {
+                            //higher outdoor temp, push less heat out
+                            float heat = Props.heatVent * GenMath.LerpDoubleClamped(-100,100,1,0, map.mapTemperature.OutdoorTemp);
+                            RemHeatFromNetwork(heat);
+                        }
                     }
                 }
                 if (myNet.StorageUsed > 0)

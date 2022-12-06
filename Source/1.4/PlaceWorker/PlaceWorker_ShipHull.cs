@@ -16,7 +16,7 @@ namespace RimWorld
 					return false;
 				foreach (Thing t in vec.GetThingList(map))
 				{
-					if (t is Building b && b.def.passability == Traversability.Impassable || t is Building_Door || t.def.defName.StartsWith("ShipHardpoint"))
+					if (t is Building b && b.def.passability == Traversability.Impassable || t is Building_Door || t.def.building.shipPart)//t.def.defName.StartsWith("ShipHardpoint"))
 						return false;
 				}
 			}

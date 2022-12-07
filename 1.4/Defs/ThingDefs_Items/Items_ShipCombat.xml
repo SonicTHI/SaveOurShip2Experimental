@@ -15,9 +15,6 @@
 		<thingCategories>
 			<li>SpaceTorpedoes</li>
 		</thingCategories>
-		<tradeTags>
-			<li>MortarShell</li>
-		</tradeTags>
 		<recipeMaker>
 			<workSpeedStat>GeneralLaborSpeed</workSpeedStat>
 			<effectWorking>Cook</effectWorking>

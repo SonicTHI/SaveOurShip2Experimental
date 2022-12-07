@@ -26,7 +26,7 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Rebuilt ship roster:** almost every ship in the mod has been redesigned and built from the ground up utilizing new systems and mechanics making for a more interesting and varied experience. New ships and fleets have also been added. Many thanks to the ship wrights that helped with this: HG, Oninnaise, UrbanMonkey, VVither_Skeleton.
 
-* **Ship blueprints:** sold by weapon merchant ships. These items allow you to build entire ships and are fully reusable. You will still need the required technologies and resources to do so (these are listed on each blueprint).
+* **Ship blueprints:** sold by weapon merchants. These items allow you to build entire ships and are fully reusable. You will still need the required technologies and resources to do so (these are listed on each blueprint).
 
 * **Ground defense:** all small ship weapons are now capable of firing on enemy combatants while your ship is landed. Decimate hordes of enemies with the push of a button so long as they are not already too close or your weapons on cooldown.
 

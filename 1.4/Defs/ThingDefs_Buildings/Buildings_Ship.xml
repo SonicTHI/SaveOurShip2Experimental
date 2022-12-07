@@ -2937,7 +2937,6 @@
 			<li>ShipBlueprints</li>
 		</thingCategories>
 		<drawGUIOverlay>false</drawGUIOverlay>
-		<tradeability>Sellable</tradeability>
 		<techLevel>Spacer</techLevel>
 	</ThingDef>
 	<ThingCategoryDef>

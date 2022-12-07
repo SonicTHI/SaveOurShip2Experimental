@@ -202,7 +202,9 @@ namespace RimWorld
                             if (shape.stuff != null)
                                 stuff = ThingDef.Named(shape.stuff);
                         }
-                        GenConstruct.PlaceBlueprintForBuild(def, new IntVec3(pos.x + shape.x, 0, pos.z + shape.z), map, shape.rot, Faction.OfPlayer, stuff);
+                        Thing t = GenConstruct.PlaceBlueprintForBuild(def, new IntVec3(pos.x + shape.x, 0, pos.z + shape.z), map, shape.rot, Faction.OfPlayer, stuff);
+                        if (!def.building.shipPart)
+                            t.SetForbidden(true, false);
                     }
                 }
             }

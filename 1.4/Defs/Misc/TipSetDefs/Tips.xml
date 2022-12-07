@@ -5,8 +5,8 @@
     <defName>SoSGameplayTips</defName>
     <tips>
       <!-- Quests -->
-      <li TKey="SoSTipScan">Once in orbit, colonists can scan at a ship's bridge to discover orbital quest sites. Send colonists in a shuttle to visit them.</li>
-      <li TKey="SosTipAICore">Once in orbit, ship computer cores will automatically scan for orbital quest sites. Multiple cores can speed this process along.</li>
+      <li TKey="SoSTipScan">Once in orbit, colonists can scan at a ship's science console to discover orbital quest sites. Send colonists in a shuttle to visit them.</li>
+      <li TKey="SosTipAICore">Once in orbit, advanced sensors will automatically scan for orbital quest sites. Multiple cores can speed this process along.</li>
       <li TKey="SoSTipAsteroids">Asteroids are a great source of building materials in space, but beware of what may lurk inside...</li>
       <li TKey="SoSTipDebris">The skies of most rimworlds are filled with orbital debris. Some may even contain survivors of the ship's crew, now crazed and cannibalistic.</li>
       <li TKey="SoSTipSatellites">Clever starship captains can hijack ancient satellites to control weather or bombard their foes. This risks triggering mechanoid-based defenses, however...</li>
@@ -16,12 +16,12 @@
       <!-- Combat -->
       <li TKey="SoSTipNoWeapons">An unarmed ship is easy prey. Install weapons before launching, or bring a shuttle and a competent boarding party.</li>
       <li TKey="SoSTipHeatsinks">Heatsinks are critical to a ship's performance in combat. More heat capacity means your shields will stay up longer.</li>
-      <li TKey="SoSTipRadiators">A ship can't radiate heat while its shields or cloaking device are active. Make sure to disable both once your ship becomes dangerously hot.</li>
-      <li TKey="SoSTipBoardingParties">Enemy ships will launch boarding parties once their weapons have broken your hull. You can mount standard autocannon turrets on hardpoints to help repel boarders.</li>
+      <li TKey="SoSTipRadiators">A ship can't radiate heat while its cloaking device is active. Make sure to disable it once your ship becomes dangerously hot.</li>
+      <li TKey="SoSTipBoardingParties">Enemy ships will launch boarding parties once their weapons have broken your hull. You can use pint defense capable ship weapons to help repel boarders.</li>
       <li TKey="SoSTipBoardingParties2">In combat, you can send a shuttle over to the enemy ship. Many ships are vulnerable to a skilled boarding party.</li>
       <li TKey="SoSTipHackBridge">A colonist can use the Intellectual skill to hack an enemy ship's bridge, placing it under your control. Some captains weld multiple captured ships together.</li>
       <li TKey="SoSTipDetach">Pieces of a ship separated from its bridge will detach and drift away. Their resources can still be recovered by a salvage bay after the battle.</li>
-      <li TKey="SoSTipRange">Ship railguns are most accurate at long range. Plasma weapons can be used at medium range or closer. Lasers are only effective up close.</li>
+      <li TKey="SoSTipRange">Ship railguns are best at long range. Plasma weapons can be used at medium range or closer. Lasers are only effective up close.</li>
       <li TKey="SoSTipTorpedo">A well-placed torpedo can overload shields and shatter hull, assuming it isn't intercepted by point-defense weaponry.</li>
       <li TKey="SoSTipSpinal">Spinal-mount cannons deal more damage, and produce larger explosions, the more amplifiers they contain.</li>
       <li TKey="SoSTipEngines">Larger ships require more engines to move quickly in combat. Often a small, nimble ship can outrun a heavily-armed opponent.</li>

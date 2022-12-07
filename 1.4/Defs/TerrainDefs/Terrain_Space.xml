@@ -119,6 +119,7 @@
 			<li>GrowSoil</li>
 			<li>Diggable</li>
 		</affordances>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<generatedFilth>Filth_Dirt</generatedFilth>
 		<fertility>1.0</fertility>
 		<takeFootprints>True</takeFootprints>

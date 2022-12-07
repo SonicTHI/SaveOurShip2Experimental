@@ -99,7 +99,7 @@
     <defName>ShuttlePersonalHover</defName>
     <label>Personal Shuttle (hover mode)</label>
     <race>ShuttlePersonalRace</race>
-	<combatPower>999999</combatPower>
+	<combatPower>999</combatPower>
 	<isFighter>false</isFighter>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>
@@ -200,7 +200,7 @@
     <defName>ShuttleCargoHover</defName>
     <label>Cargo Shuttle (hover mode)</label>
     <race>ShuttleCargoRace</race>
-	<combatPower>999999</combatPower>
+	<combatPower>999</combatPower>
 	<isFighter>false</isFighter>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>
@@ -301,7 +301,7 @@
     <defName>ShuttleHeavyHover</defName>
     <label>Heavy Cargo Shuttle (hover mode)</label>
     <race>ShuttleHeavyRace</race>
-	<combatPower>999999</combatPower>
+	<combatPower>999</combatPower>
 	<isFighter>false</isFighter>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>
@@ -545,7 +545,7 @@
     <defName>ShuttleDropshipHover</defName>
     <label>Superheavy Dropship (hover mode)</label>
     <race>ShuttleDropshipRace</race>
-	<combatPower>999999</combatPower>
+	<combatPower>999</combatPower>
 	<isFighter>false</isFighter>
     <defaultFactionType>PlayerColony</defaultFactionType>
     <aiAvoidCover>true</aiAvoidCover>

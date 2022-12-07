@@ -6,7 +6,7 @@ namespace RimWorld
 {
 	public class PlaceWorker_ShipHull : PlaceWorker
 	{
-		//not on anything that blocks pawns, doors and hardpoints
+		//not on ship hull, not under any building that blocks path
 		public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{
 			CellRect occupiedRect = GenAdj.OccupiedRect(loc, rot, def.Size);
@@ -16,8 +16,15 @@ namespace RimWorld
 					return false;
 				foreach (Thing t in vec.GetThingList(map))
 				{
-					if (t is Building b && b.def.passability == Traversability.Impassable || t is Building_Door || t.def.building.shipPart)//t.def.defName.StartsWith("ShipHardpoint"))
+					if (t is Building b)
+					{
+						if (b.def.passability == Traversability.Impassable || b.def.building.shipPart || b is Building_Door)
+							return false;
+					}
+					else if (t is Blueprint_Build) //no idea why this cant be checked for def.shipPart, etc.
+					{
 						return false;
+					}
 				}
 			}
 			return true;

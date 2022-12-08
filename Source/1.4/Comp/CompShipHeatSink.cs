@@ -41,7 +41,7 @@ namespace RimWorld
         public override void PostExposeData()
         {
             base.PostExposeData();
-            if (Scribe.mode == LoadSaveMode.Saving)
+            if (myNet != null && Scribe.mode == LoadSaveMode.Saving)
                 heatStored = myNet.StorageUsed * Props.heatCapacity / myNet.StorageCapacity;
             Scribe_Values.Look<float>(ref heatStored, "heatStored");
         }

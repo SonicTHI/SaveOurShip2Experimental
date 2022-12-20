@@ -114,6 +114,7 @@
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
+    <Compile Include="SpaceNavyDef.cs" />
     <Compile Include="Comp\CompProperties_ShipBlueprint.cs" />
     <Compile Include="Comp\CompRCSThruster.cs" />
     <Compile Include="Comp\CompProperties_ShipLifeSupport.cs" />
@@ -255,7 +256,7 @@
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_MoonBase.cs" />
     <Compile Include="Comp\TribalPillarSiteComp.cs" />
     <Compile Include="Comp\ImpactSiteComp.cs" />
-    <Compile Include="IncidentWorker_FreeEntanglement.cs" />
+    <Compile Include="Obsolete\IncidentWorker_FreeEntanglement.cs" />
     <Compile Include="IncidentWorker_ShipCombat.cs" />
     <Compile Include="Jobs\JobDriver_BreachAirlock.cs" />
     <Compile Include="Jobs\JobDriver_HackAirlock.cs" />

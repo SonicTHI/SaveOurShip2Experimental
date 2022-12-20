@@ -21,7 +21,7 @@ namespace RimWorld
         public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
             var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
-            if (mapComp.Shields.NullOrEmpty() || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) == 0)
+            if (mapComp.Shields.NullOrEmpty() || (pawn.RaceProps.Humanlike && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) == 0))
                 return ThinkResult.NoJob;
             if (pawn.RaceProps.IsMechanoid || !pawn.skills.GetSkill(SkillDefOf.Construction).TotallyDisabled)
             {

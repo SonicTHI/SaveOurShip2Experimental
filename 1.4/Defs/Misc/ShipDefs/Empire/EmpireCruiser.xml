@@ -10,9 +10,7 @@
 		<label>Imperial Scipio class cruiser</label>
 		<combatPoints>1480</combatPoints>
 		<cargoValue>500</cargoValue>
-		<imperialShip>True</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>82</x>

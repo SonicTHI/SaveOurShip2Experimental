@@ -9,6 +9,8 @@
 		<sizeZ>42</sizeZ>
 		<label>Unusually hot mining rig</label>
 		<combatPoints>319</combatPoints>
+		<customPaintjob>true</customPaintjob>
+		<navyExclusive>true</navyExclusive>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>3</x>

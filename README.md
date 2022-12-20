@@ -14,7 +14,7 @@ SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamco
 
 When updating to a new SOS2EXP version: Make sure to delete the old folder then extract the new one.
 
-You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - **read the server rules and mention that you are using the experimental build**. **Make sure you are on the latest version, check the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) before reporting and if possible try replicating the bug with only the required mods installed**.
+You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - **read the server rules and mention what SOS2EXP version you are on**. **Make sure you are on the latest version, check the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) before reporting and if possible try replicating the bug with only the required mods installed**.
 
 An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2EXP.
 
@@ -34,6 +34,8 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Redone heat system:** simplified, with less cheese and far better performance. Radiators have been removed while heatsinks now vent heat through the roof even when shielded. Coolant tanks have been added that offer a much larger heat capacity but without the ability to vent it to space.
 
+* **Procedural wreck system:** generates wrecks from ships in the database for you to explore and loot. Other factions and ships might attempt to do the same.
+
 * **Reworked salvage system:** gone are the days of pushing a button and getting a shipload of resources. Use salvage bays to drag defeated ships to your map, repair or deconstruct them for resources or simply let them burn up in atmosphere. A larger crew or taking advantage of other mods or new mechs in Biotech will come in handy.
 
 * **Bridge system overhaul:** old large bridges have become obsolete with two new consoles taking on and expanding the functionality. Some functions like scanning have been moved to advanced sensors or the new science console while the tactical variant lets you select various weapons types across your ship provided they are connected to it by the ships heat network.
@@ -46,7 +48,7 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Tons of minor adjustments, balance changes and bugfixes.**
 
-* **Extendability:** while not perfect it is now easier to mod in new types of ship buildings or adding EVA functionality to other mods.
+* **Extendability:** while not perfect it is now easier to mod in new types of ship buildings or adding EVA functionality to other mods. A navy system has also ben added so modders can add factions with their own pawns, ships and colors.
 
 * **Creation kit:** now includes new tools for fleet and blueprint creation as well as improvements to existing ones.
 

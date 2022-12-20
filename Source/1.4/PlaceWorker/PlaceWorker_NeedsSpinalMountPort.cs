@@ -8,27 +8,7 @@ using Verse;
 namespace RimWorld
 {
     public class PlaceWorker_NeedsSpinalMountPort : PlaceWorker
-    {/*
-        public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
-        {
-            bool flag = false;
-            List<Building> allBuildingsColonist = map.listerBuildings.allBuildingsColonist;
-            for (int i = 0; i < allBuildingsColonist.Count; i++)
-            {
-                Building building = allBuildingsColonist[i];
-                if (building.Position==(center+new IntVec3(0,0,-1-(building.def.size.z/2)-(def.Size.z-1)/2)) && building.TryGetComp<CompSpinalMount>()!=null && building.TryGetComp<CompSpinalMount>().Props.emits)
-                {
-                    flag = true;
-                    break;
-                }
-            }
-            if (!flag)
-            {
-                return "MustPlaceNearSpinalMountPort".Translate();
-            }
-            return true;
-        }*/
-
+    {
         public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, Color ghostCol, Thing thing = null)
         {
             Map currentMap = Find.CurrentMap;
@@ -53,9 +33,28 @@ namespace RimWorld
                     rect = new CellRect(center.x - 1, 0, 3, center.z - 2);
                 else
                     rect = new CellRect(0, center.z - 1, center.x - 2, 3);
-
                 GenDraw.DrawFieldEdges(rect.Cells.ToList(),Color.red);
             }
         }
+        /*
+        public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
+        {
+            bool flag = false;
+            List<Building> allBuildingsColonist = map.listerBuildings.allBuildingsColonist;
+            for (int i = 0; i < allBuildingsColonist.Count; i++)
+            {
+                Building building = allBuildingsColonist[i];
+                if (building.Position==(center+new IntVec3(0,0,-1-(building.def.size.z/2)-(def.Size.z-1)/2)) && building.TryGetComp<CompSpinalMount>()!=null && building.TryGetComp<CompSpinalMount>().Props.emits)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if (!flag)
+            {
+                return "MustPlaceNearSpinalMountPort".Translate();
+            }
+            return true;
+        }*/
     }
 }

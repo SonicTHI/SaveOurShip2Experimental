@@ -106,22 +106,20 @@ namespace RimWorld
         public int cargoValue;
         public List<ShipShape> parts;
         public ShipShape core;
-        public bool neverRandom = false;
-        public bool neverAttacks = false;
-        public bool spaceSite = false;
-        public bool imperialShip = false;
-        public bool pirateShip = false;
-        public bool bountyShip = false;
-        public bool mechanoidShip = false;
-        public bool fighterShip = false;
-        public bool carrierShip = false;
-        public bool tradeShip = false;
+        public bool neverRandom = false; //true for specially spawned ships, starts
+        public bool neverWreck = false; //prevent random wrecks from this shipdef
+        public bool neverAttacks = false; //will not attack player
         public bool startingShip = false;
         public bool startingDungeon = false;
+        public bool spaceSite = false; //custom space site
+        public bool tradeShip = false; //trades, requires neverAttacks
+        public bool navyExclusive = false; //only navies can use this
+        public bool customPaintjob = false; //prevents simple navy paint scheme
+        //unused
+        public bool fighterShip = false;
+        public bool carrierShip = false;
+
         public string bigString = "";
-        public string crewDef;
-        public string marineDef;
-        public string marineHeavyDef;
 
         public string GetUniqueLoadID()
         {

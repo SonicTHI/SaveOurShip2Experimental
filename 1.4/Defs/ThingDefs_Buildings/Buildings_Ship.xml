@@ -412,204 +412,6 @@
 			<ChunkSlagSteel>1</ChunkSlagSteel>
 		</killedLeavings>
 	</ThingDef>
-
-	<!-- obsolete -->
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipInside_PassiveCooler</defName>
-		<label>ship radiator</label>
-		<description>Radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
-		<thingClass>Building_Radiator</thingClass>
-		<drawerType>MapMeshAndRealTime</drawerType>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Atlas</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<linkType>Basic</linkType>
-			<linkFlags>
-				<li>Wall</li>
-				<li>Rock</li>
-			</linkFlags>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-				<edgeTop>Damage/Edge</edgeTop>
-				<edgeBot>Damage/Edge</edgeBot>
-				<edgeLeft>Damage/Edge</edgeLeft>
-				<edgeRight>Damage/Edge</edgeRight>
-			</damageData>
-		</graphicData>
-		<uiIconPath>Things/Building/Ship/BeamRadiatorUI</uiIconPath>
-		<size>(1,1)</size>
-		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
-		<tickerType>Normal</tickerType>
-		<statBases>
-			<WorkToBuild>8000</WorkToBuild>
-			<MaxHitPoints>500</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<selectable>true</selectable>
-		<costList>
-			<Steel>100</Steel>
-			<Plasteel>25</Plasteel>
-			<ComponentSpacer>1</ComponentSpacer>
-		</costList>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
-		<placeWorkers>
-			<li>PlaceWorker_Radiator</li>
-		</placeWorkers>
-		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<!--comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>100</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_TempControl">
-				<energyPerSecond>-21</energyPerSecond>
-			</li>
-			<li Class="CompProperties_Unfold">
-				<extendRate>0.005</extendRate>
-				<retractRate>0.0025</retractRate>
-				<retractTime>750</retractTime>
-				<extendDirection>(0,0,-1)</extendDirection>
-				<startOffset>0.5</startOffset>
-				<length>3.0</length>
-				<graphicPath>Things/Building/Ship/Radiator</graphicPath>
-			</li>
-			<li Class="CompProperties_Overlay">
-				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
-				<size>(1,1,1)</size>
-			</li>
-			<li Class="CompProperties_RoofMe"/>
-			<li Class="CompProperties_ShipHeat">
-			</li>
-			<li>
-				<compClass>CompColorable</compClass>
-			</li>
-		</comps-->
-		<designationHotKey>Misc2</designationHotKey>
-		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
-		<building>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipInside_PassiveCoolerAdvanced</defName>
-		<label>advanced ship radiator</label>
-		<description>Quickly radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
-		<thingClass>Building_Radiator</thingClass>
-		<drawerType>MapMeshAndRealTime</drawerType>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Atlas</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<linkType>Basic</linkType>
-			<linkFlags>
-				<li>Wall</li>
-				<li>Rock</li>
-			</linkFlags>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-				<edgeTop>Damage/Edge</edgeTop>
-				<edgeBot>Damage/Edge</edgeBot>
-				<edgeLeft>Damage/Edge</edgeLeft>
-				<edgeRight>Damage/Edge</edgeRight>
-			</damageData>
-		</graphicData>
-		<uiIconPath>Things/Building/Ship/BeamRadiatorAdvUI</uiIconPath>
-		<size>(1,1)</size>
-		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
-		<tickerType>Normal</tickerType>
-		<statBases>
-			<WorkToBuild>8000</WorkToBuild>
-			<MaxHitPoints>600</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<selectable>true</selectable>
-		<costList>
-			<Steel>100</Steel>
-			<Plasteel>25</Plasteel>
-			<Uranium>25</Uranium>
-			<ComponentSpacer>2</ComponentSpacer>
-		</costList>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
-		<placeWorkers>
-			<li>PlaceWorker_Radiator</li>
-		</placeWorkers>
-		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<!--comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>150</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_TempControl">
-				<energyPerSecond>-30</energyPerSecond>
-			</li>
-			<li Class="CompProperties_Unfold">
-				<extendRate>0.005</extendRate>
-				<retractRate>0.0025</retractRate>
-				<retractTime>750</retractTime>
-				<extendDirection>(0,0,-1)</extendDirection>
-				<startOffset>0.5</startOffset>
-				<length>3.0</length>
-				<graphicPath>Things/Building/Ship/AdvancedRadiator</graphicPath>
-			</li>
-			<li Class="CompProperties_Overlay">
-				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
-				<size>(1,1,1)</size>
-			</li>
-			<li Class="CompProperties_RoofMe"/>
-			<li Class="CompProperties_ShipHeat">
-			</li>
-			<li>
-				<compClass>CompColorable</compClass>
-			</li>
-		</comps-->
-		<designationHotKey>Misc2</designationHotKey>
-		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
-		<building>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
-	</ThingDef>
-
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Vents</defName>
 	</DesignatorDropdownGroupDef>
@@ -1719,136 +1521,6 @@
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
 	</ThingDef>
-	<!--ThingDef ParentName="BuildingBase">
-		<defName>ShipViewscreen</defName>
-		<label>ship viewscreen</label>
-		<description>A huge, high-tech screen that will keep your bridge crew occupied.</description>
-		<designatorDropdown>Ship_Bridges</designatorDropdown>
-		<graphicData>
-			<texPath>Things/Building/Joy/MegascreenTelevision</texPath>
-			<graphicClass>Graphic_Multi</graphicClass>
-			<shadowData>
-				<volume>(2.5, 0.6, 0.1)</volume>
-				<offset>(0, 0, 0.2)</offset>
-			</shadowData>
-			<drawSize>(5,1)</drawSize>
-		</graphicData>
-		<researchPrerequisites>
-			<li>ShipPilotSeat</li>
-		</researchPrerequisites>
-		<designationCategory>Ship</designationCategory>
-		<altitudeLayer>Building</altitudeLayer>
-		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<rotatable>true</rotatable>
-		<socialPropernessMatters>true</socialPropernessMatters>
-		<fillPercent>0.35</fillPercent>
-		<defaultPlacingRot>South</defaultPlacingRot>
-		<thingSetMakerTags>
-			<li>RewardStandardLowFreq</li>
-			<li>RewardStandardQualitySuper</li>
-		</thingSetMakerTags>
-		<costList>
-			<Steel>300</Steel>
-			<Plasteel>20</Plasteel>
-			<ComponentIndustrial>10</ComponentIndustrial>
-			<ComponentSpacer>4</ComponentSpacer>
-		</costList>
-		<statBases>
-			<WorkToBuild>80000</WorkToBuild>
-			<MaxHitPoints>85</MaxHitPoints>
-			<Flammability>1.0</Flammability>
-			<Mass>10</Mass>
-			<JoyGainFactor>1.6</JoyGainFactor>
-		</statBases>
-		<pathCost>50</pathCost>
-		<passability>PassThroughOnly</passability>
-		<size>(5,1)</size>
-		<building>
-			<joyKind>Television</joyKind>
-			<spawnedConceptLearnOpportunity>TVForSickPeople</spawnedConceptLearnOpportunity>
-			<boughtConceptLearnOpportunity>TVForSickPeople</boughtConceptLearnOpportunity>
-			<watchBuildingStandDistanceRange>2~9</watchBuildingStandDistanceRange>
-			<watchBuildingStandRectWidth>9</watchBuildingStandRectWidth>
-			<watchBuildingInSameRoom>true</watchBuildingInSameRoom>
-			<effectWatching>WatchingTelevision</effectWatching>
-		</building>
-		<placeWorkers>
-			<li>PlaceWorker_WatchArea</li>
-		</placeWorkers>
-		<comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<shortCircuitInRain>true</shortCircuitInRain>
-				<basePowerConsumption>450</basePowerConsumption>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-		</comps>
-	</ThingDef-->
-
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipPilotSeat</defName>
-		<label>ship bridge</label>
-		<designatorDropdown>Ship_Bridges</designatorDropdown>
-		<thingClass>Building_ShipBridge</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/Ship_Bridge</texPath>
-			<graphicClass>Graphic_MultiOnOff</graphicClass>
-			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(6,7)</drawSize>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-			</damageData>
-		</graphicData>
-		<altitudeLayer>Building</altitudeLayer>
-		<hasInteractionCell>True</hasInteractionCell>
-		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
-		<stealable>false</stealable>
-		<size>(5,3)</size>
-		<pathCost>30</pathCost>
-		<fillPercent>0.40</fillPercent>
-		<defaultPlacingRot>South</defaultPlacingRot>
-		<tickerType>Normal</tickerType>
-		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<costList>
-			<Steel>50</Steel>
-			<ComponentSpacer>3</ComponentSpacer>
-		</costList>
-		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_Mannable"/>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>250</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
-			</li>
-		</comps>
-		<statBases>
-			<MaxHitPoints>220</MaxHitPoints>
-			<WorkToBuild>7500</WorkToBuild>
-			<Mass>18</Mass>
-			<Flammability>0</Flammability>
-			<Beauty>1</Beauty>
-		</statBases>
-		<building>
-			<isSittable>true</isSittable>
-		</building>
-		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
-		</placeWorkers>
-		<researchPrerequisites>
-			<li>ShipPilotSeat</li>
-		</researchPrerequisites>
-		<description>Allows colonists to pilot a starship.</description>
-	</ThingDef>
 	<!-- sensors -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Sensors</defName>
@@ -2837,102 +2509,384 @@
 		<staticSunShadowHeight>0.4</staticSunShadowHeight>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 	</ThingDef>
-	<!-- blueprinte -->
-	<ThingDef ParentName="EtherealThingBase">
-		<defName>ShipSpawnBlueprint</defName>
-		<label>ship blueprint</label>
-		<thingClass>Building</thingClass>
-		<description>Marks the place where you intend to build a ship. Once placed, this cannot be moved.</description>
+	<!-- holo -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_AvatarCasket</defName>
+		<label>afterlife casket</label>
+		<description>An advanced life-support system capable of reviving a recently-deceased human brain, connected to a hologram projector. Allows dead colonists to live again in holographic form.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/AvatarCasket</texPath>
+			<graphicClass>Graphic_SingleOnOffEmpty</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(2.5,2.8)</drawSize>
+			<shadowData>
+				<volume>(0.83, 0.3, 1.7)</volume>
+			</shadowData>
+		</graphicData>
+		<researchPrerequisites>
+			<li>ShipAvatarCasket</li>
+		</researchPrerequisites>
+		<thingCategories>
+			<li>Buildings</li>
+		</thingCategories>
+		<minifiedDef>MinifiedThing</minifiedDef>
 		<altitudeLayer>Building</altitudeLayer>
-		<useSameGraphicForGhost>true</useSameGraphicForGhost>
+		<passability>PassThroughOnly</passability>
+		<pathCost>70</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>0.5</fillPercent>
+		<canOverlapZones>false</canOverlapZones>
+		<rotatable>false</rotatable>
+		<statBases>
+			<WorkToBuild>6400</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>200</Mass>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<size>(2,2)</size>
+		<designationCategory>Ship</designationCategory>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>1000</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Explosive">
+				<explosiveRadius>2.66</explosiveRadius>
+				<explosiveDamageType>Flame</explosiveDamageType>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_BuildingConsciousness">
+				<holoHediff>SoSHologram</holoHediff>
+				<holoWeapon>HologramLaser</holoWeapon>
+				<holoWeaponMelee>HologramSword</holoWeaponMelee>
+				<holoShield>HologramShield</holoShield>
+				<canMergeHuman>true</canMergeHuman>
+				<mustBeDead>true</mustBeDead>
+			</li>
+			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="CompProperties_Glower">
+				<glowRadius>8</glowRadius>
+				<glowColor>(255,255,255,0)</glowColor>
+			</li>
+		</comps>
+		<defaultPlacingRot>North</defaultPlacingRot>
+		<costList>
+			<Steel>40</Steel>
+			<Plasteel>80</Plasteel>
+			<ComponentIndustrial>4</ComponentIndustrial>
+			<ComponentSpacer>6</ComponentSpacer>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_HologramRelay</defName>
+		<label>hologram relay</label>
+		<description>A long-range relay allowing holograms to be projected from elsewhere. Each relay can only support a single hologram.</description>
+		<graphicData>
+			<texPath>Things/Building/Ship/HologramRepeater</texPath>
+			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(1.5,1.8)</drawSize>
+			<shadowData>
+				<volume>(0.83, 0.3, 1.7)</volume>
+			</shadowData>
+		</graphicData>
+		<researchPrerequisites>
+			<li>ShipHologramRepeater</li>
+		</researchPrerequisites>
+		<thingCategories>
+			<li>Buildings</li>
+		</thingCategories>
+		<minifiedDef>MinifiedThing</minifiedDef>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>70</pathCost>
+		<blockWind>true</blockWind>
+		<fillPercent>0.5</fillPercent>
+		<canOverlapZones>false</canOverlapZones>
+		<rotatable>false</rotatable>
+		<statBases>
+			<WorkToBuild>1600</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>100</Mass>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<size>(1,1)</size>
+		<designationCategory>Ship</designationCategory>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>100</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Explosive">
+				<explosiveRadius>1.66</explosiveRadius>
+				<explosiveDamageType>Flame</explosiveDamageType>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="CompProperties_Glower">
+				<glowRadius>8</glowRadius>
+				<glowColor>(255,255,255,0)</glowColor>
+			</li>
+			<li Class="CompProperties_HologramRelay"/>
+		</comps>
+		<defaultPlacingRot>North</defaultPlacingRot>
+		<costList>
+			<Steel>10</Steel>
+			<Plasteel>20</Plasteel>
+			<ComponentIndustrial>2</ComponentIndustrial>
+			<ComponentSpacer>1</ComponentSpacer>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+	</ThingDef>
+	<!-- foam -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>HullFoamWall</defName>
+		<label>hullfoam</label>
+		<description>An airtight slab of hullfoam.</description>
+		<thingClass>Building</thingClass>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Linked/Rock_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>CornerFiller</linkType>
+			<linkFlags>
+				<li>Rock</li>
+				<li>MapEdge</li>
+			</linkFlags>
+		</graphicData>
+		<uiIconPath>Things/Building/Linked/WallSmooth_MenuIcon</uiIconPath>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToBuild>50</WorkToBuild>
+			<Flammability>0.0</Flammability>
+			<Beauty>-1</Beauty>
+		</statBases>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<coversFloor>true</coversFloor>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
+		<tickerType>Never</tickerType>
 		<rotatable>false</rotatable>
 		<selectable>true</selectable>
-		<hasCustomRectForSelector>true</hasCustomRectForSelector>
-		<drawerType>RealtimeOnly</drawerType>
-		<drawOffscreen>true</drawOffscreen>
-		<minifiedDef>MinifiedShipBlueprint</minifiedDef>
-		<drawPlaceWorkersWhileInstallBlueprintSelected>true</drawPlaceWorkersWhileInstallBlueprintSelected>
-		<canLoadIntoCaravan>false</canLoadIntoCaravan>
+		<neverMultiSelect>true</neverMultiSelect>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<holdsRoof>true</holdsRoof>
+		<designationCategory>Structure</designationCategory>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<fertility>0</fertility>
 		<building>
+			<isInert>true</isInert>
+			<ai_chillDestination>false</ai_chillDestination>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+			<shipPart>true</shipPart>
 		</building>
+		<costList>
+			<HullFoam>1</HullFoam>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_RoofMe">
+				<foam>true</foam>
+			</li>
+		</comps>
+		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipHullfoamTile</defName>
+		<label>hullfoam plating</label>
+		<thingClass>Building</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<seeThroughFog>true</seeThroughFog>
+		<uiIconPath>Things/Building/Ship/HullfoamPlate</uiIconPath>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<isInert>true</isInert>
+			<isEdifice>false</isEdifice>
+			<shipPart>true</shipPart>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Ship/HullPlate</texPath>
+			</blueprintGraphicData>
+		</building>
+		<coversFloor>false</coversFloor>
+		<altitudeLayer>LowPlant</altitudeLayer>
+		<passability>Standable</passability>
+		<placingDraggableDimensions>2</placingDraggableDimensions>
+		<statBases>
+			<MaxHitPoints>50</MaxHitPoints>
+			<WorkToBuild>50</WorkToBuild>
+			<Flammability>0.0</Flammability>
+			<Beauty>-1</Beauty>
+		</statBases>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<description>Airtight hullfoam, sprayed to replace a missing hull plate.</description>
+		<costList>
+			<HullFoam>1</HullFoam>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isPlating>true</isPlating>
+				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_RoofMe">
+				<foam>true</foam>
+			</li>
+		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipBlueprint</li>
+			<li>PlaceWorker_NotOnBuilding</li>
 		</placeWorkers>
+		<rotatable>false</rotatable>
+		<selectable>false</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<designationCategory>Structure</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<designationHotKey>Misc1</designationHotKey>
+		<fillPercent>0.0</fillPercent>
+		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
+	</ThingDef>
+	<!-- airlock -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipAirlockBeamWall</defName>
+		<label>airlock wall</label>
+		<description>An airtight extended airlock wall.</description>
+		<thingClass>Building</thingClass>
+		<category>Building</category>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<statBases>
-			<Mass>0</Mass>
+			<MaxHitPoints>50</MaxHitPoints>
+			<Flammability>0.0</Flammability>
 		</statBases>
-		<thingCategories>
-			<li>BuildingsSpecial</li>
-		</thingCategories>
-		<tickerType>Normal</tickerType>
-	</ThingDef>
-	<ThingDef>
-		<defName>MinifiedShipBlueprint</defName>
-		<label>minified thing</label>
-		<thingClass>MinifiedThingShipBlueprint</thingClass>
-		<useHitPoints>true</useHitPoints>
-		<selectable>true</selectable>
-		<altitudeLayer>Item</altitudeLayer>
-		<scatterableOnMapGen>false</scatterableOnMapGen>
-		<tickerType>Normal</tickerType>
-		<!-- for CompForbiddable -->
-		<drawerType>RealtimeOnly</drawerType>
-		<rotatable>false</rotatable>
-		<pathCost>15</pathCost>
-	</ThingDef>
-	<ThingDef ParentName="EtherealThingBase">
-		<defName>ShipMoveBlueprint</defName>
-		<label>New Ship Position</label>
-		<thingClass>Building</thingClass>
-		<description>Select where you would like to move the ship.</description>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<altitudeLayer>Building</altitudeLayer>
-		<useSameGraphicForGhost>true</useSameGraphicForGhost>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<coversFloor>true</coversFloor>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
+		<tickerType>Never</tickerType>
 		<rotatable>false</rotatable>
 		<selectable>true</selectable>
-		<hasCustomRectForSelector>true</hasCustomRectForSelector>
-		<drawerType>RealtimeOnly</drawerType>
-		<drawOffscreen>true</drawOffscreen>
-		<minifiedDef>MinifiedThingShipMove</minifiedDef>
-		<drawPlaceWorkersWhileInstallBlueprintSelected>true</drawPlaceWorkersWhileInstallBlueprintSelected>
-		<canLoadIntoCaravan>false</canLoadIntoCaravan>
+		<neverMultiSelect>true</neverMultiSelect>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<holdsRoof>true</holdsRoof>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<fertility>0</fertility>
 		<building>
+			<isInert>true</isInert>
+			<ai_chillDestination>false</ai_chillDestination>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
 		</building>
-		<placeWorkers>
-			<li>PlaceWorker_MoveShip</li>
-		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeat</compClass>
+			</li>
+		</comps>
+		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipAirlockBeamTile</defName>
+		<label>airlock floor</label>
+		<thingClass>Building</thingClass>
+		<category>Building</category>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
+		<seeThroughFog>true</seeThroughFog>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<isInert>true</isInert>
+			<isEdifice>false</isEdifice>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			</blueprintGraphicData>
+		</building>
+		<coversFloor>false</coversFloor>
+		<altitudeLayer>LowPlant</altitudeLayer>
+		<passability>Standable</passability>
+		<placingDraggableDimensions>2</placingDraggableDimensions>
 		<statBases>
-			<Mass>0</Mass>
+			<MaxHitPoints>50</MaxHitPoints>
+			<Flammability>0.0</Flammability>
 		</statBases>
-		<thingCategories>
-			<li>BuildingsSpecial</li>
-		</thingCategories>
-		<tickerType>Normal</tickerType>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_RoofMe">
+				<foam>true</foam>
+			</li>
+		</comps>
+		<rotatable>false</rotatable>
+		<selectable>false</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<constructEffect>ConstructMetal</constructEffect>
+		<designationHotKey>Misc1</designationHotKey>
+		<fillPercent>0.0</fillPercent>
+		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
 	</ThingDef>
-	<ThingDef ParentName="ResourceBase" Name="ShipBlueprintBase" Abstract="True">
+	<!-- blueprints -->
+	<ThingDef ParentName="BuildingBase" Name="ShipBlueprintBase" Abstract="True">
 		<graphicData>
 			<texPath>Things/Item/Ship_Blueprint</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
-		<thingClass>ThingWithComps</thingClass>
-		<stackLimit>1</stackLimit>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<healthAffectsPrice>false</healthAffectsPrice>
 		<uiIconForStackCount>1</uiIconForStackCount>
+		<minifiedDef>MinifiedThing</minifiedDef>
 		<soundInteract>Standard_Drop</soundInteract>
 		<soundDrop>Standard_Drop</soundDrop>
 		<useHitPoints>true</useHitPoints>
+		<rotatable>false</rotatable>
 		<statBases>
 			<MaxHitPoints>20</MaxHitPoints>
 			<Mass>0.05</Mass>
 			<Flammability>1</Flammability>
 		</statBases>
+		<placeWorkers>
+			<li>PlaceWorker_ShipBlueprint</li>
+		</placeWorkers>
 		<thingCategories>
 			<li>ShipBlueprints</li>
 		</thingCategories>
@@ -3075,6 +3029,38 @@
 		</comps>
 	</ThingDef>
 	<!-- ship move -->
+	<ThingDef ParentName="EtherealThingBase">
+		<defName>ShipMoveBlueprint</defName>
+		<label>New Ship Position</label>
+		<thingClass>Building</thingClass>
+		<description>Select where you would like to move the ship.</description>
+		<altitudeLayer>Building</altitudeLayer>
+		<useSameGraphicForGhost>true</useSameGraphicForGhost>
+		<rotatable>false</rotatable>
+		<selectable>true</selectable>
+		<hasCustomRectForSelector>true</hasCustomRectForSelector>
+		<drawerType>RealtimeOnly</drawerType>
+		<drawOffscreen>true</drawOffscreen>
+		<minifiedDef>MinifiedThingShipMove</minifiedDef>
+		<drawPlaceWorkersWhileInstallBlueprintSelected>true</drawPlaceWorkersWhileInstallBlueprintSelected>
+		<canLoadIntoCaravan>false</canLoadIntoCaravan>
+		<building>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_MoveShip</li>
+		</placeWorkers>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<Mass>0</Mass>
+		</statBases>
+		<thingCategories>
+			<li>BuildingsSpecial</li>
+		</thingCategories>
+		<tickerType>Normal</tickerType>
+	</ThingDef>
 	<ThingDef>
 		<defName>MinifiedThingShipMove</defName>
 		<label>minified thing</label>
@@ -3089,32 +3075,6 @@
 		<rotatable>false</rotatable>
 		<pathCost>15</pathCost>
 	</ThingDef>
-	<ThingDef ParentName="EtherealThingBase">
-		<defName>DetachedShipPart</defName>
-		<label>Detached Ship Part</label>
-		<thingClass>DetachedShipPart</thingClass>
-		<description>A destroyed portion of a spaceship.</description>
-		<altitudeLayer>Projectile</altitudeLayer>
-		<useSameGraphicForGhost>true</useSameGraphicForGhost>
-		<rotatable>false</rotatable>
-		<selectable>false</selectable>
-		<hasCustomRectForSelector>true</hasCustomRectForSelector>
-		<drawerType>RealtimeOnly</drawerType>
-		<drawOffscreen>true</drawOffscreen>
-		<canLoadIntoCaravan>false</canLoadIntoCaravan>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<statBases>
-			<Mass>0</Mass>
-		</statBases>
-		<thingCategories>
-			<li>BuildingsSpecial</li>
-		</thingCategories>
-		<tickerType>Normal</tickerType>
-	</ThingDef>
-
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_FakeBeam</defName>
 		<label>ship hull</label>
@@ -3153,380 +3113,18 @@
 		</statBases>
 		<description>The outer structural elements of a ship's hull. Includes conduits for power, life-support gases, and coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
-		<comps>
-		</comps>
-		<placeWorkers>
-			<li>PlaceWorker_NotOnBuilding</li>
-		</placeWorkers>
 		<building>
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
 		</building>
-		<costList>
-		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>HullFoamWall</defName>
-		<label>hullfoam</label>
-		<description>An airtight slab of hullfoam.</description>
-		<thingClass>Building</thingClass>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Linked/Rock_Atlas</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<linkType>CornerFiller</linkType>
-			<linkFlags>
-				<li>Rock</li>
-				<li>MapEdge</li>
-			</linkFlags>
-		</graphicData>
-		<uiIconPath>Things/Building/Linked/WallSmooth_MenuIcon</uiIconPath>
-		<statBases>
-			<MaxHitPoints>200</MaxHitPoints>
-			<WorkToBuild>50</WorkToBuild>
-			<Flammability>0.0</Flammability>
-			<Beauty>-1</Beauty>
-		</statBases>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<coversFloor>true</coversFloor>
-		<placingDraggableDimensions>1</placingDraggableDimensions>
-		<tickerType>Never</tickerType>
-		<rotatable>false</rotatable>
-		<selectable>true</selectable>
-		<neverMultiSelect>true</neverMultiSelect>
-		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<holdsRoof>true</holdsRoof>
-		<designationCategory>Structure</designationCategory>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<fertility>0</fertility>
-		<building>
-			<isInert>true</isInert>
-			<ai_chillDestination>false</ai_chillDestination>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-			<shipPart>true</shipPart>
-		</building>
-		<costList>
-			<HullFoam>1</HullFoam>
-		</costList>
-		<comps>
-			<li Class="CompProperties_SoShipPart">
-				<isHull>true</isHull>
-				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
-				<foam>true</foam>
-			</li>
-		</comps>
-		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipHullfoamTile</defName>
-		<label>hullfoam plating</label>
-		<thingClass>Building</thingClass>
-		<drawerType>MapMeshAndRealTime</drawerType>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<seeThroughFog>true</seeThroughFog>
-		<uiIconPath>Things/Building/Ship/HullfoamPlate</uiIconPath>
-		<building>
-			<ai_chillDestination>false</ai_chillDestination>
-			<isInert>true</isInert>
-			<isEdifice>false</isEdifice>
-			<shipPart>true</shipPart>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Ship/HullPlate</texPath>
-			</blueprintGraphicData>
-		</building>
-		<coversFloor>false</coversFloor>
-		<altitudeLayer>LowPlant</altitudeLayer>
-		<passability>Standable</passability>
-		<placingDraggableDimensions>2</placingDraggableDimensions>
-		<statBases>
-			<MaxHitPoints>50</MaxHitPoints>
-			<WorkToBuild>50</WorkToBuild>
-			<Flammability>0.0</Flammability>
-			<Beauty>-1</Beauty>
-		</statBases>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<description>Airtight hullfoam, sprayed to replace a missing hull plate.</description>
-		<costList>
-			<HullFoam>1</HullFoam>
-		</costList>
-		<comps>
-			<li Class="CompProperties_SoShipPart">
-				<isPlating>true</isPlating>
-				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
-				<foam>true</foam>
-			</li>
-		</comps>
-		<placeWorkers>
-			<li>PlaceWorker_NotOnBuilding</li>
-		</placeWorkers>
-		<rotatable>false</rotatable>
-		<selectable>false</selectable>
-		<neverMultiSelect>true</neverMultiSelect>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<designationCategory>Structure</designationCategory>
-		<constructEffect>ConstructMetal</constructEffect>
-		<designationHotKey>Misc1</designationHotKey>
-		<fillPercent>0.0</fillPercent>
-		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>Ship_AvatarCasket</defName>
-		<label>afterlife casket</label>
-		<description>An advanced life-support system capable of reviving a recently-deceased human brain, connected to a hologram projector. Allows dead colonists to live again in holographic form.</description>
-		<graphicData>
-			<texPath>Things/Building/Ship/AvatarCasket</texPath>
-			<graphicClass>Graphic_SingleOnOffEmpty</graphicClass>
-			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(2.5,2.8)</drawSize>
-			<shadowData>
-				<volume>(0.83, 0.3, 1.7)</volume>
-			</shadowData>
-		</graphicData>
-		<researchPrerequisites>
-			<li>ShipAvatarCasket</li>
-		</researchPrerequisites>
-		<thingCategories>
-			<li>Buildings</li>
-		</thingCategories>
-		<minifiedDef>MinifiedThing</minifiedDef>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<pathCost>70</pathCost>
-		<blockWind>true</blockWind>
-		<fillPercent>0.5</fillPercent>
-		<canOverlapZones>false</canOverlapZones>
-		<rotatable>false</rotatable>
-		<statBases>
-			<WorkToBuild>6400</WorkToBuild>
-			<MaxHitPoints>500</MaxHitPoints>
-			<Flammability>0</Flammability>
-			<Mass>200</Mass>
-		</statBases>
-		<tickerType>Normal</tickerType>
-		<size>(2,2)</size>
-		<designationCategory>Ship</designationCategory>
-		<comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>1000</basePowerConsumption>
-			</li>
-			<li Class="CompProperties_Explosive">
-				<explosiveRadius>2.66</explosiveRadius>
-				<explosiveDamageType>Flame</explosiveDamageType>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_BuildingConsciousness">
-				<holoHediff>SoSHologram</holoHediff>
-				<holoWeapon>HologramLaser</holoWeapon>
-				<holoWeaponMelee>HologramSword</holoWeaponMelee>
-				<holoShield>HologramShield</holoShield>
-				<canMergeHuman>true</canMergeHuman>
-				<mustBeDead>true</mustBeDead>
-			</li>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_Glower">
-				<glowRadius>8</glowRadius>
-				<glowColor>(255,255,255,0)</glowColor>
-			</li>
-		</comps>
-		<defaultPlacingRot>North</defaultPlacingRot>
-		<costList>
-			<Steel>40</Steel>
-			<Plasteel>80</Plasteel>
-			<ComponentIndustrial>4</ComponentIndustrial>
-			<ComponentSpacer>6</ComponentSpacer>
-		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>Ship_HologramRelay</defName>
-		<label>hologram relay</label>
-		<description>A long-range relay allowing holograms to be projected from elsewhere. Each relay can only support a single hologram.</description>
-		<graphicData>
-			<texPath>Things/Building/Ship/HologramRepeater</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
-			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(1.5,1.8)</drawSize>
-			<shadowData>
-				<volume>(0.83, 0.3, 1.7)</volume>
-			</shadowData>
-		</graphicData>
-		<researchPrerequisites>
-			<li>ShipHologramRepeater</li>
-		</researchPrerequisites>
-		<thingCategories>
-			<li>Buildings</li>
-		</thingCategories>
-		<minifiedDef>MinifiedThing</minifiedDef>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<pathCost>70</pathCost>
-		<blockWind>true</blockWind>
-		<fillPercent>0.5</fillPercent>
-		<canOverlapZones>false</canOverlapZones>
-		<rotatable>false</rotatable>
-		<statBases>
-			<WorkToBuild>1600</WorkToBuild>
-			<MaxHitPoints>500</MaxHitPoints>
-			<Flammability>0</Flammability>
-			<Mass>100</Mass>
-		</statBases>
-		<tickerType>Normal</tickerType>
-		<size>(1,1)</size>
-		<designationCategory>Ship</designationCategory>
-		<comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>100</basePowerConsumption>
-			</li>
-			<li Class="CompProperties_Explosive">
-				<explosiveRadius>1.66</explosiveRadius>
-				<explosiveDamageType>Flame</explosiveDamageType>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_Glower">
-				<glowRadius>8</glowRadius>
-				<glowColor>(255,255,255,0)</glowColor>
-			</li>
-			<li Class="CompProperties_HologramRelay"/>
-		</comps>
-		<defaultPlacingRot>North</defaultPlacingRot>
-		<costList>
-			<Steel>10</Steel>
-			<Plasteel>20</Plasteel>
-			<ComponentIndustrial>2</ComponentIndustrial>
-			<ComponentSpacer>1</ComponentSpacer>
-		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipAirlockBeamWall</defName>
-		<label>airlock wall</label>
-		<description>An airtight extended airlock wall.</description>
-		<thingClass>Building</thingClass>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<statBases>
-			<MaxHitPoints>50</MaxHitPoints>
-			<Flammability>0.0</Flammability>
-		</statBases>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<coversFloor>true</coversFloor>
-		<placingDraggableDimensions>1</placingDraggableDimensions>
-		<tickerType>Never</tickerType>
-		<rotatable>false</rotatable>
-		<selectable>true</selectable>
-		<neverMultiSelect>true</neverMultiSelect>
-		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<holdsRoof>true</holdsRoof>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<fertility>0</fertility>
-		<building>
-			<isInert>true</isInert>
-			<ai_chillDestination>false</ai_chillDestination>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-		</building>
-		<comps>
-			<li Class="CompProperties_SoShipPart">
-				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTransmitter</compClass>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
-			</li>
-		</comps>
-		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipAirlockBeamTile</defName>
-		<label>airlock floor</label>
-		<thingClass>Building</thingClass>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<seeThroughFog>true</seeThroughFog>
-		<building>
-			<ai_chillDestination>false</ai_chillDestination>
-			<isInert>true</isInert>
-			<isEdifice>false</isEdifice>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			</blueprintGraphicData>
-		</building>
-		<coversFloor>false</coversFloor>
-		<altitudeLayer>LowPlant</altitudeLayer>
-		<passability>Standable</passability>
-		<placingDraggableDimensions>2</placingDraggableDimensions>
-		<statBases>
-			<MaxHitPoints>50</MaxHitPoints>
-			<Flammability>0.0</Flammability>
-		</statBases>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<comps>
-			<li Class="CompProperties_SoShipPart">
-				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
-				<foam>true</foam>
-			</li>
-		</comps>
-		<rotatable>false</rotatable>
-		<selectable>false</selectable>
-		<neverMultiSelect>true</neverMultiSelect>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<constructEffect>ConstructMetal</constructEffect>
-		<designationHotKey>Misc1</designationHotKey>
-		<fillPercent>0.0</fillPercent>
-		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
-	</ThingDef>
+
 	<ThingDef ParentName="BuildingBase">
 		<defName>PawnSpawnerStart</defName>
 		<label>starting pawn spawner</label>
@@ -3550,5 +3148,330 @@
 			<isEdifice>false</isEdifice>
 		</building>
 		<rotatable>false</rotatable>
+	</ThingDef>
+	<!-- obsolete -->
+	<!--ThingDef ParentName="BuildingBase">
+		<defName>ShipViewscreen</defName>
+		<label>ship viewscreen</label>
+		<description>A huge, high-tech screen that will keep your bridge crew occupied.</description>
+		<designatorDropdown>Ship_Bridges</designatorDropdown>
+		<graphicData>
+			<texPath>Things/Building/Joy/MegascreenTelevision</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<shadowData>
+				<volume>(2.5, 0.6, 0.1)</volume>
+				<offset>(0, 0, 0.2)</offset>
+			</shadowData>
+			<drawSize>(5,1)</drawSize>
+		</graphicData>
+		<researchPrerequisites>
+			<li>ShipPilotSeat</li>
+		</researchPrerequisites>
+		<designationCategory>Ship</designationCategory>
+		<altitudeLayer>Building</altitudeLayer>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<rotatable>true</rotatable>
+		<socialPropernessMatters>true</socialPropernessMatters>
+		<fillPercent>0.35</fillPercent>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<thingSetMakerTags>
+			<li>RewardStandardLowFreq</li>
+			<li>RewardStandardQualitySuper</li>
+		</thingSetMakerTags>
+		<costList>
+			<Steel>300</Steel>
+			<Plasteel>20</Plasteel>
+			<ComponentIndustrial>10</ComponentIndustrial>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<statBases>
+			<WorkToBuild>80000</WorkToBuild>
+			<MaxHitPoints>85</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+			<Mass>10</Mass>
+			<JoyGainFactor>1.6</JoyGainFactor>
+		</statBases>
+		<pathCost>50</pathCost>
+		<passability>PassThroughOnly</passability>
+		<size>(5,1)</size>
+		<building>
+			<joyKind>Television</joyKind>
+			<spawnedConceptLearnOpportunity>TVForSickPeople</spawnedConceptLearnOpportunity>
+			<boughtConceptLearnOpportunity>TVForSickPeople</boughtConceptLearnOpportunity>
+			<watchBuildingStandDistanceRange>2~9</watchBuildingStandDistanceRange>
+			<watchBuildingStandRectWidth>9</watchBuildingStandRectWidth>
+			<watchBuildingInSameRoom>true</watchBuildingInSameRoom>
+			<effectWatching>WatchingTelevision</effectWatching>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_WatchArea</li>
+		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<shortCircuitInRain>true</shortCircuitInRain>
+				<basePowerConsumption>450</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+		</comps>
+	</ThingDef-->
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipPilotSeat</defName>
+		<label>ship bridge</label>
+		<designatorDropdown>Ship_Bridges</designatorDropdown>
+		<thingClass>Building_ShipBridge</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/Ship_Bridge</texPath>
+			<graphicClass>Graphic_MultiOnOff</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(6,7)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,-1)</interactionCellOffset>
+		<stealable>false</stealable>
+		<size>(5,3)</size>
+		<pathCost>30</pathCost>
+		<fillPercent>0.40</fillPercent>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<tickerType>Normal</tickerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<costList>
+			<Steel>50</Steel>
+			<ComponentSpacer>3</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_ShipPart"/>
+			<li Class="CompProperties_Mannable"/>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>250</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeat</compClass>
+			</li>
+		</comps>
+		<statBases>
+			<MaxHitPoints>220</MaxHitPoints>
+			<WorkToBuild>7500</WorkToBuild>
+			<Mass>18</Mass>
+			<Flammability>0</Flammability>
+			<Beauty>1</Beauty>
+		</statBases>
+		<building>
+			<isSittable>true</isSittable>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<researchPrerequisites>
+			<li>ShipPilotSeat</li>
+		</researchPrerequisites>
+		<description>Allows colonists to pilot a starship.</description>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipInside_PassiveCooler</defName>
+		<label>ship radiator</label>
+		<description>Radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
+		<thingClass>Building_Radiator</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Wall</li>
+				<li>Rock</li>
+			</linkFlags>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+				<edgeTop>Damage/Edge</edgeTop>
+				<edgeBot>Damage/Edge</edgeBot>
+				<edgeLeft>Damage/Edge</edgeLeft>
+				<edgeRight>Damage/Edge</edgeRight>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Ship/BeamRadiatorUI</uiIconPath>
+		<size>(1,1)</size>
+		<rotatable>true</rotatable>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<holdsRoof>true</holdsRoof>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<castEdgeShadows>true</castEdgeShadows>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<WorkToBuild>8000</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<selectable>true</selectable>
+		<costList>
+			<Steel>100</Steel>
+			<Plasteel>25</Plasteel>
+			<ComponentSpacer>1</ComponentSpacer>
+		</costList>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
+		<placeWorkers>
+			<li>PlaceWorker_Radiator</li>
+		</placeWorkers>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<!--comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>100</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_TempControl">
+				<energyPerSecond>-21</energyPerSecond>
+			</li>
+			<li Class="CompProperties_Unfold">
+				<extendRate>0.005</extendRate>
+				<retractRate>0.0025</retractRate>
+				<retractTime>750</retractTime>
+				<extendDirection>(0,0,-1)</extendDirection>
+				<startOffset>0.5</startOffset>
+				<length>3.0</length>
+				<graphicPath>Things/Building/Ship/Radiator</graphicPath>
+			</li>
+			<li Class="CompProperties_Overlay">
+				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
+				<size>(1,1,1)</size>
+			</li>
+			<li Class="CompProperties_RoofMe"/>
+			<li Class="CompProperties_ShipHeat">
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps-->
+		<designationHotKey>Misc2</designationHotKey>
+		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+		<building>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipInside_PassiveCoolerAdvanced</defName>
+		<label>advanced ship radiator</label>
+		<description>Quickly radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
+		<thingClass>Building_Radiator</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Wall</li>
+				<li>Rock</li>
+			</linkFlags>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+				<edgeTop>Damage/Edge</edgeTop>
+				<edgeBot>Damage/Edge</edgeBot>
+				<edgeLeft>Damage/Edge</edgeLeft>
+				<edgeRight>Damage/Edge</edgeRight>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Ship/BeamRadiatorAdvUI</uiIconPath>
+		<size>(1,1)</size>
+		<rotatable>true</rotatable>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<holdsRoof>true</holdsRoof>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<castEdgeShadows>true</castEdgeShadows>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<WorkToBuild>8000</WorkToBuild>
+			<MaxHitPoints>600</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<selectable>true</selectable>
+		<costList>
+			<Steel>100</Steel>
+			<Plasteel>25</Plasteel>
+			<Uranium>25</Uranium>
+			<ComponentSpacer>2</ComponentSpacer>
+		</costList>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
+		<placeWorkers>
+			<li>PlaceWorker_Radiator</li>
+		</placeWorkers>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<!--comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_TempControl">
+				<energyPerSecond>-30</energyPerSecond>
+			</li>
+			<li Class="CompProperties_Unfold">
+				<extendRate>0.005</extendRate>
+				<retractRate>0.0025</retractRate>
+				<retractTime>750</retractTime>
+				<extendDirection>(0,0,-1)</extendDirection>
+				<startOffset>0.5</startOffset>
+				<length>3.0</length>
+				<graphicPath>Things/Building/Ship/AdvancedRadiator</graphicPath>
+			</li>
+			<li Class="CompProperties_Overlay">
+				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
+				<size>(1,1,1)</size>
+			</li>
+			<li Class="CompProperties_RoofMe"/>
+			<li Class="CompProperties_ShipHeat">
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps-->
+		<designationHotKey>Misc2</designationHotKey>
+		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
+		<building>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 </Defs>

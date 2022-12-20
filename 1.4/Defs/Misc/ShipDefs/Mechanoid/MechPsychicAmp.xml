@@ -12,7 +12,7 @@
 		<randomTurretPoints>300</randomTurretPoints>
 		<neverRandom>True</neverRandom>
 		<neverAttacks>True</neverAttacks>
-		<mechanoidShip>True</mechanoidShip>
+		<navyExclusive>true</navyExclusive>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>51</x>

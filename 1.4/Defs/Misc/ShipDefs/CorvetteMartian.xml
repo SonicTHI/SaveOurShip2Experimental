@@ -9,6 +9,7 @@
 		<sizeZ>22</sizeZ>
 		<label>Ancient martian corvette</label>
 		<combatPoints>134</combatPoints>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>ShipConsoleTactical</shapeOrDef>
 			<x>12</x>

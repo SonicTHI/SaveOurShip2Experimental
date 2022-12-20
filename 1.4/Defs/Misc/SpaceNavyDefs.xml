@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+    <SpaceNavyDef Abstract="True" Name="SpaceNavy">
+        <factionDefs>
+		</factionDefs>
+		<colorPrimary>RGBA(0, 0, 0, 0)</colorPrimary>
+		<colorSecondary>RGBA(0, 0, 0, 0)</colorSecondary>
+		<bountyHunts>true</bountyHunts>
+		<canOperateAfterFactionDefeated>true</canOperateAfterFactionDefeated>
+        <crewDef>SpaceCrew</crewDef>
+        <marineDef>SpaceCrewMarine</marineDef>
+        <marineHeavyDef>SpaceCrewMarineHeavy</marineHeavyDef>
+        <enemyShipDefs>
+        </enemyShipDefs>
+    </SpaceNavyDef>
+    <SpaceNavyDef ParentName="SpaceNavy">
+        <defName>Pirate_SpaceNavy</defName>
+        <label>Pirates</label>
+        <factionDefs>
+            <li>Pirate</li>
+		</factionDefs>
+		<colorPrimary>RGBA(0.196, 0.196, 0.196, 1.000)</colorPrimary>
+		<colorSecondary>RGBA(0.624, 0.314, 0.314, 1.000)</colorSecondary>
+        <enemyShipDefs>
+            <li>PirateMiningRig</li>
+            <li>PirateISCS</li>
+            <li>DestroyerT1</li>
+            <li>FrigateScorpion</li>
+            <li>ShipBreakerFullyArmed</li>
+            <li>CorvetteMartian</li>
+            <li>BomberHeavy</li>
+        </enemyShipDefs>
+    </SpaceNavyDef>
+    <SpaceNavyDef ParentName="SpaceNavy">
+        <defName>Mechanoid_SpaceNavy</defName>
+        <label>Mechanoids</label>
+        <factionDefs>
+            <li>Mechanoid</li>
+		</factionDefs>
+		<bountyHunts>false</bountyHunts>
+        <crewDef>Mech_Pikeman</crewDef>
+        <marineDef>Mech_Scyther</marineDef>
+        <marineHeavyDef>Mech_Lancer</marineHeavyDef>
+        <enemyShipDefs>
+            <li>MechPsychicAmp</li>
+            <li>MechSphere</li>
+            <li>MechSphereArcho</li>
+            <li>MechSphereHuge</li>
+            <li>MechSphereLarge</li>
+            <li>MechSphereLargeAlt</li>
+            <li>MechSphereMini</li>
+            <li>MechSphereSmall</li>
+            <li>MechanoidMoonBase</li>
+            <li>ContainerMech</li>
+        </enemyShipDefs>
+    </SpaceNavyDef>
+    <SpaceNavyDef ParentName="SpaceNavy">
+        <defName>Insect_SpaceNavy</defName>
+        <label>Insects</label>
+        <factionDefs>
+            <li>Insect</li>
+		</factionDefs>
+		<bountyHunts>false</bountyHunts>
+        <crewDef>Astromite</crewDef>
+        <marineDef>Stellapede</marineDef>
+        <marineHeavyDef>Cosmopillar</marineHeavyDef>
+        <enemyShipDefs>
+        </enemyShipDefs>
+    </SpaceNavyDef>
+</Defs>

@@ -367,101 +367,6 @@
 		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
-		<defName>ShipInside_PassiveCoolerMechanoid</defName>
-		<label>mechanoid ship radiator</label>
-		<description>Quickly radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
-		<thingClass>Building_Radiator</thingClass>
-		<drawerType>MapMeshAndRealTime</drawerType>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Mechanoid_Atlas</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<linkType>Basic</linkType>
-			<linkFlags>
-				<li>Wall</li>
-				<li>Rock</li>
-			</linkFlags>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-				<edgeTop>Damage/Edge</edgeTop>
-				<edgeBot>Damage/Edge</edgeBot>
-				<edgeLeft>Damage/Edge</edgeLeft>
-				<edgeRight>Damage/Edge</edgeRight>
-			</damageData>
-		</graphicData>
-		<uiIconPath>Things/Building/Ship/BeamRadiatorMechanoidUI</uiIconPath>
-		<size>(1,1)</size>
-		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
-		<tickerType>Normal</tickerType>
-		<statBases>
-			<WorkToBuild>8000</WorkToBuild>
-			<MaxHitPoints>500</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<selectable>true</selectable>
-		<costList>
-			<Steel>100</Steel>
-			<Plasteel>25</Plasteel>
-			<Uranium>25</Uranium>
-			<ComponentSpacer>2</ComponentSpacer>
-		</costList>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
-		<placeWorkers>
-			<li>PlaceWorker_Radiator</li>
-		</placeWorkers>
-		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<!--comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>150</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_TempControl">
-				<energyPerSecond>-30</energyPerSecond>
-			</li>
-			<li Class="CompProperties_Unfold">
-				<extendRate>0.005</extendRate>
-				<retractRate>0.0025</retractRate>
-				<retractTime>750</retractTime>
-				<extendDirection>(0,0,-1)</extendDirection>
-				<startOffset>0.5</startOffset>
-				<length>3.0</length>
-				<graphicPath>Things/Building/Ship/MechanoidRadiator</graphicPath>
-			</li>
-			<li Class="CompProperties_Overlay">
-				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
-				<size>(1,1,1)</size>
-			</li>
-			<li Class="CompProperties_RoofMe"/>
-			<li Class="CompProperties_ShipHeat">
-			</li>
-		</comps-->
-		<designationHotKey>Misc2</designationHotKey>
-		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
-		<building>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
 		<defName>ShipInside_PassiveVentMechanoid</defName>
 		<label>mechanoid ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
@@ -702,5 +607,101 @@
 		<fillPercent>0.0</fillPercent>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<designationCategory>Ship</designationCategory>
+	</ThingDef>
+	<!-- obsolete -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipInside_PassiveCoolerMechanoid</defName>
+		<label>mechanoid ship radiator</label>
+		<description>Quickly radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
+		<thingClass>Building_Radiator</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Mechanoid_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Wall</li>
+				<li>Rock</li>
+			</linkFlags>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+				<edgeTop>Damage/Edge</edgeTop>
+				<edgeBot>Damage/Edge</edgeBot>
+				<edgeLeft>Damage/Edge</edgeLeft>
+				<edgeRight>Damage/Edge</edgeRight>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Ship/BeamRadiatorMechanoidUI</uiIconPath>
+		<size>(1,1)</size>
+		<rotatable>true</rotatable>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<holdsRoof>true</holdsRoof>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<castEdgeShadows>true</castEdgeShadows>
+		<tickerType>Normal</tickerType>
+		<statBases>
+			<WorkToBuild>8000</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<selectable>true</selectable>
+		<costList>
+			<Steel>100</Steel>
+			<Plasteel>25</Plasteel>
+			<Uranium>25</Uranium>
+			<ComponentSpacer>2</ComponentSpacer>
+		</costList>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
+		<placeWorkers>
+			<li>PlaceWorker_Radiator</li>
+		</placeWorkers>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<!--comps>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>150</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_TempControl">
+				<energyPerSecond>-30</energyPerSecond>
+			</li>
+			<li Class="CompProperties_Unfold">
+				<extendRate>0.005</extendRate>
+				<retractRate>0.0025</retractRate>
+				<retractTime>750</retractTime>
+				<extendDirection>(0,0,-1)</extendDirection>
+				<startOffset>0.5</startOffset>
+				<length>3.0</length>
+				<graphicPath>Things/Building/Ship/MechanoidRadiator</graphicPath>
+			</li>
+			<li Class="CompProperties_Overlay">
+				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
+				<size>(1,1,1)</size>
+			</li>
+			<li Class="CompProperties_RoofMe"/>
+			<li Class="CompProperties_ShipHeat">
+			</li>
+		</comps-->
+		<designationHotKey>Misc2</designationHotKey>
+		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
+		<building>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
 	</ThingDef>
 </Defs>

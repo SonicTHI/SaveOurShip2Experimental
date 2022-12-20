@@ -21,7 +21,12 @@ namespace RimWorld
 
         protected override Job TryGiveJob(Pawn pawn)
 		{
-            if (!pawn.RaceProps.IsMechanoid)
+            if (!pawn.RaceProps.Humanlike)
+            {
+                if (!pawn.RaceProps.IsMechanoid)
+                    return null;
+            }
+            else
             {
                 if (!pawn.HostileTo(Faction.OfPlayer) || pawn.skills.GetSkill(SkillDefOf.Construction).TotallyDisabled || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) == 0)
                 {

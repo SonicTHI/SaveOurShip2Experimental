@@ -7,7 +7,6 @@
 		<sizeZ>249</sizeZ>
 		<label>NOT A SHIP</label>
 		<combatPoints>240</combatPoints>
-		<mechanoidShip>True</mechanoidShip>
 		<neverRandom>True</neverRandom>
 		<symbolTable>
 			<li>

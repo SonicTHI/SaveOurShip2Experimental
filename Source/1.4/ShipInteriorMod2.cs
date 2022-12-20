@@ -32,6 +32,7 @@ namespace SaveOurShip2
 		public static HugsLib.Utils.ModLogger instLogger;
 
 		public static readonly float crittersleepBodySize = 0.7f;
+		public static readonly float navyShipChance = 0.2f;
 		public static bool ArchoStuffEnabled = true;//unassigned???
 		public static bool SoSWin = false;
 		public static bool loadedGraphics = false;
@@ -131,11 +132,13 @@ namespace SaveOurShip2
 			Harmony pat = new Harmony("ShipInteriorMod2");
 			pat.Patch(regenerateMethod, postfix: new HarmonyMethod(regeneratePostfix));
 
-			
+
 			if (ModLister.HasActiveModWithName("RT Fuse"))
 			{
 				Log.Message("SOS2: Enabling compatibility with RT Fuze");
-			} else {
+			}
+			else
+			{
 				var doShortCircuitMethod = typeof(ShortCircuitUtility).GetMethod("DoShortCircuit");
 				var prefix = typeof(NoShortCircuitCapacitors).GetMethod("disableEventQuestionMark");
 				var postfix = typeof(NoShortCircuitCapacitors).GetMethod("tellThePlayerTheDayWasSaved");
@@ -150,11 +153,11 @@ namespace SaveOurShip2
 		}
 
 		public static SettingHandle<double> difficultySoS;
+		public static SettingHandle<double> frequencySoS;
 		public static SettingHandle<bool> easyMode;
 		public static SettingHandle<int> minTravelTime;
 		public static SettingHandle<int> maxTravelTime;
 		public static SettingHandle<bool> renderPlanet;
-		public static SettingHandle<double> frequencySoS;
 		public static SettingHandle<bool> useVacuumPathfinding;
 		public static SettingHandle<bool> useSplashScreen;
 		public static SettingHandle<int> offsetUIx;
@@ -163,13 +166,14 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
+			Log.Message("SOS2EXP V74 active");
 			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
-			easyMode = Settings.GetHandle("easyMode", "Easy Mode",
-				"If checked will prevent player pawns dying to PD and pods landing in your ship",
-				false);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
 				"Higher values mean less cooldown time between ship battles.", 1.0);
+			easyMode = Settings.GetHandle("easyMode", "Easy Mode",
+				"If checked will prevent player pawns dying to PD and pods landing in outer rooms of your ship",
+				false);
 			minTravelTime = Settings.GetHandle("minTravelTime", "Minimum Travel Time",
 				"Minimum number of years that pass when traveling to a new world.", 5);
 			maxTravelTime = Settings.GetHandle("maxTravelTime", "Maximum Travel Time",
@@ -219,15 +223,15 @@ namespace SaveOurShip2
 			wreckDictionary.Add(ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked"));
 			wreckDictionary.Add(ThingDef.Named("Ship_BeamArchotech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked"));
 			wreckDictionary.Add(ThingDef.Named("ShipInside_SolarGenerator"), ThingDef.Named("Ship_Beam_Wrecked"));
-			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveCooler"), ThingDef.Named("Ship_Beam_Wrecked"));
-			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveCoolerAdvanced"), ThingDef.Named("Ship_Beam_Wrecked"));
-			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("Ship_Beam_Wrecked"));
-			wreckDictionary.Add(ThingDef.Named("ShipInside_SolarGeneratorArchotech"), ThingDef.Named("Ship_Beam_Wrecked"));
 			wreckDictionary.Add(ThingDef.Named("ShipInside_SolarGeneratorMech"), ThingDef.Named("Ship_Beam_Wrecked"));
-			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveCoolerArchotech"), ThingDef.Named("Ship_Beam_Wrecked"));
-			wreckDictionary.Add(ThingDef.Named("ShipAirlockArchotech"), ThingDef.Named("ShipAirlockWrecked"));
-			wreckDictionary.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_SolarGeneratorArchotech"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveVentArchotech"), ThingDef.Named("Ship_Beam_Wrecked"));
 			wreckDictionary.Add(ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipAirlockArchotech"), ThingDef.Named("ShipAirlockWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipAirlockBeam"), ThingDef.Named("Ship_Beam_Wrecked"));
 
 			var compatibleRoofs = new List<RoofDef>();
 			// Compatibility tricks for Roofs Extended.
@@ -312,9 +316,9 @@ namespace SaveOurShip2
 			//}
 		}
 
-        public override void SceneLoaded(Scene scene)
-        {
-            base.SceneLoaded(scene);
+		public override void SceneLoaded(Scene scene)
+		{
+			base.SceneLoaded(scene);
 
 			if (!loadedGraphics)
 			{
@@ -426,18 +430,46 @@ namespace SaveOurShip2
 			Find.WorldObjects.Add(impactSite);
 		}
 
-		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shieldsActive = true, bool clearArea = false, bool wreckEverything = false, int offsetX = -1, int offsetZ = -1)
+		public static SpaceNavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true)
+		{
+			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
+			{
+				if (needsShips && navy.enemyShipDefs.NullOrEmpty())
+					return false;
+				if (hostileTo != null) //any faction that has same def as navy, defeat check, hostile check
+				{
+					if (Find.FactionManager.AllFactions.Any(f => f.HostileTo(hostileTo) && navy.factionDefs.Contains(f.def) && (!f.defeated || (f.defeated && navy.canOperateAfterFactionDefeated))))
+						return true;
+				}
+				//any faction that has same def as navy, defeat check
+				else if (Find.FactionManager.AllFactions.Any(f => navy.factionDefs.Contains(f.def) && (!f.defeated || (f.defeated && navy.canOperateAfterFactionDefeated))))
+					return true;
+				return false;
+			}).RandomElement();
+		}
+		public static SpaceNavyDef ValidRandomNavyBountyHunts()
+		{
+			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
+			{
+				if (!navy.bountyHunts || navy.enemyShipDefs.NullOrEmpty())
+					return false;
+				if (Find.FactionManager.AllFactions.Any(f => navy.factionDefs.Contains(f.def) && !f.defeated || (f.defeated && navy.canOperateAfterFactionDefeated)))
+					return true;
+				return false;
+			}).RandomElement();
+		}
+		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shieldsActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
 			bool unlockedJT = false;
 			if (WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("JTDriveToo"))
 				unlockedJT = true;
 			bool ideoActive = false;
-			if (ModsConfig.IdeologyActive && (fac != Faction.OfAncientsHostile || fac != Faction.OfAncients))
+			if (ModsConfig.IdeologyActive && (fac != Faction.OfAncientsHostile || fac != Faction.OfAncients || fac != Faction.OfMechanoids))
 				ideoActive = true;
 			cores = new List<Building>();
 			List<IntVec3> cellsToFog = new List<IntVec3>();
 			if (!shipDef.ships.NullOrEmpty())
-            {
+			{
 				for (int i = 0; i < shipDef.ships.Count; i++)
 				{
 					Log.Message("Spawning fleet ship nr." + i);
@@ -448,31 +480,36 @@ namespace SaveOurShip2
 						Log.Error("Fleet ship not found in database");
 						return;
 					}
-					GenerateShip(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out core, shieldsActive, clearArea, wreckEverything, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ);
+					GenerateShip(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out core, shieldsActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
 					cores.AddRange(core);
 				}
 				PostGenerateShip(map, shipDef, clearArea, cellsToFog);
 				return;
 			}
+
+
+			int size = shipDef.sizeX * shipDef.sizeZ;
+			List<Building> wreckDestroy = new List<Building>();
+			List<Pawn> pawnsOnShip = new List<Pawn>();
 			List<ShipShape> partsToGenerate = new List<ShipShape>();
 			List<IntVec3> cargoCells = new List<IntVec3>();
-			IntVec3 c = new IntVec3(0, 0, 0);
+			IntVec3 offset = new IntVec3(0, 0, 0);
 
 			if (shipDef.saveSysVer == 2)
-            {
+			{
 				if (offsetX < 0 || offsetZ < 0) //unset offset, use offset from shipdef
-					c = new IntVec3(shipDef.offsetX, 0, shipDef.offsetZ);
+					offset = new IntVec3(shipDef.offsetX, 0, shipDef.offsetZ);
 				else
-					c = new IntVec3(offsetX, 0, offsetZ);
+					offset = new IntVec3(offsetX, 0, offsetZ);
 			}
 			else //old system, from center
-				c = map.Center;
+				offset = map.Center;
 
-			if (clearArea) // clear ship area extended by 1
+			if (clearArea) //clear ship area extended by 1 - better as actual ship area extended by 1
 			{
 				CellRect rect;
 				if (shipDef.saveSysVer == 2)
-					rect = new CellRect(shipDef.offsetX - 1, shipDef.offsetZ - 1, shipDef.offsetX + shipDef.sizeX + 1, shipDef.offsetZ + shipDef.sizeZ + 1);
+					rect = new CellRect(offset.x - 1, offset.z - 1, shipDef.sizeX + 1, shipDef.sizeZ + 1);
 				else //V1 legacy
 				{
 					IntVec3 min = new IntVec3(map.Size.x, 0, map.Size.z);
@@ -488,7 +525,7 @@ namespace SaveOurShip2
 						if (shape.z > max.z)
 							max.z = shape.z;
 					}
-					rect = new CellRect(c.x + min.x - 1, c.z + min.z - 1, c.x + max.x - min.x + 1, c.z + max.z - min.z + 1);
+					rect = new CellRect(offset.x + min.x - 1, offset.z + min.z - 1, offset.x + max.x - min.x + 1, offset.z + max.z - min.z + 1);
 				}
 				List<Thing> DestroyTheseThings = new List<Thing>();
 				foreach (IntVec3 pos in rect.Cells)
@@ -504,25 +541,19 @@ namespace SaveOurShip2
 					t.Destroy();
 				}
 			}
-			if (!shipDef.core.shapeOrDef.NullOrEmpty())
+			if (!shipDef.core.shapeOrDef.NullOrEmpty() && wreckLevel < 3)
 			{
 				Building bridge = (Building)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
 				bridge.SetFaction(fac);
-				GenSpawn.Spawn(bridge, new IntVec3(c.x + shipDef.core.x, 0, c.z + shipDef.core.z), map, shipDef.core.rot);
+				GenSpawn.Spawn(bridge, new IntVec3(offset.x + shipDef.core.x, 0, offset.z + shipDef.core.z), map, shipDef.core.rot);
 				bridge.TryGetComp<CompPowerTrader>().PowerOn = true;
 				cores.Add(bridge);
 				((Building_ShipBridge)bridge).ShipName = shipDef.label;
 			}
-			//check if custom replacers for pawns are set and present in the game
-			bool crewOver = false;
-			bool marineOver = false;
-			bool heavyOver = false;
-			if (shipDef.crewDef != null && DefDatabase<PawnKindDef>.GetNamed(shipDef.crewDef) != null)
-				crewOver = true;
-			if (shipDef.marineDef != null && DefDatabase<PawnKindDef>.GetNamed(shipDef.marineDef) != null)
-				marineOver = true;
-			if (shipDef.marineHeavyDef != null && DefDatabase<PawnKindDef>.GetNamed(shipDef.marineHeavyDef) != null)
-				heavyOver = true;
+			//color navy ships without custom paint
+			bool rePaint = false; 
+			if (navyDef != null && !shipDef.customPaintjob && navyDef.colorPrimary != Color.clear)
+				rePaint = true;
 			//turrets randomized per ship
 			int randomSmall = Rand.RangeInclusive(0, 2);
 			int randomLarge = Rand.RangeInclusive(0, 2);
@@ -538,7 +569,8 @@ namespace SaveOurShip2
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
 						if (lord != null)
 							lord.AddPawn(pawn);
-						GenSpawn.Spawn(pawn, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
+						GenSpawn.Spawn(pawn, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map);
+						pawnsOnShip.Add(pawn);
 					}
 					else if (DefDatabase<EnemyShipPartDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
@@ -546,23 +578,29 @@ namespace SaveOurShip2
 					}
 					else if (DefDatabase<PawnKindDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
-						string pawnGen = shape.shapeOrDef;
-						if (crewOver && shape.shapeOrDef.Equals("SpaceCrew"))
-							pawnGen = shipDef.crewDef;
-						else if (marineOver && shape.shapeOrDef.Equals("SpaceCrewMarine"))
-							pawnGen = shipDef.marineDef;
-						else if (heavyOver && shape.shapeOrDef.Equals("SpaceCrewMarineHeavy"))
-							pawnGen = shipDef.marineHeavyDef;
-						PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(pawnGen), fac);
+						PawnGenerationRequest req;
+						if (navyDef != null)
+						{
+							if (shape.shapeOrDef.Equals("SpaceCrewMarineHeavy"))
+								req = new PawnGenerationRequest(navyDef.marineHeavyDef, fac);
+							else if (shape.shapeOrDef.Equals("SpaceCrewMarine"))
+								req = new PawnGenerationRequest(navyDef.marineDef, fac);
+							else
+								req = new PawnGenerationRequest(navyDef.crewDef, fac);
+						}
+						else
+							req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.shapeOrDef), fac);
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
 						if (lord != null)
 							lord.AddPawn(pawn);
-						GenSpawn.Spawn(pawn, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
+						GenSpawn.Spawn(pawn, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map);
+						pawnsOnShip.Add(pawn);
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
 						bool isBuilding = false;
-						Thing thing;
+						bool isWrecked = false;
+						Thing thing = null;
 						ThingDef def = ThingDef.Named(shape.shapeOrDef);
 						if (def.IsBuildingArtificial)
 						{
@@ -570,8 +608,11 @@ namespace SaveOurShip2
 							if (!unlockedJT && def.defName.StartsWith("Ship_Engine_Interplanetary"))
 								continue;
 						}
-						if (wreckEverything && isBuilding && wreckDictionary.ContainsKey(def))
+						if (wreckLevel > 2 && isBuilding && wreckDictionary.ContainsKey(def))
+						{
 							thing = ThingMaker.MakeThing(wreckDictionary[def]);
+							isWrecked = true;
+						}
 						else if (def.MadeFromStuff)
 						{
 							if (shape.stuff != null)
@@ -581,18 +622,46 @@ namespace SaveOurShip2
 						}
 						else
 							thing = ThingMaker.MakeThing(def);
-						if (thing.TryGetComp<CompColorable>() != null && shape.color != Color.clear)
-							thing.SetColor(shape.color);
+						if (wreckLevel > 1 && isBuilding && !isWrecked)
+                        {
+							wreckDestroy.Add(thing as Building);
+						}
+
+						if (thing.TryGetComp<CompColorable>() != null)
+                        {
+							if (rePaint) //color unpainted navy ships
+							{
+								var hull = thing.TryGetComp<CompSoShipPart>();
+								if (hull.Props.isHull)
+									thing.SetColor(navyDef.colorPrimary);
+								else if (def.defName.StartsWith("Ship_Corner"))
+									thing.SetColor(navyDef.colorSecondary);
+							}
+							if (shape.color != Color.clear)
+								thing.SetColor(shape.color);
+						}
 						var batComp = thing.TryGetComp<CompPowerBattery>();
 						if (batComp != null)
-							batComp.AddEnergy(batComp.AmountCanAccept);
+                        {
+							if (wreckLevel < 2)
+								batComp.AddEnergy(batComp.AmountCanAccept);
+							else if (wreckLevel == 2)
+								batComp.AddEnergy(batComp.AmountCanAccept * Rand.Gaussian(0.1f, 0.02f));
+						}
 						var refuelComp = thing.TryGetComp<CompRefuelable>();
 						if (refuelComp != null)
 						{
-							refuelComp.Refuel(refuelComp.Props.fuelCapacity * Rand.Gaussian(0.7f, 0.2f));
-							var reactorComp = thing.TryGetComp<CompPowerTraderOverdrivable>();
-							if (reactorComp != null && shieldsActive)
-								reactorComp.overdriveSetting = 1;
+							float refuel;
+							if (wreckLevel < 3)
+							{
+								refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.7f, 0.2f);
+								var reactorComp = thing.TryGetComp<CompPowerTraderOverdrivable>();
+								if (reactorComp != null && shieldsActive)
+									reactorComp.overdriveSetting = 1;
+							}
+							else
+								refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.1f, 0.02f);
+							refuelComp.Refuel(refuel);
 						}
 						if (thing.def.stackLimit > 1)
 						{
@@ -600,7 +669,7 @@ namespace SaveOurShip2
 							if (thing.stackCount * thing.MarketValue > 500)
 								thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
 						}
-						GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
+						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map, shape.rot);
 						if (isBuilding)
 						{
 							if (thing.def.CanHaveFaction)
@@ -618,9 +687,9 @@ namespace SaveOurShip2
 							if (powerComp != null)
 								powerComp.PowerOn = true;
 							if (ideoActive && b.def.CanBeStyled() && fac.ideos.PrimaryIdeo.style.StyleForThingDef(thing.def) != null)
-                            {
+							{
 								b.SetStyleDef(fac.ideos.PrimaryIdeo.GetStyleFor(thing.def));
-                            }
+							}
 							else if (b is Building_ShipTurret turret)
 							{
 								turret.burstCooldownTicksLeft = 300;
@@ -628,8 +697,12 @@ namespace SaveOurShip2
 								{
 									for (int i = 0; i < torp.torpComp.Props.maxTorpedoes; i++)
 									{
-										//td make this random
-										torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
+										if (size > 10000 && Rand.Chance(0.05f))
+											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_Antimatter"), 1);
+										else if (size > 5000 && Rand.Chance(0.2f))
+											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_EMP"), 1);
+										else
+											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
 									}
 								}
 							}
@@ -662,7 +735,7 @@ namespace SaveOurShip2
 						TerrainDef terrain = DefDatabase<TerrainDef>.GetNamed(shape.shapeOrDef);
 						IntVec3 pos = new IntVec3(shape.x, 0, shape.z);
 						if (shipDef.saveSysVer == 2)
-							pos = new IntVec3(c.x + shape.x, 0, c.z + shape.z);
+							pos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
 						if (pos.InBounds(map))
 							map.terrainGrid.SetTerrain(pos, terrain);
 						if (terrain.fertility > 0 && pos.GetEdifice(map) == null)
@@ -679,7 +752,7 @@ namespace SaveOurShip2
 				}
 				catch (Exception e)
 				{
-					Log.Warning("Ship part was not generated properly: "+ shape.shapeOrDef + " at " +  c.x + shape.x + ", " + c.z + shape.z + " Shipdef pos: |"+ shape.x + "," + shape.z + ",0,*|\n" + e);
+					Log.Warning("Ship part was not generated properly: " + shape.shapeOrDef + " at " + offset.x + shape.x + ", " + offset.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
 				}
 			}
 			//generate SOS2 shapedefs
@@ -687,8 +760,8 @@ namespace SaveOurShip2
 			partsToGenerate.Shuffle();
 			foreach (ShipShape shape in partsToGenerate)
 			{
-                try
-                {
+				try
+				{
 					EnemyShipPartDef def = DefDatabase<EnemyShipPartDef>.GetNamed(shape.shapeOrDef);
 					if (randomTurretPoints >= def.randomTurretPoints)
 						randomTurretPoints -= def.randomTurretPoints;
@@ -701,7 +774,7 @@ namespace SaveOurShip2
 						thing.SetFaction(fac);
 						Pawn sleeper = PawnGenerator.GeneratePawn(new PawnGenerationRequest(PawnKindDefOf.Slave, Faction.OfAncients, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
 						((Building_CryptosleepCasket)thing).TryAcceptThing(sleeper);
-						GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
+						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map, shape.rot);
 					}
 					else if (def.defName.Length > 8 && def.defName.Substring(def.defName.Length - 8) == "_SPAWNER")
 					{
@@ -721,12 +794,13 @@ namespace SaveOurShip2
 							p.ageTracker.AgeChronologicalTicks = 36000000;
 							if (lord != null)
 								lord.AddPawn(p);
+							pawnsOnShip.Add(p);
 						}
 						else if (thing is Hive)
 							thing.SetFactionDirect(Faction.OfInsects);
 						else
 							thing.SetFaction(fac);
-						GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map);
+						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map);
 					}
 					else if (!def.defName.Equals("Cargo")) //everything else
 					{
@@ -757,6 +831,7 @@ namespace SaveOurShip2
 								p.ageTracker.AgeChronologicalTicks = 36000000;
 								if (lord != null)
 									lord.AddPawn(p);
+								pawnsOnShip.Add(p);
 							}
 							else if (thing is Hive)
 								thing.SetFactionDirect(Faction.OfInsects);
@@ -767,13 +842,13 @@ namespace SaveOurShip2
 							turret.burstCooldownTicksLeft = 300;
 						if (thing.TryGetComp<CompColorable>() != null)
 							thing.TryGetComp<CompColorable>().SetColor(shape.color);
-						GenSpawn.Spawn(thing, new IntVec3(c.x + shape.x, 0, c.z + shape.z), map, shape.rot);
+						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map, shape.rot);
 					}
 					else //cargo
 					{
-						for (int ecks = c.x + shape.x; ecks <= c.x + shape.x + shape.width; ecks++)
+						for (int ecks = offset.x + shape.x; ecks <= offset.x + shape.x + shape.width; ecks++)
 						{
-							for (int zee = c.z + shape.z; zee <= c.z + shape.z + shape.height; zee++)
+							for (int zee = offset.z + shape.z; zee <= offset.z + shape.z + shape.height; zee++)
 							{
 								cargoCells.Add(new IntVec3(ecks, 0, zee));
 							}
@@ -782,10 +857,11 @@ namespace SaveOurShip2
 				}
 				catch (Exception e)
 				{
-					Log.Warning("Ship shape was not generated properly: " + shape.shapeOrDef + " at " + c.x + shape.x + ", " + c.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
+					Log.Warning("Ship shape was not generated properly: " + shape.shapeOrDef + " at " + offset.x + shape.x + ", " + offset.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
 				}
 			}
-			if (cargoCells.Any())
+			//cargo
+			if (cargoCells.Any() && wreckLevel < 3)
 			{
 				List<Thing> loot;
 				if (passingShip is TradeShip)
@@ -824,10 +900,226 @@ namespace SaveOurShip2
 						t.SetFactionDirect(fac);
 				}
 			}
+			//wreck
+			//1 (light damage - starting ships): outer explo few
+			//2: outer explo more, destroy some buildings, some dead crew, chance for more invaders
+			//3: wreck all hull, outer explo lots, chance to split, destroy most buildings, most crew dead, chance for invaders
+			//4: planetside wreck - no invaders
+			if (wreckLevel > 0)
+			{
+				int holeNum = 0;
+				//split
+				if ((wreckLevel == 2 || wreckLevel == 3) && size > 1000 && Rand.Chance(0.7f))
+                {
+                    MakeLines(shipDef, map, wreckLevel, offset);
+				}
+				if ((wreckLevel == 2 || wreckLevel == 3) && size > 10000)
+				{
+					MakeLines(shipDef, map, wreckLevel, offset);
+				}
+				//holes, surounded by wreck
+				if (size > 8000 || wreckLevel > 2 && size > 4000)
+				{
+					holeNum = Rand.RangeInclusive(10, 16);
+				}
+				else if (size > 4000 || wreckLevel > 1 && size > 2000)
+				{
+					holeNum = Rand.RangeInclusive(6, 10);
+				}
+				else //sub 2k, lvl 1
+				{
+					holeNum = Rand.RangeInclusive(2, 4);
+				}
+				CellRect rect = new CellRect(offset.x - 1, offset.z - 1, shipDef.sizeX + 1, shipDef.sizeZ + 1);
+				MakeHoles(FindCellOnOuterHull(map, holeNum, rect), map, wreckLevel, 1.9f, 4.9f);
+				//buildings
+				List<Building> toKill = new List<Building>();
+				toKill = new List<Building>();
+				if (wreckLevel > 2)
+				{
+					foreach (Building b in wreckDestroy.Where(t => !t.Destroyed))
+					{
+						if (Rand.Chance(0.8f))
+							toKill.Add(b);
+					}
+				}
+				foreach (Building b in toKill.Where(t => !t.Destroyed))
+				{
+					if (wreckLevel == 4)
+						GenExplosion.DoExplosion(b.Position, map, Rand.Range(1.9f, 4.9f), DamageDefOf.Flame, null);
+					var refuelComp = b.TryGetComp<CompRefuelable>();
+					if (refuelComp != null)
+						refuelComp.ConsumeFuel(refuelComp.Fuel);
+					b.Destroy();
+				}
+				//td remove floor, roof?
 
+				//pawns
+				List<Pawn> pawnsToKill = new List<Pawn>();
+				foreach (Pawn p in pawnsOnShip)
+				{
+					if (wreckLevel > 2)
+						HealthUtility.DamageUntilDead(p);
+					if (wreckLevel == 2)
+                    {
+						int chance = Rand.RangeInclusive(1, 3);
+						if (chance == 1)
+							HealthUtility.DamageUntilDead(p);
+						else if (chance == 2)
+							HealthUtility.DamageUntilDowned(p);
+					}
+				}
+				//invaders - pick faction, spawn lord + pawns
+				if ((wreckLevel == 2 && Rand.Chance(0.7f)) || (wreckLevel ==3 && Rand.Chance(0.4f)))
+				{
+					SpaceNavyDef navy = ValidRandomNavy(Faction.OfPlayer, false);
+					if (navy != null)
+					{
+						Faction invaderFac;
+						var mapComp = map.GetComponent<ShipHeatMapComp>();
+						if (mapComp.InvaderLord == null) //spawn only one invader lord
+						{
+							invaderFac = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+							if (wreckLevel == 2)
+								mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_AssaultShip(invaderFac, false), map);
+							else
+								mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_DefendShip(invaderFac, map.Center), map);
+							Log.Message("Spawned invaders from: " + invaderFac);
+							//chance for ship battle
+							if (invaderFac.HostileTo(Faction.OfPlayer) && !navy.enemyShipDefs.NullOrEmpty() && Rand.Chance(0.4f))
+							{
+								IncidentParms parms = new IncidentParms();
+								var check = (MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault();
+								if (check != null)
+								{
+									parms.target = check.Map;
+									parms.forced = true;
+									parms.faction = invaderFac;
+									QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ShipCombat"), null, parms), Find.TickManager.TicksGame + Rand.RangeInclusive(2000, 8000));
+									Find.Storyteller.incidentQueue.Add(qi);
+								}
+							}
+						}
+						else
+							invaderFac = mapComp.InvaderLord.faction;
+
+						foreach (Pawn p in pawnsOnShip.Where(p => p.Downed || p.Dead))
+						{
+							if ((wreckLevel == 2 && Rand.Chance(0.6f)) || (wreckLevel == 3 && Rand.Chance(0.3f)))
+							{
+								PawnKindDef req;
+								int chance = Rand.RangeInclusive(1, 3);
+								if (chance == 3)
+									req = navy.marineHeavyDef;
+								else
+									req = navy.marineDef;
+								Pawn pawn = PawnGenerator.GeneratePawn(req, invaderFac);
+								GenSpawn.Spawn(pawn, p.Position, map);
+								mapComp.InvaderLord.AddPawn(pawn);
+							}
+						}
+					}
+				}
+			}
 			//post spawn
 			if (shipDef.ships.NullOrEmpty())
 				PostGenerateShip(map, shipDef, clearArea, cellsToFog);
+		}
+		public static void SpawnInvaders(List<Pawn> pawnPos, Map map)
+		{
+
+		}
+
+        public static List<IntVec3> FindCellOnOuterHull(Map map, int num, CellRect shipArea)
+		{
+			//targets outer cells
+			Room outdoors = new IntVec3(0, 0, 0).GetRoom(map);
+			List<IntVec3> targetCells = new List<IntVec3>();
+			List<IntVec3> validCells = new List<IntVec3>();
+			foreach (IntVec3 cell in outdoors.BorderCells.Where(c => c.InBounds(map)).Intersect(shipArea))
+				validCells.Add(cell);
+			validCells.Shuffle();
+			int i = 0;
+			while (i < num + 1)
+			{
+				targetCells.Add(validCells[i]);
+				i++;
+				if (i > validCells.Count || i > 20)
+					break;
+			}
+			return targetCells;
+		}
+		public static void MakeLines(EnemyShipDef shipDef, Map map, int wreckLevel, IntVec3 offset)
+		{
+			List<IntVec3> detVecs = new List<IntVec3>();
+			IntVec3 from = new IntVec3(Rand.RangeInclusive(offset.x + 10, offset.x + shipDef.sizeX - 10), 0, offset.z);
+			IntVec3 to = new IntVec3(Rand.RangeInclusive(offset.x + 10, offset.x + shipDef.sizeX - 10), 0, offset.z + shipDef.sizeZ);
+			float angle = (to - from).AngleFlat;
+			IntVec3 curVec = IntVec3.Zero;
+			while ((from.z + curVec.z) < to.z)
+			{
+				curVec += new Vector3(4 * Mathf.Sin(Mathf.Deg2Rad * angle), 0, 4 * Mathf.Cos(Mathf.Deg2Rad * angle)).ToIntVec3();
+				detVecs.Add(from + curVec);
+				//Log.Message("vec: " + (from + curVec));
+				if (Rand.Chance(0.05f))
+					break;
+			}
+			MakeHoles(detVecs, map, wreckLevel, 2.9f, 3.9f);
+		}
+		public static void MakeHoles(List<IntVec3> targets, Map map, int wreckLevel, float minSize, float maxSize)
+		{
+			if (targets.NullOrEmpty())
+				return;
+			List<Thing> toDestroy = new List<Thing>();
+			List<Building> toReplace = new List<Building>();
+			foreach (IntVec3 v in targets)
+			{
+				float exploRadius = Rand.Range(minSize, maxSize);
+				foreach (IntVec3 vec in GenRadial.RadialCellsAround(v, exploRadius, true))
+				{
+					map.roofGrid.SetRoof(vec, null);
+					foreach (Thing t in vec.GetThingList(map).Where(t => !t.Destroyed))
+					{
+						toDestroy.Add(t);
+					}
+				}
+				foreach (IntVec3 vec in GenRadial.RadialCellsAround(v, exploRadius, exploRadius + 1))
+				{
+					foreach (Thing t in vec.GetThingList(map).Where(t => t is Building && !t.Destroyed))
+					{
+						if (wreckDictionary.ContainsKey(t.def))
+						{
+							toReplace.Add(t as Building);
+						}
+					}
+				}
+			}
+			foreach (Building b in toReplace)
+			{
+				IntVec3 v = b.Position;
+				Thing thing = ThingMaker.MakeThing(wreckDictionary[b.def]);
+				if (!b.Destroyed)
+					b.Destroy();
+				GenSpawn.Spawn(thing, v, map);
+			}
+			foreach (Thing t in toDestroy.Where(t => !t.Destroyed))
+			{
+				if (t is Building b)
+				{
+					var refuelComp = b.TryGetComp<CompRefuelable>();
+					if (refuelComp != null)
+						refuelComp.ConsumeFuel(refuelComp.Fuel);
+					if (wreckLevel == 4 && b.def.CostList != null && b.def.CostList.Any(cost => cost.thingDef == ThingDefOf.ComponentSpacer) && Rand.Chance(0.2f))
+						GenPlace.TryPlaceThing(ThingMaker.MakeThing(ThingDef.Named("ShipChunkSalvage")), b.Position, map, ThingPlaceMode.Near);
+					if (!b.Destroyed)
+						b.Destroy();
+				}
+				else if (t is Pawn p)
+                {
+					HealthUtility.DamageUntilDowned(p);
+				}
+			}
+			//secondaries?
 		}
 		private static void PostGenerateShip(Map map, EnemyShipDef shipDef, bool clearArea, List<IntVec3> cellsToFog)
 		{
@@ -836,8 +1128,14 @@ namespace SaveOurShip2
 			{
 				foreach (IntVec3 cell in cellsToFog)
 				{
-					if (cell.GetRoom(map) == null || (cell.GetRoom(map).OpenRoofCount == 0 && !cell.GetRoom(map).IsDoorway))
+					var room = cell.GetRoom(map);
+					if (room != null && room.TouchesMapEdge) //if room outside no fog
+						continue;
+					if (room == null || (room.OpenRoofCount < 2 && room.ProperRoom))
 						map.fogGrid.fogGrid[map.cellIndices.CellToIndex(cell)] = true;
+					//if (room == null || (room.OpenRoofCount == 0 && !room.IsDoorway))
+					//if (room == null || (room.OpenRoofCount == 0 && !cell.GetRoom(map).IsDoorway)) //fog if in room and roof
+					//cell.GetRoom(map) != null && !ExposedToOutside(cell.GetRoom(map)) && !cell.GetRoom(map).IsDoorway)
 				}
 			}
 			foreach (Room r in map.regionGrid.allRooms)
@@ -1489,6 +1787,7 @@ namespace SaveOurShip2
 					sec.RegenerateLayers(MapMeshFlag.Zone);
 				}
 			}
+			targetMap.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
 			if (devMode)
 			{
 				watch.Record("finalize");
@@ -5465,7 +5764,7 @@ namespace SaveOurShip2
 				{
 					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
 					AttackableShip ship = new AttackableShip();
-					ship.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
+					ship.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
 					spaceMap.passingShipManager.AddShip(ship);
 				}
 			}

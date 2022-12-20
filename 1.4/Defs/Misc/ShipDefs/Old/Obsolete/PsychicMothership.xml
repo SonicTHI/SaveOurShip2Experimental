@@ -5,8 +5,7 @@
 		<label>Psychic Mothership</label>
 		<combatPoints>3000</combatPoints>
 		<randomTurretPoints>3000</randomTurretPoints>
-		<neverAttacks>True</neverAttacks>
-		<mechanoidShip>True</mechanoidShip>
+		<neverRandom>True</neverRandom>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<z>1</z>

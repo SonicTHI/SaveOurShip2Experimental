@@ -225,7 +225,7 @@ namespace RimWorld
         {
             lastPrankTick = tick + Rand.Range(40000, 80000);
             int prank = Rand.RangeInclusive(0, 5);
-            if (prank == 0)
+            if (prank == 0) //cancer
             {
                 Find.LetterStack.ReceiveLetter("ArchotechPrank".Translate(), "ArchotechPrankCancer".Translate(), LetterDefOf.NegativeEvent);
                 int numCancers = Rand.RangeInclusive(2, 5);
@@ -235,7 +235,7 @@ namespace RimWorld
                     HediffGiverUtility.TryApply(victim, HediffDefOf.Carcinoma, null, true);
                 }
             }
-            else if (prank == 1)
+            else if (prank == 1) //breakdown
             {
                 Find.LetterStack.ReceiveLetter("ArchotechPrank".Translate(), "ArchotechPrankDamage".Translate(), LetterDefOf.NegativeEvent);
                 int numBrokenDevices = Rand.RangeInclusive(5, 12);
@@ -247,13 +247,13 @@ namespace RimWorld
                     breakableThings.RandomElement().TryGetComp<CompBreakdownable>().DoBreakdown();
                 }
             }
-            else if (prank == 2)
+            else if (prank == 2) //romance
             {
                 Pawn worstA = null;
                 Pawn worstB = null;
                 float worstScore = 9999;
-                List<Pawn> pawns = this.Map.mapPawns.FreeColonistsAndPrisonersSpawned;
-                List<Pawn> pawns2 = this.Map.mapPawns.FreeColonistsAndPrisonersSpawned;
+                List<Pawn> pawns = this.Map.mapPawns.FreeColonistsAndPrisonersSpawned.Where(p => p.DevelopmentalStage == DevelopmentalStage.Adult).ToList();
+                List<Pawn> pawns2 = this.Map.mapPawns.FreeColonistsAndPrisonersSpawned.Where(p => p.DevelopmentalStage == DevelopmentalStage.Adult).ToList();
                 foreach (Pawn pawn in pawns)
                 {
                     foreach (Pawn p in pawns2)
@@ -309,7 +309,7 @@ namespace RimWorld
                     LovePartnerRelationUtility.TryToShareBed(worstA, worstB);
                 }
             }
-            else if(prank==3)
+            else if(prank==3) //manhunter
             {
                 Find.LetterStack.ReceiveLetter("ArchotechPrank".Translate(), "ArchotechPrankSquirrels".Translate(), LetterDefOf.NegativeEvent);
                 int numSquirrels = this.Map.mapPawns.ColonistsSpawnedCount;
@@ -322,13 +322,13 @@ namespace RimWorld
                     p.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.ManhunterPermanent);
                 }
             }
-            else if(prank==4)
+            else if(prank==4) //goodwill
             {
                 Faction fac = Find.FactionManager.AllFactions.Where(f => f.def.CanEverBeNonHostile && !f.def.isPlayer).RandomElement();
                 fac.TryAffectGoodwillWith(Faction.OfPlayer, -10);
                 Find.LetterStack.ReceiveLetter("ArchotechPrank".Translate(), "ArchotechPrankReputation".Translate(fac.Name), LetterDefOf.NegativeEvent);
             }
-            else if(prank==5)
+            else if(prank==5) //secret
             {
                 Pawn victim = this.Map.mapPawns.FreeColonists.RandomElement();
                 Find.LetterStack.ReceiveLetter("ArchotechPrank".Translate(), "ArchotechPrankSecret".Translate(victim), LetterDefOf.NegativeEvent);

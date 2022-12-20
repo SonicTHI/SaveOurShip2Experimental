@@ -5,7 +5,7 @@
 		<label>Mechanoid System Defender</label>
 		<combatPoints>2427</combatPoints>
 		<randomTurretPoints>2427</randomTurretPoints>
-		<mechanoidShip>True</mechanoidShip>
+		<neverRandom>True</neverRandom>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>-1</x>

@@ -9,9 +9,7 @@
 		<sizeZ>34</sizeZ>
 		<label>Imperial Scutum class corvette</label>
 		<combatPoints>342</combatPoints>
-		<imperialShip>True</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>38</x>

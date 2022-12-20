@@ -9,6 +9,7 @@
 		<sizeZ>50</sizeZ>
 		<label>Stealth frigate</label>
 		<combatPoints>569</combatPoints>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>75</x>

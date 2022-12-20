@@ -9,6 +9,7 @@
 		<sizeZ>16</sizeZ>
 		<label>Heavily armed fighter</label>
 		<combatPoints>121</combatPoints>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>9</x>

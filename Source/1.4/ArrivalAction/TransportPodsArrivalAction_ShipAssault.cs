@@ -63,7 +63,7 @@ namespace RimWorld.Planet
 			Room outdoors = new IntVec3(0, 0, 0).GetRoom(map);
 			List<IntVec3> targetCells = new List<IntVec3>();
 			List<IntVec3> validCells = new List<IntVec3>();
-			foreach (IntVec3 cell in outdoors.BorderCells)
+			foreach (IntVec3 cell in outdoors.BorderCells.Where(c => c.InBounds(map)))
 				validCells.Add(cell);
 			if (validCells.Any())
 			{
@@ -96,7 +96,7 @@ namespace RimWorld.Planet
 						}
 					}
 					i++;
-					if (i > validCells.Count || i > 30)//max tries
+					if (i > validCells.Count || i > 30)
 						break;
 				}
 				if (!targetCells.NullOrEmpty())

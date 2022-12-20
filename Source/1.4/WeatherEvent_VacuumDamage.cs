@@ -88,7 +88,7 @@ namespace RimWorld
         public void RunFromVacuum(Pawn pawn)
         {
             //find first nonvac area and run to it - enemy only
-            var mapConmp = pawn.Map.GetComponent<ShipHeatMapComp>();
+            var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
             if (pawn.Faction != Faction.OfPlayer && !pawn.Downed && pawn.CurJob.def != DefDatabase<JobDef>.GetNamed("FleeVacuum"))
             {
                 Predicate<Thing> otherValidator = delegate (Thing t)

@@ -8,7 +8,9 @@ namespace RimWorld
 {
     class AttackableShip : PassingShip
     {
-        public EnemyShipDef enemyShip;
+        public EnemyShipDef attackableShip;
+        public Faction faction;
+        public SpaceNavyDef spaceNavyDef;
 
         public AttackableShip() : base()
         {
@@ -23,14 +25,21 @@ namespace RimWorld
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Defs.Look(ref enemyShip, "EnemyShip");
+            Scribe_Defs.Look(ref attackableShip, "EnemyShip");
+            Scribe_Defs.Look(ref spaceNavyDef, "spaceNavyDef");
         }
-
-        public override string FullTitle => enemyShip!=null ? enemyShip.label : "Glitched ship";
-
+        public override string FullTitle
+        {
+            get
+            {
+                if (attackableShip != null)
+                    return (loadID + " " + attackableShip.label);
+                return "Glitched ship";
+            }
+        }
         public override string GetCallLabel()
         {
-            return enemyShip != null ? enemyShip.label : "Glitched ship";
+            return attackableShip != null ? attackableShip.label : "Glitched ship";
         }
     }
 }

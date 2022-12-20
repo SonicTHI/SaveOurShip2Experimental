@@ -11,7 +11,7 @@
 		<combatPoints>2254</combatPoints>
 		<randomTurretPoints>680</randomTurretPoints>
 		<cargoValue>500</cargoValue>
-		<mechanoidShip>True</mechanoidShip>
+		<navyExclusive>true</navyExclusive>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>26</x>

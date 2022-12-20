@@ -7,10 +7,10 @@
 		<match Class="PatchOperationSequence">
 			<success>Normal</success>
 			<operations>
-				<!-- pawns -->
 				<li Class="PatchOperationAdd">
 					<xpath>/Defs</xpath>
 					<value>
+						<!-- pawns -->
 						<PawnKindDef>
 							<defName>Empire_Space_Laborer</defName>
 							<label>imperial laborer</label>
@@ -148,7 +148,34 @@
 							<initialWillRange>4~6</initialWillRange>
 							<initialResistanceRange>17~26</initialResistanceRange>
 						</PawnKindDef>
+						<!-- navy -->
+						<SpaceNavyDef ParentName="SpaceNavy">
+							<defName>Empire_SpaceNavy</defName>
+							<label>Royal Space Navy</label>
+							<factionDefs>
+								<li>Empire</li>
+							</factionDefs>
+							<colorPrimary>RGBA(0.624, 0.314, 0.314, 1.000)</colorPrimary>
+							<colorSecondary>RGBA(0.588, 0.612, 0.612, 1.000)</colorSecondary>
+							<marineDef>Empire_Fighter_Marine_Space</marineDef>
+							<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
+							<enemyShipDefs>
+								<li>EmpireBattleship</li>
+								<li>EmpireBomber</li>
+								<li>EmpireCorvette</li>
+								<li>EmpireCruiser</li>
+								<li>EmpireDestroyer</li>
+								<li>EmpireFighter</li>
+								<li>EmpireFleetCruisers</li>
+								<li>EmpireFleetDestroyerEscort</li>
+								<li>EmpireFleetStrikeWing</li>
+							</enemyShipDefs>
+						</SpaceNavyDef>
 					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/EnemyShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
+					<value><navyExclusive>true</navyExclusive></value>
 				</li>
 				<!-- EVA -->
 				<li Class="PatchOperationAdd">
@@ -213,6 +240,13 @@
 					<value>
 						<li>ShipBasics</li>
 						<li>UltraMechtech</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/SpaceNavyDef[defName="Pirate_SpaceNavy"]/factionDefs</xpath>
+					<value>
+						<li>PirateYttakin</li>
+						<li>PirateWaster</li>
 					</value>
 				</li>
 			</operations>

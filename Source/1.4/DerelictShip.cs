@@ -9,6 +9,9 @@ namespace RimWorld
     class DerelictShip : PassingShip
     {
         public EnemyShipDef derelictShip;
+        public Faction faction;
+        public SpaceNavyDef spaceNavyDef;
+        public int wreckLevel;
 
         public DerelictShip() : base()
         {
@@ -24,9 +27,19 @@ namespace RimWorld
         {
             base.ExposeData();
             Scribe_Defs.Look(ref derelictShip, "EnemyShip");
+            Scribe_Defs.Look(ref spaceNavyDef, "spaceNavyDef");
+            Scribe_Values.Look<int>(ref wreckLevel, "wreckLevel");
         }
 
-        public override string FullTitle => derelictShip != null ? derelictShip.label : "Glitched ship";
+        public override string FullTitle
+        {
+            get
+            {
+                if (derelictShip != null)
+                    return (loadID + ": " + derelictShip.label);
+                return "Glitched ship";
+            }
+        }
 
         public override string GetCallLabel()
         {

@@ -11,6 +11,7 @@
 		<combatPoints>447</combatPoints>
 		<cargoValue>1300</cargoValue>
 		<neverAttacks>True</neverAttacks>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>51</x>

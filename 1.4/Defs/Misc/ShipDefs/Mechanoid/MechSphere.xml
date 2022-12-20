@@ -10,7 +10,7 @@
 		<label>Mechanoid sphere</label>
 		<combatPoints>630</combatPoints>
 		<randomTurretPoints>280</randomTurretPoints>
-		<mechanoidShip>True</mechanoidShip>
+		<navyExclusive>true</navyExclusive>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>21</x>

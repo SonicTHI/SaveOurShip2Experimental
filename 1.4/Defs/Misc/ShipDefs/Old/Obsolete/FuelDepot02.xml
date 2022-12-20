@@ -4,6 +4,7 @@
 		<defName>FuelDepot02</defName>
 		<label>Fuel Depot</label>
 		<combatPoints>27</combatPoints>
+		<neverRandom>True</neverRandom>
 		<neverAttacks>True</neverAttacks>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>

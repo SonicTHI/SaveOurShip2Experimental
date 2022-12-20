@@ -12,6 +12,8 @@
 		<randomTurretPoints>140</randomTurretPoints>
 		<cargoValue>1000</cargoValue>
 		<tradeShip>True</tradeShip>
+		<customPaintjob>true</customPaintjob>
+		<navyExclusive>true</navyExclusive>
 		<core>
 			<shapeOrDef>ShipConsoleTactical</shapeOrDef>
 			<x>51</x>

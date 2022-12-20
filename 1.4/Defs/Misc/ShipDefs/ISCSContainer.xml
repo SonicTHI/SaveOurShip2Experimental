@@ -12,6 +12,7 @@
 		<cargoValue>3000</cargoValue>
 		<neverAttacks>True</neverAttacks>
 		<tradeShip>True</tradeShip>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>51</x>

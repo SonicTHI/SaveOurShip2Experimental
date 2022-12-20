@@ -89,7 +89,6 @@
 		<defName>EmpireFleetCruisers</defName>
 		<saveSysVer>2</saveSysVer>
 		<label>Pair of Imperial Scipio class cruisers</label>
-		<imperialShip>True</imperialShip>
 		<combatPoints>2960</combatPoints>
 		<ships>
 			<li>
@@ -109,7 +108,6 @@
 		<defName>EmpireFleetDestroyerEscort</defName>
 		<saveSysVer>2</saveSysVer>
 		<label>Imperial Longinus class destroyer with escorts</label>
-		<imperialShip>True</imperialShip>
 		<combatPoints>1617</combatPoints>
 		<ships>
 			<li>
@@ -134,7 +132,6 @@
 		<defName>EmpireFleetStrikeWing</defName>
 		<saveSysVer>2</saveSysVer>
 		<label>Imperial strike wing</label>
-		<imperialShip>True</imperialShip>
 		<combatPoints>308</combatPoints>
 		<ships>
 			<li>

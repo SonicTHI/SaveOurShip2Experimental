@@ -10,9 +10,7 @@
 		<label>Imperial Augustus class battleship</label>
 		<combatPoints>2496</combatPoints>
 		<cargoValue>1000</cargoValue>
-		<imperialShip>True</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>94</x>

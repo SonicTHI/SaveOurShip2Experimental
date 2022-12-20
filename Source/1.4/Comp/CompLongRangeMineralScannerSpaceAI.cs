@@ -22,7 +22,7 @@ namespace RimWorld
         public override void CompTick()
         {
             base.CompTick();
-            if (Find.TickManager.TicksGame % 250 != 0 || !this.parent.Map.IsSpace() || !this.powerComp.PowerOn)
+            if (Find.TickManager.TicksGame % 250 != 0 || !this.parent.Map.IsSpace() || !this.powerComp.PowerOn || this.parent.Faction != Faction.OfPlayer)
                 return;
 
             float rate = Rate;

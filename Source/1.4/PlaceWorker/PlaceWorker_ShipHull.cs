@@ -18,7 +18,7 @@ namespace RimWorld
 				{
 					if (t is Building b)
 					{
-						if (b.def.passability == Traversability.Impassable || b.def.building.shipPart || b is Building_Door)
+						if (b.def.passability == Traversability.Impassable || b.def.building.shipPart || b is Building_Door || b.Faction != Faction.OfPlayer)
 							return false;
 					}
 					else if (t is Blueprint_Build) //no idea why this cant be checked for def.shipPart, etc.

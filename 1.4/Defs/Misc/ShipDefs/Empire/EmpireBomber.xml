@@ -9,9 +9,7 @@
 		<sizeZ>18</sizeZ>
 		<label>Imperial Pilum bomber</label>
 		<combatPoints>98</combatPoints>
-		<imperialShip>True</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>3</x>

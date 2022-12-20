@@ -38,23 +38,34 @@ namespace RimWorld
             GenTemperature.PushHeat(pos, map, heat);
             base.PostDestroy(mode, previousMap);
         }
+        public override void PostDeSpawn(Map map)
+        {
+            base.PostDeSpawn(map);
+        }
         public override void PostExposeData()
         {
             base.PostExposeData();
+            //save heat to sinks on save, value clamps
             if (myNet != null && Scribe.mode == LoadSaveMode.Saving)
+            {
                 heatStored = myNet.StorageUsed * Props.heatCapacity / myNet.StorageCapacity;
+                if (heatStored < 0)
+                    heatStored = 0;
+                else if (heatStored > Props.heatCapacity)
+                    heatStored = Props.heatCapacity;
+            }
             Scribe_Values.Look<float>(ref heatStored, "heatStored");
         }
         public override void CompTick()
         {
             base.CompTick();
-            if (!parent.Spawned || myNet == null)
+            if (!parent.Spawned || parent.Destroyed || myNet == null)
             {
                 return;
             }
             if (this.parent.IsHashIntervalTick(120))
             {
-                if (Props.heatVent > 0) //radiates to space
+                if (Props.heatVent > 0 && !Props.antiEntropic) //radiates to space
                 {
                     IsDisabled();
                     if (!Disabled)
@@ -76,25 +87,22 @@ namespace RimWorld
                     {
                         this.parent.TakeDamage(new DamageInfo(DamageDefOf.Burn, 10));
                     }
-                    if (this.Props.antiEntropic) //convert heat
+                    if (Props.antiEntropic) //convert heat
                     {
                         if (powerComp != null && powerComp.PowerNet != null && powerComp.PowerNet.batteryComps.Count > 0)
                         {
                             IEnumerable<CompPowerBattery> batteries = powerComp.PowerNet.batteryComps.Where(b => b.StoredEnergy <= b.Props.storedEnergyMax - 1);
                             if (batteries.Any())
                             {
-                                batteries.RandomElement().AddEnergy(1);
-                                RemHeatFromNetwork(2);
+                                batteries.RandomElement().AddEnergy(2);
+                                RemHeatFromNetwork(Props.heatVent);
                             }
                         }
                     }
-                    else if (inSpace && ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom())) { }
+                    else if (inSpace && ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom()))
+                        return;
                     else //push heat to room
                     {
-                        if (parent.Destroyed)
-                        {
-                            return;
-                        }
                         if (RemHeatFromNetwork(Props.heatLoss))
                             GenTemperature.PushHeat(this.parent, Props.heatLoss * HeatPushMult * ratio);
                     }

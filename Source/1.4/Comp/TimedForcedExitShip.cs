@@ -91,12 +91,14 @@ namespace RimWorld.Planet
 				List<Pawn> deadPawns = new List<Pawn>();
 				foreach (Thing t in mapParent.Map.spawnedThings)
 				{
-					if (t is Pawn)
-						deadPawns.Add((Pawn)t);
-					t.Kill(new DamageInfo(DamageDefOf.Bomb, 99999));
+					if (t is Pawn p)
+						deadPawns.Add(p);
 				}
-
-				if (deadPawns.Any())
+				foreach (Pawn p in deadPawns)
+				{
+					p.Kill(new DamageInfo(DamageDefOf.Bomb, 99999));
+				}
+				if (deadPawns.Any(p => p.Faction == Faction.OfPlayer))
 				{
 					string letterString = TranslatorFormattedStringExtensions.Translate("LetterPawnsLostReEntry") + "\n\n";
 					foreach (Pawn deadPawn in deadPawns)

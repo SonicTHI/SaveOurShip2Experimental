@@ -75,7 +75,7 @@ namespace RimWorld
                 if (num2 > 0.5f)
                 {
                     int max = GenRadial.NumCellsInRadius(num2);
-                    int num3 = Rand.Range(0, max);
+                    int num3 = Rand.RangeInclusive(0, max);
                     if (num3 > 0)
                     {
                         IntVec3 c = this.currentTarget.Cell + GenRadial.RadialPattern[num3];

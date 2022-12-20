@@ -10,7 +10,8 @@
 		<label>Mysterious Archotech Sphere</label>
 		<combatPoints>1677</combatPoints>
 		<randomTurretPoints>120</randomTurretPoints>
-		<mechanoidShip>true</mechanoidShip>
+		<navyExclusive>true</navyExclusive>
+		<neverWreck>true</neverWreck>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>29</x>

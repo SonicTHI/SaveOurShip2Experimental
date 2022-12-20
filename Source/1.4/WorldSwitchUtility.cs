@@ -601,6 +601,15 @@ namespace SaveOurShip2
 
         }
 
+        public override void FinalizeInit()
+        {
+            base.FinalizeInit();
+            if (!Find.FactionManager.AllFactions.Any(f => f.def == FactionDefOf.Mechanoid))
+                Log.Warning("SOS2: Mechanoid faction not found! Parts of SOS2 will likely fail to function properly!");
+            if (!Find.FactionManager.AllFactions.Any(f => f.def == FactionDefOf.Insect))
+                Log.Warning("SOS2: Insect faction not found! SOS2 gameplay experience will be affected.");
+        }
+
         public List<string> Unlocks
         {
             get
@@ -624,8 +633,6 @@ namespace SaveOurShip2
             Scribe_Values.Look<bool>(ref startedEndgame, "StartedEndgame");
             Scribe_Values.Look<int>(ref IncidentWorker_ShipCombat.LastAttackTick, "LastShipBattleTick");
 
-            Scribe_Collections.Look<Thing>(ref ShipCombatManager.Salvage, "Salvage", LookMode.Reference);
-            Scribe_Values.Look<int>(ref ShipCombatManager.SalvageChunkProgress, "SalvageChunkProgress");
 
             /*if (Scribe.mode!=LoadSaveMode.Saving)
             {
@@ -690,13 +697,26 @@ namespace SaveOurShip2
                     Building_ShipBridge bridge = map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();
                     if (bridge == null)
                         return;
-                    AttackableShip ship = new AttackableShip();
                     int threatRating = map.GetComponent<ShipHeatMapComp>().MapThreat(map);
-                    ship.enemyShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.combatPoints > threatRating * ShipInteriorMod2.difficultySoS && def.combatPoints <= Math.Pow(PlayerFactionBounty,0.3) * threatRating * ShipInteriorMod2.difficultySoS && !def.neverAttacks && !def.neverRandom && !def.mechanoidShip).RandomElement();
-                    if (ship.enemyShip == null)
-                        ship.enemyShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom && !def.mechanoidShip).RandomElement();
-                    if(ship.enemyShip!=null)
-                        map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, ship);
+                    AttackableShip ship = new AttackableShip();
+                    Faction enemyShipFac = Faction.OfAncientsHostile;
+                    if (Rand.Chance(ShipInteriorMod2.navyShipChance))
+                    {
+                        SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavyBountyHunts();
+                        if (navy != null)
+                        {
+                            ship.attackableShip = navy.enemyShipDefs.Where(def => def.combatPoints > threatRating * ShipInteriorMod2.difficultySoS && def.combatPoints <= Math.Pow(PlayerFactionBounty, 0.3) * threatRating * ShipInteriorMod2.difficultySoS && !def.neverAttacks && !def.neverRandom).RandomElement();
+                            enemyShipFac = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+                        }
+                    }
+                    if (enemyShipFac == Faction.OfAncientsHostile) //no navy or fallback
+                    {
+                        ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.combatPoints > threatRating * ShipInteriorMod2.difficultySoS && def.combatPoints <= Math.Pow(PlayerFactionBounty, 0.3) * threatRating * ShipInteriorMod2.difficultySoS && !def.neverAttacks && !def.neverRandom).RandomElement();
+                        if (ship.attackableShip == null)
+                            ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom).RandomElement();
+                    }
+                    ship.faction = enemyShipFac;
+                    map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, ship);
                 }
             }
         }

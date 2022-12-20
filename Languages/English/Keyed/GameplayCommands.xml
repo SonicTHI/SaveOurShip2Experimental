@@ -134,9 +134,17 @@
 	<ShipReactorOverdrive3>Overdrive III</ShipReactorOverdrive3>
 	<ShipReactorOverdrive3Desc>Vastly increase reactor output, at the cost of increased heat production and fuel consumption. Increases instability, risking fire and radiation leaks.</ShipReactorOverdrive3Desc>
 	
-	<ShipBlueprintDisabled>Requires starflight basics research</ShipBlueprintDisabled>
 	<SelectEverything>Select Everything</SelectEverything>
 	<SelectEverythingDesc>Select everything.</SelectEverythingDesc>
+	<!-- blueprints -->
+	<ShipBlueprintDisabled>Requires starflight basics research</ShipBlueprintDisabled>
+	<ShipBlueprintFailed>Blueprint placement failed! Area must support heavy construction and be clear of non-owned objects and mountain roof.</ShipBlueprintFailed>
+	<ShipBlueprintPlace1>Plating blueprints</ShipBlueprintPlace1>
+	<ShipBlueprintPlace1Desc>Place ship plating blueprints. Construct this before placing hull blueprints.</ShipBlueprintPlace1Desc>
+	<ShipBlueprintPlace2>Hull blueprints</ShipBlueprintPlace2>
+	<ShipBlueprintPlace2Desc>Place ship hull blueprints. Construct this before placing interior blueprints.</ShipBlueprintPlace2Desc>
+	<ShipBlueprintPlace3>Place interior blueprints</ShipBlueprintPlace3>
+	<ShipBlueprintPlace3Desc>Place ship interior blueprints.</ShipBlueprintPlace3Desc>
 	<!-- holo/spore -->
 	<SoSSpawnHologram>Generate hologram</SoSSpawnHologram>
 	<SoSSpawnHologramDesc>Begin projecting a hologram through which this consciousness can affect the world</SoSSpawnHologramDesc>

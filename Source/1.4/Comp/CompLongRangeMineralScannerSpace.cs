@@ -10,6 +10,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimworldMod.VacuumIsNotFun;
+using HarmonyLib;
 
 namespace RimWorld
 {
@@ -62,6 +63,8 @@ namespace RimWorld
             {
                 Log.Error("Used while CanUseNow is false.");
             }
+            if (!this.parent.Map.IsSpace() || !this.powerComp.PowerOn || this.parent.Faction != Faction.OfPlayer)
+                return;
             float statValue = worker.GetStatValue(StatDefOf.ResearchSpeed, true);
             float rate = findRate;
             if (mapComp.Cloaks.Any(c => c.active))
@@ -80,9 +83,16 @@ namespace RimWorld
         protected void FoundMinerals(Pawn worker)
         {
             this.daysWorkingSinceLastMinerals = 0f;
-            bool foundSite = Rand.Bool;
 
-            if ((foundSite && scanSites && scanShips) || (scanSites && !scanShips))
+            int chance;
+            if (scanSites && !scanShips)
+                chance = 1;
+            else if (!scanSites && scanShips)
+                chance = Rand.RangeInclusive(3, 15);
+            else
+                chance = Rand.RangeInclusive(1, 15);
+
+            if (chance  < 3) //legacy site
             {
                 Slate slate = new Slate();
                 slate.Set<Map>("map", this.parent.Map, false);
@@ -103,50 +113,107 @@ namespace RimWorld
                 Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(DefDatabase<QuestScriptDef>.GetNamed("SpaceSiteQuest"), slate);
                 Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null);
             }
-            else if (scanShips)
+            else if (chance == 3) //premade sites, very low chance
             {
-                int chance = Rand.RangeInclusive(1,10);
-                if (chance <= 2)//tradeship
+                DerelictShip ship = new DerelictShip();
+                if (Rand.Chance(ShipInteriorMod2.navyShipChance))
                 {
-                    IncidentParms parms = new IncidentParms();
-                    parms.target = parent.Map;
-                    parms.forced = true;
-                    bool tradeShip=Find.Storyteller.TryFire(new FiringIncident(IncidentDefOf.OrbitalTraderArrival, null, parms));
-                    if(tradeShip)
+                    SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
+                    if (navy != null)
                     {
-                        if (worker != null)
-                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTraderScan"), TranslatorFormattedStringExtensions.Translate("SoSTraderScanDesc",worker), LetterDefOf.PositiveEvent);
-                        else
-                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTraderScan"), TranslatorFormattedStringExtensions.Translate("SoSTraderScanDesc","its AI"), LetterDefOf.PositiveEvent);
+                        ship.derelictShip = navy.enemyShipDefs.Where(def => def.spaceSite).RandomElement();
+                        ship.faction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+                        ship.spaceNavyDef = navy;
+                        ship.wreckLevel = 0;
                     }
                 }
-                else if (chance <5)//derelict
+                if (ship.derelictShip == null)
                 {
-                    DerelictShip ship = new DerelictShip();
                     ship.derelictShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.spaceSite).RandomElement();
-                    parent.Map.passingShipManager.AddShip(ship);
-                    if (worker != null)
-                        Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
-                    else
-                        Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
+                    ship.faction = Faction.OfAncientsHostile;
                 }
-                else//randomship
+                Log.Message("Created ship with def: " + ship.derelictShip + " fac: " + ship.faction + " navy: " + ship.spaceNavyDef);
+                parent.Map.passingShipManager.AddShip(ship);
+                if (worker != null)
+                    Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
+                else
+                    Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
+            }
+            else if (chance > 4 && chance < 8) //tradeship, already has faction, navy resolves in SpawnEnemyShip
+            {
+                IncidentParms parms = new IncidentParms();
+                parms.target = parent.Map;
+                parms.forced = true;
+                bool tradeShip = Find.Storyteller.TryFire(new FiringIncident(IncidentDefOf.OrbitalTraderArrival, null, parms));
+                if (tradeShip)
                 {
-                    AttackableShip ship = new AttackableShip();
-                    ship.enemyShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverRandom && !def.tradeShip && !def.spaceSite).RandomElement();
-                    parent.Map.passingShipManager.AddShip(ship);
                     if (worker != null)
-                        Find.LetterStack.ReceiveLetter("SoSEnemyScan".Translate(), "SoSEnemyScanDesc".Translate(worker, ship.enemyShip), LetterDefOf.PositiveEvent);
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTraderScan"), TranslatorFormattedStringExtensions.Translate("SoSTraderScanDesc", worker), LetterDefOf.PositiveEvent);
                     else
-                        Find.LetterStack.ReceiveLetter("SoSEnemyScan".Translate(), "SoSEnemyScanDesc".Translate("its AI", ship.enemyShip), LetterDefOf.PositiveEvent);
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTraderScan"), TranslatorFormattedStringExtensions.Translate("SoSTraderScanDesc", "its AI"), LetterDefOf.PositiveEvent);
                 }
+            }
+            else if (chance > 7 && chance < 12) //ship wreck
+            {
+                DerelictShip ship = new DerelictShip();
+                ship.wreckLevel = Rand.RangeInclusive(2, 3);
+                if (Rand.Chance(ShipInteriorMod2.navyShipChance))
+                {
+                    SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
+                    if (navy != null)
+                    {
+                        ship.spaceNavyDef = navy;
+                        ship.derelictShip = navy.enemyShipDefs.Where(def => def.saveSysVer == 2 && !def.neverRandom && !def.spaceSite && !def.neverWreck).RandomElement();
+                        ship.faction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+                    }
+                }
+                if (ship.derelictShip == null)
+                {
+                    ship.derelictShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.saveSysVer == 2 && !def.neverRandom && !def.spaceSite && !def.neverWreck && !def.navyExclusive).RandomElement();
+                    ship.faction = Faction.OfAncientsHostile;
+                }
+                if (ship.wreckLevel == 3)
+                    ship.faction = Faction.OfAncients;
+
+                Log.Message("Created ship with def: " + ship.derelictShip + " fac: " + ship.faction + " navy: " + ship.spaceNavyDef);
+                parent.Map.passingShipManager.AddShip(ship);
+                if (worker != null)
+                    Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
+                else
+                    Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
+            }
+            else //random ship
+            {
+                AttackableShip ship = new AttackableShip();
+                if (Rand.Chance(ShipInteriorMod2.navyShipChance))
+                {
+                    SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy();
+                    if (navy != null)
+                    {
+                        ship.spaceNavyDef = navy;
+                        ship.attackableShip = navy.enemyShipDefs.Where(def => !def.neverRandom && !def.neverAttacks).RandomElement();
+                        ship.faction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+                    }
+                }
+                if (ship.attackableShip == null)
+                {
+                    ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverRandom && !def.neverAttacks && !def.navyExclusive).RandomElement();
+                    ship.faction = Faction.OfAncientsHostile;
+                }
+
+                Log.Message("Created ship with def: " + ship.attackableShip + " fac: " + ship.faction + " navy: " + ship.spaceNavyDef);
+                parent.Map.passingShipManager.AddShip(ship);
+                if (worker != null)
+                    Find.LetterStack.ReceiveLetter("SoSEnemyScan".Translate(), "SoSEnemyScanDesc".Translate(worker, ship.attackableShip), LetterDefOf.PositiveEvent);
+                else
+                    Find.LetterStack.ReceiveLetter("SoSEnemyScan".Translate(), "SoSEnemyScanDesc".Translate("its AI", ship.attackableShip), LetterDefOf.PositiveEvent);
             }
         }
 
         [DebuggerHidden]
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            if (this.parent.Map.IsSpace())
+            if (this.parent.Map.IsSpace() && this.parent.Faction == Faction.OfPlayer)
             {
                 Command_Toggle scanSitesCommand = new Command_Toggle
                 {

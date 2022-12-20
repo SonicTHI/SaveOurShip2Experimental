@@ -10,9 +10,7 @@
 		<label>Imperial Longinus class destroyer</label>
 		<combatPoints>933</combatPoints>
 		<cargoValue>250</cargoValue>
-		<imperialShip>true</imperialShip>
-		<marineDef>Empire_Fighter_Marine_Space</marineDef>
-		<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>70</x>

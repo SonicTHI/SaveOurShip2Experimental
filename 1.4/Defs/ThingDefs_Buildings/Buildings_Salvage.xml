@@ -41,6 +41,9 @@
 		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -95,7 +98,9 @@
 			<Plasteel>12</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>50</basePowerConsumption>
@@ -175,10 +180,12 @@
 			<Plasteel>1</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SoShipPart">
+				<isPlating>true</isPlating>
+			</li>
 			<li Class="CompProperties_RoofMe">
 				<wreckage>true</wreckage>
-				<roof>false</roof>
+				<roof>true</roof>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -193,7 +200,7 @@
 		<fillPercent>0.0</fillPercent>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>
-	<!-- misc -->
+	<!-- misc, legacy -->
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipChunkSalvage</defName>
 		<label>ship salvage</label>
@@ -611,6 +618,31 @@
 		</comps>
 	</ThingDef>
 	<!-- floating -->
+	<ThingDef ParentName="EtherealThingBase">
+		<defName>DetachedShipPart</defName>
+		<label>Detached Ship Part</label>
+		<thingClass>DetachedShipPart</thingClass>
+		<description>A destroyed portion of a spaceship.</description>
+		<altitudeLayer>Projectile</altitudeLayer>
+		<useSameGraphicForGhost>true</useSameGraphicForGhost>
+		<rotatable>false</rotatable>
+		<selectable>false</selectable>
+		<hasCustomRectForSelector>true</hasCustomRectForSelector>
+		<drawerType>RealtimeOnly</drawerType>
+		<drawOffscreen>true</drawOffscreen>
+		<canLoadIntoCaravan>false</canLoadIntoCaravan>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<Mass>0</Mass>
+		</statBases>
+		<thingCategories>
+			<li>BuildingsSpecial</li>
+		</thingCategories>
+		<tickerType>Normal</tickerType>
+	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_Beam_Wrecked_Fake</defName>
 		<label>wrecked hull</label>
@@ -649,12 +681,6 @@
 		<tickerType>Normal</tickerType>
 		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
-		<comps>
-			<li Class="CompProperties_RoofMe">
-				<wreckage>true</wreckage>
-				<roof>false</roof>
-			</li>
-		</comps>
 		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>
@@ -668,9 +694,7 @@
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings><ChunkSlagSteel>1</ChunkSlagSteel></killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipHullTileWreckedFake</defName>
@@ -701,12 +725,6 @@
 			<Steel>1</Steel>
 			<Plasteel>1</Plasteel>
 		</costList>
-		<comps>
-			<li Class="CompProperties_RoofMe">
-				<wreckage>true</wreckage>
-				<roof>false</roof>
-			</li>
-		</comps>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>
 		<neverMultiSelect>true</neverMultiSelect>

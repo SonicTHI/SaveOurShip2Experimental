@@ -11,6 +11,7 @@
 		<combatPoints>442</combatPoints>
 		<cargoValue>300</cargoValue>
 		<neverAttacks>True</neverAttacks>
+		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>59</x>

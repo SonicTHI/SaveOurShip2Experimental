@@ -24,7 +24,7 @@ namespace RimWorld
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
             LastAttackTick = Find.TickManager.TicksGame;
-            ((Map)parms.target).GetComponent<ShipHeatMapComp>().StartShipEncounter((Building)((Map)parms.target).listerThings.AllThings.Where(t => t is Building_ShipBridge).FirstOrDefault());
+            ((Map)parms.target).GetComponent<ShipHeatMapComp>().StartShipEncounter((Building)((Map)parms.target).listerThings.AllThings.Where(t => t is Building_ShipBridge).FirstOrDefault(), fac: parms.faction);
             return true;
         }
     }

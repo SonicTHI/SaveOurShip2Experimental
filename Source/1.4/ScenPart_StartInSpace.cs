@@ -89,11 +89,11 @@ namespace RimWorld
 			List<Building> cores = new List<Building>();
 			Current.ProgramState = ProgramState.MapInitializing;
 			bool station = this.def.defName.Equals("StartInSpaceDungeon");
-			if (station && this.enemyShipDef.defName == "0")//random dungeon
+			if (station && this.enemyShipDef.defName == "0") //random dungeon
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
-			else if (this.enemyShipDef.defName == "0")//random ship
+			else if (this.enemyShipDef.defName == "0") //random ship
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
-			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false);
+			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, 1);
 
 			Current.ProgramState = ProgramState.Playing;
 			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);

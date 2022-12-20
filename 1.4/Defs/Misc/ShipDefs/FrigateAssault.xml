@@ -7,7 +7,7 @@
 		<offsetZ>100</offsetZ>
 		<sizeX>61</sizeX>
 		<sizeZ>50</sizeZ>
-		<label>Friagate</label>
+		<label>Frigate</label>
 		<combatPoints>352</combatPoints>
 		<core>
 			<shapeOrDef>ShipConsoleTactical</shapeOrDef>

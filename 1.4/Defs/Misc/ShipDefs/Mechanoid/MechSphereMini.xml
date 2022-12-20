@@ -9,7 +9,7 @@
 		<sizeZ>14</sizeZ>
 		<label>Smallest mechanoid sphere</label>
 		<combatPoints>74</combatPoints>
-		<mechanoidShip>True</mechanoidShip>
+		<navyExclusive>true</navyExclusive>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>7</x>

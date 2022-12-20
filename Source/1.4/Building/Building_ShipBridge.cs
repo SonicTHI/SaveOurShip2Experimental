@@ -36,7 +36,7 @@ namespace RimWorld
 
         public ShipHeatMapComp mapComp;
         public CompShipHeat heatComp;
-        public CompPower powerComp;
+        public CompPowerTrader powerComp;
         private bool CanLaunchNow
 		{
 			get
@@ -122,7 +122,7 @@ namespace RimWorld
 			{
 				yield return c;
             }
-            if (TacCon || heatNet == null)
+            if (TacCon || heatNet == null || this.Faction != Faction.OfPlayer || !powerComp.PowerOn)
                 yield break;
             if (!mapComp.InCombat)
             {
@@ -512,7 +512,7 @@ namespace RimWorld
                                     action = delegate
                                     {
                                         AttackableShip station = new AttackableShip();
-                                        station.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("ArchotechGardenStation");
+                                        station.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("ArchotechGardenStation");
                                         mapComp.StartShipEncounter(this, station);
                                     },
                                     icon = ContentFinder<Texture2D>.Get("UI/ArchotechStation_Icon_Quest"),
@@ -528,7 +528,7 @@ namespace RimWorld
                                     action = delegate
                                     {
                                         AttackableShip attacker = new AttackableShip();
-                                        attacker.enemyShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge");
+                                        attacker.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge");
                                         mapComp.StartShipEncounter(this, attacker);
                                         MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
                                     },
@@ -767,7 +767,7 @@ namespace RimWorld
         {
             base.SpawnSetup(map, respawningAfterLoad);
             this.heatComp = this.GetComp<CompShipHeat>();
-            this.powerComp = this.GetComp<CompPower>();
+            this.powerComp = this.GetComp<CompPowerTrader>();
             this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
             if (!mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Add(this);
@@ -801,7 +801,7 @@ namespace RimWorld
             else if (this.Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty())
             {
                 var countdownComp = this.Map.Parent.GetComponent<TimedForcedExitShip>();
-                if (countdownComp != null)
+                if (countdownComp != null && !countdownComp.ForceExitAndRemoveMapCountdownActive)
                 {
                     countdownComp.StartForceExitAndRemoveMapCountdown();
                     Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipBurnupPlayer"), TranslatorFormattedStringExtensions.Translate("ShipBurnupPlayerDesc", countdownComp.ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.ThreatBig);
@@ -945,7 +945,7 @@ namespace RimWorld
                 return;
             }
             AttackableShip shipa = new AttackableShip();
-            shipa.enemyShip = DefDatabase<EnemyShipDef>.GetNamed(name);
+            shipa.attackableShip = DefDatabase<EnemyShipDef>.GetNamed(name);
             mapi.passingShipManager.AddShip(shipa);
         }
     }

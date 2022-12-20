@@ -60,13 +60,15 @@ namespace RimWorld
                 this.SetFaction(Faction.OfAncients);
                 this.DoorOpen();
                 this.def.building.soundDoorOpenManual.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockHacked"), this, MessageTypeDefOf.PositiveEvent);
+                if (pawn.Faction == Faction.OfPlayer)
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockHacked"), this, MessageTypeDefOf.PositiveEvent);
             }
             else
             {
                 this.failed = true;
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(100);
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockHackFailed"), this, MessageTypeDefOf.NegativeEvent);
+                if (pawn.Faction == Faction.OfPlayer)
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockHackFailed"), this, MessageTypeDefOf.NegativeEvent);
             }
         }
         //breached - will open and stay open
@@ -78,7 +80,8 @@ namespace RimWorld
             this.DoorOpen();
             Traverse.Create(this).Field("holdOpenInt").SetValue(true);
             this.def.building.soundDoorOpenManual.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
-            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockBreached"), this, MessageTypeDefOf.PositiveEvent);
+            if (pawn.Faction == Faction.OfPlayer)
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockBreached"), this, MessageTypeDefOf.PositiveEvent);
             this.TakeDamage(new DamageInfo(DamageDefOf.Cut,200));
         }
 		public override bool PawnCanOpen(Pawn p)

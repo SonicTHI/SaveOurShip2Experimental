@@ -7,7 +7,7 @@
 		<offsetZ>106</offsetZ>
 		<sizeX>66</sizeX>
 		<sizeZ>38</sizeZ>
-		<label>Civilian Garden Vessel (Mild Difficulty)</label>
+		<label>Civilian Garden Vessel</label>
 		<combatPoints>149</combatPoints>
 		<neverRandom>true</neverRandom>
 		<startingShip>true</startingShip>

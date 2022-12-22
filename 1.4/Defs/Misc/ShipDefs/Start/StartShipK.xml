@@ -7,7 +7,7 @@
 		<offsetZ>104</offsetZ>
 		<sizeX>159</sizeX>
 		<sizeZ>40</sizeZ>
-		<label>ISCS Start (High Difficulty)</label>
+		<label>ISCS Start</label>
 		<combatPoints>441</combatPoints>
 		<neverRandom>True</neverRandom>
 		<startingShip>True</startingShip>

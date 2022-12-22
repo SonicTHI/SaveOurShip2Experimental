@@ -7,7 +7,7 @@
 		<offsetZ>95</offsetZ>
 		<sizeX>77</sizeX>
 		<sizeZ>60</sizeZ>
-		<label>Heavy Frigate (Easy Mode)</label>
+		<label>Heavy Frigate</label>
 		<combatPoints>601</combatPoints>
 		<randomTurretPoints>20</randomTurretPoints>
 		<neverRandom>True</neverRandom>

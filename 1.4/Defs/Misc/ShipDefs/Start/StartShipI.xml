@@ -11,6 +11,7 @@
 		<combatPoints>19</combatPoints>
 		<neverRandom>True</neverRandom>
 		<startingShip>True</startingShip>
+		<startingDungeon>True</startingDungeon>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>59</x>

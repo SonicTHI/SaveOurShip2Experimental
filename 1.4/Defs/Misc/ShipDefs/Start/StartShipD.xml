@@ -7,7 +7,7 @@
 		<offsetZ>104</offsetZ>
 		<sizeX>42</sizeX>
 		<sizeZ>42</sizeZ>
-		<label>Damaged Cargo Vessel (Moderate Difficulty)</label>
+		<label>Damaged Cargo Vessel</label>
 		<combatPoints>100</combatPoints>
 		<neverRandom>True</neverRandom>
 		<startingShip>True</startingShip>

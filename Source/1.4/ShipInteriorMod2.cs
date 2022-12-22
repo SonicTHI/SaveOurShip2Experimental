@@ -166,7 +166,7 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			Log.Message("SOS2EXP V74 active");
+			Log.Message("SOS2EXP V74f1 active");
 			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
@@ -429,7 +429,6 @@ namespace SaveOurShip2
 			impactSite.Tile = tile;
 			Find.WorldObjects.Add(impactSite);
 		}
-
 		public static SpaceNavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true)
 		{
 			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
@@ -466,6 +465,9 @@ namespace SaveOurShip2
 			bool ideoActive = false;
 			if (ModsConfig.IdeologyActive && (fac != Faction.OfAncientsHostile || fac != Faction.OfAncients || fac != Faction.OfMechanoids))
 				ideoActive = true;
+			bool royActive = false;
+			if (ModsConfig.RoyaltyActive)
+				royActive = true;
 			cores = new List<Building>();
 			List<IntVec3> cellsToFog = new List<IntVec3>();
 			if (!shipDef.ships.NullOrEmpty())
@@ -599,7 +601,6 @@ namespace SaveOurShip2
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
 						bool isBuilding = false;
-						bool isWrecked = false;
 						Thing thing = null;
 						ThingDef def = ThingDef.Named(shape.shapeOrDef);
 						if (def.IsBuildingArtificial)
@@ -607,11 +608,17 @@ namespace SaveOurShip2
 							isBuilding = true;
 							if (!unlockedJT && def.defName.StartsWith("Ship_Engine_Interplanetary"))
 								continue;
+							else if (!royActive && def.Equals(ThingDefOf.Throne))
+								def = DefDatabase<ThingDef>.GetNamed("Armchair");
 						}
-						if (wreckLevel > 2 && isBuilding && wreckDictionary.ContainsKey(def))
+						if (wreckLevel > 1 && isBuilding)
 						{
-							thing = ThingMaker.MakeThing(wreckDictionary[def]);
-							isWrecked = true;
+							if (wreckLevel > 2 && wreckDictionary.ContainsKey(def)) //replace ship walls/floor
+							{
+								thing = ThingMaker.MakeThing(wreckDictionary[def]);
+							}
+							else
+								wreckDestroy.Add(thing as Building);
 						}
 						else if (def.MadeFromStuff)
 						{
@@ -622,10 +629,6 @@ namespace SaveOurShip2
 						}
 						else
 							thing = ThingMaker.MakeThing(def);
-						if (wreckLevel > 1 && isBuilding && !isWrecked)
-                        {
-							wreckDestroy.Add(thing as Building);
-						}
 
 						if (thing.TryGetComp<CompColorable>() != null)
                         {
@@ -639,29 +642,6 @@ namespace SaveOurShip2
 							}
 							if (shape.color != Color.clear)
 								thing.SetColor(shape.color);
-						}
-						var batComp = thing.TryGetComp<CompPowerBattery>();
-						if (batComp != null)
-                        {
-							if (wreckLevel < 2)
-								batComp.AddEnergy(batComp.AmountCanAccept);
-							else if (wreckLevel == 2)
-								batComp.AddEnergy(batComp.AmountCanAccept * Rand.Gaussian(0.1f, 0.02f));
-						}
-						var refuelComp = thing.TryGetComp<CompRefuelable>();
-						if (refuelComp != null)
-						{
-							float refuel;
-							if (wreckLevel < 3)
-							{
-								refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.7f, 0.2f);
-								var reactorComp = thing.TryGetComp<CompPowerTraderOverdrivable>();
-								if (reactorComp != null && shieldsActive)
-									reactorComp.overdriveSetting = 1;
-							}
-							else
-								refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.1f, 0.02f);
-							refuelComp.Refuel(refuel);
 						}
 						if (thing.def.stackLimit > 1)
 						{
@@ -683,6 +663,29 @@ namespace SaveOurShip2
 									thing.SetFaction(fac);
 							}
 							Building b = thing as Building;
+							var batComp = b.TryGetComp<CompPowerBattery>();
+							if (batComp != null)
+							{
+								if (wreckLevel < 2)
+									batComp.AddEnergy(batComp.AmountCanAccept);
+								else if (wreckLevel == 2)
+									batComp.AddEnergy(batComp.AmountCanAccept * Rand.Gaussian(0.1f, 0.02f));
+							}
+							var refuelComp = b.TryGetComp<CompRefuelable>();
+							if (refuelComp != null)
+							{
+								float refuel;
+								if (wreckLevel < 3)
+								{
+									refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.7f, 0.2f);
+									var reactorComp = b.TryGetComp<CompPowerTraderOverdrivable>();
+									if (reactorComp != null && shieldsActive)
+										reactorComp.overdriveSetting = 1;
+								}
+								else
+									refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.1f, 0.02f);
+								refuelComp.Refuel(refuel);
+							}
 							var powerComp = b.TryGetComp<CompPowerTrader>();
 							if (powerComp != null)
 								powerComp.PowerOn = true;
@@ -918,11 +921,11 @@ namespace SaveOurShip2
 					MakeLines(shipDef, map, wreckLevel, offset);
 				}
 				//holes, surounded by wreck
-				if (size > 8000 || wreckLevel > 2 && size > 4000)
+				if (size > 10000 || wreckLevel > 2 && size > 5000)
 				{
 					holeNum = Rand.RangeInclusive(10, 16);
 				}
-				else if (size > 4000 || wreckLevel > 1 && size > 2000)
+				else if (size > 5000 || wreckLevel > 1 && size > 2500)
 				{
 					holeNum = Rand.RangeInclusive(6, 10);
 				}

@@ -28,33 +28,35 @@ namespace RimWorld
                 return;
             if (roomGroup1 == roomGroup2 && !roomGroup1.UsesOutdoorTemperature)
             {
-                GenDraw.DrawFieldEdges(roomGroup1.Cells.ToList<IntVec3>(), new Color(1f, 0.7f, 0.0f, 0.5f));
+                GenDraw.DrawFieldEdges(roomGroup1.Cells.ToList(), new Color(1f, 0.7f, 0.0f, 0.5f));
             }
             else
             {
                 if (!roomGroup1.UsesOutdoorTemperature)
-                    GenDraw.DrawFieldEdges(roomGroup1.Cells.ToList<IntVec3>(), GenTemperature.ColorRoomHot);
+                    GenDraw.DrawFieldEdges(roomGroup1.Cells.ToList(), GenTemperature.ColorRoomHot);
                 if (roomGroup2.UsesOutdoorTemperature)
                     return;
-                GenDraw.DrawFieldEdges(roomGroup2.Cells.ToList<IntVec3>(), GenTemperature.ColorRoomCold);
+                GenDraw.DrawFieldEdges(roomGroup2.Cells.ToList(), GenTemperature.ColorRoomCold);
             }
         }
 
         public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
             IntVec3 loc1 = center + IntVec3.North.RotatedBy(rot);
-            if (loc1.Impassable(map))
-                return (AcceptanceReport)TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
+            if (loc1.Impassable(map) || !loc1.InBounds(map))
+                return TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
             for (int i = 1; i < 7; i++)
             {
                 IntVec3 loc2 = center + (IntVec3.South.RotatedBy(rot) * i);
+                if (!loc2.InBounds(map))
+                    return false;
                 if (i<4 && loc2.Impassable(map))
-                    return (AcceptanceReport)TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
+                    return TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
                 Building b = loc2.GetFirstBuilding(Find.CurrentMap);
                 if (b !=null && (b.def.defName.Equals("ShipInside_PassiveCooler") || b.def.defName.Equals("ShipInside_PassiveCoolerAdvanced") || b.def.defName.Equals("ShipInside_SolarGenerator")) && b.Rotation == rot.Opposite)
-                    return (AcceptanceReport)TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
+                    return TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
             }
-            return (AcceptanceReport)true;
+            return true;
         }
     }
 }

@@ -74,15 +74,7 @@ namespace RimWorld
 			if (WorldSwitchUtility.SelectiveWorldGenFlag)
 				return;
             List<Pawn> startingPawns = Find.CurrentMap.mapPawns.PawnsInFaction(Faction.OfPlayer);
-			int newTile = -1;
-			for (int i = 0; i < 420; i++)
-			{
-				if (!Find.World.worldObjects.AnyMapParentAt(i))
-				{
-					newTile = i;
-					break;
-				}
-			}
+			int newTile = ShipInteriorMod2.FindWorldTile();
 			Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
 			((WorldObjectOrbitingShip)spaceMap.Parent).radius = 150;
 			((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
@@ -90,11 +82,15 @@ namespace RimWorld
 			Current.ProgramState = ProgramState.MapInitializing;
 			bool station = this.def.defName.Equals("StartInSpaceDungeon");
 			if (station && this.enemyShipDef.defName == "0") //random dungeon
+			{
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
-			else if (this.enemyShipDef.defName == "0") //random ship
+				ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, 0);
+			}
+			else if (this.enemyShipDef.defName == "0") //random ship, damage lvl 1
+			{
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
-			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, 1);
-
+				ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, 1);
+			}
 			Current.ProgramState = ProgramState.Playing;
 			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
 			Section[,] secArray = new Section[secs.x, secs.z];

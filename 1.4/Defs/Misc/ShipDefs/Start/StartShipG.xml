@@ -7,7 +7,7 @@
 		<offsetZ>106</offsetZ>
 		<sizeX>44</sizeX>
 		<sizeZ>38</sizeZ>
-		<label>Arrowhead corvette (Low Difficulty)</label>
+		<label>Arrowhead corvette</label>
 		<combatPoints>168</combatPoints>
 		<neverRandom>True</neverRandom>
 		<startingShip>True</startingShip>

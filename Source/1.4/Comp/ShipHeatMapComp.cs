@@ -394,7 +394,7 @@ namespace RimWorld
             if (faction.HasGoodwill && faction.AllyOrNeutralTo(Faction.OfPlayer))
                 faction.TryAffectGoodwillWith(Faction.OfPlayer, -150);
             //keep this for troubleshooting
-            Log.Message("SOS2 - spawning ship: " + shipDef.defName + " with faction: " + faction + " of navy: " + navyDef);
+            Log.Message("SOS2 - spawning ship: " + shipDef.defName + ", of faction: " + faction + ", of navy: " + navyDef + ", wrecklvl: " + wreckLevel);
             MasterMapComp.ShipFaction = faction;
             if (wreckLevel != 3)
                 MasterMapComp.ShipLord = LordMaker.MakeNewLord(faction, new LordJob_DefendShip(faction, map.Center), map);

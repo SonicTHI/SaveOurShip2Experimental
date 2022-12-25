@@ -6,7 +6,7 @@ SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamco
 
 **As of V69, 1.3 version is no longer maintained.**
 
-**While this version is official you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from SOS2EXP back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case.
+**While this version is officialy endorsed, it is not made by RHX media and you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from SOS2EXP back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case.
 
 **Make a separate save while NOT IN A SHIP BATTLE before switching to this version and unsubscribe from SOS2 on STEAM!**
 
@@ -14,7 +14,7 @@ SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamco
 
 When updating to a new SOS2EXP version: Make sure to delete the old folder then extract the new one.
 
-You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - **read the server rules and mention what SOS2EXP version you are on**. **Make sure you are on the latest version, check the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) before reporting and if possible try replicating the bug with only the required mods installed**.
+You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - **(read the rules) Make sure you are on the latest version, check the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) before reporting and if possible try replicating the bug with only the required mods installed. When making a report provide errors, logs, screenshots and be descriptive. "X is broken/not working" tells us nothing.**
 
 An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2EXP.
 
@@ -26,7 +26,7 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Rebuilt ship roster:** almost every ship in the mod has been redesigned and built from the ground up utilizing new systems and mechanics making for a more interesting and varied experience. New ships and fleets have also been added. Many thanks to the ship wrights that helped with this: HG, Oninnaise, UrbanMonkey, VVither_Skeleton.
 
-* **Ship blueprints:** sold by weapon merchants. These items allow you to build entire ships and are fully reusable. You will still need the required technologies and resources to do so (these are listed on each blueprint).
+* **Ship blueprints:** sold by weapon merchants. These items allow you to build entire ships and are fully reusable and customizable. You will still need the required technologies and resources to do so (these are listed on each blueprint).
 
 * **Ground defense:** all small ship weapons are now capable of firing on enemy combatants while your ship is landed. Decimate hordes of enemies with the push of a button so long as they are not already too close or your weapons on cooldown.
 

@@ -21,6 +21,7 @@ namespace RimWorld
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
 		internal EnemyShipDef enemyShipDef;
+		bool damageStart = true;
 		public override void ExposeData()
 		{
 			base.ExposeData();
@@ -28,7 +29,11 @@ namespace RimWorld
 		}
 		public override void DoEditInterface(Listing_ScenEdit listing)
 		{
-			if (Widgets.ButtonText(listing.GetScenPartRect(this, ScenPart.RowHeight), this.enemyShipDef.label, true, true, true))
+			Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 2f);
+			Rect rect = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 2f);
+			Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 2f, scenPartRect.width, scenPartRect.height / 2f);
+			//selection 1
+			if (Widgets.ButtonText(rect, this.enemyShipDef.label, true, true, true))
 			{
 				bool station = false;
 				if (this.def.defName.Equals("StartInSpaceDungeon"))
@@ -46,6 +51,21 @@ namespace RimWorld
 					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
 				}
 				Find.WindowStack.Add(new FloatMenu(list));
+			}
+			//selection 2
+			if (Widgets.ButtonText(rect2, "Damage ship: " + damageStart.ToString(), true, true, true))
+			{
+				List<FloatMenuOption> toggleDamage = new List<FloatMenuOption>();
+				toggleDamage.Add(new FloatMenuOption("Damage ship: True", delegate ()
+				{
+					this.damageStart = true;
+				}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+				toggleDamage.Add(new FloatMenuOption("Damage ship: False", delegate ()
+				{
+					this.damageStart = false;
+				}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+				Find.WindowStack.Add(new FloatMenu(toggleDamage));
+
 			}
 		}
 		public override string Summary(Scenario scen)
@@ -89,7 +109,7 @@ namespace RimWorld
 			else if (this.enemyShipDef.defName == "0") //random ship, damage lvl 1
 			{
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
-				ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, 1);
+				ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0);
 			}
 			Current.ProgramState = ProgramState.Playing;
 			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);

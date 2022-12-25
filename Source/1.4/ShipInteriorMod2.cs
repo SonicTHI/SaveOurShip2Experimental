@@ -155,10 +155,10 @@ namespace SaveOurShip2
 		public static SettingHandle<double> difficultySoS;
 		public static SettingHandle<double> frequencySoS;
 		public static SettingHandle<bool> easyMode;
+		public static SettingHandle<bool> useVacuumPathfinding;
 		public static SettingHandle<int> minTravelTime;
 		public static SettingHandle<int> maxTravelTime;
 		public static SettingHandle<bool> renderPlanet;
-		public static SettingHandle<bool> useVacuumPathfinding;
 		public static SettingHandle<bool> useSplashScreen;
 		public static SettingHandle<int> offsetUIx;
 		public static SettingHandle<int> offsetUIy;
@@ -166,7 +166,7 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			Log.Message("SOS2EXP V74f1 active");
+			Log.Message("SOS2EXP V74f2 active");
 			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
@@ -174,6 +174,9 @@ namespace SaveOurShip2
 			easyMode = Settings.GetHandle("easyMode", "Easy Mode",
 				"If checked will prevent player pawns dying to PD and pods landing in outer rooms of your ship",
 				false);
+			useVacuumPathfinding = Settings.GetHandle("useVacuumPathfinding", "Use Vacuum Pathfinding?",
+				"If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.",
+				true);
 			minTravelTime = Settings.GetHandle("minTravelTime", "Minimum Travel Time",
 				"Minimum number of years that pass when traveling to a new world.", 5);
 			maxTravelTime = Settings.GetHandle("maxTravelTime", "Maximum Travel Time",
@@ -181,9 +184,6 @@ namespace SaveOurShip2
 			renderPlanet = Settings.GetHandle("renderPlanet", "Dynamic Planet Rendering",
 				"If checked, orbital maps will show a day/night cycle on the planet. Disable this option if the game runs slowly in space.",
 				false);
-			useVacuumPathfinding = Settings.GetHandle("useVacuumPathfinding", "Use Vacuum Pathfinding?",
-				"If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.",
-				true);
 			useSplashScreen = Settings.GetHandle("useSplashScreen", "SoS Splash Screen",
 				"If checked, RimWorld will use SoS2's new splash screen. Restart the game after changing this setting.",
 				true);
@@ -601,6 +601,7 @@ namespace SaveOurShip2
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
 						bool isBuilding = false;
+						bool isWrecked = false;
 						Thing thing = null;
 						ThingDef def = ThingDef.Named(shape.shapeOrDef);
 						if (def.IsBuildingArtificial)
@@ -610,17 +611,14 @@ namespace SaveOurShip2
 								continue;
 							else if (!royActive && def.Equals(ThingDefOf.Throne))
 								def = DefDatabase<ThingDef>.GetNamed("Armchair");
-						}
-						if (wreckLevel > 1 && isBuilding)
-						{
-							if (wreckLevel > 2 && wreckDictionary.ContainsKey(def)) //replace ship walls/floor
+							else if (wreckLevel > 2 && wreckDictionary.ContainsKey(def)) //replace ship walls/floor
 							{
-								thing = ThingMaker.MakeThing(wreckDictionary[def]);
+								def = wreckDictionary[def];
+								isWrecked = true;
 							}
-							else
-								wreckDestroy.Add(thing as Building);
 						}
-						else if (def.MadeFromStuff)
+						//make
+						if (def.MadeFromStuff)
 						{
 							if (shape.stuff != null)
 								thing = ThingMaker.MakeThing(def, ThingDef.Named(shape.stuff));
@@ -629,6 +627,8 @@ namespace SaveOurShip2
 						}
 						else
 							thing = ThingMaker.MakeThing(def);
+						if (wreckLevel > 1 && isBuilding && !isWrecked)
+							wreckDestroy.Add(thing as Building);
 
 						if (thing.TryGetComp<CompColorable>() != null)
                         {
@@ -649,6 +649,7 @@ namespace SaveOurShip2
 							if (thing.stackCount * thing.MarketValue > 500)
 								thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
 						}
+						//spawn
 						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map, shape.rot);
 						if (isBuilding)
 						{
@@ -741,7 +742,7 @@ namespace SaveOurShip2
 							pos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
 						if (pos.InBounds(map))
 							map.terrainGrid.SetTerrain(pos, terrain);
-						if (terrain.fertility > 0 && pos.GetEdifice(map) == null)
+						if (wreckLevel < 3 && terrain.fertility > 0 && pos.GetEdifice(map) == null)
 						{
 							Plant plant = ThingMaker.MakeThing(randomPlants.RandomElement()) as Plant;
 							if (plant != null)
@@ -921,7 +922,10 @@ namespace SaveOurShip2
 					MakeLines(shipDef, map, wreckLevel, offset);
 				}
 				//holes, surounded by wreck
-				if (size > 10000 || wreckLevel > 2 && size > 5000)
+				int adj = (size / 1000) + wreckLevel;
+				//Log.Message("holenum: "+adj);
+				holeNum = Rand.RangeInclusive(adj, adj + wreckLevel);
+				/*if (size > 10000 || wreckLevel > 2 && size > 5000)
 				{
 					holeNum = Rand.RangeInclusive(10, 16);
 				}
@@ -932,12 +936,11 @@ namespace SaveOurShip2
 				else //sub 2k, lvl 1
 				{
 					holeNum = Rand.RangeInclusive(2, 4);
-				}
+				}*/
 				CellRect rect = new CellRect(offset.x - 1, offset.z - 1, shipDef.sizeX + 1, shipDef.sizeZ + 1);
 				MakeHoles(FindCellOnOuterHull(map, holeNum, rect), map, wreckLevel, 1.9f, 4.9f);
 				//buildings
 				List<Building> toKill = new List<Building>();
-				toKill = new List<Building>();
 				if (wreckLevel > 2)
 				{
 					foreach (Building b in wreckDestroy.Where(t => !t.Destroyed))
@@ -1028,11 +1031,6 @@ namespace SaveOurShip2
 			if (shipDef.ships.NullOrEmpty())
 				PostGenerateShip(map, shipDef, clearArea, cellsToFog);
 		}
-		public static void SpawnInvaders(List<Pawn> pawnPos, Map map)
-		{
-
-		}
-
         public static List<IntVec3> FindCellOnOuterHull(Map map, int num, CellRect shipArea)
 		{
 			//targets outer cells
@@ -2307,6 +2305,19 @@ namespace SaveOurShip2
 		{
 			if (__state)
 				__result = ShipInteriorMod2.OuterSpaceBiome;
+		}
+	}
+
+	[HarmonyPatch(typeof(JoyUtility), "EnjoyableOutsideNow", new Type[] { typeof(Map), typeof(StringBuilder) })]
+	public static class NoNatureRunningInSpace
+	{
+		[HarmonyPostfix]
+		public static void NoOutside(Map map, ref bool __result)
+		{
+			if (map.IsSpace())
+            {
+				__result = false;
+			}
 		}
 	}
 

@@ -40,14 +40,20 @@ namespace RimWorld
                 {
                     if (t is Building_ShipAirlock a && !a.Open)
                     {
+                        //if door leads to same room, skip
+                        if (a.Rotation.FacingCell.GetRoom(a.Map) == a.Rotation.Opposite.FacingCell.GetRoom(a.Map))
+                            return false;
                         //only go for outerdoors when outside
-                        if (!pawn.GetRoom().TouchesMapEdge && !((Building_ShipAirlock)t).Outerdoor())
+                        if (!pawn.GetRoom().TouchesMapEdge && !a.Outerdoor())
                             return true;
-                        else if (pawn.GetRoom().TouchesMapEdge && ((Building_ShipAirlock)t).Outerdoor())
+                        else if (pawn.GetRoom().TouchesMapEdge && a.Outerdoor())
                             return true;
                     }
                     else if (t is Building_Door d && !d.Open)
                     {
+                        //if door leads to same room, skip
+                        if (d.Rotation.FacingCell.GetRoom(d.Map) == d.Rotation.Opposite.FacingCell.GetRoom(d.Map))
+                            return false;
                         return true;
                     }
                 }

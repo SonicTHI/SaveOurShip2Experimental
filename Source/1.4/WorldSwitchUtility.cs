@@ -715,7 +715,7 @@ namespace SaveOurShip2
                         if (ship.attackableShip == null)
                             ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom).RandomElement();
                     }
-                    ship.faction = enemyShipFac;
+                    ship.shipFaction = enemyShipFac;
                     map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, ship);
                 }
             }

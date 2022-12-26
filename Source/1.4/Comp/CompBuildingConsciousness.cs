@@ -21,7 +21,6 @@ namespace RimWorld
         public Thing WhichPawn;
         public Thing RezPlz;
 
-        public static Dictionary<Map, List<CompBuildingConsciousness>> allOnMap = new Dictionary<Map, List<CompBuildingConsciousness>>();
         static Color[] colors = new Color[] { new Color(0, 1f, 0.5f, 0.8f), new Color(0, 0.5f, 1f, 0.8f), new Color(1f, 0.25f, 0.25f, 0.8f), new Color(1f, 0.8f, 0, 0.8f), new Color(0.75f,0,1f,0.8f), new Color(1f,0.5f,0,0.8f), new Color (0.1f,0.1f,0.1f,0.8f), new Color (0.9f,0.9f,0.9f,0.8f)};
         static string[] colorNames = new string[] { "Green", "Blue", "Red", "Yellow", "Purple", "Orange", "Black", "White"};
         public static List<ThingDef> drugs = new List<ThingDef>();
@@ -485,20 +484,16 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            if (!allOnMap.ContainsKey(parent.Map))
-            {
-                allOnMap.Add(parent.Map, new List<CompBuildingConsciousness>());
-            }
-            allOnMap[parent.Map].Add(this);
+            parent.Map.GetComponent<ShipHeatMapComp>().Spores.Add(this);
             compPower = parent.TryGetComp<CompPowerTrader>();
         }
 
         public override void PostDeSpawn(Map map)
         {
-            base.PostDeSpawn(map);
-            allOnMap[map].Remove(this);
-            if(!parent.Destroyed)
+            map.GetComponent<ShipHeatMapComp>().Spores.Remove(this);
+            if (ShipInteriorMod2.AirlockBugFlag)
                 HologramDestroyed(false);
+            base.PostDeSpawn(map);
         }
 
         public void InstallConsciousness(Thing newConsc, List<Apparel> overrideApparel=null, bool graphicsDirty=true)

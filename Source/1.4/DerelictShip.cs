@@ -9,7 +9,7 @@ namespace RimWorld
     class DerelictShip : PassingShip
     {
         public EnemyShipDef derelictShip;
-        public Faction faction;
+        public Faction shipFaction;
         public SpaceNavyDef spaceNavyDef;
         public int wreckLevel;
 
@@ -29,6 +29,7 @@ namespace RimWorld
             Scribe_Defs.Look(ref derelictShip, "EnemyShip");
             Scribe_Defs.Look(ref spaceNavyDef, "spaceNavyDef");
             Scribe_Values.Look<int>(ref wreckLevel, "wreckLevel");
+            Scribe_References.Look<Faction>(ref shipFaction, "shipFaction", false);
         }
 
         public override string FullTitle

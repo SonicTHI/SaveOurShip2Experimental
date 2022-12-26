@@ -617,7 +617,7 @@ namespace SaveOurShip2
 								isWrecked = true;
 							}
 						}
-						//make
+						//make thing
 						if (def.MadeFromStuff)
 						{
 							if (shape.stuff != null)
@@ -627,12 +627,10 @@ namespace SaveOurShip2
 						}
 						else
 							thing = ThingMaker.MakeThing(def);
-						if (wreckLevel > 1 && isBuilding && !isWrecked)
-							wreckDestroy.Add(thing as Building);
 
 						if (thing.TryGetComp<CompColorable>() != null)
                         {
-							if (rePaint) //color unpainted navy ships
+							if (rePaint && isBuilding) //color unpainted navy ships
 							{
 								var hull = thing.TryGetComp<CompSoShipPart>();
 								if (hull.Props.isHull)
@@ -643,16 +641,19 @@ namespace SaveOurShip2
 							if (shape.color != Color.clear)
 								thing.SetColor(shape.color);
 						}
-						if (thing.def.stackLimit > 1)
+						else if (thing.def.stackLimit > 1)
 						{
 							thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
 							if (thing.stackCount * thing.MarketValue > 500)
 								thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
 						}
-						//spawn
+						//spawn thing
 						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map, shape.rot);
+						//post spawn
 						if (isBuilding)
 						{
+							if (wreckLevel > 1 && !isWrecked)
+								wreckDestroy.Add(thing as Building);
 							if (thing.def.CanHaveFaction)
 							{
 								if (thing.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
@@ -1122,23 +1123,45 @@ namespace SaveOurShip2
 			}
 			//secondaries?
 		}
-		private static void PostGenerateShip(Map map, EnemyShipDef shipDef, bool clearArea, List<IntVec3> cellsToFog)
+		private static void PostGenerateShip(Map map, EnemyShipDef shipDef, bool clearArea, List<IntVec3> shipArea)
 		{
+			//HashSet<Room> validRooms = new HashSet<Room>();
 			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
-			if (shipDef.defName != "MechanoidMoonBase" && !clearArea)
+			if (!clearArea)
 			{
-				foreach (IntVec3 cell in cellsToFog)
+				//all cells, except if outdoors+outdoors border
+				Room outdoors = new IntVec3(0, 0, 0).GetRoom(map); //td make this find first cell outside
+				List<IntVec3> excludeCells = new List<IntVec3>();
+				foreach (IntVec3 cell in outdoors.BorderCells.Where(c => c.InBounds(map)))
 				{
-					var room = cell.GetRoom(map);
-					if (room != null && room.TouchesMapEdge) //if room outside no fog
-						continue;
-					if (room == null || (room.OpenRoofCount < 2 && room.ProperRoom))
-						map.fogGrid.fogGrid[map.cellIndices.CellToIndex(cell)] = true;
-					//if (room == null || (room.OpenRoofCount == 0 && !room.IsDoorway))
-					//if (room == null || (room.OpenRoofCount == 0 && !cell.GetRoom(map).IsDoorway)) //fog if in room and roof
-					//cell.GetRoom(map) != null && !ExposedToOutside(cell.GetRoom(map)) && !cell.GetRoom(map).IsDoorway)
+					//find larger than 1x1 edifice buildings and remove their cells from tofog
+					Building edifice = cell.GetEdifice(map);
+					if (edifice != null && edifice.def.MakeFog && (edifice.def.size.x > 1 || edifice.def.size.z > 1))
+					{
+						foreach (IntVec3 v in edifice.OccupiedRect())//.ExpandedBy(1))
+						{
+							//if (v.GetEdifice(map) != null)
+								shipArea.Remove(v);
+						}
+					}
+				}
+				foreach (IntVec3 cell in shipArea.Except(outdoors.Cells.Concat(outdoors.BorderCells.Where(c => c.InBounds(map)))))
+                {
+					map.fogGrid.fogGrid[map.cellIndices.CellToIndex(cell)] = true;
+					//validRooms.Add(cell.GetRoom(map));
 				}
 			}
+			/*if (validRooms.Any())
+			{
+				Log.Message("set temp in rooms: " + validRooms.Count);
+				foreach (Room r in validRooms.Where(r => r != null))
+				{
+					if (r.OpenRoofCount < 2)
+					{
+						r.Temperature = 21;
+					}
+				}
+			}*/
 			foreach (Room r in map.regionGrid.allRooms)
 				r.Temperature = 21;
 			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
@@ -1967,9 +1990,9 @@ namespace SaveOurShip2
 						rect3.x = screenHalf - 615;
 						rect3.height = Text.LineHeight;
 						if (capacity > 0)
-							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()));
+							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
 						else
-							Widgets.Label(rect3, "<color=red>ERROR: no capacitors</color>");
+							Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
 
 						ShipHeatNet net2 = bridge.heatComp.myNet;
 						if (net2 != null)
@@ -1981,9 +2004,9 @@ namespace SaveOurShip2
 							rect4.x = screenHalf - 420;
 							rect4.height = Text.LineHeight;
 							if (net2.StorageCapacity > 0)
-								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed));
+								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + net2.StorageCapacity);
 							else
-								Widgets.Label(rect4, "<color=red>ERROR: no heatbanks</color>");
+								Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
 						}
 					}
 					catch (Exception e)
@@ -2013,9 +2036,9 @@ namespace SaveOurShip2
 							rect4.x = screenHalf + 255;
 							rect4.height = Text.LineHeight;
 							if (net2.StorageCapacity > 0)
-								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed));
+								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + net2.StorageCapacity);
 							else
-								Widgets.Label(rect4, "<color=red>ERROR: no heatbanks</color>");
+								Widgets.Label(rect4, "<color=red>Energy: N/A</color>");
 						}
 
 						PowerNet net = bridge.powerComp.PowerNet;
@@ -2030,9 +2053,9 @@ namespace SaveOurShip2
 						rect3.x = screenHalf + 445;
 						rect3.height = Text.LineHeight;
 						if (capacity > 0)
-							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()));
+							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
 						else
-							Widgets.Label(rect3, "<color=red>ERROR: no capacitors</color>");
+							Widgets.Label(rect3, "<color=red>Heat: N/A</color>");
 					}
 					catch (Exception e)
 					{

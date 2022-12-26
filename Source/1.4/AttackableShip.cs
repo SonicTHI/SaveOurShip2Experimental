@@ -9,7 +9,7 @@ namespace RimWorld
     class AttackableShip : PassingShip
     {
         public EnemyShipDef attackableShip;
-        public Faction faction;
+        public Faction shipFaction;
         public SpaceNavyDef spaceNavyDef;
 
         public AttackableShip() : base()
@@ -27,6 +27,7 @@ namespace RimWorld
             base.ExposeData();
             Scribe_Defs.Look(ref attackableShip, "EnemyShip");
             Scribe_Defs.Look(ref spaceNavyDef, "spaceNavyDef");
+            Scribe_References.Look<Faction>(ref shipFaction, "shipFaction", false);
         }
         public override string FullTitle
         {

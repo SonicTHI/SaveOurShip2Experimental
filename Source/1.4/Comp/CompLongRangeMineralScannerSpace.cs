@@ -35,7 +35,9 @@ namespace RimWorld
         {
             get
             {
-                return this.parent.Spawned && (this.powerComp == null || this.powerComp.PowerOn) && this.parent.Faction == Faction.OfPlayer && this.parent.Map.IsSpace() && (scanShips || scanSites);
+                if (!parent.Spawned || powerComp == null || !powerComp.PowerOn || parent.Faction != Faction.OfPlayer || !parent.Map.IsSpace())
+                    return false;
+                return scanShips || scanSites || mapComp.InCombat;
             }
         }
 
@@ -63,20 +65,42 @@ namespace RimWorld
             {
                 Log.Error("Used while CanUseNow is false.");
             }
-            if (!this.parent.Map.IsSpace() || !this.powerComp.PowerOn || this.parent.Faction != Faction.OfPlayer)
-                return;
-            float statValue = worker.GetStatValue(StatDefOf.ResearchSpeed, true);
-            float rate = findRate;
-            if (mapComp.Cloaks.Any(c => c.active))
-                rate *= 5;
-            this.daysWorkingSinceLastMinerals += statValue / rate;
-            if (Find.TickManager.TicksGame % 59 == 0)
+            if (Find.TickManager.TicksGame % 60 == 0)
             {
-                float mtb = this.Props.mtbDays / statValue;
-                if (this.daysWorkingSinceLastMinerals >= this.Props.guaranteedToFindLumpAfterDaysWorking || Rand.MTBEventOccurs(mtb, 40000f, 59f))
+                float statValue = worker.GetStatValue(StatDefOf.ResearchSpeed, true);
+                if (!mapComp.InCombat)
                 {
-                    this.FoundMinerals(worker);
+                    float rate = findRate;
+                    if (mapComp.Cloaks.Any(c => c.active))
+                        rate /= 4;
+                    this.daysWorkingSinceLastMinerals += 60 * statValue / rate;
+                    float mtb = this.Props.mtbDays / statValue;
+                    if (this.daysWorkingSinceLastMinerals >= this.Props.guaranteedToFindLumpAfterDaysWorking || Rand.MTBEventOccurs(mtb, 40000f, 60f))
+                    {
+                        this.FoundMinerals(worker);
+                    }
                 }
+                else if (Find.TickManager.TicksGame % 300 == 0)
+                {
+                    if (Rand.RangeInclusive(0,21) > statValue)
+                        ScannedRoom();
+                }
+            }
+        }
+        public void ScannedRoom()
+        {
+            if (mapComp.MasterMapComp.Scanned)
+                return;
+            List<Room> rooms = mapComp.ShipCombatTargetMap.regionGrid.allRooms.Where(r => !r.TouchesMapEdge && r.ProperRoom && r.Fogged).ToList();
+            if (!rooms.NullOrEmpty())
+            {
+                //Log.Message("scanned room with " + this.parent);
+                FloodFillerFog.FloodUnfog(rooms.RandomElement().Cells.FirstOrDefault(), mapComp.ShipCombatTargetMap);
+            }
+            else
+            {
+                mapComp.ShipCombatTargetMap.fogGrid.ClearAllFog();
+                mapComp.MasterMapComp.Scanned = true;
             }
         }
 
@@ -122,7 +146,7 @@ namespace RimWorld
                     if (navy != null)
                     {
                         ship.derelictShip = navy.enemyShipDefs.Where(def => def.spaceSite).RandomElement();
-                        ship.faction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+                        ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
                         ship.spaceNavyDef = navy;
                         ship.wreckLevel = 0;
                     }
@@ -130,9 +154,9 @@ namespace RimWorld
                 if (ship.derelictShip == null)
                 {
                     ship.derelictShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.spaceSite).RandomElement();
-                    ship.faction = Faction.OfAncientsHostile;
+                    ship.shipFaction = Faction.OfAncientsHostile;
                 }
-                Log.Message("Created ship with def: " + ship.derelictShip + " fac: " + ship.faction + " navy: " + ship.spaceNavyDef);
+                Log.Message("Created ship with def: " + ship.derelictShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
                 parent.Map.passingShipManager.AddShip(ship);
                 if (worker != null)
                     Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
@@ -164,18 +188,16 @@ namespace RimWorld
                     {
                         ship.spaceNavyDef = navy;
                         ship.derelictShip = navy.enemyShipDefs.Where(def => def.saveSysVer == 2 && !def.neverRandom && !def.spaceSite && !def.neverWreck).RandomElement();
-                        ship.faction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+                        ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
                     }
                 }
                 if (ship.derelictShip == null)
                 {
                     ship.derelictShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.saveSysVer == 2 && !def.neverRandom && !def.spaceSite && !def.neverWreck && !def.navyExclusive).RandomElement();
-                    ship.faction = Faction.OfAncientsHostile;
+                    ship.shipFaction = Faction.OfAncientsHostile;
                 }
-                if (ship.wreckLevel == 3)
-                    ship.faction = Faction.OfAncients;
 
-                Log.Message("Created ship with def: " + ship.derelictShip + " fac: " + ship.faction + " navy: " + ship.spaceNavyDef);
+                Log.Message("Created ship with def: " + ship.derelictShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
                 parent.Map.passingShipManager.AddShip(ship);
                 if (worker != null)
                     Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
@@ -192,16 +214,16 @@ namespace RimWorld
                     {
                         ship.spaceNavyDef = navy;
                         ship.attackableShip = navy.enemyShipDefs.Where(def => !def.neverRandom && !def.neverAttacks).RandomElement();
-                        ship.faction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+                        ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
                     }
                 }
                 if (ship.attackableShip == null)
                 {
                     ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverRandom && !def.neverAttacks && !def.navyExclusive).RandomElement();
-                    ship.faction = Faction.OfAncientsHostile;
+                    ship.shipFaction = Faction.OfAncientsHostile;
                 }
 
-                Log.Message("Created ship with def: " + ship.attackableShip + " fac: " + ship.faction + " navy: " + ship.spaceNavyDef);
+                Log.Message("Created ship with def: " + ship.attackableShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
                 parent.Map.passingShipManager.AddShip(ship);
                 if (worker != null)
                     Find.LetterStack.ReceiveLetter("SoSEnemyScan".Translate(), "SoSEnemyScanDesc".Translate(worker, ship.attackableShip), LetterDefOf.PositiveEvent);
@@ -246,7 +268,10 @@ namespace RimWorld
                         defaultLabel = "Dev: Find site now",
                         action = delegate
                         {
-                            this.FoundMinerals(PawnsFinder.AllMaps_FreeColonists.FirstOrDefault<Pawn>());
+                            if (!mapComp.InCombat)
+                                this.FoundMinerals(PawnsFinder.AllMaps_FreeColonists.FirstOrDefault<Pawn>());
+                            else
+                                ScannedRoom();
                         }
                     };
                 }

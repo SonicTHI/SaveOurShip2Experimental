@@ -55,14 +55,11 @@ namespace RimWorld
 
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            if (CompBuildingConsciousness.allOnMap.ContainsKey(pawn.Map))
-            {
-                List<Thing> parents = new List<Thing>();
-                foreach (CompBuildingConsciousness consc in CompBuildingConsciousness.allOnMap[pawn.Map])
-                    parents.Add(consc.parent);
-                return parents;
-            }
-            return new List<Thing>();
+            var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
+            List<Thing> parents = new List<Thing>();
+            foreach (CompBuildingConsciousness consc in mapComp.Spores)
+                parents.Add(consc.parent);
+            return parents;
         }
     }
 }

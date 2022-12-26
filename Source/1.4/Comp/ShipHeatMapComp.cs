@@ -174,6 +174,7 @@ namespace RimWorld
                 Scribe_Values.Look<bool>(ref startedBoarderLoad, "StartedBoarding");
                 Scribe_Values.Look<bool>(ref launchedBoarders, "LaunchedBoarders");
                 Scribe_Values.Look<int>(ref BoardStartTick, "BoardStartTick");
+                Scribe_Values.Look<bool>(ref Scanned, "Scanned");
             }
             else if (Scribe.mode != LoadSaveMode.Saving)
             {
@@ -186,6 +187,7 @@ namespace RimWorld
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
         public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
         public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>();
+        public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>();
         //SC vars
         public Map ShipCombatOriginMap; //"player" map - initializes combat vars
         public Map ShipCombatMasterMap; //"AI" map - runs all non duplicate code
@@ -204,7 +206,7 @@ namespace RimWorld
         public int Heading; //+closer, -apart
         public int BuildingsCount;
         public int totalThreat;
-        public int[] threatPerSegment = { 1, 1, 1, 1 };
+        public float[] threatPerSegment = { 1, 1, 1, 1 };
         //SC cache
         public bool BridgeDestroyed = false;//calls CheckForDetach
         public List<ShipCombatProjectile> Projectiles;
@@ -267,6 +269,7 @@ namespace RimWorld
         public bool hasAnyPlayerPartDetached = false;
         public bool startedBoarderLoad = false;
         public bool launchedBoarders = false;
+        public bool Scanned = false;
         public int BoardStartTick = 0;
 
         public void SpawnEnemyShip(PassingShip passingShip, Faction faction, out List<Building> cores)
@@ -278,8 +281,6 @@ namespace RimWorld
             cores = new List<Building>();
             EnemyShipDef shipDef = null;
             SpaceNavyDef navyDef = null;
-            if (faction == null)
-                faction = Faction.OfAncientsHostile;
             int wreckLevel = 0;
             bool shieldsActive = false;
 
@@ -287,14 +288,14 @@ namespace RimWorld
             if (passingShip is AttackableShip attackableShip)
             {
                 shipDef = attackableShip.attackableShip;
-                faction = attackableShip.faction;
                 navyDef = attackableShip.spaceNavyDef;
+                faction = attackableShip.shipFaction;
             }
             else if (passingShip is DerelictShip derelictShip)
             {
                 shipDef = derelictShip.derelictShip;
-                faction = derelictShip.faction;
                 navyDef = derelictShip.spaceNavyDef;
+                faction = derelictShip.shipFaction;
                 wreckLevel = derelictShip.wreckLevel;
                 shieldsActive = true;
 
@@ -307,7 +308,7 @@ namespace RimWorld
             {
                 float playerCombatPoints = MapThreat(this.map) * 0.9f;
                 //spawned with faction override
-                if (faction != Faction.OfAncientsHostile)
+                if (faction != null)
                 {
                     navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
                     if (navyDef == null)
@@ -346,7 +347,6 @@ namespace RimWorld
 
                     Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty += 5;
                     attackedTradeship = true;
-                    this.map.passingShipManager.RemoveShip(passingShip);
                 }
                 else //find a random def to spawn
                 {
@@ -357,7 +357,7 @@ namespace RimWorld
                     {
                         //must have ships, hostile to player, able to operate
                         SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
-                        Log.Message("navy: " + navy);
+                        Log.Message("found navy: " + navy);
                         if (navy != null)
                         {
                             //0.5-1.5
@@ -369,12 +369,11 @@ namespace RimWorld
                             if (shipDef == null)
                                 shipDef = navy.enemyShipDefs.Where(def => !def.neverAttacks && !def.neverRandom && def.combatPoints <= 50).RandomElement();
 
-                            //Set the enemy ship's faction to the enemy space navy's faction, and enemy spaceNavyDef
                             faction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
                             navyDef = navy;
                         }
                     }
-                    if (faction == Faction.OfAncientsHostile) //no navy or fallback
+                    if (faction == null) //no navy or fallback
                     {
                         Log.Message("normal or fallback");
                         navyDef = null;
@@ -390,6 +389,16 @@ namespace RimWorld
 
                     Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
                 }
+            }
+            if (passingShip != null)
+                map.passingShipManager.RemoveShip(passingShip);
+            if (faction == null)
+            {
+                Log.Message("fac is null");
+                if (navyDef != null)
+                    Find.FactionManager.AllFactions.Where(f => navyDef.factionDefs.Contains(f.def)).RandomElement();
+                else
+                    faction = Faction.OfAncientsHostile;
             }
             if (faction.HasGoodwill && faction.AllyOrNeutralTo(Faction.OfPlayer))
                 faction.TryAffectGoodwillWith(Faction.OfPlayer, -150);
@@ -465,7 +474,7 @@ namespace RimWorld
             List<Building_ShipAdvSensor> SensorsEnemy = Find.World.GetComponent<PastWorldUWO2>().Sensors.Where(s => s.Map == MasterMapComp.map).ToList();
             if (Sensors.Where(sensor => sensor.def.defName.Equals("Ship_SensorClusterAdv") && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
             {
-                ShipCombatMasterMap.fogGrid.ClearAllFog();
+                //ShipCombatMasterMap.fogGrid.ClearAllFog();
                 detectionLevel += 2;
             }
             else if (Sensors.Where(sensor => sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
@@ -655,7 +664,7 @@ namespace RimWorld
         public void SlowTick()
         {
             totalThreat = 1;
-            threatPerSegment = new[] { 1, 1, 1, 1 };
+            threatPerSegment = new[] { 1f, 1f, 1f, 1f };
             int TurretNum = 0;
             MapEnginePower = 0;
             bool anyMapEngineCanActivate = false;
@@ -715,30 +724,32 @@ namespace RimWorld
                 }
                 foreach (var turret in ship.Turrets)
                 {
+                    //var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
+                    //if (torp != null && !torp.Loaded)
+                    //    continue;
                     TurretNum++;
-                    if (turret.TryGetComp<CompChangeableProjectilePlural>() != null && !turret.TryGetComp<CompChangeableProjectilePlural>().Loaded)
-                        continue;
-                    totalThreat += turret.heatComp.Props.threat;
+                    int threat = turret.heatComp.Props.threat;
+                    totalThreat += threat;
                     if (turret.heatComp.Props.maxRange > 150)//long
                     {
-                        threatPerSegment[0] += turret.heatComp.Props.threat / 6;
-                        threatPerSegment[1] += turret.heatComp.Props.threat / 4;
-                        threatPerSegment[2] += turret.heatComp.Props.threat / 2;
-                        threatPerSegment[3] += turret.heatComp.Props.threat;
+                        threatPerSegment[0] += threat / 6f;
+                        threatPerSegment[1] += threat / 4f;
+                        threatPerSegment[2] += threat / 2f;
+                        threatPerSegment[3] += threat;
                     }
                     else if (turret.heatComp.Props.maxRange > 100)//med
                     {
-                        threatPerSegment[0] += turret.heatComp.Props.threat / 4;
-                        threatPerSegment[1] += turret.heatComp.Props.threat / 2;
-                        threatPerSegment[2] += turret.heatComp.Props.threat;
+                        threatPerSegment[0] += threat / 4f;
+                        threatPerSegment[1] += threat / 2f;
+                        threatPerSegment[2] += threat;
                     }
                     else if (turret.heatComp.Props.maxRange > 50)//short
                     {
-                        threatPerSegment[0] += turret.heatComp.Props.threat / 2;
-                        threatPerSegment[1] += turret.heatComp.Props.threat;
+                        threatPerSegment[0] += threat / 2f;
+                        threatPerSegment[1] += threat;
                     }
                     else //cqc
-                        threatPerSegment[0] += turret.heatComp.Props.threat;
+                        threatPerSegment[0] += threat;
                 }
                 if (ship.Engines.FirstOrDefault() != null)
                     EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
@@ -786,13 +797,13 @@ namespace RimWorld
                     else //move to range
                     {
                         //calc ratios
-                        int[] threatRatio = new[] { 0, 0, 0, 0 };
+                        float[] threatRatio = new[] { 0f, 0f, 0f, 0f };
                         threatRatio[3] = threatPerSegment[3] / OriginMapComp.threatPerSegment[3];
                         threatRatio[2] = threatPerSegment[2] / OriginMapComp.threatPerSegment[2];
                         threatRatio[1] = threatPerSegment[1] / OriginMapComp.threatPerSegment[1];
                         threatRatio[0] = threatPerSegment[0] / OriginMapComp.threatPerSegment[0];
                         //Log.Message("Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
-                        int max = 0;
+                        float max = 0;
                         int best = -1;
                         for (int i = 0; i < 4; i++)
                         {

@@ -3630,7 +3630,7 @@ namespace SaveOurShip2
 
 	[HarmonyPatch(typeof(Building))]
 	[HarmonyPatch("MaxItemsInCell", MethodType.Getter)]
-	public static class DisableForMove
+	public static class DisableForMoveShelf
 	{
 		[HarmonyPostfix]
 		public static int Postfix(int __result, Building __instance)
@@ -3638,6 +3638,18 @@ namespace SaveOurShip2
 			if (__result > 1 && ShipInteriorMod2.AirlockBugFlag)
 				return 1;
 			return __result;
+		}
+	}
+
+	[HarmonyPatch(typeof(CompGenepackContainer), "EjectContents")]
+	public static class DisableForMoveGene
+	{
+		[HarmonyPrefix]
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return false;
+			return true;
 		}
 	}
 
@@ -4032,6 +4044,7 @@ namespace SaveOurShip2
 			return true;
 		}
 	}
+
 	[HarmonyPatch(typeof(PawnRelationWorker), "CreateRelation")]
 	public static class PreventRelations
 	{

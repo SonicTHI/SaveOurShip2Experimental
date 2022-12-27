@@ -23,6 +23,7 @@
 					<targetAcquireRadius>99</targetAcquireRadius>
 					<targetKeepRadius>99</targetKeepRadius>
 				</li>
+				<li Class="JobGiver_SeekSafeTemperature"/>
 				<li Class="JobGiver_ManShipBridge">
 					<maxDistFromPoint>99</maxDistFromPoint>
 				</li>
@@ -34,7 +35,6 @@
 						</li>
 					</subNodes>
 				</li>
-				<li Class="JobGiver_SeekSafeTemperature"/>
 				<li Class="ThinkNode_ConditionalCloseToDutyTarget">
 					<maxDistToDutyTarget>99</maxDistToDutyTarget>
 					<subNodes>

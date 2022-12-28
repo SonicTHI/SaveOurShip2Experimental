@@ -29,6 +29,7 @@
             <li>ShipBreakerFullyArmed</li>
             <li>CorvetteMartian</li>
             <li>BomberHeavy</li>
+            <li>FighterMedium</li>
         </enemyShipDefs>
     </SpaceNavyDef>
     <SpaceNavyDef ParentName="SpaceNavy">

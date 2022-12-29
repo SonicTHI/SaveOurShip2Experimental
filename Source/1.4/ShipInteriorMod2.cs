@@ -166,7 +166,7 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			Log.Message("SOS2EXP V75f2 active");
+			Log.Message("SOS2EXP V75f3 active");
 			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
@@ -632,8 +632,7 @@ namespace SaveOurShip2
                         {
 							if (rePaint && isBuilding) //color unpainted navy ships
 							{
-								var hull = thing.TryGetComp<CompSoShipPart>();
-								if (hull.Props.isHull)
+								if (thing.TryGetComp<CompSoShipPart>()?.Props.isHull ?? false)
 									thing.SetColor(navyDef.colorPrimary);
 								else if (def.defName.StartsWith("Ship_Corner"))
 									thing.SetColor(navyDef.colorSecondary);

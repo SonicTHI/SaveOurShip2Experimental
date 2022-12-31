@@ -613,17 +613,27 @@ namespace RimWorld
                             spawnCell = proj.burstLoc;
                         //Log.Message("Spawning " + proj.turret + " projectile on player ship at " + proj.target);
                         projectile = (Projectile)GenSpawn.Spawn(proj.spawnProjectile, spawnCell, ShipCombatTargetMap);
-                        float forcedMissRadius = 1.9f;
-                        float optRange = proj.turret.heatComp.Props.optRange;
-                        if (optRange != 0 && proj.range > optRange)
-                            forcedMissRadius = 1.9f + (proj.range - optRange) / 5;
-                        //Log.Message("forcedMissRadius: " + forcedMissRadius);
-                        float num = Mathf.Min(VerbUtility.CalculateAdjustedForcedMiss(forcedMissRadius, proj.target.Cell - spawnCell), GenRadial.MaxRadialPatternRadius);
-                        int max = GenRadial.NumCellsInRadius(num);
-                        int num2 = Rand.RangeInclusive(0, max);
-                        IntVec3 c = proj.target.Cell + GenRadial.RadialPattern[num2];
-                        c += ((c - spawnCell) * 2);
-                        //Log.Message("Target cell was " + proj.target.Cell + ", actually hitting " + c);
+
+                        IntVec3 c = proj.target.Cell;
+                        //get miss
+                        float rng = proj.range - proj.turret.heatComp.Props.optRange;
+                        if (rng > 0)
+                        {
+                            //get angle
+                            IntVec3 a = proj.target.Cell - spawnCell;
+                            float angle = a.AngleFlat;
+                            //add miss to angle
+                            float missAngle = Rand.Range(-1f, 1f) * (float)Math.Sqrt(rng); //-20 - 20
+                            //Log.Message("angle: " + angle + ", missangle: " + missAngle);
+                            angle += missAngle;
+                            //new vec from origin + angle
+                            c = spawnCell + new Vector3(1000 * Mathf.Sin(Mathf.Deg2Rad * angle), 0, 1000 * Mathf.Cos(Mathf.Deg2Rad * angle)).ToIntVec3();
+                        }
+                        else //direct hit
+                        {
+                            c += ((c - spawnCell) * 2);
+                        }
+                        //Log.Message("Target cell was " + proj.target.Cell + ", adjusted to " + c);
                         projectile.Launch(proj.turret, spawnCell.ToVector3Shifted(), c, proj.target.Cell, ProjectileHitFlags.All, equipment: proj.turret);
                         toRemove.Add(proj);
                     }

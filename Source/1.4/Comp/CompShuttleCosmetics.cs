@@ -8,6 +8,7 @@ using Verse;
 
 namespace RimWorld
 {
+    [StaticConstructorOnStartup]
     class CompShuttleCosmetics : ThingComp
     {
         public int whichVersion = 0;

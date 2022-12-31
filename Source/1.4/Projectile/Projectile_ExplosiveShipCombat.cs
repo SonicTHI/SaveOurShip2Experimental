@@ -8,13 +8,8 @@ using SaveOurShip2;
 
 namespace RimWorld
 {
-    [StaticConstructorOnStartup]
     public class Projectile_ExplosiveShipCombat : Projectile_Explosive
     {
-        static ThingDef HullTileDef = ThingDef.Named("ShipHullTile");
-        static ThingDef HullTileDefMech = ThingDef.Named("ShipHullTileMech");
-        static ThingDef HullTileDefArcho = ThingDef.Named("ShipHullTileArchotech");
-
         public override void Tick()
         {
             base.Tick();
@@ -31,13 +26,13 @@ namespace RimWorld
             }
             if (!(this is Projectile_ExplosiveShipCombatPsychic))
             {
-                if (this.Spawned && this.ExactPosition.ToIntVec3().GetThingList(this.Map).Any(t => t.def==HullTileDef || t.def==HullTileDefMech || t.def==HullTileDefArcho))
+                if (this.Spawned && this.ExactPosition.ToIntVec3().GetThingList(this.Map).Any(t => t is Building b && (b.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)))
                 {
                     Explode();
                 }
             }
         }
-
+        /*
         public override Vector3 ExactPosition
         {
             get
@@ -45,6 +40,6 @@ namespace RimWorld
                 Vector3 b = (destination - origin) * Mathf.Clamp01(1f - ((float)ticksToImpact + 5) / StartingTicksToImpact); //Proximity fuze!
                 return origin + b + Vector3.up * def.Altitude;
             }
-        }
+        }*/
     }
 }

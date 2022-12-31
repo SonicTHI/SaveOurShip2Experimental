@@ -188,7 +188,7 @@ namespace RimWorld
                 target = target,
                 range = 0,
                 spawnProjectile = spawnProjectile,
-                //missRadius = this.verbProps.ForcedMissRadius,
+                missRadius = this.verbProps.ForcedMissRadius,
                 burstLoc = burstLoc,
                 speed = turret.heatComp.Props.projectileSpeed,
                 Map = turret.Map

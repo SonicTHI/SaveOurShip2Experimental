@@ -76,7 +76,6 @@
 		<killedLeavings>
 			<ChunkSlagSteel>1</ChunkSlagSteel>
 		</killedLeavings>
-		<designationCategory>Ship</designationCategory>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_BeamMech</defName>
@@ -157,7 +156,6 @@
 		<killedLeavings>
 			<ChunkSlagSteel>1</ChunkSlagSteel>
 		</killedLeavings>
-		<designationCategory>Ship</designationCategory>
 	</ThingDef>
 	<!-- corners -->
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerMech" Abstract="True">
@@ -171,7 +169,6 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
-		<designationCategory>Ship</designationCategory>
 	</ThingDef>
 	<ThingDef ParentName="ShipCornerMech">
 		<defName>Ship_Corner_OneOne_Mech</defName>
@@ -354,7 +351,6 @@
 			<li>PlaceWorker_SolarShip</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
-		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc5</designationHotKey>
 		<researchPrerequisites>
 			<li>Electricity</li>
@@ -450,7 +446,6 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
-		<designationCategory>Ship</designationCategory>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<researchPrerequisites>
 			<li>AirConditioning</li>
@@ -473,7 +468,6 @@
 		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
 		<category>Building</category>
 		<thingClass>Building_ShipAirlock</thingClass>
-		<designationCategory>Ship</designationCategory>
 		<altitudeLayer>DoorMoveable</altitudeLayer>
 		<fillPercent>1</fillPercent>
 		<useHitPoints>true</useHitPoints>
@@ -606,7 +600,6 @@
 		<designationHotKey>Misc1</designationHotKey>
 		<fillPercent>0.0</fillPercent>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<designationCategory>Ship</designationCategory>
 	</ThingDef>
 	<!-- obsolete -->
 	<ThingDef ParentName="BuildingBase">

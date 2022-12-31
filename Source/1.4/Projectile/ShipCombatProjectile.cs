@@ -8,7 +8,7 @@ namespace RimWorld
         public LocalTargetInfo target;
         public float range;
         public ThingDef spawnProjectile;
-        //public float missRadius;
+        public float missRadius;
         public IntVec3 burstLoc;
         public float speed;
         public Map Map;
@@ -19,7 +19,7 @@ namespace RimWorld
             Scribe_TargetInfo.Look(ref target, "target");
             Scribe_Values.Look<float>(ref range, "range");
             Scribe_Defs.Look<ThingDef>(ref spawnProjectile, "projectile");
-            //Scribe_Values.Look<float>(ref missRadius, "missRadius");
+            Scribe_Values.Look<float>(ref missRadius, "missRadius");
             Scribe_Values.Look<IntVec3>(ref burstLoc, "burstLoc");
             Scribe_Values.Look<float>(ref speed, "speed");
             Scribe_References.Look<Map>(ref Map, "map");

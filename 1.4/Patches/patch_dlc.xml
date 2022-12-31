@@ -227,7 +227,11 @@
 			<operations>
 				<!-- mech buildable -->
 				<li Class="PatchOperationAdd">
-					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName="Ship_BeamMech" or defName="Ship_BeamMech_Unpowered" or  defName="ShipAirlockMech" or defName="ShipHullTileMech"]</xpath>
+					<xpath>/Defs/ThingDef[@Name="ShipCornerMech" or defName = "Ship_BeamMech_Unpowered" or defName = "Ship_BeamMech" or  defName="ShipAirlockMech" or defName="ShipHullTileMech" or defName="ShipInside_SolarGeneratorMech" or defName="ShipInside_PassiveVentMechanoid"]</xpath>
+					<value><designationCategory>Ship</designationCategory></value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName="Ship_BeamMech_Unpowered" or defName="Ship_BeamMech" or  defName="ShipAirlockMech" or defName="ShipHullTileMech"]</xpath>
 					<value>
 						<researchPrerequisites>
 							<li>ShipBasics</li>

@@ -614,25 +614,21 @@ namespace RimWorld
                         //Log.Message("Spawning " + proj.turret + " projectile on player ship at " + proj.target);
                         projectile = (Projectile)GenSpawn.Spawn(proj.spawnProjectile, spawnCell, ShipCombatTargetMap);
 
-                        IntVec3 c = proj.target.Cell;
+                        //get angle
+                        IntVec3 a = proj.target.Cell - spawnCell;
+                        float angle = a.AngleFlat;
                         //get miss
+                        float missAngle = Rand.Range(-proj.missRadius, proj.missRadius); //base miss from xml
                         float rng = proj.range - proj.turret.heatComp.Props.optRange;
                         if (rng > 0)
                         {
-                            //get angle
-                            IntVec3 a = proj.target.Cell - spawnCell;
-                            float angle = a.AngleFlat;
                             //add miss to angle
-                            float missAngle = Rand.Range(-1f, 1f) * (float)Math.Sqrt(rng); //-20 - 20
+                            missAngle *= (float)Math.Sqrt(rng); //-20 - 20
                             //Log.Message("angle: " + angle + ", missangle: " + missAngle);
-                            angle += missAngle;
-                            //new vec from origin + angle
-                            c = spawnCell + new Vector3(1000 * Mathf.Sin(Mathf.Deg2Rad * angle), 0, 1000 * Mathf.Cos(Mathf.Deg2Rad * angle)).ToIntVec3();
                         }
-                        else //direct hit
-                        {
-                            c += ((c - spawnCell) * 2);
-                        }
+                        angle += missAngle;
+                        //new vec from origin + angle
+                        IntVec3 c = spawnCell + new Vector3(1000 * Mathf.Sin(Mathf.Deg2Rad * angle), 0, 1000 * Mathf.Cos(Mathf.Deg2Rad * angle)).ToIntVec3();
                         //Log.Message("Target cell was " + proj.target.Cell + ", adjusted to " + c);
                         projectile.Launch(proj.turret, spawnCell.ToVector3Shifted(), c, proj.target.Cell, ProjectileHitFlags.All, equipment: proj.turret);
                         toRemove.Add(proj);

@@ -166,7 +166,7 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			Log.Message("SOS2EXP V75f5 active");
+			Log.Message("SOS2EXP V76 active");
 			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
@@ -628,6 +628,11 @@ namespace SaveOurShip2
 						else
 							thing = ThingMaker.MakeThing(def);
 
+						var compQuality = thing.TryGetComp<CompQuality>();
+						if (compQuality != null)
+						{
+							compQuality.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
+						}
 						if (thing.TryGetComp<CompColorable>() != null)
                         {
 							if (rePaint && isBuilding) //color unpainted navy ships
@@ -911,32 +916,24 @@ namespace SaveOurShip2
 			//4: planetside wreck - no invaders
 			if (wreckLevel > 0)
 			{
+				bool madeLines = false;
 				int holeNum = 0;
 				//split
 				if ((wreckLevel == 2 || wreckLevel == 3) && size > 1000 && Rand.Chance(0.7f))
                 {
                     MakeLines(shipDef, map, wreckLevel, offset);
+					madeLines = true;
 				}
-				if ((wreckLevel == 2 || wreckLevel == 3) && size > 10000)
+				if ((wreckLevel == 2 || wreckLevel == 3) && size > 8000)
 				{
 					MakeLines(shipDef, map, wreckLevel, offset);
 				}
 				//holes, surounded by wreck
-				int adj = (size / 1000) + wreckLevel;
+				int adj = size / 1000;
 				//Log.Message("holenum: "+adj);
-				holeNum = Rand.RangeInclusive(adj, adj + wreckLevel);
-				/*if (size > 10000 || wreckLevel > 2 && size > 5000)
-				{
-					holeNum = Rand.RangeInclusive(10, 16);
-				}
-				else if (size > 5000 || wreckLevel > 1 && size > 2500)
-				{
-					holeNum = Rand.RangeInclusive(6, 10);
-				}
-				else //sub 2k, lvl 1
-				{
-					holeNum = Rand.RangeInclusive(2, 4);
-				}*/
+				holeNum = Rand.RangeInclusive(adj, adj - 1 + (wreckLevel * 2));
+				if (size > 4000 && wreckLevel > 1 && !madeLines)
+					holeNum += Rand.RangeInclusive(adj, adj - 1 + (wreckLevel * 2));
 				CellRect rect = new CellRect(offset.x - 1, offset.z - 1, shipDef.sizeX + 1, shipDef.sizeZ + 1);
 				MakeHoles(FindCellOnOuterHull(map, holeNum, rect), map, wreckLevel, 1.9f, 4.9f);
 				//buildings
@@ -976,12 +973,12 @@ namespace SaveOurShip2
 					}
 				}
 				//invaders - pick faction, spawn lord + pawns
+				Faction invaderFac = null;
 				if ((wreckLevel == 2 && Rand.Chance(0.7f)) || (wreckLevel ==3 && Rand.Chance(0.4f)))
 				{
 					SpaceNavyDef navy = ValidRandomNavy(Faction.OfPlayer, false);
 					if (navy != null)
 					{
-						Faction invaderFac;
 						var mapComp = map.GetComponent<ShipHeatMapComp>();
 						if (mapComp.InvaderLord == null) //spawn only one invader lord
 						{
@@ -991,20 +988,6 @@ namespace SaveOurShip2
 							else
 								mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_DefendShip(invaderFac, map.Center), map);
 							Log.Message("Spawned invaders from: " + invaderFac);
-							//chance for ship battle
-							if (invaderFac.HostileTo(Faction.OfPlayer) && !navy.enemyShipDefs.NullOrEmpty() && Rand.Chance(0.4f))
-							{
-								IncidentParms parms = new IncidentParms();
-								var check = (MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault();
-								if (check != null)
-								{
-									parms.target = check.Map;
-									parms.forced = true;
-									parms.faction = invaderFac;
-									QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ShipCombat"), null, parms), Find.TickManager.TicksGame + Rand.RangeInclusive(2000, 8000));
-									Find.Storyteller.incidentQueue.Add(qi);
-								}
-							}
 						}
 						else
 							invaderFac = mapComp.InvaderLord.faction;
@@ -1024,6 +1007,26 @@ namespace SaveOurShip2
 								mapComp.InvaderLord.AddPawn(pawn);
 							}
 						}
+					}
+				}
+				//chance for ship battle
+				if ((wreckLevel == 2 && Rand.Chance(0.6f)) || (wreckLevel == 3 && Rand.Chance(0.3f) && invaderFac != null))
+				{
+					IncidentParms parms = new IncidentParms();
+					var check = (MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault();
+					if (check != null)
+					{
+						parms.target = check.Map;
+						parms.forced = true;
+						if (invaderFac != null && Rand.Chance(0.8f)) //most likely invading ship
+							parms.faction = invaderFac;
+						else
+						{
+							if (navyDef != null) //if ship from a navy, likely aided by it
+								parms.faction = Find.FactionManager.AllFactions.Where(f => navyDef.factionDefs.Contains(f.def)).RandomElement();
+						}
+						QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ShipCombat"), null, parms), Find.TickManager.TicksGame + Rand.RangeInclusive(2000, 8000));
+						Find.Storyteller.incidentQueue.Add(qi);
 					}
 				}
 			}

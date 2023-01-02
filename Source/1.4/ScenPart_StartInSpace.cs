@@ -101,16 +101,16 @@ namespace RimWorld
 			List<Building> cores = new List<Building>();
 			Current.ProgramState = ProgramState.MapInitializing;
 			bool station = this.def.defName.Equals("StartInSpaceDungeon");
-			if (station && this.enemyShipDef.defName == "0") //random dungeon
+			if (station && enemyShipDef.defName == "0") //random dungeon
 			{
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
-				ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, 0);
+				damageStart = false;
 			}
-			else if (this.enemyShipDef.defName == "0") //random ship, damage lvl 1
+			else if (enemyShipDef.defName == "0") //random ship, damage lvl 1
 			{
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
-				ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0);
 			}
+			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0);
 			Current.ProgramState = ProgramState.Playing;
 			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
 			Section[,] secArray = new Section[secs.x, secs.z];
@@ -125,7 +125,8 @@ namespace RimWorld
 					}
 				}
 			}
-            foreach (Pawn p in startingPawns)
+			//move player things to space map
+			foreach (Pawn p in startingPawns)
             {
 				if (p.InContainerEnclosed)
 				{

@@ -2,6 +2,7 @@
 <Defs>
 	<EnemyShipDef>
 		<defName>0</defName>
+		<saveSysVer>2</saveSysVer>
 		<label>Random</label>
 		<neverRandom>True</neverRandom>
 		<startingShip>True</startingShip>

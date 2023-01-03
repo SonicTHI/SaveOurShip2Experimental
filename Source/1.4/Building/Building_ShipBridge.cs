@@ -609,7 +609,6 @@ namespace RimWorld
                                         action = delegate
                                         {
                                             mapComp.StartShipEncounter(this, passingShip);
-                                            this.Map.passingShipManager.RemoveShip(passingShip);
                                             if (ModsConfig.IdeologyActive)
                                                 IdeoUtility.Notify_PlayerRaidedSomeone(this.Map.mapPawns.FreeColonists);
                                         },
@@ -626,7 +625,6 @@ namespace RimWorld
                                         action = delegate
                                         {
                                             mapComp.StartShipEncounter(this, passingShip);
-                                            this.Map.passingShipManager.RemoveShip(passingShip);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Quest"),
                                         defaultLabel = "Approach " + passingShip.FullTitle,

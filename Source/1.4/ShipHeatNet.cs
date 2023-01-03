@@ -27,9 +27,9 @@ namespace RimWorld
                 {
                     //add to net
                     //Log.Message("grid: " + GridID + " add:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
+                    StorageCapacity += sink.Props.heatCapacity;
                     StorageUsed += sink.heatStored;
                     sink.heatStored = 0;
-                    StorageCapacity += sink.Props.heatCapacity;
                     //Log.Message("grid: "+ GridID +" add:"+ bank.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity);
                     Sinks.Add(sink);
                     if (comp is CompShipHeatPurge purge)

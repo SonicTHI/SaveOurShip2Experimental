@@ -166,7 +166,7 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			Log.Message("SOS2EXP V76 active");
+			Log.Message("SOS2EXP V76f1 active");
 			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
@@ -457,7 +457,7 @@ namespace SaveOurShip2
 				return false;
 			}).RandomElement();
 		}
-		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shieldsActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
 			bool unlockedJT = false;
 			if (WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("JTDriveToo"))
@@ -482,7 +482,7 @@ namespace SaveOurShip2
 						Log.Error("Fleet ship not found in database");
 						return;
 					}
-					GenerateShip(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out core, shieldsActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
+					GenerateShip(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out core, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
 					cores.AddRange(core);
 				}
 				PostGenerateShip(map, shipDef, clearArea, cellsToFog);
@@ -685,8 +685,8 @@ namespace SaveOurShip2
 								{
 									refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.7f, 0.2f);
 									var reactorComp = b.TryGetComp<CompPowerTraderOverdrivable>();
-									if (reactorComp != null && shieldsActive)
-										reactorComp.overdriveSetting = 1;
+									if (reactorComp != null && shipActive)
+										reactorComp.FlickOverdrive(1);
 								}
 								else
 									refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.1f, 0.02f);
@@ -729,8 +729,8 @@ namespace SaveOurShip2
 										shieldComp.radiusSet = shape.radius;
 										shieldComp.radius = shape.radius;
 									}
-									if (!shieldsActive)
-										b.TryGetComp<CompFlickable>().SwitchIsOn = false;
+									if (shipActive)
+										b.TryGetComp<CompFlickable>().SwitchIsOn = true;
 								}
 							}
 						}

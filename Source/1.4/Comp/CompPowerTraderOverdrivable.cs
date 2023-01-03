@@ -121,7 +121,7 @@ namespace RimWorld
             }
         }
 
-        private void FlickOverdrive(int level)
+        public void FlickOverdrive(int level)
         {
             if (overdriveSetting == level)
             {

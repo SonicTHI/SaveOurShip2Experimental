@@ -146,15 +146,15 @@ namespace SaveOurShip2
                         myShuttle = (Pawn)container[i];
                 }
 
-                var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
+                var playerMapComp = __instance.Map.GetComponent<ShipHeatMapComp>().ShipCombatOriginMap.GetComponent<ShipHeatMapComp>();
                 for (int i = container.Count - 1; i >= 0; i--)
                 {
                     if (container[i] is Pawn)
                     {
                         GenPlace.TryPlaceThing(container[i], __instance.Position, __instance.Map, ThingPlaceMode.Near, delegate (Thing thing, int count) {
                             PawnUtility.RecoverFromUnwalkablePositionOrKill(thing.Position, thing.Map);
-                            if (thing.Faction != Faction.OfPlayer && mapComp.ShipCombatOriginMap.GetComponent<ShipHeatMapComp>().ShipLord != null)
-                                mapComp.ShipCombatOriginMap.GetComponent<ShipHeatMapComp>().ShipLord.AddPawn((Pawn)thing);
+                            if (thing.Faction != Faction.OfPlayer && playerMapComp != null)
+                                playerMapComp.ShipLord.AddPawn((Pawn)thing);
                             if (thing.TryGetComp<CompShuttleCosmetics>() != null)
                                 CompShuttleCosmetics.ChangeShipGraphics((Pawn)thing, ((Pawn)thing).TryGetComp<CompShuttleCosmetics>().Props);
                         });

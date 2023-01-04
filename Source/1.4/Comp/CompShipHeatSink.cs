@@ -29,7 +29,7 @@ namespace RimWorld
             inSpace = this.parent.Map.IsSpace();
             pos = this.parent.Position;
             map = this.parent.Map;
-            mapComp = map.GetComponent<ShipHeatMapComp>();
+            mapComp = this.map.GetComponent<ShipHeatMapComp>();
         }
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
@@ -48,7 +48,7 @@ namespace RimWorld
             //save heat to sinks on save, value clamps
             if (myNet != null && Scribe.mode == LoadSaveMode.Saving)
             {
-                heatStored = myNet.StorageUsed * Props.heatCapacity / myNet.StorageCapacity;
+                heatStored = Props.heatCapacity * RatioInNetwork();
                 if (heatStored < 0)
                     heatStored = 0;
                 else if (heatStored > Props.heatCapacity)

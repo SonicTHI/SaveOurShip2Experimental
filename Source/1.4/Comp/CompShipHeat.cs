@@ -27,12 +27,6 @@ namespace RimWorld
         {
             ShipHeatOverlay.Print(layer, (Thing)(object)base.parent, 0);
         }
-
-        public override void PostSpawnSetup(bool respawningAfterLoad)
-        {
-            ((ShipHeatMapComp)this.parent.Map.components.Where(t => t is ShipHeatMapComp).FirstOrDefault()).Register(this);
-        }
-
         public override string CompInspectStringExtra()
         {
             string output = "";
@@ -89,11 +83,22 @@ namespace RimWorld
             }
             return myNet.StorageUsed / myNet.StorageCapacity;
         }
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
+            //td change to check for adj nets, perform merges
+            mapComp.cachedPipes.Add(this);
+            mapComp.heatGridDirty = true;
+        }
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
             if (myNet != null)
                 myNet.DeRegister(this);
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+            //td change to check for adj nets, if at end of line simple remove, else regen
+            mapComp.cachedPipes.Remove(this);
+            mapComp.heatGridDirty = true;
         }
     }
 }

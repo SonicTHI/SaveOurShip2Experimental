@@ -11,9 +11,9 @@ using SaveOurShip2;
 namespace RimWorld
 {
     [StaticConstructorOnStartup]
-    public class CompShipHeatPurge : CompShipHeatSink
+    public class CompShipHeatPurge : CompShipHeat
     {
-        static float HEAT_PURGE_RATIO = 20;
+        static readonly float HEAT_PURGE_RATIO = 20;
         static SoundDef HissSound = DefDatabase<SoundDef>.GetNamed("ShipPurgeHiss");
 
         public bool currentlyPurging = false;

@@ -13,34 +13,20 @@ namespace RimWorld
     public class ShipHeatMapComp : MapComponent
     {
         List<ShipHeatNet> cachedNets = new List<ShipHeatNet>();
-        List<CompShipHeat> cachedPipes = new List<CompShipHeat>();
+        public List<CompShipHeat> cachedPipes = new List<CompShipHeat>();
 
         public int[] grid;
         public bool heatGridDirty;
-        bool loaded = false;
 
         public ShipHeatMapComp(Map map) : base(map)
         {
             grid = new int[map.cellIndices.NumGridCells];
             heatGridDirty = true;
         }
-        public void Register(CompShipHeat comp)
-        {
-            cachedPipes.Add(comp);
-            GenList.Shuffle<CompShipHeat>(cachedPipes);
-            heatGridDirty = true;
-        }
-        public void DeRegister(CompShipHeat comp)
-        {
-            cachedPipes.Remove(comp);
-            GenList.Shuffle<CompShipHeat>(cachedPipes);
-            heatGridDirty = true;
-        }
         public override void MapComponentUpdate()
         {
             base.MapComponentUpdate();
-            //this only gets called when new parts are added but even so should be redone, similar to new ship cache
-            if (!heatGridDirty || (Find.TickManager.TicksGame % 60 != 0 && loaded))
+            if (!heatGridDirty && Find.TickManager.TicksGame % 60 != 0)// || (Find.TickManager.TicksGame % 60 != 0 && loaded))
             {
                 return;
             }
@@ -75,7 +61,6 @@ namespace RimWorld
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Buildings);
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Things);
             heatGridDirty = false;
-            loaded = true;
         }
         void AccumulateToNetNew(HashSet<CompShipHeat> compBatch, ShipHeatNet net)
         {

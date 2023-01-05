@@ -145,8 +145,10 @@ namespace SaveOurShip2
                     if (container[i] is Pawn && container[i].TryGetComp<CompBecomeBuilding>() != null)
                         myShuttle = (Pawn)container[i];
                 }
-
-                var playerMapComp = __instance.Map.GetComponent<ShipHeatMapComp>().ShipCombatOriginMap.GetComponent<ShipHeatMapComp>();
+                var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>().ShipCombatOriginMap;
+                ShipHeatMapComp playerMapComp = null;
+                if (mapComp != null)
+                    playerMapComp = mapComp.GetComponent<ShipHeatMapComp>();
                 for (int i = container.Count - 1; i >= 0; i--)
                 {
                     if (container[i] is Pawn)

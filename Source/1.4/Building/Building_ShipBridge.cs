@@ -513,6 +513,8 @@ namespace RimWorld
                                     {
                                         AttackableShip station = new AttackableShip();
                                         station.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("ArchotechGardenStation");
+                                        station.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
+                                        station.shipFaction = Faction.OfMechanoids;
                                         mapComp.StartShipEncounter(this, station);
                                     },
                                     icon = ContentFinder<Texture2D>.Get("UI/ArchotechStation_Icon_Quest"),
@@ -529,6 +531,8 @@ namespace RimWorld
                                     {
                                         AttackableShip attacker = new AttackableShip();
                                         attacker.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge");
+                                        attacker.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
+                                        attacker.shipFaction = Faction.OfMechanoids;
                                         mapComp.StartShipEncounter(this, attacker);
                                         MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
                                     },
@@ -944,6 +948,11 @@ namespace RimWorld
             }
             AttackableShip shipa = new AttackableShip();
             shipa.attackableShip = DefDatabase<EnemyShipDef>.GetNamed(name);
+            if (shipa.attackableShip.navyExclusive)
+            {
+                shipa.spaceNavyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.enemyShipDefs.Contains(shipa.attackableShip)).RandomElement();
+                shipa.shipFaction = Find.FactionManager.AllFactions.Where(f => shipa.spaceNavyDef.factionDefs.Contains(f.def)).RandomElement();
+            }
             mapi.passingShipManager.AddShip(shipa);
         }
     }

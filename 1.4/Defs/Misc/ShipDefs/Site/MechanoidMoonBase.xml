@@ -8,6 +8,7 @@
 		<label>NOT A SHIP</label>
 		<combatPoints>240</combatPoints>
 		<neverRandom>True</neverRandom>
+		<neverWreck>True</neverWreck>
 		<symbolTable>
 			<li>
 				<key>?</key>

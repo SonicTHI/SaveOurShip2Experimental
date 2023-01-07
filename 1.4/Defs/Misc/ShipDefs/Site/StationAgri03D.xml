@@ -11,6 +11,7 @@
 		<combatPoints>101</combatPoints>
 		<neverAttacks>true</neverAttacks>
 		<spaceSite>true</spaceSite>
+		<neverWreck>True</neverWreck>
 		<parts>
 			<li>
 				<shapeOrDef>HullFoam</shapeOrDef>

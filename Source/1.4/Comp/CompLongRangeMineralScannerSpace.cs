@@ -148,7 +148,10 @@ namespace RimWorld
                         ship.derelictShip = navy.enemyShipDefs.Where(def => def.spaceSite).RandomElement();
                         ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
                         ship.spaceNavyDef = navy;
-                        ship.wreckLevel = 0;
+                        if (ship.derelictShip.neverWreck)
+                            ship.wreckLevel = 0;
+                        else
+                            ship.wreckLevel = Rand.RangeInclusive(0, 3);
                     }
                 }
                 if (ship.derelictShip == null)

@@ -53,7 +53,7 @@
 	<ShipAirlockHacked>Airlock hack successful!</ShipAirlockHacked>
 	<ShipAirlockHackFailed>Airlock hacking failed!</ShipAirlockHackFailed>
 	<ShipAirlockBreached>Airlock breached!</ShipAirlockBreached>
-	<ShipCombatTooltip>Shows the enemy ship's distance from your ship, and all projectiles currently in flight.\n\nRED range: All weapons can fire. Railguns are highly inaccurate.\n\nGREEN range: Plasma cannons, railguns, and torpedoes can fire. Railguns are moderately accurate.\n\nBLUE range: Only railguns and torpedoes can fire. Railguns are highly accurate.</ShipCombatTooltip>
+	<ShipCombatTooltip>Shows the enemy ship's distance from your ship, all projectiles and shuttles currently in flight.\n\nRED: laser/canon range\nGREEN: plasma range\nBLUE: railgun range.\nPURPLE: torpedo range\nSmall colored bars: inaccurate maximum range for large weapons</ShipCombatTooltip>
 	<ShipAmplifierCount>Amplifiers: {0}</ShipAmplifierCount>
 	<ShipSpinalCapNotFound>Spinal capacitor not found.</ShipSpinalCapNotFound>
 	<ShipTorpedoLoaded>Loaded: {0}</ShipTorpedoLoaded>

@@ -166,7 +166,7 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			Log.Message("SOS2EXP V76f4 active");
+			Log.Message("SOS2EXP V76f5 active");
 			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
@@ -457,6 +457,28 @@ namespace SaveOurShip2
 				return false;
 			}).RandomElement();
 		}
+		public static void GenerateFleetProc(float playerCombatPoints, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		{
+			//use player points to spawn ships of the same navy
+			//fit z, random x
+			//main + escorts, twin large, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
+			cores = new List<Building>();
+			/*int z = map.Size.z;
+			do
+			{
+				float points = playerCombatPoints * 0.66f;
+				EnemyShipDef shipDef = RandomValidShipFrom(navyDef.enemyShipDefs, points, true, z);
+				playerCombatPoints -= shipDef.combatPoints;
+				z -= shipDef.sizeZ + 10;
+				List<Building> core = new List<Building>();
+				offsetX = Rand.RangeInclusive(20, map.Size.x - 20 - shipDef.sizeX);
+				GenerateShip(shipDef, map, passingShip, fac, lord, out core, shipActive, clearArea, wreckLevel, offsetX, offsetZ, navyDef);
+				cores.AddRange(core);
+			}
+			while (playerCombatPoints < 50 || z < 30);
+			List<IntVec3> cellsToFog = new List<IntVec3>(); //td
+			PostGenerateShip(map, clearArea, cellsToFog);*/
+		}
 		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
 			bool unlockedJT = false;
@@ -485,7 +507,7 @@ namespace SaveOurShip2
 					GenerateShip(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out core, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
 					cores.AddRange(core);
 				}
-				PostGenerateShip(map, shipDef, clearArea, cellsToFog);
+				PostGenerateShip(map, clearArea, cellsToFog);
 				return;
 			}
 
@@ -604,17 +626,23 @@ namespace SaveOurShip2
 						bool isWrecked = false;
 						Thing thing = null;
 						ThingDef def = ThingDef.Named(shape.shapeOrDef);
+						//def replacers
 						if (def.IsBuildingArtificial)
 						{
 							isBuilding = true;
-							if (!unlockedJT && def.defName.StartsWith("Ship_Engine_Interplanetary"))
-								continue;
-							else if (!royActive && def.Equals(ThingDefOf.Throne))
+							if (!royActive && def.Equals(ThingDefOf.Throne))
 								def = DefDatabase<ThingDef>.GetNamed("Armchair");
 							else if (wreckLevel > 2 && wreckDictionary.ContainsKey(def)) //replace ship walls/floor
 							{
 								def = wreckDictionary[def];
 								isWrecked = true;
+							}
+							else if (!unlockedJT && def.HasComp(typeof(CompEngineTrail))) //replace JT drives if not unlocked via story
+							{
+								if (def.defName.Equals("Ship_Engine_Interplanetary"))
+									def = DefDatabase<ThingDef>.GetNamed("Ship_Engine");
+								else if (def.defName.Equals("Ship_Engine_Interplanetary_Large"))
+									def = DefDatabase<ThingDef>.GetNamed("Ship_Engine_Large");
 							}
 						}
 						//make thing
@@ -929,7 +957,7 @@ namespace SaveOurShip2
 					MakeLines(shipDef, map, wreckLevel, offset);
 				}
 				//holes, surounded by wreck
-				int adj = size / 1000;
+				int adj = 1 + (size / 1000);
 				//Log.Message("holenum: "+adj);
 				holeNum = Rand.RangeInclusive(adj, adj - 1 + (wreckLevel * 2));
 				if (size > 4000 && wreckLevel > 1 && !madeLines)
@@ -1032,9 +1060,9 @@ namespace SaveOurShip2
 			}
 			//post spawn
 			if (shipDef.ships.NullOrEmpty())
-				PostGenerateShip(map, shipDef, clearArea, cellsToFog);
+				PostGenerateShip(map, clearArea, cellsToFog);
 		}
-        public static List<IntVec3> FindCellOnOuterHull(Map map, int num, CellRect shipArea)
+        public static List<IntVec3> FindCellOnOuterHull(Map map, int max, CellRect shipArea)
 		{
 			//targets outer cells
 			Room outdoors = new IntVec3(0, 0, 0).GetRoom(map);
@@ -1044,11 +1072,11 @@ namespace SaveOurShip2
 				validCells.Add(cell);
 			validCells.Shuffle();
 			int i = 0;
-			while (i < num + 1)
+			while (i < max)
 			{
 				targetCells.Add(validCells[i]);
 				i++;
-				if (i > validCells.Count || i > 20)
+				if (i > validCells.Count || i > 30)
 					break;
 			}
 			return targetCells;
@@ -1125,7 +1153,7 @@ namespace SaveOurShip2
 			}
 			//secondaries?
 		}
-		private static void PostGenerateShip(Map map, EnemyShipDef shipDef, bool clearArea, List<IntVec3> shipArea)
+		private static void PostGenerateShip(Map map, bool clearArea, List<IntVec3> shipArea)
 		{
 			//HashSet<Room> validRooms = new HashSet<Room>();
 			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
@@ -1450,6 +1478,8 @@ namespace SaveOurShip2
 			List<Thing> toDestroy = new List<Thing>();
 			List<CompPower> toRePower = new List<CompPower>();
 			List<Zone> zonesToCopy = new List<Zone>();
+			List<Room> roomsToTemp = new List<Room>();
+			List<Tuple<IntVec3, float>> posTemp = new List<Tuple<IntVec3, float>>();
 			bool movedZones = false;
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
 			List<Tuple<IntVec3, RoofDef>> roofToCopy = new List<Tuple<IntVec3, RoofDef>>();
@@ -1485,6 +1515,13 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
+				//store room temps
+				Room room = pos.GetRoom(sourceMap);
+				if (room != null && !roomsToTemp.Contains(room) && !ExposedToOutside(room))
+				{
+					roomsToTemp.Add(room);
+					posTemp.Add(new Tuple<IntVec3, float>(adjustedPos, room.Temperature));
+				}
 				//clear LZ
 				targetArea.Add(adjustedPos);
 				foreach (Thing t in adjustedPos.GetThingList(targetMap))
@@ -1747,16 +1784,13 @@ namespace SaveOurShip2
 
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
 			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);
-			//to space - normalize temp in ship
-			if (targetMapIsSpace)
+			//restore temp in ship
+			foreach (Tuple<IntVec3, float> t in posTemp)
 			{
-				foreach (Room room in targetMap.regionGrid.allRooms)
-				{
-					if (!ExposedToOutside(room))
-						room.Temperature = 21f;
-				}
+				Room room = t.Item1.GetRoom(targetMap);
+				room.Temperature = t.Item2;
 			}
-			else if (sourceMap != targetMap && !sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
+			if (sourceMap != targetMap && !sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
 			{
 				//landing - remove space map
 				WorldObject oldParent = sourceMap.Parent;
@@ -5817,6 +5851,8 @@ namespace SaveOurShip2
 					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
 					AttackableShip ship = new AttackableShip();
 					ship.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
+					ship.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
+					ship.shipFaction = Faction.OfMechanoids;
 					spaceMap.passingShipManager.AddShip(ship);
 				}
 			}

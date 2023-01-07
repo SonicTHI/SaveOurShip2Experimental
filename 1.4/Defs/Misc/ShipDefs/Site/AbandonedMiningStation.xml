@@ -12,6 +12,7 @@
 		<cargoValue>45</cargoValue>
 		<neverAttacks>True</neverAttacks>
 		<spaceSite>True</spaceSite>
+		<neverWreck>True</neverWreck>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>111</x>

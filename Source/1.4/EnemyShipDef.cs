@@ -108,6 +108,7 @@ namespace RimWorld
         public ShipShape core;
         public bool neverRandom = false; //true for specially spawned ships, starts
         public bool neverWreck = false; //prevent random wrecks from this shipdef
+        public bool neverFleet = false; //will not appear in random gen fleets
         public bool neverAttacks = false; //will not attack player
         public bool startingShip = false;
         public bool startingDungeon = false;

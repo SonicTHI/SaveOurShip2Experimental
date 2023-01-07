@@ -297,7 +297,7 @@ namespace RimWorld
                         if (shipDef == null)
                             shipDef = navyDef.enemyShipDefs.Where(def => def.tradeShip).RandomElement();
                     }
-                    else
+                    else //navy has no trade ships - use default ones
                     {
                         //0.5-2
                         shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.tradeShip && def.combatPoints >= playerCombatPoints * 0.5f * ShipInteriorMod2.difficultySoS && def.combatPoints < playerCombatPoints * 2f * ShipInteriorMod2.difficultySoS).RandomElement();
@@ -371,34 +371,34 @@ namespace RimWorld
             //if (cores != null)
             //    Log.Message("Spawned enemy cores: " + cores.Count);
         }
-        public EnemyShipDef RandomValidShipFrom(List<EnemyShipDef> ships, float CR, bool allowNavyExc)
+        public EnemyShipDef RandomValidShipFrom(List<EnemyShipDef> ships, float CR, bool allowNavyExc, int z = 0)
         {
             EnemyShipDef shipDef = null;
             float adjCR = CR * (float)ShipInteriorMod2.difficultySoS;
             if (CR < 700 && CR > 100) //reduce difficulty in this range - would be better as a timed thing
                 adjCR *= 0.8f;
             //0.5-1.5
-            shipDef = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.5f * adjCR, allowNavyExc)).RandomElement();
+            shipDef = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.5f * adjCR, allowNavyExc, z)).RandomElement();
             if (shipDef == null) //0.25-2
-                shipDef = ships.Where(def => ValidShipDef(def, 0.25f * adjCR, 2f * adjCR, allowNavyExc)).RandomElement();
+                shipDef = ships.Where(def => ValidShipDef(def, 0.25f * adjCR, 2f * adjCR, allowNavyExc, z)).RandomElement();
             if (shipDef == null) //too high or too low adjCR - ignore difficulty
             {
                 Log.Message("SOS2: difficulty set too low/high or no suitable ships found for your CR, using fallback");
                 if (CR < 1000)
-                    shipDef = ships.Where(def => ValidShipDef(def, 0f * CR, 1f * CR, allowNavyExc)).RandomElement();
+                    shipDef = ships.Where(def => ValidShipDef(def, 0f * CR, 1f * CR, allowNavyExc, z)).RandomElement();
                 else
-                    shipDef = ships.Where(def => ValidShipDef(def, 0.5f * CR, 100f * CR, allowNavyExc)).RandomElement();
+                    shipDef = ships.Where(def => ValidShipDef(def, 0.5f * CR, 100f * CR, allowNavyExc, z)).RandomElement();
             }
-            if (shipDef == null && !allowNavyExc) //any
+            if (shipDef == null && !allowNavyExc && z == 0) //any
             {
                 Log.Warning("SOS2: found no suitable enemy ship, choosing any random.");
                 shipDef = ships.Where(def => !def.neverAttacks && !def.neverRandom && (allowNavyExc || !def.navyExclusive)).RandomElement();
             }
             return shipDef;
         }
-        public bool ValidShipDef(EnemyShipDef def, float min, float max, bool allowNavyExc)
+        public bool ValidShipDef(EnemyShipDef def, float min, float max, bool allowNavyExc, int z = 0)
         {
-            return !def.neverAttacks && !def.neverRandom && def.combatPoints > min && def.combatPoints < max && (allowNavyExc || !def.navyExclusive);
+            return !def.neverAttacks && !def.neverRandom && def.combatPoints > min && def.combatPoints < max && (allowNavyExc || !def.navyExclusive && (z == 0 || (def.sizeZ < z && !def.neverFleet)));
         }
         public int MapThreat(Map map)
         {

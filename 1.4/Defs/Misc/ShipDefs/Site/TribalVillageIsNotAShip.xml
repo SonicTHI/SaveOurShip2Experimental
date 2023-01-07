@@ -10,6 +10,7 @@
 		<label>Tribal Village</label>
 		<combatPoints>31</combatPoints>
 		<neverRandom>True</neverRandom>
+		<neverWreck>True</neverWreck>
 		<symbolTable>
 			<li>
 				<key>?</key>

@@ -10,7 +10,6 @@
 		<label>Light Freighter</label>
 		<combatPoints>71</combatPoints>
 		<cargoValue>300</cargoValue>
-		<tradeShip>true</tradeShip>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>13</x>

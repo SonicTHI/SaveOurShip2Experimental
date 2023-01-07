@@ -226,7 +226,7 @@
 		<defName>ShipHeatsink</defName>
 		<label>heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 200</description>
+		<description>A heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 200Hu\nHeat vented to space: 3Hu/s\nHeat loss: 2Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatsink</texPath>
@@ -271,7 +271,7 @@
 		<defName>ShipHeatsinkLarge</defName>
 		<label>large heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A large heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 1000</description>
+		<description>A large heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 24Hu/s\nHeat loss: 12Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatsinkLarge</texPath>
@@ -315,7 +315,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatManifold</defName>
 		<label>coolant tank</label>
-		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 800</description>
+		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum.\n\nHeat capacity: 800Hu\nHeat loss: 6Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatbank</texPath>
@@ -349,7 +349,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatBankLarge</defName>
 		<label>large coolant tank</label>
-		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room; will not function in vacuum.\n\nHeat capacity: 4000</description>
+		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum.\n\nHeat capacity: 4000Hu\nHeat loss: 18Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankLarge</texPath>
@@ -2353,7 +2353,6 @@
 	<ThingDef ParentName="BaseShipTurretBuilding" Name="BaseShipTorpedoBuilding" Abstract="True">
 		<thingClass>Building_ShipTurretTorpedo</thingClass>
 		<designatorDropdown>ShipTurrets_Torpedo</designatorDropdown>
-		<description>Tubes that launch all kinds of torpedoes. Highly accurate and devastating against shields, but slow to reach targets and vulnerable to point-defense lasers.</description>
 		<graphicData>
 			<graphicClass>Graphic_Single</graphicClass>
 			<damageData>
@@ -2382,7 +2381,8 @@
 	</ThingDef>
 	<ThingDef ParentName="BaseShipTorpedoBuilding">
 		<defName>ShipTorpedoOne</defName>
-		<label>torpedo tube</label>
+		<label>torpedo launcher</label>
+		<description>Stores and launches torpedoes that are accurate and devastating, but slow to reach targets and vulnerable to point-defense lasers.\nTorpedo capacity: 7\nFire rate: 5/min</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/TorpedoTubes_Single</texPath>
 			<drawSize>(3,3)</drawSize>
@@ -2417,7 +2417,8 @@
 	</ThingDef>
 	<ThingDef ParentName="BaseShipTorpedoBuilding">
 		<defName>ShipTorpedoTwo</defName>
-		<label>torpedo tubes (2)</label>
+		<label>torpedo launcher (2)</label>
+		<description>Stores and launches torpedoes that are accurate and devastating, but slow to reach targets and vulnerable to point-defense lasers.\nTorpedo capacity: 14\nFire rate: 10/min</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/TorpedoTubes_small</texPath>
 			<drawSize>(6,3)</drawSize>
@@ -2452,7 +2453,8 @@
 	</ThingDef>
 	<ThingDef ParentName="BaseShipTorpedoBuilding">
 		<defName>ShipTorpedoSix</defName>
-		<label>torpedo tubes (6)</label>
+		<label>torpedo launcher (6)</label>
+		<description>Stores and launches torpedoes that are accurate and devastating, but slow to reach targets and vulnerable to point-defense lasers.\nTorpedo capacity: 28\nFire rate: 30/min</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/TorpedoTubes</texPath>
 			<drawSize>(6,6)</drawSize>

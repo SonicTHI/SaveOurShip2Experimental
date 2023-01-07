@@ -390,7 +390,7 @@
 				<key>z</key>
 				<value>
 					<shapeOrDef>ShipCombatShieldGenerator</shapeOrDef>
-					<radius>42</radius>
+					<radius>45</radius>
 				</value>
 			</li>
 			<li>

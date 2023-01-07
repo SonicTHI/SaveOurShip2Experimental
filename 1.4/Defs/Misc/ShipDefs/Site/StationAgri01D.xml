@@ -11,6 +11,7 @@
 		<combatPoints>159</combatPoints>
 		<neverAttacks>true</neverAttacks>
 		<spaceSite>true</spaceSite>
+		<neverWreck>True</neverWreck>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>56</x>

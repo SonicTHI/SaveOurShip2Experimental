@@ -17,6 +17,7 @@ namespace RimWorld
 
         public int[] grid;
         public bool heatGridDirty;
+        bool loaded = false;
 
         public ShipHeatMapComp(Map map) : base(map)
         {
@@ -26,7 +27,7 @@ namespace RimWorld
         public override void MapComponentUpdate()
         {
             base.MapComponentUpdate();
-            if (!heatGridDirty && Find.TickManager.TicksGame % 60 != 0)// || (Find.TickManager.TicksGame % 60 != 0 && loaded))
+            if (!heatGridDirty || (Find.TickManager.TicksGame % 60 != 0 && loaded))
             {
                 return;
             }
@@ -61,6 +62,7 @@ namespace RimWorld
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Buildings);
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Things);
             heatGridDirty = false;
+            loaded = true;
         }
         void AccumulateToNetNew(HashSet<CompShipHeat> compBatch, ShipHeatNet net)
         {

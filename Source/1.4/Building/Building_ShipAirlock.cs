@@ -283,10 +283,14 @@ namespace RimWorld
                     FleckMaker.ThrowDustPuff(extenders[extenders.Count - 1].Position, this.Map, 1f);
                     FleckMaker.ThrowDustPuff(extenders[extenders.Count - 3].Position, this.Map, 1f);
                 }
-                foreach (Building building in extenders)
+                List<Building> toDestroy = new List<Building>();
+                foreach (Building building in extenders.Where(b => !b.Destroyed))
                 {
-                    if (building != null && building.Spawned)
-                        building.DeSpawn();
+                    toDestroy.Add(building);
+                }
+                foreach (Building building in toDestroy)
+                {
+                    building.Destroy();
                 }
                 unfoldComp.Target = 0.0f;
                 docked = false;

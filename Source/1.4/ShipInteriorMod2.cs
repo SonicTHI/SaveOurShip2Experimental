@@ -457,12 +457,22 @@ namespace SaveOurShip2
 				return false;
 			}).RandomElement();
 		}
-		public static void GenerateFleetProc(float playerCombatPoints, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		public static void GenerateFleetProc(bool tradeShip, float playerCombatPoints, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
 			//use player points to spawn ships of the same navy
 			//fit z, random x
 			//main + escorts, twin large, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
 			cores = new List<Building>();
+			int offset = map.Size.z / 2;
+			bool odd = Rand.Bool;
+			if (!odd || tradeShip)
+			{
+				//pick def, offset by +-z+10, chance for twins
+			}
+            else
+            {
+				//pick def, offset by  -z/2
+			}
 			/*int z = map.Size.z;
 			do
 			{

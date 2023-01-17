@@ -116,9 +116,6 @@ namespace RimWorld
         public bool tradeShip = false; //trades, requires neverAttacks
         public bool navyExclusive = false; //only navies can use this
         public bool customPaintjob = false; //prevents simple navy paint scheme
-        //unused
-        public bool fighterShip = false;
-        public bool carrierShip = false;
 
         public string bigString = "";
 

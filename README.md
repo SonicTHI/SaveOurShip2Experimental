@@ -30,11 +30,13 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Ground defense:** all small ship weapons are now capable of firing on enemy combatants while your ship is landed. Decimate hordes of enemies with the push of a button so long as they are not already too close or your weapons on cooldown.
 
-* **New boarding system and defense:** enemy ships will now send pods directly to your ships outer rooms (this can be disabled in options). Once aboard they will breach doors and attempt to murder your crew. You can escape this fate by utilizing PD weapons to shoot down enemy pods in flight but beware - enemy ships can do the same to you.
+* **New boarding system and defense (this can be disabled in options):** instead of landing in open space when the target ship has working engines, pods will now target the outer rooms. Once aboard enemies will breach doors and attempt to murder your crew. You can escape this fate by utilizing PD weapons to shoot down enemy pods in flight but beware - enemy ships can do the same to you.
 
 * **Redone heat system:** simplified, with less cheese and far better performance. Radiators have been removed while heatsinks now vent heat through the roof even when shielded. Coolant tanks have been added that offer a much larger heat capacity but without the ability to vent it to space.
 
-* **Procedural wreck system:** generates wrecks from ships in the database for you to explore and loot. Other factions and ships might attempt to do the same.
+* **Random fleet system:** face off against randomly generated fleets of ships in various configurations and sizes.
+
+* **Random wreck system:** generates wrecks from ships in the database for you to explore and loot. Other factions and ships might attempt to do the same.
 
 * **Reworked salvage system:** gone are the days of pushing a button and getting a shipload of resources. Use salvage bays to drag defeated ships to your map, repair or deconstruct them for resources or simply let them burn up in atmosphere. A larger crew or taking advantage of other mods or new mechs in Biotech will come in handy.
 

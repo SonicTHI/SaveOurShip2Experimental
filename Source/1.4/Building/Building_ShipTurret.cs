@@ -596,7 +596,10 @@ namespace RimWorld
         {
             if (def.building.turretBurstCooldownTime >= 0f)
             {
-                return def.building.turretBurstCooldownTime;
+                if (GroundDefenseMode)
+                    return def.building.turretBurstCooldownTime * 2; //double CD on ground
+                else
+                    return def.building.turretBurstCooldownTime;
             }
             return AttackVerb.verbProps.defaultCooldownTime;
         }

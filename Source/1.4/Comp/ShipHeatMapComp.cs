@@ -37,7 +37,7 @@ namespace RimWorld
             {
                 foreach (CompShipHeatSink sink in net.Sinks)
                 {
-                    sink.heatStored = net.StorageUsed * sink.Props.heatCapacity / net.StorageCapacity;
+                    sink.heatStored = sink.Props.heatCapacity * sink.RatioInNetwork();
                 }
             }
             //rebuild all nets on map
@@ -83,9 +83,9 @@ namespace RimWorld
                     {
                         foreach (Thing t in cell.GetThingList(comp.parent.Map))
                         {
-                            if (t is ThingWithComps twc && twc != null)
+                            if (t is Building b)
                             {
-                                CompShipHeat heat = twc.TryGetComp<CompShipHeat>();
+                                CompShipHeat heat = b.TryGetComp<CompShipHeat>();
                                 if (heat != null)
                                     newBatch.Add(heat);
                             }
@@ -259,13 +259,14 @@ namespace RimWorld
         public bool Scanned = false;
         public int BoardStartTick = 0;
 
-        public void SpawnEnemyShip(PassingShip passingShip, Faction faction, out List<Building> cores)
+        public void SpawnEnemyShip(PassingShip passingShip, Faction faction, bool fleet, bool bounty, out List<Building> cores)
         {
             cores = new List<Building>();
             EnemyShipDef shipDef = null;
             SpaceNavyDef navyDef = null;
             int wreckLevel = 0;
             bool shieldsActive = true;
+            float CR = 0;
             float radius = 150f;
             float theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta - 0.1f + 0.002f * Rand.Range(0, 20);
             float phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).phi - 0.01f + 0.001f * Rand.Range(-20, 20);
@@ -286,7 +287,9 @@ namespace RimWorld
             }
             else //using player ship combat rating
             {
-                float playerCombatPoints = MapThreat(this.map);
+                if (!fleet)
+                    fleet = Rand.Chance((float)ShipInteriorMod2.fleetChance);
+                CR = MapThreat(this.map);
                 if (passingShip is TradeShip)
                 {
                     //find suitable navyDef
@@ -294,17 +297,12 @@ namespace RimWorld
                     if (faction != null && DefDatabase<SpaceNavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def) && n.enemyShipDefs.Any(s => s.tradeShip)))
                     {
                         navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
-                        //0.5-2
-                        shipDef = navyDef.enemyShipDefs.Where(def => def.tradeShip && def.combatPoints > playerCombatPoints * 0.5f * ShipInteriorMod2.difficultySoS && def.combatPoints < playerCombatPoints * 2f * ShipInteriorMod2.difficultySoS).RandomElement();
-                        if (shipDef == null)
-                            shipDef = navyDef.enemyShipDefs.Where(def => def.tradeShip).RandomElement();
+                        if (!fleet)
+                            shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.enemyShipDefs, CR, true, true);
                     }
-                    else //navy has no trade ships - use default ones
+                    else if (!fleet) //navy has no trade ships - use default ones
                     {
-                        //0.5-2
-                        shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.tradeShip && def.combatPoints >= playerCombatPoints * 0.5f * ShipInteriorMod2.difficultySoS && def.combatPoints < playerCombatPoints * 2f * ShipInteriorMod2.difficultySoS).RandomElement();
-                        if (shipDef == null)
-                            shipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.tradeShip).RandomElement();
+                        shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<EnemyShipDef>.AllDefs.ToList(), CR, true, false);
                     }
 
                     Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty += 5;
@@ -312,29 +310,33 @@ namespace RimWorld
                 }
                 else //find a random attacking ship to spawn
                 {
+                    if (bounty)
+                        CR *= (float)Math.Pow(Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty, 0.2);
                     //spawned with faction override - try to find a valid navy
                     if (faction != null && DefDatabase<SpaceNavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def)))
                     {
                         navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
-                        shipDef = RandomValidShipFrom(navyDef.enemyShipDefs, playerCombatPoints, true);
+                        shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.enemyShipDefs, CR, false, true);
                     }
-                    else if (Rand.Chance(ShipInteriorMod2.navyShipChance)) //try to spawn a random navy ship
+                    else if (Rand.Chance((float)ShipInteriorMod2.navyShipChance)) //try to spawn a random navy ship
                     {
                         //must have ships, hostile to player, able to operate
-                        navyDef = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
-                        if (navyDef != null)
+                        navyDef = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer, true, bounty);
+                        if (navyDef != null && !fleet)
                         {
-                            shipDef = RandomValidShipFrom(navyDef.enemyShipDefs, playerCombatPoints, true);
-                            faction = Find.FactionManager.AllFactions.Where(f => navyDef.factionDefs.Contains(f.def)).RandomElement();
+                            shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.enemyShipDefs, CR, false, true);
                         }
                     }
                     if (faction == null || shipDef == null) //no navy, faction or fallback
                     {
                         navyDef = null;
-                        shipDef = RandomValidShipFrom(DefDatabase<EnemyShipDef>.AllDefs.ToList(), playerCombatPoints, false);
+                        if (!fleet)
+                            shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<EnemyShipDef>.AllDefs.ToList(), CR, false, false);
                     }
-
-                    Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
+                    if (shipDef != null)
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
+                    else
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatFleetDesc"), LetterDefOf.ThreatBig);
                 }
             }
             if (passingShip != null)
@@ -342,7 +344,7 @@ namespace RimWorld
             if (faction == null)
             {
                 if (navyDef != null)
-                    Find.FactionManager.AllFactions.Where(f => navyDef.factionDefs.Contains(f.def)).RandomElement();
+                    faction = Find.FactionManager.AllFactions.Where(f => navyDef.factionDefs.Contains(f.def)).RandomElement();
                 else
                     faction = Faction.OfAncientsHostile;
             }
@@ -363,44 +365,22 @@ namespace RimWorld
                 Find.LetterStack.ReceiveLetter("ShipEncounterStart".Translate(), "ShipEncounterStartDesc".Translate(ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
             }
             //keep this for troubleshooting
-            Log.Message("SOS2: spawning shipdef: " + shipDef + ", of faction: " + faction + ", of navy: " + navyDef + ", wrecklvl: " + wreckLevel);
             MasterMapComp.ShipFaction = faction;
             if (wreckLevel != 3)
                 MasterMapComp.ShipLord = LordMaker.MakeNewLord(faction, new LordJob_DefendShip(faction, map.Center), map);
-            //spawn ship
-            ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, faction, MasterMapComp.ShipLord, out cores, !shieldsActive, false, wreckLevel, navyDef: navyDef);
+            if (fleet) //spawn fleet - not for passingShips other than trade yet
+            {
+                ShipInteriorMod2.GenerateFleet(CR, ShipCombatMasterMap, passingShip, faction, MasterMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
+                return;
+            }
+            else //spawn ship
+            {
+                Log.Message("SOS2: spawning shipdef: " + shipDef + ", of faction: " + faction + ", of navy: " + navyDef + ", wrecklvl: " + wreckLevel);
+                ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, faction, MasterMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
+            }
             //post ship spawn
             //if (cores != null)
             //    Log.Message("Spawned enemy cores: " + cores.Count);
-        }
-        public EnemyShipDef RandomValidShipFrom(List<EnemyShipDef> ships, float CR, bool allowNavyExc, int z = 0)
-        {
-            EnemyShipDef shipDef = null;
-            float adjCR = CR * (float)ShipInteriorMod2.difficultySoS;
-            if (CR < 700 && CR > 100) //reduce difficulty in this range - would be better as a timed thing
-                adjCR *= 0.8f;
-            //0.5-1.5
-            shipDef = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.5f * adjCR, allowNavyExc, z)).RandomElement();
-            if (shipDef == null) //0.25-2
-                shipDef = ships.Where(def => ValidShipDef(def, 0.25f * adjCR, 2f * adjCR, allowNavyExc, z)).RandomElement();
-            if (shipDef == null) //too high or too low adjCR - ignore difficulty
-            {
-                Log.Message("SOS2: difficulty set too low/high or no suitable ships found for your CR, using fallback");
-                if (CR < 1000)
-                    shipDef = ships.Where(def => ValidShipDef(def, 0f * CR, 1f * CR, allowNavyExc, z)).RandomElement();
-                else
-                    shipDef = ships.Where(def => ValidShipDef(def, 0.5f * CR, 100f * CR, allowNavyExc, z)).RandomElement();
-            }
-            if (shipDef == null && !allowNavyExc && z == 0) //any
-            {
-                Log.Warning("SOS2: found no suitable enemy ship, choosing any random.");
-                shipDef = ships.Where(def => !def.neverAttacks && !def.neverRandom && (allowNavyExc || !def.navyExclusive)).RandomElement();
-            }
-            return shipDef;
-        }
-        public bool ValidShipDef(EnemyShipDef def, float min, float max, bool allowNavyExc, int z = 0)
-        {
-            return !def.neverAttacks && !def.neverRandom && def.combatPoints > min && def.combatPoints < max && (allowNavyExc || !def.navyExclusive && (z == 0 || (def.sizeZ < z && !def.neverFleet)));
         }
         public int MapThreat(Map map)
         {
@@ -423,7 +403,7 @@ namespace RimWorld
             return ShipThreat;
         }
 
-        public void StartShipEncounter(Building playerShipRoot, PassingShip passingShip = null, Map enemyMap = null, Faction fac = null, int range = 0)
+        public void StartShipEncounter(Building playerShipRoot, PassingShip passingShip = null, Map enemyMap = null, Faction fac = null, int range = 0, bool fleet = false, bool bounty = false)
         {
             //startup on origin
             if (playerShipRoot == null || InCombat || BurnUpSet)
@@ -439,7 +419,7 @@ namespace RimWorld
             attackedTradeship = false;
             //target or create master + spawn ship
             if (enemyMap == null)
-                SpawnEnemyShip(passingShip, fac, out cores);
+                SpawnEnemyShip(passingShip, fac, fleet, bounty, out cores);
             else
                 ShipCombatMasterMap = enemyMap;
             //master vars

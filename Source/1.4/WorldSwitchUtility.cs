@@ -697,26 +697,7 @@ namespace SaveOurShip2
                     Building_ShipBridge bridge = map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();
                     if (bridge == null)
                         return;
-                    int threatRating = map.GetComponent<ShipHeatMapComp>().MapThreat(map);
-                    AttackableShip ship = new AttackableShip();
-                    Faction enemyShipFac = Faction.OfAncientsHostile;
-                    if (Rand.Chance(ShipInteriorMod2.navyShipChance))
-                    {
-                        SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavyBountyHunts();
-                        if (navy != null)
-                        {
-                            ship.attackableShip = navy.enemyShipDefs.Where(def => def.combatPoints > threatRating * ShipInteriorMod2.difficultySoS && def.combatPoints <= Math.Pow(PlayerFactionBounty, 0.3) * threatRating * ShipInteriorMod2.difficultySoS && !def.neverAttacks && !def.neverRandom).RandomElement();
-                            enemyShipFac = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
-                        }
-                    }
-                    if (enemyShipFac == Faction.OfAncientsHostile) //no navy or fallback
-                    {
-                        ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.combatPoints > threatRating * ShipInteriorMod2.difficultySoS && def.combatPoints <= Math.Pow(PlayerFactionBounty, 0.3) * threatRating * ShipInteriorMod2.difficultySoS && !def.neverAttacks && !def.neverRandom).RandomElement();
-                        if (ship.attackableShip == null)
-                            ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverAttacks && !def.neverRandom).RandomElement();
-                    }
-                    ship.shipFaction = enemyShipFac;
-                    map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, ship);
+                    map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, bounty : true);
                 }
             }
         }

@@ -32,8 +32,6 @@ namespace RimWorld
         List<Building> cachedPods;
         List<string> fail;
 
-        bool ShouldStartCombat = false;
-
         public ShipHeatMapComp mapComp;
         public CompShipHeat heatComp;
         public CompPowerTrader powerComp;
@@ -550,12 +548,26 @@ namespace RimWorld
                             {
                                 action = delegate
                                 {
-                                    ShouldStartCombat = true;
+                                    if (Find.TickManager.Paused)
+                                        Find.TickManager.TogglePaused();
+                                    mapComp.StartShipEncounter(this);
                                 },
                                 defaultLabel = "Dev: Start ship battle",
                             };
                             startBattle.hotKey = KeyBindingDefOf.Misc9;
                             yield return startBattle;
+                            Command_Action startFleetBattle = new Command_Action
+                            {
+                                action = delegate
+                                {
+                                    if (Find.TickManager.Paused)
+                                        Find.TickManager.TogglePaused();
+                                    mapComp.StartShipEncounter(this, fleet: true);
+                                },
+                                defaultLabel = "Dev: Start random fleet battle",
+                            };
+                            startFleetBattle.hotKey = KeyBindingDefOf.Misc10;
+                            yield return startFleetBattle;
                             Command_Action loadshipdef = new Command_Action
                             {
                                 action = delegate
@@ -564,7 +576,7 @@ namespace RimWorld
                                 },
                                 defaultLabel = "Dev: load ship from database",
                             };
-                            loadshipdef.hotKey = KeyBindingDefOf.Misc9;
+                            loadshipdef.hotKey = KeyBindingDefOf.Misc11;
                             yield return loadshipdef;
                             if (WorldSwitchUtility.PastWorldTracker.PastWorlds.Any())
                             {
@@ -816,11 +828,6 @@ namespace RimWorld
             base.Tick();
             if (selected && !Find.Selector.IsSelected(this))
                 selected = false;
-            if (ShouldStartCombat)
-            {
-                mapComp.StartShipEncounter(this);
-                ShouldStartCombat = false;
-            }
             //td rem this?
             int ticks = Find.TickManager.TicksGame;
             if (ticks % 250 == 0)

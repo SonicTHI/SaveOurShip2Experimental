@@ -32,7 +32,6 @@ namespace SaveOurShip2
 		public static HugsLib.Utils.ModLogger instLogger;
 
 		public static readonly float crittersleepBodySize = 0.7f;
-		public static readonly float navyShipChance = 0.2f;
 		public static bool ArchoStuffEnabled = true;//unassigned???
 		public static bool SoSWin = false;
 		public static bool loadedGraphics = false;
@@ -154,6 +153,8 @@ namespace SaveOurShip2
 
 		public static SettingHandle<double> difficultySoS;
 		public static SettingHandle<double> frequencySoS;
+		public static SettingHandle<double> navyShipChance;
+		public static SettingHandle<double> fleetChance;
 		public static SettingHandle<bool> easyMode;
 		public static SettingHandle<bool> useVacuumPathfinding;
 		public static SettingHandle<int> minTravelTime;
@@ -166,11 +167,19 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			Log.Message("SOS2EXP V76f5 active");
+			Log.Message("SOS2EXP V77 active");
+			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
+            {
+				Log.Error("SOS2: mod \"" + ship.modContentPack.Name + "\" contains EnemyShipDef: \"" + ship + "\" that can spawn as a random ship but is saved with an old version of CK!");
+			}
 			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
 				"Affects the size and strength of enemy ships.", 1.0);
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
 				"Higher values mean less cooldown time between ship battles.", 1.0);
+			navyShipChance = Settings.GetHandle("navyShipChance", "Navy chance",
+				"", 0.2);
+			fleetChance = Settings.GetHandle("fleetChance", "Random fleet chance",
+				"", 0.3);
 			easyMode = Settings.GetHandle("easyMode", "Easy Mode",
 				"If checked will prevent player pawns dying to PD and pods landing in outer rooms of your ship",
 				false);
@@ -429,11 +438,13 @@ namespace SaveOurShip2
 			impactSite.Tile = tile;
 			Find.WorldObjects.Add(impactSite);
 		}
-		public static SpaceNavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true)
+		public static SpaceNavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true, bool bountyHunts = true)
 		{
 			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
 			{
 				if (needsShips && navy.enemyShipDefs.NullOrEmpty())
+					return false;
+				if (bountyHunts && !navy.bountyHunts)
 					return false;
 				if (hostileTo != null) //any faction that has same def as navy, defeat check, hostile check
 				{
@@ -457,40 +468,224 @@ namespace SaveOurShip2
 				return false;
 			}).RandomElement();
 		}
-		public static void GenerateFleetProc(bool tradeShip, float playerCombatPoints, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		public static EnemyShipDef RandomValidShipFrom(List<EnemyShipDef> ships, float CR, bool tradeShip, bool allowNavyExc, bool randomFleet = false, int minZ = 0, int maxZ = 0)
 		{
-			//use player points to spawn ships of the same navy
-			//fit z, random x
-			//main + escorts, twin large, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
-			cores = new List<Building>();
-			int offset = map.Size.z / 2;
-			bool odd = Rand.Bool;
-			if (!odd || tradeShip)
+			Log.Message("Spawning ship from CR: " + CR + " tradeShip: " + tradeShip + " allowNavyExc: " + allowNavyExc + " randomFleet: " + randomFleet + " minZ: " + minZ + " maxZ: " + maxZ);
+			float adjCR = CR * Mathf.Clamp((float)difficultySoS, 0.1f, 5f);
+			if (CR < 500) //reduce difficulty in this range - would be better as a timed thing
+				adjCR *= 0.8f;
+			List<EnemyShipDef> check = new List<EnemyShipDef>();
+			if (randomFleet)
 			{
-				//pick def, offset by +-z+10, chance for twins
+				check = ships.Where(def => ValidShipDef(def, 0.8f * adjCR, 1.2f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				if (check.Any())
+					return check.RandomElement();
+				Log.Message("fleetship");
 			}
-            else
-            {
-				//pick def, offset by  -z/2
-			}
-			/*int z = map.Size.z;
-			do
+			Log.Message("fallback 0");
+			check = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.5f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+			if (check.Any())
+				return check.RandomElement();
+			Log.Message("fallback 1");
+			check = ships.Where(def => ValidShipDef(def, 0.25f * adjCR, 2f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+			if (check.Any())
+				return check.RandomElement();
+			//too high or too low adjCR - ignore difficulty
+			Log.Warning("SOS2: difficulty set too low/high or no suitable ships found for your CR, using fallback");
+			if (CR < 1000)
+				check = ships.Where(def => ValidShipDef(def, 0f * CR, 1f * CR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+			else
+				check = ships.Where(def => ValidShipDef(def, 0.5f * CR, 100f * CR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+			if (check.Any())
+				return check.RandomElement();
+			//last fallback, not for fleets or navy exclusive
+			if (tradeShip)
 			{
-				float points = playerCombatPoints * 0.66f;
-				EnemyShipDef shipDef = RandomValidShipFrom(navyDef.enemyShipDefs, points, true, z);
-				playerCombatPoints -= shipDef.combatPoints;
-				z -= shipDef.sizeZ + 10;
-				List<Building> core = new List<Building>();
-				offsetX = Rand.RangeInclusive(20, map.Size.x - 20 - shipDef.sizeX);
-				GenerateShip(shipDef, map, passingShip, fac, lord, out core, shipActive, clearArea, wreckLevel, offsetX, offsetZ, navyDef);
-				cores.AddRange(core);
+				Log.Message("trade ship fallback");
+				check = ships.Where(def => ValidShipDef(def, 0, 100000f, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				if (check.Any())
+					return check.RandomElement();
+				Log.Warning("SOS2: navy has no trade ships, choosing any random.");
+				return DefDatabase<EnemyShipDef>.AllDefs.Where(def => ValidShipDef(def, 0f, 100000f, tradeShip, false, randomFleet, minZ, maxZ)).RandomElement();
 			}
-			while (playerCombatPoints < 50 || z < 30);
-			List<IntVec3> cellsToFog = new List<IntVec3>(); //td
-			PostGenerateShip(map, clearArea, cellsToFog);*/
+			else if (!allowNavyExc && !randomFleet)
+			{
+				Log.Warning("SOS2: found no suitable enemy ship, choosing any random.");
+				check = ships.Where(def => ValidShipDef(def, 0, 100000f, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				if (check.Any())
+					return check.RandomElement();
+				ships.Where(def => !def.neverAttacks && !def.neverRandom && (allowNavyExc || !def.navyExclusive)).RandomElement();
+			}
+			return null;
+		}
+		public static bool ValidShipDef(EnemyShipDef def, float CRmin, float CRmax, bool tradeShip, bool allowNavyExc, bool randomFleet, int minZ = 0, int maxZ = 0)
+		{
+			if (tradeShip)
+			{
+				if (!def.tradeShip)
+					return false;
+			}
+			else if (def.neverAttacks)
+				return false;
+
+			if (randomFleet && (def.neverFleet || !def.ships.NullOrEmpty()))
+				return false;
+			if (def.neverRandom || def.combatPoints < CRmin || def.combatPoints > CRmax || (minZ > 0 && def.sizeZ < minZ) || (maxZ > 0 && def.sizeZ > maxZ))
+			{
+				return false;
+			}
+			if (def.navyExclusive && !allowNavyExc)
+				return false;
+			return true;
 		}
 		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
+			List<IntVec3> area = new List<IntVec3>();
+			List<IntVec3> areaOut;
+			cores = new List<Building>();
+			List<Building> coresOut;
+			if (shipDef.ships.NullOrEmpty())
+			{
+				GenerateShipDef(shipDef, map, passingShip, fac, lord, out coresOut, out areaOut, shipActive, clearArea, wreckLevel, offsetX, offsetZ, navyDef);
+				cores.AddRange(coresOut);
+				area.AddRange(areaOut);
+			}
+            else
+			{
+				for (int i = 0; i < shipDef.ships.Count; i++)
+				{
+					Log.Message("Spawning fleet ship nr." + i);
+					var genShip = DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship);
+					if (genShip == null)
+					{
+						Log.Error("Fleet ship not found in database");
+						return;
+					}
+					GenerateShipDef(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out coresOut, out areaOut, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
+					cores.AddRange(coresOut);
+					area.AddRange(areaOut);
+				}
+			}
+			PostGenerateShipDef(map, clearArea, area);
+		}
+		public static void GenerateFleet(float CR, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, SpaceNavyDef navyDef = null)
+		{
+			//use player points to spawn ships of the same navy, fit z, random x
+			//main + twin, twin, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
+			//60-20-20,50-50,40-40-10-10
+			List<EnemyShipDef> ships;
+			bool allowNavyExc = true;
+			if (navyDef != null)
+				ships = navyDef.enemyShipDefs;
+            else
+			{
+				allowNavyExc = false;
+				ships = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.navyExclusive).ToList();
+			}
+			bool tradeShip = passingShip is TradeShip;
+			List<IntVec3> area = new List<IntVec3>();
+			List<IntVec3> areaOut;
+			cores = new List<Building>();
+			List<Building> coresOut;
+			bool firstLarger = Rand.Bool;
+			bool escorts = Rand.Bool;
+			float CRfactor = CR;
+			Log.Message("Spawning random fleet from CR: " + CR + " navyDef: " + navyDef + " tradeShip: " + tradeShip + " firstLarger: " + firstLarger + " escorts: " + escorts);
+			int marginZ;
+			if (firstLarger)
+			{
+				CRfactor = 0.6f;
+				marginZ = 15;
+			}
+			else if (escorts)
+			{
+				CRfactor = 0.3f;
+				marginZ = 15;
+			}
+			else
+			{
+				CRfactor = 0.4f;
+				marginZ = 25;
+			}
+			int offsetZ = (map.Size.z - marginZ) / 2;
+			int offsetZup = (map.Size.z + marginZ) / 2;
+			int maxSizeZ;
+			EnemyShipDef shipDef = null;
+			int i = 1;
+			while (i < 8 && CR > 50 && (offsetZ > 20 || offsetZup < map.Size.z - 20))
+			{
+				Log.Message("loop: " + i);
+				if (i % 2 == 0) //even up 2,4,6
+				{
+					maxSizeZ = map.Size.z - offsetZup - marginZ;
+					if (!(i == 2 && !tradeShip && !firstLarger && Rand.Chance(0.3f))) //second ship, chance for twins - retain def
+						shipDef = RandomValidShipFrom(ships, CR * CRfactor, false, allowNavyExc, true, 0, maxSizeZ);
+				}
+				else //odd down - 1,3,5
+				{
+					maxSizeZ = offsetZ - marginZ;
+					if (i == 1) //first ship, can be trade
+					{
+						if (firstLarger) //larger first
+						{
+							maxSizeZ = offsetZ * 4 / 3;
+						}
+						if (tradeShip)
+						{
+							shipDef = RandomValidShipFrom(ships, CR * CRfactor, true, allowNavyExc, true, 0, maxSizeZ);
+						}
+						else
+						{
+							shipDef = RandomValidShipFrom(ships, CR * CRfactor, false, allowNavyExc, true, 0, maxSizeZ);
+						}
+						if (firstLarger) //shift all to center
+						{
+							offsetZ += (marginZ + shipDef.sizeZ) / 2;
+							offsetZup += (marginZ + shipDef.sizeZ) / 2;
+						}
+						else if (!escorts)
+							CRfactor = 0.9f;
+					}
+					else
+						shipDef = RandomValidShipFrom(ships, CR, false, allowNavyExc, true, 0, maxSizeZ);
+				}
+				//stop if no escorts
+				if (!escorts && ((i > 2 && !firstLarger) || (i > 3 && firstLarger)))
+				{
+					break;
+				}
+
+				int offsetZAdj;
+				if (i % 2 == 0) //after def is picked, adjust z for next offset
+				{
+					offsetZAdj = offsetZup;
+					offsetZup += shipDef.sizeZ + marginZ;
+				}
+				else
+				{
+					offsetZ -= shipDef.sizeZ;
+					offsetZAdj = offsetZ;
+					offsetZ -= marginZ;
+				}
+				Log.Message("random ship: " + shipDef + " z: " + offsetZAdj);
+				int sizeXadj = map.Size.x - shipDef.sizeX;
+				int offsetX = Mathf.Clamp((int)Rand.Gaussian(sizeXadj / 2, sizeXadj / 8), 20, sizeXadj - 20);
+				CR -= shipDef.combatPoints;
+				Log.Message("random ship: " + shipDef + " CR remain: " + CR);
+				if (shipDef != null)
+				{
+					GenerateShipDef(shipDef, map, passingShip, fac, lord, out coresOut, out areaOut, !shipActive, false, wreckLevel, offsetX, offsetZAdj, navyDef);
+					cores.AddRange(coresOut);
+					area.AddRange(areaOut);
+				}
+				i++;
+			}
+			PostGenerateShipDef(map, clearArea, area);
+		}
+		public static void GenerateShipDef(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		{
+			cellsToFog = new List<IntVec3>();
+			cores = new List<Building>();
 			bool unlockedJT = false;
 			if (WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("JTDriveToo"))
 				unlockedJT = true;
@@ -500,26 +695,6 @@ namespace SaveOurShip2
 			bool royActive = false;
 			if (ModsConfig.RoyaltyActive)
 				royActive = true;
-			cores = new List<Building>();
-			List<IntVec3> cellsToFog = new List<IntVec3>();
-			if (!shipDef.ships.NullOrEmpty())
-			{
-				for (int i = 0; i < shipDef.ships.Count; i++)
-				{
-					Log.Message("Spawning fleet ship nr." + i);
-					List<Building> core = new List<Building>();
-					var genShip = DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship);
-					if (genShip == null)
-					{
-						Log.Error("Fleet ship not found in database");
-						return;
-					}
-					GenerateShip(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out core, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
-					cores.AddRange(core);
-				}
-				PostGenerateShip(map, clearArea, cellsToFog);
-				return;
-			}
 
 
 			int size = shipDef.sizeX * shipDef.sizeZ;
@@ -1068,11 +1243,53 @@ namespace SaveOurShip2
 					}
 				}
 			}
-			//post spawn
-			if (shipDef.ships.NullOrEmpty())
-				PostGenerateShip(map, clearArea, cellsToFog);
 		}
-        public static List<IntVec3> FindCellOnOuterHull(Map map, int max, CellRect shipArea)
+		public static void PostGenerateShipDef(Map map, bool clearArea, List<IntVec3> shipArea)
+		{
+			//HashSet<Room> validRooms = new HashSet<Room>();
+			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
+			if (!clearArea)
+			{
+				//all cells, except if outdoors+outdoors border
+				Room outdoors = new IntVec3(0, 0, 0).GetRoom(map); //td make this find first cell outside
+				List<IntVec3> excludeCells = new List<IntVec3>();
+				foreach (IntVec3 cell in outdoors.BorderCells.Where(c => c.InBounds(map)))
+				{
+					//find larger than 1x1 edifice buildings and remove their cells from tofog
+					Building edifice = cell.GetEdifice(map);
+					if (edifice != null && edifice.def.MakeFog && (edifice.def.size.x > 1 || edifice.def.size.z > 1))
+					{
+						foreach (IntVec3 v in edifice.OccupiedRect())//.ExpandedBy(1))
+						{
+							//if (v.GetEdifice(map) != null)
+							shipArea.Remove(v);
+						}
+					}
+				}
+				foreach (IntVec3 cell in shipArea.Except(outdoors.Cells.Concat(outdoors.BorderCells.Where(c => c.InBounds(map)))))
+				{
+					map.fogGrid.fogGrid[map.cellIndices.CellToIndex(cell)] = true;
+					//validRooms.Add(cell.GetRoom(map));
+				}
+			}
+			/*if (validRooms.Any())
+			{
+				Log.Message("set temp in rooms: " + validRooms.Count);
+				foreach (Room r in validRooms.Where(r => r != null))
+				{
+					if (r.OpenRoofCount < 2)
+					{
+						r.Temperature = 21;
+					}
+				}
+			}*/
+			foreach (Room r in map.regionGrid.allRooms)
+				r.Temperature = 21;
+			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
+			if (Current.ProgramState == ProgramState.Playing)
+				map.mapDrawer.RegenerateEverythingNow();
+		}
+		public static List<IntVec3> FindCellOnOuterHull(Map map, int max, CellRect shipArea)
 		{
 			//targets outer cells
 			Room outdoors = new IntVec3(0, 0, 0).GetRoom(map);
@@ -1162,51 +1379,6 @@ namespace SaveOurShip2
 				}
 			}
 			//secondaries?
-		}
-		private static void PostGenerateShip(Map map, bool clearArea, List<IntVec3> shipArea)
-		{
-			//HashSet<Room> validRooms = new HashSet<Room>();
-			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
-			if (!clearArea)
-			{
-				//all cells, except if outdoors+outdoors border
-				Room outdoors = new IntVec3(0, 0, 0).GetRoom(map); //td make this find first cell outside
-				List<IntVec3> excludeCells = new List<IntVec3>();
-				foreach (IntVec3 cell in outdoors.BorderCells.Where(c => c.InBounds(map)))
-				{
-					//find larger than 1x1 edifice buildings and remove their cells from tofog
-					Building edifice = cell.GetEdifice(map);
-					if (edifice != null && edifice.def.MakeFog && (edifice.def.size.x > 1 || edifice.def.size.z > 1))
-					{
-						foreach (IntVec3 v in edifice.OccupiedRect())//.ExpandedBy(1))
-						{
-							//if (v.GetEdifice(map) != null)
-								shipArea.Remove(v);
-						}
-					}
-				}
-				foreach (IntVec3 cell in shipArea.Except(outdoors.Cells.Concat(outdoors.BorderCells.Where(c => c.InBounds(map)))))
-                {
-					map.fogGrid.fogGrid[map.cellIndices.CellToIndex(cell)] = true;
-					//validRooms.Add(cell.GetRoom(map));
-				}
-			}
-			/*if (validRooms.Any())
-			{
-				Log.Message("set temp in rooms: " + validRooms.Count);
-				foreach (Room r in validRooms.Where(r => r != null))
-				{
-					if (r.OpenRoofCount < 2)
-					{
-						r.Temperature = 21;
-					}
-				}
-			}*/
-			foreach (Room r in map.regionGrid.allRooms)
-				r.Temperature = 21;
-			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
-			if (Current.ProgramState == ProgramState.Playing)
-				map.mapDrawer.RegenerateEverythingNow();
 		}
 		private static void GenerateHull(List<IntVec3> border, List<IntVec3> interior, Faction fac, Map map)
 		{
@@ -1474,6 +1646,8 @@ namespace SaveOurShip2
 				Find.Selector.Deselect(ob);
 			Current.Game.CurrentMap = targetMap;
 			Find.Selector.Select(fakeMover);
+			if (Find.TickManager.Paused)
+				Find.TickManager.TogglePaused();
 			InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
 		}
 		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)

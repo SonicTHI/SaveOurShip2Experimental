@@ -321,7 +321,11 @@ namespace RimWorld
                     else if (Rand.Chance((float)ShipInteriorMod2.navyShipChance)) //try to spawn a random navy ship
                     {
                         //must have ships, hostile to player, able to operate
-                        navyDef = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer, true, bounty);
+                        if (bounty)
+                            navyDef = ShipInteriorMod2.ValidRandomNavyBountyHunts();
+                        else
+                            navyDef = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer, true);
+
                         if (navyDef != null && !fleet)
                         {
                             shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.enemyShipDefs, CR, false, true);

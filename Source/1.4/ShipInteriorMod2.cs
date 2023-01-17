@@ -167,7 +167,7 @@ namespace SaveOurShip2
 		public override void DefsLoaded()
 		{
 			base.DefsLoaded();
-			Log.Message("SOS2EXP V77 active");
+			Log.Message("SOS2EXP V77f1 active");
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
             {
 				Log.Error("SOS2: mod \"" + ship.modContentPack.Name + "\" contains EnemyShipDef: \"" + ship + "\" that can spawn as a random ship but is saved with an old version of CK!");
@@ -177,9 +177,9 @@ namespace SaveOurShip2
 			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
 				"Higher values mean less cooldown time between ship battles.", 1.0);
 			navyShipChance = Settings.GetHandle("navyShipChance", "Navy chance",
-				"", 0.2);
+				"How likely navies will appear in random encounters.", 0.2);
 			fleetChance = Settings.GetHandle("fleetChance", "Random fleet chance",
-				"", 0.3);
+				"Chance for random unknown enemy ships and traders to be fleets.", 0.3);
 			easyMode = Settings.GetHandle("easyMode", "Easy Mode",
 				"If checked will prevent player pawns dying to PD and pods landing in outer rooms of your ship",
 				false);

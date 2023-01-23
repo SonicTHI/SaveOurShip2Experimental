@@ -37,7 +37,7 @@ namespace RimWorld.Planet
 		public void ResetForceExitAndRemoveMapCountdown()
 		{
 			this.ticksLeftToForceExitAndRemoveMap = -1;
-			if (parent.Biome != null && parent.Biome == ResourceBank.BiomeDefOf.OuterSpaceBiome && parent.GetComponent<TimeoutComp>() != null)
+			if (parent.Biome != null && parent.Biome == ShipInteriorMod2.OuterSpaceBiome && parent.GetComponent<TimeoutComp>() != null)
 				this.ticksLeftToForceExitAndRemoveMap = parent.GetComponent<TimeoutComp>().TicksLeft;
 		}
 		public void StartForceExitAndRemoveMapCountdown()

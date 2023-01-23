@@ -36,7 +36,7 @@ namespace RimWorld
             return ReservationUtility.Reserve(base.pawn, base.job.targetA, base.job, 1, 1, null, true);
         }
 
-        public override IEnumerable<Toil> MakeNewToils()
+        protected override IEnumerable<Toil> MakeNewToils()
         {
             this.job.count = 1;
             ToilFailConditions.FailOnDespawnedNullOrForbidden<JobDriver_LoadTorpedoTube>(this, (TargetIndex)1);

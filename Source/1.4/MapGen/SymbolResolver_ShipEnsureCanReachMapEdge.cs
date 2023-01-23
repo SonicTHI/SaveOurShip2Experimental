@@ -17,9 +17,11 @@ namespace RimWorld.BaseGen
         public override void Resolve(ResolveParams rp)
         {
             SymbolResolver_ShipEnsureCanReachMapEdge.cellsInRandomOrder.Clear();
-            foreach (var item in rp.rect)
+            CellRect.CellRectIterator iterator = rp.rect.GetIterator();
+            while (!iterator.Done())
             {
-                SymbolResolver_ShipEnsureCanReachMapEdge.cellsInRandomOrder.Add(item);
+                SymbolResolver_ShipEnsureCanReachMapEdge.cellsInRandomOrder.Add(iterator.Current);
+                iterator.MoveNext();
             }
             SymbolResolver_ShipEnsureCanReachMapEdge.cellsInRandomOrder.Shuffle<IntVec3>();
             this.TryMakeAllCellsReachable(false, rp);

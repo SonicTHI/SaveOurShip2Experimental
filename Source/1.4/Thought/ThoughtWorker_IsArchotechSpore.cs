@@ -10,9 +10,9 @@ namespace RimWorld
 {
     class ThoughtWorker_IsArchotechSpore : ThoughtWorker
 	{
-		public override ThoughtState CurrentSocialStateInternal(Pawn p, Pawn other)
+		protected override ThoughtState CurrentSocialStateInternal(Pawn p, Pawn other)
 		{
-			return other.health.hediffSet.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SoSHologramArchotech)!=null;
+			return other.health.hediffSet.GetFirstHediffOfDef(ShipInteriorMod2.SoSHologramArchotech)!=null;
 		}
     }
 }

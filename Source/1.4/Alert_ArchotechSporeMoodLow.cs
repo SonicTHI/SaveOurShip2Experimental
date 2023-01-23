@@ -17,7 +17,7 @@ namespace RimWorld
 				List<Map> maps = Find.Maps;
 				for (int i = 0; i < maps.Count; i++)
 				{
-					List<Thing> list = maps[i].listerThings.ThingsOfDef(ResourceBank.ThingDefOf.ShipArchotechSpore);
+					List<Thing> list = maps[i].listerThings.ThingsOfDef(ShipInteriorMod2.ArchotechSpore);
 					for (int j = 0; j < list.Count; j++)
 					{
 						Building_ArchotechSpore spore = list[j] as Building_ArchotechSpore;

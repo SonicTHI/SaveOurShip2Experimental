@@ -93,7 +93,7 @@ namespace Verse
             {
                 if (which >= this.subMats.Length)
                 {
-                    Log.Warning("Cannot get submat of index " + which + ": out of range.");
+                    Log.Warning("Cannot get submat of index " + which + ": out of range.", false);
                     return BaseContent.BadMat;
                 }
                 return this.subMats[which];

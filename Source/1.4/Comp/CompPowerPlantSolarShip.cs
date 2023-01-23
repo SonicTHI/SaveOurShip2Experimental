@@ -20,7 +20,7 @@ namespace RimWorld
             get { return props as CompProperties_PowerPlantSolarShip; }
         }
 
-        public override float DesiredPowerOutput
+        protected override float DesiredPowerOutput
         {
             get
             {

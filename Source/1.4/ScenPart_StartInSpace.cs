@@ -199,7 +199,7 @@ namespace RimWorld
 					}
                 }
 			}
-			Current.Game.DeinitAndRemoveMap_NewTemp(Find.CurrentMap, false);
+			Current.Game.DeinitAndRemoveMap(Find.CurrentMap);
             CameraJumper.TryJump(spaceMap.Center, spaceMap);
 			spaceMap.weatherManager.curWeather = WeatherDef.Named("OuterSpaceWeather");
 			spaceMap.weatherManager.lastWeather = WeatherDef.Named("OuterSpaceWeather");

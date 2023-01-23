@@ -21,12 +21,12 @@ namespace RimWorld
             }
         }
 
-        public override bool CanScatterAt(IntVec3 c, Map map)
+        protected override bool CanScatterAt(IntVec3 c, Map map)
         {
             return true;
         }
 
-        public override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
+        protected override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
         {
             TerrainDef moonTerrain = ThingDef.Named("Marble").building.naturalTerrain;
             foreach(IntVec3 cell in map.AllCells)

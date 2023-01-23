@@ -21,7 +21,7 @@ namespace RimWorld.BaseGen
         {
             if (rp.rect.Width < 9 && rp.rect.Height < 9)
             {
-                Log.Warning("Too small rect. params=" + rp);
+                Log.Warning("Too small rect. params=" + rp, false);
                 return;
             }
             bool flag = (Rand.Bool && rp.rect.Height >= 9) || rp.rect.Width < 9;

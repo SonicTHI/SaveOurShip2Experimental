@@ -21,7 +21,7 @@ namespace RimworldMod
                 if (map == null) return false;
                 if (spaceMaps.TryGetValue(map.uniqueID, out var space)) return space;
 
-                var isSpace = map.Biome == ResourceBank.BiomeDefOf.OuterSpaceBiome;
+                var isSpace = map.Biome == ShipInteriorMod2.OuterSpaceBiome;
                 spaceMaps.Add(map.uniqueID, isSpace);
                 return isSpace;
             }

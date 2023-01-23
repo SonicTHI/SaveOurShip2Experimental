@@ -30,7 +30,7 @@ namespace RimWorld
 			{
 				return null;
 			}
-			List<Thing> spores = pawn.Map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.ShipArchotechSpore);
+			List<Thing> spores = pawn.Map.listerThings.ThingsOfDef(ShipInteriorMod2.ArchotechSpore);
 			if (spores.Count == 0)
 				return null;
 			if (pawn.WorkTagIsDisabled(WorkTags.Violent))

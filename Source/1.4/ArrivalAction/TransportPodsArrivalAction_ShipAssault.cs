@@ -38,7 +38,7 @@ namespace RimWorld.Planet
 		}
 		public override void Arrived(List<ActiveDropPodInfo> pods, int tile)
 		{
-			if (ShipInteriorMod2.easyMode)
+			if (SaveOurShip2.ModSettings_SoS.easyMode)
 				cells = mapParent.Map.AllCells.Where(c => DropCellFinder.CanPhysicallyDropInto(c, mapParent.Map, true, true) && c.Standable(mapParent.Map)).ToList();
 			else
 				cells = FindTargetsForPods(mapParent.Map, pods.Count);

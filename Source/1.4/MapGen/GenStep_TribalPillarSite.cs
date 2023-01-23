@@ -21,12 +21,12 @@ namespace RimWorld
             }
         }
 
-        protected override bool CanScatterAt(IntVec3 c, Map map)
+        public override bool CanScatterAt(IntVec3 c, Map map)
         {
             return true;
         }
 
-        protected override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
+        public override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
         {
             Faction nastyTribals = Find.FactionManager.AllFactions.Where(fac => fac.def.techLevel == TechLevel.Neolithic && fac.PlayerRelationKind==FactionRelationKind.Hostile).FirstOrDefault();
             Lord defendShip = LordMaker.MakeNewLord(nastyTribals, new LordJob_DefendShip(nastyTribals, map.Center), map);

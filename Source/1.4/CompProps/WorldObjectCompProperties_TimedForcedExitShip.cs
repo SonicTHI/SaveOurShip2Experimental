@@ -17,12 +17,11 @@ namespace RimWorld
 			{
 				yield return text;
 			}
-			IEnumerator<string> enumerator = null;
+			
 			if (!typeof(MapParent).IsAssignableFrom(parentDef.worldObjectClass))
 			{
 				yield return parentDef.defName + " has WorldObjectCompProperties_TimedForcedExit but it's not MapParent.";
 			}
-			yield break;
 			yield break;
 		}
 	}

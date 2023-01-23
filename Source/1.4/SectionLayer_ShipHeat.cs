@@ -27,7 +27,7 @@ namespace RimWorld
             }
         }
 
-        protected override void TakePrintFrom(Thing t)
+        public override void TakePrintFrom(Thing t)
         {
             Building val = t as Building;
             if (val != null && ((ThingWithComps)val).TryGetComp<CompShipHeat>()!=null)

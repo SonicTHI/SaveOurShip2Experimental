@@ -149,7 +149,7 @@ namespace RimWorld
                 node.options.Add(keepIdeo);
                 node.options.Add(newIdeo);
                 DiaNode nodeKeepFaith;
-                if (Consciousness.Ideo.memes.Contains(ShipInteriorMod2.Archism))
+                if (Consciousness.Ideo.memes.Contains(ResourceBank.MemeDefOf.Structure_Archist))
                     nodeKeepFaith = new DiaNode(TranslatorFormattedStringExtensions.Translate("ArchotechIdeoCertaintyArchist", Consciousness.Name.ToStringShort, Consciousness.Ideo.name));
                 else if (Consciousness.Ideo.memes.Contains(MemeDefOf.Structure_Ideological))
                     nodeKeepFaith = new DiaNode(TranslatorFormattedStringExtensions.Translate("ArchotechIdeoCertaintyEthical", Consciousness.Name.ToStringShort, Consciousness.Ideo.name));

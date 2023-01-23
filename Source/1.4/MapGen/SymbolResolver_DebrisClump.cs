@@ -21,18 +21,16 @@ namespace RimWorld.BaseGen
         {
             Map map = BaseGen.globalSettings.map;
             TerrainGrid terrainGrid = map.terrainGrid;
-            CellRect.CellRectIterator iterator = rect.GetIterator();
-            while (!iterator.Done())
+            foreach (var item in rect)
             {
-                IntVec3 current = iterator.Current;
+                IntVec3 current = item;
                     if (Rand.Chance(0.6f))
-                        GenSpawn.Spawn(ThingMaker.MakeThing(floorDef), iterator.Current, map, WipeMode.Vanish);
+                        GenSpawn.Spawn(ThingMaker.MakeThing(floorDef), current, map, WipeMode.Vanish);
                     else if (Rand.Chance(0.2f))
                     {
                         Thing thing = ThingMaker.MakeThing(ThingDefOf.ChunkSlagSteel, null);
                         GenSpawn.Spawn(thing, current, map, WipeMode.Vanish);
                     }
-                iterator.MoveNext();
             }
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using HugsLib;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
@@ -10,9 +11,9 @@ using Verse.Sound;
 using HarmonyLib;
 using System.Text;
 using UnityEngine;
-using Verse.AI.Group;
-using HugsLib;
 using HugsLib.Utils;
+using Verse.AI.Group;
+using HugsLib.Settings;
 using RimWorld.QuestGen;
 using RimworldMod;
 using System.Net;
@@ -22,21 +23,13 @@ using System.Collections;
 using System.Reflection.Emit;
 using UnityEngine.SceneManagement;
 using System.Linq.Expressions;
-using static SaveOurShip2.ModSettings_SoS;
 
 namespace SaveOurShip2
 {
-	public class ShipInteriorMod2 : Mod
+	[StaticConstructorOnStartup]
+	public class ShipInteriorMod2 : ModBase
 	{
-		public ShipInteriorMod2(ModContentPack content) : base(content)
-		{
-			//new Harmony(this.Content.PackageIdPlayerFacing).PatchAll();
-			base.GetSettings<ModSettings_SoS>();
-			Harmony pat = new Harmony("ShipInteriorMod2");
-			Initialize(pat);
-			LongEventHandler.QueueLongEvent(() => DefsLoaded(), "ShipInteriorMod2", false, null);
-			LongEventHandler.QueueLongEvent(() => SceneLoaded(), "ShipInteriorMod2", false, null);
-		}
+		public static HugsLib.Utils.ModLogger instLogger;
 
 		public static readonly float crittersleepBodySize = 0.7f;
 		public static bool ArchoStuffEnabled = true;//unassigned???
@@ -48,23 +41,94 @@ namespace SaveOurShip2
 		public static Building shipOriginRoot = null;//used for patched original launch code
 		public static Map shipOriginMap = null;//used to check for shipmove map size problem, reset after move
 
-		
+		public static Graphic shipZeroEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Enemy_Icon_Off",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.red, Color.red);
+		public static Graphic shipOneEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Enemy_Icon_On_slow",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.red, Color.red);
+		public static Graphic shipTwoEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Enemy_Icon_On_mid",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.red, Color.red);
+		public static Graphic projectileEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/EnemyProjectile",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.red, Color.red);
+		public static Graphic shipZero = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Ship_Icon_Off",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shipOne = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Ship_Icon_On_slow",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shipTwo = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Ship_Icon_On_mid",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shipThree = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Ship_Icon_On_fast",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shuttlePlayer = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Shuttle_Icon_Player",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shuttleEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Shuttle_Icon_Enemy",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.red, Color.red);
+		public static Graphic ruler = GraphicDatabase.Get(typeof(Graphic_Single), "UI/ShipRangeRuler",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic projectile = GraphicDatabase.Get(typeof(Graphic_Single), "UI/ShipProjectile",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shipBarEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Map_Icon_Enemy",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shipBarPlayer = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Map_Icon_Player",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+		public static Graphic shipBarNeutral = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Map_Icon_Neutral",
+			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
+
+		public static Texture2D PowerTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.45f, 0.425f, 0.1f));
+		public static Texture2D HeatTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.5f, 0.1f, 0.1f));
+		public static Texture2D Splash = ContentFinder<Texture2D>.Get("SplashScreen");
+		public static Texture2D virtualPhoto = new Texture2D(2048, 2048, TextureFormat.RGB24, false);
+		public static RenderTexture target = new RenderTexture(2048, 2048, 16);
+		public static Material PlanetMaterial = MaterialPool.MatFrom(virtualPhoto);
+
+		public static ThingDef MechaniteFire = ThingDef.Named("MechaniteFire");
+		public static ThingDef ArchotechSpore = ThingDef.Named("ShipArchotechSpore");
+		public static ThingDef HoloEmitterDef = ThingDef.Named("Apparel_HologramRelay");
+		public static ThingDef beamDef = ThingDef.Named("Ship_Beam");
+		public static ThingDef wreckedBeamDef = ThingDef.Named("Ship_Beam_Wrecked");
+		public static ThingDef wreckedAirlockDef = ThingDef.Named("ShipAirlockWrecked");
+		public static ThingDef wreckedHullPlateDef = ThingDef.Named("ShipHullTileWrecked");
+		public static ThingDef hullPlateDef = ThingDef.Named("ShipHullTile");
+		public static TerrainDef spaceTerrain = TerrainDef.Named("EmptySpace");
+		public static TerrainDef hullFloorDef = TerrainDef.Named("FakeFloorInsideShip");
+		public static TerrainDef mechHullFloorDef = TerrainDef.Named("FakeFloorInsideShipMech");
+		public static TerrainDef archoHullFloorDef = TerrainDef.Named("FakeFloorInsideShipArchotech");
+		public static TerrainDef wreckedHullFloorDef = TerrainDef.Named("ShipWreckageTerrain");
+		public static TerrainDef hullFoamFloorDef = TerrainDef.Named("FakeFloorInsideShipFoam");
+		public static RoofDef shipRoofDef = DefDatabase<RoofDef>.GetNamed("RoofShip");
 		// Additional array of compatible RoofDefs from other mods.
 		public static RoofDef[] compatibleAirtightRoofs;
 		// Contains terrain types that are considered a "rock".
 		private static TerrainDef[] rockTerrains;
 
-
+		public static HediffDef hypoxia = HediffDef.Named("SpaceHypoxia");
+		public static HediffDef ArchoLung = HediffDef.Named("SoSArchotechLung");
+		public static HediffDef ArchoSkin = HediffDef.Named("SoSArchotechSkin");
+		public static HediffDef bubbleHediff = HediffDef.Named("SpaceBeltBubbleHediff");
+		public static HediffDef SoSHologramArchotech = HediffDef.Named("SoSHologramArchotech");
 		public static BackstoryDef hologramBackstory;
-		public static List<ThingDef> randomPlants;
-		public static Dictionary<ThingDef, ThingDef> wreckDictionary;
+		public static MemeDef Archism = DefDatabase<MemeDef>.GetNamed("Structure_Archist", false);
+		public static BiomeDef OuterSpaceBiome = DefDatabase<BiomeDef>.GetNamed("OuterSpaceBiome");
+		public static StorytellerDef Sara = DefDatabase<StorytellerDef>.GetNamed("Sara");
+		public static ResearchProjectDef PillarAProject = ResearchProjectDef.Named("ArchotechPillarA");
+		public static ResearchProjectDef PillarBProject = ResearchProjectDef.Named("ArchotechPillarB");
 
-		void Initialize(Harmony pat)
+		public static List<ThingDef> randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
+		public static Dictionary<ThingDef, ThingDef> wreckDictionary = new Dictionary<ThingDef, ThingDef>();
+
+		static ShipInteriorMod2()
+		{
+		}
+
+		public override string ModIdentifier
+		{
+			get { return "ShipInteriorMod2"; }
+		}
+
+		public override void Initialize()
 		{
 			// Must be manually patched as SectionLayer_Terrain is internal
 			var regenerateMethod = AccessTools.TypeByName("SectionLayer_Terrain").GetMethod("Regenerate");
 			var regeneratePostfix = typeof(SectionRegenerateHelper).GetMethod("Postfix");
-			
+			Harmony pat = new Harmony("ShipInteriorMod2");
 			pat.Patch(regenerateMethod, postfix: new HarmonyMethod(regeneratePostfix));
 
 
@@ -87,71 +151,58 @@ namespace SaveOurShip2
             HarmonyInst.Patch(FirefightMethod, postfix: new HarmonyMethod(FirefightPostfix));*/
 		}
 
-		public override void DoSettingsWindowContents(Rect inRect)
+		public static SettingHandle<double> difficultySoS;
+		public static SettingHandle<double> frequencySoS;
+		public static SettingHandle<double> navyShipChance;
+		public static SettingHandle<double> fleetChance;
+		public static SettingHandle<bool> easyMode;
+		public static SettingHandle<bool> useVacuumPathfinding;
+		public static SettingHandle<int> minTravelTime;
+		public static SettingHandle<int> maxTravelTime;
+		public static SettingHandle<bool> renderPlanet;
+		public static SettingHandle<bool> useSplashScreen;
+		public static SettingHandle<int> offsetUIx;
+		public static SettingHandle<int> offsetUIy;
+
+		public override void DefsLoaded()
 		{
-			Listing_Standard options = new Listing_Standard();
-			options.Begin(inRect);
-
-			options.Label("SoS.Settings.DifficultySoS".Translate("0.5", "10", "1", Math.Round(difficultySoS, 1).ToString()), -1f, "SoS.Settings.DifficultySoS.Desc".Translate());
-			difficultySoS = options.Slider((float)difficultySoS, 0.5f, 10f);
-
-			options.Label("SoS.Settings.FrequencySoS".Translate("0.5", "10", "1", Math.Round(frequencySoS, 1).ToString()), -1f, "SoS.Settings.FrequencySoS.Desc".Translate());
-			frequencySoS = options.Slider((float)frequencySoS, 0.5f, 10f);
-
-			options.Label("SoS.Settings.NavyShipChance".Translate("0", "1", "0.2", Math.Round(navyShipChance, 1).ToString()), -1f, "SoS.Settings.NavyShipChance.Desc".Translate());
-			navyShipChance = options.Slider((float)navyShipChance, 0f, 1f);
-
-			options.Label("SoS.Settings.FleetChance".Translate("0", "1", "0.3", Math.Round(fleetChance, 1).ToString()), -1f, "SoS.Settings.FleetChance.Desc".Translate());
-			fleetChance = options.Slider((float)fleetChance, 0f, 1f);
-
-			options.Gap();
-			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
-			options.CheckboxLabeled("SoS.Settings.UseVacuumPathfinding".Translate(), ref useVacuumPathfinding, "SoS.Settings.UseVacuumPathfinding.Desc".Translate());
-			options.Gap();
-
-			options.Label("SoS.Settings.MinTravelTime".Translate("1", "50", "5", minTravelTime.ToString()), -1f, "SoS.Settings.MinTravelTime.Desc".Translate());
-			minTravelTime = (int)options.Slider(minTravelTime, 1f, 50f);
-
-			options.Label("SoS.Settings.MaxTravelTime".Translate("50", "1000", "100", maxTravelTime.ToString()), -1f, "SoS.Settings.MaxTravelTime.Desc".Translate());
-			maxTravelTime = (int)options.Slider(maxTravelTime, 1f, 1000f);
-
-			options.CheckboxLabeled("SoS.Settings.RenderPlanet".Translate(), ref renderPlanet, "SoS.Settings.RenderPlanet.Desc".Translate());
-			options.CheckboxLabeled("SoS.Settings.UseSplashScreen".Translate(), ref useSplashScreen, "SoS.Settings.UseSplashScreens.Desc".Translate());
-			options.Gap();
-			options.Label("SoS.Settings.OffsetUIx".Translate(), -1f, "SoS.Settings.OffsetUIx.Desc".Translate());
-			string bufferX = "0";
-			options.TextFieldNumeric<int>(ref offsetUIx, ref bufferX, int.MinValue, int.MaxValue);
-
-			options.Label("SoS.Settings.OffsetUIy".Translate(), -1f, "SoS.Settings.OffsetUIy.Desc".Translate());
-			string bufferY = "0";
-			options.TextFieldNumeric<int>(ref offsetUIy, ref bufferY, int.MinValue, int.MaxValue);
-
-			options.End();
-			base.DoSettingsWindowContents(inRect);
-		}
-
-		public override string SettingsCategory()
-		{
-			return "Save Our Ship";
-		}
-
-		public override void WriteSettings()
-		{
-			base.WriteSettings();
-		}
-
-		public void DefsLoaded()
-		{
+			base.DefsLoaded();
 			Log.Message("SOS2EXP V77f1 active");
-			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
-
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
             {
 				Log.Error("SOS2: mod \"" + ship.modContentPack.Name + "\" contains EnemyShipDef: \"" + ship + "\" that can spawn as a random ship but is saved with an old version of CK!");
 			}
+			difficultySoS = Settings.GetHandle("difficultySoS", "Difficulty factor",
+				"Affects the size and strength of enemy ships.", 1.0);
+			frequencySoS = Settings.GetHandle("frequencySoS", "Ship Combat Frequency",
+				"Higher values mean less cooldown time between ship battles.", 1.0);
+			navyShipChance = Settings.GetHandle("navyShipChance", "Navy chance",
+				"How likely navies will appear in random encounters.", 0.2);
+			fleetChance = Settings.GetHandle("fleetChance", "Random fleet chance",
+				"Chance for random unknown enemy ships and traders to be fleets.", 0.3);
+			easyMode = Settings.GetHandle("easyMode", "Easy Mode",
+				"If checked will prevent player pawns dying to PD and pods landing in outer rooms of your ship",
+				false);
+			useVacuumPathfinding = Settings.GetHandle("useVacuumPathfinding", "Use Vacuum Pathfinding?",
+				"If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.",
+				true);
+			minTravelTime = Settings.GetHandle("minTravelTime", "Minimum Travel Time",
+				"Minimum number of years that pass when traveling to a new world.", 5);
+			maxTravelTime = Settings.GetHandle("maxTravelTime", "Maximum Travel Time",
+				"Maximum number of years that pass when traveling to a new world.", 100);
+			renderPlanet = Settings.GetHandle("renderPlanet", "Dynamic Planet Rendering",
+				"If checked, orbital maps will show a day/night cycle on the planet. Disable this option if the game runs slowly in space.",
+				false);
+			useSplashScreen = Settings.GetHandle("useSplashScreen", "SoS Splash Screen",
+				"If checked, RimWorld will use SoS2's new splash screen. Restart the game after changing this setting.",
+				true);
+			offsetUIx = Settings.GetHandle("offsetUIx", "Ship UI offset x",
+				"UI offset horizontal from the center of your screen.", 0);
+			offsetUIy = Settings.GetHandle("offsetUIy", "Ship UI offset y",
+				"UI offset vertical from bellow the pawn bar.", 0);
 
 			if (useSplashScreen)
-				((UI_BackgroundMain)UIMenuBackgroundManager.background).overrideBGImage = ResourceBank.Splash;
+				((UI_BackgroundMain)UIMenuBackgroundManager.background).overrideBGImage = Splash;
 
 			foreach (ThingDef drug in DefDatabase<ThingDef>.AllDefsListForReading)
 			{
@@ -171,28 +222,25 @@ namespace SaveOurShip2
 				}
 			}
 
-			wreckDictionary = new Dictionary<ThingDef, ThingDef>
-			{
-				{ThingDef.Named("ShipHullTile"), ThingDef.Named("ShipHullTileWrecked")},
-				{ThingDef.Named("ShipHullTileMech"), ThingDef.Named("ShipHullTileWrecked")},
-				{ThingDef.Named("ShipHullTileArchotech"), ThingDef.Named("ShipHullTileWrecked")},
-				{ThingDef.Named("Ship_Beam"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamMech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_Beam_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamArchotech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGenerator"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGeneratorMech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGeneratorArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVentArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockArchotech"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockBeam"), ThingDef.Named("Ship_Beam_Wrecked")}
-			};			
+			wreckDictionary.Add(ThingDef.Named("ShipHullTile"), ThingDef.Named("ShipHullTileWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipHullTileMech"), ThingDef.Named("ShipHullTileWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipHullTileArchotech"), ThingDef.Named("ShipHullTileWrecked"));
+			wreckDictionary.Add(ThingDef.Named("Ship_Beam"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("Ship_BeamMech"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("Ship_BeamArchotech"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("Ship_Beam_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("Ship_BeamArchotech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_SolarGenerator"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_SolarGeneratorMech"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_SolarGeneratorArchotech"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipInside_PassiveVentArchotech"), ThingDef.Named("Ship_Beam_Wrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipAirlockArchotech"), ThingDef.Named("ShipAirlockWrecked"));
+			wreckDictionary.Add(ThingDef.Named("ShipAirlockBeam"), ThingDef.Named("Ship_Beam_Wrecked"));
 
 			var compatibleRoofs = new List<RoofDef>();
 			// Compatibility tricks for Roofs Extended.
@@ -277,8 +325,10 @@ namespace SaveOurShip2
 			//}
 		}
 
-		public void SceneLoaded()
+		public override void SceneLoaded(Scene scene)
 		{
+			base.SceneLoaded(scene);
+
 			if (!loadedGraphics)
 			{
 				foreach (ThingDef thingToResolve in CompShuttleCosmetics.GraphicsToResolve.Keys)
@@ -317,7 +367,7 @@ namespace SaveOurShip2
 		{
 			if (roof == null)
 				return false;
-			if (roof == ResourceBank.RoofDefOf.RoofShip)
+			if (roof == shipRoofDef)
 				return true;
 			if (compatibleAirtightRoofs != null)
 			{
@@ -828,7 +878,7 @@ namespace SaveOurShip2
 									cellsToFog.Add(thing.Position);
 									continue;
 								}
-								else if (!(thing.def == ResourceBank.ThingDefOf.ShipHullTileWrecked || thing.def == ResourceBank.ThingDefOf.ShipAirlockWrecked || thing.def.thingClass == typeof(Building_ArchotechPillar)))
+								else if (!(thing.def == wreckedHullPlateDef || thing.def == wreckedAirlockDef || thing.def.thingClass == typeof(Building_ArchotechPillar)))
 									thing.SetFaction(fac);
 							}
 							Building b = thing as Building;
@@ -1334,16 +1384,16 @@ namespace SaveOurShip2
 		{
 			foreach (IntVec3 vec in border)
 			{
-				if (!GenSpawn.WouldWipeAnythingWith(vec, Rot4.South, ResourceBank.ThingDefOf.Ship_Beam, map, (Thing x) => x.def.category == ThingCategory.Building) && !vec.GetThingList(map).Where(t => t.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false).Any())
+				if (!GenSpawn.WouldWipeAnythingWith(vec, Rot4.South, beamDef, map, (Thing x) => x.def.category == ThingCategory.Building) && !vec.GetThingList(map).Where(t => t.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false).Any())
 				{
-					Thing wall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.Ship_Beam);
+					Thing wall = ThingMaker.MakeThing(beamDef);
 					wall.SetFaction(fac);
 					GenSpawn.Spawn(wall, vec, map);
 				}
 			}
 			foreach (IntVec3 vec in interior)
 			{
-				Thing floor = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullTile);
+				Thing floor = ThingMaker.MakeThing(hullPlateDef);
 				if (fac == Faction.OfPlayer)
 					floor.SetFaction(fac);
 				GenSpawn.Spawn(floor, vec, map);
@@ -1507,7 +1557,7 @@ namespace SaveOurShip2
 		}
 		public static bool IsHull(TerrainDef def)
 		{
-			return def == ResourceBank.TerrainDefOf.FakeFloorInsideShip || def == ResourceBank.TerrainDefOf.FakeFloorInsideShipMech || def == ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech;
+			return def == hullFloorDef || def == mechHullFloorDef || def == archoHullFloorDef;
 		}
 		public static Sketch GenerateShipSketch(HashSet<IntVec3> positions, Map map, IntVec3 lowestCorner, byte rotb = 0)
 		{
@@ -1701,7 +1751,7 @@ namespace SaveOurShip2
 				else if (includeRock && IsRock(sourceTerrain))
 				{
 					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceTerrain));
-					sourceMap.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
+					sourceMap.terrainGrid.SetTerrain(pos, spaceTerrain);
 				}
 
 				var sourceRoof = sourceMap.roofGrid.RoofAt(pos);
@@ -1901,7 +1951,7 @@ namespace SaveOurShip2
 			{
 				foreach (IntVec3 pos in sourceArea)
 				{
-					sourceMap.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
+					sourceMap.terrainGrid.SetTerrain(pos, spaceTerrain);
 				}
 			}
 			if (devMode)
@@ -2088,13 +2138,13 @@ namespace SaveOurShip2
 				return 7;
 			bool hasLung = false;
 			bool hasSkin = false;
-			if (pawn.health.hediffSet.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SoSArchotechLung) != null)
+			if (pawn.health.hediffSet.GetFirstHediffOfDef(ArchoLung) != null)
 				hasLung = true;
-			if (pawn.health.hediffSet.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SoSArchotechSkin) != null)
+			if (pawn.health.hediffSet.GetFirstHediffOfDef(ArchoSkin) != null)
 				hasSkin = true;
 			if (hasLung && hasSkin)
 				return 5;
-			if (pawn.health.hediffSet.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SpaceBeltBubbleHediff) != null)
+			if (pawn.health.hediffSet.GetFirstHediffOfDef(bubbleHediff) != null)
 				return 4;
 			if (hasBelt)
 				return 3;
@@ -2127,10 +2177,10 @@ namespace SaveOurShip2
 					Map m = playerShipComp.ShipGraveyard;
 					playerShipComp = m.GetComponent<ShipHeatMapComp>();
 				}
-				float screenHalf = (float)UI.screenWidth / 2 + SaveOurShip2.ModSettings_SoS.offsetUIx;
+				float screenHalf = (float)UI.screenWidth / 2 + ShipInteriorMod2.offsetUIx;
 
 				//player heat & energy bars
-				float baseY = __instance.Size.y + 40 + SaveOurShip2.ModSettings_SoS.offsetUIy;
+				float baseY = __instance.Size.y + 40 + ShipInteriorMod2.offsetUIy;
 				for (int i = 0; i < playerShipComp.MapRootList.Count; i++)
 				{
 					try //td rem this once this is 100% safe
@@ -2154,7 +2204,7 @@ namespace SaveOurShip2
 							capacity += bat.Props.storedEnergyMax;
 						Rect rect3 = new Rect(screenHalf - 630, baseY - 40, 200, 35);
 						Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
-							ResourceBank.PowerTex);
+							ShipInteriorMod2.PowerTex);
 						Text.Font = GameFont.Small;
 						rect3.y += 7;
 						rect3.x = screenHalf - 615;
@@ -2169,7 +2219,7 @@ namespace SaveOurShip2
 						{
 							Rect rect4 = new Rect(screenHalf - 435, baseY - 40, 200, 35);
 							Widgets.FillableBar(rect4.ContractedBy(6), bridge.heatComp.RatioInNetwork(),
-								ResourceBank.HeatTex);
+								ShipInteriorMod2.HeatTex);
 							rect4.y += 7;
 							rect4.x = screenHalf - 420;
 							rect4.height = Text.LineHeight;
@@ -2185,7 +2235,7 @@ namespace SaveOurShip2
 					}
 				}
 				//enemy heat & energy bars
-				baseY = __instance.Size.y + 40 + SaveOurShip2.ModSettings_SoS.offsetUIy;
+				baseY = __instance.Size.y + 40 + ShipInteriorMod2.offsetUIy;
 				for (int i = 0; i < enemyShipComp.MapRootList.Count; i++)
 				{
 					try //td rem this once this is 100% safe
@@ -2201,7 +2251,7 @@ namespace SaveOurShip2
 						{
 							Rect rect4 = new Rect(screenHalf + 235, baseY - 40, 200, 35);
 							Widgets.FillableBar(rect4.ContractedBy(6), bridge.heatComp.RatioInNetwork(),
-								ResourceBank.HeatTex);
+								ShipInteriorMod2.HeatTex);
 							rect4.y += 7;
 							rect4.x = screenHalf + 255;
 							rect4.height = Text.LineHeight;
@@ -2217,7 +2267,7 @@ namespace SaveOurShip2
 							capacity += bat.Props.storedEnergyMax;
 						Rect rect3 = new Rect(screenHalf + 430, baseY - 40, 200, 35);
 						Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
-							ResourceBank.PowerTex);
+							ShipInteriorMod2.PowerTex);
 						Text.Font = GameFont.Small;
 						rect3.y += 7;
 						rect3.x = screenHalf + 445;
@@ -2234,24 +2284,24 @@ namespace SaveOurShip2
 				}
 
 				//range bar
-				baseY = __instance.Size.y + 85 + SaveOurShip2.ModSettings_SoS.offsetUIy;
+				baseY = __instance.Size.y + 85 + ShipInteriorMod2.offsetUIy;
 				Rect rect = new Rect(screenHalf - 225, baseY - 40, 450, 50);
 				Verse.Widgets.DrawMenuSection(rect);
 				Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 200, baseY - 38, 400, 46),
-					new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.ruler.MatSingle.mainTexture);
+					new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.ruler.MatSingle.mainTexture);
 				switch (playerShipComp.Heading)
 				{
 					case -1:
 						Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 223, baseY - 28, 36, 36),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipOne.MatSingle.mainTexture);
+							new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.shipOne.MatSingle.mainTexture);
 						break;
 					case 1:
 						Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 235, baseY - 28, 36, 36),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipOne.MatSingle.mainTexture);
+							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shipOne.MatSingle.mainTexture);
 						break;
 					default:
 						Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 235, baseY - 28, 36, 36),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipZero.MatSingle.mainTexture);
+							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shipZero.MatSingle.mainTexture);
 						break;
 				}
 				switch (enemyShipComp.Heading)
@@ -2259,17 +2309,17 @@ namespace SaveOurShip2
 					case -1:
 						Verse.Widgets.DrawTexturePart(
 							new Rect(screenHalf - 216 + enemyShipComp.Range, baseY - 28, 36, 36),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipOneEnemy.MatSingle.mainTexture);
+							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shipOneEnemy.MatSingle.mainTexture);
 						break;
 					case 1:
 						Verse.Widgets.DrawTexturePart(
 							new Rect(screenHalf - 200 + enemyShipComp.Range, baseY - 28, 36, 36),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipOneEnemy.MatSingle.mainTexture);
+							new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.shipOneEnemy.MatSingle.mainTexture);
 						break;
 					default:
 						Verse.Widgets.DrawTexturePart(
 							new Rect(screenHalf - 200 + enemyShipComp.Range, baseY - 28, 36, 36),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipZeroEnemy.MatSingle.mainTexture);
+							new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.shipZeroEnemy.MatSingle.mainTexture);
 						break;
 				}
 				foreach (ShipCombatProjectile proj in playerShipComp.Projectiles)
@@ -2278,7 +2328,7 @@ namespace SaveOurShip2
 					{
 						Verse.Widgets.DrawTexturePart(
 							new Rect(screenHalf - 210 + proj.range, baseY - 12, 12, 12),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.projectile.MatSingle.mainTexture);
+							new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.projectile.MatSingle.mainTexture);
 					} 
 				}
 				foreach (ShipCombatProjectile proj in enemyShipComp.Projectiles)
@@ -2287,7 +2337,7 @@ namespace SaveOurShip2
 					{
 						Verse.Widgets.DrawTexturePart(
 							new Rect(screenHalf - 210 - proj.range + enemyShipComp.Range, baseY - 24, 12, 12), 
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.projectileEnemy.MatSingle.mainTexture);
+							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.projectileEnemy.MatSingle.mainTexture);
 					}
 				}
 				foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
@@ -2298,19 +2348,19 @@ namespace SaveOurShip2
 					{
 						Verse.Widgets.DrawTexturePart(
 							new Rect(screenHalf - 200 + rng * enemyShipComp.Range, baseY - 16, 12, 12),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
+							new Rect(0, 0, 1, 1), (Texture2D)ShipInteriorMod2.shuttlePlayer.MatSingle.mainTexture);
 					}
 					else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction != Faction.OfPlayer)
 					{
 						Verse.Widgets.DrawTexturePart(
 							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttleEnemy.MatSingle.mainTexture);
+							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shuttleEnemy.MatSingle.mainTexture);
 					}
 					else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction == Faction.OfPlayer)
 					{
 						Verse.Widgets.DrawTexturePart(
 							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
+							new Rect(0, 0, -1, 1), (Texture2D)ShipInteriorMod2.shuttlePlayer.MatSingle.mainTexture);
 					}
 				}
 				if (Mouse.IsOver(rect))
@@ -2341,11 +2391,11 @@ namespace SaveOurShip2
 					.Invoke(__instance, new object[] { group });
 					var mapComp = entry.map.GetComponent<ShipHeatMapComp>();
 					if (mapComp.IsGraveyard) //wreck
-						Verse.Widgets.DrawTextureFitted(rect, ResourceBank.shipBarNeutral.MatSingle.mainTexture, 1);
+						Verse.Widgets.DrawTextureFitted(rect, ShipInteriorMod2.shipBarNeutral.MatSingle.mainTexture, 1);
 					else if (entry.map.ParentFaction == Faction.OfPlayer)//player
-						Verse.Widgets.DrawTextureFitted(rect, ResourceBank.shipBarPlayer.MatSingle.mainTexture, 1);
+						Verse.Widgets.DrawTextureFitted(rect, ShipInteriorMod2.shipBarPlayer.MatSingle.mainTexture, 1);
 					else //enemy
-						Verse.Widgets.DrawTextureFitted(rect, ResourceBank.shipBarEnemy.MatSingle.mainTexture, 1);
+						Verse.Widgets.DrawTextureFitted(rect, ShipInteriorMod2.shipBarEnemy.MatSingle.mainTexture, 1);
 				}
 			}
 		}
@@ -2395,7 +2445,7 @@ namespace SaveOurShip2
 			Map map = Find.CurrentMap;
 
 			// if we aren't in space, abort!
-			if ((ShipInteriorMod2.renderedThatAlready && !SaveOurShip2.ModSettings_SoS.renderPlanet) || !map.IsSpace())
+			if ((ShipInteriorMod2.renderedThatAlready && !ShipInteriorMod2.renderPlanet) || !map.IsSpace())
 			{
 				return;
 			}
@@ -2425,17 +2475,17 @@ namespace SaveOurShip2
                     layer.Render();
             }
             Find.PlaySettings.showWorldFeatures = false;*/
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = ResourceBank.target;
+			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = ShipInteriorMod2.target;
 			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.aspect = num;
 			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.Render();
 
-			Find.WorldCamera.targetTexture = ResourceBank.target;
+			Find.WorldCamera.targetTexture = ShipInteriorMod2.target;
 			Find.WorldCamera.aspect = num;
 			Find.WorldCamera.Render();
 
-			RenderTexture.active = ResourceBank.target;
-			ResourceBank.virtualPhoto.ReadPixels(new Rect(0, 0, 2048, 2048), 0, 0);
-			ResourceBank.virtualPhoto.Apply();
+			RenderTexture.active = ShipInteriorMod2.target;
+			ShipInteriorMod2.virtualPhoto.ReadPixels(new Rect(0, 0, 2048, 2048), 0, 0);
+			ShipInteriorMod2.virtualPhoto.Apply();
 			RenderTexture.active = null;
 
 			Find.WorldCamera.targetTexture = oldTexture;
@@ -2461,17 +2511,17 @@ namespace SaveOurShip2
 			foreach (IntVec3 cell in ___section.CellRect.Cells)
 			{
 				TerrainDef terrain1 = ___section.map.terrainGrid.TerrainAt(cell);
-				if (terrain1 == ResourceBank.TerrainDefOf.EmptySpace)
+				if (terrain1 == ShipInteriorMod2.spaceTerrain)
 				{
 					foundSpace = true;
-					Printer_Mesh.PrintMesh(__instance, Matrix4x4.TRS(cell.ToVector3() + new Vector3(0.5f, 0f, 0.5f), Quaternion.identity, Vector3.one), MeshMakerPlanes.NewPlaneMesh(1f), ResourceBank.PlanetMaterial);
+					Printer_Mesh.PrintMesh(__instance, Matrix4x4.TRS(cell.ToVector3() + new Vector3(0.5f, 0f, 0.5f), Quaternion.identity, Vector3.one), MeshMakerPlanes.NewPlaneMesh(1f), ShipInteriorMod2.PlanetMaterial);
 				}
 			}
 			if (!foundSpace)
 			{
 				for (int i = 0; i < __instance.subMeshes.Count; i++)
 				{
-					if (__instance.subMeshes[i].material == ResourceBank.PlanetMaterial)
+					if (__instance.subMeshes[i].material == ShipInteriorMod2.PlanetMaterial)
 					{
 						__instance.subMeshes.RemoveAt(i);
 					}
@@ -2497,7 +2547,7 @@ namespace SaveOurShip2
 		public static void getSpaceBiome(Map __instance, ref BiomeDef __result, bool __state)
 		{
 			if (__state)
-				__result = ResourceBank.BiomeDefOf.OuterSpaceBiome;
+				__result = ShipInteriorMod2.OuterSpaceBiome;
 		}
 	}
 
@@ -2630,7 +2680,7 @@ namespace SaveOurShip2
 		{
 			Room room = (Room)typeof(RoomTempTracker)
 				.GetField("room", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
-			if (room.Map.terrainGrid.TerrainAt(IntVec3.Zero) != ResourceBank.TerrainDefOf.EmptySpace)
+			if (room.Map.terrainGrid.TerrainAt(IntVec3.Zero) != ShipInteriorMod2.spaceTerrain)
 				return;
 			if (room.Role != RoomRoleDefOf.None && room.OpenRoofCount > 0)
 				__instance.Temperature = -100f;
@@ -2727,7 +2777,7 @@ namespace SaveOurShip2
 		[HarmonyPrefix]
 		public static bool Abort(IntVec3 cell, Map ___map)
 		{
-			if (___map.terrainGrid.TerrainAt(cell) == ResourceBank.TerrainDefOf.EmptySpace)
+			if (___map.terrainGrid.TerrainAt(cell) == ShipInteriorMod2.spaceTerrain)
             {
 				return false;
 			}
@@ -3441,7 +3491,7 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void HullsAreColorful(RoofGrid __instance, int index, ref Color __result)
 		{
-			if (__instance.RoofAt(index) == ResourceBank.RoofDefOf.RoofShip)
+			if (__instance.RoofAt(index) == ShipInteriorMod2.shipRoofDef)
 				__result = Color.clear;
 		}
 	}
@@ -3502,7 +3552,7 @@ namespace SaveOurShip2
 					if (ShipInteriorMod2.IsRoofDefAirtight(def))
 						return true;
 					//Log.Message(String.Format("Overriding roof at {0}. Set shipRoofDef instead of {1}", cellIndex, def.defName));
-					___roofGrid[cellIndex] = ResourceBank.RoofDefOf.RoofShip;
+					___roofGrid[cellIndex] = ShipInteriorMod2.shipRoofDef;
 					___map.glowGrid.MarkGlowGridDirty(c);
 					Region validRegionAt_NoRebuild = ___map.regionGrid.GetValidRegionAt_NoRebuild(c);
 					if (validRegionAt_NoRebuild != null)
@@ -3540,7 +3590,7 @@ namespace SaveOurShip2
 							if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
 							{
 								dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
-								map.roofGrid.SetRoof(cell, ResourceBank.RoofDefOf.RoofShip);
+								map.roofGrid.SetRoof(cell, ShipInteriorMod2.shipRoofDef);
 								//Log.Message("rebuilt roof at:" + cell);
 								break;
 							}
@@ -4126,7 +4176,7 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void GoFast(Pawn_PathFollower __instance, Pawn ___pawn)
 		{
-			if (___pawn.Map.terrainGrid.TerrainAt(__instance.nextCell) == ResourceBank.TerrainDefOf.EmptySpace &&
+			if (___pawn.Map.terrainGrid.TerrainAt(__instance.nextCell) == ShipInteriorMod2.spaceTerrain &&
 				ShipInteriorMod2.EVAlevel(___pawn)>6)
 			{
 				__instance.nextCellCostLeft /= 4;
@@ -4871,7 +4921,7 @@ namespace SaveOurShip2
 					}
 					else
 					{
-						MechaniteFire obj = (MechaniteFire)ThingMaker.MakeThing(ResourceBank.ThingDefOf.MechaniteFire);
+						MechaniteFire obj = (MechaniteFire)ThingMaker.MakeThing(ShipInteriorMod2.MechaniteFire);
 						obj.fireSize = Rand.Range(0.1f, 0.2f);
 						GenSpawn.Spawn(obj, position, __instance.Map, Rot4.North);
 					}
@@ -4965,9 +5015,9 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Thing item)
 		{
-			if (item.HasAttachment(ResourceBank.ThingDefOf.MechaniteFire))
+			if (item.HasAttachment(ShipInteriorMod2.MechaniteFire))
 			{
-				item.GetAttachment(ResourceBank.ThingDefOf.MechaniteFire).Destroy();
+				item.GetAttachment(ShipInteriorMod2.MechaniteFire).Destroy();
 			}
 		}
 	}
@@ -4977,7 +5027,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Pawn_JobTracker __instance, ref bool __result)
 		{
-			if (((Pawn)(typeof(Pawn_JobTracker).GetField("pawn", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance))).HasAttachment(ResourceBank.ThingDefOf.MechaniteFire))
+			if (((Pawn)(typeof(Pawn_JobTracker).GetField("pawn", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance))).HasAttachment(ShipInteriorMod2.MechaniteFire))
 			{
 				__result = false;
 			}
@@ -4989,7 +5039,7 @@ namespace SaveOurShip2
 	{
 		public void Postfix(ref Job __result, Pawn pawn)
 		{
-			Thing thing = GenClosest.ClosestThingReachable(pawn.GetLord().CurLordToil.FlagLoc, pawn.Map, ThingRequest.ForDef(ResourceBank.ThingDefOf.MechaniteFire), PathEndMode.Touch, TraverseParms.For(pawn), 25);
+			Thing thing = GenClosest.ClosestThingReachable(pawn.GetLord().CurLordToil.FlagLoc, pawn.Map, ThingRequest.ForDef(ShipInteriorMod2.MechaniteFire), PathEndMode.Touch, TraverseParms.For(pawn), 25);
 			if (thing != null)
 			{
 				__result = JobMaker.MakeJob(JobDefOf.BeatFire, thing);
@@ -5004,7 +5054,7 @@ namespace SaveOurShip2
 		{
 			if (Rand.Value < 0.1f)
 			{
-				Fire fire = (Fire)pawn.GetAttachment(ResourceBank.ThingDefOf.MechaniteFire);
+				Fire fire = (Fire)pawn.GetAttachment(ShipInteriorMod2.MechaniteFire);
 				if (fire != null)
 				{
 					__result = JobMaker.MakeJob(JobDefOf.ExtinguishSelf, fire);
@@ -5018,7 +5068,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Pawn pawn, ref bool __result)
 		{
-			__result = __result || pawn.HasAttachment(ResourceBank.ThingDefOf.MechaniteFire);
+			__result = __result || pawn.HasAttachment(ShipInteriorMod2.MechaniteFire);
 		}
 	}
 
@@ -5149,11 +5199,11 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(RitualObligation obligation, Map map, Ideo ideo, ref IEnumerable<TargetInfo> __result)
 		{
-			if (ideo.memes.Contains(ResourceBank.MemeDefOf.Structure_Archist) && map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.ShipArchotechSpore).Any())
+			if (ideo.memes.Contains(ShipInteriorMod2.Archism) && map.listerThings.ThingsOfDef(ShipInteriorMod2.ArchotechSpore).Any())
 			{
 				List<TargetInfo> newResult = new List<TargetInfo>();
 				newResult.AddRange(__result);
-				foreach (Thing spore in map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.ShipArchotechSpore))
+				foreach (Thing spore in map.listerThings.ThingsOfDef(ShipInteriorMod2.ArchotechSpore))
 				{
 					newResult.Add(spore);
 				}
@@ -5167,7 +5217,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ref bool __result, Map map, IdeoBuildingPresenceDemand __instance)
 		{
-			if (__instance.parent.ideo.memes.Contains(ResourceBank.MemeDefOf.Structure_Archist) && map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.ShipArchotechSpore).Any())
+			if (__instance.parent.ideo.memes.Contains(ShipInteriorMod2.Archism) && map.listerThings.ThingsOfDef(ShipInteriorMod2.ArchotechSpore).Any())
 				__result = true;
 		}
 	}
@@ -5177,7 +5227,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ref bool __result, Map map, IdeoBuildingPresenceDemand __instance)
 		{
-			if (__instance.parent.ideo.memes.Contains(ResourceBank.MemeDefOf.Structure_Archist) && map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.ShipArchotechSpore).Any())
+			if (__instance.parent.ideo.memes.Contains(ShipInteriorMod2.Archism) && map.listerThings.ThingsOfDef(ShipInteriorMod2.ArchotechSpore).Any())
 				__result = true;
 		}
 	}
@@ -5505,7 +5555,7 @@ namespace SaveOurShip2
         {
 			foreach(ApparelGraphicRecord apparel in __instance.graphics.apparelGraphics)
 			{
-				if (apparel.sourceApparel.def == ResourceBank.ThingDefOf.Apparel_HologramRelay)
+				if (apparel.sourceApparel.def == ShipInteriorMod2.HoloEmitterDef)
 					__result = false;
 			}
 		}
@@ -5823,7 +5873,7 @@ namespace SaveOurShip2
 
 		public static void Postfix(Map __instance, ref float __result)
         {
-			if (Find.Storyteller.def != ResourceBank.StorytellerDefOf.Sara)
+			if (Find.Storyteller.def != ShipInteriorMod2.Sara)
 				return;
 			float num = ResearchToWealth();
 			int numComponents = 0;
@@ -6206,7 +6256,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Map map, Faction faction, IntVec2 size, ref IntVec3 spot, QuestNode_Root_ShuttleCrash_Rescue __instance)
 		{
-			if (map.Biome == ResourceBank.BiomeDefOf.OuterSpaceBiome)
+			if (map.Biome == ShipInteriorMod2.OuterSpaceBiome)
 			{
 				foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBay")))
 				{
@@ -6241,41 +6291,6 @@ namespace SaveOurShip2
 					QuestGen.quest.RemovePart(raidPart);
 			}
 		}
-	}
-
-	public class ModSettings_SoS : ModSettings
-	{
-		public override void ExposeData()
-		{
-			Scribe_Values.Look(ref difficultySoS, "difficultySoS", 1.0);
-			Scribe_Values.Look(ref frequencySoS, "frequencySoS", 1.0);
-			Scribe_Values.Look(ref navyShipChance, "navyShipChance", 0.2);
-			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
-
-			Scribe_Values.Look(ref easyMode, "easyMode");
-			Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
-			Scribe_Values.Look(ref renderPlanet, "renderPlanet", true);
-			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
-
-			Scribe_Values.Look(ref minTravelTime, "minTravelTime", 5);
-			Scribe_Values.Look(ref maxTravelTime, "maxTravelTime", 100);
-			Scribe_Values.Look(ref offsetUIx, "offsetUIx");
-			Scribe_Values.Look(ref offsetUIy, "offsetUIy");
-			base.ExposeData();
-		}
-
-		public static double difficultySoS = 1,
-			frequencySoS = 1,
-			navyShipChance = 0.2,
-			fleetChance = 0.3;
-		public static bool easyMode,
-			useVacuumPathfinding = true,
-			renderPlanet = true,
-			useSplashScreen = true;
-		public static int minTravelTime = 5,
-			maxTravelTime = 100,
-			offsetUIx,
-			offsetUIy;
 	}
 
 	/*[HarmonyPatch(typeof(CompShipPart),"PostSpawnSetup")]

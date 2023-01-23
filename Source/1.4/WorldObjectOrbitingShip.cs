@@ -274,7 +274,7 @@ namespace RimWorld
             {
                 Find.GameEnder.CheckOrUpdateGameOver();
             }
-            Current.Game.DeinitAndRemoveMap_NewTemp(this.Map, false);
+            Current.Game.DeinitAndRemoveMap(this.Map);
             this.Destroy();
             //this.Map.GetComponent<ShipHeatMapComp>().BurnUpSet = true;
         }

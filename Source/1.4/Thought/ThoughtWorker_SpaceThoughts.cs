@@ -9,9 +9,9 @@ namespace RimWorld
 {
     public class ThoughtWorker_SpaceThoughts : ThoughtWorker
     {
-        public override ThoughtState CurrentStateInternal(Pawn p)
+        protected override ThoughtState CurrentStateInternal(Pawn p)
         {
-            if(p.Map.terrainGrid.TerrainAt(p.Position) == ResourceBank.TerrainDefOf.EmptySpace)
+            if(p.Map.terrainGrid.TerrainAt(p.Position) == ShipInteriorMod2.spaceTerrain)
             {
                 if(p.story.traits.HasTrait(TraitDefOf.Undergrounder) || p.story.traits.HasTrait(TraitDef.Named("Wimp"))) {
                     return ThoughtState.ActiveAtStage(3);
@@ -19,7 +19,7 @@ namespace RimWorld
                 {
                     return ThoughtState.ActiveAtStage(2);
                 }
-            } else if(p.Map.terrainGrid.TerrainAt(IntVec3.Zero) == ResourceBank.TerrainDefOf.EmptySpace)
+            } else if(p.Map.terrainGrid.TerrainAt(IntVec3.Zero) == ShipInteriorMod2.spaceTerrain)
             {
                 if (p.story.traits.HasTrait(TraitDefOf.Undergrounder) || p.story.traits.HasTrait(TraitDef.Named("Wimp"))) {
                     return ThoughtState.ActiveAtStage(1);

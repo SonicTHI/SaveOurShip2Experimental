@@ -162,7 +162,7 @@ namespace Verse
                     {
                         if (!(array[3] != null))
                         {
-                            Log.Error("Failed to find any texture while constructing " + this.ToStringSafe<Graphic_MultiOnOff>() + ". Filenames have changed; if you are converting an old mod, recommend renaming textures from *_back to *_north, *_side to *_east, and *_front to *_south.");
+                            Log.Error("Failed to find any texture while constructing " + this.ToStringSafe<Graphic_MultiOnOff>() + ". Filenames have changed; if you are converting an old mod, recommend renaming textures from *_back to *_north, *_side to *_east, and *_front to *_south.", false);
                             return;
                         }
                         array[0] = array[3];

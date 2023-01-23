@@ -288,7 +288,7 @@ namespace RimWorld
             else //using player ship combat rating
             {
                 if (!fleet)
-                    fleet = Rand.Chance((float)SaveOurShip2.ModSettings_SoS.fleetChance);
+                    fleet = Rand.Chance((float)ShipInteriorMod2.fleetChance);
                 CR = MapThreat(this.map);
                 if (passingShip is TradeShip)
                 {
@@ -318,7 +318,7 @@ namespace RimWorld
                         navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
                         shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.enemyShipDefs, CR, false, true);
                     }
-                    else if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance)) //try to spawn a random navy ship
+                    else if (Rand.Chance((float)ShipInteriorMod2.navyShipChance)) //try to spawn a random navy ship
                     {
                         //must have ships, hostile to player, able to operate
                         if (bounty)
@@ -764,7 +764,7 @@ namespace RimWorld
                 if (anyMapEngineCanActivate) //set AI heading
                 {
                     //retreat
-                    if (totalThreat / (OriginMapComp.totalThreat * SaveOurShip2.ModSettings_SoS.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
+                    if (totalThreat / (OriginMapComp.totalThreat * ShipInteriorMod2.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
                     {
                         Heading = -1;
                         enemyRetreating = true;

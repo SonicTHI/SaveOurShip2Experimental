@@ -13,7 +13,7 @@ namespace RimWorld.QuestGen
 
 		public SlateRef<QualityGenerator?> qualityGenerator;
 
-		public override void RunInt()
+		protected override void RunInt()
         {
 			Slate slate = QuestGen.slate;
 			ThingSetMakerParams parms = default(ThingSetMakerParams);
@@ -70,7 +70,7 @@ namespace RimWorld.QuestGen
 			choice.quest = QuestGen.quest;
 		}
 
-        public override bool TestRunInt(Slate slate)
+        protected override bool TestRunInt(Slate slate)
         {
             return true;
         }

@@ -103,7 +103,7 @@ namespace RimWorld
             return inspectString;
         }
 
-        public override void ReceiveCompSignal(string signal)
+        protected override void ReceiveCompSignal(string signal)
         {
             if (observedMap!=null && (signal == "PowerTurnedOff" || signal == "FlickedOff"))
             {
@@ -116,7 +116,7 @@ namespace RimWorld
         {
             if (observedMap != null && observedMap.Map !=null && !observedMap.Map.mapPawns.AnyColonistSpawned && !observedMap.Map.listerBuildings.allBuildingsColonist.Any() && observedMap.Faction==Faction.OfPlayer)
             {
-                Current.Game.DeinitAndRemoveMap_NewTemp(observedMap.Map, false);
+                Current.Game.DeinitAndRemoveMap(observedMap.Map);
                 Find.World.worldObjects.Remove(observedMap);
             }
         }

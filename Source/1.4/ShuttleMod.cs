@@ -1,4 +1,5 @@
 ﻿using System;
+using HugsLib;
 using RimWorld;
 using HarmonyLib;
 using Verse;
@@ -559,7 +560,7 @@ namespace SaveOurShip2
             ___blockedByRoof = false;
             foreach (IntVec3 c in ___rect)
             {
-                if (c.Roofed(___map) && ___map.roofGrid.RoofAt(c) == ResourceBank.RoofDefOf.RoofShip)
+                if (c.Roofed(___map) && ___map.roofGrid.RoofAt(c) == ShipInteriorMod2.shipRoofDef)
                 {
                     List<Thing> thingList = c.GetThingList(___map);
                     for (int i = 0; i < thingList.Count; i++)

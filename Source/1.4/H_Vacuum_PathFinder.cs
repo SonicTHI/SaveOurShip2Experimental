@@ -73,7 +73,7 @@ namespace RimworldMod.VacuumIsNotFun {
         // Generate additional pathfinding costs for tiles that are in space
         public static int AdditionalPathCost(Map map, TraverseParms parms, int index) {
             // Only run in space, and if pawn doesn't have a space suit
-            if (!map.IsSpace() || (!SaveOurShip2.ModSettings_SoS.useVacuumPathfinding && parms.pawn.Faction.IsPlayer)) return 0;
+            if (!map.IsSpace() || (!ShipInteriorMod2.useVacuumPathfinding && parms.pawn.Faction.IsPlayer)) return 0;
 
             // Find tile room
             var room = map.cellIndices.IndexToCell(index).GetRoom(map);
@@ -131,7 +131,7 @@ namespace RimworldMod.VacuumIsNotFun {
     public static class VacuumExtensions {
         public static Danger ExtraDangerFor(Danger original, Room room, Pawn p, Map map) {
             // Always pass through deadly, if tile or map isn't space, return normal danger
-            if (original == Danger.Deadly || !map.IsSpace() || (!SaveOurShip2.ModSettings_SoS.useVacuumPathfinding && p.Faction.IsPlayer) || (!room?.IsSpace() ?? true)) return original;
+            if (original == Danger.Deadly || !map.IsSpace() || (!ShipInteriorMod2.useVacuumPathfinding && p.Faction.IsPlayer) || (!room?.IsSpace() ?? true)) return original;
 
             return ShipInteriorMod2.EVAlevel(p) > 3 ? Danger.Some : Danger.Deadly;
         }

@@ -21,7 +21,7 @@ namespace RimWorld
 			return obj;
 		}
 
-		public override Job TryGiveJob(Pawn pawn)
+		protected override Job TryGiveJob(Pawn pawn)
 		{
 			Predicate<Thing> validator = delegate (Thing t)
 			{
@@ -35,7 +35,7 @@ namespace RimWorld
 				}
 				return (!pawn.WorkTagIsDisabled(WorkTags.Firefighting)) ? true : false;
 			};
-			Thing thing = GenClosest.ClosestThingReachable(pawn.GetLord().CurLordToil.FlagLoc, pawn.Map, ThingRequest.ForDef(ResourceBank.ThingDefOf.MechaniteFire), PathEndMode.Touch, TraverseParms.For(pawn), maxDistFromPoint, validator);
+			Thing thing = GenClosest.ClosestThingReachable(pawn.GetLord().CurLordToil.FlagLoc, pawn.Map, ThingRequest.ForDef(ShipInteriorMod2.MechaniteFire), PathEndMode.Touch, TraverseParms.For(pawn), maxDistFromPoint, validator);
 			if (thing != null)
 			{
 				return JobMaker.MakeJob(JobDefOf.BeatFire, thing);

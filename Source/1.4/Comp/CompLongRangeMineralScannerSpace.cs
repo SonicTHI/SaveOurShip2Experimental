@@ -140,7 +140,7 @@ namespace RimWorld
             else if (chance == 3) //premade sites, very low chance
             {
                 DerelictShip ship = new DerelictShip();
-                if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance))
+                if (Rand.Chance((float)ShipInteriorMod2.navyShipChance))
                 {
                     SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
                     if (navy != null)
@@ -184,7 +184,7 @@ namespace RimWorld
             {
                 DerelictShip ship = new DerelictShip();
                 ship.wreckLevel = Rand.RangeInclusive(2, 3);
-                if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance))
+                if (Rand.Chance((float)ShipInteriorMod2.navyShipChance))
                 {
                     SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
                     if (navy != null)
@@ -210,7 +210,7 @@ namespace RimWorld
             else //random ship
             {
                 AttackableShip ship = new AttackableShip();
-                if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance))
+                if (Rand.Chance((float)ShipInteriorMod2.navyShipChance))
                 {
                     SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy();
                     if (navy != null)

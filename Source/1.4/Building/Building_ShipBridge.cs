@@ -46,7 +46,7 @@ namespace RimWorld
         private List<string> InterstellarFailReasons()
         {
             List<string> result = new List<string>();
-            if (!cachedShipParts.Any((Building pa) => pa.def == ThingDefOf.Ship_ComputerCore || pa.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
+            if (!cachedShipParts.Any((Building pa) => pa.def == ThingDefOf.Ship_ComputerCore || pa.def == ShipInteriorMod2.ArchotechSpore))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_ComputerCore.label);
             if (!cachedShipParts.Any((Building pa) => pa.def == ThingDefOf.Ship_SensorCluster || pa.def ==ThingDef.Named("Ship_SensorClusterAdv")))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
@@ -501,7 +501,7 @@ namespace RimWorld
                             yield return landShip;
                         }
                         //New code for endgame
-                        if (ResourceBank.ResearchProjectDefOf.ArchotechPillarB.IsFinished)
+                        if (ShipInteriorMod2.PillarBProject.IsFinished)
                         {
                             if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarA"))
                             {
@@ -944,7 +944,7 @@ namespace RimWorld
             mapi = map;
         }
 
-        public override void SetName(string name)
+        protected override void SetName(string name)
         {
             if (name == ship || string.IsNullOrEmpty(name))
                 return;

@@ -9,7 +9,7 @@ namespace RimWorld
 {
 	public class MechaniteSpark : Projectile
 	{
-		public override void Impact(Thing hitThing, bool blockedByShield = false)
+		protected override void Impact(Thing hitThing, bool blockedByShield = false)
 		{
 			Map map = base.Map;
 			MechaniteFire fire = base.Position.GetFirstThing<MechaniteFire>(base.Map);

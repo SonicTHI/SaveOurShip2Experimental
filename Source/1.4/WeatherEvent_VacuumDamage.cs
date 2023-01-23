@@ -73,7 +73,7 @@ namespace RimWorld
             {
                 if (app.def.defName.Equals("Apparel_SpaceSurvivalBelt"))
                 {
-                    pawn.health.AddHediff(ResourceBank.HediffDefOf.SpaceBeltBubbleHediff);
+                    pawn.health.AddHediff(ShipInteriorMod2.bubbleHediff);
                     pawn.apparel.Remove(app);
                     pawn.apparel.Wear((Apparel)ThingMaker.MakeThing(ThingDef.Named("Apparel_SpaceSurvivalBeltDummy")),
                         false, true);

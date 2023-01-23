@@ -68,7 +68,7 @@ namespace RimWorld
         {
             if (this.State != HibernatableStateDefOf.Hibernating)
             {
-                Log.ErrorOnce("Attempted to start a non-hibernating object", 34361223);
+                Log.ErrorOnce("Attempted to start a non-hibernating object", 34361223, false);
                 return;
             }
             this.State = HibernatableStateDefOf.Starting;

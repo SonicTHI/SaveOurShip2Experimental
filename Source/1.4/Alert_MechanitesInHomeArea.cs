@@ -17,7 +17,7 @@ namespace RimWorld
 				List<Map> maps = Find.Maps;
 				for (int i = 0; i < maps.Count; i++)
 				{
-					List<Thing> list = maps[i].listerThings.ThingsOfDef(ResourceBank.ThingDefOf.MechaniteFire);
+					List<Thing> list = maps[i].listerThings.ThingsOfDef(ShipInteriorMod2.MechaniteFire);
 					for (int j = 0; j < list.Count; j++)
 					{
 						Thing thing = list[j];

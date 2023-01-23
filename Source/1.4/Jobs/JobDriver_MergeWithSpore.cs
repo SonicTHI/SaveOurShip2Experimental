@@ -17,7 +17,7 @@ namespace RimWorld
             return ReservationUtility.Reserve(pawn, job.targetA, job) && TargetA.Thing.TryGetComp<CompBuildingConsciousness>().Consciousness == null;
         }
 
-        protected override IEnumerable<Toil> MakeNewToils()
+        public override IEnumerable<Toil> MakeNewToils()
         {
             ToilFailConditions.FailOnDestroyedOrNull<JobDriver_MergeWithSpore>(this, (TargetIndex)1);
             yield return Toils_Reserve.Reserve((TargetIndex)1);

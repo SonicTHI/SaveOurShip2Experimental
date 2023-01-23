@@ -10,7 +10,7 @@ namespace RimWorld
 {
     class Bullet_HologramLaser : Bullet
     {
-        protected override void Impact(Thing hitThing, bool blockedByShield = false)
+        public override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             base.Impact(hitThing);
             ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));

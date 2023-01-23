@@ -25,12 +25,12 @@ namespace RimWorld.QuestGen
 
         private const string RootSymbol = "root";
 
-        protected override bool TestRunInt(Slate slate)
+        public override bool TestRunInt(Slate slate)
         {
             return true;
         }
 
-        protected override void RunInt()
+        public override void RunInt()
         {
             Slate slate = QuestGen.slate;
             IEnumerable<SitePartDefWithParams> enumerable = this.sitePartsParams.GetValue(slate);

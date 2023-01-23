@@ -12,7 +12,7 @@ namespace RimWorld
     class JobDriver_Holodeck : JobDriver_WatchTelevision
     {
 
-		protected override IEnumerable<Toil> MakeNewToils()
+		public override IEnumerable<Toil> MakeNewToils()
 		{
 			this.EndOnDespawnedOrNull(TargetIndex.A);
 			Toil getToHolodeck = Toils_Goto.GotoCell(TargetIndex.B, PathEndMode.OnCell);
@@ -57,7 +57,7 @@ namespace RimWorld
 			}
 		}
 
-		protected override void WatchTickAction()
+		public override void WatchTickAction()
 		{
 			if (TargetThingA == null)
 				return;

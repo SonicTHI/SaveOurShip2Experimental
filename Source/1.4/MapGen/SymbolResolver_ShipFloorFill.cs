@@ -13,16 +13,14 @@ namespace RimWorld.BaseGen
         {
             Map map = BaseGen.globalSettings.map;
             TerrainGrid terrainGrid = map.terrainGrid;
-            CellRect.CellRectIterator iterator = rp.rect.GetIterator();
-            while (!iterator.Done())
+            foreach (var item in rp.rect)
             {
                 Thing thing;
                 if (rp.disableSinglePawn==true)
-                    thing = ThingMaker.MakeThing(ShipInteriorMod2.hullPlateDef, null);
+                    thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullTile, null);
                 else
                     thing = ThingMaker.MakeThing(ThingDef.Named("ShipHullTileWrecked"), null);
-                GenSpawn.Spawn(thing, iterator.Current, map, WipeMode.Vanish);
-                iterator.MoveNext();
+                GenSpawn.Spawn(thing, item, map, WipeMode.Vanish);
             }
         }
     }

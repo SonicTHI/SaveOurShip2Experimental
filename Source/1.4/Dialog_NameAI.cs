@@ -17,7 +17,7 @@ namespace SaveOurShip2
             curName = AI.AIName;
         }
 
-        public override void SetName(string name)
+        protected override void SetName(string name)
         {
             if (name == AI.AIName || string.IsNullOrEmpty(name))
                 return;

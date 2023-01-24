@@ -21,7 +21,7 @@ namespace RimWorld
 			return obj;
 		}
 
-		public override Job TryGiveJob(Pawn pawn)
+		protected override Job TryGiveJob(Pawn pawn)
 		{
 			Predicate<Thing> validator = delegate (Thing t)
 			{

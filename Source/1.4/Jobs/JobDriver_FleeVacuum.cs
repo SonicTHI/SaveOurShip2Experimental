@@ -13,7 +13,7 @@ namespace RimWorld
 				return true;
 			return false;
 		}
-		public override IEnumerable<Toil> MakeNewToils()
+		protected override IEnumerable<Toil> MakeNewToils()
 		{
 			if (TargetA != LocalTargetInfo.Invalid)
 				this.FailOnDespawnedOrNull(TargetIndex.A);

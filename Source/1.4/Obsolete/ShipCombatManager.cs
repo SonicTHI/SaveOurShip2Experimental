@@ -53,7 +53,7 @@ namespace RimWorld
                         MinifiedThing mini = thing.MakeMinified();
                         Salvage.Add(mini);
                     }
-                    catch(Exception e)
+                    catch(Exception)
                     {
 
                     }

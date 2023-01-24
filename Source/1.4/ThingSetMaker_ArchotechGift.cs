@@ -9,7 +9,7 @@ namespace RimWorld
 {
     class ThingSetMaker_ArchotechGift : ThingSetMaker_MarketValue
     {
-        public override IEnumerable<ThingDef> AllowedThingDefs(ThingSetMakerParams parms)
+        protected override IEnumerable<ThingDef> AllowedThingDefs(ThingSetMakerParams parms)
         {
             List<ThingDef> defs = new List<ThingDef>();
             foreach(ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)

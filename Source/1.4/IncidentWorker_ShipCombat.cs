@@ -11,7 +11,7 @@ namespace RimWorld
     {
         public static int LastAttackTick = 0;
 
-        public override bool CanFireNowSub(IncidentParms parms)
+        protected override bool CanFireNowSub(IncidentParms parms)
         {
             foreach (Building_ShipCloakingDevice cloak in ((Map)parms.target).GetComponent<ShipHeatMapComp>().Cloaks)
             {
@@ -21,7 +21,7 @@ namespace RimWorld
             return !((Map)parms.target).GetComponent<ShipHeatMapComp>().InCombat && SaveOurShip2.ModSettings_SoS.frequencySoS > 0 && Find.TickManager.TicksGame > LastAttackTick + 180000/ SaveOurShip2.ModSettings_SoS.frequencySoS;
         }
 
-        public override bool TryExecuteWorker(IncidentParms parms)
+        protected override bool TryExecuteWorker(IncidentParms parms)
         {
             LastAttackTick = Find.TickManager.TicksGame;
             ((Map)parms.target).GetComponent<ShipHeatMapComp>().StartShipEncounter((Building)((Map)parms.target).listerThings.AllThings.Where(t => t is Building_ShipBridge).FirstOrDefault(), fac: parms.faction);

@@ -30,12 +30,12 @@ namespace SaveOurShip2
 	{
 		public ShipInteriorMod2(ModContentPack content) : base(content)
 		{
-			//new Harmony(this.Content.PackageIdPlayerFacing).PatchAll();
 			base.GetSettings<ModSettings_SoS>();
 			Harmony pat = new Harmony("ShipInteriorMod2");
 			Initialize(pat);
 			LongEventHandler.QueueLongEvent(() => DefsLoaded(), "ShipInteriorMod2", false, null);
 			LongEventHandler.QueueLongEvent(() => SceneLoaded(), "ShipInteriorMod2", false, null);
+			pat.PatchAll();
 		}
 
 		public static readonly float crittersleepBodySize = 0.7f;
@@ -2783,7 +2783,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(MapDeiniter), "Deinit")]
+	[HarmonyPatch(typeof(MapDeiniter), "Deinit_NewTemp")]
 	public static class RemoveSpaceMap
 	{
 		public static void Postfix()
@@ -5791,12 +5791,17 @@ namespace SaveOurShip2
 	[HarmonyPatch(typeof(PawnApparelGenerator), "CanUsePair")]
 	public static class NoHolographicGearOnGeneratedPawns
 	{
-		public static void Postfix(ThingStuffPair pair, Pawn pawn, ref bool __result)
+		static bool Prepare()
+		{
+			return false; //temporary disable
+		}
+		public static bool Postfix(bool __result, ThingStuffPair pair, Pawn pawn)
 		{
 			if (pair.thing.IsApparel && pair.thing.apparel.tags != null && pair.thing.apparel.tags.Contains("HologramGear") && pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
 			{
-				__result = false;
+				return false;
 			}
+			return __result;
 		}
 	}
 

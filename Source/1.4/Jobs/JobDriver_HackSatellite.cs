@@ -17,7 +17,7 @@ namespace RimWorld
             return pawn.Reserve(TargetA, job);
         }
 
-        public override IEnumerable<Toil> MakeNewToils()
+        protected override IEnumerable<Toil> MakeNewToils()
         {
             if (TargetA != LocalTargetInfo.Invalid)
                 this.FailOnDespawnedOrNull(TargetIndex.A);

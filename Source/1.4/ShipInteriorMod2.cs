@@ -30,12 +30,18 @@ namespace SaveOurShip2
 	{
 		public ShipInteriorMod2(ModContentPack content) : base(content)
 		{
-			//new Harmony(this.Content.PackageIdPlayerFacing).PatchAll();
+			//var timer = new System.Diagnostics.Stopwatch();
+  			//timer.Start();
+			
 			base.GetSettings<ModSettings_SoS>();
 			Harmony pat = new Harmony("ShipInteriorMod2");
 			Initialize(pat);
 			LongEventHandler.QueueLongEvent(() => DefsLoaded(), "ShipInteriorMod2", false, null);
 			LongEventHandler.QueueLongEvent(() => SceneLoaded(), "ShipInteriorMod2", false, null);
+
+			//timer.Stop();
+			//TimeSpan timeTaken = timer.Elapsed;
+			//Log.Message("[Save Our Ship] Initialized in " + timeTaken.ToString(@"ss\.fffff") + " seconds.");
 		}
 
 		public static readonly float crittersleepBodySize = 0.7f;
@@ -1928,7 +1934,7 @@ namespace SaveOurShip2
 			{
 				//landing - remove space map
 				WorldObject oldParent = sourceMap.Parent;
-				Current.Game.DeinitAndRemoveMap(sourceMap);
+				Current.Game.DeinitAndRemoveMap_NewTemp(sourceMap, false);
 				Find.World.worldObjects.Remove(oldParent);
 			}
 			if (!sourceMapIsSpace) //takeoff - explosions

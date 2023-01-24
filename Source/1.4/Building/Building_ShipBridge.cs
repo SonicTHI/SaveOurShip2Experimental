@@ -944,7 +944,7 @@ namespace RimWorld
             mapi = map;
         }
 
-        public override void SetName(string name)
+        protected override void SetName(string name)
         {
             if (name == ship || string.IsNullOrEmpty(name))
                 return;

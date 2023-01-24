@@ -21,12 +21,12 @@ namespace RimWorld
             }
         }
 
-        public override bool CanScatterAt(IntVec3 c, Map map)
+        protected override bool CanScatterAt(IntVec3 c, Map map)
         {
             return true;
         }
 
-        public override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
+        protected override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
         {
             List<Building> cores = new List<Building>();
             //limited to 100x100 due to unsettable map size, no fleets

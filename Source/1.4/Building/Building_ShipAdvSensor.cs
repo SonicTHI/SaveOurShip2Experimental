@@ -103,7 +103,7 @@ namespace RimWorld
             return inspectString;
         }
 
-        public override void ReceiveCompSignal(string signal)
+        protected override void ReceiveCompSignal(string signal)
         {
             if (observedMap!=null && (signal == "PowerTurnedOff" || signal == "FlickedOff"))
             {

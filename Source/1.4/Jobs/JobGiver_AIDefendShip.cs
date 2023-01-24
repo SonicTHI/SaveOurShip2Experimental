@@ -10,7 +10,7 @@ namespace RimWorld
 {
     public class JobGiver_AIDefendShip : JobGiver_AIFightEnemies
     {
-        public override Thing FindAttackTarget(Pawn pawn)
+        protected override Thing FindAttackTarget(Pawn pawn)
         {
 			TargetScanFlags targetScanFlags = TargetScanFlags.NeedReachableIfCantHitFromMyPos | TargetScanFlags.NeedThreat | TargetScanFlags.NeedAutoTargetable;
 			return (Thing)AttackTargetFinder.BestAttackTarget(pawn, targetScanFlags, (Thing x) => ExtraTargetValidator(pawn, x), 0f, 99f, GetFlagPosition(pawn), GetFlagRadius(pawn));

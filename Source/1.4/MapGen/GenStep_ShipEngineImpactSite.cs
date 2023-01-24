@@ -19,12 +19,12 @@ namespace RimWorld
             }
         }
 
-        public override bool CanScatterAt(IntVec3 c, Map map)
+        protected override bool CanScatterAt(IntVec3 c, Map map)
         {
             return true;
         }
 
-        public override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
+        protected override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
         {
             ThingDef chunk = ThingDefOf.ShipChunk;
             for(int i=0;i<13;i++)

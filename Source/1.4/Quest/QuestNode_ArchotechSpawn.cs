@@ -17,12 +17,12 @@ namespace RimWorld.QuestGen
 
 		private const string RootSymbol = "root";
 
-		public override bool TestRunInt(Slate slate)
+		protected override bool TestRunInt(Slate slate)
 		{
 			return slate.Exists("map");
 		}
 
-		public override void RunInt()
+		protected override void RunInt()
 		{
 			Slate slate = QuestGen.slate;
 			if (contents.GetValue(slate) != null)

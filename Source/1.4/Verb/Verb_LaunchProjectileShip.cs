@@ -31,7 +31,7 @@ namespace RimWorld
             }
         }
 
-        public override bool TryCastShot()
+        protected override bool TryCastShot()
         {
             ThingDef projectile = Projectile;
             if (projectile == null)

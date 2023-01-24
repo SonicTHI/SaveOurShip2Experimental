@@ -9,9 +9,9 @@ namespace RimWorld
 {
     class CompTargetable_DamagedItem : CompTargetable
 	{
-		public override bool PlayerChoosesTarget => true;
+		protected override bool PlayerChoosesTarget => true;
 
-		public override TargetingParameters GetTargetingParameters()
+		protected override TargetingParameters GetTargetingParameters()
 		{
 			return new TargetingParameters
 			{

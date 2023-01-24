@@ -9,7 +9,7 @@ namespace RimWorld
 {
     public class ThoughtWorker_SpaceThoughts : ThoughtWorker
     {
-        public override ThoughtState CurrentStateInternal(Pawn p)
+        protected override ThoughtState CurrentStateInternal(Pawn p)
         {
             if(p.Map.terrainGrid.TerrainAt(p.Position) == ResourceBank.TerrainDefOf.EmptySpace)
             {

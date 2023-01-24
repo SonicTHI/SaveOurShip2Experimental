@@ -19,7 +19,7 @@ namespace RimWorld
             return obj;
         }
 
-        protected override Job TryGiveJob(Pawn pawn)
+        public override Job TryGiveJob(Pawn pawn)
 		{
             if (!pawn.RaceProps.Humanlike)
             {

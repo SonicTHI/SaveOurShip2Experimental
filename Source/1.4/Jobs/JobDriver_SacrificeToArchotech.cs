@@ -29,7 +29,7 @@ namespace RimWorld
 			return false;
 		}
 
-		protected override IEnumerable<Toil> MakeNewToils()
+		public override IEnumerable<Toil> MakeNewToils()
 		{
 			this.job.count = 1;
 			this.FailOnDestroyedOrNull(TargetIndex.A);

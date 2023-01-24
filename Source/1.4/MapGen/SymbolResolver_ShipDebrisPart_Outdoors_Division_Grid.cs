@@ -86,7 +86,7 @@ namespace RimWorld.BaseGen
             {
                 return;
             }
-            Log.Warning("Grid resolver could not resolve any grid size. params=" + rp, false);
+            Log.Warning("Grid resolver could not resolve any grid size. params=" + rp);
         }
 
         private void FillOptions(CellRect rect)

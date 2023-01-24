@@ -17,7 +17,7 @@ namespace RimWorld
             loadID = Find.UniqueIDsManager.GetNextPassingShipID();
         }
 
-        protected override AcceptanceReport CanCommunicateWith(Pawn negotiator)
+        public override AcceptanceReport CanCommunicateWith(Pawn negotiator)
         {
             return "This ship refuses your hails";
         }

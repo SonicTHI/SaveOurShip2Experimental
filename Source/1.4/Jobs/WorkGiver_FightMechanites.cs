@@ -17,7 +17,7 @@ namespace RimWorld
 
 		private const float HandledDistance = 5f;
 
-		public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForDef(ShipInteriorMod2.MechaniteFire);
+		public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForDef(ResourceBank.ThingDefOf.MechaniteFire);
 
 		public override PathEndMode PathEndMode => PathEndMode.Touch;
 

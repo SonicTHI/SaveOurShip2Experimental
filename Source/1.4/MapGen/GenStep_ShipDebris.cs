@@ -19,7 +19,7 @@ namespace RimWorld
             }
         }
 
-        protected override bool CanScatterAt(IntVec3 c, Map map)
+        public override bool CanScatterAt(IntVec3 c, Map map)
         {
             if (!base.CanScatterAt(c, map))
             {
@@ -42,7 +42,7 @@ namespace RimWorld
             return cellRect.FullyContainedWithin(new CellRect(0, 0, map.Size.x, map.Size.z));
         }
 
-        protected override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
+        public override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
         {
             int randomInRange = SettlementSizeRange.RandomInRange;
             int randomInRange2 = SettlementSizeRange.RandomInRange;

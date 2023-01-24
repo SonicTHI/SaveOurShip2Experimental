@@ -31,7 +31,7 @@ namespace RimWorld
             }
         }
 
-        protected override bool TryCastShot()
+        public override bool TryCastShot()
         {
             ThingDef projectile = Projectile;
             if (projectile == null)
@@ -163,7 +163,7 @@ namespace RimWorld
                     {
                         if (t is Pawn p)
                         {
-                            if (ShipInteriorMod2.easyMode && t.Faction == Faction.OfPlayer)
+                            if (SaveOurShip2.ModSettings_SoS.easyMode && t.Faction == Faction.OfPlayer)
                                 HealthUtility.DamageUntilDowned(p, false);
                             else
                                 t.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));

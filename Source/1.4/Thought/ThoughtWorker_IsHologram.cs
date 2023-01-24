@@ -10,7 +10,7 @@ namespace RimWorld
 {
     class ThoughtWorker_IsHologram : ThoughtWorker
     {
-        protected override ThoughtState CurrentStateInternal(Pawn p)
+        public override ThoughtState CurrentStateInternal(Pawn p)
         {
             if (ShipInteriorMod2.IsHologram(p))
                 return ThoughtState.ActiveDefault;

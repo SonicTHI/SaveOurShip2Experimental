@@ -9,7 +9,7 @@ namespace RimWorld
 {
     class Projectile_ExplosiveShipCombatLaser : Projectile_ExplosiveShipCombat
     {
-        protected override void Impact(Thing hitThing, bool blockedByShield = false)
+        public override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             base.Impact(hitThing);
             ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
@@ -28,7 +28,7 @@ namespace RimWorld
                 GenSpawn.Spawn(obj, this.Position, this.Map, 0);
         }
 
-        protected override void Explode()
+        public override void Explode()
         {
             if(this.weaponDamageMultiplier == 1.0f)
                 base.Explode();

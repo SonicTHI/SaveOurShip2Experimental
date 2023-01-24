@@ -18,7 +18,7 @@ namespace RimWorld
             loadID = Find.UniqueIDsManager.GetNextPassingShipID();
         }
 
-        protected override AcceptanceReport CanCommunicateWith(Pawn negotiator)
+        public override AcceptanceReport CanCommunicateWith(Pawn negotiator)
         {
             return "There is no response";
         }

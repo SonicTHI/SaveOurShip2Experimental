@@ -134,7 +134,7 @@ namespace RimWorld
             StartSustainer();
         }
 
-        protected override float DesiredPowerOutput => base.DesiredPowerOutput * (1 + (overdriveSetting * 2));
+        public override float DesiredPowerOutput => base.DesiredPowerOutput * (1 + (overdriveSetting * 2));
 
         public void StartSustainer()
         {

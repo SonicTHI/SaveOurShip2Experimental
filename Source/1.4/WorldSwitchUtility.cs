@@ -2,12 +2,13 @@
 using Verse;
 using RimWorld;
 using RimWorld.Planet;
-using HugsLib.Utils;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using UnityEngine;
 using Verse.AI.Group;
+using HugsLib;
+using HugsLib.Utils;
 
 namespace SaveOurShip2
 {
@@ -209,7 +210,7 @@ namespace SaveOurShip2
             }
 
             //Oddly enough, interstellar flight takes a lot of time
-            int years = Rand.RangeInclusive(ShipInteriorMod2.minTravelTime.Value, ShipInteriorMod2.maxTravelTime.Value);
+            int years = Rand.RangeInclusive(SaveOurShip2.ModSettings_SoS.minTravelTime, SaveOurShip2.ModSettings_SoS.maxTravelTime);
             Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * years);
             Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);
         }

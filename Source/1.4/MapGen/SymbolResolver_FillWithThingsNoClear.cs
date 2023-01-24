@@ -56,7 +56,7 @@ namespace RimWorld.BaseGen
             GenAdj.AdjustForRotation(ref zero, ref size, rot);
             if (size.x <= 0 || size.z <= 0)
             {
-                Log.Error("Thing has 0 size.", false);
+                Log.Error("Thing has 0 size.");
                 return;
             }
             for (int i = rp.rect.minX; i <= rp.rect.maxX - size.x + 1; i += size.x + num)

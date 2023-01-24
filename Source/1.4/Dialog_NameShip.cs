@@ -17,7 +17,7 @@ namespace SaveOurShip2
             curName = b.ShipName;
         }
 
-        protected override void SetName(string name)
+        public override void SetName(string name)
         {
             if (name == bridge.ShipName || string.IsNullOrEmpty(name))
                 return;

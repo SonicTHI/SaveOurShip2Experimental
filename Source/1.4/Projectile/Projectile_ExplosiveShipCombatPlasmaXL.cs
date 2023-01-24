@@ -9,7 +9,7 @@ namespace RimWorld
 {
     class Projectile_ExplosiveShipCombatPlasmaXL : Projectile_ExplosiveShipCombat
     {
-        protected override void Impact(Thing hitThing, bool blockedByShield = false)
+        public override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             Map map = base.Map;
             base.Impact(hitThing);

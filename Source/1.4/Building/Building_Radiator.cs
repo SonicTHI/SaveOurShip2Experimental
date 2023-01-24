@@ -35,7 +35,7 @@ namespace RimWorld
             else if (this.def.defName.Equals("ShipInside_PassiveCoolerArchotech"))
                 def = ThingDef.Named("Ship_BeamArchotech");
             else
-                def = ShipInteriorMod2.beamDef;
+                def = ResourceBank.ThingDefOf.Ship_Beam;
             Thing thing = ThingMaker.MakeThing(def);
             thing.SetFaction(fac);
             if (col != Color.clear)

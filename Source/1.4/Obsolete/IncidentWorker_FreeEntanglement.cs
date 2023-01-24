@@ -8,12 +8,12 @@ namespace RimWorld
 {
     class IncidentWorker_FreeEntanglement : IncidentWorker
     {
-        protected override bool CanFireNowSub(IncidentParms parms)
+        public override bool CanFireNowSub(IncidentParms parms)
         {
             return true;
         }
 
-        protected override bool TryExecuteWorker(IncidentParms parms)
+        public override bool TryExecuteWorker(IncidentParms parms)
         {
             Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("EntanglementUpdate"), TranslatorFormattedStringExtensions.Translate("EntanglementUpdateDesc"), LetterDefOf.NeutralEvent);
             ActiveDropPodInfo info = new ActiveDropPodInfo();

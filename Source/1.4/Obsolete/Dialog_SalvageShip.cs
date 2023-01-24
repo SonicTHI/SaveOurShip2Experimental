@@ -52,7 +52,7 @@ namespace RimWorld
 
         public override Vector2 InitialSize => new Vector2(1024f, UI.screenHeight);
 
-        protected override float Margin => 0f;
+        public override float Margin => 0f;
 
         private int numSalvageBays;
 

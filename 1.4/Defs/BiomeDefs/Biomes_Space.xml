@@ -31,5 +31,11 @@
 		</baseWeatherCommonalities>
 		<wildAnimals />
 		<wildPlants />
+		<modExtensions>
+			<li Class="GeologicalLandforms.BiomeProperties" MayRequire="m00nl1ght.GeologicalLandforms">
+				<allowLandforms>false</allowLandforms>
+				<allowBiomeTransitions>false</allowBiomeTransitions>
+			</li>
+		</modExtensions>
 	</BiomeDef>
 </Defs>

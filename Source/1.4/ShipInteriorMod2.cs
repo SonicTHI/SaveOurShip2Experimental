@@ -26,16 +26,29 @@ using static SaveOurShip2.ModSettings_SoS;
 
 namespace SaveOurShip2
 {
+	
+	[StaticConstructorOnStartup]
+	static class Setup
+	{
+		static Setup()
+		{
+			Harmony pat = new Harmony("ShipInteriorMod2");
+			
+			//Legacy methods. All 3 of these could technically be merged
+			ShipInteriorMod2.Initialize(pat);
+			ShipInteriorMod2.DefsLoaded();
+			ShipInteriorMod2.SceneLoaded();
+			
+			pat.PatchAll();
+			//Needs an init delay
+			if (useSplashScreen) LongEventHandler.QueueLongEvent(() => ShipInteriorMod2.UseCustomSplashScreen(), "ShipInteriorMod2", false, null);
+		}
+	}
 	public class ShipInteriorMod2 : Mod
 	{
 		public ShipInteriorMod2(ModContentPack content) : base(content)
 		{
 			base.GetSettings<ModSettings_SoS>();
-			Harmony pat = new Harmony("ShipInteriorMod2");
-			Initialize(pat);
-			LongEventHandler.QueueLongEvent(() => DefsLoaded(), "ShipInteriorMod2", false, null);
-			LongEventHandler.QueueLongEvent(() => SceneLoaded(), "ShipInteriorMod2", false, null);
-			pat.PatchAll();
 		}
 
 		public static readonly float crittersleepBodySize = 0.7f;
@@ -59,7 +72,7 @@ namespace SaveOurShip2
 		public static List<ThingDef> randomPlants;
 		public static Dictionary<ThingDef, ThingDef> wreckDictionary;
 
-		void Initialize(Harmony pat)
+		public static void Initialize(Harmony pat)
 		{
 			// Must be manually patched as SectionLayer_Terrain is internal
 			var regenerateMethod = AccessTools.TypeByName("SectionLayer_Terrain").GetMethod("Regenerate");
@@ -140,7 +153,7 @@ namespace SaveOurShip2
 			base.WriteSettings();
 		}
 
-		public void DefsLoaded()
+		public static void DefsLoaded()
 		{
 			Log.Message("SOS2EXP V77f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
@@ -149,9 +162,6 @@ namespace SaveOurShip2
             {
 				Log.Error("SOS2: mod \"" + ship.modContentPack.Name + "\" contains EnemyShipDef: \"" + ship + "\" that can spawn as a random ship but is saved with an old version of CK!");
 			}
-
-			if (useSplashScreen)
-				((UI_BackgroundMain)UIMenuBackgroundManager.background).overrideBGImage = ResourceBank.Splash;
 
 			foreach (ThingDef drug in DefDatabase<ThingDef>.AllDefsListForReading)
 			{
@@ -277,7 +287,7 @@ namespace SaveOurShip2
 			//}
 		}
 
-		public void SceneLoaded()
+		public static void SceneLoaded()
 		{
 			if (!loadedGraphics)
 			{
@@ -313,6 +323,12 @@ namespace SaveOurShip2
 		/// </summary>
 		/// <param name="roof"></param>
 		/// <returns></returns>
+		
+		public static void UseCustomSplashScreen()
+		{
+			((UI_BackgroundMain)UIMenuBackgroundManager.background).overrideBGImage = ResourceBank.Splash;
+		}
+
 		public static bool IsRoofDefAirtight(RoofDef roof)
 		{
 			if (roof == null)
@@ -5791,10 +5807,6 @@ namespace SaveOurShip2
 	[HarmonyPatch(typeof(PawnApparelGenerator), "CanUsePair")]
 	public static class NoHolographicGearOnGeneratedPawns
 	{
-		static bool Prepare()
-		{
-			return false; //temporary disable
-		}
 		public static bool Postfix(bool __result, ThingStuffPair pair, Pawn pawn)
 		{
 			if (pair.thing.IsApparel && pair.thing.apparel.tags != null && pair.thing.apparel.tags.Contains("HologramGear") && pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)

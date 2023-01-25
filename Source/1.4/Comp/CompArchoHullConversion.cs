@@ -130,7 +130,7 @@ namespace RimWorld
 					replacement.SpawnSetup(parent.Map, false);
 					FleckMaker.ThrowSmoke(replacement.DrawPos, parent.Map, 2);
 				}
-				if (terrain != CompRoofMe.hullTerrain && terrain!=ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!=ResourceBank.TerrainDefOf.FakeFloorInsideShipMech && terrain!=ResourceBank.TerrainDefOf.ShipWreckageTerrain && terrain!=ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam)
+				if (terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipMech && terrain!= ResourceBank.TerrainDefOf.ShipWreckageTerrain && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam)
 					parent.Map.terrainGrid.SetTerrain(c, terrain);
 			}
 		}

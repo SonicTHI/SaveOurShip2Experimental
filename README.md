@@ -4,7 +4,7 @@
 
 SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131). It includes over a years worth of bugfixes, performance optimizations, mechanics changes and some new features that might need more testing.
 
-**As of V69, 1.3 version is no longer maintained.**
+**As of V78, 1.3 version is no longer included and has not been maintained since V69.**
 
 **While this version is officialy endorsed, it is not made by RHX media and you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from SOS2EXP back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case.
 

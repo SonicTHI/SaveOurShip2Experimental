@@ -17,7 +17,7 @@
       <li TKey="SoSTipNoWeapons">An unarmed ship is easy prey. Install weapons before launching, or bring a shuttle and a competent boarding party.</li>
       <li TKey="SoSTipHeatsinks">Heatsinks are critical to a ship's performance in combat. More heat capacity means your shields will stay up longer.</li>
       <li TKey="SoSTipRadiators">A ship can't radiate heat while its cloaking device is active. Make sure to disable it once your ship becomes dangerously hot.</li>
-      <li TKey="SoSTipBoardingParties">Enemy ships will launch boarding parties once their weapons have broken your hull. You can use pint defense capable ship weapons to help repel boarders.</li>
+      <li TKey="SoSTipBoardingParties">Enemy ships will launch boarding parties once their weapons have broken your hull. You can use point defense capable ship weapons to help repel boarders.</li>
       <li TKey="SoSTipBoardingParties2">In combat, you can send a shuttle over to the enemy ship. Many ships are vulnerable to a skilled boarding party.</li>
       <li TKey="SoSTipHackBridge">A colonist can use the Intellectual skill to hack an enemy ship's bridge, placing it under your control. Some captains weld multiple captured ships together.</li>
       <li TKey="SoSTipDetach">Pieces of a ship separated from its bridge will detach and drift away. Their resources can still be recovered by a salvage bay after the battle.</li>

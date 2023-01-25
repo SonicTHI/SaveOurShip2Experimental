@@ -383,6 +383,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipPurgePort</defName>
 		<label>emergency purge port</label>
+		<altitudeLayer>WorldClipper</altitudeLayer>
 		<description>A system for channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.</description>
 		<size>(2,2)</size>
 		<graphicData>
@@ -402,6 +403,7 @@
 			<ComponentSpacer>4</ComponentSpacer>
 		</costList>
 		<passability>Impassable</passability>
+		<seeThroughFog>true</seeThroughFog>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>
@@ -435,6 +437,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipPurgePortLarge</defName>
 		<label>large emergency purge port</label>
+		<altitudeLayer>WorldClipper</altitudeLayer>
 		<description>A system for rapidly channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.</description>
 		<size>(4,4)</size>
 		<graphicData>
@@ -454,6 +457,7 @@
 			<ComponentSpacer>20</ComponentSpacer>
 		</costList>
 		<passability>Impassable</passability>
+		<seeThroughFog>true</seeThroughFog>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>

@@ -14,16 +14,6 @@ namespace RimWorld
         public static GraphicData roofedDataMech = new GraphicData();
         public static Graphic roofedGraphicTile;
         public static Graphic roofedGraphicTileMech;
-        public static RoofDef roof = DefDatabase<RoofDef>.GetNamed("RoofShip");
-        public static TerrainDef hullTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShip");
-        public static TerrainDef mechHullTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShipMech");
-        public static TerrainDef archotechHullTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShipArchotech");
-        public static TerrainDef wreckageTerrain = DefDatabase<TerrainDef>.GetNamed("ShipWreckageTerrain");
-        public static TerrainDef hullfoamTerrain = DefDatabase<TerrainDef>.GetNamed("FakeFloorInsideShipFoam");
-        public static ThingDef hullPlateDef = ThingDef.Named("ShipHullTile");
-        public static ThingDef mechHullPlateDef = ThingDef.Named("ShipHullTileMech");
-        public static ThingDef archoHullPlateDef = ThingDef.Named("ShipHullTileArchotech");
-        public static ThingDef hullFoamDef = ThingDef.Named("ShipHullfoamTile");
         bool isTile;
         bool isMechTile;
         bool isArchoTile;
@@ -54,10 +44,10 @@ namespace RimWorld
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
-            isTile = parent.def == hullPlateDef;
-            isMechTile = parent.def == mechHullPlateDef;
-            isArchoTile = parent.def == archoHullPlateDef;
-            isFoamTile = parent.def == hullFoamDef;
+            isTile = parent.def == ResourceBank.ThingDefOf.ShipHullTile;
+            isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
+            isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
+            isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
             map = parent.Map;
             positions = new List<IntVec3>();
             foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(parent))
@@ -70,7 +60,7 @@ namespace RimWorld
                 {
                     var oldRoof = map.roofGrid.RoofAt(pos);
                     if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
-                        map.roofGrid.SetRoof(pos, roof);
+                        map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
                 }
             }
             if (respawningAfterLoad)
@@ -87,15 +77,15 @@ namespace RimWorld
             if (!map.terrainGrid.TerrainAt(v).layerable)
             {
                 if (Props.archotech)
-                    map.terrainGrid.SetTerrain(v, archotechHullTerrain);
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech);
                 else if (Props.mechanoid)
-                    map.terrainGrid.SetTerrain(v, mechHullTerrain);
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipMech);
                 else if (Props.foam)
-                    map.terrainGrid.SetTerrain(v, hullfoamTerrain);
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam);
                 else if (Props.wreckage)
-                    map.terrainGrid.SetTerrain(v, wreckageTerrain);
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.ShipWreckageTerrain);
                 else
-                    map.terrainGrid.SetTerrain(v, hullTerrain);
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
             }
         }
         public override void PostDeSpawn(Map map)
@@ -144,7 +134,7 @@ namespace RimWorld
             {
                 foreach (Thing t in parent.Position.GetThingList(parent.Map))
                 {
-                    if (t is Building_ShipTurret || (t.TryGetComp<CompShipHeatSink>() != null && t.def.altitudeLayer == AltitudeLayer.WorldClipper))
+                    if (t.TryGetComp<CompShipHeat>() != null && t.def.altitudeLayer == AltitudeLayer.WorldClipper)
                     {
                         return;
                     }

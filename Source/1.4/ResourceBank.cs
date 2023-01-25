@@ -77,7 +77,10 @@ namespace SaveOurShip2
 			public static ThingDef ShipAirlockWrecked;
 			public static ThingDef ShipHullTileWrecked;
 			public static ThingDef ShipHullTile;
-        }
+			public static ThingDef ShipHullTileMech;
+			public static ThingDef ShipHullTileArchotech;
+			public static ThingDef ShipHullfoamTile;
+		}
 
 		[DefOf]
         public static class TerrainDefOf

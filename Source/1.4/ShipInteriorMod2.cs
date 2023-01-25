@@ -56,11 +56,9 @@ namespace SaveOurShip2
 		public static bool SoSWin = false;
 		public static bool loadedGraphics = false;
 		public static bool renderedThatAlready = false;
-
 		public static bool AirlockBugFlag = false;//shipmove
 		public static Building shipOriginRoot = null;//used for patched original launch code
 		public static Map shipOriginMap = null;//used to check for shipmove map size problem, reset after move
-
 		
 		// Additional array of compatible RoofDefs from other mods.
 		public static RoofDef[] compatibleAirtightRoofs;
@@ -77,9 +75,7 @@ namespace SaveOurShip2
 			// Must be manually patched as SectionLayer_Terrain is internal
 			var regenerateMethod = AccessTools.TypeByName("SectionLayer_Terrain").GetMethod("Regenerate");
 			var regeneratePostfix = typeof(SectionRegenerateHelper).GetMethod("Postfix");
-			
 			pat.Patch(regenerateMethod, postfix: new HarmonyMethod(regeneratePostfix));
-
 
 			if (ModLister.HasActiveModWithName("RT Fuse"))
 			{
@@ -3469,7 +3465,7 @@ namespace SaveOurShip2
 		public static void CheckShipFloor(Blueprint blue, ref bool __result)
 		{
 			var t = blue.Map.terrainGrid.TerrainAt(blue.Position);
-			if (t == CompRoofMe.hullTerrain || t == CompRoofMe.archotechHullTerrain || t == CompRoofMe.mechHullTerrain)
+			if (t == ResourceBank.TerrainDefOf.FakeFloorInsideShip || t == ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech || t == ResourceBank.TerrainDefOf.FakeFloorInsideShipMech)
 			{
 				__result = false;
 			}

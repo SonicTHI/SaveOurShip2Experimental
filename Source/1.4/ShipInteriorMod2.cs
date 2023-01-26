@@ -151,7 +151,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V77f1 active");
+			Log.Message("SOS2EXP V78f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -4209,6 +4209,37 @@ namespace SaveOurShip2
 		internal static void Postfix(Pawn __instance)
 		{
 			Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == __instance.thingIDNumber);
+		}
+	}
+
+	[HarmonyPatch(typeof(RCellFinder), "CanSelfShutdown")]
+	public static class AllowOnShipFloor
+	{
+		internal static bool Postfix(bool __result, IntVec3 c, Map map)
+		{
+			//mechs wont sleep on any building
+			if (__result == false && c.GetFirstBuilding(map) != null && (c.GetFirstBuilding(map).TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false))
+            {
+				//check bellow GetFirstBuilding
+				Room room = c.GetRoom(map);
+				if (room != null && room.IsPrisonCell)
+				{
+					return false;
+				}
+				for (int i = 0; i < GenAdj.CardinalDirections.Length; i++)
+				{
+					List<Thing> thingList = (c + GenAdj.CardinalDirections[i]).GetThingList(map);
+					for (int j = 0; j < thingList.Count; j++)
+					{
+						if (thingList[j].def.hasInteractionCell && thingList[j].InteractionCell == c)
+						{
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+			return __result;
 		}
 	}
 

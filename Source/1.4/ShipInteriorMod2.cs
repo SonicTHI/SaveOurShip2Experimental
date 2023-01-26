@@ -151,7 +151,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V78f1 active");
+			Log.Message("SOS2EXP V78f2 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -2746,8 +2746,29 @@ namespace SaveOurShip2
 			return true;
 		}
 	}
-	//map
-	[HarmonyPatch(typeof(CompShipPart), "CompGetGizmosExtra")]
+
+	[HarmonyPatch(typeof(PenFoodCalculator), "ProcessTerrain")]
+	public static class SpaceHasNoWildPlants
+	{
+		public static bool Prefix(PenFoodCalculator __instance, IntVec3 c, Map map)
+		{
+			if (map.IsSpace())
+			{
+				__instance.numCells++;
+				MapPastureNutritionCalculator.NutritionPerDayPerQuadrum other = new MapPastureNutritionCalculator.NutritionPerDayPerQuadrum();
+				other.quadrum[0] = 0;
+				other.quadrum[1] = 0;
+				other.quadrum[2] = 0;
+				other.quadrum[3] = 0;
+				__instance.nutritionPerDayPerQuadrum.AddFrom(other);
+				return false;
+			}
+			return true;
+		}
+	}
+
+   //map
+   [HarmonyPatch(typeof(CompShipPart), "CompGetGizmosExtra")]
 	public static class NoGizmoInSpace
 	{
 		[HarmonyPrefix]

@@ -82,7 +82,6 @@
 			<Beauty>-2</Beauty>
 			<Cleanliness>-1</Cleanliness>
 		</statBases>
-		<fertility>0</fertility>
 		<changeable>false</changeable>
 	</TerrainDef>
 	<TerrainDef ParentName="ShipFloorBase">

@@ -46,9 +46,9 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Performance optimizations:** from faster EVA checks to a completely rebuilt ship combat system - a lot has been done to improve the performance of this mod.
 
-* **New UI:** now sits bellow your pawn bar, showing all ships and can be adjusted in the settings.
+* **New UI and settings menu:** the ship battle UI has been moved bellow the pawn bar. It now shows all ships and can be moved in the SOS2 settings menu. SOS2 settings have been reset to their defaults as we now use the native RW mod tools.
 
-* **Tons of minor adjustments, balance changes and bugfixes.**
+* **Tons of other minor adjustments, balance changes and bugfixes.**
 
 * **Extendability:** while not perfect it is now easier to mod in new types of ship buildings or adding EVA functionality to other mods. A navy system has also ben added so modders can add factions with their own pawns, ships and colors.
 

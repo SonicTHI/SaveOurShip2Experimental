@@ -151,7 +151,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V78f2 active");
+			Log.Message("SOS2EXP V78f3 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -4233,37 +4233,6 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(RCellFinder), "CanSelfShutdown")]
-	public static class AllowOnShipFloor
-	{
-		internal static bool Postfix(bool __result, IntVec3 c, Map map)
-		{
-			//mechs wont sleep on any building
-			if (__result == false && c.GetFirstBuilding(map) != null && (c.GetFirstBuilding(map).TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false))
-            {
-				//check bellow GetFirstBuilding
-				Room room = c.GetRoom(map);
-				if (room != null && room.IsPrisonCell)
-				{
-					return false;
-				}
-				for (int i = 0; i < GenAdj.CardinalDirections.Length; i++)
-				{
-					List<Thing> thingList = (c + GenAdj.CardinalDirections[i]).GetThingList(map);
-					for (int j = 0; j < thingList.Count; j++)
-					{
-						if (thingList[j].def.hasInteractionCell && thingList[j].InteractionCell == c)
-						{
-							return false;
-						}
-					}
-				}
-				return true;
-			}
-			return __result;
-		}
-	}
-
 	//pawns
 	[HarmonyPatch(typeof(PreceptComp_Apparel), "GiveApparelToPawn")]
 	public static class PreventIdeoApparel
@@ -4406,6 +4375,59 @@ namespace SaveOurShip2
 					__instance.StartFleeingBecauseOfPawnAction(dinfo.Instigator);
 					return false;
 				}
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(RCellFinder), "CanSelfShutdown")]
+	public static class AllowMechSleepShipFloor
+	{
+		public static bool Prefix(ref bool __result, Pawn pawn, IntVec3 c, Map map, bool allowForbidden)
+		{
+			if (c.GetFirstBuilding(map) != null && (c.GetFirstBuilding(map).TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false))
+			{
+				//check all except building
+				__result = true;
+				if (!pawn.CanReserve(c, 1, -1, null, false))
+				{
+					__result = false;
+					return false;
+				}
+				if (!pawn.CanReach(c, PathEndMode.OnCell, Danger.Some, false, false, TraverseMode.ByPawn))
+				{
+					__result = false;
+					return false;
+				}
+				if (!c.Standable(map))
+				{
+					__result = false;
+					return false;
+				}
+				if (!allowForbidden && c.IsForbidden(pawn))
+				{
+					__result = false;
+					return false;
+				}
+				Room room = c.GetRoom(map);
+				if (room != null && room.IsPrisonCell)
+				{
+					__result = false;
+					return false;
+				}
+				for (int i = 0; i < GenAdj.CardinalDirections.Length; i++)
+				{
+					List<Thing> thingList = (c + GenAdj.CardinalDirections[i]).GetThingList(map);
+					for (int j = 0; j < thingList.Count; j++)
+					{
+						if (thingList[j].def.hasInteractionCell && thingList[j].InteractionCell == c)
+						{
+							__result = false;
+							return false;
+						}
+					}
+				}
+				return false;
 			}
 			return true;
 		}

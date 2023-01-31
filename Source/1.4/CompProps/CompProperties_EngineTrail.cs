@@ -11,6 +11,7 @@ namespace RimWorld
 		public int width = 0;
 		public bool takeOff = false;
 		public bool energy = false;
+		public bool reactionless = false;
 		public CompProperties_EngineTrail()
 		{
 			this.compClass = typeof(CompEngineTrail);

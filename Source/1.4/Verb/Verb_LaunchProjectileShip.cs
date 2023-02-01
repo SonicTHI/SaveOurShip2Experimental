@@ -11,7 +11,7 @@ using RimworldMod;
 
 namespace RimWorld
 {
-    class Verb_LaunchProjectileShip : Verb_Shoot
+    public class Verb_LaunchProjectileShip : Verb_Shoot
     {
         public LocalTargetInfo shipTarget;
 

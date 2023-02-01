@@ -11,7 +11,8 @@ namespace RimWorld
     {
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
-            Building engineprev = map.listerBuildings.allBuildingsColonist.Where(x => x.TryGetComp<CompEngineTrail>() != null).FirstOrDefault();
+            Building engineprev = map.listerBuildings.allBuildingsColonist.Where(x => x.TryGetComp<CompEngineTrail>() != null 
+                && !x.TryGetComp<CompEngineTrail>().Props.reactionless).FirstOrDefault();
             if (engineprev == null || (engineprev != null && engineprev.Rotation == rot))
                 return AcceptanceReport.WasAccepted;
             else

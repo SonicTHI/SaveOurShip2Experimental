@@ -94,7 +94,7 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
-            if (active)
+            if (!Props.reactionless && active)
             {
                 if (Props.energy)
                 {
@@ -142,19 +142,21 @@ namespace RimWorld
                 {
                     refuelComp.ConsumeFuel(Props.fuelUse);
                 }
-                //destroy stuff in plume
-                HashSet<Thing> toBurn = new HashSet<Thing>();
-                foreach (IntVec3 cell in rectToKill)
-                {
-                    foreach (Thing t in cell.GetThingList(parent.Map))
+                if (!Props.reactionless) { 
+                    //destroy stuff in plume
+                    HashSet<Thing> toBurn = new HashSet<Thing>();
+                    foreach (IntVec3 cell in rectToKill)
                     {
-                        if ((t.def.useHitPoints || t is Pawn) && t.def.altitudeLayer != AltitudeLayer.Terrain)
-                            toBurn.Add(t);
+                        foreach (Thing t in cell.GetThingList(parent.Map))
+                        {
+                            if ((t.def.useHitPoints || t is Pawn) && t.def.altitudeLayer != AltitudeLayer.Terrain)
+                                toBurn.Add(t);
+                        }
                     }
-                }
-                foreach (Thing t in toBurn)
-                {
-                    t.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 100));
+                    foreach (Thing t in toBurn)
+                    {
+                        t.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 100));
+                    }
                 }
             }
         }

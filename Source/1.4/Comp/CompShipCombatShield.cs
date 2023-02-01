@@ -68,11 +68,9 @@ namespace RimWorld
 			stringBuilder.Append("ShipInsideRadius".Translate() + radius + "/" + radiusSet);
             return stringBuilder.ToString();
         }
-        public void HitShield(Projectile_ExplosiveShipCombat proj)
-        {
-            lastInterceptAngle = proj.DrawPos.AngleToFlat(parent.TrueCenter());
-            lastIntercepted = Find.TickManager.TicksGame;
 
+        public virtual float CalcHeatGenerated(Projectile_ExplosiveShipCombat proj)
+        {
             float heatGenerated = proj.DamageAmount * HeatDamageMult * Props.heatMultiplier;
             if (proj.def.projectile.damageDef==DamageDefOf.EMP)
                 heatGenerated *= 10;
@@ -80,7 +78,16 @@ namespace RimWorld
                 heatGenerated *= 1.5f;
             else if (proj is Projectile_TorpedoShipCombat)
                 heatGenerated /= 3;
-            else if (proj is Projectile_ExplosiveShipCombatLaser || proj is Projectile_ExplosiveShipCombatPsychic)
+            return heatGenerated;
+        }
+
+        public void HitShield(Projectile_ExplosiveShipCombat proj)
+        {
+            lastInterceptAngle = proj.DrawPos.AngleToFlat(parent.TrueCenter());
+            lastIntercepted = Find.TickManager.TicksGame;
+
+            float heatGenerated = CalcHeatGenerated(proj);
+            if (proj is Projectile_ExplosiveShipCombatLaser || proj is Projectile_ExplosiveShipCombatPsychic)
             {
                 ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
                 obj.origin = (Vector3)typeof(Projectile).GetField("origin", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(proj);

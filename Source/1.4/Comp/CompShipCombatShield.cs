@@ -72,20 +72,17 @@ namespace RimWorld
             return stringBuilder.ToString();
         }
 
-        public static Dictionary<DamageDef, float> DamageToMult = new Dictionary<DamageDef, float>() {
-            {DamageDefOf.EMP, 30f},
-        };
         public static Dictionary<ThingDef, float> ProjectileToMult = new Dictionary<ThingDef, float>() {
             {ThingDef.Named("Proj_ShipSpinalBeamPlasma"), 1.5f},
+            {ThingDef.Named("Bullet_Torpedo_HighExplosive"), 0.33f},
+            {ThingDef.Named("Bullet_Torpedo_EMP"), 10f},
+            {ThingDef.Named("Bullet_Torpedo_Antimatter"), 0.33f},
         };
 
         public virtual float CalcHeatGenerated(Projectile_ExplosiveShipCombat proj)
         {
             float heatGenerated = proj.DamageAmount * HeatDamageMult * Props.heatMultiplier;
-            heatGenerated *= CompShipCombatShield.DamageToMult.TryGetValue(proj.def.projectile.damageDef, 1f);
             heatGenerated *= CompShipCombatShield.ProjectileToMult.TryGetValue(proj.def, 1f);
-            if (proj is Projectile_TorpedoShipCombat)
-                heatGenerated /= 3;
             return heatGenerated;
         }
 

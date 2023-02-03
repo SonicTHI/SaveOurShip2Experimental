@@ -46,8 +46,11 @@ namespace RimWorld
             base.CompTick();
             this.shutDown = breakComp.BrokenDown || !powerComp.PowerOn;
             if (!this.shutDown && Find.TickManager.TicksGame % 60 == 0)
-            {
-                if (radiusSet > radius)
+            {			
+                float absDiff = Math.Abs(radius - radiusSet);
+			    if (absDiff > 0 && absDiff < 1)
+				    radius = radiusSet;
+                else if (radiusSet > radius)
                     radius+=1f;
                 else if (radiusSet < radius)
                     radius-=1f;
@@ -69,15 +72,17 @@ namespace RimWorld
             return stringBuilder.ToString();
         }
 
+        public static Dictionary<ThingDef, float> ProjectileToMult = new Dictionary<ThingDef, float>() {
+            {ThingDef.Named("Proj_ShipSpinalBeamPlasma"), 1.5f},
+            {ThingDef.Named("Bullet_Torpedo_HighExplosive"), 0.33f},
+            {ThingDef.Named("Bullet_Torpedo_EMP"), 10f},
+            {ThingDef.Named("Bullet_Torpedo_Antimatter"), 0.33f},
+        };
+
         public virtual float CalcHeatGenerated(Projectile_ExplosiveShipCombat proj)
         {
             float heatGenerated = proj.DamageAmount * HeatDamageMult * Props.heatMultiplier;
-            if (proj.def.projectile.damageDef==DamageDefOf.EMP)
-                heatGenerated *= 10;
-            else if(proj is Projectile_ExplosiveShipCombatPlasmaXL)
-                heatGenerated *= 1.5f;
-            else if (proj is Projectile_TorpedoShipCombat)
-                heatGenerated /= 3;
+            heatGenerated *= CompShipCombatShield.ProjectileToMult.TryGetValue(proj.def, 1f);
             return heatGenerated;
         }
 

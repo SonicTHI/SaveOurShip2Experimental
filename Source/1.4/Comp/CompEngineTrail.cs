@@ -25,7 +25,14 @@ namespace RimWorld
         {
             get { return props as CompProperties_EngineTrail; }
         }
-        private bool active = false;
+        public virtual float Thrust
+        {
+            get
+            {
+                return Props.thrust;
+            }
+        }
+        public bool active = false;
         int size;
         public ShipHeatMapComp mapComp;
         public CompFlickable flickComp;

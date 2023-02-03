@@ -854,7 +854,7 @@ namespace RimWorld
                     var engine = b.TryGetComp<CompEngineTrail>();
                     if (engine != null)
                     {
-                        ShipThrust += engine.Props.thrust;
+                        ShipThrust += engine.Thrust;
                         if (engine.Props.takeOff)
                         {
                             ShipMaxTakeoff += b.TryGetComp<CompRefuelable>().Props.fuelCapacity;

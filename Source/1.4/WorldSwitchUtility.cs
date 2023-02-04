@@ -7,31 +7,32 @@ using System.Reflection;
 using System.Linq;
 using UnityEngine;
 using Verse.AI.Group;
-using HugsLib;
-using HugsLib.Utils;
+using Verse.Sound;
+using System.IO;
 
 namespace SaveOurShip2
 {
-	public static class WorldSwitchUtility
-	{
-		public static bool SelectiveWorldGenFlag = false;
+    public static class WorldSwitchUtility
+    {
         public static bool FactionRelationFlag = false;
         public static bool LoadWorldFlag = false;
-		public static Faction SavedPlayerFaction=null;
-		public static Map SavedMap=null;
-		public static UniqueIDsManager Uniques=null;
-		public static WorldPawns Pawns=null;
-		public static FactionManager Factions = null;
+        public static Faction SavedPlayerFaction = null;
+        public static Map SavedMap = null;
+        public static UniqueIDsManager Uniques = null;
+        public static WorldPawns Pawns = null;
+        public static FactionManager Factions = null;
         public static IdeoManager Ideos = null;
-		private static PastWorldUWO2 PastWorldTrackerInternal = null;
+        private static PastWorldUWO2 PastWorldTrackerInternal = null;
         public static World SoonToBeObsoleteWorld = null;
         public static bool planetkiller = false;
         public static bool NoRecache = false;
         public static List<ScenPart> CachedScenario;
 
-        static Faction DonatedToFaction=null;
-        static float DonatedAmount=0;
-        static List<UtilityWorldObject> tmpUWOs = new List<UtilityWorldObject>();
+        public static bool SaveShipFlag = false;
+        public static bool LoadShipFlag = false; //NOTE: This is set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
+
+        static Faction DonatedToFaction = null;
+        static float DonatedAmount = 0;
         static List<WorldComponent> tmpComponents = new List<WorldComponent>();
 
         public static PastWorldUWO2 PastWorldTracker
@@ -52,7 +53,7 @@ namespace SaveOurShip2
         public static void ColonyAbandonWarning(Action action)
         {
             DiaNode theNode;
-            if(Find.Scenario.AllParts.Any(p => p.def.defName.Equals("GameCondition_Planetkiller")))
+            if (Find.Scenario.AllParts.Any(p => p.def.defName.Equals("GameCondition_Planetkiller")))
             {
                 theNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("ShipAbandonColoniesWarningPK"));
                 planetkiller = true;
@@ -63,7 +64,7 @@ namespace SaveOurShip2
             DiaOption accept = new DiaOption("Accept");
             accept.resolveTree = true;
             List<Faction> alliedFactions = new List<Faction>();
-            foreach(Faction f in Find.FactionManager.AllFactionsVisible)
+            foreach (Faction f in Find.FactionManager.AllFactionsVisible)
             {
                 if (f != Faction.OfPlayer && f.PlayerRelationKind == FactionRelationKind.Ally)
                     alliedFactions.Add(f);
@@ -92,7 +93,7 @@ namespace SaveOurShip2
             {
                 DiaOption option = new DiaOption(f.Name);
                 option.resolveTree = true;
-                option.action = delegate { AllyTakeColony(f);  action.Invoke(); };
+                option.action = delegate { AllyTakeColony(f); action.Invoke(); };
                 theNode.options.Add(option);
             }
 
@@ -114,24 +115,24 @@ namespace SaveOurShip2
         private static void AllyTakeColony(Faction f)
         {
             List<Map> colonies = new List<Map>();
-            foreach(Map m in Find.Maps)
+            foreach (Map m in Find.Maps)
             {
-                if(m.IsPlayerHome && !(m.Parent is WorldObjectOrbitingShip))
+                if (m.IsPlayerHome && !(m.Parent is WorldObjectOrbitingShip))
                 {
                     colonies.Add(m);
                 }
             }
-            foreach(Map m in colonies)
+            foreach (Map m in colonies)
             {
                 m.wealthWatcher.ForceRecount();
                 DonatedToFaction = f;
-                DonatedAmount=m.wealthWatcher.WealthTotal;
+                DonatedAmount = m.wealthWatcher.WealthTotal;
                 List<Pawn> pawnsToDonate = new List<Pawn>();
                 foreach (Pawn p in m.mapPawns.FreeColonistsAndPrisonersSpawned)
                 {
                     pawnsToDonate.Add(p);
                 }
-                foreach(Pawn p in pawnsToDonate)
+                foreach (Pawn p in pawnsToDonate)
                 {
                     p.SetFaction(f);
                     p.DeSpawn();
@@ -159,7 +160,7 @@ namespace SaveOurShip2
                     colonies.Add(m);
                 }
             }
-            foreach(Map m in colonies)
+            foreach (Map m in colonies)
             {
                 int tile = m.Parent.Tile;
                 Find.WorldObjects.Remove(m.Parent);
@@ -176,12 +177,12 @@ namespace SaveOurShip2
             List<Pawn> toKill = new List<Pawn>();
             foreach (Pawn p in shipMap.mapPawns.AllPawns)
             {
-                if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!ShipInteriorMod2.IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map!=shipMap))
+                if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!ShipInteriorMod2.IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map != shipMap))
                     toKill.Add(p);
             }
             foreach (Pawn p in toKill)
                 p.Kill(null);
-            foreach(Thing t in shipMap.spawnedThings)
+            foreach (Thing t in shipMap.spawnedThings)
             {
                 if (t is Corpse c)
                 {
@@ -194,9 +195,9 @@ namespace SaveOurShip2
             ShipInteriorMod2.renderedThatAlready = false;
 
             float EnergyCost = 100000;
-            foreach(CompPowerBattery capacitor in bridge.PowerComp.PowerNet.batteryComps)
+            foreach (CompPowerBattery capacitor in bridge.PowerComp.PowerNet.batteryComps)
             {
-                if(capacitor.StoredEnergy <= EnergyCost)
+                if (capacitor.StoredEnergy <= EnergyCost)
                 {
                     capacitor.SetStoredEnergyPct(capacitor.StoredEnergyPct - (EnergyCost / capacitor.Props.storedEnergyMax));
                     EnergyCost = 0;
@@ -210,379 +211,23 @@ namespace SaveOurShip2
             }
 
             //Oddly enough, interstellar flight takes a lot of time
-            int years = Rand.RangeInclusive(SaveOurShip2.ModSettings_SoS.minTravelTime, SaveOurShip2.ModSettings_SoS.maxTravelTime);
+            /*int years = Rand.RangeInclusive(ShipInteriorMod2.minTravelTime.Value, ShipInteriorMod2.maxTravelTime.Value);
             Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * years);
-            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);
+            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);*/
         }
 
-        public static void SwitchToNewWorld(Map shipMap, Building_ShipBridge bridge)
-		{
-            KillAllColonistsNotInCrypto(shipMap, bridge);
-			SaveUniqueIDsFactionsAndWorldPawns ();
-			Find.World.components.Remove (PastWorldTracker);
-            SavedMap = shipMap;
-            WorldSwitchUtility.KillAllMapsExceptShip();
-            Current.Game.InitData = new GameInitData();
-			Current.Game.InitData.playerFaction = Faction.OfPlayer;
-			SelectiveWorldGenFlag=true;
-			SavedPlayerFaction = Faction.OfPlayer;
-			Find.WorldInterface.selector.ClearSelection();
-            SoonToBeObsoleteWorld = Find.World;
-            CacheFactions(SoonToBeObsoleteWorld.info.name);
-            List<ScenPart> scenarioPartsToRemove = new List<ScenPart>();
-            CachedScenario = new List<ScenPart>();
-            foreach(ScenPart part in Find.Scenario.AllParts)
-            {
-                if (part.def.category == ScenPartCategory.StartingItem || part.def.category == ScenPartCategory.WorldThing || part.def.category == ScenPartCategory.StartingImportant || part.def.category == ScenPartCategory.Fixed || part.def.category == ScenPartCategory.PlayerPawnFilter || part.def.defName.Equals("GameStartDialog"))
-                    scenarioPartsToRemove.Add(part);
-                else
-                    CachedScenario.Add(part);
-            }
-            foreach (ScenPart part in scenarioPartsToRemove)
-                Find.Scenario.RemovePart(part);
-            Find.SoundRoot.sustainerManager.EndAllInMap(shipMap);
-            Page thePage = new Page_ScenarioEditor(Find.Scenario);
-            thePage.silenceAmbientSound = true;
-            thePage.next= new Page_CreateWorldParams();
-            thePage.next.next = new Page_ConfigureIdeo();
-            IdeoUIUtility.selected = Faction.OfPlayer.ideos.PrimaryIdeo;
-            Find.WindowStack.Add(thePage);
-		}
-
-		public static void ReturnToPreviousWorld(Map shipMap, Building_ShipBridge bridge)
+        public static void SaveShip(Building_ShipBridge bridge)
         {
-            SaveUniqueIDsFactionsAndWorldPawns ();
-            DiaNode theNode = new DiaNode ("ShipPlanetReturnTo".Translate ());
-			foreach (PreviousWorld w in PastWorldTracker.PastWorlds) {
-				DiaOption worldOption = new DiaOption (w.info.name);
-				worldOption.action = delegate {
-                    KillAllColonistsNotInCrypto(shipMap, bridge);
-                    List<ScenPart> scenarioPartsToRemove = new List<ScenPart>();
-                    CachedScenario = new List<ScenPart>();
-                    foreach (ScenPart part in Find.Scenario.AllParts)
-                    {
-                        if (part.def.category == ScenPartCategory.StartingItem || part.def.category == ScenPartCategory.WorldThing || part.def.category == ScenPartCategory.StartingImportant || part.def.category == ScenPartCategory.Fixed || part.def.category == ScenPartCategory.PlayerPawnFilter || part.def.defName.Equals("GameStartDialog"))
-                            scenarioPartsToRemove.Add(part);
-                        else
-                            CachedScenario.Add(part);
-                    }
-                    foreach (ScenPart part in scenarioPartsToRemove)
-                        Find.Scenario.RemovePart(part);
-                    DoWorldSwitch(shipMap,w);
-				};
-				worldOption.resolveTree = true;
-				theNode.options.Add (worldOption);
-			}
-			DiaOption cancel = new DiaOption ("Cancel");
-			cancel.resolveTree = true;
-			theNode.options.Add (cancel);
-
-			Dialog_NodeTree dialog_NodeTree = new Dialog_NodeTree(theNode, true, false, null);
-			dialog_NodeTree.silenceAmbientSound = false;
-			dialog_NodeTree.closeOnCancel = true;
-			Find.WindowStack.Add(dialog_NodeTree);
-		}
-
-		static void DoWorldSwitch(Map shipMap, PreviousWorld w)
-        {
-            Find.World.components.Remove (PastWorldTracker);
-            foreach (WorldObject ob in Find.World.worldObjects.AllWorldObjects)
-            {
-                if (ob is UtilityWorldObject)
-                    tmpUWOs.Add((UtilityWorldObject)ob);
-            }
-            foreach (UtilityWorldObject uwo in tmpUWOs)
-            {
-                //Compatibility issues with PostRemove stuff, so we do this manually via reflection
-                ((List<WorldObject>)typeof(WorldObjectsHolder).GetField("worldObjects", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Find.World.worldObjects)).Remove(uwo);
-                typeof(WorldObjectsHolder).GetMethod("RemoveFromCache", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(Find.World.worldObjects, new object[] { uwo });
-            }
-            foreach (WorldComponent comp in Find.World.components)
-            {
-                if (!(comp is TileTemperaturesComp) && !(comp is WorldGenData))
-                    tmpComponents.Add(comp);
-            }
-            foreach (WorldComponent comp in tmpComponents)
-                Find.World.components.Remove(comp);
-
-            PastWorldTracker.PastWorlds.Add (PreviousWorldFromWorld(Find.World));
-            Current.Game.InitData = new GameInitData();
-            Current.Game.InitData.playerFaction = Faction.OfPlayer;
-            SelectiveWorldGenFlag =true;
-			SavedPlayerFaction = Faction.OfPlayer;
-			SavedMap = shipMap;
-            Find.WorldInterface.selector.ClearSelection();
-            PastWorldTracker.PastWorlds.Remove (w);
-            KillAllMapsExceptShip();
-
-            Current.Game.World = WorldFromPreviousWorld(w);
-            LoadUniqueIDsFactionsAndWorldPawns ();
-            WorldComponent obToRemove = null;
-            foreach(WorldComponent ob in Current.Game.World.components)
-            {
-                if (ob is PastWorldUWO2)
-                    obToRemove = ob;
-            }
-            if(obToRemove != null)
-                Current.Game.World.components.Remove(obToRemove);
-            Current.Game.World.components.Add (PastWorldTracker);
-            Current.Game.World.features.UpdateFeatures();
-
-            foreach (UtilityWorldObject uwo in tmpUWOs)
-            {
-                Find.WorldObjects.Add(uwo);
-            }
-            WorldComponent toReplace;
-            foreach (WorldComponent comp in tmpComponents)
-            {
-                toReplace = null;
-                foreach (WorldComponent otherComp in Find.World.components)
-                {
-                    if (otherComp.GetType() == comp.GetType())
-                        toReplace = otherComp;
-                }
-                if (toReplace != null)
-                    Find.World.components.Remove(toReplace);
-                Find.World.components.Add(comp);
-            }
-
-            Find.World.renderer.RegenerateAllLayersNow();
-            RespawnShip ();
-            if(w.donatedFaction != null && w.donatedAmount >= 10000)
-            {
-                ThingSetMakerParams parms = default(ThingSetMakerParams);
-                parms.totalMarketValueRange = new FloatRange(Mathf.Min(DonatedAmount / 8, 50000), Mathf.Min(DonatedAmount / 16,30000));
-                List<Thing> FactionGifts = ThingSetMakerDefOf.Reward_ItemsStandard.root.Generate(parms);
-                string loot = "";
-                foreach (Thing t in FactionGifts)
-                    loot += t.Label + "\n";
-                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelPlanetReturnGift"), TranslatorFormattedStringExtensions.Translate("LetterPlanetReturnGift",DonatedToFaction,loot), LetterDefOf.PositiveEvent);
-                IntVec3 intVec = DropCellFinder.TradeDropSpot(SavedMap);
-                DropPodUtility.DropThingsNear(intVec, SavedMap, FactionGifts, 110, false, false, false);
-            }
+            KillAllColonistsNotInCrypto(bridge.Map, bridge);
+            string folder = Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            string filename = Path.Combine(folder, Faction.OfPlayer.Name + "_" + bridge.ShipName + ".sos2");
+            ShipInteriorMod2.MoveShip(bridge, bridge.Map, IntVec3.Zero, Faction.OfPlayer, 0, false, filename);
+            SaveShipFlag = false;
+            ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
         }
-
-		public static void RespawnShip()
-		{
-            List<WorldObject> oldShips = new List<WorldObject>();
-            foreach (WorldObject ob in Find.WorldObjects.AllWorldObjects)
-            {
-                if (ob.def.defName.Equals("ShipOrbiting"))
-                    oldShips.Add(ob);
-            }
-			WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject (DefDatabase<WorldObjectDef>.GetNamed ("ShipOrbiting"));
-			orbiter.radius = 150;
-			orbiter.theta = -3;
-			orbiter.SetFaction (Faction.OfPlayer);
-			Find.WorldObjects.Add (orbiter);
-			WorldSwitchUtility.SavedMap.info.parent = orbiter;
-			WorldSwitchUtility.SelectiveWorldGenFlag = false;
-            foreach (WorldObject ob in oldShips)
-            {
-                //Compatibility issues with PostRemove stuff, so we do this manually via reflection
-                ((List<WorldObject>)typeof(WorldObjectsHolder).GetField("worldObjects", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Find.World.worldObjects)).Remove(ob);
-                typeof(WorldObjectsHolder).GetMethod("RemoveFromCache", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(Find.World.worldObjects, new object[] { ob });
-
-            }
-        }
-
-		static void SaveUniqueIDsFactionsAndWorldPawns()
-		{
-			Uniques = Find.UniqueIDsManager;
-			Pawns = Find.WorldPawns;
-			Factions = Find.FactionManager;
-            Ideos = Find.IdeoManager;
-		}
-
-		public static void LoadUniqueIDsFactionsAndWorldPawns()
-		{
-			Current.Game.uniqueIDsManager = Uniques;
-            if (Find.World.worldPawns == null)
-            {
-                Find.World.worldPawns = new WorldPawns();
-            }
-            if (Find.World.factionManager == null)
-            {
-                Find.World.factionManager = new FactionManager();
-            }
-            NoRecache = true;
-            foreach (Faction f in ((List<Faction>)typeof(FactionManager).GetField("allFactions", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(Factions)))
-            {
-                Find.FactionManager.Add(f);
-                if (f.def.isPlayer)
-                {
-                    Find.GameInitData.playerFaction = f;
-                    typeof(FactionManager).GetField("ofPlayer", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Find.FactionManager, f);
-                }
-            }
-            foreach(Ideo i in Ideos.IdeosListForReading)
-            {
-                Find.IdeoManager.Add(i);
-            }
-            NoRecache = false;
-            typeof(FactionManager).GetMethod("RecacheFactions", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Find.FactionManager, new object[] { });
-            foreach (Pawn p in Pawns.AllPawnsAliveOrDead)
-            {
-                if (!Find.WorldPawns.Contains(p))
-                {
-                    Find.WorldPawns.PassToWorld(p);
-                }
-            }
-		}
-
-		public static void KillAllMapsExceptShip()
-		{
-            List<Map> SettlementsToKill = new List<Map>();
-			foreach (Map m in Find.Maps) {
-				if (m != WorldSwitchUtility.SavedMap) {
-                    SettlementsToKill.Add(m);
-				}
-			}
-            foreach(Map m in SettlementsToKill)
-            {
-                typeof(SettlementAbandonUtility).GetMethod("Abandon", BindingFlags.NonPublic | BindingFlags.Static).Invoke(null, new object[] { ((MapParent)m.ParentHolder) });
-            }
-		}
-
-        public static World WorldFromPreviousWorld(PreviousWorld prev)
-        {
-            World world = new World();
-            world.ConstructComponents();
-            world.pathGrid = new WorldPathGrid();
-            world.info = prev.info;
-            world.components = prev.components;
-            world.worldObjects = prev.worldObjects;
-            world.features = prev.features;
-            world.grid = prev.grid;
-            List<ScenPart> parts = new List<ScenPart>();
-            foreach(ScenPart part in Find.Scenario.AllParts)
-                parts.Add(part);
-            foreach(ScenPart part in parts)
-                Find.Scenario.RemovePart(part);
-            foreach (ScenPart part in prev.scenario)
-            {
-                if (part.def.defName.Equals("CreateIncident"))
-                {
-                    Type createIncident = typeof(ScenPart).Assembly.GetType("RimWorld.ScenPart_CreateIncident");
-                    createIncident.GetField("occurTick", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(part, (float)createIncident.GetProperty("IntervalTicks", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(part, null) + Current.Game.tickManager.TicksAbs);
-                }
-                ((List<ScenPart>)typeof(Scenario).GetField("parts", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Find.Scenario)).Add(part);
-            }
-            Find.Scenario.name = prev.scenarioName;
-            Find.Scenario.summary = prev.scenarioSummary;
-            Find.Scenario.description = prev.scenarioDescription;
-            world.FinalizeInit();
-            DonatedAmount = prev.donatedAmount;
-            DonatedToFaction = prev.donatedFaction;
-            return world;
-        }
-
-        public static PreviousWorld PreviousWorldFromWorld(World world)
-        {
-            PreviousWorld prev = new PreviousWorld();
-            prev.info = world.info;
-            prev.components = world.components;
-            prev.worldObjects = world.worldObjects;
-            prev.features = world.features;
-            prev.grid = world.grid;
-            prev.scenario = CachedScenario;
-            prev.scenarioName = Find.Scenario.name;
-            prev.scenarioSummary = Find.Scenario.summary;
-            prev.scenarioDescription = Find.Scenario.description;
-            prev.donatedFaction = DonatedToFaction;
-            prev.donatedAmount = DonatedAmount;
-            return prev;
-        }
-
-        public static void CacheFactions(string worldName)
-        {
-            foreach (Faction fac in Find.FactionManager.AllFactions)
-            {
-                bool factionDoesNotExistYet = true;
-                foreach (string otherWorldName in PastWorldTracker.WorldFactions.Keys)
-                {
-                    foreach(string otherFacName in PastWorldTracker.WorldFactions[otherWorldName].myFactions)
-                    {
-                        if(fac.GetUniqueLoadID().Equals(otherFacName))
-                        {
-                            factionDoesNotExistYet = false;
-                            break;
-                        }
-                    }
-                }
-                if(factionDoesNotExistYet)
-                {
-                    if (!PastWorldTracker.WorldFactions.ContainsKey(worldName))
-                    {
-                        PastWorldTracker.WorldFactions.Add(worldName, new WorldFactionList());
-                    }
-                    if (!PastWorldTracker.WorldFactions[worldName].myFactions.Contains(fac.GetUniqueLoadID()))
-                    {
-                        PastWorldTracker.WorldFactions[worldName].myFactions.Add(fac.GetUniqueLoadID());
-                    }
-                }
-            }
-        }
-
-        public static IEnumerable<Faction> FactionsOnCurrentWorld(IEnumerable<Faction> allFactions)
-        {
-            if (Scribe.mode != LoadSaveMode.Inactive || Current.Game == null || Current.Game.World == null)
-            {
-                return allFactions;
-            }
-            if(allFactions == null)
-            {
-                return allFactions;
-            }
-            if (WorldSwitchUtility.PastWorldTracker == null)
-            {
-                return allFactions;
-            }
-            if (WorldSwitchUtility.PastWorldTracker.WorldFactions == null)
-            {
-                return allFactions;
-            }
-            if (WorldSwitchUtility.PastWorldTracker.WorldFactions.Keys.Count == 0)
-            {
-                return allFactions;
-            }
-            List<Faction> facs = new List<Faction>();
-            if (WorldSwitchUtility.PastWorldTracker.WorldFactions.Keys.Contains(Find.World.info.name))
-            {
-                List<string> thisWorldsFactions = WorldSwitchUtility.PastWorldTracker.WorldFactions[Find.World.info.name].myFactions;
-                foreach (Faction fac in allFactions)
-                {
-                    if (thisWorldsFactions.Contains(fac.GetUniqueLoadID()) || fac.def.isPlayer || fac.def.hidden)
-                        facs.Add(fac);
-                }
-            }
-            else if (SelectiveWorldGenFlag && FactionRelationFlag) //Look up all factions *not* yet assigned to any world. Used to make initial relations.
-            {
-                foreach (Faction fac in allFactions)
-                {
-                    if (fac.def.isPlayer || fac.def.hidden)
-                        facs.Add(fac);
-                    else
-                    {
-                        bool FoundFaction = false;
-                        foreach (string key in WorldSwitchUtility.PastWorldTracker.WorldFactions.Keys)
-                        {
-                            if (WorldSwitchUtility.PastWorldTracker.WorldFactions[key].myFactions.Contains(fac.GetUniqueLoadID()))
-                            {
-                                FoundFaction = true;
-                                break;
-                            }
-                        }
-                        if (!FoundFaction)
-                        {
-                            facs.Add(fac);
-                        }
-                    }
-                }
-            }
-            return facs;
-        }
-	}
+    }
 
     //Despite what common sense might tell you, this object does more than store past worlds. It also holds SoS story progress and research unlocks, as well as ship combat data.
 	public class PastWorldUWO2 : WorldComponent
@@ -591,7 +236,6 @@ namespace SaveOurShip2
         public int PlayerFactionBounty;
         public int LastBountyRaidTick;				   
 		public List<PreviousWorld> PastWorlds=new List<PreviousWorld>();
-        public Dictionary<string, WorldFactionList> WorldFactions = new Dictionary<string, WorldFactionList>();
         private List<string> UnlocksInt = new List<string>();
         public bool startedEndgame;
         public Dictionary<int, byte> PawnsInSpaceCache = new Dictionary<int, byte>();
@@ -624,7 +268,6 @@ namespace SaveOurShip2
 		public override void ExposeData() {
 			base.ExposeData ();
             Scribe_Values.Look<int>(ref ShipsHaveInsidesVersion,"SoSVersion",0);
-            Scribe_Collections.Look<string, WorldFactionList>(ref WorldFactions, "WorldFactions", LookMode.Value, LookMode.Deep);
             WorldSwitchUtility.LoadWorldFlag = true;
 			Scribe_Collections.Look<PreviousWorld> (ref PastWorlds, "PastWorlds", LookMode.Deep, new object[0]);
             WorldSwitchUtility.LoadWorldFlag = false;
@@ -712,60 +355,5 @@ namespace SaveOurShip2
             Find.Storyteller.incidentQueue.Add(qi);
         }
 	}
-
-    //Included for legacy compatibility
-    public class PastWorldUWO : UtilityWorldObject
-    {
-        public List<PreviousWorld> PastWorlds = new List<PreviousWorld>();
-        public Dictionary<string, WorldFactionList> WorldFactions = new Dictionary<string, WorldFactionList>();
-        private List<string> UnlocksInt = new List<string>();
-
-        public PastWorldUWO()
-        {
-
-        }
-
-        public List<string> Unlocks
-        {
-            get
-            {
-                if (UnlocksInt == null)
-                    UnlocksInt = new List<string>();
-                return UnlocksInt;
-            }
-        }
-
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            Scribe_Collections.Look<PreviousWorld>(ref PastWorlds, "PastWorlds", LookMode.Deep, new object[0]);
-            Scribe_Collections.Look<string, WorldFactionList>(ref WorldFactions, "WorldFactions", LookMode.Value, LookMode.Deep);
-            Scribe_Collections.Look<string>(ref UnlocksInt, "Unlocks", LookMode.Value);
-            if (Scribe.mode != LoadSaveMode.Saving)
-            {
-                PastWorldUWO2 newUWO = (PastWorldUWO2)Find.World.components.Where(x => x is PastWorldUWO2)?.FirstOrDefault();
-                if(newUWO == null)
-                {
-                    newUWO = new PastWorldUWO2(Find.World);
-                    Find.World.components.Add(newUWO);
-                }
-                newUWO.PastWorlds = PastWorlds;
-                newUWO.WorldFactions = WorldFactions;
-                typeof(PastWorldUWO2).GetField("UnlocksInt", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(newUWO, UnlocksInt);
-                Find.World.worldObjects.Remove(this);
-            }
-
-        }
-    }
-
-    public class WorldFactionList : IExposable
-    {
-        public List<string> myFactions = new List<String>();
-
-        public void ExposeData()
-        {
-            Scribe_Collections.Look<string>(ref myFactions, "MyFactions", LookMode.Value);
-        }
-    }
 }
 

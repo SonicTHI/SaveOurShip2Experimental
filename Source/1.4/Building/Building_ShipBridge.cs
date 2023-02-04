@@ -70,6 +70,8 @@ namespace RimWorld
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", playerJTReq));
             if (mapComp.ShipCombatMaster)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipOnEnemyMap"));
+            if (ShipCountdown.CountingDown)
+                result.Add("ShipAlreadyCountingDown".Translate());
             return result;
         }
 
@@ -402,7 +404,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                WorldSwitchUtility.ColonyAbandonWarning(delegate { WorldSwitchUtility.SwitchToNewWorld(this.Map, this); });
+                                WorldSwitchUtility.ColonyAbandonWarning(delegate { WorldSwitchUtility.SaveShipFlag = true;  ShipCountdown.InitiateCountdown(this); });
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipPlanetLeave"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipPlanetLeaveDesc"),
@@ -412,7 +414,7 @@ namespace RimWorld
                         if (fail.Any())
                             gotoNewWorld.Disable(fail.First());
                         yield return gotoNewWorld;
-                        if (WorldSwitchUtility.PastWorldTracker != null && WorldSwitchUtility.PastWorldTracker.PastWorlds.Count > 0)
+                        /*if (WorldSwitchUtility.PastWorldTracker != null && WorldSwitchUtility.PastWorldTracker.PastWorlds.Count > 0)
                         {
                             Command_Action returnToPrevWorld = new Command_Action
                             {
@@ -427,7 +429,7 @@ namespace RimWorld
                             if (fail.Any())
                                 returnToPrevWorld.Disable(fail.First());
                             yield return returnToPrevWorld;
-                        }
+                        }*/
                         Command_Action moveShip = new Command_Action
                         {
                             action = delegate
@@ -578,24 +580,6 @@ namespace RimWorld
                             };
                             loadshipdef.hotKey = KeyBindingDefOf.Misc11;
                             yield return loadshipdef;
-                            if (WorldSwitchUtility.PastWorldTracker.PastWorlds.Any())
-                            {
-                                Command_Action purgePlanets = new Command_Action
-                                {
-                                    action = delegate
-                                    {
-                                        List<Faction> toKeep = Find.FactionManager.AllFactions.ToList();
-                                        WorldSwitchUtility.PastWorldTracker.PastWorlds.Clear();
-                                        WorldSwitchUtility.PastWorldTracker.WorldFactions.Clear();
-                                        List<Faction> toRemove = Find.FactionManager.AllFactions.Except(toKeep).ToList();
-                                        foreach (Faction fac in toRemove)
-                                            ((List<Faction>)typeof(FactionManager).GetField("allFactions", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Find.FactionManager)).Remove(fac);
-                                    },
-                                    defaultLabel = "Dev: Remove all previously visited worlds",
-                                    defaultDesc = "WARNING: This action cannot be undone! It should only be used to fix bugs or reduce save file size."
-                                };
-                                yield return purgePlanets;
-                            }
                         }
                         //attack passing ship
                         if (this.Map.passingShipManager.passingShips.Any())

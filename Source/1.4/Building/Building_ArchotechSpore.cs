@@ -231,7 +231,7 @@ namespace RimWorld
                 int numCancers = Rand.RangeInclusive(2, 5);
                 for (int i = 0; i < numCancers; i++)
                 {
-                    Pawn victim = this.Map.mapPawns.FreeColonistsAndPrisonersSpawned.Where(pawn => ShipInteriorMod2.IsHologram(pawn)).RandomElement();
+                    Pawn victim = this.Map.mapPawns.FreeColonistsAndPrisonersSpawned.Where(pawn => !ShipInteriorMod2.IsHologram(pawn)).RandomElement();
                     HediffGiverUtility.TryApply(victim, HediffDefOf.Carcinoma, null, true);
                 }
             }

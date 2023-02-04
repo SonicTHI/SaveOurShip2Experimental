@@ -25,4 +25,14 @@
     <maxUses>1</maxUses>
   </ScenPartDef>
   
+  <ScenPartDef>
+    <defName>LoadPreviousShip</defName>
+    <label>load ship</label>
+    <scenPartClass>ScenPart_LoadShip</scenPartClass>
+    <category>StartingImportant</category>
+    <selectionWeight>1.0</selectionWeight>
+    <summaryPriority>999</summaryPriority>
+    <maxUses>1</maxUses>
+  </ScenPartDef>
+  
 </Defs>

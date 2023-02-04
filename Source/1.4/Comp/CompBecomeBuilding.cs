@@ -57,7 +57,8 @@ namespace RimWorld
                 transformed.SpawnSetup(myMap, false);
             }
             transformed.HitPoints = (int)(transformed.MaxHitPoints * ((Pawn)this.parent).health.summaryHealth.SummaryHealthPercent);
-            this.parent.Destroy(DestroyMode.Vanish);
+			if(!this.parent.Destroyed)
+	            this.parent.Destroy(DestroyMode.Vanish);
         }
 
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()

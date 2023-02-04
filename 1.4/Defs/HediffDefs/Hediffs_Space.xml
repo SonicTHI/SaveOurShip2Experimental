@@ -259,80 +259,150 @@
 	</HediffDef>
 	<HediffDef>
 		<defName>SoSHologram</defName>
-		<label>hologram</label>
+		<label>formgel</label>
 		<hediffClass>HediffPawnIsHologram</hediffClass>
 		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
-		<description>This entity is a holographic projection controlled by a brain located elsewhere.</description>
+		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a human consciousness via psychic entanglement.
+\nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.
+\nUnlike holograms, a formgel is capable of engaging in the full range of human activities, including sexual reproduction and drug use. Its mimicry of biological functions extends to the abilities of its subject's xenotype, and it can even adapt to a newly implanted xenogerm. Although it is immune to most organic pathogens, exotic diseases such as sensory mechanites can still infect a formgel.
+\nFormgels are the invention of nanoscientist Dr. Kimberly Yao, designed as a next-generation replacement for hologram technology. Although hardlight fields were capable of imitating the shape of a human body and performing most crew duties, the lack of high-resolution sensory feedback inevitably resulted in a sense of dissociation and progressive psychosis in brains operating holographic avatars. Yao initially tested the technology on herself as part of her successful evolution into an archotech superintelligence, and formgels can now be found aboard starships throughout known space.</description>
+		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a human consciousness via psychic entanglement.</descriptionShort>
 		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
-		<disablesNeeds>
-			<li>Food</li>
-			<li>Comfort</li>
-			<li>Outdoors</li>
-			<li>Indoors</li>
-			<li>DrugDesire</li>
-		</disablesNeeds>
+		<everCurableByItem>false</everCurableByItem>
 		<stages>
 			<li>
-				<totalBleedFactor>0</totalBleedFactor>
-				<painFactor>0</painFactor>
-				<naturalHealingFactor>2.5</naturalHealingFactor>
+				<totalBleedFactor>0.1</totalBleedFactor>
+				<painFactor>0.1</painFactor>
+				<naturalHealingFactor>5</naturalHealingFactor>
+				<hungerRateFactorOffset>-0.9</hungerRateFactorOffset>
+				<foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>
+				<makeImmuneTo>
+				  <li>Flu</li>
+				  <li>Malaria</li>
+				  <li>SleepingSickness</li>
+				  <li>Plague</li>
+				  <li>WoundInfection</li>
+				  <li>LungRot</li>
+				  <li>GutWorms</li>
+				  <li>MuscleParasites</li>
+				</makeImmuneTo>
+				<statFactors>
+					<MarketValue>0</MarketValue>
+					<Flammability>0.5</Flammability>
+					<MeatAmount>0</MeatAmount>
+					<LeatherAmount>0</LeatherAmount>
+					<RoyalFavorValue>0</RoyalFavorValue>
+					<LifespanFactor>100</LifespanFactor>
+				</statFactors>
+				<statOffsets>
+					<ComfyTemperatureMin>-120</ComfyTemperatureMin>
+					<ComfyTemperatureMax>50</ComfyTemperatureMax>
+					<ArmorRating_Heat>0.5</ArmorRating_Heat>
+					<ToxicResistance>0.5</ToxicResistance>
+					<ImmunityGainSpeed>1</ImmunityGainSpeed>
+				</statOffsets>
 			</li>
 		</stages>
 	</HediffDef>
 	<HediffDef>
 		<defName>SoSHologramMachine</defName>
-		<label>persona hologram</label>
+		<label>persona formgel</label>
 		<hediffClass>HediffPawnIsHologram</hediffClass>
 		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
-		<description>This entity is a holographic projection controlled by a superhumanlike machine persona.</description>
+		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a machine persona via psychic entanglement.
+\nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.
+\nUnlike holograms, a formgel is capable of engaging in the full range of human activities, including sexual reproduction and drug use. Its mimicry of biological functions extends to the abilities of its subject's xenotype, and it can even adapt to a newly implanted xenogerm. Although it is immune to most organic pathogens, exotic diseases such as sensory mechanites can still infect a formgel.
+\nFormgels are the invention of nanoscientist Dr. Kimberly Yao, designed as a next-generation replacement for hologram technology. Although hardlight fields were capable of imitating the shape of a human body and performing most crew duties, the lack of high-resolution sensory feedback inevitably resulted in a sense of dissociation and progressive psychosis in brains operating holographic avatars. Yao initially tested the technology on herself as part of her successful evolution into an archotech superintelligence, and formgels can now be found aboard starships throughout known space.</description>
+		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a machine persona via psychic entanglement.</descriptionShort>
 		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
-		<disablesNeeds>
-			<li>Food</li>
-			<li>Comfort</li>
-			<li>Outdoors</li>
-			<li>Indoors</li>
-			<li>DrugDesire</li>
-		</disablesNeeds>
+		<everCurableByItem>false</everCurableByItem>
 		<stages>
 			<li>
-				<totalBleedFactor>0</totalBleedFactor>
+				<totalBleedFactor>0.1</totalBleedFactor>
+				<painFactor>0.1</painFactor>
+				<naturalHealingFactor>5</naturalHealingFactor>
+				<hungerRateFactorOffset>-0.9</hungerRateFactorOffset>
+				<foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>
+				<makeImmuneTo>
+				  <li>Flu</li>
+				  <li>Malaria</li>
+				  <li>SleepingSickness</li>
+				  <li>Plague</li>
+				  <li>WoundInfection</li>
+				  <li>LungRot</li>
+				  <li>GutWorms</li>
+				  <li>MuscleParasites</li>
+				</makeImmuneTo>
+				<statFactors>
+					<MarketValue>0</MarketValue>
+					<Flammability>0.5</Flammability>
+					<MeatAmount>0</MeatAmount>
+					<LeatherAmount>0</LeatherAmount>
+					<RoyalFavorValue>0</RoyalFavorValue>
+					<LifespanFactor>100</LifespanFactor>
+				</statFactors>
+				<statOffsets>
+					<ComfyTemperatureMin>-120</ComfyTemperatureMin>
+					<ComfyTemperatureMax>50</ComfyTemperatureMax>
+					<ArmorRating_Heat>0.5</ArmorRating_Heat>
+					<ToxicResistance>0.5</ToxicResistance>
+					<ImmunityGainSpeed>1</ImmunityGainSpeed>
+					<MechBandwidth MayRequire="Ludeon.RimWorld.Biotech">16</MechBandwidth>
+					<MechControlGroups MayRequire="Ludeon.RimWorld.Biotech">2</MechControlGroups>
+				</statOffsets>
 				<capMods>
 					<li>
 						<capacity>Consciousness</capacity>
 						<offset>0.5</offset>
 					</li>
 				</capMods>
-				<painFactor>0</painFactor>
-				<naturalHealingFactor>5</naturalHealingFactor>
 			</li>
 		</stages>
 	</HediffDef>
 	<HediffDef>
 		<defName>SoSHologramArchotech</defName>
-		<label>archotech hologram</label>
+		<label>archotech formgel</label>
 		<hediffClass>HediffPawnIsHologram</hediffClass>
 		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
-		<description>This entity is a holographic projection controlled by an archotech spore.</description>
+		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by an archotech spore via psychic entanglement.
+\nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.
+\nUnlike holograms, a formgel is capable of engaging in the full range of human activities, including sexual reproduction and drug use. Its mimicry of biological functions extends to the abilities of its subject's xenotype, and it can even adapt to a newly implanted xenogerm. Although it is immune to most organic pathogens, exotic diseases such as sensory mechanites can still infect a formgel.
+\nFormgels are the invention of nanoscientist Dr. Kimberly Yao, designed as a next-generation replacement for hologram technology. Although hardlight fields were capable of imitating the shape of a human body and performing most crew duties, the lack of high-resolution sensory feedback inevitably resulted in a sense of dissociation and progressive psychosis in brains operating holographic avatars. Yao initially tested the technology on herself as part of her successful evolution into an archotech superintelligence, and formgels can now be found aboard starships throughout known space.</description>
+		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by an archotech spore via psychic entanglement.</descriptionShort>
 		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
-		<disablesNeeds>
-			<li>Food</li>
-			<li>Comfort</li>
-			<li>Outdoors</li>
-			<li>Indoors</li>
-			<li>DrugDesire</li>
-		</disablesNeeds>
+		<everCurableByItem>false</everCurableByItem>
 		<stages>
 			<li>
 				<totalBleedFactor>0</totalBleedFactor>
-				<capMods>
-					<li>
-						<capacity>Consciousness</capacity>
-						<offset>2</offset>
-					</li>
-				</capMods>
 				<painFactor>0</painFactor>
 				<naturalHealingFactor>10</naturalHealingFactor>
+				<hungerRateFactorOffset>-0.95</hungerRateFactorOffset>
+				<foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>
+				<makeImmuneTo>
+				  <li>Flu</li>
+				  <li>Malaria</li>
+				  <li>SleepingSickness</li>
+				  <li>Plague</li>
+				  <li>WoundInfection</li>
+				  <li>LungRot</li>
+				  <li>GutWorms</li>
+				  <li>MuscleParasites</li>
+				</makeImmuneTo>
+				<statFactors>
+					<MarketValue>0</MarketValue>
+					<Flammability>0.25</Flammability>
+					<MeatAmount>0</MeatAmount>
+					<LeatherAmount>0</LeatherAmount>
+					<RoyalFavorValue>0</RoyalFavorValue>
+					<LifespanFactor>1000</LifespanFactor>
+					<CertaintyLossFactor MayRequire="Ludeon.RimWorld.Ideology">0</CertaintyLossFactor>
+				</statFactors>
 				<statOffsets>
+					<ComfyTemperatureMin>-150</ComfyTemperatureMin>
+					<ComfyTemperatureMax>100</ComfyTemperatureMax>
+					<ArmorRating_Heat>0.9</ArmorRating_Heat>
+					<ToxicResistance>0.9</ToxicResistance>
+					<ImmunityGainSpeed>2</ImmunityGainSpeed>
 					<ArmorRating_Sharp>0.75</ArmorRating_Sharp>
 					<ArmorRating_Blunt>0.5</ArmorRating_Blunt>
 					<GlobalLearningFactor>1</GlobalLearningFactor>
@@ -341,10 +411,32 @@
 					<MeditationFocusGain MayRequire="Ludeon.RimWorld.Royalty">2</MeditationFocusGain>
 					<NegotiationAbility>0.50</NegotiationAbility>
 					<TradePriceImprovement>0.10</TradePriceImprovement>
+					<MechBandwidth MayRequire="Ludeon.RimWorld.Biotech">32</MechBandwidth>
+					<MechControlGroups MayRequire="Ludeon.RimWorld.Biotech">2</MechControlGroups>
 				</statOffsets>
-				<statFactors>
-					<CertaintyLossFactor MayRequire="Ludeon.RimWorld.Ideology">0</CertaintyLossFactor>
-				</statFactors>
+				<capMods>
+					<li>
+						<capacity>Consciousness</capacity>
+						<offset>2</offset>
+					</li>
+				</capMods>
+			</li>
+		</stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>HologramDisconnected</defName>
+		<defaultLabelColor>(0.8, 0.8, 0.35)</defaultLabelColor>
+		<hediffClass>HediffWithComps</hediffClass>
+		<label>Consciousness offline</label>
+		<description>This formgel's conscious substrate lacks power. Until it is restored, the swarm will remain in a comatose standby mode.</description>
+		<stages>
+			<li>
+				<capMods>
+				  <li>
+					<capacity>Consciousness</capacity>
+					<setMax>0.1</setMax>
+				  </li>
+				</capMods>
 			</li>
 		</stages>
 	</HediffDef>

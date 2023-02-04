@@ -7,9 +7,12 @@
 		<slot>Childhood</slot>
 		<title>machine persona</title>
 		<titleShort>persona</titleShort>
-		<baseDesc>[PAWN_nameDef] is a machine persona. [PAWN_pronoun] interacts with the world via a hologram, which cannot leave the map where [PAWN_possessive] core resides.</baseDesc>
+		<baseDesc>[PAWN_nameDef] is a machine persona. [PAWN_pronoun] interacts with the world via a formgel, a swarm of mechanites which mimics a human body.</baseDesc>
 		<bodyTypeMale>Male</bodyTypeMale>
 		<bodyTypeFemale>Female</bodyTypeFemale>
-		<shuffleable>False</shuffleable>
+		<spawnCategories>
+			<li>SoSHologram</li>
+		</spawnCategories>
+		<requiredWorkTags>AllWork</requiredWorkTags>
 	</BackstoryDef>
 </Defs>

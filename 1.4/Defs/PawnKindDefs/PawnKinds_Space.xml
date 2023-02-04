@@ -564,14 +564,11 @@
 	</PawnKindDef>
 	<ThingDef ParentName="BasePawn">
 		<defName>SoSHologramRace</defName>
-		<label>hologram</label>
-		<description>A holographic projection operated by a mind located elsewhere. Despite its humanlike appearance, the avatar could belong to a machine persona with frighteningly alien goals.\n\nIf the projection is destroyed, its emitter will need a day to reestablish coherence, but the mind itself suffers no permanent harm.</description>
-		<!--comps>
-			<li Class="CompProperties_HologramGlower">
-				<glowRadius>8</glowRadius>
-				<glowColor>(78,226,229,0)</glowColor>
-			</li>
-		</comps-->
+		<label>Deprecated - do not use</label>
+		<description>Obsolete hologram race from earlier versions of Save Our Ship 2. If you're still seeing this after game load, please report a bug.</description>
+		<comps>
+			<li Class="CompProperties_HologramRemover"/>
+		</comps>
 		<statBases>
 			<MarketValue>0</MarketValue>
 			<MoveSpeed>5.6</MoveSpeed>
@@ -693,343 +690,30 @@
       </hediffGiverSets>
 		</race>
 		<butcherProducts>
-    </butcherProducts>
+		</butcherProducts>
 	</ThingDef>
 	<PawnKindDef>
 		<defName>SoSHologram</defName>
-		<label>holographic avatar</label>
-		<race>SoSHologramRace</race>
-		<combatPower>999999</combatPower>
+		<label>machine persona</label>
 		<backstoryCategories>
 			<li>SoSHologram</li>
 		</backstoryCategories>
+		<race>Human</race>
+		<combatPower>30</combatPower>
+		<isFighter>false</isFighter>
 		<defaultFactionType>Ancients</defaultFactionType>
 		<chemicalAddictionChance>0</chemicalAddictionChance>
 		<weaponMoney>
 			<min>0</min>
 			<max>0</max>
 		</weaponMoney>
+		<apparelMoney>
+			<min>0</min>
+			<max>0</max>
+		</apparelMoney>
 		<techHediffsChance>0</techHediffsChance>
 		<combatEnhancingDrugsChance>0</combatEnhancingDrugsChance>
 		<initialWillRange>999~999</initialWillRange>
 		<initialResistanceRange>999~999</initialResistanceRange>
 	</PawnKindDef>
-	<ThingDef ParentName="BaseGun">
-		<defName>HologramLaser</defName>
-		<label>hologram laser</label>
-		<description>A hologram can emit some of its substance as a damaging beam of hardlight. While it is both accurate and deadly to unarmored targets, the beam is all but useless against power armor and mechanoids.</description>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<soundInteract>Interact_Rifle</soundInteract>
-		<weaponClasses>
-			<li>RangedHeavy</li>
-			<li>HologramGear</li>
-		</weaponClasses>
-		<statBases>
-			<Mass>0</Mass>
-			<AccuracyTouch>0.60</AccuracyTouch>
-			<AccuracyShort>0.72</AccuracyShort>
-			<AccuracyMedium>0.64</AccuracyMedium>
-			<AccuracyLong>0.48</AccuracyLong>
-			<RangedWeapon_Cooldown>0.9</RangedWeapon_Cooldown>
-		</statBases>
-		<verbs>
-			<li>
-				<verbClass>Verb_Shoot</verbClass>
-				<hasStandardCommand>true</hasStandardCommand>
-				<defaultProjectile>Bullet_HologramLaser</defaultProjectile>
-				<warmupTime>0.9</warmupTime>
-				<range>25.9</range>
-				<ticksBetweenBurstShots>7</ticksBetweenBurstShots>
-				<burstShotCount>6</burstShotCount>
-				<soundCast>ShipCombatLaser</soundCast>
-				<muzzleFlashScale>9</muzzleFlashScale>
-			</li>
-		</verbs>
-		<tools>
-    </tools>
-		<techLevel>Spacer</techLevel>
-		<tradeability>None</tradeability>
-		<destroyOnDrop>true</destroyOnDrop>
-	</ThingDef>
-	<ThingDef ParentName="BaseBullet">
-		<defName>Bullet_HologramLaser</defName>
-		<label>hologram laser</label>
-		<thingClass>Bullet_HologramLaser</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<projectile>
-			<damageDef>Burn</damageDef>
-			<damageAmountBase>9</damageAmountBase>
-			<stoppingPower>1</stoppingPower>
-			<speed>999</speed>
-		</projectile>
-		<relicChance>0</relicChance>
-	</ThingDef>
-	<ThingDef ParentName="BaseWeapon">
-		<defName>HologramSword</defName>
-		<label>hologram sword</label>
-		<description>A hologram can effortlessly manifest a blade of hardlight. While it is both quick to swing and deadly to unarmored targets, the blade is less useful against power armor and mechanoids.</description>
-		<graphicData>
-			<texPath>Things/Item/Equipment/WeaponMelee/LongSword</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<techLevel>Spacer</techLevel>
-		<tradeability>None</tradeability>
-		<destroyOnDrop>true</destroyOnDrop>
-		<weaponClasses>
-			<li>HologramGear</li>
-			<li>Melee</li>
-		</weaponClasses>
-		<statBases>
-			<Mass>0</Mass>
-		</statBases>
-		<equippedAngleOffset>-65</equippedAngleOffset>
-		<tools>
-			<li>
-				<label>point</label>
-				<capacities>
-					<li>Stab</li>
-				</capacities>
-				<power>5</power>
-				<cooldownTime>1.2</cooldownTime>
-				<extraMeleeDamages>
-					<li>
-						<def>Burn</def>
-						<amount>10</amount>
-						<chance>1</chance>
-					</li>
-				</extraMeleeDamages>
-			</li>
-			<li>
-				<label>edge</label>
-				<capacities>
-					<li>Cut</li>
-				</capacities>
-				<power>5</power>
-				<cooldownTime>1.2</cooldownTime>
-				<extraMeleeDamages>
-					<li>
-						<def>Burn</def>
-						<amount>10</amount>
-						<chance>1</chance>
-					</li>
-				</extraMeleeDamages>
-			</li>
-		</tools>
-		<relicChance>0</relicChance>
-	</ThingDef>
-	<ThingDef ParentName="ApparelNoQualityBase">
-		<defName>HologramShield</defName>
-		<label>hologram barrier</label>
-		<description>A hologram can project some of its substance to form a protective barrier of hardlight. This shield is subject to all of the same restrictions as a conventional shield belt.</description>
-		<thingClass>Apparel</thingClass>
-		<graphicData>
-			<texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<tickerType>Normal</tickerType>
-		<techLevel>Spacer</techLevel>
-		<tradeability>None</tradeability>
-		<destroyOnDrop>true</destroyOnDrop>
-		<statBases>
-			<Mass>0</Mass>
-			<EnergyShieldRechargeRate>0.3</EnergyShieldRechargeRate>
-			<EnergyShieldEnergyMax>2</EnergyShieldEnergyMax>
-		</statBases>
-		<apparel>
-			<countsAsClothingForNudity>false</countsAsClothingForNudity>
-			<careIfWornByCorpse>false</careIfWornByCorpse>
-			<careIfDamaged>false</careIfDamaged>
-			<wearPerDay>0</wearPerDay>
-			<bodyPartGroups>
-				<li>Waist</li>
-			</bodyPartGroups>
-			<layers>
-				<li>Belt</li>
-			</layers>
-			<tags>
-				<li>HologramGear</li>
-			</tags>
-		</apparel>
-		<comps>
-			<li Class="CompProperties_Shield" />
-		</comps>
-	</ThingDef>
-	<ThingDef ParentName="BaseGun">
-		<defName>HologramLaserArchotech</defName>
-		<label>archoblast</label>
-		<description>An archotech spore's hologram can emit some of its substance as a damaging beam of hardlight. Unlike a more typical hologram's lasers, the archoblast simultaneously inflicts explosive, EMP, and flame damage.</description>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<soundInteract>Interact_Rifle</soundInteract>
-		<weaponClasses>
-			<li>RangedHeavy</li>
-			<li>HologramGear</li>
-		</weaponClasses>
-		<statBases>
-			<Mass>0</Mass>
-			<AccuracyTouch>0.60</AccuracyTouch>
-			<AccuracyShort>0.72</AccuracyShort>
-			<AccuracyMedium>0.64</AccuracyMedium>
-			<AccuracyLong>0.48</AccuracyLong>
-			<RangedWeapon_Cooldown>0.9</RangedWeapon_Cooldown>
-		</statBases>
-		<verbs>
-			<li>
-				<verbClass>Verb_Shoot</verbClass>
-				<hasStandardCommand>true</hasStandardCommand>
-				<defaultProjectile>Bullet_HologramLaserArchotech</defaultProjectile>
-				<warmupTime>0.9</warmupTime>
-				<range>25.9</range>
-				<ticksBetweenBurstShots>6</ticksBetweenBurstShots>
-				<burstShotCount>6</burstShotCount>
-				<soundCast>ShipCombatLaser</soundCast>
-				<muzzleFlashScale>9</muzzleFlashScale>
-			</li>
-		</verbs>
-		<tools>
-    </tools>
-		<techLevel>Ultra</techLevel>
-		<tradeability>None</tradeability>
-		<destroyOnDrop>true</destroyOnDrop>
-	</ThingDef>
-	<ThingDef ParentName="BaseBullet">
-		<defName>Bullet_HologramLaserArchotech</defName>
-		<label>archoblast</label>
-		<thingClass>Bullet_HologramLaser</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<projectile>
-			<damageDef>Bomb</damageDef>
-			<extraDamages>
-				<li>
-					<def>EMP</def>
-					<amount>5</amount>
-					<chance>1</chance>
-				</li>
-				<li>
-					<def>Flame</def>
-					<amount>5</amount>
-					<chance>1</chance>
-				</li>
-			</extraDamages>
-			<damageAmountBase>9</damageAmountBase>
-			<stoppingPower>1</stoppingPower>
-			<speed>999</speed>
-		</projectile>
-		<relicChance>0</relicChance>
-	</ThingDef>
-	<ThingDef ParentName="BaseWeapon">
-		<defName>HologramSwordArchotech</defName>
-		<label>archoblade</label>
-		<description>An archotech spore's hologram can effortlessly manifest a blade of hardlight. Unlike a more typical hologram's sword, the archoblade simultaneously inflicts EMP and flame damage.</description>
-		<graphicData>
-			<texPath>Things/Item/Equipment/WeaponMelee/LongSword</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<techLevel>Ultra</techLevel>
-		<tradeability>None</tradeability>
-		<destroyOnDrop>true</destroyOnDrop>
-		<weaponClasses>
-			<li>HologramGear</li>
-			<li>Melee</li>
-		</weaponClasses>
-		<statBases>
-			<Mass>0</Mass>
-		</statBases>
-		<equippedAngleOffset>-65</equippedAngleOffset>
-		<tools>
-			<li>
-				<label>point</label>
-				<capacities>
-					<li>Stab</li>
-				</capacities>
-				<power>25</power>
-				<cooldownTime>1.2</cooldownTime>
-				<extraMeleeDamages>
-					<li>
-						<def>Flame</def>
-						<amount>10</amount>
-						<chance>1</chance>
-					</li>
-					<li>
-						<def>EMP</def>
-						<amount>10</amount>
-						<chance>1</chance>
-					</li>
-				</extraMeleeDamages>
-			</li>
-			<li>
-				<label>edge</label>
-				<capacities>
-					<li>Cut</li>
-				</capacities>
-				<power>15</power>
-				<cooldownTime>1.2</cooldownTime>
-				<extraMeleeDamages>
-					<li>
-						<def>Flame</def>
-						<amount>10</amount>
-						<chance>1</chance>
-					</li>
-					<li>
-						<def>EMP</def>
-						<amount>10</amount>
-						<chance>1</chance>
-					</li>
-				</extraMeleeDamages>
-			</li>
-		</tools>
-		<relicChance>0</relicChance>
-	</ThingDef>
-	<ThingDef ParentName="ApparelNoQualityBase">
-		<defName>HologramShieldArchotech</defName>
-		<label>archobarrier</label>
-		<description>An archotech spore's hologram can project some of its substance to form a protective barrier of hardlight. This shield is subject to all of the same restrictions as a conventional shield belt, but offers vastly superior defense.</description>
-		<thingClass>Apparel</thingClass>
-		<graphicData>
-			<texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<tickerType>Normal</tickerType>
-		<techLevel>Spacer</techLevel>
-		<tradeability>None</tradeability>
-		<destroyOnDrop>true</destroyOnDrop>
-		<statBases>
-			<Mass>0</Mass>
-			<EnergyShieldRechargeRate>1</EnergyShieldRechargeRate>
-			<EnergyShieldEnergyMax>5</EnergyShieldEnergyMax>
-		</statBases>
-		<apparel>
-			<countsAsClothingForNudity>false</countsAsClothingForNudity>
-			<careIfWornByCorpse>false</careIfWornByCorpse>
-			<careIfDamaged>false</careIfDamaged>
-			<wearPerDay>0</wearPerDay>
-			<bodyPartGroups>
-				<li>Waist</li>
-			</bodyPartGroups>
-			<layers>
-				<li>Belt</li>
-			</layers>
-			<tags>
-				<li>HologramGear</li>
-			</tags>
-		</apparel>
-	</ThingDef>
-	<comps>
-		<li Class="CompProperties_Shield" />
-	</comps>
-	<WeaponClassDef>
-		<defName>HologramGear</defName>
-		<label>holographic</label>
-	</WeaponClassDef>
 </Defs>

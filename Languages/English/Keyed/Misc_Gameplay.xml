@@ -33,7 +33,7 @@
 	<SpaceSiteFuelCost>Fuel cost: {0}%</SpaceSiteFuelCost>
 	<ShipForceExitAndRemoveMapCountdown>Entering atmosphere in {0}</ShipForceExitAndRemoveMapCountdown>
 	<ShipBurnupPlayer>Orbit failiure!</ShipBurnupPlayer>
-	<ShipBurnupPlayerDesc>With the loss of the last ship bridge this map can no longer maintain its orbit and will enter the atmoshpere in {0} days! \n\nEveryting on it will be destroyed!</ShipBurnupPlayerDesc>
+	<ShipBurnupPlayerDesc>With the loss of the last ship bridge this map can no longer maintain its orbit and will enter the atmoshpere in {0} days! \n\nEverything on it will be destroyed!</ShipBurnupPlayerDesc>
 	<ShipBurnupPlayerPrevented>Building a ship bridge has allowed you to stabilize the orbit.</ShipBurnupPlayerPrevented>
 	<ShipBurnUpCountdown>Entering atmosphere in {0}!</ShipBurnUpCountdown>
 	<ShipBurnUpCountdownTip>This map will enter atmosphere in {0}. Everything on it will be destroyed.</ShipBurnUpCountdownTip>

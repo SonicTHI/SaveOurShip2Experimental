@@ -52,15 +52,10 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\2009463077 Harmony\Current\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HugsLib">
-      <HintPath>..\..\..\818773962 HugsLib\v1.4\Assemblies\HugsLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -115,6 +110,9 @@
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
     <Compile Include="ResourceBank.cs" />
+    <Compile Include="CompProps\CompProperties_HologramRemover.cs" />
+    <Compile Include="Comp\CompHologramRemover.cs" />
+    <Compile Include="ScenPart_LoadShip.cs" />
     <Compile Include="SpaceNavyDef.cs" />
     <Compile Include="CompProps\CompProperties_ShipBlueprint.cs" />
     <Compile Include="Comp\CompRCSThruster.cs" />

@@ -11,7 +11,7 @@ namespace RimWorld
     {
         public override void ReceiveCompSignal(string signal)
         {
-            if (signal == "PowerTurnedOn" || signal == "PowerTurnedOff" || signal == "FlickedOn" || signal == "FlickedOff" || signal == "Refueled" || signal == "RanOutOfFuel" || signal == "ScheduledOn" || signal == "ScheduledOff")
+            if (parent.Map != null && (signal == "PowerTurnedOn" || signal == "PowerTurnedOff" || signal == "FlickedOn" || signal == "FlickedOff" || signal == "Refueled" || signal == "RanOutOfFuel" || signal == "ScheduledOn" || signal == "ScheduledOff"))
             {
                 parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlag.Buildings | MapMeshFlag.Things);
             }

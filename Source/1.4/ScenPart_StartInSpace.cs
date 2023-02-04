@@ -16,7 +16,7 @@ namespace RimWorld
 		List<Building> spawns = new List<Building>();
 		public override bool CanCoexistWith(ScenPart other)
 		{
-			return !(other is ScenPart_AfterlifeVault);
+			return !(other is ScenPart_AfterlifeVault || other is ScenPart_LoadShip);
 		}
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
@@ -91,8 +91,6 @@ namespace RimWorld
 		//ship selection end
 		public override void PostGameStart()
         {
-			if (WorldSwitchUtility.SelectiveWorldGenFlag)
-				return;
             List<Pawn> startingPawns = Find.CurrentMap.mapPawns.PawnsInFaction(Faction.OfPlayer);
 			int newTile = ShipInteriorMod2.FindWorldTile();
 			Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
@@ -112,7 +110,7 @@ namespace RimWorld
 			}
 			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0);
 			Current.ProgramState = ProgramState.Playing;
-			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
+			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
 			Section[,] secArray = new Section[secs.x, secs.z];
 			typeof(MapDrawer).GetField("sections", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(spaceMap.mapDrawer, secArray);
 			for (int i = 0; i < secs.x; i++)

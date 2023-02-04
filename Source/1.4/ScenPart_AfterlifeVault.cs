@@ -13,13 +13,11 @@ namespace RimWorld
     {
         public override bool CanCoexistWith(ScenPart other)
         {
-            return !(other is ScenPart_StartInSpace);
+            return !(other is ScenPart_StartInSpace || other is ScenPart_LoadShip);
         }
 
         public override void GenerateIntoMap(Map map)
         {
-            if (WorldSwitchUtility.SelectiveWorldGenFlag)
-                return;
             List<Pawn> startingPawns = Find.GameInitData.startingAndOptionalPawns;
             List<Building> cores = new List<Building>();
             try

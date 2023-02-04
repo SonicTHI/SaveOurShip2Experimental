@@ -11,7 +11,6 @@ namespace SaveOurShip2
 		{
 			shipZeroEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Enemy_Icon_Off",
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.red, Color.red);
-			
 			shipOneEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Enemy_Icon_On_slow",
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.red, Color.red);
 			shipTwoEnemy = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Enemy_Icon_On_mid",

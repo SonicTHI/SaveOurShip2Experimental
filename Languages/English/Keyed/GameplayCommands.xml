@@ -146,10 +146,10 @@
 	<ShipBlueprintPlace3>Place interior blueprints</ShipBlueprintPlace3>
 	<ShipBlueprintPlace3Desc>Place ship interior blueprints.</ShipBlueprintPlace3Desc>
 	<!-- holo/spore -->
-	<SoSSpawnHologram>Generate hologram</SoSSpawnHologram>
-	<SoSSpawnHologramDesc>Begin projecting a hologram through which this consciousness can affect the world</SoSSpawnHologramDesc>
-	<SoSDespawnHologram>Deactivate hologram</SoSDespawnHologram>
-	<SoSDespawnHologramDesc>Stop projecting a hologram from this device</SoSDespawnHologramDesc>
+	<SoSSpawnHologram>Spawn formgel</SoSSpawnHologram>
+	<SoSSpawnHologramDesc>Assemble a formgel through which this consciousness can affect the world</SoSSpawnHologramDesc>
+	<SoSDespawnHologram>Decohere formgel</SoSDespawnHologram>
+	<SoSDespawnHologramDesc>Destroy the formgel controlled by this device. Breeding a new mechanite swarm to replace it will take one day</SoSDespawnHologramDesc>
 	<ShipInsideRenameAI>Rename AI</ShipInsideRenameAI>
 	<ShipInsideRenameAIDesc>Give this AI a new name</ShipInsideRenameAIDesc>
 	<ShipInsideInstallConsciousness>Install consciousness</ShipInsideInstallConsciousness>
@@ -159,9 +159,9 @@
 	<ShipInsideInstallCoreDesc>Order your colonists to install an AI core in this device</ShipInsideInstallCoreDesc>
 	<ShipInsideNoBrains>No consciousness available</ShipInsideNoBrains>
 	<ShipInsideNoCores>No persona cores available</ShipInsideNoCores>
-	<SoSSpawnHologramDelay>Hologram regenerating: available in {0}</SoSSpawnHologramDelay>
-	<SoSHologramColor>Hologram Color</SoSHologramColor>
-	<SoSHologramColorDesc>Choose the color for this mind's hologram</SoSHologramColorDesc>
+	<SoSSpawnHologramDelay>Formgel swarm regenerating: available in {0}</SoSSpawnHologramDelay>
+	<SoSHologramColor>Formgel Color</SoSHologramColor>
+	<SoSHologramColorDesc>Choose the color for this mind's formgel</SoSHologramColorDesc>
 	<SoSHologramDrug>Simulate Drug</SoSHologramDrug>
 	<SoSHologramDrugDesc>Affect this mind with a simulated version of an organic drug.</SoSHologramDrugDesc>
 	<SoSHologramDrugTaken>Effects of {1} applied to {0}</SoSHologramDrugTaken>
@@ -176,7 +176,7 @@
 	<ShipInsideEquipMelee>Melee mode</ShipInsideEquipMelee>
 	<ShipInsideEquipMeleeDesc>Equip this hologram with a blade and an energy shield</ShipInsideEquipMeleeDesc>
 	<ShipInsideResurrectBrain>Resurrect</ShipInsideResurrectBrain>
-	<ShipInsideResurrectBrainDesc>Use a resurrector mech serum to construct a new body for this brain</ShipInsideResurrectBrainDesc>
+	<ShipInsideResurrectBrainDesc>Use a resurrector mech serum to construct a new body for this consciousness</ShipInsideResurrectBrainDesc>
 	<!-- archo -->
 	<ArchotechNotEnoughFieldStrength>Insufficient field strength</ArchotechNotEnoughFieldStrength>
 	<ArchotechCommandSoothe>Psychic soothe</ArchotechCommandSoothe>

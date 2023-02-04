@@ -1,4 +1,5 @@
-﻿using SaveOurShip2;
+﻿using HarmonyLib;
+using SaveOurShip2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using Verse.Sound;
 
 namespace RimWorld
 {
+    [StaticConstructorOnStartup]
     public class CompBuildingConsciousness : ThingComp
     {
         public Pawn Consciousness;
@@ -23,8 +25,7 @@ namespace RimWorld
 
         static Color[] colors = new Color[] { new Color(0, 1f, 0.5f, 0.8f), new Color(0, 0.5f, 1f, 0.8f), new Color(1f, 0.25f, 0.25f, 0.8f), new Color(1f, 0.8f, 0, 0.8f), new Color(0.75f,0,1f,0.8f), new Color(1f,0.5f,0,0.8f), new Color (0.1f,0.1f,0.1f,0.8f), new Color (0.9f,0.9f,0.9f,0.8f)};
         static string[] colorNames = new string[] { "Green", "Blue", "Red", "Yellow", "Purple", "Orange", "Black", "White"};
-        public static List<ThingDef> drugs = new List<ThingDef>();
-        public static List<ThingDef> apparel = new List<ThingDef>();
+        public static DamageDef FormgelSlime = DefDatabase<DamageDef>.GetNamed("FormgelSlime");
 
         bool SavedDeep = false;
 
@@ -76,7 +77,7 @@ namespace RimWorld
         }
         public void GenerateAIPawn()
         {
-            PawnGenerationRequest req = new PawnGenerationRequest(PawnKindDef.Named("SoSHologram"), Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, false, true, false, false, false, 0, true, false, false, false, false, false, false, false, true, 0, 0, forceNoIdeo: true, forbidAnyTitle: true);
+            PawnGenerationRequest req = new PawnGenerationRequest(PawnKindDef.Named("SoSHologram"), Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, true, false, false, false, true, 0, allowFood: false, allowAddictions: false, forceNoIdeo: true, forbidAnyTitle: true, fixedBiologicalAge: 18, fixedChronologicalAge: 18, forceNoBackstory:true);
             Pawn p = PawnGenerator.GeneratePawn(req);
             p.story.Childhood = ShipInteriorMod2.hologramBackstory;
             p.Name = new NameTriple("", AIName, "");
@@ -97,6 +98,7 @@ namespace RimWorld
             Consciousness.skills.Notify_SkillDisablesChanged();
             if (ModsConfig.IdeologyActive)
                 Consciousness.ideo.SetIdeo(Faction.OfPlayer.ideos.PrimaryIdeo);
+            p.apparel.DestroyAll();
             SetupConsciousness();
         }
 
@@ -109,7 +111,7 @@ namespace RimWorld
             }
             foreach(Hediff hediff in hediffs)
             {
-                if (hediff.def.spawnThingOnRemoved != null)
+                if (hediff.def.spawnThingOnRemoved != null && hediff.def != HediffDefOf.MechlinkImplant)
                 {
                     Consciousness.health.RemoveHediff(hediff);
                     GenPlace.TryPlaceThing(ThingMaker.MakeThing(hediff.def.spawnThingOnRemoved), Consciousness.Position, parent.Map, ThingPlaceMode.Near);
@@ -140,10 +142,18 @@ namespace RimWorld
                 }
                 if(ModsConfig.RoyaltyActive)
                 {
-                    while (Consciousness.GetPsylinkLevel() < 6)
-                        Consciousness.ChangePsylinkLevel(1);
-                    foreach (AbilityDef ability in DefDatabase<AbilityDef>.AllDefs)
-                        Consciousness.abilities.GainAbility(ability);
+                    if (AccessTools.TypeByName("VanillaPsycastsExpanded.PsycasterPathDef") != null)
+                    {
+                        for(int i=0;i<50;i++)
+                            Consciousness.ChangePsylinkLevel(1, false);
+                    }
+                    else
+                    {
+                        while (Consciousness.GetPsylinkLevel() < 6)
+                            Consciousness.ChangePsylinkLevel(1);
+                        foreach (AbilityDef ability in DefDatabase<AbilityDef>.AllDefs.Where(def => def.IsPsycast))
+                            Consciousness.abilities.GainAbility(ability);
+                    }
                 }
             }
             else if (Props.canMergeHuman) //Avatar
@@ -155,17 +165,7 @@ namespace RimWorld
             if(graphicsDirty)
                 Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
             HologramDestroyed(false);
-            Consciousness.kindDef = PawnKindDef.Named("SoSHologram");
-            Consciousness.def = ThingDef.Named("SoSHologramRace");
             typeof(Pawn_AgeTracker).GetMethod("RecalculateLifeStageIndex", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Consciousness.ageTracker, new object[] { });
-            if(pawnApparel!=null)
-            {
-                foreach(Apparel app in pawnApparel)
-                {
-                    if (app.def.apparel.layers.Contains(ApparelLayerDefOf.Overhead) || app.def.apparel.layers.Contains(ApparelLayerDefOf.Shell) || (app.def.apparel.layers.Contains(ApparelLayerDefOf.OnSkin) && (app.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs) || app.def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))))
-                        AddHolographicApparel(app.def);
-                }
-            }
         }
 
         public void HologramDestroyed(bool decohere, bool goneForGood = false)
@@ -175,12 +175,15 @@ namespace RimWorld
             Thing thing = null;
             if(Consciousness.carryTracker.CarriedThing!=null)
                 Consciousness.carryTracker.TryDropCarriedThing(Consciousness.Position, ThingPlaceMode.Near, out thing);
-            if(Consciousness.Spawned)
+            if (Consciousness.Spawned)
+            {
+                Consciousness.apparel.DropAll(Consciousness.Position);
                 Consciousness.inventory.DropAllNearPawn(Consciousness.Position);
+            }
             if (decohere)
             {
                 HologramRespawnTick = Find.TickManager.TicksGame + 60000;
-                GenExplosion.DoExplosion(Consciousness.Position, Consciousness.Map, 4.9f, DamageDefOf.EMP, Consciousness);
+                GenExplosion.DoExplosion(Consciousness.Position, Consciousness.Map, 4.9f, FormgelSlime, Consciousness, postExplosionSpawnThingDef: ThingDefOf.Filth_Slime, postExplosionSpawnChance:1f, postExplosionSpawnThingCount:1);
                 if(goneForGood && !Consciousness.Dead)
                     Consciousness.Kill(null);
             }
@@ -192,10 +195,6 @@ namespace RimWorld
             }
             if (Consciousness.CarriedBy != null)
                 Consciousness.CarriedBy.carryTracker.DestroyCarriedThing();
-            Thing relay = Consciousness.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().relay;
-            Consciousness.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().relay = null;
-            if(relay!=null)
-                relay.TryGetComp<CompHologramRelay>().StopRelaying(false);
         }
 
         public override void PostDestroy(DestroyMode mode, Map previousMap)
@@ -240,7 +239,7 @@ namespace RimWorld
                             {
                                 action = delegate
                                 {
-                                    HologramDestroyed(false);
+                                    HologramDestroyed(true);
                                 },
                                 defaultLabel = "SoSDespawnHologram".Translate(),
                                 defaultDesc = "SoSDespawnHologramDesc".Translate(),
@@ -287,45 +286,6 @@ namespace RimWorld
                         defaultLabel = "SoSHologramColor".Translate(),
                         defaultDesc = "SoSHologramColorDesc".Translate(),
                         icon = ContentFinder<Texture2D>.Get("RoughAlphaAdd", true)
-                    });
-                    gizmos.Add(new Command_Action
-                    {
-                        action = delegate
-                        {
-                            List<FloatMenuOption> options = new List<FloatMenuOption>();
-                            foreach (ThingDef drug in drugs)
-                            {
-                                options.Add(new FloatMenuOption(drug.label, delegate
-                                {
-                                    ThingMaker.MakeThing(drug).Ingested(Consciousness, 0);
-                                    Messages.Message("SoSHologramDrugTaken".Translate(Consciousness, drug.label), MessageTypeDefOf.PositiveEvent);
-                                }));
-                            }
-                            if (options.Count > 0)
-                                Find.WindowStack.Add(new FloatMenu(options));
-                        },
-                        defaultLabel = "SoSHologramDrug".Translate(),
-                        defaultDesc = "SoSHologramDrugDesc".Translate(),
-                        icon = ContentFinder<Texture2D>.Get("Things/Item/Resource/PlantFoodRaw/SmokeleafLeaves", true)
-                    });
-                    gizmos.Add(new Command_Action
-                    {
-                        action = delegate
-                        {
-                            List<FloatMenuOption> options = new List<FloatMenuOption>();
-                            foreach (ThingDef app in apparel)
-                            {
-                                options.Add(new FloatMenuOption(app.label, delegate
-                                {
-                                    AddHolographicApparel(app);
-                                },app));
-                            }
-                            if (options.Count > 0)
-                                Find.WindowStack.Add(new FloatMenu(options));
-                        },
-                        defaultLabel = "SoSHologramApparel".Translate(),
-                        defaultDesc = "SoSHologramApparelDesc".Translate(),
-                        icon = ContentFinder<Texture2D>.Get("Things/Pawn/Humanlike/Apparel/Pants/Pants", true)
                     });
                 }
             }
@@ -458,14 +418,6 @@ namespace RimWorld
             Consciousness.Drawer.renderer.graphics.ResolveAllGraphics();
             if(Consciousness.Dead)
                 ResurrectionUtility.Resurrect(Consciousness);
-            if (!Consciousness.story.traits.HasTrait(TraitDefOf.Brawler) && Consciousness.skills.GetSkill(SkillDefOf.Melee).Level <= Consciousness.skills.GetSkill(SkillDefOf.Shooting).Level)
-            {
-                SwitchToRanged();
-            }
-            else
-            {
-                SwitchToMelee();
-            }
             SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
             FleckMaker.Static(parent.Position, parent.Map, FleckDefOf.PsycastAreaEffect, 5f);
             Consciousness.ageTracker.ResetAgeReversalDemand(Pawn_AgeTracker.AgeReversalReason.ViaTreatment);
@@ -515,6 +467,15 @@ namespace RimWorld
                 pawn = (Pawn)newConsc;
                 List<Apparel> pawnApparel = pawn.apparel.WornApparel.ListFullCopy();
                 pawn.Strip();
+
+                if(ShipInteriorMod2.IsHologram((Pawn)newConsc))
+                {
+                    HediffPawnIsHologram existingHediff = ((Pawn)newConsc).health.hediffSet.GetFirstHediff<HediffPawnIsHologram>();
+                    existingHediff.consciousnessSource.GetComp<CompBuildingConsciousness>().Consciousness = null;
+                    existingHediff.consciousnessSource.DirtyMapMesh(existingHediff.consciousnessSource.Map);
+                    ((Pawn)newConsc).health.RemoveHediff(existingHediff);
+                }
+
                 Consciousness = pawn;
                 SetupConsciousness(overrideApparel==null ? pawnApparel : overrideApparel, graphicsDirty);
             }
@@ -531,9 +492,9 @@ namespace RimWorld
         {
             if (Consciousness == null)
                 return;
+            Consciousness.apparel.DropAll(Consciousness.Position);
+            Consciousness.equipment.DropAllEquipment(Consciousness.Position);
             Consciousness.Position = parent.Position;
-            Consciousness.apparel.DropAll(parent.Position);
-            Consciousness.equipment.DropAllEquipment(parent.Position);
 
             List<Hediff> hediffs = new List<Hediff>();
             foreach (Hediff hediff in Consciousness.health.hediffSet.hediffs)
@@ -550,8 +511,6 @@ namespace RimWorld
             Consciousness.story.HairColor = HologramColor;
             Consciousness.story.skinColorOverride = null;
             Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
-            Consciousness.kindDef = PawnKindDefOf.Colonist;
-            Consciousness.def = ThingDefOf.Human;
             typeof(Pawn_AgeTracker).GetMethod("RecalculateLifeStageIndex", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Consciousness.ageTracker, new object[] { });
 
             Consciousness.DeSpawn();
@@ -570,7 +529,13 @@ namespace RimWorld
         {
             if (signal == "PowerTurnedOff" || signal == "FlickedOff")
             {
-                HologramDestroyed(false);
+                if (Consciousness != null && !Consciousness.health.hediffSet.HasHediff(HediffDef.Named("HologramDisconnected")))
+                    Consciousness.health.AddHediff(HediffDef.Named("HologramDisconnected"));
+            }
+            else if(signal == "PowerTurnedOn" || signal == "FlickedOn")
+            {
+                if (Consciousness != null && Consciousness.health.hediffSet.HasHediff(HediffDef.Named("HologramDisconnected")))
+                    Consciousness.health.RemoveHediff(Consciousness.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named("HologramDisconnected")));
             }
         }
 
@@ -587,58 +552,6 @@ namespace RimWorld
                     hologramHediff.consciousnessSource = (Building)parent;
                 }
             }
-        }
-
-        void AddHolographicApparel(ThingDef def)
-        {
-            ApparelHolographic holoApp;
-            if (def.apparel.layers.Contains(ApparelLayerDefOf.Overhead))
-                holoApp = (ApparelHolographic)ThingMaker.MakeThing(ThingDef.Named("Apparel_HologramDummyHat"));
-            else if (def.apparel.layers.Contains(ApparelLayerDefOf.Shell))
-                holoApp = (ApparelHolographic)ThingMaker.MakeThing(ThingDef.Named("Apparel_HologramDummyShell"));
-            else if (def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Legs))
-                holoApp = (ApparelHolographic)ThingMaker.MakeThing(ThingDef.Named("Apparel_HologramDummyPants"));
-            else if (def.apparel.bodyPartGroups.Contains(BodyPartGroupDefOf.Torso))
-                holoApp = (ApparelHolographic)ThingMaker.MakeThing(ThingDef.Named("Apparel_HologramDummyShirt"));
-            else
-                holoApp = (ApparelHolographic)ThingMaker.MakeThing(ThingDef.Named("Apparel_HologramDummyShell"));
-            holoApp.apparelToMimic = def;
-            Consciousness.apparel.Wear(holoApp);
-            Consciousness.outfits.forcedHandler.SetForced(holoApp, true);
-        }
-
-        public void SwitchToRanged()
-        {
-            foreach (ThingWithComps equipped in Consciousness.equipment.AllEquipmentListForReading.ListFullCopy())
-            {
-                if(equipped.def.weaponClasses!=null && equipped.def.weaponClasses.Contains(DefDatabase<WeaponClassDef>.GetNamed("HologramGear")))
-                    Consciousness.equipment.Remove(equipped);
-            }
-            Apparel belt = null;
-            foreach(Apparel app in Consciousness.apparel.WornApparel)
-            {
-                if (app.TryGetComp<CompShield>() != null)
-                {
-                    belt = app;
-                    break;
-                }
-            }
-            if (belt != null)
-                Consciousness.apparel.Remove(belt);
-            Consciousness.equipment.AddEquipment((ThingWithComps)ThingMaker.MakeThing(Props.holoWeapon));
-        }
-
-        public void SwitchToMelee()
-        {
-            foreach (ThingWithComps equipped in Consciousness.equipment.AllEquipmentListForReading.ListFullCopy())
-            {
-                if (equipped.def.weaponClasses != null && equipped.def.weaponClasses.Contains(DefDatabase<WeaponClassDef>.GetNamed("HologramGear")))
-                    Consciousness.equipment.Remove(equipped);
-            }
-            Consciousness.equipment.AddEquipment((ThingWithComps)ThingMaker.MakeThing(Props.holoWeaponMelee));
-            Apparel app = (Apparel)ThingMaker.MakeThing(Props.holoShield);
-            Consciousness.apparel.Wear(app);
-            Consciousness.apparel.Lock(app);
         }
     }
 }

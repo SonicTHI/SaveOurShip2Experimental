@@ -11,21 +11,17 @@ namespace RimWorld
     class HediffPawnIsHologram : Hediff
     {
         public Building consciousnessSource;
-        public ThingWithComps relay;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_References.Look<Building>(ref consciousnessSource, "consciousnessSource");
-            Scribe_References.Look<ThingWithComps>(ref relay, "relay");
         }
 
         public override void Notify_PawnKilled()
         {
             base.Notify_PawnKilled();
             consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramDestroyed(true);
-            if(relay!=null)
-                relay.TryGetComp<CompHologramRelay>().StopRelaying(false);
         }
 
         public override void Tick()
@@ -54,7 +50,7 @@ namespace RimWorld
                     pawn.health.RemoveHediff(disease);
                 }
 
-                if (pawn.Map != consciousnessSource.Map && relay==null && pawn.CarriedBy==null && !pawn.InContainerEnclosed && !pawn.IsPrisoner)
+                if (pawn.Map != consciousnessSource.Map && pawn.CarriedBy==null && !pawn.InContainerEnclosed && !pawn.IsPrisoner)
                     consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramDestroyed(false);
             }
         }
@@ -71,38 +67,6 @@ namespace RimWorld
                 num = i + 1;
             }
             yield break;
-        }
-
-        public override IEnumerable<Gizmo> GetGizmos()
-        {
-            List<Gizmo> gizmos = new List<Gizmo>();
-            if(pawn.equipment.Primary==null || pawn.equipment.Primary.def.IsRangedWeapon)
-            {
-                gizmos.Add(new Command_Action
-                {
-                    action = delegate
-                    {
-                        consciousnessSource.TryGetComp<CompBuildingConsciousness>().SwitchToMelee();
-                    },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideEquipMelee"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideEquipMeleeDesc"),
-                    icon = ContentFinder<Texture2D>.Get("Things/Item/Equipment/WeaponMelee/LongSword")
-                });
-            }
-            else
-            {
-                gizmos.Add(new Command_Action
-                {
-                    action = delegate
-                    {
-                        consciousnessSource.TryGetComp<CompBuildingConsciousness>().SwitchToRanged();
-                    },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideEquipRanged"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideEquipRangedDesc"),
-                    icon = ContentFinder<Texture2D>.Get("UI/Commands/FireAtWill")
-                });
-            }
-            return gizmos;
         }
     }
 }

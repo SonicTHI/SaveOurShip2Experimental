@@ -53,6 +53,7 @@
       <li TKey="SoSTipFloors">Floors can be built atop ship hull tile. Your gold-paneled bridge will be the envy of every lesser captain.</li>
       <li TKey="SoSTipHolodeck">The holodeck can train any skill, depending on the program your colonist selects when using it. More advanced holodecks train skills faster.</li>
       <li TKey="SoSTipCloak">The cloaking device prevents enemy ships from noticing you. It is useless once combat has already begun, however.</li>
+	  <li TKey="SoSFormgel">A modern replacement for antiquated hologram technology, formgels are swarms of mechanites which mimic biological human bodies.</li>
 
       <!-- Archotech -->
       <li TKey="SoSTipArchotechSpore">Spacer legends tell of archotech spores - ship computer cores that have begun upgrading themselves into archotechs. Usually this requires mental contact with an existing archotech...</li>

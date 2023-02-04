@@ -1010,9 +1010,6 @@
 			</li>
 			<li Class="CompProperties_BuildingConsciousness">
 				<holoHediff>SoSHologramArchotech</holoHediff>
-				<holoWeapon>HologramLaserArchotech</holoWeapon>
-				<holoWeaponMelee>HologramSwordArchotech</holoWeaponMelee>
-				<holoShield>HologramShieldArchotech</holoShield>
 				<canMergeHuman>true</canMergeHuman>
 				<canMergeAI>true</canMergeAI>
 				<healOnMerge>true</healOnMerge>

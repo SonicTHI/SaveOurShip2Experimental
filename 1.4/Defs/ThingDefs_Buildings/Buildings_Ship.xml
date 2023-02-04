@@ -1483,7 +1483,7 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>A computer core capable of housing a superhumanlike AI who can pilot your ship or guide it on interstellar journeys.</description>
+		<description>A computer core capable of housing a superhumanlike AI who can pilot your ship or guide it on interstellar journeys. Includes a mechanite breeding tank which allows the AI to manifest a formgel avatar.</description>
 		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
@@ -1500,9 +1500,6 @@
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_BuildingConsciousness">
 				<holoHediff>SoSHologramMachine</holoHediff>
-				<holoWeapon>HologramLaser</holoWeapon>
-				<holoWeaponMelee>HologramSword</holoWeaponMelee>
-				<holoShield>HologramShield</holoShield>
 			</li>
 		</comps>
 		<rotatable>false</rotatable>
@@ -2513,7 +2510,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_AvatarCasket</defName>
 		<label>afterlife casket</label>
-		<description>An advanced life-support system capable of reviving a recently-deceased human brain, connected to a hologram projector. Allows dead colonists to live again in holographic form.</description>
+		<description>A tank of advanced mechanites capable of dismantling a deceased human body and constructing a formgel swarm which mimics the subject's original biological functions.\nThe subject's consciousness is transferred with perfect fidelity to an artificial neuro-psychic substrate which remains in the tank, remotely controlling its formgel via psychic entanglement. An afterlife casket can preserve only a single consciousness at a time.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/AvatarCasket</texPath>
 			<graphicClass>Graphic_SingleOnOffEmpty</graphicClass>
@@ -2558,9 +2555,6 @@
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_BuildingConsciousness">
 				<holoHediff>SoSHologram</holoHediff>
-				<holoWeapon>HologramLaser</holoWeapon>
-				<holoWeaponMelee>HologramSword</holoWeaponMelee>
-				<holoShield>HologramShield</holoShield>
 				<canMergeHuman>true</canMergeHuman>
 				<mustBeDead>true</mustBeDead>
 			</li>
@@ -2576,69 +2570,6 @@
 			<Plasteel>80</Plasteel>
 			<ComponentIndustrial>4</ComponentIndustrial>
 			<ComponentSpacer>6</ComponentSpacer>
-		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>Ship_HologramRelay</defName>
-		<label>hologram relay</label>
-		<description>A long-range relay allowing holograms to be projected from elsewhere. Each relay can only support a single hologram.</description>
-		<graphicData>
-			<texPath>Things/Building/Ship/HologramRepeater</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
-			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(1.5,1.8)</drawSize>
-			<shadowData>
-				<volume>(0.83, 0.3, 1.7)</volume>
-			</shadowData>
-		</graphicData>
-		<researchPrerequisites>
-			<li>ShipHologramRepeater</li>
-		</researchPrerequisites>
-		<thingCategories>
-			<li>Buildings</li>
-		</thingCategories>
-		<minifiedDef>MinifiedThing</minifiedDef>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<pathCost>70</pathCost>
-		<blockWind>true</blockWind>
-		<fillPercent>0.5</fillPercent>
-		<canOverlapZones>false</canOverlapZones>
-		<rotatable>false</rotatable>
-		<statBases>
-			<WorkToBuild>1600</WorkToBuild>
-			<MaxHitPoints>500</MaxHitPoints>
-			<Flammability>0</Flammability>
-			<Mass>100</Mass>
-		</statBases>
-		<tickerType>Normal</tickerType>
-		<size>(1,1)</size>
-		<designationCategory>Ship</designationCategory>
-		<comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>100</basePowerConsumption>
-			</li>
-			<li Class="CompProperties_Explosive">
-				<explosiveRadius>1.66</explosiveRadius>
-				<explosiveDamageType>Flame</explosiveDamageType>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_Glower">
-				<glowRadius>8</glowRadius>
-				<glowColor>(255,255,255,0)</glowColor>
-			</li>
-			<li Class="CompProperties_HologramRelay"/>
-		</comps>
-		<defaultPlacingRot>North</defaultPlacingRot>
-		<costList>
-			<Steel>10</Steel>
-			<Plasteel>20</Plasteel>
-			<ComponentIndustrial>2</ComponentIndustrial>
-			<ComponentSpacer>1</ComponentSpacer>
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>

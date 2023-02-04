@@ -11,5 +11,18 @@
     <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
     <canUseDeflectMetalEffect>false</canUseDeflectMetalEffect>
   </DamageDef>
+
+  <DamageDef>
+    <defName>FormgelSlime</defName>
+    <label>formgel slime</label>
+    <canInterruptJobs>false</canInterruptJobs>
+    <makesBlood>false</makesBlood>
+    <defaultDamage>0</defaultDamage>
+    <explosionCellFleck>BlastExtinguisher</explosionCellFleck>
+    <explosionColorEdge>(1, 1, 1, 0.05)</explosionColorEdge>
+    <soundExplosion>Explosion_Stun</soundExplosion>
+    <harmsHealth>false</harmsHealth>
+    <combatLogRules>Damage_Smoke</combatLogRules>
+  </DamageDef>
   
 </Defs>

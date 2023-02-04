@@ -9,6 +9,8 @@ using UnityEngine;
 using Verse.AI.Group;
 using HugsLib;
 using HugsLib.Utils;
+using Verse.Sound;
+using System.IO;
 
 namespace SaveOurShip2
 {
@@ -28,6 +30,9 @@ namespace SaveOurShip2
         public static bool planetkiller = false;
         public static bool NoRecache = false;
         public static List<ScenPart> CachedScenario;
+
+        public static bool SaveShipFlag = false;
+        public static bool LoadShipFlag = false; //NOTE: This is set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
 
         static Faction DonatedToFaction=null;
         static float DonatedAmount=0;
@@ -210,9 +215,21 @@ namespace SaveOurShip2
             }
 
             //Oddly enough, interstellar flight takes a lot of time
-            int years = Rand.RangeInclusive(SaveOurShip2.ModSettings_SoS.minTravelTime, SaveOurShip2.ModSettings_SoS.maxTravelTime);
+            /*int years = Rand.RangeInclusive(ShipInteriorMod2.minTravelTime.Value, ShipInteriorMod2.maxTravelTime.Value);
             Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * years);
-            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);
+            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);*/
+        }
+
+        public static void SaveShip(Building_ShipBridge bridge)
+        {
+            KillAllColonistsNotInCrypto(bridge.Map, bridge);
+            string folder = Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            string filename = Path.Combine(folder, Faction.OfPlayer.Name + "_" + bridge.ShipName + ".sos2");
+            ShipInteriorMod2.MoveShip(bridge, bridge.Map, IntVec3.Zero, Faction.OfPlayer, 0, false, filename);
+            SaveShipFlag = false;
+            ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
         }
 
         public static void SwitchToNewWorld(Map shipMap, Building_ShipBridge bridge)

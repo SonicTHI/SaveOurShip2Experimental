@@ -38,6 +38,18 @@
 	<prerequisites>
 		<li>ArchotechBioMechanites</li>
 	</prerequisites>
+    <researchViewX>1</researchViewX>
+    <researchViewY>0</researchViewY>
+  </ResearchProjectDef>
+  
+  <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+    <defName>ArchotechArchites</defName>
+    <label>archogenetics</label>
+    <description>---REQUIRES BIOTECH DLC---\n\nDevelop your own strain of archites, adding archite capsules and archogene packs to your spore's gift options.</description>
+    <baseCost>8000</baseCost>
+	<prerequisites>
+		<li>ArchotechBioMechanitesTwo</li>
+	</prerequisites>
     <researchViewX>2</researchViewX>
     <researchViewY>0</researchViewY>
   </ResearchProjectDef>

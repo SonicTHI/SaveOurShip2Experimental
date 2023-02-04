@@ -22,7 +22,6 @@ using System.Collections;
 using System.Reflection.Emit;
 using UnityEngine.SceneManagement;
 using System.Linq.Expressions;
-using static SaveOurShip2.ModSettings_SoS;
 
 namespace SaveOurShip2
 {
@@ -1612,7 +1611,7 @@ namespace SaveOurShip2
 				Find.TickManager.TogglePaused();
 			InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
 		}
-		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
+		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false, string writeToFile = null)
 		{
 			bool devMode = false;
 			var watch = new TimeHelper();
@@ -1669,14 +1668,17 @@ namespace SaveOurShip2
 					posTemp.Add(new Tuple<IntVec3, float>(adjustedPos, room.Temperature));
 				}
 				//clear LZ
-				targetArea.Add(adjustedPos);
-				foreach (Thing t in adjustedPos.GetThingList(targetMap))
+				if (writeToFile == null)
 				{
-					if (!toDestroy.Contains(t))
-						toDestroy.Add(t);
+					targetArea.Add(adjustedPos);
+					foreach (Thing t in adjustedPos.GetThingList(targetMap))
+					{
+						if (!toDestroy.Contains(t))
+							toDestroy.Add(t);
+					}
+					if (!targetMapIsSpace)
+						targetMap.snowGrid.SetDepth(adjustedPos, 0f);
 				}
-				if (!targetMapIsSpace)
-					targetMap.snowGrid.SetDepth(adjustedPos, 0f);
 				//add all things, terrain from area
 				List<Thing> allTheThings = pos.GetThingList(sourceMap);
 				foreach (Thing t in allTheThings)
@@ -1804,7 +1806,7 @@ namespace SaveOurShip2
 			//move things
 			foreach (Thing spawnThing in toSave)
 			{
-				if (!spawnThing.Destroyed)
+				if (!spawnThing.Destroyed && writeToFile == null)
 				{
 					try
 					{
@@ -1888,24 +1890,30 @@ namespace SaveOurShip2
 			foreach (Zone theZone in zonesToCopy)
 			{
 				sourceMap.zoneManager.DeregisterZone(theZone);
-				theZone.zoneManager = targetMap.zoneManager;
-				List<IntVec3> newCells = new List<IntVec3>();
-				foreach (IntVec3 cell in theZone.cells)
-					newCells.Add(Transform(cell));
-				theZone.cells = newCells;
-				targetMap.zoneManager.RegisterZone(theZone);
+				if (writeToFile == null)
+				{
+					theZone.zoneManager = targetMap.zoneManager;
+					List<IntVec3> newCells = new List<IntVec3>();
+					foreach (IntVec3 cell in theZone.cells)
+						newCells.Add(Transform(cell));
+					theZone.cells = newCells;
+					targetMap.zoneManager.RegisterZone(theZone);
+				}
 			}
 			if (devMode)
 				watch.Record("moveZones");
 
 			//move terrain
-			foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
+			if (writeToFile == null)
 			{
-				var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
-				if (!targetTile.layerable || IsHull(targetTile))
+				foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
 				{
-					var targetPos = Transform(tup.Item1);
-					targetMap.terrainGrid.SetTerrain(targetPos, tup.Item2);
+					var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
+					if (!targetTile.layerable || IsHull(targetTile))
+					{
+						var targetPos = Transform(tup.Item1);
+						targetMap.terrainGrid.SetTerrain(targetPos, tup.Item2);
+					}
 				}
 			}
 
@@ -1920,10 +1928,13 @@ namespace SaveOurShip2
 				watch.Record("moveTerrain");
 
 			// Move roofs.
-			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
+			if (writeToFile == null)
 			{
-				var targetPos = Transform(tup.Item1);
-				targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
+				foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
+				{
+					var targetPos = Transform(tup.Item1);
+					targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
+				}
 			}
 			if (devMode)
 				watch.Record("moveRoof");
@@ -1999,6 +2010,131 @@ namespace SaveOurShip2
 				watch.Record("finalize");
 				Log.Message("Timing report:\n" + watch.MakeReport());
 				Log.Message("Moved ship with building " + core);
+			}
+
+			if(writeToFile != null)
+            {
+				List<IntVec3> terrainPos = new List<IntVec3>();
+				List<TerrainDef> terrainDefs = new List<TerrainDef>();
+				foreach(Tuple<IntVec3,TerrainDef> tuple in terrainToCopy)
+                {
+					terrainPos.Add(tuple.Item1);
+					terrainDefs.Add(tuple.Item2);
+                }
+
+				List<IntVec3> roofPos = new List<IntVec3>();
+				List<RoofDef> roofDefs = new List<RoofDef>();
+				foreach (Tuple<IntVec3, RoofDef> tuple in roofToCopy)
+				{
+					roofPos.Add(tuple.Item1);
+					roofDefs.Add(tuple.Item2);
+				}
+
+				HashSet<Ideo> ideosAboardShip = new HashSet<Ideo>();
+				HashSet<CustomXenotype> xenosAboardShip = new HashSet<CustomXenotype>();
+
+				HashSet<Pawn> pawnsAboardShip = new HashSet<Pawn>();
+
+				foreach (Thing thing in toSave)
+				{
+					if (thing is Pawn)
+					{
+						Pawn pawn = thing as Pawn;
+						if (pawn.Ideo != null && pawn.Ideo != Faction.OfPlayer.ideos.PrimaryIdeo)
+							ideosAboardShip.Add(pawn.Ideo);
+						if (pawn.genes.CustomXenotype != null)
+							xenosAboardShip.Add(pawn.genes.CustomXenotype);
+						pawnsAboardShip.Add(pawn);
+					}
+					if (thing is IThingHolder holder && holder.GetDirectlyHeldThings() != null)
+                    {
+						foreach(Thing thing2 in holder.GetDirectlyHeldThings())
+                        {
+							if(thing2 is Pawn)
+                            {
+								Pawn pawn = thing2 as Pawn;
+								if (pawn.Ideo != null && pawn.Ideo != Faction.OfPlayer.ideos.PrimaryIdeo)
+									ideosAboardShip.Add(pawn.Ideo);
+								if (pawn.genes.CustomXenotype != null)
+									xenosAboardShip.Add(pawn.genes.CustomXenotype);
+								pawnsAboardShip.Add(pawn);
+							}
+                        }
+                    }
+                }
+
+				foreach(Pawn pawn in pawnsAboardShip)
+                {
+					List<DirectPawnRelation> toPrune = new List<DirectPawnRelation>();
+					foreach(DirectPawnRelation relation in pawn.relations.DirectRelations)
+                    {
+						if (!pawnsAboardShip.Contains(relation.otherPawn))
+							toPrune.Add(relation);
+                    }
+					foreach (DirectPawnRelation relation in toPrune)
+						pawn.relations.RemoveDirectRelation(relation);
+					pawn.jobs.ClearQueuedJobs();
+					pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                }					
+
+				List<GameComponent> components = new List<GameComponent>();
+
+				foreach(GameComponent comp in Current.Game.components)
+                {
+					//Don't copy ours or vanilla components. We'll probably need a more general-purpose way to add more exceptions if other mods' components shouldn't be moved.
+					if (!(comp is EnvironmentCachingUtility || comp is GameComponent_Bossgroup || comp is GameComponent_DebugTools || comp is GameComponent_OnetimeNotification))
+						components.Add(comp);
+                }
+
+				string playerFactionName = Faction.OfPlayer.Name;
+				Ideo playerFactionIdeo = Faction.OfPlayer.ideos.PrimaryIdeo;
+
+				SafeSaver.Save(writeToFile, "SoS2Ship", (Action)(() =>
+				{
+					ScribeMetaHeaderUtility.WriteMetaHeader();
+					
+					Scribe_Defs.Look<FactionDef>(ref Faction.OfPlayer.def, "playerFactionDef");
+					Scribe_Values.Look(ref playerFactionName, "playerFactionName");
+					//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
+					Scribe_Deep.Look(ref playerFactionIdeo, "playerFactionIdeo");
+					//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
+
+					Scribe_Deep.Look<TickManager>(ref Current.Game.tickManager, true, "tickManager");
+					Scribe_Deep.Look<PlaySettings>(ref Current.Game.playSettings, true, "playSettings");
+					Scribe_Deep.Look<StoryWatcher>(ref Current.Game.storyWatcher, true, "storyWatcher");
+					Scribe_Deep.Look<ResearchManager>(ref Current.Game.researchManager, true, "researchManager");
+					Scribe_Deep.Look<TaleManager>(ref Current.Game.taleManager, true, "taleManager");
+					Scribe_Deep.Look<PlayLog>(ref Current.Game.playLog, true, "playLog");
+					Scribe_Deep.Look<OutfitDatabase>(ref Current.Game.outfitDatabase, true, "outfitDatabase");
+					Scribe_Deep.Look<DrugPolicyDatabase>(ref Current.Game.drugPolicyDatabase, true, "drugPolicyDatabase");
+					Scribe_Deep.Look<FoodRestrictionDatabase>(ref Current.Game.foodRestrictionDatabase, true, "foodRestrictionDatabase");
+					Scribe_Deep.Look<UniqueIDsManager>(ref Current.Game.uniqueIDsManager, true, "uniqueIDsManager");
+
+					//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
+					Scribe_Collections.Look<Ideo>(ref ideosAboardShip, "ideos", LookMode.Deep);
+					//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
+					Scribe_Collections.Look<CustomXenotype>(ref xenosAboardShip, "xenotypes", LookMode.Deep);
+					Scribe_Deep.Look<CustomXenogermDatabase>(ref Current.Game.customXenogermDatabase, true, "customXenogermDatabase");
+					Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep);
+
+					Scribe_Collections.Look<Thing>(ref toSave, "shipThings", LookMode.Deep);
+					Scribe_Collections.Look<Zone>(ref zonesToCopy, "shipZones", LookMode.Deep);
+					Scribe_Collections.Look<IntVec3>(ref terrainPos, "terrainPos");
+					Scribe_Collections.Look<TerrainDef>(ref terrainDefs, "terrainDefs");
+					Scribe_Collections.Look<IntVec3>(ref roofPos, "roofPos");
+					Scribe_Collections.Look<RoofDef>(ref roofDefs, "roofDefs");
+				}));
+
+				foreach(Thing spawnThing in toSave)
+                {
+					if (!spawnThing.Destroyed)
+					{
+						CompRefuelable refuelable = spawnThing.TryGetComp<CompRefuelable>();
+						if (refuelable != null)
+							refuelable.ConsumeFuel(refuelable.Fuel); //To avoid CompRefuelable.PostDestroy
+						spawnThing.Destroy();
+					}
+				}
 			}
 
 			/*Things = 1,
@@ -2115,6 +2251,11 @@ namespace SaveOurShip2
 			if (hasLung)
 				return 1;
 			return 0;
+		}
+
+		public static bool CompatibleWithShipLoad(ScenPart item)
+		{
+			return !(item is ScenPart_PlayerFaction || item is ScenPart_PlayerPawnsArriveMethod || item is ScenPart_ScatterThings || item is ScenPart_Naked || item is ScenPart_NoPossessions || item is ScenPart_GameStartDialog || item is ScenPart_AfterlifeVault || item is ScenPart_SetNeedLevel || item is ScenPart_StartingAnimal || item is ScenPart_StartingMech || item is ScenPart_StartingResearch || item is ScenPart_StartingThing_Defined || item is ScenPart_StartInSpace || item is ScenPart_ThingCount || item is ScenPart_ConfigPage_ConfigureStartingPawnsBase);
 		}
 	}
 	//harmony patches
@@ -2767,8 +2908,8 @@ namespace SaveOurShip2
 		}
 	}
 
-   //map
-   [HarmonyPatch(typeof(CompShipPart), "CompGetGizmosExtra")]
+	//map
+	[HarmonyPatch(typeof(CompShipPart), "CompGetGizmosExtra")]
 	public static class NoGizmoInSpace
 	{
 		[HarmonyPrefix]
@@ -3406,7 +3547,11 @@ namespace SaveOurShip2
 		[HarmonyPrefix]
 		public static bool SaveShipAndRemoveItemStacks()
 		{
-			if (ShipInteriorMod2.shipOriginRoot != null)
+			if(WorldSwitchUtility.SaveShipFlag)
+            {
+				WorldSwitchUtility.SaveShip((Building_ShipBridge)ShipInteriorMod2.shipOriginRoot);
+            }
+			else if (ShipInteriorMod2.shipOriginRoot != null)
 			{
 				ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
 				WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
@@ -5372,32 +5517,8 @@ namespace SaveOurShip2
 			return true;
 		}
 	}
-	
-	//holographic race
-	[HarmonyPatch(typeof(Pawn_ApparelTracker))]
-	[HarmonyPatch("PsychologicallyNude", MethodType.Getter)]
-	public static class HologramNudityIsOkay
-	{
-		[HarmonyPostfix]
-		public static void DoNotFearMyHolographicJunk(Pawn_ApparelTracker __instance, ref bool __result)
-		{
-			if (ShipInteriorMod2.IsHologram(__instance.pawn))
-			{
-				__result = __instance.pawn.story.traits.HasTrait(TraitDefOf.Nudist);
-			}
-		}
-	}
 
-	[HarmonyPatch(typeof(ApparelUtility), "HasPartsToWear")]
-	public static class HologramsCannotWear
-    {
-		public static void Postfix(Pawn p, ThingDef apparel, ref bool __result)
-        {
-			if (ShipInteriorMod2.IsHologram(p) && apparel.thingClass != typeof(ApparelHolographic) && !apparel.apparel.tags.Contains("HologramGear"))
-				__result = false;
-        }
-    }
-
+	// Formgels - simpler than holograms!
 	[HarmonyPatch(typeof(Pawn),"Kill")]
 	public static class CorpseRemoval
     {
@@ -5408,193 +5529,9 @@ namespace SaveOurShip2
 				if(__instance.Corpse!=null)
 					__instance.Corpse.Destroy();
 				if(!__instance.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Destroyed)
-				ResurrectionUtility.Resurrect(__instance);
+					ResurrectionUtility.Resurrect(__instance);
             }
         }
-    }
-
-	[HarmonyPatch(typeof(MeditationUtility), "CanMeditateNow")]
-	public static class HologramsCanMeditate
-    {
-		public static bool Prefix(Pawn pawn)
-        {
-			return !ShipInteriorMod2.IsHologram(pawn);
-        }
-
-		public static void Postfix(Pawn pawn, ref bool __result)
-        {
-			if(ShipInteriorMod2.IsHologram(pawn))
-            {
-				__result = pawn.Awake();
-			}
-        }
-    }
-
-	[HarmonyPatch(typeof(GatheringsUtility), "ShouldGuestKeepAttendingGathering")]
-	public static class HologramsCanParty
-	{
-		public static bool Prefix(Pawn p, ref bool __result)
-		{
-			if (p.needs?.food == null || p.needs?.rest == null)
-			{
-				return HologramResult(p, out __result);
-			}
-			return true;
-		}
-
-		private static bool HologramResult(Pawn p, out bool __result)
-		{
-			__result = (!p.Downed && (p.needs?.food == null || !p.needs.food.Starving) && p.health.hediffSet.BleedRateTotal <= 0f && (p.needs?.rest == null || (int)p.needs.rest.CurCategory < 3) && !p.health.hediffSet.HasTendableNonInjuryNonMissingPartHediff(false) && RestUtility.Awake(p) && !p.InAggroMentalState && !p.IsPrisoner);
-			return false;
-		}
-	}
-
-	[HarmonyPatch(typeof(LovePartnerRelationUtility), "GetLovinMtbHours")]
-	public static class HologramsCanGetSome
-    {
-		public static bool Prefix(Pawn pawn, Pawn partner)
-        {
-			return !ShipInteriorMod2.IsHologram(pawn) && !ShipInteriorMod2.IsHologram(partner);
-        }
-
-		public static void Postfix(Pawn pawn, Pawn partner, ref float __result)
-        {
-			if(ShipInteriorMod2.IsHologram(pawn) || ShipInteriorMod2.IsHologram(partner))
-            {
-				if (pawn.Dead || partner.Dead)
-				{
-					__result = - 1f;
-					return;
-				}
-				if (DebugSettings.alwaysDoLovin)
-				{
-					__result = 0.1f;
-					return;
-				}
-				if ((pawn.needs.food != null && pawn.needs.food.Starving) || (partner.needs.food !=null && partner.needs.food.Starving))
-				{
-					__result = -1f;
-					return;
-				}
-				if (pawn.health.hediffSet.BleedRateTotal > 0f || partner.health.hediffSet.BleedRateTotal > 0f)
-				{
-					__result = -1f;
-					return;
-				}
-				MethodInfo SingleFactor = typeof(LovePartnerRelationUtility).GetMethod("LovinMtbSinglePawnFactor", BindingFlags.NonPublic | BindingFlags.Static);
-				float num = (float)SingleFactor.Invoke(null, new object[] { pawn });
-				if (num <= 0f)
-				{
-					__result = -1f;
-					return;
-				}
-				float num2 = (float)SingleFactor.Invoke(null, new object[] { partner });
-				if (num2 <= 0f)
-				{
-					__result = -1f;
-					return;
-				}
-				float num3 = 12f;
-				num3 *= num;
-				num3 *= num2;
-				num3 /= Mathf.Max(pawn.relations.SecondaryLovinChanceFactor(partner), 0.1f);
-				num3 /= Mathf.Max(partner.relations.SecondaryLovinChanceFactor(pawn), 0.1f);
-				num3 *= GenMath.LerpDouble(-100f, 100f, 1.3f, 0.7f, pawn.relations.OpinionOf(partner));
-				num3 *= GenMath.LerpDouble(-100f, 100f, 1.3f, 0.7f, partner.relations.OpinionOf(pawn));
-				if (pawn.health.hediffSet.HasHediff(HediffDefOf.PsychicLove))
-				{
-					num3 /= 4f;
-				}
-				__result = num3;
-			}
-        }
-    }
-
-	[HarmonyPatch(typeof(Pawn_RelationsTracker), "SecondaryLovinChanceFactor")]
-	public static class HologramsAreRomantic
-	{
-		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-		{
-			if (ModLister.HasActiveModWithName("Humanoid Alien Races"))
-				return instructions;
-
-			List<CodeInstruction> newInstructions = new List<CodeInstruction>();
-
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldarg_0));
-			newInstructions.Add(CodeInstruction.LoadField(typeof(Pawn_RelationsTracker), "pawn"));
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldarg_1));
-			newInstructions.Add(CodeInstruction.Call(typeof(HologramsAreRomantic), "AreCompatible"));
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldc_I4, 0));
-
-			int index = 0;
-			foreach(CodeInstruction instr in instructions)
-            {
-				if (index >= 9)
-					newInstructions.Add(instr);
-				index++;
-            }
-			return newInstructions;
-		}
-
-		public static int AreCompatible(Pawn pawnA, Pawn pawnB)
-        {
-			return (pawnA != pawnB && pawnA.RaceProps.intelligence == Intelligence.Humanlike && pawnB.RaceProps.intelligence == Intelligence.Humanlike) ? 1 : 0;
-        }
-	}
-
-	[HarmonyPatch(typeof(Pawn_RelationsTracker), "CompatibilityWith")]
-	public static class HologramsAreCompatible
-	{
-		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-		{
-			if (ModLister.HasActiveModWithName("Humanoid Alien Races"))
-				return instructions;
-
-			List<CodeInstruction> newInstructions = new List<CodeInstruction>();
-
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldarg_0));
-			newInstructions.Add(CodeInstruction.LoadField(typeof(Pawn_RelationsTracker),"pawn"));
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldarg_1));
-			newInstructions.Add(CodeInstruction.Call(typeof(HologramsAreRomantic),"AreCompatible"));
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldc_I4, 0));
-
-			int index = 0;
-			foreach (CodeInstruction instr in instructions)
-			{
-				if (index >= 9)
-					newInstructions.Add(instr);
-				index++;
-			}
-			return newInstructions;
-		}
-	}
-
-	[HarmonyPatch(typeof(CaravanFormingUtility), "AllSendablePawns")]
-	public static class NoEscapeForHolograms
-    {
-		public static void Postfix(ref List<Pawn> __result)
-        {
-			List<Pawn> newList = new List<Pawn>();
-			foreach(Pawn pawn in __result)
-            {
-				if (!ShipInteriorMod2.IsHologram(pawn))
-					newList.Add(pawn);
-            }
-			__result = newList;
-        }
-    }
-
-	[HarmonyPatch(typeof(PawnRenderer), "ShellFullyCoversHead")]
-	public static class DoesNotActuallyCoverHead
-    {
-		public static void Postfix(PawnRenderer __instance, ref bool __result)
-        {
-			foreach(ApparelGraphicRecord apparel in __instance.graphics.apparelGraphics)
-			{
-				if (apparel.sourceApparel.def == ResourceBank.ThingDefOf.Apparel_HologramRelay)
-					__result = false;
-			}
-		}
     }
 
 	[HarmonyPatch(typeof(ThoughtWorker_AgeReversalDemanded), "CanHaveThought")]
@@ -5607,100 +5544,6 @@ namespace SaveOurShip2
         }
     }
 
-	[HarmonyPatch(typeof(Apparel), "get_WornGraphicPath")]
-	public static class HologramClothingAppearance
-    {
-		public static void Postfix(ref string __result, Apparel __instance)
-        {
-			if(__instance is ApparelHolographic)
-            {
-				__result = ((ApparelHolographic)__instance).apparelToMimic.apparel.wornGraphicPath;
-            }
-        }
-    }
-
-	[HarmonyPatch(typeof(ApparelRequirement), "IsMet")]
-	public static class HoloApparelIdeologyRole
-    {
-		public static void Postfix(ref bool __result, ApparelRequirement __instance, Pawn p)
-        {
-			foreach (Apparel itemApparel in p.apparel.WornApparel)
-			{
-				if (itemApparel is ApparelHolographic)
-				{
-					ApparelHolographic item = (ApparelHolographic)itemApparel;
-					bool flag = false;
-					for (int i = 0; i < __instance.bodyPartGroupsMatchAny.Count; i++)
-					{
-						if (item.apparelToMimic.apparel.bodyPartGroups.Contains(__instance.bodyPartGroupsMatchAny[i]))
-						{
-							flag = true;
-							break;
-						}
-					}
-					if (flag)
-					{
-						if (__instance.requiredDefs != null && __instance.requiredDefs.Contains(item.apparelToMimic))
-						{
-							__result = true;
-							return;
-						}
-						if (__instance.requiredTags != null)
-						{
-							for (int j = 0; j < __instance.requiredTags.Count; j++)
-							{
-								if (item.apparelToMimic.apparel.tags.Contains(__instance.requiredTags[j]))
-								{
-									__result = true;
-									return;
-								}
-							}
-						}
-						if (__instance.allowedTags != null)
-						{
-							for (int k = 0; k < __instance.allowedTags.Count; k++)
-							{
-								if (item.apparelToMimic.apparel.tags.Contains(__instance.allowedTags[k]))
-								{
-									__result = true;
-									return;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-    }
-
-	[HarmonyPatch(typeof(IncidentWorker_DiseaseHuman), "PotentialVictimCandidates")]
-	public static class HologramsDontGetDiseases
-    {
-		public static void Postfix(ref IEnumerable<Pawn> __result)
-        {
-			List<Pawn> newResult = new List<Pawn>();
-			foreach(Pawn pawn in __result)
-            {
-				if (!ShipInteriorMod2.IsHologram(pawn))
-					newResult.Add(pawn);
-            }
-			__result = newResult;
-        }
-    }
-
-	[HarmonyPatch(typeof(ImmunityHandler), "AnyHediffMakesFullyImmuneTo")]
-	public static class HologramsDontGetDiseasesToo
-    {
-		public static void Postfix(ref bool __result, ImmunityHandler __instance, ref Hediff sourceHediff)
-        {
-			if (ShipInteriorMod2.IsHologram(__instance.pawn))
-			{
-				__result = true;
-				sourceHediff = __instance.pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>();
-			}
-        }
-    }
-
 	[HarmonyPatch(typeof(SkillRecord), "Interval")]
 	public static class MachineHologramsPerfectMemory
     {
@@ -5710,41 +5553,86 @@ namespace SaveOurShip2
         }
     }
 
-	[HarmonyPatch(typeof(SickPawnVisitUtility), "CanVisit")]
-	public static class NoVisitingHolograms
-    {
-		public static void Postfix(Pawn sick, ref bool __result)
-        {
-			if (ShipInteriorMod2.IsHologram(sick))
-				__result = false;
-        }
-    }
-
-	[HarmonyPatch(typeof(WorkGiver_Warden_DeliverFood), "JobOnThing")]
-	public static class NoFeedingTheHolograms
-	{
-		public static bool Prefix(Thing t)
-		{
-			return !(t is Pawn) || !ShipInteriorMod2.IsHologram((Pawn)t);
-		}
-
-		public static void Postfix(Thing t, ref Job __result)
-		{
-			if (t is Pawn && ShipInteriorMod2.IsHologram((Pawn)t))
-				__result = null;
-		}
-	}
-
 	[HarmonyPatch(typeof(Pawn_StoryTracker), "get_SkinColor")]
 	public static class SkinColorPostfixPostfix
     {
 		[HarmonyPriority(Priority.Last)]
 		public static void Postfix(Pawn ___pawn, ref Color __result, Pawn_StoryTracker __instance)
         {
-			if (ShipInteriorMod2.IsHologram(___pawn))
+			if (ShipInteriorMod2.IsHologram(___pawn) && __instance.skinColorOverride.HasValue)
 				__result = __instance.skinColorOverride.Value;
         }
     }
+
+	[HarmonyPatch(typeof(Recipe_BloodTransfusion), "AvailableOnNow")]
+	public static class FormgelsHaveNoBlood
+	{
+		public static void Postfix(ref bool __result, Thing thing)
+		{
+			if (thing is Pawn && ShipInteriorMod2.IsHologram(((Pawn)thing)))
+				__result = false;
+		}
+	}
+
+	[HarmonyPatch(typeof(Recipe_ExtractHemogen), "AvailableOnNow")]
+	public static class FormgelsStillHaveNoBlood
+	{
+		public static void Postfix(ref bool __result, Thing thing)
+		{
+			if (thing is Pawn && ShipInteriorMod2.IsHologram(((Pawn)thing)))
+				__result = false;
+		}
+	}
+
+	[HarmonyPatch(typeof(Recipe_InstallArtificialBodyPart), "GetPartsToApplyOn")]
+	public static class FormgelsCannotUseBionics
+	{
+		public static void Postfix(ref IEnumerable<BodyPartRecord> __result, Pawn pawn)
+		{
+			if (ShipInteriorMod2.IsHologram(pawn))
+				__result = new List<BodyPartRecord>();
+		}
+	}
+
+	[HarmonyPatch(typeof(Recipe_InstallImplant), "GetPartsToApplyOn")]
+	public static class FormgelsCannotUseImplants
+	{
+		public static void Postfix(ref IEnumerable<BodyPartRecord> __result, Pawn pawn)
+		{
+			if (ShipInteriorMod2.IsHologram(pawn))
+				__result = new List<BodyPartRecord>();
+		}
+	}
+
+	[HarmonyPatch(typeof(Recipe_RemoveImplant), "GetPartsToApplyOn")]
+	public static class FormgelsStillCannotUseImplants
+	{
+		public static void Postfix(ref IEnumerable<BodyPartRecord> __result, Pawn pawn)
+		{
+			if (ShipInteriorMod2.IsHologram(pawn))
+				__result = new List<BodyPartRecord>();
+		}
+	}
+
+	[HarmonyPatch(typeof(Recipe_InstallNaturalBodyPart), "GetPartsToApplyOn")]
+	public static class FormgelsCannotUseOrgans
+	{
+		public static void Postfix(ref IEnumerable<BodyPartRecord> __result, Pawn pawn)
+		{
+			if (ShipInteriorMod2.IsHologram(pawn))
+				__result = new List<BodyPartRecord>();
+		}
+	}
+
+	[HarmonyPatch(typeof(Recipe_RemoveBodyPart), "GetPartsToApplyOn")]
+	public static class FormgelsHaveNoOrgans
+	{
+		public static void Postfix(ref IEnumerable<BodyPartRecord> __result, Pawn pawn)
+		{
+			if (ShipInteriorMod2.IsHologram(pawn))
+				__result = new List<BodyPartRecord>();
+		}
+	}
 
 	[HarmonyPatch(typeof(GenStep_Fog), "Generate")]
 	public static class UnfogVault
@@ -5757,149 +5645,6 @@ namespace SaveOurShip2
 			}
 		}
     }
-
-	[HarmonyPatch(typeof(JobDriver_InteractAnimal), "RequiredNutritionPerFeed")]
-	public static class TameWildHologram
-	{
-		public static bool Prefix(Pawn animal)
-		{
-			return animal.needs.food != null;
-		}
-
-		public static void Postfix(Pawn animal, ref float __result)
-		{
-			if (animal.needs.food == null)
-				__result = 0;
-		}
-	}
-
-	[HarmonyPatch(typeof(WorkGiver_InteractAnimal), "HasFoodToInteractAnimal")]
-	public static class TameWildHologramToo
-	{
-		public static bool Prefix(Pawn tamee)
-		{
-			return tamee.needs.food != null;
-		}
-
-		public static void Postfix(Pawn tamee, ref bool __result)
-		{
-			if (tamee.needs.food == null)
-				__result = true;
-		}
-	}
-
-	[HarmonyPatch(typeof(WorkGiver_InteractAnimal), "TakeFoodForAnimalInteractJob")]
-	public static class TameWildHologramThree
-	{
-		public static bool Prefix(Pawn tamee)
-		{
-			return tamee.needs.food != null;
-		}
-
-		public static void Postfix(Pawn tamee, ref Job __result)
-		{
-			if (tamee.needs.food == null)
-			{
-				__result = JobMaker.MakeJob(JobDefOf.Goto, tamee.Position);
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(JobDriver_InteractAnimal), "StartFeedAnimal")]
-	public static class TameWildHologramFour
-	{
-		public static bool Prefix(JobDriver_InteractAnimal __instance, TargetIndex tameeInd)
-		{
-			return ((Pawn)__instance.pawn.CurJob.GetTarget(tameeInd)).needs.food != null;
-		}
-
-		public static void Postfix(JobDriver_InteractAnimal __instance, TargetIndex tameeInd, ref Toil __result)
-		{
-			if (((Pawn)__instance.pawn.CurJob.GetTarget(tameeInd)).needs.food == null)
-				__result = Toils_General.Wait(10);
-		}
-	}
-
-	[HarmonyPatch(typeof(JobDriver_InteractAnimal), "FeedToils")]
-	public static class TameWildHologramFive
-	{
-		public static bool Prefix(JobDriver_InteractAnimal __instance)
-		{
-			return ((Pawn)__instance.job.targetA.Thing).needs.food != null;
-		}
-
-		public static void Postfix(JobDriver_InteractAnimal __instance, ref IEnumerable<Toil> __result)
-		{
-			if (((Pawn)__instance.job.targetA.Thing).needs.food == null)
-			{
-				List<Toil> newResult = new List<Toil>();
-				newResult.Add(Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch));
-				__result = newResult;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(Toils_Ingest), "FinalizeIngest")]
-	public static class HologramsDoNotEatIMeanItSeriously
-	{
-		public static void Postfix(Pawn ingester, TargetIndex ingestibleInd, ref Toil __result)
-		{
-			if (ingester.needs.food == null)
-			{
-				__result.initAction = delegate
-				{
-					Pawn actor = ingester;
-					Job curJob = actor.jobs.curJob;
-					Thing thing = curJob.GetTarget(ingestibleInd).Thing;
-					thing.Ingested(ingester, 0);
-				};
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(JobGiver_EatInGatheringArea), "TryGiveJob")]
-	public static class HologramsParty
-	{
-		public static bool Prefix(Pawn pawn)
-		{
-			return pawn.needs.food != null;
-		}
-
-		public static void Postfix(Pawn pawn, ref Job __result)
-		{
-			if (pawn.needs.food == null)
-			{
-				__result = null;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(PawnApparelGenerator), "CanUsePair")]
-	public static class NoHolographicGearOnGeneratedPawns
-	{
-		public static bool Postfix(bool __result, ThingStuffPair pair, Pawn pawn)
-		{
-			if (pair.thing.IsApparel && pair.thing.apparel.tags != null && pair.thing.apparel.tags.Contains("HologramGear") && pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
-			{
-				return false;
-			}
-			return __result;
-		}
-	}
-
-	[HarmonyPatch(typeof(PawnWeaponGenerator), "GetWeaponCommonalityFromIdeo")]
-	public static class NoHolographicWeaponsOnGeneratedPawns
-	{
-		static WeaponClassDef hologramClass = DefDatabase<WeaponClassDef>.GetNamed("HologramGear");
-
-		public static void Postfix(ThingStuffPair pair, Pawn pawn, ref float __result)
-		{
-			if (pair.thing.IsWeapon && pair.thing.weaponClasses != null && pair.thing.weaponClasses.Contains(hologramClass) && pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
-			{
-				__result = 0f;
-			}
-		}
-	}
 	
 	//storyteller
 	[HarmonyPatch(typeof(Map), "get_PlayerWealthForStoryteller")]
@@ -6404,4 +6149,163 @@ namespace SaveOurShip2
 
 		}
 	}*/
+
+	//AI cores should be able to control mechanoids by default, and this is a hill I will die on
+	[HarmonyPatch(typeof(MechanitorUtility), "IsMechanitor")]
+	public static class AICoreIsMechanitor
+    {
+		public static void Postfix(Pawn pawn, ref bool __result)
+        {
+			if (pawn.health.hediffSet.HasHediff(HediffDef.Named("SoSHologramMachine")) || pawn.health.hediffSet.HasHediff(HediffDef.Named("SoSHologramArchotech")))
+				__result = true;
+		}
+    }
+
+	//For loading ships
+	[HarmonyPatch(typeof(Page_ChooseIdeoPreset), "PostOpen")]
+	public static class DoNotRemoveMyIdeo
+    {
+		public static bool Prefix()
+        {
+			return !WorldSwitchUtility.LoadShipFlag;
+        }
+
+		public static void Postfix(Page_ChooseIdeoPreset __instance)
+        {
+			if(WorldSwitchUtility.LoadShipFlag)
+            {
+				foreach (Faction allFaction in Find.FactionManager.AllFactions)
+				{
+					if (allFaction != Faction.OfPlayer && allFaction.ideos != null && allFaction.ideos.PrimaryIdeo.memes.NullOrEmpty())
+					{
+						allFaction.ideos.ChooseOrGenerateIdeo(new IdeoGenerationParms(allFaction.def));
+					}
+				}
+				Faction.OfPlayer.ideos.SetPrimary(ScenPart_LoadShip.playerFactionIdeo);
+				IdeoUIUtility.selected = ScenPart_LoadShip.playerFactionIdeo;
+				ScenPart_LoadShip.AddIdeo(Faction.OfPlayer.ideos.PrimaryIdeo);
+				Page_ConfigureIdeo page_ConfigureIdeo = new Page_ConfigureIdeo();
+				page_ConfigureIdeo.prev = __instance.prev;
+				page_ConfigureIdeo.next = __instance.next;
+				__instance.next.prev = page_ConfigureIdeo;
+				Find.WindowStack.Add(page_ConfigureIdeo);
+				__instance.Close();
+			}
+        }
+    }
+
+	[HarmonyPatch(typeof(Page_ConfigureStartingPawns),"PreOpen")]
+	public static class NoNeedForMorePawns
+    {
+		public static bool Prefix()
+        {
+			return !WorldSwitchUtility.LoadShipFlag;
+        }
+
+		public static void Postfix(Page_ConfigureStartingPawns __instance)
+        {
+			if (WorldSwitchUtility.LoadShipFlag)
+			{
+				if (__instance.next != null)
+				{
+					__instance.prev.next = __instance.next;
+					__instance.next.prev = __instance.prev;
+					Find.WindowStack.Add(__instance.next);
+				}
+				if (__instance.nextAct != null)
+				{
+					__instance.nextAct();
+				}
+				__instance.Close();
+			}
+        }
+    }
+
+	[HarmonyPatch(typeof(Scenario), "GetFullInformationText")]
+	public static class RemoveUnwantedScenPartText
+    {
+		public static bool Prefix(Scenario __instance)
+        {
+			return __instance.AllParts.Where(part => part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename()).Count() == 0;
+        }
+
+		public static void Postfix(Scenario __instance, ref string __result)
+        {
+			if(__instance.AllParts.Where(part => part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename()).Count() > 0)
+            {
+				try
+				{
+					StringBuilder stringBuilder = new StringBuilder();
+					foreach (ScenPart allPart in __instance.AllParts)
+					{
+						allPart.summarized = false;
+					}
+					foreach (ScenPart item in from p in __instance.AllParts
+											  orderby p.def.summaryPriority descending, p.def.defName
+											  where p.visible
+											  select p)
+					{
+						if (ShipInteriorMod2.CompatibleWithShipLoad(item))
+						{
+							string text = item.Summary(__instance);
+							if (!text.NullOrEmpty())
+							{
+								stringBuilder.AppendLine(text);
+							}
+						}
+					}
+					__result = stringBuilder.ToString().TrimEndNewlines();
+					return;
+				}
+				catch (Exception ex)
+				{
+					Log.ErrorOnce("Exception in Scenario.GetFullInformationText():\n" + ex.ToString(), 10395878);
+					__result = "Cannot read data.";
+				}
+			}
+        }
+    }
+
+	[HarmonyPatch(typeof(GameInitData), "PrepForMapGen")]
+	public static class FixPawnGen
+    {
+		public static bool Prefix()
+        {
+			return !WorldSwitchUtility.LoadShipFlag;
+        }
+    }
+
+	[HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
+	public static class DoNotActuallyInitMap
+    {
+		public static bool Prefix()
+        {
+			return !WorldSwitchUtility.LoadShipFlag;
+        }
+
+		public static void Postfix(MapParent parent, ref Map __result)
+        {
+			if (WorldSwitchUtility.LoadShipFlag)
+			{
+				parent.Destroy();
+				WorldSwitchUtility.LoadShipFlag = false;
+				__result = ScenPart_LoadShip.GenerateShipSpaceMap();
+			}
+		}
+    }
+
+	[HarmonyPatch(typeof(Scenario),"GetFirstConfigPage")]
+	public static class LoadTheUniqueIDs
+    {
+		public static void Postfix(Scenario __instance)
+		{
+			foreach (ScenPart part in __instance.AllParts)
+			{
+				if (part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename())
+				{
+					((ScenPart_LoadShip)part).DoEarlyInit();
+				}
+			}
+		}
+    }
 }

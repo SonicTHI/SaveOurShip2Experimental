@@ -13,7 +13,7 @@ namespace RimWorld
     {
         public override bool CanCoexistWith(ScenPart other)
         {
-            return !(other is ScenPart_StartInSpace);
+            return !(other is ScenPart_StartInSpace || other is ScenPart_LoadShip);
         }
 
         public override void GenerateIntoMap(Map map)

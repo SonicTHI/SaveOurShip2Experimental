@@ -535,7 +535,7 @@
 	<ResearchProjectDef>
 		<defName>ShipAvatarCasket</defName>
 		<label>afterlife casket</label>
-		<description>Construct a life-support system capable of reviving deceased brains, allowing dead colonists to live again as holographic avatars.</description>
+		<description>Utilize mechanites to break down a deceased body and create a formgel which mimics its biological functions - allowing the dead to live again.</description>
 		<baseCost>2000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
@@ -553,12 +553,11 @@
 	
 	<ResearchProjectDef>
 		<defName>ShipAIHologram</defName>
-		<label>holographic avatars</label>
-		<description>Allow your ship's computer core to manifest a holographic avatar.</description>
+		<label>formgel avatars</label>
+		<description>Allow your ship's computer core to manifest a formgel - a swarm of mechanites which mimics a biological human body.</description>
 		<baseCost>500</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
-			<li>Holodeck_Standard</li>
 			<li>ShipComputerCore</li>
 		</prerequisites>
 		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
@@ -568,23 +567,5 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>5</researchViewX>
 		<researchViewY>6</researchViewY>
-	</ResearchProjectDef>
-	
-	<ResearchProjectDef>
-		<defName>ShipHologramRepeater</defName>
-		<label>holographic repeaters</label>
-		<description>Project holograms across maps with either stationary or portable repeaters.</description>
-		<baseCost>1000</baseCost>
-		<techLevel>Spacer</techLevel>
-		<prerequisites>
-			<li>ShipAIHologram</li>
-		</prerequisites>
-		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
-		<requiredResearchFacilities>
-			<li>MultiAnalyzer</li>
-		</requiredResearchFacilities>
-		<tab>ResearchTabShip</tab>
-		<researchViewX>6</researchViewX>
-		<researchViewY>5</researchViewY>
 	</ResearchProjectDef>
 </Defs>

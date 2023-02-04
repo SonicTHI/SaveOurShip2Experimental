@@ -71,7 +71,6 @@ namespace SaveOurShip2
         {
             public static ThingDef MechaniteFire;
 			public static ThingDef ShipArchotechSpore;
-			public static ThingDef Apparel_HologramRelay;
 			public static ThingDef Ship_Beam;
 			public static ThingDef Ship_Beam_Wrecked;
 			public static ThingDef ShipAirlockWrecked;
@@ -132,5 +131,11 @@ namespace SaveOurShip2
 			public static ResearchProjectDef ArchotechPillarA;
 			public static ResearchProjectDef ArchotechPillarB;
 		}
+
+		[DefOf]
+		public static class BackstoryDefOf
+        {
+			public static BackstoryDef SoSHologram;
+        }
 	}
 }

@@ -91,8 +91,6 @@ namespace RimWorld
 		//ship selection end
 		public override void PostGameStart()
         {
-			if (WorldSwitchUtility.SelectiveWorldGenFlag)
-				return;
             List<Pawn> startingPawns = Find.CurrentMap.mapPawns.PawnsInFaction(Faction.OfPlayer);
 			int newTile = ShipInteriorMod2.FindWorldTile();
 			Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));

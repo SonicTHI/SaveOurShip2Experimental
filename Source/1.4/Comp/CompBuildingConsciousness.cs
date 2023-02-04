@@ -79,7 +79,7 @@ namespace RimWorld
         {
             PawnGenerationRequest req = new PawnGenerationRequest(PawnKindDef.Named("SoSHologram"), Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, true, false, false, false, true, 0, allowFood: false, allowAddictions: false, forceNoIdeo: true, forbidAnyTitle: true, fixedBiologicalAge: 18, fixedChronologicalAge: 18, forceNoBackstory:true);
             Pawn p = PawnGenerator.GeneratePawn(req);
-            p.story.Childhood = ShipInteriorMod2.hologramBackstory;
+            p.story.Childhood = ResourceBank.BackstoryDefOf.SoSHologram;
             p.Name = new NameTriple("", AIName, "");
             p.Position = parent.Position;
             p.relations = new Pawn_RelationsTracker(p);

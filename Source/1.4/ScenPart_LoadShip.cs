@@ -109,7 +109,7 @@ namespace RimWorld
                 }
 
                 Current.Game.tickManager = tickManager;
-                Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * Rand.RangeInclusive(ShipInteriorMod2.minTravelTime.Value, ShipInteriorMod2.maxTravelTime.Value));
+                Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * Rand.RangeInclusive(ModSettings_SoS.minTravelTime, ModSettings_SoS.maxTravelTime));
 
                 Current.Game.playSettings = playSettings;
                 Current.Game.storyWatcher = storyWatcher;

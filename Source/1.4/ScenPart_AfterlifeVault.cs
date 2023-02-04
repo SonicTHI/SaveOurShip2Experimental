@@ -18,8 +18,6 @@ namespace RimWorld
 
         public override void GenerateIntoMap(Map map)
         {
-            if (WorldSwitchUtility.SelectiveWorldGenFlag)
-                return;
             List<Pawn> startingPawns = Find.GameInitData.startingAndOptionalPawns;
             List<Building> cores = new List<Building>();
             try

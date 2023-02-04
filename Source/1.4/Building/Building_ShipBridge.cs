@@ -580,24 +580,6 @@ namespace RimWorld
                             };
                             loadshipdef.hotKey = KeyBindingDefOf.Misc11;
                             yield return loadshipdef;
-                            if (WorldSwitchUtility.PastWorldTracker.PastWorlds.Any())
-                            {
-                                Command_Action purgePlanets = new Command_Action
-                                {
-                                    action = delegate
-                                    {
-                                        List<Faction> toKeep = Find.FactionManager.AllFactions.ToList();
-                                        WorldSwitchUtility.PastWorldTracker.PastWorlds.Clear();
-                                        WorldSwitchUtility.PastWorldTracker.WorldFactions.Clear();
-                                        List<Faction> toRemove = Find.FactionManager.AllFactions.Except(toKeep).ToList();
-                                        foreach (Faction fac in toRemove)
-                                            ((List<Faction>)typeof(FactionManager).GetField("allFactions", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Find.FactionManager)).Remove(fac);
-                                    },
-                                    defaultLabel = "Dev: Remove all previously visited worlds",
-                                    defaultDesc = "WARNING: This action cannot be undone! It should only be used to fix bugs or reduce save file size."
-                                };
-                                yield return purgePlanets;
-                            }
                         }
                         //attack passing ship
                         if (this.Map.passingShipManager.passingShips.Any())

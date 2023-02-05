@@ -208,86 +208,83 @@ namespace RimWorld
         {
             List<Gizmo> gizmos = new List<Gizmo>();
             gizmos.AddRange(base.CompGetGizmosExtra());
-            if (ResearchProjectDef.Named("ShipAIHologram").IsFinished||Props.canMergeHuman)
+            if (parent.Faction == Faction.OfPlayer && compPower.PowerOn)
             {
-                if (parent.Faction == Faction.OfPlayer && compPower.PowerOn)
+                if (Consciousness != null)
                 {
-                    if (Consciousness != null)
+                    if (!Consciousness.Spawned && !Consciousness.InContainerEnclosed && Consciousness.CarriedBy==null)
                     {
-                        if (!Consciousness.Spawned && !Consciousness.InContainerEnclosed && Consciousness.CarriedBy==null)
-                        {
-                            Command_Action spawn = new Command_Action
-                            {
-                                action = delegate
-                                {
-                                    SpawnHologram();
-                                },
-                                defaultLabel = "SoSSpawnHologram".Translate(),
-                                defaultDesc = "SoSSpawnHologramDesc".Translate(),
-                                icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
-                            };
-                            if(Find.TickManager.TicksGame<this.HologramRespawnTick)
-                            {
-                                spawn.disabled = true;
-                                spawn.disabledReason = "SoSSpawnHologramDelay".Translate(GenDate.ToStringTicksToPeriod(this.HologramRespawnTick-Find.TickManager.TicksGame));
-                            }
-                            gizmos.Add(spawn);
-                        }
-                        else
-                        {
-                            gizmos.Add(new Command_Action
-                            {
-                                action = delegate
-                                {
-                                    HologramDestroyed(true);
-                                },
-                                defaultLabel = "SoSDespawnHologram".Translate(),
-                                defaultDesc = "SoSDespawnHologramDesc".Translate(),
-                                icon = ContentFinder<Texture2D>.Get("UI/DespawnHologram", true)
-                            });
-                        }
-                    }
-                    else if (!Props.canMergeAI && !Props.canMergeHuman)
-                    {
-                        gizmos.Add(new Command_Action
+                        Command_Action spawn = new Command_Action
                         {
                             action = delegate
                             {
-                                GenerateAIPawn();
                                 SpawnHologram();
                             },
                             defaultLabel = "SoSSpawnHologram".Translate(),
                             defaultDesc = "SoSSpawnHologramDesc".Translate(),
                             icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
+                        };
+                        if(Find.TickManager.TicksGame<this.HologramRespawnTick)
+                        {
+                            spawn.disabled = true;
+                            spawn.disabledReason = "SoSSpawnHologramDelay".Translate(GenDate.ToStringTicksToPeriod(this.HologramRespawnTick-Find.TickManager.TicksGame));
+                        }
+                        gizmos.Add(spawn);
+                    }
+                    else
+                    {
+                        gizmos.Add(new Command_Action
+                        {
+                            action = delegate
+                            {
+                                HologramDestroyed(true);
+                            },
+                            defaultLabel = "SoSDespawnHologram".Translate(),
+                            defaultDesc = "SoSDespawnHologramDesc".Translate(),
+                            icon = ContentFinder<Texture2D>.Get("UI/DespawnHologram", true)
                         });
                     }
                 }
-                if (Consciousness != null)
+                else if (!Props.canMergeAI && !Props.canMergeHuman)
                 {
                     gizmos.Add(new Command_Action
                     {
                         action = delegate
                         {
-                            List<FloatMenuOption> options = new List<FloatMenuOption>();
-                            foreach (string name in colorNames)
-                            {
-                                options.Add(new FloatMenuOption(name, delegate
-                                {
-                                    this.HologramColor = colors[colorNames.FirstIndexOf(colorname => colorname == name)];
-                                    Consciousness.story.HairColor = HologramColor;
-                                    Consciousness.story.skinColorOverride = HologramColor;
-                                    Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
-                                    PortraitsCache.SetDirty(Consciousness);
-                                }));
-                            }
-                            if(options.Count>0)
-                                Find.WindowStack.Add(new FloatMenu(options));
+                            GenerateAIPawn();
+                            SpawnHologram();
                         },
-                        defaultLabel = "SoSHologramColor".Translate(),
-                        defaultDesc = "SoSHologramColorDesc".Translate(),
-                        icon = ContentFinder<Texture2D>.Get("RoughAlphaAdd", true)
+                        defaultLabel = "SoSSpawnHologram".Translate(),
+                        defaultDesc = "SoSSpawnHologramDesc".Translate(),
+                        icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
                     });
                 }
+            }
+            if (Consciousness != null)
+            {
+                gizmos.Add(new Command_Action
+                {
+                    action = delegate
+                    {
+                        List<FloatMenuOption> options = new List<FloatMenuOption>();
+                        foreach (string name in colorNames)
+                        {
+                            options.Add(new FloatMenuOption(name, delegate
+                            {
+                                this.HologramColor = colors[colorNames.FirstIndexOf(colorname => colorname == name)];
+                                Consciousness.story.HairColor = HologramColor;
+                                Consciousness.story.skinColorOverride = HologramColor;
+                                Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
+                                PortraitsCache.SetDirty(Consciousness);
+                            }));
+                        }
+                        if(options.Count>0)
+                            Find.WindowStack.Add(new FloatMenu(options));
+                    },
+                    defaultLabel = "SoSHologramColor".Translate(),
+                    defaultDesc = "SoSHologramColorDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("RoughAlphaAdd", true)
+                });
             }
 
             if (!this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat && ((!Props.canMergeAI && !Props.canMergeHuman) || Props.healOnMerge)) //AI or archotech

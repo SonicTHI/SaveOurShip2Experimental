@@ -2546,7 +2546,7 @@
 		<comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>1000</basePowerConsumption>
+				<basePowerConsumption>700</basePowerConsumption>
 			</li>
 			<li Class="CompProperties_Explosive">
 				<explosiveRadius>2.66</explosiveRadius>

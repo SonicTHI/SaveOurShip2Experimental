@@ -1188,7 +1188,7 @@ namespace SaveOurShip2
 		{
 			//HashSet<Room> validRooms = new HashSet<Room>();
 			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
-			if (!clearArea)
+			if (!clearArea && map.IsSpace())
 			{
 				//all cells, except if outdoors+outdoors border
 				Room outdoors = new IntVec3(0, 0, 0).GetRoom(map); //td make this find first cell outside
@@ -2052,8 +2052,11 @@ namespace SaveOurShip2
                     }
 					foreach (DirectPawnRelation relation in toPrune)
 						pawn.relations.RemoveDirectRelation(relation);
-					pawn.jobs.ClearQueuedJobs();
-					pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+					if (pawn.jobs != null)
+					{
+						pawn.jobs.ClearQueuedJobs();
+						pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+					}
                 }					
 
 				List<GameComponent> components = new List<GameComponent>();

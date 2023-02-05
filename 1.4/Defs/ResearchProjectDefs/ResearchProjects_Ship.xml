@@ -539,25 +539,6 @@
 		<baseCost>2000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
-			<li>ShipAIHologram</li>
-			<li>Cryptosleep</li>
-		</prerequisites>
-		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
-		<requiredResearchFacilities>
-			<li>MultiAnalyzer</li>
-		</requiredResearchFacilities>
-		<tab>ResearchTabShip</tab>
-		<researchViewX>6</researchViewX>
-		<researchViewY>6</researchViewY>
-	</ResearchProjectDef>
-	
-	<ResearchProjectDef>
-		<defName>ShipAIHologram</defName>
-		<label>formgel avatars</label>
-		<description>Allow your ship's computer core to manifest a formgel - a swarm of mechanites which mimics a biological human body.</description>
-		<baseCost>500</baseCost>
-		<techLevel>Spacer</techLevel>
-		<prerequisites>
 			<li>ShipComputerCore</li>
 		</prerequisites>
 		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>

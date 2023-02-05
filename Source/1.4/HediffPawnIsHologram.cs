@@ -49,9 +49,6 @@ namespace RimWorld
                 {
                     pawn.health.RemoveHediff(disease);
                 }
-
-                if (pawn.Map != consciousnessSource.Map && pawn.CarriedBy==null && !pawn.InContainerEnclosed && !pawn.IsPrisoner)
-                    consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramDestroyed(false);
             }
         }
         public IEnumerable<T> GetHediffs<T>() where T : Hediff //1.4 more removed shit, thx TY

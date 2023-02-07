@@ -27,9 +27,7 @@ namespace RimWorld
         {
             get
             {
-                return { 
-                    Props.threat;
-                }
+                return Props.threat;
             }
         } 
 

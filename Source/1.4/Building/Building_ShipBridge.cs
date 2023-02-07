@@ -832,7 +832,7 @@ namespace RimWorld
                 {
                     ShipMass += (b.def.size.x * b.def.size.z) * 3;
                     if (b.TryGetComp<CompShipHeat>() != null)
-                        ShipThreat += b.TryGetComp<CompShipHeat>().Props.threat;
+                        ShipThreat += b.TryGetComp<CompShipHeat>().Threat;
                     else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
                         ShipThreat += 5;
                     var engine = b.TryGetComp<CompEngineTrail>();

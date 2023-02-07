@@ -23,6 +23,16 @@ namespace RimWorld
             get { return props as CompProperties_ShipHeat; }
         }
 
+        public virtual int Threat
+        {
+            get
+            {
+                return { 
+                    Props.threat;
+                }
+            }
+        } 
+
         public void PrintForGrid(SectionLayer layer)
         {
             ShipHeatOverlay.Print(layer, (Thing)(object)base.parent, 0);

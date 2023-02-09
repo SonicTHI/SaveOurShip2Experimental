@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f2 active");
+			Log.Message("SOS2EXP V79f3 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1462,7 +1462,39 @@ namespace SaveOurShip2
 			}
 			return cellsFound;
 		}
-
+		public static void RemoveShip(List<IntVec3> positions, Map map)
+        {
+			AirlockBugFlag = true;
+			List<Thing> things = new List<Thing>();
+			foreach (IntVec3 pos in positions)
+			{
+				things.AddRange(pos.GetThingList(map));
+			}
+			foreach (Thing t in things)
+			{
+				try
+				{
+					if (t is Pawn)
+						t.Kill();
+					if (t.def.destroyable && !t.Destroyed)
+                    {
+						CompRefuelable refuelable = t.TryGetComp<CompRefuelable>();
+						if (refuelable != null)
+							refuelable.ConsumeFuel(refuelable.Fuel); //To avoid CompRefuelable.PostDestroy
+						t.Destroy(DestroyMode.Vanish);
+					}
+				}
+				catch (Exception e)
+				{
+					Log.Warning("" + e);
+				}
+			}
+			foreach (IntVec3 pos in positions)
+			{
+				map.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
+			}
+			AirlockBugFlag = false;
+		}
 		public class TimeHelper
 		{
 			private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
@@ -2106,26 +2138,6 @@ namespace SaveOurShip2
 					Scribe_Collections.Look<IntVec3>(ref roofPos, "roofPos");
 					Scribe_Collections.Look<RoofDef>(ref roofDefs, "roofDefs");
 				}));
-
-				AirlockBugFlag = true;
-				foreach(Thing spawnThing in toSave)
-                {
-					if (!spawnThing.Destroyed)
-					{
-						CompRefuelable refuelable = spawnThing.TryGetComp<CompRefuelable>();
-						if (refuelable != null)
-							refuelable.ConsumeFuel(refuelable.Fuel); //To avoid CompRefuelable.PostDestroy
-                        try
-						{
-							spawnThing.Destroy();
-						}
-						catch (Exception e)
-						{
-							Log.Warning(e.Message);
-						}
-					}
-				}
-				AirlockBugFlag = false;
 			}
 
 			/*Things = 1,
@@ -3564,11 +3576,7 @@ namespace SaveOurShip2
 		[HarmonyPrefix]
 		public static bool SaveShipAndRemoveItemStacks()
 		{
-			if(WorldSwitchUtility.SaveShipFlag)
-            {
-				WorldSwitchUtility.SaveShip((Building_ShipBridge)ShipInteriorMod2.shipOriginRoot);
-            }
-			else if (ShipInteriorMod2.shipOriginRoot != null)
+			if (ShipInteriorMod2.shipOriginRoot != null)
 			{
 				ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
 				WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));

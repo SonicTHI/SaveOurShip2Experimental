@@ -46,29 +46,7 @@ namespace RimWorld
                 return;
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmAbandonWreck", delegate
             {
-                try
-                {
-                    List<Thing> things = new List<Thing>();
-                    foreach (IntVec3 pos in positions)
-                    {
-                        things.AddRange(pos.GetThingList(targetMap));
-                    }
-                    foreach (Thing t in things)
-                    {
-                        if (t is Pawn)
-                            t.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
-                        if (t.def.destroyable && !t.Destroyed)
-                            t.Destroy(DestroyMode.Vanish);
-                    }
-                    foreach (IntVec3 pos in positions)
-                    {
-                        targetMap.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Warning(""+e);
-                }
+                ShipInteriorMod2.RemoveShip(positions, targetMap);
             }));
         }
     }

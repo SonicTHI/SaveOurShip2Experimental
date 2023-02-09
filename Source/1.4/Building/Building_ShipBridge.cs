@@ -404,7 +404,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                WorldSwitchUtility.ColonyAbandonWarning(delegate { WorldSwitchUtility.SaveShipFlag = true;  ShipCountdown.InitiateCountdown(this); });
+                                WorldSwitchUtility.ColonyAbandonWarning(delegate { WorldSwitchUtility.SaveShip(this); });
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipPlanetLeave"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipPlanetLeaveDesc"),

@@ -9,6 +9,7 @@ using UnityEngine;
 using Verse.AI.Group;
 using Verse.Sound;
 using System.IO;
+using System.Text;
 
 namespace SaveOurShip2
 {
@@ -28,7 +29,6 @@ namespace SaveOurShip2
         public static bool NoRecache = false;
         public static List<ScenPart> CachedScenario;
 
-        public static bool SaveShipFlag = false;
         public static bool LoadShipFlag = false; //NOTE: This is set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
 
         static Faction DonatedToFaction = null;
@@ -224,8 +224,27 @@ namespace SaveOurShip2
                 Directory.CreateDirectory(folder);
             string filename = Path.Combine(folder, Faction.OfPlayer.Name + "_" + bridge.ShipName + ".sos2");
             ShipInteriorMod2.MoveShip(bridge, bridge.Map, IntVec3.Zero, Faction.OfPlayer, 0, false, filename);
-            SaveShipFlag = false;
-            ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
+
+            //td this is taken from CountdownEnded, change the text as necessary
+            TaggedString taggedString = "GameOverShipLaunchedEnding".Translate();
+            List<Building> list = ShipUtility.ShipBuildingsAttachedTo(bridge).ToList();
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (Building building in list)
+            {
+                Building_CryptosleepCasket building_CryptosleepCasket = building as Building_CryptosleepCasket;
+                if (building_CryptosleepCasket != null && building_CryptosleepCasket.HasAnyContents)
+                {
+                    stringBuilder.AppendLine("   " + building_CryptosleepCasket.ContainedThing.LabelCap);
+                    Find.StoryWatcher.statsRecord.colonistsLaunched++;
+                    TaleRecorder.RecordTale(TaleDefOf.LaunchedShip, new object[]
+                    {
+                            building_CryptosleepCasket.ContainedThing
+                    });
+                }
+            }
+            GameVictoryUtility.ShowCredits(GameVictoryUtility.MakeEndCredits("GameOverShipLaunchedIntro".Translate(), taggedString, stringBuilder.ToString(), "GameOverColonistsEscaped", null), null, false, 5f);
+
+            ShipInteriorMod2.RemoveShip(ShipInteriorMod2.FindAreaAttached(bridge, false).ToList(), bridge.Map);
         }
     }
 

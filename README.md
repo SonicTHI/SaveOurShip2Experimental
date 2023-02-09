@@ -34,6 +34,10 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Redone heat system:** simplified, with less cheese and far better performance. Radiators have been removed while heatsinks now vent heat through the roof even when shielded. Coolant tanks have been added that offer a much larger heat capacity but without the ability to vent it to space.
 
+* **New planet travel system:** with new Rimworld releases and many mods constantly altering the game start procedure this has been reworked into a more easil maintained system that lets you start a new game with your old ship. Revisiting old planets is no longer possible.
+
+* **Hologram rework:** Biotech's new gene system and other changes caused too many issues with holograms so they have been reworked into formgel swarm like beeings.
+
 * **Random fleet system:** face off against randomly generated fleets of ships in various configurations and sizes.
 
 * **Random wreck system:** generates wrecks from ships in the database for you to explore and loot. Other factions and ships might attempt to do the same.
@@ -46,7 +50,7 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Performance optimizations:** from faster EVA checks to a completely rebuilt ship combat system - a lot has been done to improve the performance of this mod.
 
-* **New UI and settings menu:** the ship battle UI has been moved bellow the pawn bar. It now shows all ships and can be moved in the SOS2 settings menu. SOS2 settings have been reset to their defaults as we now use the native RW mod tools.
+* **New UI and settings menu:** the ship battle UI has been moved bellow the pawn bar. It now shows all ships and can be moved in the SOS2 settings menu. SOS2 settings have been reset to their defaults as we now use the native RW mod tools. Hugslib has been removed as a required mod.
 
 * **Tons of other minor adjustments, balance changes and bugfixes.**
 

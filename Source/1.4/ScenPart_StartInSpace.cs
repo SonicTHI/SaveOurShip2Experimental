@@ -199,8 +199,8 @@ namespace RimWorld
 			}
 			Current.Game.DeinitAndRemoveMap_NewTemp(Find.CurrentMap, false);
             CameraJumper.TryJump(spaceMap.Center, spaceMap);
-			spaceMap.weatherManager.curWeather = WeatherDef.Named("OuterSpaceWeather");
-			spaceMap.weatherManager.lastWeather = WeatherDef.Named("OuterSpaceWeather");
+			spaceMap.weatherManager.curWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
+			spaceMap.weatherManager.lastWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
 			spaceMap.Parent.SetFaction(Faction.OfPlayer);
 			Find.MapUI.Notify_SwitchedMap();
 			spaceMap.regionAndRoomUpdater.RebuildAllRegionsAndRooms();

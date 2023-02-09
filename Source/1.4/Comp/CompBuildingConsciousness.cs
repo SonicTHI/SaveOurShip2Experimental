@@ -23,8 +23,8 @@ namespace RimWorld
         public Thing WhichPawn;
         public Thing RezPlz;
 
-        static Color[] colors = new Color[] { new Color(0, 1f, 0.5f, 0.8f), new Color(0, 0.5f, 1f, 0.8f), new Color(1f, 0.25f, 0.25f, 0.8f), new Color(1f, 0.8f, 0, 0.8f), new Color(0.75f,0,1f,0.8f), new Color(1f,0.5f,0,0.8f), new Color (0.1f,0.1f,0.1f,0.8f), new Color (0.9f,0.9f,0.9f,0.8f)};
-        static string[] colorNames = new string[] { "Green", "Blue", "Red", "Yellow", "Purple", "Orange", "Black", "White"};
+        static Color[] colors = new Color[] { new Color(0, 1f, 0.5f, 0.8f), new Color(0, 0.5f, 1f, 0.8f), new Color(1f, 0.25f, 0.25f, 0.8f), new Color(1f, 0.8f, 0, 0.8f), new Color(0.75f, 0, 1f, 0.8f), new Color(1f, 0.5f, 0, 0.8f), new Color(0.1f, 0.1f, 0.1f, 0.8f), new Color(0.9f, 0.9f, 0.9f, 0.8f) };
+        static string[] colorNames = new string[] { "Green", "Blue", "Red", "Yellow", "Purple", "Orange", "Black", "White" };
         public static DamageDef FormgelSlime = DefDatabase<DamageDef>.GetNamed("FormgelSlime");
 
         bool SavedDeep = false;
@@ -36,7 +36,7 @@ namespace RimWorld
             base.PostExposeData();
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                if (Consciousness!=null && !Consciousness.Spawned && !Find.WorldPawns.Contains(Consciousness) && !Consciousness.InContainerEnclosed && Consciousness.CarriedBy==null)
+                if (Consciousness != null && !Consciousness.Spawned && !Find.WorldPawns.Contains(Consciousness) && !Consciousness.InContainerEnclosed && Consciousness.CarriedBy == null)
                 {
                     SavedDeep = true;
                     Scribe_Values.Look<bool>(ref SavedDeep, "SavedDeep");
@@ -63,7 +63,7 @@ namespace RimWorld
                             SavedDeep = false;
                         }
                     }
-                    if(SavedDeep)
+                    if (SavedDeep)
                         Scribe_Deep.Look<Pawn>(ref Consciousness, "Consciousness");
                 }
                 else
@@ -77,7 +77,7 @@ namespace RimWorld
         }
         public void GenerateAIPawn()
         {
-            PawnGenerationRequest req = new PawnGenerationRequest(PawnKindDef.Named("SoSHologram"), Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, true, false, false, false, true, 0, allowFood: false, allowAddictions: false, forceNoIdeo: true, forbidAnyTitle: true, fixedBiologicalAge: 18, fixedChronologicalAge: 18, forceNoBackstory:true);
+            PawnGenerationRequest req = new PawnGenerationRequest(PawnKindDef.Named("SoSHologram"), Faction.OfPlayer, PawnGenerationContext.NonPlayer, -1, true, false, false, false, true, 0, allowFood: false, allowAddictions: false, forceNoIdeo: true, forbidAnyTitle: true, fixedBiologicalAge: 18, fixedChronologicalAge: 18, forceNoBackstory: true);
             Pawn p = PawnGenerator.GeneratePawn(req);
             p.story.Childhood = ResourceBank.BackstoryDefOf.SoSHologram;
             p.Name = new NameTriple("", AIName, "");
@@ -89,11 +89,11 @@ namespace RimWorld
                 p.story.traits.allTraits.RemoveLast();
             }
             Consciousness = p;
-            foreach(SkillRecord skill in Consciousness.skills.skills)
+            foreach (SkillRecord skill in Consciousness.skills.skills)
             {
                 skill.passion = Passion.Minor;
                 skill.levelInt = 5;
-                bool dummy=skill.TotallyDisabled;
+                bool dummy = skill.TotallyDisabled;
             }
             Consciousness.skills.Notify_SkillDisablesChanged();
             if (ModsConfig.IdeologyActive)
@@ -102,14 +102,14 @@ namespace RimWorld
             SetupConsciousness();
         }
 
-        void SetupConsciousness(List<Apparel> pawnApparel = null, bool graphicsDirty=true)
+        void SetupConsciousness(List<Apparel> pawnApparel = null, bool graphicsDirty = true)
         {
             List<Hediff> hediffs = new List<Hediff>();
-            foreach(Hediff hediff in Consciousness.health.hediffSet.hediffs)
+            foreach (Hediff hediff in Consciousness.health.hediffSet.hediffs)
             {
                 hediffs.Add(hediff);
             }
-            foreach(Hediff hediff in hediffs)
+            foreach (Hediff hediff in hediffs)
             {
                 if (hediff.def.spawnThingOnRemoved != null && hediff.def != HediffDefOf.MechlinkImplant)
                 {
@@ -129,7 +129,7 @@ namespace RimWorld
                     }
                 }
             }
-            HediffPawnIsHologram hologramHediff=(HediffPawnIsHologram)Consciousness.health.AddHediff(Props.holoHediff);
+            HediffPawnIsHologram hologramHediff = (HediffPawnIsHologram)Consciousness.health.AddHediff(Props.holoHediff);
             hologramHediff.consciousnessSource = (Building)parent;
             Consciousness.needs.AddOrRemoveNeedsAsAppropriate();
             if (Props.canMergeAI && Props.canMergeHuman) //Archotech
@@ -140,11 +140,11 @@ namespace RimWorld
                     if (skill.levelInt < 10)
                         skill.levelInt = 10;
                 }
-                if(ModsConfig.RoyaltyActive)
+                if (ModsConfig.RoyaltyActive)
                 {
                     if (AccessTools.TypeByName("VanillaPsycastsExpanded.PsycasterPathDef") != null)
                     {
-                        for(int i=0;i<50;i++)
+                        for (int i = 0; i < 50; i++)
                             Consciousness.ChangePsylinkLevel(1, false);
                     }
                     else
@@ -162,7 +162,7 @@ namespace RimWorld
                 HologramColor = colors[1];
             Consciousness.story.HairColor = HologramColor;
             Consciousness.story.skinColorOverride = HologramColor;
-            if(graphicsDirty)
+            if (graphicsDirty)
                 Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
             HologramDestroyed(false);
             typeof(Pawn_AgeTracker).GetMethod("RecalculateLifeStageIndex", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Consciousness.ageTracker, new object[] { });
@@ -173,7 +173,7 @@ namespace RimWorld
             if (Consciousness == null)
                 return;
             Thing thing = null;
-            if(Consciousness.carryTracker.CarriedThing!=null)
+            if (Consciousness.carryTracker.CarriedThing != null)
                 Consciousness.carryTracker.TryDropCarriedThing(Consciousness.Position, ThingPlaceMode.Near, out thing);
             if (Consciousness.Spawned)
             {
@@ -183,13 +183,13 @@ namespace RimWorld
             if (decohere)
             {
                 HologramRespawnTick = Find.TickManager.TicksGame + 60000;
-                GenExplosion.DoExplosion(Consciousness.Position, Consciousness.Map, 4.9f, FormgelSlime, Consciousness, postExplosionSpawnThingDef: ThingDefOf.Filth_Slime, postExplosionSpawnChance:1f, postExplosionSpawnThingCount:1);
-                if(goneForGood && !Consciousness.Dead)
+                GenExplosion.DoExplosion(Consciousness.Position, Consciousness.Map, 4.9f, FormgelSlime, Consciousness, postExplosionSpawnThingDef: ThingDefOf.Filth_Slime, postExplosionSpawnChance: 1f, postExplosionSpawnThingCount: 1);
+                if (goneForGood && !Consciousness.Dead)
                     Consciousness.Kill(null);
             }
             if (Consciousness.Spawned)
                 Consciousness.DeSpawn();
-            if(Consciousness.InContainerEnclosed)
+            if (Consciousness.InContainerEnclosed)
             {
                 Consciousness.ParentHolder.GetDirectlyHeldThings().Remove(Consciousness);
             }
@@ -200,7 +200,7 @@ namespace RimWorld
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
             base.PostDestroy(mode, previousMap);
-            if(mode==DestroyMode.Deconstruct || mode==DestroyMode.KillFinalize)
+            if (mode == DestroyMode.Deconstruct || mode == DestroyMode.KillFinalize)
                 HologramDestroyed(true, true);
         }
 
@@ -208,86 +208,83 @@ namespace RimWorld
         {
             List<Gizmo> gizmos = new List<Gizmo>();
             gizmos.AddRange(base.CompGetGizmosExtra());
-            if (ResearchProjectDef.Named("ShipAIHologram").IsFinished||Props.canMergeHuman)
+            if (parent.Faction == Faction.OfPlayer && compPower.PowerOn)
             {
-                if (parent.Faction == Faction.OfPlayer && compPower.PowerOn)
+                if (Consciousness != null)
                 {
-                    if (Consciousness != null)
+                    if (!Consciousness.Spawned && !Consciousness.InContainerEnclosed && Consciousness.CarriedBy == null)
                     {
-                        if (!Consciousness.Spawned && !Consciousness.InContainerEnclosed && Consciousness.CarriedBy==null)
-                        {
-                            Command_Action spawn = new Command_Action
-                            {
-                                action = delegate
-                                {
-                                    SpawnHologram();
-                                },
-                                defaultLabel = "SoSSpawnHologram".Translate(),
-                                defaultDesc = "SoSSpawnHologramDesc".Translate(),
-                                icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
-                            };
-                            if(Find.TickManager.TicksGame<this.HologramRespawnTick)
-                            {
-                                spawn.disabled = true;
-                                spawn.disabledReason = "SoSSpawnHologramDelay".Translate(GenDate.ToStringTicksToPeriod(this.HologramRespawnTick-Find.TickManager.TicksGame));
-                            }
-                            gizmos.Add(spawn);
-                        }
-                        else
-                        {
-                            gizmos.Add(new Command_Action
-                            {
-                                action = delegate
-                                {
-                                    HologramDestroyed(true);
-                                },
-                                defaultLabel = "SoSDespawnHologram".Translate(),
-                                defaultDesc = "SoSDespawnHologramDesc".Translate(),
-                                icon = ContentFinder<Texture2D>.Get("UI/DespawnHologram", true)
-                            });
-                        }
-                    }
-                    else if (!Props.canMergeAI && !Props.canMergeHuman)
-                    {
-                        gizmos.Add(new Command_Action
+                        Command_Action spawn = new Command_Action
                         {
                             action = delegate
                             {
-                                GenerateAIPawn();
                                 SpawnHologram();
                             },
                             defaultLabel = "SoSSpawnHologram".Translate(),
                             defaultDesc = "SoSSpawnHologramDesc".Translate(),
                             icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
+                        };
+                        if (Find.TickManager.TicksGame < this.HologramRespawnTick)
+                        {
+                            spawn.disabled = true;
+                            spawn.disabledReason = "SoSSpawnHologramDelay".Translate(GenDate.ToStringTicksToPeriod(this.HologramRespawnTick - Find.TickManager.TicksGame));
+                        }
+                        gizmos.Add(spawn);
+                    }
+                    else
+                    {
+                        gizmos.Add(new Command_Action
+                        {
+                            action = delegate
+                            {
+                                HologramDestroyed(true);
+                            },
+                            defaultLabel = "SoSDespawnHologram".Translate(),
+                            defaultDesc = "SoSDespawnHologramDesc".Translate(),
+                            icon = ContentFinder<Texture2D>.Get("UI/DespawnHologram", true)
                         });
                     }
                 }
-                if (Consciousness != null)
+                else if (!Props.canMergeAI && !Props.canMergeHuman)
                 {
                     gizmos.Add(new Command_Action
                     {
                         action = delegate
                         {
-                            List<FloatMenuOption> options = new List<FloatMenuOption>();
-                            foreach (string name in colorNames)
-                            {
-                                options.Add(new FloatMenuOption(name, delegate
-                                {
-                                    this.HologramColor = colors[colorNames.FirstIndexOf(colorname => colorname == name)];
-                                    Consciousness.story.HairColor = HologramColor;
-                                    Consciousness.story.skinColorOverride = HologramColor;
-                                    Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
-                                    PortraitsCache.SetDirty(Consciousness);
-                                }));
-                            }
-                            if(options.Count>0)
-                                Find.WindowStack.Add(new FloatMenu(options));
+                            GenerateAIPawn();
+                            SpawnHologram();
                         },
-                        defaultLabel = "SoSHologramColor".Translate(),
-                        defaultDesc = "SoSHologramColorDesc".Translate(),
-                        icon = ContentFinder<Texture2D>.Get("RoughAlphaAdd", true)
+                        defaultLabel = "SoSSpawnHologram".Translate(),
+                        defaultDesc = "SoSSpawnHologramDesc".Translate(),
+                        icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
                     });
                 }
+            }
+            if (Consciousness != null)
+            {
+                gizmos.Add(new Command_Action
+                {
+                    action = delegate
+                    {
+                        List<FloatMenuOption> options = new List<FloatMenuOption>();
+                        foreach (string name in colorNames)
+                        {
+                            options.Add(new FloatMenuOption(name, delegate
+                            {
+                                this.HologramColor = colors[colorNames.FirstIndexOf(colorname => colorname == name)];
+                                Consciousness.story.HairColor = HologramColor;
+                                Consciousness.story.skinColorOverride = HologramColor;
+                                Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
+                                PortraitsCache.SetDirty(Consciousness);
+                            }));
+                        }
+                        if (options.Count > 0)
+                            Find.WindowStack.Add(new FloatMenu(options));
+                    },
+                    defaultLabel = "SoSHologramColor".Translate(),
+                    defaultDesc = "SoSHologramColorDesc".Translate(),
+                    icon = ContentFinder<Texture2D>.Get("RoughAlphaAdd", true)
+                });
             }
 
             if (!this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat && ((!Props.canMergeAI && !Props.canMergeHuman) || Props.healOnMerge)) //AI or archotech
@@ -304,11 +301,11 @@ namespace RimWorld
                 });
             }
 
-            if(Props.canMergeHuman && Consciousness==null)
+            if (Props.canMergeHuman && Consciousness == null)
             {
-                Command_Action installBrain=new Command_Action
+                Command_Action installBrain = new Command_Action
                 {
-                    action=delegate
+                    action = delegate
                     {
                         List<FloatMenuOption> options = new List<FloatMenuOption>();
                         if (!Props.mustBeDead)
@@ -326,7 +323,7 @@ namespace RimWorld
                         }
                         else
                         {
-                            foreach(Corpse c in parent.Map.listerThings.ThingsInGroup(ThingRequestGroup.Corpse))
+                            foreach (Corpse c in parent.Map.listerThings.ThingsInGroup(ThingRequestGroup.Corpse))
                             {
                                 Pawn p = c.InnerPawn;
                                 var brainDef = p.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.ConsciousnessSource).FirstOrDefault()?.def;
@@ -342,7 +339,7 @@ namespace RimWorld
                         if (options.Count > 0)
                             Find.WindowStack.Add(new FloatMenu(options));
                     },
-                    defaultLabel = WhichPawn==null ? TranslatorFormattedStringExtensions.Translate("ShipInsideInstallConsciousness") : TranslatorFormattedStringExtensions.Translate("ShipInsideInstallConsciousnessThisOne",WhichPawn),
+                    defaultLabel = WhichPawn == null ? TranslatorFormattedStringExtensions.Translate("ShipInsideInstallConsciousness") : TranslatorFormattedStringExtensions.Translate("ShipInsideInstallConsciousnessThisOne", WhichPawn),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideInstallConsciousnessDesc"),
                     icon = Props.healOnMerge ? ContentFinder<Texture2D>.Get("UI/ArchoTechUpload") : ContentFinder<Texture2D>.Get("UI/InstallBrain")
                 };
@@ -368,7 +365,7 @@ namespace RimWorld
                     installBrain.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideNoBrains");
                 gizmos.Add(installBrain);
             }
-            if(Props.canMergeAI && Consciousness==null)
+            if (Props.canMergeAI && Consciousness == null)
             {
                 Command_Action installCore = new Command_Action
                 {
@@ -385,7 +382,7 @@ namespace RimWorld
                     installCore.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideNoCores");
                 gizmos.Add(installCore);
             }
-            if(Props.mustBeDead && Consciousness!=null)
+            if (Props.mustBeDead && Consciousness != null)
             {
                 Command_Toggle resurrect = new Command_Toggle
                 {
@@ -416,7 +413,7 @@ namespace RimWorld
         {
             GenPlace.TryPlaceThing(Consciousness, parent.Position, parent.Map, ThingPlaceMode.Near);
             Consciousness.Drawer.renderer.graphics.ResolveAllGraphics();
-            if(Consciousness.Dead)
+            if (Consciousness.Dead)
                 ResurrectionUtility.Resurrect(Consciousness);
             SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
             FleckMaker.Static(parent.Position, parent.Map, FleckDefOf.PsycastAreaEffect, 5f);
@@ -448,7 +445,7 @@ namespace RimWorld
             base.PostDeSpawn(map);
         }
 
-        public void InstallConsciousness(Thing newConsc, List<Apparel> overrideApparel=null, bool graphicsDirty=true)
+        public void InstallConsciousness(Thing newConsc, List<Apparel> overrideApparel = null, bool graphicsDirty = true)
         {
             if (Consciousness != null)
                 return;
@@ -468,7 +465,7 @@ namespace RimWorld
                 List<Apparel> pawnApparel = pawn.apparel.WornApparel.ListFullCopy();
                 pawn.Strip();
 
-                if(ShipInteriorMod2.IsHologram((Pawn)newConsc))
+                if (ShipInteriorMod2.IsHologram((Pawn)newConsc))
                 {
                     HediffPawnIsHologram existingHediff = ((Pawn)newConsc).health.hediffSet.GetFirstHediff<HediffPawnIsHologram>();
                     existingHediff.consciousnessSource.GetComp<CompBuildingConsciousness>().Consciousness = null;
@@ -477,7 +474,7 @@ namespace RimWorld
                 }
 
                 Consciousness = pawn;
-                SetupConsciousness(overrideApparel==null ? pawnApparel : overrideApparel, graphicsDirty);
+                SetupConsciousness(overrideApparel == null ? pawnApparel : overrideApparel, graphicsDirty);
             }
             else
             {
@@ -532,7 +529,7 @@ namespace RimWorld
                 if (Consciousness != null && !Consciousness.health.hediffSet.HasHediff(HediffDef.Named("HologramDisconnected")))
                     Consciousness.health.AddHediff(HediffDef.Named("HologramDisconnected"));
             }
-            else if(signal == "PowerTurnedOn" || signal == "FlickedOn")
+            else if (signal == "PowerTurnedOn" || signal == "FlickedOn")
             {
                 if (Consciousness != null && Consciousness.health.hediffSet.HasHediff(HediffDef.Named("HologramDisconnected")))
                     Consciousness.health.RemoveHediff(Consciousness.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named("HologramDisconnected")));
@@ -546,7 +543,7 @@ namespace RimWorld
                 Consciousness.Tick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (Consciousness !=null && Consciousness.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
+                if (Consciousness != null && Consciousness.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
                 {
                     HediffPawnIsHologram hologramHediff = (HediffPawnIsHologram)Consciousness.health.AddHediff(Props.holoHediff);
                     hologramHediff.consciousnessSource = (Building)parent;

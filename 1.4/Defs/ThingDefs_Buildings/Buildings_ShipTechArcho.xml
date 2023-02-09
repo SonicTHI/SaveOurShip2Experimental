@@ -976,7 +976,6 @@
 				<basePowerConsumption>2000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_LongRangeMineralScannerSpaceAI"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>

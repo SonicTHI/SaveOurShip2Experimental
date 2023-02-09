@@ -135,6 +135,12 @@ namespace SaveOurShip2
 		public static class BackstoryDefOf
         {
 			public static BackstoryDef SoSHologram;
-        }
+		}
+
+		[DefOf]
+		public static class WeatherDefOf
+		{
+			public static WeatherDef OuterSpaceWeather;
+		}
 	}
 }

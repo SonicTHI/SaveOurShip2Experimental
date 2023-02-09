@@ -39,7 +39,7 @@
 		<designationCategory>Ship</designationCategory>
 		<statBases>
 			<MaxHitPoints>1000</MaxHitPoints>
-			<Flammability>0.5</Flammability>
+			<Flammability>0</Flammability>
 			<WorkToBuild>8000</WorkToBuild>
 			<Mass>120</Mass>
 			<Beauty>0</Beauty>
@@ -236,7 +236,7 @@
 		<statBases>
 			<MaxHitPoints>800</MaxHitPoints>
 			<WorkToBuild>3500</WorkToBuild>
-			<Flammability>0.7</Flammability>
+			<Flammability>0</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
 		<passability>Impassable</passability>
@@ -281,7 +281,7 @@
 		<statBases>
 			<MaxHitPoints>1600</MaxHitPoints>
 			<WorkToBuild>12000</WorkToBuild>
-			<Flammability>0.7</Flammability>
+			<Flammability>0</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
 		<passability>Impassable</passability>
@@ -394,7 +394,7 @@
 		<statBases>
 			<MaxHitPoints>800</MaxHitPoints>
 			<WorkToBuild>3500</WorkToBuild>
-			<Flammability>0.7</Flammability>
+			<Flammability>0</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
 		<costList>
@@ -448,7 +448,7 @@
 		<statBases>
 			<MaxHitPoints>1600</MaxHitPoints>
 			<WorkToBuild>12000</WorkToBuild>
-			<Flammability>0.7</Flammability>
+			<Flammability>0</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
 		<costList>

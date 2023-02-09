@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79 active");
+			Log.Message("SOS2EXP V79f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -2053,8 +2053,12 @@ namespace SaveOurShip2
 					foreach (DirectPawnRelation relation in toPrune)
 						pawn.relations.RemoveDirectRelation(relation);
 					pawn.jobs.ClearQueuedJobs();
-					pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
-                }					
+					if (pawn.jobs != null)
+					{
+						pawn.jobs.ClearQueuedJobs();
+						pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+					}
+				}					
 
 				List<GameComponent> components = new List<GameComponent>();
 
@@ -2887,6 +2891,32 @@ namespace SaveOurShip2
 		}
 	}
 
+	[HarmonyPatch(typeof(WeatherManager), "TransitionTo")]
+	public static class SpaceWeatherStays
+	{
+		public static bool Prefix(WeatherManager __instance)
+		{
+			if (__instance.map.IsSpace() && __instance.curWeather == ResourceBank.WeatherDefOf.OuterSpaceWeather)
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(WeatherDecider), "StartNextWeather")]
+	public static class SpaceWeatherStaysTwo
+	{
+		public static bool Prefix(WeatherManager __instance)
+		{
+			if (__instance.map.IsSpace() && __instance.curWeather == ResourceBank.WeatherDefOf.OuterSpaceWeather)
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+
 	//map
 	[HarmonyPatch(typeof(CompShipPart), "CompGetGizmosExtra")]
 	public static class NoGizmoInSpace
@@ -3543,7 +3573,7 @@ namespace SaveOurShip2
 				myMap.fogGrid.ClearAllFog();
 
 				ShipInteriorMod2.MoveShip(ShipInteriorMod2.shipOriginRoot, myMap, IntVec3.Zero);
-				myMap.weatherManager.TransitionTo(DefDatabase<WeatherDef>.GetNamed("OuterSpaceWeather"));
+				myMap.weatherManager.TransitionTo(ResourceBank.WeatherDefOf.OuterSpaceWeather);
 				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"),
 					TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
 				ShipInteriorMod2.shipOriginRoot = null;

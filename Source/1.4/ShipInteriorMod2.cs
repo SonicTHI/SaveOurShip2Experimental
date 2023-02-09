@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f1 active");
+			Log.Message("SOS2EXP V79f2 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1991,7 +1991,7 @@ namespace SaveOurShip2
 				Log.Message("Moved ship with building " + core);
 			}
 
-			if(writeToFile != null)
+			if (writeToFile != null)
             {
 				List<IntVec3> terrainPos = new List<IntVec3>();
 				List<TerrainDef> terrainDefs = new List<TerrainDef>();
@@ -2042,7 +2042,7 @@ namespace SaveOurShip2
                     }
                 }
 
-				foreach(Pawn pawn in pawnsAboardShip)
+				foreach (Pawn pawn in pawnsAboardShip)
                 {
 					List<DirectPawnRelation> toPrune = new List<DirectPawnRelation>();
 					foreach(DirectPawnRelation relation in pawn.relations.DirectRelations)
@@ -2052,13 +2052,12 @@ namespace SaveOurShip2
                     }
 					foreach (DirectPawnRelation relation in toPrune)
 						pawn.relations.RemoveDirectRelation(relation);
-					pawn.jobs.ClearQueuedJobs();
 					if (pawn.jobs != null)
 					{
 						pawn.jobs.ClearQueuedJobs();
 						pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
 					}
-				}					
+				}
 
 				List<GameComponent> components = new List<GameComponent>();
 
@@ -2108,6 +2107,7 @@ namespace SaveOurShip2
 					Scribe_Collections.Look<RoofDef>(ref roofDefs, "roofDefs");
 				}));
 
+				AirlockBugFlag = true;
 				foreach(Thing spawnThing in toSave)
                 {
 					if (!spawnThing.Destroyed)
@@ -2115,9 +2115,17 @@ namespace SaveOurShip2
 						CompRefuelable refuelable = spawnThing.TryGetComp<CompRefuelable>();
 						if (refuelable != null)
 							refuelable.ConsumeFuel(refuelable.Fuel); //To avoid CompRefuelable.PostDestroy
-						spawnThing.Destroy();
+                        try
+						{
+							spawnThing.Destroy();
+						}
+						catch (Exception e)
+						{
+							Log.Warning(e.Message);
+						}
 					}
 				}
+				AirlockBugFlag = false;
 			}
 
 			/*Things = 1,

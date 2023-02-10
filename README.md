@@ -34,7 +34,7 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Redone heat system:** simplified, with less cheese and far better performance. Radiators have been removed while heatsinks now vent heat through the roof even when shielded. Coolant tanks have been added that offer a much larger heat capacity but without the ability to vent it to space.
 
-* **New planet travel system:** with new Rimworld releases and many mods constantly altering the game start procedure this has been reworked into a more easil maintained system that lets you start a new game with your old ship. Revisiting old planets is no longer possible.
+* **New planet travel system:** with new Rimworld releases and many mods constantly altering the game start procedure this has been reworked into a more easily maintained system that lets you start a new game with your old ship by editing the scenario, adding a "Load ship" part and selecting your ship. Revisiting old planets is no longer possible.
 
 * **Hologram rework:** Biotech's new gene system and other changes caused too many issues with holograms so they have been reworked into formgel swarm like beeings.
 

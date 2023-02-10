@@ -83,6 +83,7 @@
 	<ShipInsideReturnShipDesc>Move this ship back to your stable orbit</ShipInsideReturnShipDesc>
 	<ShipInsideCaptureShip>Capture</ShipInsideCaptureShip>
 	<ShipInsideCaptureShipDesc>Move this ship to your map</ShipInsideCaptureShipDesc>
+	<ShipMoveFailPawns>Non player pawns found on ship, takeoff aborted.</ShipMoveFailPawns>
 	<ShipMoveWreckCommand>Move wreck</ShipMoveWreckCommand>
 	<ShipMoveWreckCommandDesc>Reposition a wreck on your map</ShipMoveWreckCommandDesc>
 	<ShipMoveWreckFlipCommand>Flip wreck</ShipMoveWreckFlipCommand>

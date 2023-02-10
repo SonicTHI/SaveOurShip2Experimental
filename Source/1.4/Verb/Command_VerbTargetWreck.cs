@@ -46,7 +46,7 @@ namespace RimWorld
                 return;
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmAbandonWreck", delegate
             {
-                ShipInteriorMod2.RemoveShip(positions, targetMap);
+                ShipInteriorMod2.RemoveShip(positions, targetMap, false);
             }));
         }
     }

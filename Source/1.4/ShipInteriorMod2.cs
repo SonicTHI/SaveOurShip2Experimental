@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f3 active");
+			Log.Message("SOS2EXP V79f4 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1462,39 +1462,7 @@ namespace SaveOurShip2
 			}
 			return cellsFound;
 		}
-		public static void RemoveShip(List<IntVec3> positions, Map map)
-        {
-			AirlockBugFlag = true;
-			List<Thing> things = new List<Thing>();
-			foreach (IntVec3 pos in positions)
-			{
-				things.AddRange(pos.GetThingList(map));
-			}
-			foreach (Thing t in things)
-			{
-				try
-				{
-					if (t is Pawn)
-						t.Kill();
-					if (t.def.destroyable && !t.Destroyed)
-                    {
-						CompRefuelable refuelable = t.TryGetComp<CompRefuelable>();
-						if (refuelable != null)
-							refuelable.ConsumeFuel(refuelable.Fuel); //To avoid CompRefuelable.PostDestroy
-						t.Destroy(DestroyMode.Vanish);
-					}
-				}
-				catch (Exception e)
-				{
-					Log.Warning("" + e);
-				}
-			}
-			foreach (IntVec3 pos in positions)
-			{
-				map.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
-			}
-			AirlockBugFlag = false;
-		}
+		
 		public class TimeHelper
 		{
 			private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
@@ -1522,7 +1490,6 @@ namespace SaveOurShip2
 				return sb.ToString();
 			}
 		}
-
 		public static bool IsRock(TerrainDef def)
 		{
 			return rockTerrains.Contains(def);
@@ -1622,7 +1589,7 @@ namespace SaveOurShip2
 				Find.TickManager.TogglePaused();
 			InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
 		}
-		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false, string writeToFile = null)
+		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
 			bool devMode = false;
 			var watch = new TimeHelper();
@@ -1636,14 +1603,12 @@ namespace SaveOurShip2
 			List<Zone> zonesToCopy = new List<Zone>();
 			List<Room> roomsToTemp = new List<Room>();
 			List<Tuple<IntVec3, float>> posTemp = new List<Tuple<IntVec3, float>>();
-			bool movedZones = false;
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
 			List<Tuple<IntVec3, RoofDef>> roofToCopy = new List<Tuple<IntVec3, RoofDef>>();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
 			// source area of the ship.
 			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);
 
-			HashSet<IntVec3> unroofTiles = new HashSet<IntVec3>();
 			List<IntVec3> fireExplosions = new List<IntVec3>();
 			List<CompEngineTrail> nukeExplosions = new List<CompEngineTrail>();
 			IntVec3 rot = IntVec3.Zero;
@@ -1679,42 +1644,46 @@ namespace SaveOurShip2
 					posTemp.Add(new Tuple<IntVec3, float>(adjustedPos, room.Temperature));
 				}
 				//clear LZ
-				if (writeToFile == null)
+				targetArea.Add(adjustedPos);
+				foreach (Thing t in adjustedPos.GetThingList(targetMap))
 				{
-					targetArea.Add(adjustedPos);
-					foreach (Thing t in adjustedPos.GetThingList(targetMap))
-					{
-						if (!toDestroy.Contains(t))
-							toDestroy.Add(t);
-					}
-					if (!targetMapIsSpace)
-						targetMap.snowGrid.SetDepth(adjustedPos, 0f);
+					if (!toDestroy.Contains(t))
+						toDestroy.Add(t);
 				}
-				//add all things, terrain from area
-				List<Thing> allTheThings = pos.GetThingList(sourceMap);
-				foreach (Thing t in allTheThings)
+				if (!targetMapIsSpace)
+					targetMap.snowGrid.SetDepth(adjustedPos, 0f);
+				//add all things from area
+				foreach (Thing t in pos.GetThingList(sourceMap))
 				{
-					if (t is Building_ShipAirlock a && a.docked)
-					{
-						a.UnDock();
+					if (t is Building b)
+                    {
+						if (b is Building_SteamGeyser)
+							continue;
+						if (b is Building_ShipAirlock a && a.docked)
+						{
+							a.UnDock();
+						}
+						var engineComp = b.TryGetComp<CompEngineTrail>();
+						var powerComp = b.TryGetComp<CompPower>();
+						if (engineComp != null)
+							engineComp.Off();
+						if (powerComp != null)
+							toRePower.Add(powerComp);
 					}
-					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zonesToCopy.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
-					{
-						zonesToCopy.Add(t.Map.zoneManager.ZoneAt(t.Position));
-					}
-					var engineComp = t.TryGetComp<CompEngineTrail>();
-					var powerComp = t.TryGetComp<CompPower>();
-					if (engineComp != null)
-						engineComp.Off();
-					if (powerComp != null)
-						toRePower.Add(powerComp);
-					if (!toSave.Contains(t) && !(t is Building_SteamGeyser))
+					else if (t is Pawn p && !sourceMapIsSpace && p.Faction != Faction.OfPlayer)
+                    {
+						Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipMoveFailPawns"), null, MessageTypeDefOf.NegativeEvent);
+						return;
+                    }
+					if (!toSave.Contains(t))
 					{
 						toSave.Add(t);
 					}
+				}
 
-					foreach (IntVec3 thingPos in GenAdj.CellsOccupiedBy(t))
-						unroofTiles.Add(thingPos);
+				if (sourceMap.zoneManager.ZoneAt(pos) != null && !zonesToCopy.Contains(sourceMap.zoneManager.ZoneAt(pos)))
+				{
+					zonesToCopy.Add(sourceMap.zoneManager.ZoneAt(pos));
 				}
 
 				var sourceTerrain = sourceMap.terrainGrid.TerrainAt(pos);
@@ -1734,6 +1703,7 @@ namespace SaveOurShip2
 				{
 					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(pos, sourceRoof));
 				}
+				sourceMap.roofGrid.SetRoof(pos, null);
 				if (playerMove)
 				{
 					sourceMap.areaManager.Home[pos] = false;
@@ -1742,11 +1712,6 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("processSourceArea");
-
-			foreach (IntVec3 pos in unroofTiles)
-			{
-				sourceMap.roofGrid.SetRoof(pos, null);
-			}
 
 			//move live pawns out of target area, destroy non buildings
 			foreach (Thing thing in toDestroy)
@@ -1813,11 +1778,12 @@ namespace SaveOurShip2
 					watch.Record("takeoffEngineEffects");
 
 			}
-			AirlockBugFlag = true;
+
 			//move things
+			AirlockBugFlag = true;
 			foreach (Thing spawnThing in toSave)
 			{
-				if (!spawnThing.Destroyed && writeToFile == null)
+				if (!spawnThing.Destroyed)
 				{
 					try
 					{
@@ -1893,116 +1859,48 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveThings");
-
 			AirlockBugFlag = false;
-			if (zonesToCopy.Count != 0)
-				movedZones = true;
-			//move zones
-			foreach (Zone theZone in zonesToCopy)
-			{
-				sourceMap.zoneManager.DeregisterZone(theZone);
-				if (writeToFile == null)
-				{
-					theZone.zoneManager = targetMap.zoneManager;
-					List<IntVec3> newCells = new List<IntVec3>();
-					foreach (IntVec3 cell in theZone.cells)
-						newCells.Add(Transform(cell));
-					theZone.cells = newCells;
-					targetMap.zoneManager.RegisterZone(theZone);
-				}
-			}
-			if (devMode)
-				watch.Record("moveZones");
 
-			//move terrain
-			if (writeToFile == null)
+			//move zones
+			if (zonesToCopy.Any())
 			{
-				foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
+				foreach (Zone zone in zonesToCopy) //only move fully contained zones
 				{
-					var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
-					if (!targetTile.layerable || IsHull(targetTile))
+					bool allOn = true;
+					foreach (IntVec3 v in zone.Cells)
 					{
-						var targetPos = Transform(tup.Item1);
-						targetMap.terrainGrid.SetTerrain(targetPos, tup.Item2);
+						if (!sourceArea.Contains(v))
+						{
+							allOn = false;
+							break;
+						}
+					}
+					if (allOn)
+					{
+						sourceMap.zoneManager.DeregisterZone(zone);
+						zone.zoneManager = targetMap.zoneManager;
+						List<IntVec3> newCells = new List<IntVec3>();
+						foreach (IntVec3 cell in zone.cells)
+							newCells.Add(Transform(cell));
+						zone.cells = newCells;
+						targetMap.zoneManager.RegisterZone(zone);
 					}
 				}
-			}
+				typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
+				typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);
 
-			if (includeRock)
-			{
+				//regen affected map layers
+				List<Section> sourceSec = new List<Section>();
 				foreach (IntVec3 pos in sourceArea)
-				{
-					sourceMap.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
-				}
-			}
-			if (devMode)
-				watch.Record("moveTerrain");
-
-			// Move roofs.
-			if (writeToFile == null)
-			{
-				foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
-				{
-					var targetPos = Transform(tup.Item1);
-					targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
-				}
-			}
-			if (devMode)
-				watch.Record("moveRoof");
-
-			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
-			typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);
-			//restore temp in ship
-			foreach (Tuple<IntVec3, float> t in posTemp)
-			{
-				Room room = t.Item1.GetRoom(targetMap);
-				room.Temperature = t.Item2;
-			}
-			if (sourceMap != targetMap && !sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
-			{
-				//landing - remove space map
-				WorldObject oldParent = sourceMap.Parent;
-				Current.Game.DeinitAndRemoveMap(sourceMap);
-				Find.World.worldObjects.Remove(oldParent);
-			}
-			if (!sourceMapIsSpace) //takeoff - explosions
-			{
-				foreach (IntVec3 pos in fireExplosions)
-				{
-					GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null);
-				}
-			}
-			if (sourceMap != targetMap)
-			{
-				foreach (CompPower powerComp in toRePower)
-				{
-					powerComp.ResetPowerVars();
-				}
-			}
-			// Power consumers become upnowered without this update.
-			if (toRePower.Count > 0)
-				targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
-
-			//regen affected map layers
-			List<Section> sourceSec = new List<Section>();
-			foreach (IntVec3 pos in sourceArea)
-			{
-				if (movedZones)
 				{
 					var sec = sourceMap.mapDrawer.SectionAt(pos);
 					if (!sourceSec.Contains(sec))
 						sourceSec.Add(sec);
 				}
-			}
-			foreach (Section sec in sourceSec)
-			{
-				if (movedZones)
+				foreach (Section sec in sourceSec)
 				{
 					sec.RegenerateLayers(MapMeshFlag.Zone);
 				}
-			}
-			if (movedZones)
-			{
 				List<Section> targetSec = new List<Section>();
 				foreach (IntVec3 pos in targetArea)
 				{
@@ -2015,131 +1913,82 @@ namespace SaveOurShip2
 					sec.RegenerateLayers(MapMeshFlag.Zone);
 				}
 			}
+			if (devMode)
+				watch.Record("moveZones");
+
+			//move terrain
+			foreach (Tuple<IntVec3, TerrainDef> tup in terrainToCopy)
+			{
+				var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
+				if (!targetTile.layerable || IsHull(targetTile))
+				{
+					var targetPos = Transform(tup.Item1);
+					targetMap.terrainGrid.SetTerrain(targetPos, tup.Item2);
+				}
+			}
+			if (includeRock)
+			{
+				foreach (IntVec3 pos in sourceArea)
+				{
+					sourceMap.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
+				}
+			}
+			if (devMode)
+				watch.Record("moveTerrain");
+
+			//move roofs
+			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
+			{
+				var targetPos = Transform(tup.Item1);
+				targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
+			}
+			if (devMode)
+				watch.Record("moveRoof");
+
+			//restore temp in ship
+			foreach (Tuple<IntVec3, float> t in posTemp)
+			{
+				Room room = t.Item1.GetRoom(targetMap);
+				room.Temperature = t.Item2;
+			}
+
+			//landing - remove space map
+			if (sourceMap != targetMap && !sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
+			{
+				WorldObject oldParent = sourceMap.Parent;
+				Current.Game.DeinitAndRemoveMap(sourceMap);
+				Find.World.worldObjects.Remove(oldParent);
+			}
+
+			//takeoff - explosions
+			if (!sourceMapIsSpace)
+			{
+				foreach (IntVec3 pos in fireExplosions)
+				{
+					GenExplosion.DoExplosion(pos, sourceMap, 3.9f, DamageDefOf.Flame, null);
+				}
+			}
+
+			//power
+			if (sourceMap != targetMap)
+			{
+				foreach (CompPower powerComp in toRePower)
+				{
+					powerComp.ResetPowerVars();
+				}
+			}
+			if (toRePower.Any())
+				targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
+
+			//heat
 			targetMap.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
+
 			if (devMode)
 			{
 				watch.Record("finalize");
 				Log.Message("Timing report:\n" + watch.MakeReport());
 				Log.Message("Moved ship with building " + core);
 			}
-
-			if (writeToFile != null)
-            {
-				List<IntVec3> terrainPos = new List<IntVec3>();
-				List<TerrainDef> terrainDefs = new List<TerrainDef>();
-				foreach(Tuple<IntVec3,TerrainDef> tuple in terrainToCopy)
-                {
-					terrainPos.Add(tuple.Item1);
-					terrainDefs.Add(tuple.Item2);
-                }
-
-				List<IntVec3> roofPos = new List<IntVec3>();
-				List<RoofDef> roofDefs = new List<RoofDef>();
-				foreach (Tuple<IntVec3, RoofDef> tuple in roofToCopy)
-				{
-					roofPos.Add(tuple.Item1);
-					roofDefs.Add(tuple.Item2);
-				}
-
-				HashSet<Ideo> ideosAboardShip = new HashSet<Ideo>();
-				HashSet<CustomXenotype> xenosAboardShip = new HashSet<CustomXenotype>();
-
-				HashSet<Pawn> pawnsAboardShip = new HashSet<Pawn>();
-
-				foreach (Thing thing in toSave)
-				{
-					if (thing is Pawn)
-					{
-						Pawn pawn = thing as Pawn;
-						if (pawn.Ideo != null && pawn.Ideo != Faction.OfPlayer.ideos.PrimaryIdeo)
-							ideosAboardShip.Add(pawn.Ideo);
-						if (pawn.genes.CustomXenotype != null)
-							xenosAboardShip.Add(pawn.genes.CustomXenotype);
-						pawnsAboardShip.Add(pawn);
-					}
-					if (thing is IThingHolder holder && holder.GetDirectlyHeldThings() != null)
-                    {
-						foreach(Thing thing2 in holder.GetDirectlyHeldThings())
-                        {
-							if(thing2 is Pawn)
-                            {
-								Pawn pawn = thing2 as Pawn;
-								if (pawn.Ideo != null && pawn.Ideo != Faction.OfPlayer.ideos.PrimaryIdeo)
-									ideosAboardShip.Add(pawn.Ideo);
-								if (pawn.genes.CustomXenotype != null)
-									xenosAboardShip.Add(pawn.genes.CustomXenotype);
-								pawnsAboardShip.Add(pawn);
-							}
-                        }
-                    }
-                }
-
-				foreach (Pawn pawn in pawnsAboardShip)
-                {
-					List<DirectPawnRelation> toPrune = new List<DirectPawnRelation>();
-					foreach(DirectPawnRelation relation in pawn.relations.DirectRelations)
-                    {
-						if (!pawnsAboardShip.Contains(relation.otherPawn))
-							toPrune.Add(relation);
-                    }
-					foreach (DirectPawnRelation relation in toPrune)
-						pawn.relations.RemoveDirectRelation(relation);
-					if (pawn.jobs != null)
-					{
-						pawn.jobs.ClearQueuedJobs();
-						pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
-					}
-				}
-
-				List<GameComponent> components = new List<GameComponent>();
-
-				foreach(GameComponent comp in Current.Game.components)
-                {
-					//Don't copy ours or vanilla components. We'll probably need a more general-purpose way to add more exceptions if other mods' components shouldn't be moved.
-					if (!(comp is EnvironmentCachingUtility || comp is GameComponent_Bossgroup || comp is GameComponent_DebugTools || comp is GameComponent_OnetimeNotification))
-						components.Add(comp);
-                }
-
-				string playerFactionName = Faction.OfPlayer.Name;
-				Ideo playerFactionIdeo = Faction.OfPlayer.ideos.PrimaryIdeo;
-
-				SafeSaver.Save(writeToFile, "SoS2Ship", (Action)(() =>
-				{
-					ScribeMetaHeaderUtility.WriteMetaHeader();
-					
-					Scribe_Defs.Look<FactionDef>(ref Faction.OfPlayer.def, "playerFactionDef");
-					Scribe_Values.Look(ref playerFactionName, "playerFactionName");
-					//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
-					Scribe_Deep.Look(ref playerFactionIdeo, "playerFactionIdeo");
-					//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
-
-					Scribe_Deep.Look<TickManager>(ref Current.Game.tickManager, true, "tickManager");
-					Scribe_Deep.Look<PlaySettings>(ref Current.Game.playSettings, true, "playSettings");
-					Scribe_Deep.Look<StoryWatcher>(ref Current.Game.storyWatcher, true, "storyWatcher");
-					Scribe_Deep.Look<ResearchManager>(ref Current.Game.researchManager, true, "researchManager");
-					Scribe_Deep.Look<TaleManager>(ref Current.Game.taleManager, true, "taleManager");
-					Scribe_Deep.Look<PlayLog>(ref Current.Game.playLog, true, "playLog");
-					Scribe_Deep.Look<OutfitDatabase>(ref Current.Game.outfitDatabase, true, "outfitDatabase");
-					Scribe_Deep.Look<DrugPolicyDatabase>(ref Current.Game.drugPolicyDatabase, true, "drugPolicyDatabase");
-					Scribe_Deep.Look<FoodRestrictionDatabase>(ref Current.Game.foodRestrictionDatabase, true, "foodRestrictionDatabase");
-					Scribe_Deep.Look<UniqueIDsManager>(ref Current.Game.uniqueIDsManager, true, "uniqueIDsManager");
-
-					//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
-					Scribe_Collections.Look<Ideo>(ref ideosAboardShip, "ideos", LookMode.Deep);
-					//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
-					Scribe_Collections.Look<CustomXenotype>(ref xenosAboardShip, "xenotypes", LookMode.Deep);
-					Scribe_Deep.Look<CustomXenogermDatabase>(ref Current.Game.customXenogermDatabase, true, "customXenogermDatabase");
-					Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep);
-
-					Scribe_Collections.Look<Thing>(ref toSave, "shipThings", LookMode.Deep);
-					Scribe_Collections.Look<Zone>(ref zonesToCopy, "shipZones", LookMode.Deep);
-					Scribe_Collections.Look<IntVec3>(ref terrainPos, "terrainPos");
-					Scribe_Collections.Look<TerrainDef>(ref terrainDefs, "terrainDefs");
-					Scribe_Collections.Look<IntVec3>(ref roofPos, "roofPos");
-					Scribe_Collections.Look<RoofDef>(ref roofDefs, "roofDefs");
-				}));
-			}
-
 			/*Things = 1,
 			FogOfWar = 2,
 			Buildings = 4,
@@ -2181,7 +2030,253 @@ namespace SaveOurShip2
 				}
 			}*/
 		}
-		
+		public static void SaveShip(Building core, string file)
+		{
+			List<Thing> toSave = new List<Thing>();
+			List<Zone> zones = new List<Zone>();
+			HashSet<IntVec3> area = FindAreaAttached(core, false);
+
+			HashSet<Ideo> ideosAboardShip = new HashSet<Ideo>();
+			HashSet<CustomXenotype> xenosAboardShip = new HashSet<CustomXenotype>();
+			HashSet<Pawn> pawnsAboardShip = new HashSet<Pawn>();
+			List<IntVec3> roofPos = new List<IntVec3>();
+			List<RoofDef> roofDefs = new List<RoofDef>();
+			List<IntVec3> terrainPos = new List<IntVec3>();
+			List<TerrainDef> terrainDefs = new List<TerrainDef>();
+			Map map = core.Map;
+
+			foreach (IntVec3 pos in area)
+			{
+				//add all things, terrain from area
+				List<Thing> allTheThings = pos.GetThingList(map);
+				foreach (Thing t in allTheThings)
+				{
+					if (t is Building b)
+					{
+						if (b is Building_CryptosleepCasket cc && cc.HasAnyContents)
+						{
+							if (cc.ContainedThing is Pawn p)
+								pawnsAboardShip.Add(p);
+						}
+						else if (t is Building_ShipAirlock a && a.docked)
+						{
+							a.UnDock();
+						}
+						var engineComp = t.TryGetComp<CompEngineTrail>();
+						if (engineComp != null)
+							engineComp.Off();
+					}
+					else if (t is Pawn p)
+                    {
+						if (p.jobs != null)
+						{
+							p.jobs.ClearQueuedJobs();
+							p.jobs.EndCurrentJob(JobCondition.Incompletable);
+						}
+					}
+					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zones.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
+					{
+						zones.Add(t.Map.zoneManager.ZoneAt(t.Position));
+					}
+					if (!toSave.Contains(t))
+					{
+						toSave.Add(t);
+					}
+				}
+
+				var sourceTerrain = map.terrainGrid.TerrainAt(pos);
+				if (sourceTerrain.layerable && !IsHull(sourceTerrain))
+				{
+					terrainPos.Add(pos);
+					terrainDefs.Add(sourceTerrain);
+					map.terrainGrid.RemoveTopLayer(pos, false);
+				}
+
+				var sourceRoof = map.roofGrid.RoofAt(pos);
+				if (IsRoofDefAirtight(sourceRoof))
+				{
+					roofPos.Add(pos);
+					roofDefs.Add(sourceRoof);
+				}
+				map.areaManager.Home[pos] = false;
+			}
+
+			//remove non fully contained zones
+			List<Zone> dirtyZones = new List<Zone>();
+			foreach (Zone zone in zones)
+			{
+				foreach (IntVec3 v in zone.Cells)
+				{
+					if (!area.Contains(v))
+					{
+						if (!dirtyZones.Contains(zone))
+							dirtyZones.Add(zone);
+						break;
+					}
+				}
+			}
+			foreach (Zone zone in dirtyZones)
+			{
+				zones.Remove(zone);
+			}
+
+			StringBuilder stringBuilder = new StringBuilder();
+			foreach (Pawn pawn in pawnsAboardShip)
+			{
+				stringBuilder.AppendLine("   " + pawn.LabelCap);
+				Find.StoryWatcher.statsRecord.colonistsLaunched++;
+				TaleRecorder.RecordTale(TaleDefOf.LaunchedShip, new object[] { pawn });
+
+				if (pawn.Ideo != null && pawn.Ideo != Faction.OfPlayer.ideos.PrimaryIdeo)
+					ideosAboardShip.Add(pawn.Ideo);
+				if (pawn.genes.CustomXenotype != null)
+					xenosAboardShip.Add(pawn.genes.CustomXenotype);
+
+				List<DirectPawnRelation> toPrune = new List<DirectPawnRelation>();
+				foreach (DirectPawnRelation relation in pawn.relations.DirectRelations)
+				{
+					if (!pawnsAboardShip.Contains(relation.otherPawn))
+						toPrune.Add(relation);
+				}
+				foreach (DirectPawnRelation relation in toPrune)
+					pawn.relations.RemoveDirectRelation(relation);
+			}
+
+			List<GameComponent> components = new List<GameComponent>();
+			foreach (GameComponent comp in Current.Game.components)
+			{
+				//Don't copy ours or vanilla components. We'll probably need a more general-purpose way to add more exceptions if other mods' components shouldn't be moved.
+				if (!(comp is EnvironmentCachingUtility || comp is GameComponent_Bossgroup || comp is GameComponent_DebugTools || comp is GameComponent_OnetimeNotification))
+					components.Add(comp);
+			}
+
+			string playerFactionName = Faction.OfPlayer.Name;
+			Ideo playerFactionIdeo = Faction.OfPlayer.ideos.PrimaryIdeo;
+
+			SafeSaver.Save(file, "SoS2Ship", (Action)(() =>
+			{
+				ScribeMetaHeaderUtility.WriteMetaHeader();
+
+				Scribe_Defs.Look<FactionDef>(ref Faction.OfPlayer.def, "playerFactionDef");
+				Scribe_Values.Look(ref playerFactionName, "playerFactionName");
+				//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
+				Scribe_Deep.Look(ref playerFactionIdeo, "playerFactionIdeo");
+				//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
+
+				Scribe_Deep.Look<TickManager>(ref Current.Game.tickManager, true, "tickManager");
+				Scribe_Deep.Look<PlaySettings>(ref Current.Game.playSettings, true, "playSettings");
+				Scribe_Deep.Look<StoryWatcher>(ref Current.Game.storyWatcher, true, "storyWatcher");
+				Scribe_Deep.Look<ResearchManager>(ref Current.Game.researchManager, true, "researchManager");
+				Scribe_Deep.Look<TaleManager>(ref Current.Game.taleManager, true, "taleManager");
+				Scribe_Deep.Look<PlayLog>(ref Current.Game.playLog, true, "playLog");
+				Scribe_Deep.Look<OutfitDatabase>(ref Current.Game.outfitDatabase, true, "outfitDatabase");
+				Scribe_Deep.Look<DrugPolicyDatabase>(ref Current.Game.drugPolicyDatabase, true, "drugPolicyDatabase");
+				Scribe_Deep.Look<FoodRestrictionDatabase>(ref Current.Game.foodRestrictionDatabase, true, "foodRestrictionDatabase");
+				Scribe_Deep.Look<UniqueIDsManager>(ref Current.Game.uniqueIDsManager, true, "uniqueIDsManager");
+
+				//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
+				Scribe_Collections.Look<Ideo>(ref ideosAboardShip, "ideos", LookMode.Deep);
+				//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
+				Scribe_Collections.Look<CustomXenotype>(ref xenosAboardShip, "xenotypes", LookMode.Deep);
+				Scribe_Deep.Look<CustomXenogermDatabase>(ref Current.Game.customXenogermDatabase, true, "customXenogermDatabase");
+				Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep);
+
+				Scribe_Collections.Look<Thing>(ref toSave, "shipThings", LookMode.Deep);
+				Scribe_Collections.Look<Zone>(ref zones, "shipZones", LookMode.Deep);
+				Scribe_Collections.Look<IntVec3>(ref terrainPos, "terrainPos");
+				Scribe_Collections.Look<TerrainDef>(ref terrainDefs, "terrainDefs");
+				Scribe_Collections.Look<IntVec3>(ref roofPos, "roofPos");
+				Scribe_Collections.Look<RoofDef>(ref roofDefs, "roofDefs");
+			}));
+
+			Log.Message("Saved ship with building " + core);
+
+			GameVictoryUtility.ShowCredits(GameVictoryUtility.MakeEndCredits("GameOverShipPlanetLeaveIntro".Translate(), "GameOverShipPlanetLeaveEnding".Translate(), stringBuilder.ToString(), "GameOverColonistsEscaped", null), null, false, 5f);
+
+			RemoveShip(area.ToList(), map, true);
+		}
+		public static void RemoveShip(List<IntVec3> area, Map map, bool planetTravel)
+		{
+			AirlockBugFlag = true;
+			List<Thing> things = new List<Thing>();
+			List<Zone> zones = new List<Zone>();
+			foreach (IntVec3 pos in area)
+			{
+				map.roofGrid.SetRoof(pos, null);
+				things.AddRange(pos.GetThingList(map));
+				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))
+				{
+					zones.Add(map.zoneManager.ZoneAt(pos));
+				}
+			}
+			foreach (Thing t in things)
+			{
+				try
+				{
+					if (!planetTravel && t is Pawn)
+						t.Kill();
+					if (t.def.destroyable && !t.Destroyed)
+					{
+						CompRefuelable refuelable = t.TryGetComp<CompRefuelable>();
+						if (refuelable != null)
+							refuelable.ConsumeFuel(refuelable.Fuel); //To avoid CompRefuelable.PostDestroy
+						t.Destroy(DestroyMode.Vanish);
+					}
+				}
+				catch (Exception e)
+				{
+					Log.Warning("" + e);
+				}
+			}
+			foreach (IntVec3 pos in area)
+			{
+				map.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
+			}
+			AirlockBugFlag = false;
+
+			//regen affected map layers
+			List<Section> sourceSec = new List<Section>();
+			if (zones.Any())
+			{
+				foreach (Zone zone in zones) //only remove fully contained zones
+				{
+					bool allOn = true;
+					foreach (IntVec3 v in zone.Cells)
+                    {
+						if (!area.Contains(v))
+                        {
+							allOn = false;
+							break;
+						}
+                    }
+					if (allOn)
+						map.zoneManager.DeregisterZone(zone);
+				}
+				typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(map.zoneManager, new object[0]);
+				foreach (IntVec3 pos in map)
+				{
+					var sec = map.mapDrawer.SectionAt(pos);
+					if (!sourceSec.Contains(sec))
+						sourceSec.Add(sec);
+				}
+				foreach (Section sec in sourceSec)
+				{
+					sec.RegenerateLayers(MapMeshFlag.Zone);
+				}
+				List<Section> targetSec = new List<Section>();
+				foreach (IntVec3 pos in area)
+				{
+					var sec = map.mapDrawer.SectionAt(pos);
+					if (!targetSec.Contains(sec))
+						targetSec.Add(sec);
+				}
+				foreach (Section sec in targetSec)
+				{
+					sec.RegenerateLayers(MapMeshFlag.Zone);
+				}
+			}
+			map.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
+		}
 		public static bool IsHologram(Pawn pawn)
 		{
 			return pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null;

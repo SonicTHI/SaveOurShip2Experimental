@@ -223,28 +223,7 @@ namespace SaveOurShip2
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
             string filename = Path.Combine(folder, Faction.OfPlayer.Name + "_" + bridge.ShipName + ".sos2");
-            ShipInteriorMod2.MoveShip(bridge, bridge.Map, IntVec3.Zero, Faction.OfPlayer, 0, false, filename);
-
-            //td this is taken from CountdownEnded, change the text as necessary
-            TaggedString taggedString = "GameOverShipLaunchedEnding".Translate();
-            List<Building> list = ShipUtility.ShipBuildingsAttachedTo(bridge).ToList();
-            StringBuilder stringBuilder = new StringBuilder();
-            foreach (Building building in list)
-            {
-                Building_CryptosleepCasket building_CryptosleepCasket = building as Building_CryptosleepCasket;
-                if (building_CryptosleepCasket != null && building_CryptosleepCasket.HasAnyContents)
-                {
-                    stringBuilder.AppendLine("   " + building_CryptosleepCasket.ContainedThing.LabelCap);
-                    Find.StoryWatcher.statsRecord.colonistsLaunched++;
-                    TaleRecorder.RecordTale(TaleDefOf.LaunchedShip, new object[]
-                    {
-                            building_CryptosleepCasket.ContainedThing
-                    });
-                }
-            }
-            GameVictoryUtility.ShowCredits(GameVictoryUtility.MakeEndCredits("GameOverShipLaunchedIntro".Translate(), taggedString, stringBuilder.ToString(), "GameOverColonistsEscaped", null), null, false, 5f);
-
-            ShipInteriorMod2.RemoveShip(ShipInteriorMod2.FindAreaAttached(bridge, false).ToList(), bridge.Map);
+            ShipInteriorMod2.SaveShip(bridge, filename);
         }
     }
 

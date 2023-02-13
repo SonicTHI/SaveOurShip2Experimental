@@ -13,12 +13,8 @@ using RimworldMod;
 
 namespace RimWorld
 {
-    [StaticConstructorOnStartup]
     public class Building_ShipTurret : Building_Turret
     {
-        public static Material ForcedTargetLineMat = MaterialPool.MatFrom(GenDraw.LineTexPath, ShaderDatabase.Transparent, new Color(1f, 0.5f, 0.5f));
-        private const int TryStartShootSomethingIntervalTicks = 10;
-
         public Thing gun;
         protected TurretTop top;
         public ShipHeatMapComp mapComp;
@@ -42,7 +38,6 @@ namespace RimWorld
         public bool PointDefenseMode;
         public bool GroundDefenseMode;
         public bool useOptimalRange;
-        static int lastPDTick = 0;
         public CompEquippable GunCompEq => gun.TryGetComp<CompEquippable>();
         public override LocalTargetInfo CurrentTarget => currentTargetInt;
         public override Verb AttackVerb => GunCompEq.PrimaryVerb;
@@ -96,14 +91,14 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            mapComp = this.Map.GetComponent<ShipHeatMapComp>();
+            mapComp = Map.GetComponent<ShipHeatMapComp>();
             initiatableComp = GetComp<CompInitiatable>();
             powerComp = this.TryGetComp<CompPowerTrader>();
             heatComp = this.TryGetComp<CompShipHeat>();
             fuelComp = this.TryGetComp<CompRefuelable>();
             spinalComp = this.TryGetComp<CompSpinalMount>();
-            torpComp = this.gun.TryGetComp<CompChangeableProjectilePlural>();
-            if (!this.Map.IsSpace() && heatComp.Props.groundDefense)
+            torpComp = gun.TryGetComp<CompChangeableProjectilePlural>();
+            if (!Map.IsSpace() && heatComp.Props.groundDefense)
                 GroundDefenseMode = true;
             else
                 GroundDefenseMode = false;
@@ -157,7 +152,7 @@ namespace RimWorld
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecauseHoldFire", def.label), this, MessageTypeDefOf.RejectInput, historical: false);
                 return;
             }
-            if (this.PointDefenseMode)
+            if (PointDefenseMode)
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecausePointDefense", def.label), this, MessageTypeDefOf.RejectInput, historical: false);
                 return;
@@ -166,18 +161,18 @@ namespace RimWorld
             {
                 if (!targ.IsValid)
                 {
-                    if (this.forcedTarget.IsValid)
+                    if (forcedTarget.IsValid)
                     {
-                        this.ResetForcedTarget();
+                        ResetForcedTarget();
                     }
                     return;
                 }
-                if ((targ.Cell - base.Position).LengthHorizontal < this.AttackVerb.verbProps.EffectiveMinRange(targ, this))
+                if ((targ.Cell - base.Position).LengthHorizontal < AttackVerb.verbProps.EffectiveMinRange(targ, this))
                 {
                     Messages.Message("MessageTargetBelowMinimumRange".Translate(), this, MessageTypeDefOf.RejectInput, false);
                     return;
                 }
-                if ((targ.Cell - base.Position).LengthHorizontal > this.AttackVerb.verbProps.range)
+                if ((targ.Cell - base.Position).LengthHorizontal > AttackVerb.verbProps.range)
                 {
                     Messages.Message("MessageTargetBeyondMaximumRange".Translate(), this, MessageTypeDefOf.RejectInput, false);
                     return;
@@ -196,47 +191,47 @@ namespace RimWorld
             {
                 holdFire = false;
             }
-            if (this.forcedTarget.ThingDestroyed)
+            if (forcedTarget.ThingDestroyed)
             {
-                this.ResetForcedTarget();
+                ResetForcedTarget();
             }
             if (GroundDefenseMode)
             {
-                if (this.forcedTarget.IsValid && !this.CanSetForcedTarget)
+                if (forcedTarget.IsValid && !CanSetForcedTarget)
                 {
-                    this.ResetForcedTarget();
+                    ResetForcedTarget();
                 }
-                if (this.Active && !this.stunner.Stunned && base.Spawned)
+                if (Active && !stunner.Stunned && base.Spawned)
                 {
-                    this.GunCompEq.verbTracker.VerbsTick();
-                    if (this.AttackVerb.state != VerbState.Bursting)
+                    GunCompEq.verbTracker.VerbsTick();
+                    if (AttackVerb.state != VerbState.Bursting)
                     {
-                        if (this.burstWarmupTicksLeft > 0)
+                        if (burstWarmupTicksLeft > 0)
                         {
-                            this.burstWarmupTicksLeft--;
-                            if (this.burstWarmupTicksLeft == 0)
+                            burstWarmupTicksLeft--;
+                            if (burstWarmupTicksLeft == 0)
                             {
-                                this.BeginBurst();
+                                BeginBurst();
                             }
                         }
                         else
                         {
-                            if (this.burstCooldownTicksLeft > 0)
+                            if (burstCooldownTicksLeft > 0)
                             {
-                                this.burstCooldownTicksLeft--;
+                                burstCooldownTicksLeft--;
                             }
-                            if (this.burstCooldownTicksLeft <= 0 && this.IsHashIntervalTick(10))
+                            if (burstCooldownTicksLeft <= 0 && this.IsHashIntervalTick(10))
                             {
-                                this.TryStartShootSomething(true);
+                                TryStartShootSomething(true);
                             }
                         }
-                        this.top.TurretTopTick();
+                        top.TurretTopTick();
                         return;
                     }
                 }
                 else
                 {
-                    this.ResetCurrentTarget();
+                    ResetCurrentTarget();
                 }
             }
             else
@@ -261,7 +256,7 @@ namespace RimWorld
                         //PD mode
                         if ((this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0 && IncomingPtDefTargetsInRange()) && (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense)))
                         {
-                            if (Find.TickManager.TicksGame > lastPDTick + 10 && !holdFire)
+                            if (Find.TickManager.TicksGame > mapComp.lastPDTick + 10 && !holdFire)
                                 BeginBurst();
                         }
                         //check if we are in range
@@ -273,7 +268,7 @@ namespace RimWorld
                                 //cant fire spinals opposite of heading
                                 if (spinalComp != null)
                                 {
-                                    if ((this.Rotation == new Rot4(mapComp.EngineRot) && mapComp.Heading == -1) || (this.Rotation == new Rot4(mapComp.EngineRot + 2) && mapComp.Heading == 1))
+                                    if ((Rotation == new Rot4(mapComp.EngineRot) && mapComp.Heading == -1) || (Rotation == new Rot4(mapComp.EngineRot + 2) && mapComp.Heading == 1))
                                     {
                                         if (PlayerControlled)
                                             return;
@@ -312,23 +307,23 @@ namespace RimWorld
             bool isValid = currentTargetInt.IsValid;
             if (GroundDefenseMode)
             {
-                if (this.progressBarEffecter != null)
+                if (progressBarEffecter != null)
                 {
-                    this.progressBarEffecter.Cleanup();
-                    this.progressBarEffecter = null;
+                    progressBarEffecter.Cleanup();
+                    progressBarEffecter = null;
                 }
-                if (!base.Spawned || (this.holdFire && this.CanToggleHoldFire) || !this.AttackVerb.Available())
+                if (!base.Spawned || (holdFire && CanToggleHoldFire) || !AttackVerb.Available())
                 {
-                    this.ResetCurrentTarget();
+                    ResetCurrentTarget();
                     return;
                 }
-                if (this.forcedTarget.IsValid)
+                if (forcedTarget.IsValid)
                 {
-                    this.currentTargetInt = this.forcedTarget;
+                    currentTargetInt = forcedTarget;
                 }
                 else
                 {
-                    this.currentTargetInt = this.TryFindNewTarget();
+                    currentTargetInt = TryFindNewTarget();
                 }
             }
             else
@@ -339,7 +334,7 @@ namespace RimWorld
                     ResetCurrentTarget();
                     return;
                 }
-                if (!this.PlayerControlled && mapComp.ShipCombatMaster)
+                if (!PlayerControlled && mapComp.ShipCombatMaster)
                 {
                     if (spinalComp == null || spinalComp.Props.destroysHull || mapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.Count == 0)
                         shipTarget = mapComp.ShipCombatOriginMap.listerBuildings.allBuildingsColonist.RandomElement();
@@ -355,27 +350,27 @@ namespace RimWorld
                     currentTargetInt = TryFindNewTarget();
                 }
             }
-            if (!isValid && this.currentTargetInt.IsValid)
+            if (!isValid && currentTargetInt.IsValid)
             {
                 SoundDefOf.TurretAcquireTarget.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
             }
-            if (!this.currentTargetInt.IsValid)
+            if (!currentTargetInt.IsValid)
             {
-                this.ResetCurrentTarget();
+                ResetCurrentTarget();
                 return;
             }
-            float randomInRange = this.def.building.turretBurstWarmupTime.RandomInRange;
+            float randomInRange = def.building.turretBurstWarmupTime.RandomInRange;
             if (randomInRange > 0f)
             {
-                this.burstWarmupTicksLeft = randomInRange.SecondsToTicks();
+                burstWarmupTicksLeft = randomInRange.SecondsToTicks();
                 return;
             }
             if (canBeginBurstImmediately)
             {
-                this.BeginBurst();
+                BeginBurst();
                 return;
             }
-            this.burstWarmupTicksLeft = 1;
+            burstWarmupTicksLeft = 1;
         }
         private LocalTargetInfo MapEdgeCell (int miss)
         {
@@ -389,7 +384,7 @@ namespace RimWorld
                 v = new IntVec3(Map.Size.x - 1, 0, Position.z + miss);
             else if ((mapComp.EngineRot == 2 && mapComp.Heading != -1) || (mapComp.EngineRot == 0 && mapComp.Heading == -1)) //south
                 v = new IntVec3(Position.x + miss, 0, 0);
-            else//west
+            else //west
                 v = new IntVec3(0, 0, Position.z + miss);
             if (v.x < 0)
                 v.x = 0; 
@@ -406,9 +401,9 @@ namespace RimWorld
         {
             if (GroundDefenseMode)
             {
-                IAttackTargetSearcher attackTargetSearcher = this.TargSearcher();
+                IAttackTargetSearcher attackTargetSearcher = TargSearcher();
                 TargetScanFlags targetScanFlags = TargetScanFlags.NeedThreat | TargetScanFlags.NeedAutoTargetable |  TargetScanFlags.NeedNotUnderThickRoof;
-                return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, targetScanFlags, new Predicate<Thing>(this.IsValidTarget), this.AttackVerb.verbProps.minRange, this.AttackVerb.verbProps.range);
+                return (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(attackTargetSearcher, targetScanFlags, new Predicate<Thing>(IsValidTarget), AttackVerb.verbProps.minRange, AttackVerb.verbProps.range);
             }
             else
                 return LocalTargetInfo.Invalid;
@@ -440,8 +435,8 @@ namespace RimWorld
             if (powerComp != null && heatComp != null && powerComp.PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + AmplifierDamageBonus))
             {
                 if (!PointDefenseMode && PlayerControlled)
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToPower",this.Label), this, MessageTypeDefOf.CautionInput);
-                this.shipTarget = LocalTargetInfo.Invalid;
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToPower",Label), this, MessageTypeDefOf.CautionInput);
+                shipTarget = LocalTargetInfo.Invalid;
                 ResetCurrentTarget();
                 return;
             }
@@ -451,8 +446,8 @@ namespace RimWorld
                 if (!GroundDefenseMode && ShipInteriorMod2.ExposedToOutside(this.GetRoom()))
                 {
                     if (!PointDefenseMode && PlayerControlled)
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", this.Label), this, MessageTypeDefOf.CautionInput);
-                    this.shipTarget = LocalTargetInfo.Invalid;
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", Label), this, MessageTypeDefOf.CautionInput);
+                    shipTarget = LocalTargetInfo.Invalid;
                     ResetCurrentTarget();
                     return;
                 }
@@ -464,8 +459,8 @@ namespace RimWorld
                 if (fuelComp.Fuel <= 0)
                 {
                     if (!PointDefenseMode && PlayerControlled)
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToAmmo", this.Label), this, MessageTypeDefOf.CautionInput);
-                    this.shipTarget = LocalTargetInfo.Invalid;
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToAmmo", Label), this, MessageTypeDefOf.CautionInput);
+                    shipTarget = LocalTargetInfo.Invalid;
                     ResetCurrentTarget();
                     return;
                 }
@@ -476,114 +471,115 @@ namespace RimWorld
             {
                 bat.DrawPower(Mathf.Min(heatComp.Props.energyToFire * (1 + AmplifierDamageBonus) * bat.StoredEnergy / powerComp.PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
             }
+            //sfx
             if (heatComp.Props.singleFireSound != null)
             {
                 heatComp.Props.singleFireSound.PlayOneShot(this);
             }
-
+            //cast
             if (GroundDefenseMode)
             {
-                this.AttackVerb.TryStartCastOn(this.CurrentTarget, false, true, false);
-                base.OnAttackedTarget(this.CurrentTarget);
+                AttackVerb.TryStartCastOn(CurrentTarget, false, true, false);
+                base.OnAttackedTarget(CurrentTarget);
             }
             else
             {
                 if (shipTarget == null)
-                    this.shipTarget = LocalTargetInfo.Invalid;
+                    shipTarget = LocalTargetInfo.Invalid;
                 if (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense))
                 {
                     currentTargetInt = MapEdgeCell(20);
-                    lastPDTick = Find.TickManager.TicksGame;
+                    mapComp.lastPDTick = Find.TickManager.TicksGame;
                 }
                 //sync
-                ((Verb_LaunchProjectileShip)AttackVerb).shipTarget = this.shipTarget;
-                if (this.AttackVerb.verbProps.burstShotCount > 0 && mapComp.ShipCombatTargetMap != null)
+                ((Verb_LaunchProjectileShip)AttackVerb).shipTarget = shipTarget;
+                if (AttackVerb.verbProps.burstShotCount > 0 && mapComp.ShipCombatTargetMap != null)
                     SynchronizedBurstLocation = mapComp.FindClosestEdgeCell(mapComp.ShipCombatTargetMap, shipTarget.Cell);
                 else
                     SynchronizedBurstLocation = IntVec3.Invalid;
-                //spinal weapons fire straight
+                //spinal weapons fire straight and destroy things in the way
                 if (spinalComp != null)
                 {
-                    if (this.Rotation.AsByte == 0)
-                        currentTargetInt = new LocalTargetInfo(new IntVec3(this.Position.x, 0, this.Map.Size.z - 1));
-                    else if (this.Rotation.AsByte == 1)
-                        currentTargetInt = new LocalTargetInfo(new IntVec3(this.Map.Size.x - 1, 0, this.Position.z));
-                    else if (this.Rotation.AsByte == 2)
-                        currentTargetInt = new LocalTargetInfo(new IntVec3(this.Position.x, 0, 1));
+                    if (Rotation.AsByte == 0)
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(Position.x, 0, Map.Size.z - 1));
+                    else if (Rotation.AsByte == 1)
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(Map.Size.x - 1, 0, Position.z));
+                    else if (Rotation.AsByte == 2)
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(Position.x, 0, 1));
                     else
-                        currentTargetInt = new LocalTargetInfo(new IntVec3(1, 0, this.Position.z));
+                        currentTargetInt = new LocalTargetInfo(new IntVec3(1, 0, Position.z));
+                    if (spinalComp.Props.destroysHull)
+                    {
+                        List<Thing> thingsToDestroy = new List<Thing>();
+
+                        if (Rotation.AsByte == 0)
+                        {
+                            for (int x = Position.x - 1; x <= Position.x + 1; x++)
+                            {
+                                for (int z = Position.z + 3; z < Map.Size.z; z++)
+                                {
+                                    IntVec3 vec = new IntVec3(x, 0, z);
+                                    foreach (Thing thing in vec.GetThingList(Map))
+                                    {
+                                        thingsToDestroy.Add(thing);
+                                    }
+                                }
+                            }
+                        }
+                        else if (Rotation.AsByte == 1)
+                        {
+                            for (int x = Position.x + 3; x < Map.Size.x; x++)
+                            {
+                                for (int z = Position.z - 1; z <= Position.z + 1; z++)
+                                {
+                                    IntVec3 vec = new IntVec3(x, 0, z);
+                                    foreach (Thing thing in vec.GetThingList(Map))
+                                    {
+                                        thingsToDestroy.Add(thing);
+                                    }
+                                }
+                            }
+                        }
+                        else if (Rotation.AsByte == 2)
+                        {
+                            for (int x = Position.x - 1; x <= Position.x + 1; x++)
+                            {
+                                for (int z = Position.z - 3; z > 0; z--)
+                                {
+                                    IntVec3 vec = new IntVec3(x, 0, z);
+                                    foreach (Thing thing in vec.GetThingList(Map))
+                                    {
+                                        thingsToDestroy.Add(thing);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int x = 1; x <= Position.x - 3; x++)
+                            {
+                                for (int z = Position.z - 1; z <= Position.z + 1; z++)
+                                {
+                                    IntVec3 vec = new IntVec3(x, 0, z);
+                                    foreach (Thing thing in vec.GetThingList(Map))
+                                    {
+                                        thingsToDestroy.Add(thing);
+                                    }
+                                }
+                            }
+                        }
+
+                        foreach (Thing thing in thingsToDestroy)
+                        {
+                            GenExplosion.DoExplosion(thing.Position, thing.Map, 0.5f, DamageDefOf.Bomb, null);
+                            if (!thing.Destroyed)
+                                thing.Kill();
+                        }
+                    }
                 }
                 AttackVerb.TryStartCastOn(currentTargetInt);
                 OnAttackedTarget(currentTargetInt);
-                burstCooldownTicksLeft = BurstCooldownTime().SecondsToTicks(); //Seems to prevent the "turbo railgun" bug. Don't ask me why.
-                if (spinalComp != null && spinalComp.Props.destroysHull)
-                {
-                    List<Thing> thingsToDestroy = new List<Thing>();
-
-                    if (this.Rotation.AsByte == 0)
-                    {
-                        for (int x = Position.x - 1; x <= Position.x + 1; x++)
-                        {
-                            for (int z = Position.z + 3; z < Map.Size.z; z++)
-                            {
-                                IntVec3 vec = new IntVec3(x, 0, z);
-                                foreach (Thing thing in vec.GetThingList(Map))
-                                {
-                                    thingsToDestroy.Add(thing);
-                                }
-                            }
-                        }
-                    }
-                    else if (this.Rotation.AsByte == 1)
-                    {
-                        for (int x = Position.x + 3; x < Map.Size.x; x++)
-                        {
-                            for (int z = Position.z - 1; z <= Position.z + 1; z++)
-                            {
-                                IntVec3 vec = new IntVec3(x, 0, z);
-                                foreach (Thing thing in vec.GetThingList(Map))
-                                {
-                                    thingsToDestroy.Add(thing);
-                                }
-                            }
-                        }
-                    }
-                    else if (this.Rotation.AsByte == 2)
-                    {
-                        for (int x = Position.x - 1; x <= Position.x + 1; x++)
-                        {
-                            for (int z = Position.z - 3; z > 0; z--)
-                            {
-                                IntVec3 vec = new IntVec3(x, 0, z);
-                                foreach (Thing thing in vec.GetThingList(Map))
-                                {
-                                    thingsToDestroy.Add(thing);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int x = 1; x <= Position.x - 3; x++)
-                        {
-                            for (int z = Position.z - 1; z <= Position.z + 1; z++)
-                            {
-                                IntVec3 vec = new IntVec3(x, 0, z);
-                                foreach (Thing thing in vec.GetThingList(Map))
-                                {
-                                    thingsToDestroy.Add(thing);
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (Thing thing in thingsToDestroy)
-                    {
-                        GenExplosion.DoExplosion(thing.Position, thing.Map, 0.5f, DamageDefOf.Bomb, null);
-                        if (!thing.Destroyed)
-                            thing.Kill();
-                    }
-                }
+                BurstComplete(); //Seems to prevent the "turbo railgun" bug. Don't ask me why.
             }
         }
 
@@ -669,31 +665,31 @@ namespace RimWorld
             if (GroundDefenseMode)
             {
                 base.DrawExtraSelectionOverlays();
-                float range = this.AttackVerb.verbProps.range;
+                float range = AttackVerb.verbProps.range;
                 if (range < 90f)
                 {
                     GenDraw.DrawRadiusRing(base.Position, range);
                 }
-                float num = this.AttackVerb.verbProps.EffectiveMinRange(true);
+                float num = AttackVerb.verbProps.EffectiveMinRange(true);
                 if (num < 90f && num > 0.1f)
                 {
                     GenDraw.DrawRadiusRing(base.Position, num);
                 }
-                if (this.burstWarmupTicksLeft > 0)
+                if (burstWarmupTicksLeft > 0)
                 {
-                    int degreesWide = (int)((float)this.burstWarmupTicksLeft * 0.5f);
-                    GenDraw.DrawAimPie(this, this.CurrentTarget, degreesWide, (float)this.def.size.x * 0.5f);
+                    int degreesWide = (int)((float)burstWarmupTicksLeft * 0.5f);
+                    GenDraw.DrawAimPie(this, CurrentTarget, degreesWide, (float)def.size.x * 0.5f);
                 }
-                if (this.forcedTarget.IsValid && (!this.forcedTarget.HasThing || this.forcedTarget.Thing.Spawned))
+                if (forcedTarget.IsValid && (!forcedTarget.HasThing || forcedTarget.Thing.Spawned))
                 {
                     Vector3 vector;
-                    if (this.forcedTarget.HasThing)
+                    if (forcedTarget.HasThing)
                     {
-                        vector = this.forcedTarget.Thing.TrueCenter();
+                        vector = forcedTarget.Thing.TrueCenter();
                     }
                     else
                     {
-                        vector = this.forcedTarget.Cell.ToVector3Shifted();
+                        vector = forcedTarget.Cell.ToVector3Shifted();
                     }
                     Vector3 a = this.TrueCenter();
                     vector.y = AltitudeLayer.MetaOverlays.AltitudeFor();
@@ -726,7 +722,7 @@ namespace RimWorld
                         defaultLabel = "CommandSetForceAttackTarget".Translate(),
                         defaultDesc = "CommandSetForceAttackTargetDesc".Translate(),
                         icon = ContentFinder<Texture2D>.Get("UI/Commands/Attack", true),
-                        verb = this.AttackVerb,
+                        verb = AttackVerb,
                         hotKey = KeyBindingDefOf.Misc4,
                         drawRadius = false
                     };
@@ -856,7 +852,7 @@ namespace RimWorld
         public void ResetForcedTarget()
         {
             if (GroundDefenseMode)
-                this.forcedTarget = LocalTargetInfo.Invalid;
+                forcedTarget = LocalTargetInfo.Invalid;
             else
                 shipTarget = LocalTargetInfo.Invalid;
             burstWarmupTicksLeft = 0;
@@ -887,7 +883,7 @@ namespace RimWorld
         }
         public void SetTarget(LocalTargetInfo target)
         {
-            this.shipTarget = target;
+            shipTarget = target;
         }
         public bool IncomingPtDefTargetsInRange() //PD targets are in range if they are on target map and in PD range
         {
@@ -896,7 +892,7 @@ namespace RimWorld
             foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
             {
                 float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
-                if (obj.destinationTile == this.Map.Parent.Tile && obj.Faction != mapComp.ShipFaction && rng > 0.75)
+                if (obj.destinationTile == Map.Parent.Tile && obj.Faction != mapComp.ShipFaction && rng > 0.75)
                 {
                     return true;
                 }
@@ -913,15 +909,15 @@ namespace RimWorld
             Thing amp=this;
             IntVec3 previousThingPos;
             IntVec3 vec;
-            if (this.Rotation.AsByte == 0)
+            if (Rotation.AsByte == 0)
             {
                 vec = new IntVec3(0, 0, -1);
             }
-            else if (this.Rotation.AsByte == 1)
+            else if (Rotation.AsByte == 1)
             {
                 vec = new IntVec3(-1, 0, 0);
             }
-            else if (this.Rotation.AsByte == 2)
+            else if (Rotation.AsByte == 2)
             {
                 vec = new IntVec3(0, 0, 1);
             }
@@ -933,9 +929,9 @@ namespace RimWorld
             do
             {
                 previousThingPos += vec;
-                amp = previousThingPos.GetFirstThingWithComp<CompSpinalMount>(this.Map);
+                amp = previousThingPos.GetFirstThingWithComp<CompSpinalMount>(Map);
                 CompSpinalMount ampComp = amp.TryGetComp<CompSpinalMount>();
-                if (amp == null || amp.Rotation != this.Rotation)
+                if (amp == null || amp.Rotation != Rotation)
                 {
                     AmplifierCount = -1;
                     break;
@@ -963,7 +959,7 @@ namespace RimWorld
 
             if (ampBoost > 0)
             {
-                this.AmplifierDamageBonus = ampBoost;
+                AmplifierDamageBonus = ampBoost;
             }
         }
     }

@@ -258,6 +258,7 @@ namespace RimWorld
         public bool launchedBoarders = false;
         public bool Scanned = false;
         public int BoardStartTick = 0;
+        public int lastPDTick = 0;
 
         public void SpawnEnemyShip(PassingShip passingShip, Faction faction, bool fleet, bool bounty, out List<Building> cores)
         {

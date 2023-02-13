@@ -63,6 +63,8 @@ namespace RimWorld.Planet
 			Room outdoors = new IntVec3(0, 0, 0).GetRoom(map);
 			List<IntVec3> targetCells = new List<IntVec3>();
 			List<IntVec3> validCells = new List<IntVec3>();
+			if (num == 0)
+				return targetCells;
 			foreach (IntVec3 cell in outdoors.BorderCells.Where(c => c.InBounds(map)))
 				validCells.Add(cell);
 			if (validCells.Any())
@@ -101,7 +103,7 @@ namespace RimWorld.Planet
 				}
 				if (!targetCells.NullOrEmpty())
 				{
-					Log.Message("Initial pod target cells: " + targetCells.Count);
+					//Log.Message("Initial pod target cells: " + targetCells.Count);
 					if (targetCells.Count  == num)
 						return targetCells;
                     else
@@ -125,7 +127,7 @@ namespace RimWorld.Planet
 								l--;
 							}
 						}
-						Log.Message("Final pod target cells: " + targetCells.Count);
+						//Log.Message("Final pod target cells: " + targetCells.Count);
 						return targetCells;
 					}
 				}

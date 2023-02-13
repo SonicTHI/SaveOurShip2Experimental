@@ -127,18 +127,18 @@ namespace RimWorld
         public void PointDefense(Building_ShipTurret turret) // PD removes from target map
         {
             var mapComp = turret.Map.GetComponent<ShipHeatMapComp>();
-            //pods
-            List<TravelingTransportPods> podsinrange = new List<TravelingTransportPods>();
-            foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
-            {
-                float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
-                if (obj.destinationTile == turret.Map.Parent.Tile && obj.Faction != mapComp.ShipFaction && rng > 0.75)
-                {
-                    podsinrange.Add(obj);
-                }
-            }
             if (mapComp.ShipCombatTargetMap != null)
             {
+                //pods
+                List<TravelingTransportPods> podsinrange = new List<TravelingTransportPods>();
+                foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
+                {
+                    float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
+                    if (obj.destinationTile == turret.Map.Parent.Tile && obj.Faction != mapComp.ShipFaction && rng > 0.75)
+                    {
+                        podsinrange.Add(obj);
+                    }
+                }
                 var targetMapComp = mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>();
                 if (targetMapComp.TorpsInRange.Any() && Rand.Chance(0.1f))
                 {
@@ -146,37 +146,51 @@ namespace RimWorld
                     targetMapComp.Projectiles.Remove(projtr);
                     targetMapComp.TorpsInRange.Remove(projtr);
                 }
-            }
-            else if (!podsinrange.NullOrEmpty() && Rand.Chance(0.1f))
-            {
-                var groupedPods = podsinrange.RandomElement();
-                List<ActiveDropPodInfo> pods = Traverse.Create(groupedPods).Field("pods").GetValue() as List<ActiveDropPodInfo>;
-                if (!pods.NullOrEmpty())
+                else if (!podsinrange.NullOrEmpty() && Rand.Chance(0.1f))
                 {
-                    ActiveDropPodInfo pod = pods.RandomElement();
-                    List<Thing> toDestroy = new List<Thing>();
-                    foreach (Thing t in pod.innerContainer)
+                    var groupedPods = podsinrange.RandomElement();
+                    List<ActiveDropPodInfo> pods = Traverse.Create(groupedPods).Field("pods").GetValue() as List<ActiveDropPodInfo>;
+
+                    //Log.Message("groupedPods: " + podsinrange.Count);
+                    //Log.Message("pods: " + pods.Count);
+                    if (!pods.NullOrEmpty())
                     {
-                        toDestroy.Add(t);
-                    }
-                    foreach (Thing t in toDestroy)
-                    {
-                        if (t is Pawn p)
+                        ActiveDropPodInfo pod = pods.RandomElement();
+                        List<Thing> toDestroy = new List<Thing>();
+                        bool player = false;
+                        foreach (Thing t in pod.innerContainer.Where(p => p is Pawn))
                         {
-                            if (SaveOurShip2.ModSettings_SoS.easyMode && t.Faction == Faction.OfPlayer)
-                                HealthUtility.DamageUntilDowned(p, false);
-                            else
-                                t.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
+                            if (t.Faction == Faction.OfPlayer)
+                            {
+                                if (!player)
+                                    player = true;
+                                if (SaveOurShip2.ModSettings_SoS.easyMode)
+                                {
+                                    HealthUtility.DamageUntilDowned((Pawn)t, false);
+                                    continue;
+                                }
+                            }
+                            toDestroy.Add(t);
                         }
-                    }
-                    if (toDestroy.NullOrEmpty())
-                    {
+                        foreach (Thing t in toDestroy)
+                        {
+                            if (t is Pawn p)
+                            {
+                                p.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
+                            }
+                        }
+                        if (player && SaveOurShip2.ModSettings_SoS.easyMode)
+                        {
+                            return;
+                        }
                         pod.innerContainer.ClearAndDestroyContents();
                         pods.Remove(pod);
+                        if (player)
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatPodDestroyedPlayer"), null, MessageTypeDefOf.NegativeEvent);
+                        else
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatPodDestroyedEnemy"), null, MessageTypeDefOf.PositiveEvent);
                     }
                 }
-                else
-                    groupedPods.Destroy();
             }
         }
         //projectiles register on turret map

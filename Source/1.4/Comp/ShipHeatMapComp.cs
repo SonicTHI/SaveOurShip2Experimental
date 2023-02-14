@@ -224,6 +224,8 @@ namespace RimWorld
         {
             get
             {
+                if (ShipCombatOriginMap == null)
+                    return null;
                 if (this.originMapComp == null)
                 {
                     this.originMapComp = ShipCombatOriginMap.GetComponent<ShipHeatMapComp>();
@@ -236,6 +238,8 @@ namespace RimWorld
         {
             get
             {
+                if (ShipCombatMasterMap == null)
+                    return null;
                 if (this.masterMapComp == null)
                 {
                     this.masterMapComp = ShipCombatMasterMap.GetComponent<ShipHeatMapComp>();

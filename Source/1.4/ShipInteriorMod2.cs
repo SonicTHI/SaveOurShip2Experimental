@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f5 active");
+			Log.Message("SOS2EXP V79f6 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -420,7 +420,6 @@ namespace SaveOurShip2
 				check = ships.Where(def => ValidShipDef(def, 0.8f * adjCR, 1.2f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
 				if (check.Any())
 					return check.RandomElement();
-				Log.Message("fleetship");
 			}
 			Log.Message("fallback 0");
 			check = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.5f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
@@ -549,16 +548,19 @@ namespace SaveOurShip2
 			}
 			int offsetZ = (map.Size.z - marginZ) / 2;
 			int offsetZup = (map.Size.z + marginZ) / 2;
-			int maxSizeZ;
+			int maxSizeZ; //max z to find a random def for
+			int minSizeZ = 20; //min z after margins to spawn a ship
 			EnemyShipDef shipDef = null;
 			int i = 1;
-			while (i < 8 && CR > 50 && (offsetZ > 20 || offsetZup < map.Size.z - 20))
+			while (i < 8 && CR > 50)
 			{
-				Log.Message("loop: " + i);
+				//pick def
 				if (i % 2 == 0) //even up 2,4,6
 				{
 					maxSizeZ = map.Size.z - offsetZup - marginZ;
-					if (!(i == 2 && !tradeShip && !firstLarger && Rand.Chance(0.3f))) //second ship, chance for twins - retain def
+					if (maxSizeZ < minSizeZ)
+						shipDef = null;
+					else if (!(i == 2 && !tradeShip && !firstLarger && Rand.Chance(0.3f))) //second ship, chance for twins - retain def
 						shipDef = RandomValidShipFrom(ships, CR * CRfactor, false, allowNavyExc, true, 0, maxSizeZ);
 				}
 				else //odd down - 1,3,5
@@ -586,6 +588,8 @@ namespace SaveOurShip2
 						else if (!escorts)
 							CRfactor = 0.9f;
 					}
+					else if (maxSizeZ < minSizeZ)
+						shipDef = null;
 					else
 						shipDef = RandomValidShipFrom(ships, CR, false, allowNavyExc, true, 0, maxSizeZ);
 				}
@@ -594,29 +598,31 @@ namespace SaveOurShip2
 				{
 					break;
 				}
-
-				int offsetZAdj;
-				if (i % 2 == 0) //after def is picked, adjust z for next offset
+				if (shipDef != null) //skip up/down if ship is null
 				{
-					offsetZAdj = offsetZup;
-					offsetZup += shipDef.sizeZ + marginZ;
-				}
-				else
-				{
-					offsetZ -= shipDef.sizeZ;
-					offsetZAdj = offsetZ;
-					offsetZ -= marginZ;
-				}
-				Log.Message("random ship: " + shipDef + " z: " + offsetZAdj);
-				int sizeXadj = map.Size.x - shipDef.sizeX;
-				int offsetX = Mathf.Clamp((int)Rand.Gaussian(sizeXadj / 2, sizeXadj / 8), 20, sizeXadj - 20);
-				CR -= shipDef.combatPoints;
-				Log.Message("random ship: " + shipDef + " CR remain: " + CR);
-				if (shipDef != null)
-				{
-					GenerateShipDef(shipDef, map, passingShip, fac, lord, out coresOut, out areaOut, !shipActive, false, wreckLevel, offsetX, offsetZAdj, navyDef);
-					cores.AddRange(coresOut);
-					area.AddRange(areaOut);
+					int offsetZAdj;
+					if (i % 2 == 0) //after def is picked, adjust z for next offset
+					{
+						offsetZAdj = offsetZup;
+						offsetZup += shipDef.sizeZ + marginZ;
+					}
+					else
+					{
+						offsetZ -= shipDef.sizeZ;
+						offsetZAdj = offsetZ;
+						offsetZ -= marginZ;
+					}
+					Log.Message("random ship: " + shipDef + " z: " + offsetZAdj);
+					int sizeXadj = map.Size.x - shipDef.sizeX;
+					int offsetX = Mathf.Clamp((int)Rand.Gaussian(sizeXadj / 2, sizeXadj / 8), 20, sizeXadj - 20);
+					CR -= shipDef.combatPoints;
+					Log.Message("random ship: " + shipDef + " CR remain: " + CR);
+					if (shipDef != null)
+					{
+						GenerateShipDef(shipDef, map, passingShip, fac, lord, out coresOut, out areaOut, !shipActive, false, wreckLevel, offsetX, offsetZAdj, navyDef);
+						cores.AddRange(coresOut);
+						area.AddRange(areaOut);
+					}
 				}
 				i++;
 			}
@@ -2371,7 +2377,7 @@ namespace SaveOurShip2
 			{
 				var playerShipComp = mapPlayer.GetComponent<ShipHeatMapComp>();
 				var enemyShipComp = mapPlayer.GetComponent<ShipHeatMapComp>().MasterMapComp;
-				if (playerShipComp.MapRootList.Count == 0 || playerShipComp.MapRootList[0] == null || !playerShipComp.MapRootList[0].Spawned)
+				if (enemyShipComp == null || playerShipComp.MapRootList.Count == 0 || playerShipComp.MapRootList[0] == null || !playerShipComp.MapRootList[0].Spawned)
 					return;
 				if (!playerShipComp.InCombat && playerShipComp.IsGraveyard)
 				{

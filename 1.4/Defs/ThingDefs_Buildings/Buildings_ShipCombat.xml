@@ -263,6 +263,9 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
+		<building>
+			<paintable>true</paintable>
+		</building>
 		<researchPrerequisites>
 			<li>ShipHeatsink</li>
 		</researchPrerequisites>
@@ -308,6 +311,9 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
+		<building>
+			<paintable>true</paintable>
+		</building>
 		<researchPrerequisites>
 			<li>ShipHeatsink</li>
 		</researchPrerequisites>

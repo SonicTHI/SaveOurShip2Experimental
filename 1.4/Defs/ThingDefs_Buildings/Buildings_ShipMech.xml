@@ -4,7 +4,7 @@
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Beams_Mech</defName>
 	</DesignatorDropdownGroupDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>Ship_BeamMech_Unpowered</defName>
 		<label>mechanoid ship hull (unpowered)</label>
 		<designatorDropdown>Ship_Beams_Mech</designatorDropdown>
@@ -29,13 +29,6 @@
 			</damageData>
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
@@ -68,16 +61,9 @@
 			<Plasteel>3</Plasteel>
 			<ComponentIndustrial>1</ComponentIndustrial>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>Ship_BeamMech</defName>
 		<label>mechanoid ship hull</label>
 		<designatorDropdown>Ship_Beams_Mech</designatorDropdown>
@@ -102,13 +88,6 @@
 			</damageData>
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
@@ -148,14 +127,7 @@
 			<Plasteel>4</Plasteel>
 			<ComponentIndustrial>1</ComponentIndustrial>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<!-- corners -->
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerMech" Abstract="True">
@@ -169,6 +141,9 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
+		<building>
+			<shipPart>true</shipPart>
+		</building>
 	</ThingDef>
 	<ThingDef ParentName="ShipCornerMech">
 		<defName>Ship_Corner_OneOne_Mech</defName>
@@ -263,7 +238,7 @@
 		<size>(1,3)</size>
 	</ThingDef>
 	<!-- hull misc -->
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_SolarGeneratorMech</defName>
 		<label>mechanoid solar generator</label>
 		<designatorDropdown>Ship_SolarGenerators</designatorDropdown>
@@ -291,14 +266,6 @@
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/BeamSolarUI_Mechanoid</uiIconPath>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<holdsRoof>true</holdsRoof>
-		<blockWind>true</blockWind>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Normal</tickerType>
 		<statBases>
 			<WorkToBuild>8000</WorkToBuild>
@@ -350,19 +317,14 @@
 		<placeWorkers>
 			<li>PlaceWorker_SolarShip</li>
 		</placeWorkers>
-		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationHotKey>Misc5</designationHotKey>
 		<researchPrerequisites>
 			<li>Electricity</li>
 			<li>SolarPanels</li>
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_PassiveVentMechanoid</defName>
 		<label>mechanoid ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
@@ -392,14 +354,6 @@
 		<uiIconPath>Things/Building/Ship/BeamVentUI</uiIconPath>
 		<size>(1,1)</size>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Rare</tickerType>
 		<statBases>
 			<WorkToBuild>4000</WorkToBuild>
@@ -456,10 +410,6 @@
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
 		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipAirlockMech</defName>
@@ -613,7 +563,7 @@
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>
 	<!-- obsolete -->
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_PassiveCoolerMechanoid</defName>
 		<label>mechanoid ship radiator</label>
 		<description>Quickly radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
@@ -642,14 +592,6 @@
 		<uiIconPath>Things/Building/Ship/BeamRadiatorMechanoidUI</uiIconPath>
 		<size>(1,1)</size>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Normal</tickerType>
 		<statBases>
 			<WorkToBuild>8000</WorkToBuild>
@@ -703,9 +645,5 @@
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
 		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 </Defs>

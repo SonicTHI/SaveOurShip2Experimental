@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<!-- hull -->
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>Ship_Beam_Wrecked</defName>
 		<label>wrecked hull</label>
 		<thingClass>Building</thingClass>
@@ -25,13 +25,6 @@
 			</damageData>
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>500</MaxHitPoints>
@@ -64,14 +57,7 @@
 			<Steel>8</Steel>
 			<Plasteel>2</Plasteel>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<!-- hull misc -->
 	<ThingDef ParentName="BuildingBase">

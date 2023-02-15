@@ -1,10 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
+	<ThingDef ParentName="BuildingBase" Name="BuildingShipBase" Abstract="True">
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+	</ThingDef>
+	<ThingDef ParentName="BuildingShipBase" Name="BuildingShipHullBase" Abstract="True">
+		<holdsRoof>true</holdsRoof>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>1</ChunkSlagSteel>
+		</killedLeavings>
+	</ThingDef>
 	<!-- hull -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Beams</defName>
 	</DesignatorDropdownGroupDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>Ship_Beam_Unpowered</defName>
 		<label>ship hull (unpowered)</label>
 		<designatorDropdown>Ship_Beams</designatorDropdown>
@@ -29,13 +47,6 @@
 			</damageData>
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeamModular_east</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
@@ -60,25 +71,19 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
 		<costList>
 			<Steel>14</Steel>
 			<Plasteel>3</Plasteel>
 			<ComponentIndustrial>1</ComponentIndustrial>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<researchPrerequisites>
 			<li>ShipBasics</li>
 		</researchPrerequisites>
 		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>Ship_Beam</defName>
 		<label>ship hull</label>
 		<designatorDropdown>Ship_Beams</designatorDropdown>
@@ -103,13 +108,6 @@
 			</damageData>
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
@@ -123,11 +121,11 @@
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -141,26 +139,20 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
 		<costList>
 			<Steel>16</Steel>
 			<Plasteel>4</Plasteel>
 			<ComponentIndustrial>1</ComponentIndustrial>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<researchPrerequisites>
 			<li>ShipBasics</li>
 		</researchPrerequisites>
 		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<!-- corners -->
-	<ThingDef ParentName="BuildingBase" Name="ShipCornerBase" Abstract="True">
+	<ThingDef ParentName="BuildingShipHullBase" Name="ShipCornerBase" Abstract="True">
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -175,31 +167,12 @@
 				<edgeRight>Damage/Edge</edgeRight>
 			</damageData>
 		</graphicData>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>800</WorkToBuild>
 			<Flammability>0</Flammability>
 		</statBases>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
-		<placeWorkers>
-		</placeWorkers>
 		<rotatable>true</rotatable>
-		<building>
-			<shipPart>true</shipPart>
-		</building>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCorner" Abstract="True">
 		<designatorDropdown>Ship_Beams</designatorDropdown>
@@ -212,6 +185,10 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
+		<building>
+			<shipPart>true</shipPart>
+			<paintable>true</paintable>
+		</building>
 		<designationCategory>Ship</designationCategory>
 		<researchPrerequisites>
 			<li>ShipBasics</li>
@@ -313,7 +290,7 @@
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_SolarGenerators</defName>
 	</DesignatorDropdownGroupDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_SolarGenerator</defName>
 		<label>solar generator</label>
 		<designatorDropdown>Ship_SolarGenerators</designatorDropdown>
@@ -341,14 +318,6 @@
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/BeamSolarUI</uiIconPath>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<holdsRoof>true</holdsRoof>
-		<blockWind>true</blockWind>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Normal</tickerType>
 		<statBases>
 			<WorkToBuild>8000</WorkToBuild>
@@ -366,6 +335,7 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
 		<comps>
 			<li Class="CompProperties_SoShipPart">
@@ -398,7 +368,6 @@
 		<placeWorkers>
 			<li>PlaceWorker_SolarShip</li>
 		</placeWorkers>
-		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc5</designationHotKey>
 		<researchPrerequisites>
@@ -407,15 +376,11 @@
 			<li>ShipBasics</li>
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Vents</defName>
 	</DesignatorDropdownGroupDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_PassiveVent</defName>
 		<label>ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
@@ -445,14 +410,6 @@
 		<uiIconPath>Things/Building/Ship/BeamVentUI</uiIconPath>
 		<size>(1,1)</size>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Rare</tickerType>
 		<statBases>
 			<WorkToBuild>4000</WorkToBuild>
@@ -509,11 +466,8 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Airlocks</defName>
@@ -605,10 +559,11 @@
 			</blueprintGraphicData>
 			<blueprintClass>Blueprint_Door</blueprintClass>
 			<roamerCanOpen>false</roamerCanOpen>
+			<paintable>true</paintable>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipAirlockBeam</defName>
 		<label>airlock beam</label>
 		<designatorDropdown>Ship_Airlocks</designatorDropdown>
@@ -636,14 +591,6 @@
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/BeamRadiatorAdvUI</uiIconPath>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<holdsRoof>true</holdsRoof>
-		<blockWind>true</blockWind>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Normal</tickerType>
 		<statBases>
 			<WorkToBuild>8000</WorkToBuild>
@@ -661,6 +608,7 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
 		<comps>
 			<li Class="CompProperties_SoShipPart">
@@ -686,17 +634,12 @@
 		<placeWorkers>
 			<li>PlaceWorker_SolarShip</li>
 		</placeWorkers>
-		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc5</designationHotKey>
 		<researchPrerequisites>
 			<li>ShipBasics</li>
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<!-- plating -->
 	<DesignatorDropdownGroupDef>
@@ -780,6 +723,7 @@
 			<isInert>true</isInert>
 			<isEdifice>false</isEdifice>
 			<shipPart>true</shipPart>
+			<paintable>true</paintable>
 		</building>
 		<coversFloor>true</coversFloor>
 		<altitudeLayer>Floor</altitudeLayer>
@@ -886,7 +830,7 @@
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Engines</defName>
 	</DesignatorDropdownGroupDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_Engine_Small</defName>
 		<label>small rocket engine</label>
 		<designatorDropdown>Ship_Engines</designatorDropdown>
@@ -900,13 +844,6 @@
 		<researchPrerequisites>
 			<li>ShipEngine</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>20000</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
@@ -963,10 +900,8 @@
 			<Plasteel>20</Plasteel>
 			<ComponentIndustrial>6</ComponentIndustrial>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_Engine</defName>
 		<label>rocket engine</label>
 		<designatorDropdown>Ship_Engines</designatorDropdown>
@@ -980,13 +915,6 @@
 		<researchPrerequisites>
 			<li>ShipEngine</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>40000</WorkToBuild>
 			<MaxHitPoints>1500</MaxHitPoints>
@@ -1043,11 +971,9 @@
 			<Plasteel>40</Plasteel>
 			<ComponentIndustrial>12</ComponentIndustrial>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_Engine_Large</defName>
 		<label>nuclear engine</label>
 		<designatorDropdown>Ship_Engines</designatorDropdown>
@@ -1062,13 +988,6 @@
 			<li>ShipEngine</li>
 			<li>ShipReactor</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>80000</WorkToBuild>
 			<MaxHitPoints>2500</MaxHitPoints>
@@ -1126,11 +1045,9 @@
 			<ComponentIndustrial>12</ComponentIndustrial>
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_Thruster</defName>
 		<label>RCS thruster</label>
 		<designatorDropdown>Ship_Engines</designatorDropdown>
@@ -1144,12 +1061,6 @@
 			<li>ShipEngine</li>
 		</researchPrerequisites>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>2000</WorkToBuild>
 			<MaxHitPoints>300</MaxHitPoints>
@@ -1172,20 +1083,19 @@
 		</comps>
 		<building>
 			<shipPart>true</shipPart>
+			<paintable>true</paintable>
 		</building>
 		<costList>
 			<Steel>50</Steel>
 			<Plasteel>10</Plasteel>
 			<ComponentIndustrial>3</ComponentIndustrial>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 	</ThingDef>
 	<!-- JTengines -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Engines_Interplanetary</defName>
 	</DesignatorDropdownGroupDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_Engine_Interplanetary</defName>
 		<label>Johnson-Tanaka drive</label>
 		<designatorDropdown>Ship_Engines_Interplanetary</designatorDropdown>
@@ -1199,13 +1109,6 @@
 		<researchPrerequisites>
 			<li>SoSJTDrive</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>60000</WorkToBuild>
 			<MaxHitPoints>600</MaxHitPoints>
@@ -1249,12 +1152,10 @@
 			<ComponentSpacer>12</ComponentSpacer>
 			<SoSEntanglementManifold>1</SoSEntanglementManifold>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_Engine_Interplanetary_Large</defName>
 		<label>large Johnson-Tanaka drive</label>
 		<designatorDropdown>Ship_Engines_Interplanetary</designatorDropdown>
@@ -1268,13 +1169,6 @@
 		<researchPrerequisites>
 			<li>SoSJTDrive</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>120000</WorkToBuild>
 			<MaxHitPoints>1200</MaxHitPoints>
@@ -1318,8 +1212,6 @@
 			<ComponentSpacer>30</ComponentSpacer>
 			<SoSEntanglementManifold>2</SoSEntanglementManifold>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
 	</ThingDef>
@@ -1457,7 +1349,7 @@
 			<li>ShipPilotSeat</li>
 		</researchPrerequisites>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_ComputerCore</defName>
 		<label>ship computer core</label>
 		<designatorDropdown>Ship_Bridges</designatorDropdown>
@@ -1470,13 +1362,6 @@
 		<researchPrerequisites>
 			<li>ShipComputerCore</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>16000</WorkToBuild>
 			<MaxHitPoints>150</MaxHitPoints>
@@ -1512,8 +1397,6 @@
 			<Gold>70</Gold>
 			<AIPersonaCore>1</AIPersonaCore>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc3</designationHotKey>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
@@ -1522,7 +1405,7 @@
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Sensors</defName>
 	</DesignatorDropdownGroupDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_SensorCluster</defName>
 		<label>basic sensors</label>
 		<designatorDropdown>Ship_Sensors</designatorDropdown>
@@ -1535,13 +1418,6 @@
 		<researchPrerequisites>
 			<li>ShipSensorCluster</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>30000</WorkToBuild>
 			<MaxHitPoints>100</MaxHitPoints>
@@ -1570,12 +1446,10 @@
 		<placeWorkers>
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_SensorClusterAdv</defName>
 		<label>advanced sensors</label>
 		<designatorDropdown>Ship_Sensors</designatorDropdown>
@@ -1588,13 +1462,6 @@
 		<researchPrerequisites>
 			<li>ShipSensorClusterAdv</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>60000</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
@@ -1623,8 +1490,6 @@
 		<placeWorkers>
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 	</ThingDef>
@@ -2897,7 +2762,7 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvetteWinged</defName>
 		<label>ship blueprint (corvette)</label>
-		<description>Class: Corvette\n[DESCRIPTION HERE]\n\nMass: 3154\nT/W ratio: 1.763\nCombat rating: 179\n\nWeapons: \n1x large railgun turret\n6x laser turret\n2x torpedo tube\n\nRequired resources: \nsteel: 15313\nplasteel: 4794\nadvanced component: 172\ncomponent: 547\nuranium: 220\ngold: 4\nsilver: 900\n\nRequired research: \nstarflight basics, ship navigation, electricity, capacitor arrays, cruiser armaments, microelectronics, basic ship sensors, salvage bay, air conditioning, automatic ejection, tube television, ship shields, ship life support, vitals monitor, hospital bed, ship fission reactor, laser turrets, rocket propulsion, heatsinks, ship torpedoes</description>
+		<description>Class: Corvette\nA winged corvette.\n\nMass: 3154\nT/W ratio: 1.763\nCombat rating: 179\n\nWeapons: \n1x large railgun turret\n6x laser turret\n2x torpedo tube\n\nRequired resources: \nsteel: 15313\nplasteel: 4794\nadvanced component: 172\ncomponent: 547\nuranium: 220\ngold: 4\nsilver: 900\n\nRequired research: \nstarflight basics, ship navigation, electricity, capacitor arrays, cruiser armaments, microelectronics, basic ship sensors, salvage bay, air conditioning, automatic ejection, tube television, ship shields, ship life support, vitals monitor, hospital bed, ship fission reactor, laser turrets, rocket propulsion, heatsinks, ship torpedoes</description>
 		<statBases>
 			<MarketValue>4000</MarketValue>
 		</statBases>
@@ -3006,7 +2871,7 @@
 		<rotatable>false</rotatable>
 		<pathCost>15</pathCost>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_FakeBeam</defName>
 		<label>ship hull</label>
 		<thingClass>Building</thingClass>
@@ -3030,13 +2895,6 @@
 			</damageData>
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
@@ -3049,8 +2907,6 @@
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
 		</building>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc1</designationHotKey>
 		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
@@ -3210,7 +3066,7 @@
 		</researchPrerequisites>
 		<description>Allows colonists to pilot a starship.</description>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>ShipInside_PassiveCooler</defName>
 		<label>ship radiator</label>
 		<description>Radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
@@ -3239,14 +3095,6 @@
 		<uiIconPath>Things/Building/Ship/BeamRadiatorUI</uiIconPath>
 		<size>(1,1)</size>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Normal</tickerType>
 		<statBases>
 			<WorkToBuild>8000</WorkToBuild>
@@ -3302,12 +3150,13 @@
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
 		</building>
+		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<killedLeavings>
 			<ChunkSlagSteel>1</ChunkSlagSteel>
 		</killedLeavings>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>ShipInside_PassiveCoolerAdvanced</defName>
 		<label>advanced ship radiator</label>
 		<description>Quickly radiates heat into the void, cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
@@ -3336,14 +3185,6 @@
 		<uiIconPath>Things/Building/Ship/BeamRadiatorAdvUI</uiIconPath>
 		<size>(1,1)</size>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Normal</tickerType>
 		<statBases>
 			<WorkToBuild>8000</WorkToBuild>
@@ -3400,6 +3241,7 @@
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
 		</building>
+		<holdsRoof>true</holdsRoof>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<killedLeavings>
 			<ChunkSlagSteel>1</ChunkSlagSteel>

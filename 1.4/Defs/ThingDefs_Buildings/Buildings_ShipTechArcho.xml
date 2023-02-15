@@ -4,7 +4,7 @@
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Beams_Archotech</defName>
 	</DesignatorDropdownGroupDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>Ship_BeamArchotech_Unpowered</defName>
 		<label>archotech ship hull (unpowered)</label>
 		<designatorDropdown>Ship_Beams_Archotech</designatorDropdown>
@@ -29,20 +29,12 @@
 			</damageData>
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeam_Archotech_UI2</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1500</MaxHitPoints>
 			<Flammability>0</Flammability>
 			<Beauty>1</Beauty>
 		</statBases>
-		<tickerType>Normal</tickerType>
 		<description>The outer structural elements of an archotech-designed ship's hull. Does not include conduits for power or coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
@@ -66,6 +58,7 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
 		<costList>
 			<Steel>13</Steel>
@@ -73,17 +66,10 @@
 			<ComponentIndustrial>1</ComponentIndustrial>
 			<Gold>10</Gold>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 		<designationCategory>Ship</designationCategory>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>Ship_BeamArchotech</defName>
 		<label>archotech ship hull</label>
 		<designatorDropdown>Ship_Beams_Archotech</designatorDropdown>
@@ -108,20 +94,12 @@
 			</damageData>
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeam_Archotech_UI</uiIconPath>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1500</MaxHitPoints>
 			<Flammability>0</Flammability>
 			<Beauty>1</Beauty>
 		</statBases>
-		<tickerType>Normal</tickerType>
 		<description>The outer structural elements of an archotech-designed ship's hull. Includes conduits for power and coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
@@ -152,6 +130,7 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
 		<costList>
 			<Steel>15</Steel>
@@ -159,14 +138,7 @@
 			<ComponentIndustrial>1</ComponentIndustrial>
 			<Gold>10</Gold>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc1</designationHotKey>
-		<holdsRoof>true</holdsRoof>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 		<designationCategory>Ship</designationCategory>
 	</ThingDef>
 	<!-- corners -->
@@ -184,6 +156,10 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
+		<building>
+			<shipPart>true</shipPart>
+			<paintable>true</paintable>
+		</building>
 		<designationCategory>Ship</designationCategory>
 	</ThingDef>
 	<ThingDef ParentName="ShipCornerArchotech">
@@ -285,7 +261,7 @@
 		<size>(1,3)</size>
 	</ThingDef>
 	<!-- hull misc -->
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_SolarGeneratorArchotech</defName>
 		<label>archotech solar generator</label>
 		<designatorDropdown>Ship_SolarGenerators</designatorDropdown>
@@ -313,14 +289,6 @@
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/BeamSolarUI_archotech</uiIconPath>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<holdsRoof>true</holdsRoof>
-		<blockWind>true</blockWind>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Normal</tickerType>
 		<statBases>
 			<WorkToBuild>8000</WorkToBuild>
@@ -339,6 +307,7 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
 		<comps>
 			<li Class="CompProperties_SoShipPart">
@@ -376,16 +345,11 @@
 		<placeWorkers>
 			<li>PlaceWorker_SolarShip</li>
 		</placeWorkers>
-		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc5</designationHotKey>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_PassiveVentArchotech</defName>
 		<label>archotech ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
@@ -415,14 +379,6 @@
 		<uiIconPath>Things/Building/Ship/BeamVentUI</uiIconPath>
 		<size>(1,1)</size>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Rare</tickerType>
 		<statBases>
 			<WorkToBuild>4000</WorkToBuild>
@@ -481,11 +437,8 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<paintable>true</paintable>
 		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipAirlockArchotech</defName>
@@ -577,6 +530,7 @@
 			</blueprintGraphicData>
 			<blueprintClass>Blueprint_Door</blueprintClass>
 			<roamerCanOpen>false</roamerCanOpen>
+			<paintable>true</paintable>
 		</building>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>
@@ -649,7 +603,7 @@
 		<designationCategory>Ship</designationCategory>
 	</ThingDef>
 	<!-- misc -->
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_Engine_Archotech</defName>
 		<label>antimatter thruster</label>
 		<designatorDropdown>Ship_Engines</designatorDropdown>
@@ -663,13 +617,6 @@
 		<researchPrerequisites>
 			<li>ArchotechEngine</li>
 		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>40000</WorkToBuild>
 			<MaxHitPoints>3000</MaxHitPoints>
@@ -722,8 +669,6 @@
 			<Uranium>50</Uranium>
 			<ComponentSpacer>24</ComponentSpacer>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<designationHotKey>Misc5</designationHotKey>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
@@ -1748,7 +1693,7 @@
 		</fixedIngredientFilter>
 	</RecipeDef>
 	<!-- obsolete -->
-	<ThingDef ParentName="BuildingBase">
+	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_PassiveCoolerArchotech</defName>
 		<label>archotech ship radiator</label>
 		<description>Vents heat into the void at a physically-implausible rate, rapidly cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
@@ -1777,14 +1722,6 @@
 		<uiIconPath>Things/Building/Ship/BeamRadiatorArchotechUI</uiIconPath>
 		<size>(1,1)</size>
 		<rotatable>true</rotatable>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
-		<holdsRoof>true</holdsRoof>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<castEdgeShadows>true</castEdgeShadows>
 		<tickerType>Normal</tickerType>
 		<statBases>
 			<WorkToBuild>8000</WorkToBuild>
@@ -1845,9 +1782,5 @@
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
 		</building>
-		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
-		<killedLeavings>
-			<ChunkSlagSteel>1</ChunkSlagSteel>
-		</killedLeavings>
 	</ThingDef>
 </Defs>

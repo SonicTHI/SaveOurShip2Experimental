@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f6 active");
+			Log.Message("SOS2EXP V79f8 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1647,7 +1647,10 @@ namespace SaveOurShip2
 				if (room != null && !roomsToTemp.Contains(room) && !ExposedToOutside(room))
 				{
 					roomsToTemp.Add(room);
-					posTemp.Add(new Tuple<IntVec3, float>(adjustedPos, room.Temperature));
+					float temp = room.Temperature;
+					if (temp > 1000 || temp < -1000)
+						temp = 21f;
+					posTemp.Add(new Tuple<IntVec3, float>(adjustedPos, temp));
 				}
 				//clear LZ
 				targetArea.Add(adjustedPos);

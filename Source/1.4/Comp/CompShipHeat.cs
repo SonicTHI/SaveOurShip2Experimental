@@ -84,9 +84,8 @@ namespace RimWorld
         }
         public float RatioInNetwork()
         {
-            if (myNet == null || myNet.StorageCapacity == 0)
+            if (myNet == null || myNet.StorageCapacity <= 0)
             {
-                //Log.Error("Null heatnet for " + parent);
                 return 0;
             }
             return myNet.StorageUsed / myNet.StorageCapacity;

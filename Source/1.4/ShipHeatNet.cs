@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 using Verse;
 
 namespace RimWorld
@@ -59,7 +60,7 @@ namespace RimWorld
             if (comp is CompShipHeatSink sink)
             {
                 //rem from net with a factor
-                sink.heatStored = StorageUsed * sink.Props.heatCapacity / StorageCapacity;
+                sink.heatStored = Mathf.Clamp(StorageUsed * sink.Props.heatCapacity / StorageCapacity, 0, sink.Props.heatCapacity);
                 RemoveHeat(sink.heatStored);
                 StorageCapacity -= sink.Props.heatCapacity;
                 //Log.Message("grid: " + GridID + " rem:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
@@ -87,7 +88,7 @@ namespace RimWorld
         public void RemoveHeat(float amount)
         {
             StorageUsed -= amount;
-            if (StorageUsed < 0)
+            if (StorageUsed < 0 || float.IsNaN(StorageUsed))
                 StorageUsed = 0;
         }
         public bool AnyShieldOn()

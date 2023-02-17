@@ -33,7 +33,7 @@ namespace RimWorld
         }
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
-            float heat = this.Props.heatCapacity * HeatPushMult * RatioInNetwork();
+            float heat = Mathf.Clamp(Props.heatCapacity * RatioInNetwork(), 0, Props.heatCapacity);
             pos = pos.GetRoom(map).Cells.FirstOrDefault();
             GenTemperature.PushHeat(pos, map, heat);
             base.PostDestroy(mode, previousMap);
@@ -48,11 +48,7 @@ namespace RimWorld
             //save heat to sinks on save, value clamps
             if (myNet != null && Scribe.mode == LoadSaveMode.Saving)
             {
-                heatStored = Props.heatCapacity * RatioInNetwork();
-                if (heatStored < 0)
-                    heatStored = 0;
-                else if (heatStored > Props.heatCapacity)
-                    heatStored = Props.heatCapacity;
+                heatStored = Mathf.Clamp(Props.heatCapacity * RatioInNetwork(), 0, Props.heatCapacity);
             }
             Scribe_Values.Look<float>(ref heatStored, "heatStored");
         }

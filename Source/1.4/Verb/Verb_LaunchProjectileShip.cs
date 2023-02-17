@@ -31,12 +31,19 @@ namespace RimWorld
             }
         }
 
+        public static Dictionary<string, Color> LaserColors = new Dictionary<string, Color>()
+        {
+            {"Bullet_Fake_Laser", Color.red},
+            {"Bullet_Ground_Laser", Color.red},
+            {"Bullet_Fake_Psychic", Color.green}
+        };
+
         protected override bool TryCastShot()
         {
             ThingDef projectile = Projectile;
             if (projectile == null)
             {
-                return true;
+                return false;
             }
             Building_ShipTurret turret = this.caster as Building_ShipTurret;
             if (turret != null)
@@ -101,23 +108,12 @@ namespace RimWorld
             else
                 projectile2.Launch(launcher, currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
 
-            if (projectile.defName.Equals("Bullet_Fake_Laser") || projectile.defName.Equals("Bullet_Ground_Laser"))
-            {
+            if (LaserColors.ContainsKey(projectile.defName)) {
                 ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
                 obj.origin = drawPos;
                 obj.destination = currentTarget.Cell.ToVector3Shifted();
                 obj.large = this.caster.GetStatValue(StatDefOf.RangedWeapon_DamageMultiplier) > 1.0f;
-                obj.color = Color.red;
-                obj.Attach(launcher);
-                GenSpawn.Spawn(obj, launcher.Position, launcher.Map, 0);
-            }
-            else if (projectile.defName.Equals("Bullet_Fake_Psychic"))
-            {
-                ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
-                obj.origin = drawPos;
-                obj.destination = currentTarget.Cell.ToVector3Shifted();
-                obj.large = this.caster.GetStatValue(StatDefOf.RangedWeapon_DamageMultiplier) > 1.0f;
-                obj.color = Color.green;
+                obj.color = LaserColors.TryGetValue(projectile.defName, Color.red);
                 obj.Attach(launcher);
                 GenSpawn.Spawn(obj, launcher.Position, launcher.Map, 0);
             }

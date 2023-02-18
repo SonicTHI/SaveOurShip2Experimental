@@ -100,7 +100,7 @@ namespace RimWorld
                 if (proj is Projectile_ExplosiveShipCombatPsychic)
                     obj.color = Color.green;
                 else
-                    obj.color = Color.red;
+                    obj.color = Projectile_ExplosiveShipCombatLaser.defToColor.TryGetValue(proj.def.defName, Color.red);
                 if ((float)typeof(Projectile).GetField("weaponDamageMultiplier", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(proj) > 1f)
                     obj.large = true;
                 obj.Attach(parent);

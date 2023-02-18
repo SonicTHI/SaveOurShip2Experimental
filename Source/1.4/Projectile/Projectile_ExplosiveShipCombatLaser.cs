@@ -9,6 +9,8 @@ namespace RimWorld
 {
     class Projectile_ExplosiveShipCombatLaser : Projectile_ExplosiveShipCombat
     {
+        public static Dictionary<string, Color> defToColor = new Dictionary<string, Color>();
+
         protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
             base.Impact(hitThing);
@@ -18,7 +20,7 @@ namespace RimWorld
                 obj.destination = hitThing.DrawPos;
             else
                 obj.destination = this.DrawPos;
-            obj.color = Color.red;
+            obj.color = defToColor.TryGetValue(this.def.defName, Color.red);
             if(this.weaponDamageMultiplier>1.0f)
                 obj.large = true;
             obj.Attach(hitThing);

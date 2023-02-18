@@ -11,6 +11,7 @@ using RimworldMod;
 
 namespace RimWorld
 {
+    [StaticConstructorOnStartup]
     public class Verb_LaunchProjectileShip : Verb_Shoot
     {
         public LocalTargetInfo shipTarget;
@@ -43,7 +44,7 @@ namespace RimWorld
             ThingDef projectile = Projectile;
             if (projectile == null)
             {
-                return false;
+                return true;
             }
             Building_ShipTurret turret = this.caster as Building_ShipTurret;
             if (turret != null)

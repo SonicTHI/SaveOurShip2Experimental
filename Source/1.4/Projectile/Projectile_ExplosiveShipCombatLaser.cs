@@ -7,7 +7,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class Projectile_ExplosiveShipCombatLaser : Projectile_ExplosiveShipCombat
+    public class Projectile_ExplosiveShipCombatLaser : Projectile_ExplosiveShipCombat
     {
         public static Dictionary<string, Color> defToColor = new Dictionary<string, Color>();
 

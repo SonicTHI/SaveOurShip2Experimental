@@ -2590,13 +2590,13 @@ namespace SaveOurShip2
 		public static void DrawShip(int group, ColonistBarColonistDrawer __instance)
 		{
 			List<ColonistBar.Entry> entries = Find.ColonistBar.Entries;
-			foreach (ColonistBar.Entry entry in entries)
+			var length = entries.Count;
+			for (int i = 0; i < length; i++)
 			{
+				ColonistBar.Entry entry = entries[i];
 				if (entry.group == group && entry.pawn == null && entry.map.IsSpace())
 				{
-					Rect rect = (Rect)typeof(ColonistBarColonistDrawer)
-					.GetMethod("GroupFrameRect", BindingFlags.NonPublic | BindingFlags.Instance)
-					.Invoke(__instance, new object[] { group });
+					Rect rect = __instance.GroupFrameRect(group);
 					var mapComp = entry.map.GetComponent<ShipHeatMapComp>();
 					if (mapComp.IsGraveyard) //wreck
 						Verse.Widgets.DrawTextureFitted(rect, ResourceBank.shipBarNeutral.MatSingle.mainTexture, 1);

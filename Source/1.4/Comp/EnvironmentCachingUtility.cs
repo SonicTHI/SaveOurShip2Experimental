@@ -8,6 +8,7 @@ namespace RimworldMod
     {
 
         private Dictionary<int, bool> spaceMaps = new Dictionary<int, bool>();
+        public HashSet<Thing> shuttleCache = new HashSet<Thing>();
 
         public EnvironmentCachingUtility(Game game)
         {

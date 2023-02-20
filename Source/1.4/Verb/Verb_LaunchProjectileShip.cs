@@ -107,7 +107,7 @@ namespace RimWorld
                 obj.origin = drawPos;
                 obj.destination = currentTarget.Cell.ToVector3Shifted();
                 obj.large = this.caster.GetStatValue(StatDefOf.RangedWeapon_DamageMultiplier) > 1.0f;
-                obj.color = Color.red;
+                obj.color = turret.heatComp.Props.laserColor;
                 obj.Attach(launcher);
                 GenSpawn.Spawn(obj, launcher.Position, launcher.Map, 0);
             }

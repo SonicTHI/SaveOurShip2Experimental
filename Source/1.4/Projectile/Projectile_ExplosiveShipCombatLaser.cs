@@ -11,6 +11,7 @@ namespace RimWorld
     {
         protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
+            CompShipHeat heat = base.Launcher.TryGetComp<CompShipHeat>();
             base.Impact(hitThing);
             ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
             obj.origin = this.origin;
@@ -18,7 +19,7 @@ namespace RimWorld
                 obj.destination = hitThing.DrawPos;
             else
                 obj.destination = this.DrawPos;
-            obj.color = Color.red;
+            obj.color = heat.Props.laserColor;
             if(this.weaponDamageMultiplier>1.0f)
                 obj.large = true;
             obj.Attach(hitThing);

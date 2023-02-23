@@ -805,7 +805,7 @@
 		<defName>ArchotechShieldGenerator</defName>
 		<label>archotech shield generator</label>
 		<designatorDropdown>Ship_Shields</designatorDropdown>
-		<description>A shielding device which projects a momentum repulsor field. Shots can go out, but not in.\n\nGenerates 75% of a standard shield's heat when it blocks attacks. If no heatsink capacity is available, the shield will be damaged and require repairs.\n\nShip radiators cannot disperse heat while shields are up. Captains are advised to drop shields once heatsinks are close to capacity, or risk their ships turning into ovens.</description>
+		<description>An advanced shielding device which projects a momentum repulsor field. Shots can go out, but not in.\n\nGenerates 75% of a standard shield's heat when it blocks attacks. If no heatsink capacity is available, the shield will be damaged and require repairs.\n\nCaptains are advised to drop shields once coolant reaches very high temperature, or risk heatsink damage.</description>
 		<size>(3,3)</size>
 		<receivesSignals>true</receivesSignals>
 		<statBases>
@@ -1195,6 +1195,7 @@
 				<projectileSpeed>10</projectileSpeed>
 				<singleFireSound>ShipCombatLaser</singleFireSound>
 				<threat>100</threat>
+				<laserColor>(0,255,0)</laserColor>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>

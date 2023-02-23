@@ -82,7 +82,7 @@ namespace RimWorld
         public virtual float CalcHeatGenerated(Projectile_ExplosiveShipCombat proj)
         {
             float heatGenerated = proj.DamageAmount * HeatDamageMult * Props.heatMultiplier;
-            heatGenerated *= CompShipCombatShield.ProjectileToMult.TryGetValue(proj.def, 1f);
+            heatGenerated *= ProjectileToMult.TryGetValue(proj.def, 1f);
             return heatGenerated;
         }
 
@@ -97,10 +97,7 @@ namespace RimWorld
                 ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
                 obj.origin = (Vector3)typeof(Projectile).GetField("origin", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(proj);
                 obj.destination = proj.DrawPos;
-                if (proj is Projectile_ExplosiveShipCombatPsychic)
-                    obj.color = Color.green;
-                else
-                    obj.color = proj.Launcher.TryGetComp<CompShipHeat>().Props.laserColor;
+                obj.color = proj.Launcher.TryGetComp<CompShipHeat>().Props.laserColor;
                 if ((float)typeof(Projectile).GetField("weaponDamageMultiplier", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(proj) > 1f)
                     obj.large = true;
                 obj.Attach(parent);

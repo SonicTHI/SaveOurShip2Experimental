@@ -101,23 +101,13 @@ namespace RimWorld
             else
                 projectile2.Launch(launcher, currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
 
-            if (projectile.defName.Equals("Bullet_Fake_Laser") || projectile.defName.Equals("Bullet_Ground_Laser"))
+            if (projectile2 is Projectile_ExplosiveShipCombatLaser || projectile2 is Projectile_ExplosiveShipCombatPsychic)
             {
                 ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
                 obj.origin = drawPos;
                 obj.destination = currentTarget.Cell.ToVector3Shifted();
                 obj.large = this.caster.GetStatValue(StatDefOf.RangedWeapon_DamageMultiplier) > 1.0f;
                 obj.color = turret.heatComp.Props.laserColor;
-                obj.Attach(launcher);
-                GenSpawn.Spawn(obj, launcher.Position, launcher.Map, 0);
-            }
-            else if (projectile.defName.Equals("Bullet_Fake_Psychic"))
-            {
-                ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
-                obj.origin = drawPos;
-                obj.destination = currentTarget.Cell.ToVector3Shifted();
-                obj.large = this.caster.GetStatValue(StatDefOf.RangedWeapon_DamageMultiplier) > 1.0f;
-                obj.color = Color.green;
                 obj.Attach(launcher);
                 GenSpawn.Spawn(obj, launcher.Position, launcher.Map, 0);
             }

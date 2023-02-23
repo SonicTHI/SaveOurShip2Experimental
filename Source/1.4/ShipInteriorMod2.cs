@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f9 active");
+			Log.Message("SOS2EXP V79f10 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())

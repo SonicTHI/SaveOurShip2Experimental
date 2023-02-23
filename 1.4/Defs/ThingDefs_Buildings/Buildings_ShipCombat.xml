@@ -77,7 +77,7 @@
 		<defName>ShipCombatShieldGenerator</defName>
 		<label>shield generator</label>
 		<designatorDropdown>Ship_Shields</designatorDropdown>
-		<description>A shielding device which projects a momentum repulsor field. Shots can go out, but not in.\n\nGenerates heat when it blocks attacks. If no heatsink capacity is available, the shield will be damaged and require repairs.\n\nShip radiators cannot disperse heat while shields are up. Captains are advised to drop shields once heatsinks are close to capacity, or risk their ships turning into ovens.</description>
+		<description>A shielding device which projects a momentum repulsor field. Shots can go out, but not in.\n\nGenerates heat when it blocks attacks. If no heatsink capacity is available, the shield will be damaged and require repairs.\n\nCaptains are advised to drop shields once coolant reaches very high temperature, or risk heatsink damage.</description>
 		<size>(3,3)</size>
 		<receivesSignals>true</receivesSignals>
 		<statBases>
@@ -226,7 +226,7 @@
 		<defName>ShipHeatsink</defName>
 		<label>heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 200Hu\nHeat vented to space: 3Hu/s\nHeat loss: 2Hu/s</description>
+		<description>A heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 200Hu\nHeat vented to space: 3Hu/s\nHeat loss: 2Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatsink</texPath>
@@ -274,7 +274,7 @@
 		<defName>ShipHeatsinkLarge</defName>
 		<label>large heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A large heatsink that slowly removes heat from the heat network. Will not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 24Hu/s\nHeat loss: 12Hu/s</description>
+		<description>A large heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 24Hu/s\nHeat loss: 12Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatsinkLarge</texPath>
@@ -321,7 +321,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatManifold</defName>
 		<label>coolant tank</label>
-		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum.\n\nHeat capacity: 800Hu\nHeat loss: 6Hu/s</description>
+		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 800Hu\nHeat loss: 6Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatbank</texPath>
@@ -355,7 +355,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatBankLarge</defName>
 		<label>large coolant tank</label>
-		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum.\n\nHeat capacity: 4000Hu\nHeat loss: 18Hu/s</description>
+		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 4000Hu\nHeat loss: 18Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankLarge</texPath>
@@ -1063,7 +1063,7 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>400</speed>
+			<speed>200</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -1082,7 +1082,7 @@
 		<projectile>
 			<explosionRadius>1.9</explosionRadius>
 			<damageDef>ShipLaserSmall</damageDef>
-			<speed>400</speed>
+			<speed>200</speed>
 		</projectile>
 	</ThingDef>
 	<ThingDef ParentName="BaseGrenadeProjectile">

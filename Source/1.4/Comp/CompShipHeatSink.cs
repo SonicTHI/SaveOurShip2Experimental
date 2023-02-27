@@ -17,11 +17,23 @@ namespace RimWorld
         public float heatStored; //used only when a HB is not on a net
         public bool inSpace;
         public CompPower powerComp;
-        public bool Disabled = false;
         ShipHeatMapComp mapComp;
         IntVec3 pos; //needed because no predestroy
         Map map; //needed because no predestroy
 
+        public bool disabled;
+        public bool Disabled
+        {
+            get
+            {
+                if (!mapComp.InCombat && mapComp.Cloaks.Any(c => c.active))
+                {
+                    disabled = true;
+                }
+                disabled = false;
+                return disabled;
+            }
+        }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -33,9 +45,20 @@ namespace RimWorld
         }
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
-            float heat = Mathf.Clamp(Props.heatCapacity * RatioInNetwork(), 0, Props.heatCapacity);
-            pos = pos.GetRoom(map).Cells.FirstOrDefault();
-            GenTemperature.PushHeat(pos, map, heat);
+            float ratio = RatioInNetwork();
+            float heat = Mathf.Clamp(Props.heatCapacity * ratio, 0, Props.heatCapacity);
+            if (PushHeat(ratio, parent.Position, heat)) //tanks
+            {
+                return;
+            }
+            else //sinks are walls, check adjacent
+            {
+                foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(parent).ToList())
+                {
+                    if (PushHeat(ratio, vec, heat))
+                        return;
+                }
+            }
             base.PostDestroy(mode, previousMap);
         }
         public override void PostDeSpawn(Map map)
@@ -61,19 +84,15 @@ namespace RimWorld
             }
             if (this.parent.IsHashIntervalTick(120))
             {
-                if (Props.heatVent > 0 && !Props.antiEntropic) //radiates to space
+                if (Props.heatVent > 0 && !Props.antiEntropic && !Disabled) //radiate to space
                 {
-                    IsDisabled();
-                    if (!Disabled)
+                    if (inSpace)
+                        RemHeatFromNetwork(Props.heatVent);
+                    else
                     {
-                        if (map.IsSpace())
-                            RemHeatFromNetwork(Props.heatVent);
-                        else
-                        {
-                            //higher outdoor temp, push less heat out
-                            float heat = Props.heatVent * GenMath.LerpDoubleClamped(0, 100, 1, 0, map.mapTemperature.OutdoorTemp);
-                            RemHeatFromNetwork(heat);
-                        }
+                        //higher outdoor temp, push less heat out
+                        float heat = Props.heatVent * GenMath.LerpDoubleClamped(0, 100, 1, 0, map.mapTemperature.OutdoorTemp);
+                        RemHeatFromNetwork(heat);
                     }
                 }
                 if (myNet.StorageUsed > 0)
@@ -96,40 +115,40 @@ namespace RimWorld
                         }
                         return;
                     }
-                    if (inSpace)
-                        return;
-                    if (this.parent.GetRoom() != null && !ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom()))
+                    //bleed into or adjacent room
+                    if (PushHeat(ratio, parent.Position)) //tanks
                     {
-                        if (RemHeatFromNetwork(Props.heatLoss))
-                            GenTemperature.PushHeat(this.parent, Props.heatLoss * HeatPushMult * ratio);
+                        return;
                     }
                     else //sinks are walls, check adjacent
                     {
                         foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(parent).ToList())
                         {
-                            if (vec.GetRoom(parent.Map) != null && !ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom()))
-                            {
-                                if (RemHeatFromNetwork(Props.heatLoss))
-                                    GenTemperature.PushHeat(vec, parent.Map, Props.heatLoss * HeatPushMult * ratio);
+                            if (PushHeat(ratio, vec))
                                 return;
-                            }
                         }
                     }
                 }
             }
         }
-        private void IsDisabled()
+        public bool PushHeat(float ratio, IntVec3 vec, float heat = 0)
         {
-            if (!mapComp.InCombat && mapComp.Cloaks.Any(c => c.active))
+            if (vec.GetRoom(parent.Map) == null || (inSpace && ShipInteriorMod2.ExposedToOutside(vec.GetRoom(map))))
+                return false;
+            if (RemHeatFromNetwork(Props.heatLoss))
             {
-                Disabled = true;
+                if (heat == 0)
+                    heat = Props.heatLoss * HeatPushMult * ratio;
+                GenTemperature.PushHeat(vec, parent.Map, heat);
+                //Log.Message("" + vec);
+                return true;
             }
-            Disabled = false;
+            return false;
         }
         public override string CompInspectStringExtra()
         {
             string toReturn = base.CompInspectStringExtra();// = "Stored heat: " + Mathf.Round(heatStored)+"/"+Props.heatCapacity;
-            if (Disabled)
+            if (disabled)
             {
                 toReturn += "\n<color=red>Cannot vent: Cloaked</color>";
             }

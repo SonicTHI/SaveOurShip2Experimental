@@ -274,7 +274,7 @@
 		<defName>ShipHeatsinkLarge</defName>
 		<label>large heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A large heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 24Hu/s\nHeat loss: 12Hu/s</description>
+		<description>A large heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 12Hu/s\nHeat loss: 6Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatsinkLarge</texPath>
@@ -321,7 +321,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatManifold</defName>
 		<label>coolant tank</label>
-		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 800Hu\nHeat loss: 6Hu/s</description>
+		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 800Hu\nHeat loss: 3Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatbank</texPath>
@@ -355,7 +355,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatBankLarge</defName>
 		<label>large coolant tank</label>
-		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 4000Hu\nHeat loss: 18Hu/s</description>
+		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 4000Hu\nHeat loss: 9Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankLarge</texPath>

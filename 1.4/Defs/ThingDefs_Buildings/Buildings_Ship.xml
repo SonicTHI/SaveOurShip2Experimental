@@ -2127,7 +2127,7 @@
 			<li Class="CompProperties_GraphicOnOff"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>
-				<heatPerSecond>10</heatPerSecond>
+				<heatPerSecond>20</heatPerSecond>
 			</li>
 		</comps>
 		<placeWorkers>

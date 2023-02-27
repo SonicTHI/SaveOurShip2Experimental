@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f12 active");
+			Log.Message("SOS2EXP V79f13 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -4125,6 +4125,54 @@ namespace SaveOurShip2
 			if (ShipInteriorMod2.AirlockBugFlag)
 				return false;
 			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(Building_MechGestator), "EjectContentsAndRemovePawns")]
+	public static class DisableForMoveGest
+	{
+		[HarmonyPrefix]
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return false;
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(CompWasteProducer), "ProduceWaste")]
+	public static class DisableForMoveWaste
+	{
+		[HarmonyPrefix]
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return false;
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
+	public static class DisableForMoveCharg
+	{
+		[HarmonyPrefix]
+		public static bool Prefix(Pawn ___currentlyChargingMech, out Pawn __state)
+		{
+			__state = null;
+			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				__state = ___currentlyChargingMech;
+				___currentlyChargingMech = null;
+			}
+			return true;
+		}
+		[HarmonyPostfix]
+		public static void Postfix(Pawn ___currentlyChargingMech, Pawn __state)
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				___currentlyChargingMech = __state;
+			}
 		}
 	}
 

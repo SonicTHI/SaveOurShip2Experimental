@@ -443,15 +443,11 @@ namespace RimWorld
             //if we do not have enough heatcap, vent heat to room/fail to fire in vacuum
             if (!heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus) * 3))
             {
-                if (!GroundDefenseMode && ShipInteriorMod2.ExposedToOutside(this.GetRoom()))
-                {
-                    if (!PointDefenseMode && PlayerControlled)
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", Label), this, MessageTypeDefOf.CautionInput);
-                    shipTarget = LocalTargetInfo.Invalid;
-                    ResetCurrentTarget();
-                    return;
-                }
-                GenTemperature.PushHeat(this, heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus));
+                if (!PointDefenseMode && PlayerControlled)
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", Label), this, MessageTypeDefOf.CautionInput);
+                shipTarget = LocalTargetInfo.Invalid;
+                ResetCurrentTarget();
+                return;
             }
             //ammo
             if (fuelComp != null)

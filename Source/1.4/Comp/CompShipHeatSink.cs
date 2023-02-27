@@ -94,13 +94,26 @@ namespace RimWorld
                                 RemHeatFromNetwork(Props.heatVent);
                             }
                         }
-                    }
-                    else if (inSpace && ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom()))
                         return;
-                    else //push heat to room
+                    }
+                    if (inSpace)
+                        return;
+                    if (this.parent.GetRoom() != null && !ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom()))
                     {
                         if (RemHeatFromNetwork(Props.heatLoss))
                             GenTemperature.PushHeat(this.parent, Props.heatLoss * HeatPushMult * ratio);
+                    }
+                    else //sinks are walls, check adjacent
+                    {
+                        foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(parent).ToList())
+                        {
+                            if (vec.GetRoom(parent.Map) != null && !ShipInteriorMod2.ExposedToOutside(this.parent.GetRoom()))
+                            {
+                                if (RemHeatFromNetwork(Props.heatLoss))
+                                    GenTemperature.PushHeat(vec, parent.Map, Props.heatLoss * HeatPushMult * ratio);
+                                return;
+                            }
+                        }
                     }
                 }
             }

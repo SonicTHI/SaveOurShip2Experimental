@@ -101,7 +101,7 @@ namespace RimWorld
             else
                 projectile2.Launch(launcher, currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
 
-            if (projectile2 is Projectile_ExplosiveShipCombatLaser || projectile2 is Projectile_ExplosiveShipCombatPsychic)
+            if (projectile.defName.Equals("Bullet_Fake_Laser") || projectile.defName.Equals("Bullet_Ground_Laser") || projectile.defName.Equals("Bullet_Fake_Psychic"))
             {
                 ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
                 obj.origin = drawPos;

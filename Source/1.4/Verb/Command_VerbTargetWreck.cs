@@ -13,6 +13,7 @@ namespace RimWorld
     public class Command_VerbTargetWreck : Command
     {
         public Map targetMap;
+        public IntVec3 position;
         /*
         public override void MergeWith(Gizmo other)
         {
@@ -42,9 +43,9 @@ namespace RimWorld
         public void AfterTarget(Building b)
         {
             List<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true).ToList();
-            if (positions.NullOrEmpty())
+            if (positions.Contains(position) || positions.NullOrEmpty())
                 return;
-            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmAbandonWreck", delegate
+            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ShipSalvageAbandonConfirm", delegate
             {
                 ShipInteriorMod2.RemoveShip(positions, targetMap, false);
             }));

@@ -293,7 +293,7 @@
     <Compile Include="PlaceWorker\Placeworker_SolarShip.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_SpinalMountPort.cs" />
     <Compile Include="PreviousWorld.cs" />
-    <Compile Include="Projectile\Bullet_HologramLaser.cs" />
+    <Compile Include="Obsolete\Bullet_HologramLaser.cs" />
     <Compile Include="Projectile\Projectile_SoSFake.cs" />
     <Compile Include="Projectile\Projectile_ExplosiveShipCombat.cs" />
     <Compile Include="Projectile\Projectile_ExplosiveShipCombatPsychic.cs" />

@@ -113,6 +113,7 @@ namespace RimWorld
                 {
                     //abandon target wreck (rem rock floor)
                     targetMap = this.parent.Map,
+                    position = this.parent.Position,
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommandDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")

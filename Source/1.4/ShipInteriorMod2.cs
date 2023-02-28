@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f15 active");
+			Log.Message("SOS2EXP V79f16 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -4127,9 +4127,21 @@ namespace SaveOurShip2
 			return true;
 		}
 	}
+	
+	[HarmonyPatch(typeof(CompThingContainer), "PostDeSpawn")]
+	public static class DisableForMoveContainer
+	{
+		[HarmonyPrefix]
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return false;
+			return true;
+		}
+	}
 
 	[HarmonyPatch(typeof(Building_MechGestator), "EjectContentsAndRemovePawns")]
-	public static class DisableForMoveGest
+	public static class DisableForMoveGestator
 	{
 		[HarmonyPrefix]
 		public static bool Prefix()
@@ -4153,7 +4165,7 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
-	public static class DisableForMoveCharg
+	public static class DisableForMoveCharger
 	{
 		[HarmonyPrefix]
 		public static bool Prefix(Pawn ___currentlyChargingMech, out Pawn __state)
@@ -4173,6 +4185,18 @@ namespace SaveOurShip2
 			{
 				___currentlyChargingMech = __state;
 			}
+		}
+	}
+
+	[HarmonyPatch(typeof(CompDeathrestBindable), "PostDeSpawn")]
+	public static class DisableForMoveDeath
+	{
+		[HarmonyPrefix]
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return false;
+			return true;
 		}
 	}
 

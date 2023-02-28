@@ -45,20 +45,8 @@ namespace RimWorld
         }
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
-            float ratio = RatioInNetwork();
-            float heat = Mathf.Clamp(Props.heatCapacity * ratio, 0, Props.heatCapacity);
-            if (PushHeat(ratio, parent.Position, heat)) //tanks
-            {
-                return;
-            }
-            else //sinks are walls, check adjacent
-            {
-                foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(parent).ToList())
-                {
-                    if (PushHeat(ratio, vec, heat))
-                        return;
-                }
-            }
+            float heat = Mathf.Clamp(Props.heatCapacity * RatioInNetwork(), 0, Props.heatCapacity);
+            GenTemperature.PushHeat(pos, map, heat);
             base.PostDestroy(mode, previousMap);
         }
         public override void PostDeSpawn(Map map)

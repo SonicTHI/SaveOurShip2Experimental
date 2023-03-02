@@ -254,13 +254,16 @@ namespace RimWorld
                     if (mapComp.InCombat)
                     {
                         bool pdActive = false;
-                        if (this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0)
+                        if (heatComp.Props.pointDefense && this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0)
                         {
                             pdActive = IncomingPtDefTargetsInRange();
-                            if (pdActive && !PlayerControlled && heatComp.Props.pointDefense)
-                                PointDefenseMode = true;
-                            else
-                                PointDefenseMode = false;
+                            if (!PlayerControlled)
+                            {
+                                if (pdActive)
+                                    PointDefenseMode = true;
+                                else
+                                    PointDefenseMode = false;
+                            }
                         }
                         //PD mode
                         if (pdActive && PointDefenseMode)

@@ -769,7 +769,7 @@ namespace RimWorld
                 if (anyMapEngineCanActivate) //set AI heading
                 {
                     //retreat
-                    if (totalThreat / (OriginMapComp.totalThreat * ModSettings_SoS.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
+                    if (enemyRetreating || totalThreat / (OriginMapComp.totalThreat * ModSettings_SoS.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
                     {
                         Heading = -1;
                         enemyRetreating = true;

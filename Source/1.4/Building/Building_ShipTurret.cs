@@ -482,7 +482,7 @@ namespace RimWorld
             {
                 if (shipTarget == null)
                     shipTarget = LocalTargetInfo.Invalid;
-                if (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense))
+                if (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense && IncomingPtDefTargetsInRange()))
                 {
                     currentTargetInt = MapEdgeCell(20);
                     mapComp.lastPDTick = Find.TickManager.TicksGame;

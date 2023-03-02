@@ -2003,7 +2003,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Moves enemy ships to your map. More bays are required for larger ships. Can also move and get rid of unwanted wrecks.</description>
+		<description>Moves enemy ship wrecks to your map. More bays are required for larger ships. Can also move and get rid of unwanted wrecks.\n\nWeight limit: 5000</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>

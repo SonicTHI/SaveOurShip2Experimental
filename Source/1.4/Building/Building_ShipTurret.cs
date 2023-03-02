@@ -253,8 +253,17 @@ namespace RimWorld
                     }
                     if (mapComp.InCombat)
                     {
+                        bool pdActive = false;
+                        if (this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0)
+                        {
+                            pdActive = IncomingPtDefTargetsInRange();
+                            if (pdActive && !PlayerControlled && heatComp.Props.pointDefense)
+                                PointDefenseMode = true;
+                            else
+                                PointDefenseMode = false;
+                        }
                         //PD mode
-                        if ((this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0 && IncomingPtDefTargetsInRange()) && (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense)))
+                        if (pdActive && PointDefenseMode)
                         {
                             if (Find.TickManager.TicksGame > mapComp.lastPDTick + 10 && !holdFire)
                                 BeginBurst();
@@ -482,7 +491,7 @@ namespace RimWorld
             {
                 if (shipTarget == null)
                     shipTarget = LocalTargetInfo.Invalid;
-                if (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense && IncomingPtDefTargetsInRange()))
+                if (PointDefenseMode)
                 {
                     currentTargetInt = MapEdgeCell(20);
                     mapComp.lastPDTick = Find.TickManager.TicksGame;

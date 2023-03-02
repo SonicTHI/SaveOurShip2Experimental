@@ -13,7 +13,7 @@ namespace RimWorld
     [StaticConstructorOnStartup]
     public class CompShipSalvageBay : ThingComp
     {
-        public static int salvageCapacity = 2500;
+        public static int salvageCapacity = 5000;
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
 			var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();

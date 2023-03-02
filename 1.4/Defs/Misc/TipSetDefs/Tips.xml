@@ -25,7 +25,7 @@
       <li TKey="SoSTipTorpedo">A well-placed torpedo can overload shields and shatter hull, assuming it isn't intercepted by point-defense weaponry.</li>
       <li TKey="SoSTipSpinal">Spinal-mount cannons deal more damage, and produce larger explosions, the more amplifiers they contain.</li>
       <li TKey="SoSTipEngines">Larger ships require more engines to move quickly in combat. Often a small, nimble ship can outrun a heavily-armed opponent.</li>
-      <li TKey="SoSTipSalvage">Each salvage bay can move one tonne of material. Build multiple bays to efficiently move larger wrecks.</li>
+      <li TKey="SoSTipSalvage">Each salvage bay can move up to 5000 units of ship weight. Build multiple bays to efficiently move larger wrecks.</li>
       <li TKey="SoSTipAbandon">When your ship is defeated in combat, any crew inside auto-eject caskets will land somewhere on the planet below. There, your story can begin anew.</li>
       <li TKey="SoSTipAirlocks">When boarding an enemy ship, its airlocks can be breached with the Construction skill or hacked with the Intellectual skill.</li>
       <li TKey="SoSTipCombatPower">The more combat-capable your ship is, the more likely you are to be challenged by formidable enemies.</li>

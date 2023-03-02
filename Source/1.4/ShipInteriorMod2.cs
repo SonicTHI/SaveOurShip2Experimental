@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f17 active");
+			Log.Message("SOS2EXP V79f18 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1567,9 +1567,10 @@ namespace SaveOurShip2
 				lowestCorner.x = b.Map.Size.x - lowestCorner.x;
 				lowestCorner.z = b.Map.Size.z - lowestCorner.z;
 			}
+			float bCountF = bCount * 2.5f;
 			if (salvage && bCount > bMax)
 			{
-				Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", bCount, bMax), MessageTypeDefOf.NeutralEvent);
+				Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
 				cachedParts.Clear();
 				positions.Clear();
 				return;

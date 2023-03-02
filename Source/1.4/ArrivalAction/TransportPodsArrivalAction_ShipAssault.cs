@@ -120,11 +120,9 @@ namespace RimWorld.Planet
 						}
 						else if (targetCells.Count > num)
                         {
-							int l = num;
-							while (targetCells.Count > l)
+							while (targetCells.Count - 1 > num)
 							{
 								targetCells.RemoveLast();
-								l--;
 							}
 						}
 						//Log.Message("Final pod target cells: " + targetCells.Count);

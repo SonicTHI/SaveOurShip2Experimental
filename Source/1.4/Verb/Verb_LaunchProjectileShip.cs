@@ -46,7 +46,7 @@ namespace RimWorld
                     if (turret.heatComp.Props.groundProjectile != null)
                         projectile = turret.heatComp.Props.groundProjectile;
                 }
-                else if (turret.PointDefenseMode || (!turret.PlayerControlled && turret.heatComp.Props.pointDefense)) //remove registered torps/pods in range
+                else if (turret.PointDefenseMode) //remove registered torps/pods in range
                 {
                     PointDefense(turret);
                 }

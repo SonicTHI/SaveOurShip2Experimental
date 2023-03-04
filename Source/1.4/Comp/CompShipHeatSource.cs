@@ -25,11 +25,19 @@ namespace RimWorld
         public override void CompTick()
         {
             base.CompTick();
+            if (!parent.Spawned || parent.Destroyed || myNet == null)
+            {
+                return;
+            }
             if (this.parent.IsHashIntervalTick(60) && (flickComp==null || flickComp.SwitchIsOn) && (refuelComp==null || refuelComp.HasFuel))
             {
                 float heatGenerated = Props.heatPerSecond;
                 if (overdriveComp != null)
                     heatGenerated *= 1 + Mathf.Pow(overdriveComp.overdriveSetting, 1.5f);
+                else if (parent is Building_ShipCloakingDevice)
+                {
+                    heatGenerated += this.myNet.StorageCapacity * 0.008f;
+                }
                 if (!AddHeatToNetwork(heatGenerated))
                     GenTemperature.PushHeat(parent, heatGenerated);
             }

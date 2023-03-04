@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V79f20 active");
+			Log.Message("SOS2EXP V80 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -2875,7 +2875,7 @@ namespace SaveOurShip2
 				if (a.Open && a.Outerdoor())
 					return false;
 				else
-					rate = 0.5f;
+					rate = 0.75f;
 			}
 			return true;
 		}
@@ -2885,13 +2885,11 @@ namespace SaveOurShip2
 	public static class ExposedToVacuum
 	{
 		[HarmonyPostfix]
-		public static void setShipTemp(RoomTempTracker __instance)
+		public static void SetShipTemp(RoomTempTracker __instance, ref Room ___room)
 		{
-			Room room = (Room)typeof(RoomTempTracker)
-				.GetField("room", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
-			if (room.Map.terrainGrid.TerrainAt(IntVec3.Zero) != ResourceBank.TerrainDefOf.EmptySpace)
+			if (___room.Map.terrainGrid.TerrainAt(IntVec3.Zero) != ResourceBank.TerrainDefOf.EmptySpace)
 				return;
-			if (room.Role != RoomRoleDefOf.None && room.OpenRoofCount > 0)
+			if (___room.Role != RoomRoleDefOf.None && ___room.OpenRoofCount > 0)
 				__instance.Temperature = -100f;
 		}
 	}
@@ -2970,6 +2968,8 @@ namespace SaveOurShip2
 		{
 			if (__instance.Spawned && __instance.Map.IsSpace())
 			{
+				if (ShipInteriorMod2.AirlockBugFlag)
+					return;
 				Room room = __instance.Position.GetRoom(__instance.Map);
 				if (ShipInteriorMod2.ExposedToOutside(room))
 				{
@@ -2977,6 +2977,20 @@ namespace SaveOurShip2
 						DamageInfo.SourceCategory.ThingOrUnknown, null));
 				}
 			}
+		}
+	}
+
+	[HarmonyPatch(typeof(Plant), "MakeLeafless")]
+	public static class DoNotKillPlantsOnMove
+	{
+		[HarmonyPrefix]
+		public static bool Abort()
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 
@@ -3986,11 +4000,11 @@ namespace SaveOurShip2
 	public static class AirlockBugFix
 	{
 		[HarmonyPrefix]
-		public static bool FixTheAirlockBug(Room __instance)
+		public static bool FixTheAirlockBug(Room __instance, ref bool ___statsAndRoleDirty)
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 			{
-				typeof(Room).GetField("statsAndRoleDirty", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(__instance, true);
+				___statsAndRoleDirty = true;
 				return false;
 			}
 			return true;
@@ -4165,11 +4179,23 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
+	[HarmonyPatch(typeof(CompDeathrestBindable), "PostDeSpawn")]
+	public static class DisableForMoveDeath
+	{
+		[HarmonyPrefix]
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return false;
+			return true;
+		}
+	}
+	//td rem this if patch bellow works
+	/*[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
 	public static class DisableForMoveCharger
 	{
 		[HarmonyPrefix]
-		public static bool Prefix(Pawn ___currentlyChargingMech, out Pawn __state)
+		public static bool Prefix(ref Pawn ___currentlyChargingMech, out Pawn __state)
 		{
 			__state = null;
 			if (ShipInteriorMod2.AirlockBugFlag)
@@ -4180,23 +4206,58 @@ namespace SaveOurShip2
 			return true;
 		}
 		[HarmonyPostfix]
-		public static void Postfix(Pawn ___currentlyChargingMech, Pawn __state)
+		public static void Postfix(ref Pawn ___currentlyChargingMech, Pawn __state)
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 			{
 				___currentlyChargingMech = __state;
 			}
 		}
+	}*/
+	[HarmonyPatch]
+	public class PatchCharger
+	{
+		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+		[HarmonyPatch(typeof(Building), "DeSpawn")]
+		public static void Test(object instance, DestroyMode mode)
+		{
+		}
 	}
-
-	[HarmonyPatch(typeof(CompDeathrestBindable), "PostDeSpawn")]
-	public static class DisableForMoveDeath
+	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
+	public static class DisableForMoveCharger
 	{
 		[HarmonyPrefix]
-		public static bool Prefix()
+		public static bool Prefix(Building_MechCharger __instance, DestroyMode mode)
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				PatchCharger.Test(__instance, mode);
 				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch]
+	public class PatchGrower
+	{
+		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+		[HarmonyPatch(typeof(Building), "DeSpawn")]
+		public static void Test(object instance, DestroyMode mode)
+		{
+		}
+	}
+	[HarmonyPatch(typeof(Building_PlantGrower), "DeSpawn")]
+	public static class DisableForMoveGrower
+	{
+		[HarmonyPrefix]
+		public static bool Prefix(Building_PlantGrower __instance, DestroyMode mode)
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				PatchGrower.Test(__instance, mode);
+				return false;
+			}
 			return true;
 		}
 	}

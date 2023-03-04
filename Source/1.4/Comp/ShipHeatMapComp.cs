@@ -630,7 +630,7 @@ namespace RimWorld
                             callSlowTick = true;
                         }
                     }
-                    if (MapRootList.Count <= 0)//if all ships gone, end combat
+                    if (MapRootList.Count <= 0) //if all ships gone, end combat
                     {
                         //Log.Message("Map defeated: " + this.map);
                         EndBattle(this.map, false);
@@ -657,13 +657,10 @@ namespace RimWorld
             //SCM vars
             float powerCapacity = 0;
             float powerRemaining = 0;
-            bool shieldsUp = false;
-            bool isPurging = false;
-            bool canPurge = false;
             //threat and engine power calcs
             foreach (ShipCache ship in ShipsOnMap)
             {
-                if (ShipCombatMaster)//heatpurge
+                if (ShipCombatMaster)
                 {
 					var bridge = ship.Bridges.FirstOrDefault().heatComp;			  
                     foreach (var battery in ship.Batteries)
@@ -671,37 +668,21 @@ namespace RimWorld
                         powerCapacity += battery.Props.storedEnergyMax;
                         powerRemaining += battery.StoredEnergy;
                     }
-                    shieldsUp = ship.CombatShields.Any(shield => !shield.shutDown);
-                    canPurge = ship.HeatPurges.Any(purge => purge.fuelComp.Fuel > 0);
-                    isPurging = ship.HeatPurges.Any(purge => purge.currentlyPurging);
-
-                    if (!isPurging)
+                    if (!ship.HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
                     {
-                        if (bridge.RatioInNetwork() > 0.8f)
+                        if (ship.HeatPurges.Any(purge => purge.fuelComp.Fuel > 0) && bridge.RatioInNetwork() > 0.7f) //start purge
                         {
-                            if (shieldsUp)
+                            foreach (CompShipHeatPurge purge in ship.HeatPurges)
                             {
-                                foreach (var shield in ship.CombatShields)
-                                {
-                                    if (shield.flickComp == null) continue;
-
-                                    shield.flickComp.SwitchIsOn = false;
-                                }
-                            }
-                            if (canPurge)
-                            {
-                                foreach (CompShipHeatPurge purge in ship.HeatPurges)
-                                {
-                                    purge.currentlyPurging = true;
-                                }
+                                purge.StartPurge();
                             }
                         }
-                        else if (bridge.RatioInNetwork() < 0.5f && !shieldsUp)
+                        else if (ship.CombatShields.Any(shield => shield.shutDown)) //repower shields
                         {
                             foreach (var shield in ship.CombatShields)
                             {
-                                if (shield.flickComp == null) continue;
-
+                                if (shield.flickComp == null)
+                                    continue;
                                 shield.flickComp.SwitchIsOn = true;
                             }
                         }

@@ -13,7 +13,7 @@ namespace RimWorld
     [StaticConstructorOnStartup]
     public class CompShipHeatSink : CompShipHeat
     {
-        public static readonly float HeatPushMult = 25f; //ratio modifier should be inverse to Building_ShipVent AddHeatToNetwork
+        public static readonly float HeatPushMult = 20f; //ratio modifier should be inverse to Building_ShipVent AddHeatToNetwork
         public float heatStored; //used only when a HB is not on a net
         public bool inSpace;
         public CompPower powerComp;
@@ -78,7 +78,7 @@ namespace RimWorld
                     else
                     {
                         //higher outdoor temp, push less heat out
-                        float heat = Props.heatVent * GenMath.LerpDoubleClamped(0, 100, 1, 0, map.mapTemperature.OutdoorTemp);
+                        float heat = Props.heatVent * GenMath.LerpDoubleClamped(0, 100, 2.5f, 0, map.mapTemperature.OutdoorTemp);
                         RemHeatFromNetwork(heat);
                     }
                 }

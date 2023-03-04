@@ -226,7 +226,7 @@
 		<defName>ShipHeatsink</defName>
 		<label>heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 200Hu\nHeat vented to space: 3Hu/s\nHeat loss: 2Hu/s</description>
+		<description>A heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 200Hu\nHeat vented to space: 3Hu/s\nHeat loss: 1Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatsink</texPath>
@@ -252,7 +252,7 @@
 				<compClass>CompShipHeatSink</compClass>
 				<heatCapacity>200</heatCapacity>
 				<heatVent>6</heatVent>
-				<heatLoss>4</heatLoss>
+				<heatLoss>2</heatLoss>
 				<threat>2</threat>
 			</li>
 			<li Class="CompProperties_Power">
@@ -274,7 +274,7 @@
 		<defName>ShipHeatsinkLarge</defName>
 		<label>large heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A large heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 12Hu/s\nHeat loss: 6Hu/s</description>
+		<description>A large heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 12Hu/s\nHeat loss: 3Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatsinkLarge</texPath>
@@ -300,7 +300,7 @@
 				<compClass>CompShipHeatSink</compClass>
 				<heatCapacity>1000</heatCapacity>
 				<heatVent>24</heatVent>
-				<heatLoss>12</heatLoss>
+				<heatLoss>6</heatLoss>
 				<threat>12</threat>
 			</li>
 			<li Class="CompProperties_Power">
@@ -321,7 +321,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatManifold</defName>
 		<label>coolant tank</label>
-		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 800Hu\nHeat loss: 3Hu/s</description>
+		<description>A tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 800Hu\nHeat loss: 2Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatbank</texPath>
@@ -331,7 +331,7 @@
 		<statBases>
 			<MaxHitPoints>800</MaxHitPoints>
 			<WorkToBuild>1500</WorkToBuild>
-			<Flammability>0.7</Flammability>
+			<Flammability>0</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
 		<costList>
@@ -344,7 +344,7 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
 				<heatCapacity>800</heatCapacity>
-				<heatLoss>6</heatLoss>
+				<heatLoss>4</heatLoss>
 				<threat>1</threat>
 			</li>
 		</comps>
@@ -355,7 +355,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatBankLarge</defName>
 		<label>large coolant tank</label>
-		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 4000Hu\nHeat loss: 9Hu/s</description>
+		<description>A large tank of coolant that stores excess heat produced by a ship. Slowly bleeds heat into the surrounding room if not in vacuum. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed.\n\nHeat capacity: 4000Hu\nHeat loss: 6Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankLarge</texPath>
@@ -365,7 +365,7 @@
 		<statBases>
 			<MaxHitPoints>1600</MaxHitPoints>
 			<WorkToBuild>6000</WorkToBuild>
-			<Flammability>0.7</Flammability>
+			<Flammability>0</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>
 		<costList>
@@ -378,7 +378,7 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
 				<heatCapacity>4000</heatCapacity>
-				<heatLoss>18</heatLoss>
+				<heatLoss>12</heatLoss>
 				<threat>5</threat>
 			</li>
 		</comps>
@@ -674,7 +674,7 @@
 		<defName>ShipTurret_ACII</defName>
 		<label>large cannon turret</label>
 		<designatorDropdown>ShipTurrets_AC</designatorDropdown>
-		<description>A cruiser-class turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A large turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range.\n\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/HardpointYellow</texPath>
 			<drawSize>(3,3)</drawSize>
@@ -2401,7 +2401,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
-				<heatPerPulse>1</heatPerPulse>
+				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>
 				<maxRange>300</maxRange>
@@ -2437,7 +2437,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
-				<heatPerPulse>1</heatPerPulse>
+				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>
 				<maxRange>300</maxRange>
@@ -2473,7 +2473,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
-				<heatPerPulse>1</heatPerPulse>
+				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>
 				<maxRange>300</maxRange>

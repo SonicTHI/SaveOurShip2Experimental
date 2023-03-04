@@ -34,7 +34,7 @@ namespace RimWorld
                 float heatGenerated = Props.heatPerSecond;
                 if (overdriveComp != null)
                     heatGenerated *= 1 + Mathf.Pow(overdriveComp.overdriveSetting, 1.5f);
-                else if (parent is Building_ShipCloakingDevice)
+                else if (parent is Building_ShipCloakingDevice c && c.active)
                 {
                     heatGenerated += this.myNet.StorageCapacity * 0.008f;
                 }

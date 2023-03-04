@@ -14,11 +14,13 @@ namespace RimWorld
         public CompPowerTrader powerComp;
         public CompShipHeatSource heatComp;
         public CompFlickable flickComp;
+        public ShipHeatMapComp mapComp;
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            this.Map.GetComponent<ShipHeatMapComp>().Cloaks.Add(this);
+            mapComp = map.GetComponent<ShipHeatMapComp>();
+            mapComp.Cloaks.Add(this);
             powerComp = this.TryGetComp<CompPowerTrader>();
             heatComp = this.TryGetComp<CompShipHeatSource>();
             flickComp = this.TryGetComp<CompFlickable>();
@@ -29,7 +31,7 @@ namespace RimWorld
             base.Tick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (powerComp.PowerOn && flickComp.SwitchIsOn && (heatComp.myNet!=null || (this.GetRoom()!=null && this.GetRoom().OpenRoofCount==0)))
+                if (powerComp.PowerOn && flickComp.SwitchIsOn && (heatComp.myNet!=null || (this.GetRoom()!=null && this.GetRoom().OpenRoofCount==0)) && !mapComp.InCombat)
                     active = true;
                 else
                     active = false;
@@ -38,7 +40,7 @@ namespace RimWorld
 
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
-            this.Map.GetComponent<ShipHeatMapComp>().Cloaks.Remove(this);
+            mapComp.Cloaks.Remove(this);
             base.DeSpawn(mode);
         }
 

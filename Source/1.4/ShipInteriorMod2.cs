@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V80 active");
+			Log.Message("SOS2EXP V80f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -648,6 +648,7 @@ namespace SaveOurShip2
 			List<Pawn> pawnsOnShip = new List<Pawn>();
 			List<ShipShape> partsToGenerate = new List<ShipShape>();
 			List<IntVec3> cargoCells = new List<IntVec3>();
+			List<IntVec3> hydroCells = new List<IntVec3>();
 			IntVec3 offset = new IntVec3(0, 0, 0);
 
 			if (shipDef.saveSysVer == 2)
@@ -874,6 +875,10 @@ namespace SaveOurShip2
 									}
 								}
 							}
+							else if (b is Building_PlantGrower)
+                            {
+								hydroCells.AddRange(b.OccupiedRect().Cells);
+                            }
 							else if (b is Building_ShipBridge shipBridge)
 								shipBridge.ShipName = shipDef.label;
 							else
@@ -1066,6 +1071,20 @@ namespace SaveOurShip2
 					cargoCells.Remove(cell);
 					if (t is Pawn p && !p.RaceProps.Animal)
 						t.SetFactionDirect(fac);
+				}
+			}
+			//hydro
+			if (hydroCells.Any() && wreckLevel < 3)
+            {
+				foreach (IntVec3 pos in hydroCells)
+				{
+					Plant plant = ThingMaker.MakeThing(randomPlants.Where(p => !p.plant.IsTree && p.plant.Sowable).RandomElement()) as Plant;
+					if (plant != null)
+					{
+						plant.Growth = 1;
+						plant.Position = pos;
+						plant.SpawnSetup(map, false);
+					}
 				}
 			}
 			//wreck

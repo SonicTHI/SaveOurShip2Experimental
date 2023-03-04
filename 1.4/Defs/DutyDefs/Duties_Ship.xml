@@ -19,6 +19,9 @@
 				<li Class="JobGiver_LoadTorpedoes">
 					<maxDistFromPoint>99</maxDistFromPoint>
 				</li>
+				<li Class="JobGiver_LoadShipBuilding">
+					<maxDistFromPoint>99</maxDistFromPoint>
+				</li>
 				<li Class="JobGiver_AIDefendShip">
 					<targetAcquireRadius>99</targetAcquireRadius>
 					<targetKeepRadius>99</targetKeepRadius>

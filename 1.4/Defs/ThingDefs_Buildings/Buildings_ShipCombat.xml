@@ -413,6 +413,8 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>
+				<heatCapacity>200</heatCapacity>
+				<heatLoss>1</heatLoss>
 				<heatPurge>5</heatPurge>
 				<threat>5</threat>
 			</li>
@@ -467,6 +469,8 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>
+				<heatCapacity>1000</heatCapacity>
+				<heatLoss>3</heatLoss>
 				<heatPurge>25</heatPurge>
 				<threat>30</threat>
 			</li>

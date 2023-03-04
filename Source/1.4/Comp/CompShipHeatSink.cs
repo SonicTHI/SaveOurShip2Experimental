@@ -103,7 +103,7 @@ namespace RimWorld
                         return;
                     }
                     //bleed into or adjacent room
-                    if (PushHeat(ratio, parent.Position)) //tanks
+                    if (TryPushHeat(ratio, parent.Position)) //tanks
                     {
                         return;
                     }
@@ -111,14 +111,14 @@ namespace RimWorld
                     {
                         foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(parent).ToList())
                         {
-                            if (PushHeat(ratio, vec))
+                            if (TryPushHeat(ratio, vec))
                                 return;
                         }
                     }
                 }
             }
         }
-        public bool PushHeat(float ratio, IntVec3 vec, float heat = 0)
+        public bool TryPushHeat(float ratio, IntVec3 vec, float heat = 0)
         {
             if (vec.GetRoom(parent.Map) == null || (inSpace && ShipInteriorMod2.ExposedToOutside(vec.GetRoom(map))))
                 return false;

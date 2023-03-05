@@ -31,7 +31,12 @@ namespace RimWorld
             base.Tick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (powerComp.PowerOn && flickComp.SwitchIsOn && (heatComp.myNet!=null || (this.GetRoom()!=null && this.GetRoom().OpenRoofCount==0)) && !mapComp.InCombat)
+                if (heatComp.myNet == null || mapComp.InCombat)
+                {
+                    flickComp.SwitchIsOn = false;
+                    active = false;
+                }
+                else if (powerComp.PowerOn && flickComp.SwitchIsOn)
                     active = true;
                 else
                     active = false;

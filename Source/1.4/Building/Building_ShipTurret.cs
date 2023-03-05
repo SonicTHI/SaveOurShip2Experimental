@@ -136,7 +136,6 @@ namespace RimWorld
                 UpdateGunVerbs();
             }
         }
-
         public override void OrderAttack(LocalTargetInfo targ)
         {
             if (forcedTarget != targ)
@@ -179,7 +178,6 @@ namespace RimWorld
                 }
             }
         }
-
         public override void Tick()
         {
             base.Tick();

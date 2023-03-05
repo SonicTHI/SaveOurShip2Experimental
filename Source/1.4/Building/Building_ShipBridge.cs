@@ -238,7 +238,7 @@ namespace RimWorld
                         {
                             foreach (CompShipHeatSource h in heatNet.Cloaks)
                             {
-                                h.parent.TryGetComp<CompFlickable>().SwitchIsOn = !anyCloakOn;
+                                ((Building_ShipCloakingDevice)h.parent).flickComp.SwitchIsOn = !anyCloakOn;
                             }
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleCloak"),

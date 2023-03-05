@@ -21,6 +21,10 @@ namespace RimWorld
         //looks for buildings that need fuel, checks if fuel is available, start refuel job
         protected override Job TryGiveJob(Pawn pawn)
         {
+            if (!pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
+            {
+                return null;
+            }
             CompRefuelable refuelComp = null;
             Predicate<Thing> validator = delegate (Thing t)
             {

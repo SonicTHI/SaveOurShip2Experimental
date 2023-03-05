@@ -9,6 +9,10 @@ namespace RimWorld
 {
     public class JobDriver_LoadShipBuilding : JobDriver
 	{
+		private const TargetIndex RefuelableInd = TargetIndex.A;
+		private const TargetIndex FuelInd = TargetIndex.B;
+		public const int Duration = 240;
+
 		protected Thing Refuelable
 		{
 			get
@@ -49,8 +53,6 @@ namespace RimWorld
 				}
 				return JobCondition.Succeeded;
 			});
-			//base.AddFailCondition(() => !this.job.playerForced && !this.RefuelableComp.ShouldAutoRefuelNowIgnoringFuelPct);
-			//base.AddFailCondition(() => !this.RefuelableComp.allowAutoRefuel && !this.job.playerForced);
 			yield return Toils_General.DoAtomic(delegate
 			{
 				this.job.count = this.RefuelableComp.GetFuelCountToFullyRefuel();
@@ -61,15 +63,9 @@ namespace RimWorld
 			yield return Toils_Haul.StartCarryThing(TargetIndex.B, false, true, false, true).FailOnDestroyedNullOrForbidden(TargetIndex.B);
 			yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserveFuel, TargetIndex.B, TargetIndex.None, true, null);
 			yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
-			yield return Toils_General.Wait(240, TargetIndex.None).FailOnDestroyedNullOrForbidden(TargetIndex.B).FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).WithProgressBarToilDelay(TargetIndex.A, false, -0.5f);
+			yield return Toils_General.Wait(Duration, TargetIndex.None).FailOnDestroyedNullOrForbidden(TargetIndex.B).FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).WithProgressBarToilDelay(TargetIndex.A, false, -0.5f);
 			yield return Toils_Refuel.FinalizeRefueling(TargetIndex.A, TargetIndex.B);
 			yield break;
 		}
-
-		private const TargetIndex RefuelableInd = TargetIndex.A;
-
-		private const TargetIndex FuelInd = TargetIndex.B;
-
-		public const int RefuelingDuration = 240;
 	}
 }

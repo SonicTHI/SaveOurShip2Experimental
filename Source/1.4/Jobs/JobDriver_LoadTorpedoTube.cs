@@ -11,27 +11,25 @@ namespace RimWorld
     {
         private const int Duration = 600;
 
-        private Building_ShipTurretTorpedo tube
+        private Building_ShipTurretTorpedo Tube
         {
             get
             {
-                LocalTargetInfo target = base.job.GetTarget((TargetIndex)1);
-                return (Building_ShipTurretTorpedo)target;
+                return (Building_ShipTurretTorpedo)base.job.GetTarget(TargetIndex.A);
             }
         }
 
-        protected Thing torpedo
+        protected Thing Torpedo
         {
             get
             {
-                LocalTargetInfo target = base.job.GetTarget((TargetIndex)2);
-                return (Thing)target;
+                return this.job.GetTarget(TargetIndex.B).Thing;
             }
         }
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            if (tube.torpComp.FullyLoaded)
+            if (Tube.torpComp.FullyLoaded)
                 return false;
             return ReservationUtility.Reserve(base.pawn, base.job.targetA, base.job, 1, 1, null, true);
         }
@@ -39,24 +37,24 @@ namespace RimWorld
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.job.count = 1;
-            ToilFailConditions.FailOnDespawnedNullOrForbidden<JobDriver_LoadTorpedoTube>(this, (TargetIndex)1);
-            ToilFailConditions.FailOnBurningImmobile<JobDriver_LoadTorpedoTube>(this, (TargetIndex)1);
-            yield return Toils_Reserve.Reserve((TargetIndex)1, 1, 1, (ReservationLayerDef)null);
-            Toil reserveTorpedo = Toils_Reserve.Reserve((TargetIndex)2, 1, 1, (ReservationLayerDef)null);
+            ToilFailConditions.FailOnDespawnedNullOrForbidden(this, TargetIndex.A);
+            ToilFailConditions.FailOnBurningImmobile(this, TargetIndex.A);
+            yield return Toils_Reserve.Reserve(TargetIndex.A, 1, 1,null);
+            Toil reserveTorpedo = Toils_Reserve.Reserve(TargetIndex.B, 1, 1, null);
             yield return reserveTorpedo;
-            yield return ToilFailConditions.FailOnSomeonePhysicallyInteracting<Toil>(ToilFailConditions.FailOnDespawnedNullOrForbidden<Toil>(Toils_Goto.GotoThing((TargetIndex)2, (PathEndMode)3), (TargetIndex)2), (TargetIndex)2);
-            yield return ToilFailConditions.FailOnDestroyedNullOrForbidden<Toil>(Toils_Haul.StartCarryThing((TargetIndex)2, false, true, false), (TargetIndex)2);
-            yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserveTorpedo, (TargetIndex)2, (TargetIndex)0, true, (Predicate<Thing>)null);
-            yield return Toils_Goto.GotoThing((TargetIndex)1, (PathEndMode)2);
-            yield return ToilEffects.WithProgressBarToilDelay(ToilFailConditions.FailOnDestroyedNullOrForbidden<Toil>(ToilFailConditions.FailOnDestroyedNullOrForbidden<Toil>(Toils_General.Wait(Duration, (TargetIndex)0), (TargetIndex)2), (TargetIndex)1), (TargetIndex)1, false, -0.5f);
-            Toil val = new Toil();
-            val.initAction = delegate
+            yield return ToilFailConditions.FailOnSomeonePhysicallyInteracting(ToilFailConditions.FailOnDespawnedNullOrForbidden(Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.ClosestTouch), TargetIndex.B), TargetIndex.B);
+            yield return ToilFailConditions.FailOnDestroyedNullOrForbidden(Toils_Haul.StartCarryThing(TargetIndex.B, false, true, false), TargetIndex.B);
+            yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserveTorpedo, (TargetIndex)2, TargetIndex.None, true, null);
+            yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
+            yield return ToilEffects.WithProgressBarToilDelay(ToilFailConditions.FailOnDestroyedNullOrForbidden(ToilFailConditions.FailOnDestroyedNullOrForbidden(Toils_General.Wait(Duration, TargetIndex.None), TargetIndex.B), TargetIndex.A), TargetIndex.A, false, -0.5f);
+            Toil toil = new Toil();
+            toil.initAction = delegate
             {
-                tube.torpComp.LoadShell(torpedo.def,1);
-                torpedo.Destroy(DestroyMode.Vanish);
+                Tube.torpComp.LoadShell(Torpedo.def,1);
+                Torpedo.Destroy(DestroyMode.Vanish);
             };
-            val.defaultCompleteMode = (ToilCompleteMode)1;
-            yield return val;
+            toil.defaultCompleteMode = ToilCompleteMode.Instant;
+            yield return toil;
         }
     }
 }

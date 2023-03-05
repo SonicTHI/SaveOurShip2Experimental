@@ -21,6 +21,10 @@ namespace RimWorld
 
         protected override Job TryGiveJob(Pawn pawn)
         {
+            if (!pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation))
+            {
+                return null;
+            }
             Predicate<Thing> validator = delegate (Thing t)
             {
                 if (t is Building_ShipTurretTorpedo torp && !torp.torpComp.FullyLoaded)

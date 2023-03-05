@@ -19,7 +19,6 @@ namespace RimWorld
         public bool purging = false;
         bool start = false;
         bool hiss = false;
-        public bool cloaked;
         public ShipHeatMapComp mapComp;
         public CompRefuelable fuelComp;
 
@@ -73,6 +72,13 @@ namespace RimWorld
                     {
                         shield.flickComp.SwitchIsOn = false;
                     }
+                    foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)
+                    {
+                        if (cloak.active && cloak.Map == parent.Map)
+                        {
+                            cloak.flickComp.SwitchIsOn = false;
+                        }
+                    }
                     start = true;
                 }
                 if (CanPurge() && fuelComp.Fuel > 0 && RemHeatFromNetwork(Props.heatPurge * HEAT_PURGE_RATIO))
@@ -97,9 +103,8 @@ namespace RimWorld
             hiss = false;
             start = false;
         }
-        private bool CanPurge()
+        public bool CanPurge()
         {
-            cloaked = false;
             foreach (CompShipCombatShield shield in mapComp.Shields)
             {
                 if (!shield.shutDown && (parent.DrawPos - shield.parent.DrawPos).magnitude < shield.radius)
@@ -113,7 +118,6 @@ namespace RimWorld
                 {
                     if (cloak.active && cloak.Map == parent.Map)
                     {
-                        cloaked = true;
                         return false;
                     }
                 }

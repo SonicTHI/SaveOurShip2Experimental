@@ -495,7 +495,7 @@ namespace RimWorld
                 hasAnyPlayerPartDetached = false;
                 startedBoarderLoad = false;
                 launchedBoarders = false;
-                BoardStartTick = Find.TickManager.TicksGame + 1800;
+                BoardStartTick = Find.TickManager.TicksGame + 5000;
                 if (!cores.NullOrEmpty())
                 {
                     MapRootList = cores;
@@ -1290,8 +1290,8 @@ namespace RimWorld
                 {
                     Engines.Add(building.TryGetComp<CompEngineTrail>());
                 }
-                //else if (building.TryGetComp<CompShipCombatShield>() != null)
-                //    CombatShields.Add(building.GetComp<CompShipCombatShield>());
+                else if (building.TryGetComp<CompShipCombatShield>() != null)
+                    CombatShields.Add(building.GetComp<CompShipCombatShield>());
                 else if (building is Building_ShipBridge bridge)
                 {
                     if (!bridge.Destroyed)

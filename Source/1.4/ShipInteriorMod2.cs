@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V80f1 active");
+			Log.Message("SOS2EXP V80f2 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -916,7 +916,7 @@ namespace SaveOurShip2
 							Plant plant = ThingMaker.MakeThing(randomPlants.RandomElement()) as Plant;
 							if (plant != null)
 							{
-								plant.Growth = 1;
+								plant.Growth = Rand.Range(0.5f, 1f); ;
 								plant.Position = pos;
 								plant.SpawnSetup(map, false);
 							}
@@ -1078,10 +1078,10 @@ namespace SaveOurShip2
             {
 				foreach (IntVec3 pos in hydroCells)
 				{
-					Plant plant = ThingMaker.MakeThing(randomPlants.Where(p => !p.plant.IsTree && p.plant.Sowable).RandomElement()) as Plant;
+					Plant plant = ThingMaker.MakeThing(randomPlants.Where(p => p.plant.sowTags.Contains("Hydroponic")).RandomElement()) as Plant;
 					if (plant != null)
 					{
-						plant.Growth = 1;
+						plant.Growth = Rand.Range(0.5f, 1f);
 						plant.Position = pos;
 						plant.SpawnSetup(map, false);
 					}

@@ -44,7 +44,7 @@ namespace RimWorld
             yield return reserveTorpedo;
             yield return ToilFailConditions.FailOnSomeonePhysicallyInteracting(ToilFailConditions.FailOnDespawnedNullOrForbidden(Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.ClosestTouch), TargetIndex.B), TargetIndex.B);
             yield return ToilFailConditions.FailOnDestroyedNullOrForbidden(Toils_Haul.StartCarryThing(TargetIndex.B, false, true, false), TargetIndex.B);
-            yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserveTorpedo, (TargetIndex)2, TargetIndex.None, true, null);
+            yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserveTorpedo, TargetIndex.B, TargetIndex.None, true, null);
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
             yield return ToilEffects.WithProgressBarToilDelay(ToilFailConditions.FailOnDestroyedNullOrForbidden(ToilFailConditions.FailOnDestroyedNullOrForbidden(Toils_General.Wait(Duration, TargetIndex.None), TargetIndex.B), TargetIndex.A), TargetIndex.A, false, -0.5f);
             Toil toil = new Toil();

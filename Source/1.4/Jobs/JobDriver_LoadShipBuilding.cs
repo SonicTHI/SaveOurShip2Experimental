@@ -44,6 +44,25 @@ namespace RimWorld
 
 		protected override IEnumerable<Toil> MakeNewToils()
 		{
+			this.job.count = 1;
+			ToilFailConditions.FailOnDespawnedNullOrForbidden(this, TargetIndex.A);
+			ToilFailConditions.FailOnBurningImmobile(this, TargetIndex.A);
+			yield return Toils_Reserve.Reserve(TargetIndex.A, 1, 1, null);
+			Toil reserveFuel = Toils_Reserve.Reserve(TargetIndex.B, 1, 1, null);
+			yield return reserveFuel;
+			yield return ToilFailConditions.FailOnSomeonePhysicallyInteracting(ToilFailConditions.FailOnDespawnedNullOrForbidden(Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.ClosestTouch), TargetIndex.B), TargetIndex.B);
+			yield return ToilFailConditions.FailOnDestroyedNullOrForbidden(Toils_Haul.StartCarryThing(TargetIndex.B, false, true, false), TargetIndex.B);
+			yield return Toils_Haul.CheckForGetOpportunityDuplicate(reserveFuel, TargetIndex.B, TargetIndex.None, true, null);
+			yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
+			yield return ToilEffects.WithProgressBarToilDelay(ToilFailConditions.FailOnDestroyedNullOrForbidden(ToilFailConditions.FailOnDestroyedNullOrForbidden(Toils_General.Wait(Duration, TargetIndex.None), TargetIndex.B), TargetIndex.A), TargetIndex.A, false, -0.5f);
+			Toil toil = new Toil();
+			toil.initAction = delegate
+			{
+				RefuelableComp.Refuel(new List<Thing>() { Fuel });
+			};
+			toil.defaultCompleteMode = ToilCompleteMode.Instant;
+			yield return toil;
+			/*/
 			this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
 			base.AddEndCondition(delegate
 			{
@@ -65,7 +84,7 @@ namespace RimWorld
 			yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.Touch);
 			yield return Toils_General.Wait(Duration, TargetIndex.None).FailOnDestroyedNullOrForbidden(TargetIndex.B).FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnCannotTouch(TargetIndex.A, PathEndMode.Touch).WithProgressBarToilDelay(TargetIndex.A, false, -0.5f);
 			yield return Toils_Refuel.FinalizeRefueling(TargetIndex.A, TargetIndex.B);
-			yield break;
+			yield break;*/
 		}
 	}
 }

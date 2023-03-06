@@ -9,7 +9,6 @@ namespace RimWorld
 {
     public class JobGiver_LoadShipBuilding : ThinkNode_JobGiver
     {
-
         public float maxDistFromPoint = -1f;
 
         public override ThinkNode DeepCopy(bool resolve = true)

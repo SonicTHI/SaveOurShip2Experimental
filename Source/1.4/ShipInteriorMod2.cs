@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V80f2 active");
+			Log.Message("SOS2EXP V80f3 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -480,14 +480,17 @@ namespace SaveOurShip2
 		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
 			List<IntVec3> area = new List<IntVec3>();
+			List<Thing> planters = new List<Thing>();
 			List<IntVec3> areaOut;
+			List<Thing> plantersOut;
 			cores = new List<Building>();
 			List<Building> coresOut;
 			if (shipDef.ships.NullOrEmpty())
 			{
-				GenerateShipDef(shipDef, map, passingShip, fac, lord, out coresOut, out areaOut, shipActive, clearArea, wreckLevel, offsetX, offsetZ, navyDef);
+				GenerateShipDef(shipDef, map, passingShip, fac, lord, out coresOut, out areaOut, out plantersOut, shipActive, clearArea, wreckLevel, offsetX, offsetZ, navyDef);
 				cores.AddRange(coresOut);
 				area.AddRange(areaOut);
+				planters.AddRange(plantersOut);
 			}
             else
 			{
@@ -500,12 +503,13 @@ namespace SaveOurShip2
 						Log.Error("Fleet ship not found in database");
 						return;
 					}
-					GenerateShipDef(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out coresOut, out areaOut, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
+					GenerateShipDef(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out coresOut, out areaOut, out plantersOut, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
 					cores.AddRange(coresOut);
 					area.AddRange(areaOut);
+					planters.AddRange(plantersOut);
 				}
 			}
-			PostGenerateShipDef(map, clearArea, area);
+			PostGenerateShipDef(map, clearArea, area, planters);
 		}
 		public static void GenerateFleet(float CR, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, SpaceNavyDef navyDef = null)
 		{
@@ -523,7 +527,9 @@ namespace SaveOurShip2
 			}
 			bool tradeShip = passingShip is TradeShip;
 			List<IntVec3> area = new List<IntVec3>();
+			List<Thing> planters = new List<Thing>();
 			List<IntVec3> areaOut;
+			List<Thing> plantersOut;
 			cores = new List<Building>();
 			List<Building> coresOut;
 			bool firstLarger = Rand.Bool;
@@ -619,18 +625,20 @@ namespace SaveOurShip2
 					Log.Message("random ship: " + shipDef + " CR remain: " + CR);
 					if (shipDef != null)
 					{
-						GenerateShipDef(shipDef, map, passingShip, fac, lord, out coresOut, out areaOut, !shipActive, false, wreckLevel, offsetX, offsetZAdj, navyDef);
+						GenerateShipDef(shipDef, map, passingShip, fac, lord, out coresOut, out areaOut, out plantersOut, !shipActive, false, wreckLevel, offsetX, offsetZAdj, navyDef);
 						cores.AddRange(coresOut);
 						area.AddRange(areaOut);
+						planters.AddRange(plantersOut);
 					}
 				}
 				i++;
 			}
-			PostGenerateShipDef(map, clearArea, area);
+			PostGenerateShipDef(map, clearArea, area, planters);
 		}
-		public static void GenerateShipDef(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		public static void GenerateShipDef(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, out List<Thing> planters, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
 			cellsToFog = new List<IntVec3>();
+			planters = new List<Thing>();
 			cores = new List<Building>();
 			bool unlockedJT = false;
 			if (WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("JTDriveToo"))
@@ -648,7 +656,6 @@ namespace SaveOurShip2
 			List<Pawn> pawnsOnShip = new List<Pawn>();
 			List<ShipShape> partsToGenerate = new List<ShipShape>();
 			List<IntVec3> cargoCells = new List<IntVec3>();
-			List<IntVec3> hydroCells = new List<IntVec3>();
 			IntVec3 offset = new IntVec3(0, 0, 0);
 
 			if (shipDef.saveSysVer == 2)
@@ -877,7 +884,7 @@ namespace SaveOurShip2
 							}
 							else if (b is Building_PlantGrower)
                             {
-								hydroCells.AddRange(b.OccupiedRect().Cells);
+								planters.Add(b);
                             }
 							else if (b is Building_ShipBridge shipBridge)
 								shipBridge.ShipName = shipDef.label;
@@ -1073,20 +1080,6 @@ namespace SaveOurShip2
 						t.SetFactionDirect(fac);
 				}
 			}
-			//hydro
-			if (hydroCells.Any() && wreckLevel < 3)
-            {
-				foreach (IntVec3 pos in hydroCells)
-				{
-					Plant plant = ThingMaker.MakeThing(randomPlants.Where(p => p.plant.sowTags.Contains("Hydroponic")).RandomElement()) as Plant;
-					if (plant != null)
-					{
-						plant.Growth = Rand.Range(0.5f, 1f);
-						plant.Position = pos;
-						plant.SpawnSetup(map, false);
-					}
-				}
-			}
 			//wreck
 			//1 (light damage - starting ships): outer explo few
 			//2: outer explo more, destroy some buildings, some dead crew, chance for more invaders
@@ -1209,7 +1202,7 @@ namespace SaveOurShip2
 				}
 			}
 		}
-		public static void PostGenerateShipDef(Map map, bool clearArea, List<IntVec3> shipArea)
+		public static void PostGenerateShipDef(Map map, bool clearArea, List<IntVec3> shipArea, List<Thing> planters)
 		{
 			//HashSet<Room> validRooms = new HashSet<Room>();
 			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
@@ -1237,19 +1230,40 @@ namespace SaveOurShip2
 					//validRooms.Add(cell.GetRoom(map));
 				}
 			}
-			/*if (validRooms.Any())
+			/*
+			HashSet<Room> validRooms = new HashSet<Room>();
+			foreach (IntVec3 v in shipArea)
+			{
+				Room r = v.GetRoom(map);
+				if (r != null)
+					validRooms.Add(r);
+			}
+			if (validRooms.Any())
 			{
 				Log.Message("set temp in rooms: " + validRooms.Count);
 				foreach (Room r in validRooms.Where(r => r != null))
 				{
-					if (r.OpenRoofCount < 2)
-					{
-						r.Temperature = 21;
-					}
+					r.Temperature = 21;
 				}
 			}*/
 			foreach (Room r in map.regionGrid.allRooms)
 				r.Temperature = 21;
+			foreach (Thing t in planters)
+			{
+				ThingDef def = Rand.Element(ThingDef.Named("Plant_Rice"), ThingDef.Named("Plant_Potato"), ThingDef.Named("Plant_Strawberry"));
+				//randomPlants.Where(d => d.plant.sowTags.Contains("Hydroponic") && !d.plant.cavePlant && d.plant.sowResearchPrerequisites == null).RandomElement();
+				if (def != null)
+				{
+					foreach (IntVec3 pos in t.OccupiedRect())
+					{
+						Plant plant = ThingMaker.MakeThing(def) as Plant;
+						plant.Growth = Rand.Range(0.5f, 1f);
+						plant.Position = pos;
+						plant.SpawnSetup(map, false);
+					}
+				}
+
+			}
 			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
 			if (Current.ProgramState == ProgramState.Playing)
 				map.mapDrawer.RegenerateEverythingNow();
@@ -1657,6 +1671,7 @@ namespace SaveOurShip2
 				targetMap = core.Map;
 			bool targetMapIsSpace = targetMap.IsSpace();
 			bool sourceMapIsSpace = sourceMap.IsSpace();
+			bool inCombat = sourceMap.GetComponent<ShipHeatMapComp>().InCombat;
 			bool playerMove = core.Faction == Faction.OfPlayer;
 
 			foreach (IntVec3 pos in sourceArea)
@@ -1697,8 +1712,9 @@ namespace SaveOurShip2
 						if (powerComp != null)
 							toRePower.Add(powerComp);
 					}
-					else if (t is Pawn p && !sourceMapIsSpace && p.Faction != Faction.OfPlayer)
+					else if (!inCombat && t is Pawn p && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
                     {
+						//do not allow kidnapping other fac pawns/animals
 						Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipMoveFailPawns"), null, MessageTypeDefOf.NegativeEvent);
 						return;
                     }

@@ -5674,13 +5674,24 @@ namespace SaveOurShip2
     {
 		public static bool Prefix(District __instance)
         {
-			return Find.Maps.Where(map => Find.Maps.IndexOf(map)==__instance.mapIndex).Count()>0;
+			var maps = Find.Maps;
+			for (int i = maps.Count; i-- > 0;) if (i == __instance.mapIndex) return true;
+			return false;
         }
 
 		public static void Postfix(District __instance, ref Map __result)
         {
-			if (Find.Maps.Where(map => Find.Maps.IndexOf(map) == __instance.mapIndex).Count() <= 0)
-				__result = Find.Maps.FirstOrDefault();
+			var maps = Find.Maps;
+			bool found = false;
+			for (int i = maps.Count; i-- > 0;)
+			{
+				if (i == __instance.mapIndex)
+				{
+					found = true;
+					break;
+				}
+			}
+			if (!found) __result = Find.Maps.FirstOrDefault();
 		}
 	}
 

@@ -136,7 +136,6 @@ namespace RimWorld
                 UpdateGunVerbs();
             }
         }
-
         public override void OrderAttack(LocalTargetInfo targ)
         {
             if (forcedTarget != targ)
@@ -179,7 +178,6 @@ namespace RimWorld
                 }
             }
         }
-
         public override void Tick()
         {
             base.Tick();
@@ -253,8 +251,20 @@ namespace RimWorld
                     }
                     if (mapComp.InCombat)
                     {
+                        bool pdActive = false;
+                        if (heatComp.Props.pointDefense && this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0)
+                        {
+                            pdActive = IncomingPtDefTargetsInRange();
+                            if (!PlayerControlled)
+                            {
+                                if (pdActive)
+                                    PointDefenseMode = true;
+                                else
+                                    PointDefenseMode = false;
+                            }
+                        }
                         //PD mode
-                        if ((this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0 && IncomingPtDefTargetsInRange()) && (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense)))
+                        if (pdActive && PointDefenseMode)
                         {
                             if (Find.TickManager.TicksGame > mapComp.lastPDTick + 10 && !holdFire)
                                 BeginBurst();
@@ -441,17 +451,13 @@ namespace RimWorld
                 return;
             }
             //if we do not have enough heatcap, vent heat to room/fail to fire in vacuum
-            if (!heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus) * 3))
+            if (heatComp.Props.heatPerPulse > 0 && !heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus) * 3))
             {
-                if (!GroundDefenseMode && ShipInteriorMod2.ExposedToOutside(this.GetRoom()))
-                {
-                    if (!PointDefenseMode && PlayerControlled)
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", Label), this, MessageTypeDefOf.CautionInput);
-                    shipTarget = LocalTargetInfo.Invalid;
-                    ResetCurrentTarget();
-                    return;
-                }
-                GenTemperature.PushHeat(this, heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus));
+                if (!PointDefenseMode && PlayerControlled)
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", Label), this, MessageTypeDefOf.CautionInput);
+                shipTarget = LocalTargetInfo.Invalid;
+                ResetCurrentTarget();
+                return;
             }
             //ammo
             if (fuelComp != null)
@@ -486,7 +492,7 @@ namespace RimWorld
             {
                 if (shipTarget == null)
                     shipTarget = LocalTargetInfo.Invalid;
-                if (PointDefenseMode || (!PlayerControlled && heatComp.Props.pointDefense))
+                if (PointDefenseMode)
                 {
                     currentTargetInt = MapEdgeCell(20);
                     mapComp.lastPDTick = Find.TickManager.TicksGame;

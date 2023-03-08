@@ -50,6 +50,12 @@
   </JobDef>
   
   <JobDef>
+    <defName>LoadShipBuilding</defName>
+    <driverClass>JobDriver_LoadShipBuilding</driverClass>
+    <reportString>Refueling TargetA.</reportString>
+  </JobDef>
+  
+  <JobDef>
     <defName>ManShipBridge</defName>
     <driverClass>JobDriver_ManShipBridge</driverClass>
     <reportString>manning bridge.</reportString>

@@ -110,6 +110,8 @@
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
+    <Compile Include="Jobs\JobDriver_LoadShipBuilding.cs" />
+    <Compile Include="Jobs\JobGiver_LoadShipBuilding.cs" />
     <Compile Include="ResourceBank.cs" />
     <Compile Include="CompProps\CompProperties_HologramRemover.cs" />
     <Compile Include="Comp\CompHologramRemover.cs" />
@@ -293,7 +295,7 @@
     <Compile Include="PlaceWorker\Placeworker_SolarShip.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_SpinalMountPort.cs" />
     <Compile Include="PreviousWorld.cs" />
-    <Compile Include="Projectile\Bullet_HologramLaser.cs" />
+    <Compile Include="Obsolete\Bullet_HologramLaser.cs" />
     <Compile Include="Projectile\Projectile_SoSFake.cs" />
     <Compile Include="Projectile\Projectile_ExplosiveShipCombat.cs" />
     <Compile Include="Projectile\Projectile_ExplosiveShipCombatPsychic.cs" />

@@ -28,5 +28,6 @@ namespace RimWorld
         public float heatPurge = 0;
         public float heatMultiplier = 1.0f;
         public Color color = Color.white;
+        public Color laserColor = Color.red;
     }
 }

@@ -13,7 +13,7 @@ namespace RimWorld
     [StaticConstructorOnStartup]
     public class CompShipSalvageBay : ThingComp
     {
-        public static int salvageCapacity = 2500;
+        public static int salvageCapacity = 5000;
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
 			var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
@@ -113,6 +113,7 @@ namespace RimWorld
                 {
                     //abandon target wreck (rem rock floor)
                     targetMap = this.parent.Map,
+                    position = this.parent.Position,
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommandDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")

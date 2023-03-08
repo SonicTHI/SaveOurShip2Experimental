@@ -263,6 +263,8 @@ namespace RimWorld
         public bool Scanned = false;
         public int BoardStartTick = 0;
         public int lastPDTick = 0;
+        readonly float[] minRange = new[] { 0f, 60f, 110f, 160f };
+        readonly float[] maxRange = new[] { 40f, 90f, 140f, 190f };
 
         public void SpawnEnemyShip(PassingShip passingShip, Faction faction, bool fleet, bool bounty, out List<Building> cores)
         {
@@ -763,14 +765,13 @@ namespace RimWorld
                     else //move to range
                     {
                         //calc ratios
-                        float[] threatRatio = new[] { 0f, 0f, 0f, 0f };
-                        threatRatio[3] = threatPerSegment[3] / OriginMapComp.threatPerSegment[3];
-                        threatRatio[2] = threatPerSegment[2] / OriginMapComp.threatPerSegment[2];
-                        threatRatio[1] = threatPerSegment[1] / OriginMapComp.threatPerSegment[1];
-                        threatRatio[0] = threatPerSegment[0] / OriginMapComp.threatPerSegment[0];
+                        float[] threatRatio = new[] { threatPerSegment[0] / OriginMapComp.threatPerSegment[0],
+                            threatPerSegment[1] / OriginMapComp.threatPerSegment[1],
+                            threatPerSegment[2] / OriginMapComp.threatPerSegment[2],
+                            threatPerSegment[3] / OriginMapComp.threatPerSegment[3] };
                         //Log.Message("Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                         float max = 0;
-                        int best = -1;
+                        int best = 0;
                         for (int i = 0; i < 4; i++)
                         {
                             if (threatRatio[i] > max)
@@ -779,47 +780,15 @@ namespace RimWorld
                                 best = i;
                             }
                         }
-                        //move to cqc
-                        if (best == 0)
-                        {
-                            if (Range > 40)
-                                Heading = 1;
-                            else
-                                Heading = 0;
-                        }
-                        //move to short range
-                        else if (best == 1)
-                        {
-                            if (Range > 90)
-                                Heading = 1;
-                            else if (Range <= 60)
-                                Heading = -1;
-                            else
-                                Heading = 0;
-                        }
-                        //move to medium range
-                        else if (best == 2)
-                        {
-                            if (Range > 140)
-                                Heading = 1;
-                            else if (Range <= 110)
-                                Heading = -1;
-                            else
-                                Heading = 0;
-                        }
-                        //move to long range
+                        if (Range > maxRange[best]) //forward
+                            Heading = 1;
+                        else if (Range <= minRange[best]) //back
+                            Heading = -1;
                         else
-                        {
-                            if (Range > 190)
-                                Heading = 1;
-                            else if (Range <= 160)
-                                Heading = -1;
-                            else
-                                Heading = 0;
-                        }
+                            Heading = 0; //chill
                     }
                 }
-                else
+                else //engines dead or disabled
                 {
                     if (threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1)
                     {

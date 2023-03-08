@@ -186,18 +186,20 @@ namespace RimWorld
         //projectiles register on turret map
         public void RegisterProjectile(Building_ShipTurret turret, LocalTargetInfo target, ThingDef spawnProjectile, IntVec3 burstLoc)
         {
+            var mapComp = caster.Map.GetComponent<ShipHeatMapComp>();
             ShipCombatProjectile proj = new ShipCombatProjectile
             {
                 turret = turret,
                 target = target,
                 range = 0,
+                rangeAtStart = mapComp.Range,
                 spawnProjectile = spawnProjectile,
                 missRadius = this.verbProps.ForcedMissRadius,
                 burstLoc = burstLoc,
                 speed = turret.heatComp.Props.projectileSpeed,
                 Map = turret.Map
             };
-            caster.Map.GetComponent<ShipHeatMapComp>().Projectiles.Add(proj);
+        mapComp.Projectiles.Add(proj);
         }
         public override bool CanHitTarget(LocalTargetInfo targ)
         {

@@ -51,7 +51,8 @@ namespace RimWorld.Planet
 				//DropTravelingTransportPods(pods, i, this.cells[i], this.mapParent.Map);
 			}
 			TransportPodsArrivalActionUtility.RemovePawnsFromWorldPawns(pods);
-			Messages.Message("MessageTransportPodsArrived".Translate(), lookTarget, MessageTypeDefOf.TaskCompletion, true);
+			if (!pods.NullOrEmpty())
+				Messages.Message("SoSPodsArrived".Translate(), lookTarget, MessageTypeDefOf.TaskCompletion, true);
 		}
 		public static bool CanLandInSpecificCell(IEnumerable<IThingHolder> pods, MapParent mapParent)
 		{
@@ -77,7 +78,7 @@ namespace RimWorld.Planet
 					foreach (IntVec3 intVec in GenAdj.CellsAdjacent8Way(validCells[i], Rot4.North, new IntVec2(7, 7)))
 					{
 						Room room = intVec.GetRoom(map);
-						if (intVec.InBounds(map) && intVec.Standable(map) && room != null && !room.TouchesMapEdge && !room.IsDoorway && !(room.ContainsThing(ThingDef.Named("ShipPilotSeatMini")) || room.ContainsThing(ThingDef.Named("ShipPilotSeat")) || room.ContainsThing(ThingDef.Named("ShipConsoleTactical")) || room.ContainsThing(ThingDef.Named("ShipArchotechSpore"))))
+						if (intVec.InBounds(map) && intVec.Standable(map) && room != null && !room.TouchesMapEdge && !room.IsDoorway && !ShipInteriorMod2.AnyBridgeIn(room))
 						{
 							bool prevent = false;
 							List<Thing> thingList = intVec.GetThingList(map);

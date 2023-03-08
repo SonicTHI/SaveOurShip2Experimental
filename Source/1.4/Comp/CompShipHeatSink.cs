@@ -103,8 +103,9 @@ namespace RimWorld
                         return;
                     }
                     //bleed into or adjacent room
-                    if (TryPushHeat(ratio, parent.Position)) //tanks
+                    if (parent.def.passability != Traversability.Impassable) //tanks
                     {
+                        TryPushHeat(ratio, parent.Position);
                         return;
                     }
                     else //sinks are walls, check adjacent
@@ -120,7 +121,9 @@ namespace RimWorld
         }
         public bool TryPushHeat(float ratio, IntVec3 vec, float heat = 0)
         {
-            if (vec.GetRoom(parent.Map) == null || (inSpace && ShipInteriorMod2.ExposedToOutside(vec.GetRoom(map))))
+            //dont push to null, doors or space
+            Room r = vec.GetRoom(parent.Map);
+            if (r == null || r.IsDoorway || (inSpace && ShipInteriorMod2.ExposedToOutside(vec.GetRoom(map))))
                 return false;
             if (RemHeatFromNetwork(Props.heatLoss))
             {

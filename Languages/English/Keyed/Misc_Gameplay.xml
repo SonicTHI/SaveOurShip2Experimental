@@ -64,6 +64,7 @@
 	<MessageShuttleMustBePartiallyFueled>Shuttle must have at least 25% fuel to launch a boarding action</MessageShuttleMustBePartiallyFueled>
 	<MessageShuttleMustBeFueledToLand>Shuttle must have at least 15% fuel to land.</MessageShuttleMustBeFueledToLand>
 	<MessageShuttleMustBeFueledToOrbit>Shuttle must have at least 80% fuel to reach orbit.</MessageShuttleMustBeFueledToOrbit>
+	<SoSPodsArrived>Shuttles have arrived at destination.</SoSPodsArrived>
 	
 	<MustPlaceNearSpinalMountPort>Must place adjacent to a spinal-mount module</MustPlaceNearSpinalMountPort>
 	<MustPlaceInsideShipFramework>Must place in a room bordered only by ship parts.</MustPlaceInsideShipFramework>

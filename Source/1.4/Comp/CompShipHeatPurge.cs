@@ -11,22 +11,21 @@ using SaveOurShip2;
 namespace RimWorld
 {
     [StaticConstructorOnStartup]
-    public class CompShipHeatPurge : CompShipHeat
+    public class CompShipHeatPurge : CompShipHeatSink
     {
         static readonly float HEAT_PURGE_RATIO = 20;
         static SoundDef HissSound = DefDatabase<SoundDef>.GetNamed("ShipPurgeHiss");
 
-        public bool currentlyPurging = false;
+        public bool purging = false;
+        bool start = false;
         bool hiss = false;
-        public bool cloaked;
-        public bool notInsideShield;
         public ShipHeatMapComp mapComp;
         public CompRefuelable fuelComp;
 
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.Look<bool>(ref currentlyPurging, "purging");
+            Scribe_Values.Look<bool>(ref purging, "purging");
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -44,18 +43,12 @@ namespace RimWorld
                 {
                     toggleAction = delegate
                     {
-                        currentlyPurging = !currentlyPurging;
-                        notInsideShield = true;
-                        if (currentlyPurging)
-                        {
-                            foreach (CompShipCombatShield shield in mapComp.Shields)
-                            {
-                                shield.flickComp.SwitchIsOn = false;
-                            }
-                            hiss = false;
-                        }
+                        if (purging)
+                            purging = false;
+                        else
+                            StartPurge();
                     },
-                    isActive = delegate { return currentlyPurging; },
+                    isActive = delegate { return purging; },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("SoSPurgeHeat"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("SoSPurgeHeatDesc"),
                     icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/HeatPurge")
@@ -64,14 +57,31 @@ namespace RimWorld
             }
             return giz;
         }
-
         public override void CompTick()
         {
             base.CompTick();
-            this.notInsideShield = NotInsideShield();
-            if (currentlyPurging)
+            if (!parent.Spawned || parent.Destroyed || myNet == null)
             {
-                if (notInsideShield && fuelComp.Fuel > 0 && RemHeatFromNetwork(Props.heatPurge * HEAT_PURGE_RATIO))
+                return;
+            }
+            if (purging)
+            {
+                if (!start)
+                {
+                    foreach (CompShipCombatShield shield in myNet.Shields.Where(s => !s.shutDown))
+                    {
+                        shield.flickComp.SwitchIsOn = false;
+                    }
+                    foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)
+                    {
+                        if (cloak.active && cloak.Map == parent.Map)
+                        {
+                            cloak.flickComp.SwitchIsOn = false;
+                        }
+                    }
+                    start = true;
+                }
+                if (CanPurge() && fuelComp.Fuel > 0 && RemHeatFromNetwork(Props.heatPurge * HEAT_PURGE_RATIO))
                 {
                     fuelComp.ConsumeFuel(Props.heatPurge);
                     FleckMaker.ThrowAirPuffUp(parent.DrawPos + new Vector3(0, 0, 1), parent.Map);
@@ -83,14 +93,18 @@ namespace RimWorld
                 }
                 else
                 {
-                    currentlyPurging = false;
-                    hiss = false;
+                    purging = false;
                 }
             }
         }
-        private bool NotInsideShield()
+        public void StartPurge()
         {
-            cloaked = false;
+            purging = true;
+            hiss = false;
+            start = false;
+        }
+        public bool CanPurge()
+        {
             foreach (CompShipCombatShield shield in mapComp.Shields)
             {
                 if (!shield.shutDown && (parent.DrawPos - shield.parent.DrawPos).magnitude < shield.radius)
@@ -104,7 +118,6 @@ namespace RimWorld
                 {
                     if (cloak.active && cloak.Map == parent.Map)
                     {
-                        cloaked = true;
                         return false;
                     }
                 }

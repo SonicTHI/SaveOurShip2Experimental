@@ -7,6 +7,7 @@ namespace RimWorld
         public Building_ShipTurret turret;
         public LocalTargetInfo target;
         public float range;
+        public float rangeAtStart;
         public ThingDef spawnProjectile;
         public float missRadius;
         public IntVec3 burstLoc;
@@ -18,6 +19,7 @@ namespace RimWorld
             Scribe_References.Look<Building_ShipTurret>(ref turret, "turret");
             Scribe_TargetInfo.Look(ref target, "target");
             Scribe_Values.Look<float>(ref range, "range");
+            Scribe_Values.Look<float>(ref rangeAtStart, "rangeAtStart");
             Scribe_Defs.Look<ThingDef>(ref spawnProjectile, "projectile");
             Scribe_Values.Look<float>(ref missRadius, "missRadius");
             Scribe_Values.Look<IntVec3>(ref burstLoc, "burstLoc");

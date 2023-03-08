@@ -93,7 +93,8 @@
 	<ShipSalvageCommand>Retrieve wreck</ShipSalvageCommand>
 	<ShipSalvageCommandDesc>Retrieve a wreck from target ship</ShipSalvageCommandDesc>
 	<ShipSalvageDisabled>Disabled while in battle</ShipSalvageDisabled>
-	<ShipSalvageBridge>Can not salvage intact ships, capture or destroy the bridge.</ShipSalvageBridge>
+	<ShipSalvageAbandonConfirm>Are you sure you want to discard the target?\nEverything connected to it will burn up in the atmosphere!</ShipSalvageAbandonConfirm>
+	<ShipSalvageBridge>Can not move intact ships with the salvage bay, capture or destroy the bridge.</ShipSalvageBridge>
 	<ShipSalvageCount>Not enough salvage bays. {0}/{1}</ShipSalvageCount>
 	<ShipClaimWrecksCommand>Claim wrecks</ShipClaimWrecksCommand>
 	<ShipClaimWrecksCommandDesc>Claim all wrecks on this map</ShipClaimWrecksCommandDesc>

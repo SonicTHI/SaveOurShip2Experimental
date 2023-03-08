@@ -263,6 +263,8 @@ namespace RimWorld
         public bool Scanned = false;
         public int BoardStartTick = 0;
         public int lastPDTick = 0;
+        readonly float[] minRange = new[] { 0f, 60f, 110f, 160f };
+        readonly float[] maxRange = new[] { 40f, 90f, 140f, 190f };
 
         public void SpawnEnemyShip(PassingShip passingShip, Faction faction, bool fleet, bool bounty, out List<Building> cores)
         {
@@ -292,8 +294,8 @@ namespace RimWorld
             }
             else //using player ship combat rating
             {
-                if (!fleet)
-                    fleet = Rand.Chance((float)SaveOurShip2.ModSettings_SoS.fleetChance);
+                if (CR > 100 && !fleet)
+                    fleet = Rand.Chance((float)ModSettings_SoS.fleetChance);
                 CR = MapThreat(this.map);
                 if (passingShip is TradeShip)
                 {
@@ -323,7 +325,7 @@ namespace RimWorld
                         navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
                         shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.enemyShipDefs, CR, false, true);
                     }
-                    else if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance)) //try to spawn a random navy ship
+                    else if (Rand.Chance((float)ModSettings_SoS.navyShipChance)) //try to spawn a random navy ship
                     {
                         //must have ships, hostile to player, able to operate
                         if (bounty)
@@ -495,7 +497,7 @@ namespace RimWorld
                 hasAnyPlayerPartDetached = false;
                 startedBoarderLoad = false;
                 launchedBoarders = false;
-                BoardStartTick = Find.TickManager.TicksGame + 1800;
+                BoardStartTick = Find.TickManager.TicksGame + 5000;
                 if (!cores.NullOrEmpty())
                 {
                     MapRootList = cores;
@@ -630,7 +632,7 @@ namespace RimWorld
                             callSlowTick = true;
                         }
                     }
-                    if (MapRootList.Count <= 0)//if all ships gone, end combat
+                    if (MapRootList.Count <= 0) //if all ships gone, end combat
                     {
                         //Log.Message("Map defeated: " + this.map);
                         EndBattle(this.map, false);
@@ -657,13 +659,10 @@ namespace RimWorld
             //SCM vars
             float powerCapacity = 0;
             float powerRemaining = 0;
-            bool shieldsUp = false;
-            bool isPurging = false;
-            bool canPurge = false;
             //threat and engine power calcs
             foreach (ShipCache ship in ShipsOnMap)
             {
-                if (ShipCombatMaster)//heatpurge
+                if (ShipCombatMaster)
                 {
 					var bridge = ship.Bridges.FirstOrDefault().heatComp;			  
                     foreach (var battery in ship.Batteries)
@@ -671,37 +670,21 @@ namespace RimWorld
                         powerCapacity += battery.Props.storedEnergyMax;
                         powerRemaining += battery.StoredEnergy;
                     }
-                    shieldsUp = ship.CombatShields.Any(shield => !shield.shutDown);
-                    canPurge = ship.HeatPurges.Any(purge => purge.fuelComp.Fuel > 0);
-                    isPurging = ship.HeatPurges.Any(purge => purge.currentlyPurging);
-
-                    if (!isPurging)
+                    if (!ship.HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
                     {
-                        if (bridge.RatioInNetwork() > 0.8f)
+                        if (ship.HeatPurges.Any(purge => purge.fuelComp.Fuel > 0) && bridge.RatioInNetwork() > 0.7f) //start purge
                         {
-                            if (shieldsUp)
+                            foreach (CompShipHeatPurge purge in ship.HeatPurges)
                             {
-                                foreach (var shield in ship.CombatShields)
-                                {
-                                    if (shield.flickComp == null) continue;
-
-                                    shield.flickComp.SwitchIsOn = false;
-                                }
-                            }
-                            if (canPurge)
-                            {
-                                foreach (CompShipHeatPurge purge in ship.HeatPurges)
-                                {
-                                    purge.currentlyPurging = true;
-                                }
+                                purge.StartPurge();
                             }
                         }
-                        else if (bridge.RatioInNetwork() < 0.5f && !shieldsUp)
+                        else if (ship.CombatShields.Any(shield => shield.shutDown)) //repower shields
                         {
                             foreach (var shield in ship.CombatShields)
                             {
-                                if (shield.flickComp == null) continue;
-
+                                if (shield.flickComp == null)
+                                    continue;
                                 shield.flickComp.SwitchIsOn = true;
                             }
                         }
@@ -769,7 +752,7 @@ namespace RimWorld
                 if (anyMapEngineCanActivate) //set AI heading
                 {
                     //retreat
-                    if (totalThreat / (OriginMapComp.totalThreat * SaveOurShip2.ModSettings_SoS.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
+                    if (enemyRetreating || totalThreat / (OriginMapComp.totalThreat * ModSettings_SoS.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
                     {
                         Heading = -1;
                         enemyRetreating = true;
@@ -782,14 +765,13 @@ namespace RimWorld
                     else //move to range
                     {
                         //calc ratios
-                        float[] threatRatio = new[] { 0f, 0f, 0f, 0f };
-                        threatRatio[3] = threatPerSegment[3] / OriginMapComp.threatPerSegment[3];
-                        threatRatio[2] = threatPerSegment[2] / OriginMapComp.threatPerSegment[2];
-                        threatRatio[1] = threatPerSegment[1] / OriginMapComp.threatPerSegment[1];
-                        threatRatio[0] = threatPerSegment[0] / OriginMapComp.threatPerSegment[0];
+                        float[] threatRatio = new[] { threatPerSegment[0] / OriginMapComp.threatPerSegment[0],
+                            threatPerSegment[1] / OriginMapComp.threatPerSegment[1],
+                            threatPerSegment[2] / OriginMapComp.threatPerSegment[2],
+                            threatPerSegment[3] / OriginMapComp.threatPerSegment[3] };
                         //Log.Message("Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                         float max = 0;
-                        int best = -1;
+                        int best = 0;
                         for (int i = 0; i < 4; i++)
                         {
                             if (threatRatio[i] > max)
@@ -798,47 +780,15 @@ namespace RimWorld
                                 best = i;
                             }
                         }
-                        //move to cqc
-                        if (best == 0)
-                        {
-                            if (Range > 40)
-                                Heading = 1;
-                            else
-                                Heading = 0;
-                        }
-                        //move to short range
-                        else if (best == 1)
-                        {
-                            if (Range > 90)
-                                Heading = 1;
-                            else if (Range <= 60)
-                                Heading = -1;
-                            else
-                                Heading = 0;
-                        }
-                        //move to medium range
-                        else if (best == 2)
-                        {
-                            if (Range > 140)
-                                Heading = 1;
-                            else if (Range <= 110)
-                                Heading = -1;
-                            else
-                                Heading = 0;
-                        }
-                        //move to long range
+                        if (Range > maxRange[best]) //forward
+                            Heading = 1;
+                        else if (Range <= minRange[best]) //back
+                            Heading = -1;
                         else
-                        {
-                            if (Range > 190)
-                                Heading = 1;
-                            else if (Range <= 160)
-                                Heading = -1;
-                            else
-                                Heading = 0;
-                        }
+                            Heading = 0; //chill
                     }
                 }
-                else
+                else //engines dead or disabled
                 {
                     if (threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1)
                     {
@@ -1309,8 +1259,8 @@ namespace RimWorld
                 {
                     Engines.Add(building.TryGetComp<CompEngineTrail>());
                 }
-                //else if (building.TryGetComp<CompShipCombatShield>() != null)
-                //    CombatShields.Add(building.GetComp<CompShipCombatShield>());
+                else if (building.TryGetComp<CompShipCombatShield>() != null)
+                    CombatShields.Add(building.GetComp<CompShipCombatShield>());
                 else if (building is Building_ShipBridge bridge)
                 {
                     if (!bridge.Destroyed)

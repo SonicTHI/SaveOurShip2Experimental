@@ -88,7 +88,7 @@ namespace RimWorld
             {
                 return 0;
             }
-            return myNet.StorageUsed / myNet.StorageCapacity;
+            return Mathf.Clamp(myNet.StorageUsed / myNet.StorageCapacity, 0, 1);
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {

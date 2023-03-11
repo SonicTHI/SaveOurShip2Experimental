@@ -294,9 +294,11 @@ namespace RimWorld
             }
             else //using player ship combat rating
             {
+                CR = MapThreat(this.map) * 0.9f;
                 if (CR > 100 && !fleet)
                     fleet = Rand.Chance((float)ModSettings_SoS.fleetChance);
-                CR = MapThreat(this.map);
+                if (CR < 500) //reduce difficulty in this range - would be better as a timed thing
+                    CR *= 0.9f;
                 if (passingShip is TradeShip)
                 {
                     //find suitable navyDef
@@ -632,7 +634,7 @@ namespace RimWorld
                             callSlowTick = true;
                         }
                     }
-                    if (MapRootList.Count <= 0) //if all ships gone, end combat
+                    if (MapRootList.NullOrEmpty() || MapRootListAll.NullOrEmpty()) //if all ships gone, end combat
                     {
                         //Log.Message("Map defeated: " + this.map);
                         EndBattle(this.map, false);

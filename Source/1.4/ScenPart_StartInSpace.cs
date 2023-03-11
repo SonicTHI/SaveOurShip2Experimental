@@ -1,4 +1,6 @@
-﻿using RimworldMod;
+﻿using RimWorld.Planet;
+using RimworldMod;
+using RimWorld;
 using RimworldMod.VacuumIsNotFun;
 using SaveOurShip2;
 using System;
@@ -91,7 +93,15 @@ namespace RimWorld
 		//ship selection end
 		public override void PostGameStart()
         {
-            List<Pawn> startingPawns = Find.CurrentMap.mapPawns.PawnsInFaction(Faction.OfPlayer);
+			Map originMap = Find.CurrentMap;
+			if (originMap.Size.x < enemyShipDef.sizeX + 20 || originMap.Size.z < enemyShipDef.sizeZ + 20)
+            {
+				Log.Error("SOS2: map size too small for ship: " + enemyShipDef.label + ", aborting!");
+				Scribe.ForceStop();
+				GenScene.GoToMainMenu();
+				return;
+            }
+			List<Pawn> startingPawns = Find.CurrentMap.mapPawns.PawnsInFaction(Faction.OfPlayer);
 			int newTile = ShipInteriorMod2.FindWorldTile();
 			Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
 			((WorldObjectOrbitingShip)spaceMap.Parent).radius = 150;
@@ -108,7 +118,7 @@ namespace RimWorld
 			{
 				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
 			}
-			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0);
+			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0, (spaceMap.Size.x - enemyShipDef.sizeX) / 2, (spaceMap.Size.z - enemyShipDef.sizeZ) / 2);
 			Current.ProgramState = ProgramState.Playing;
 			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
 			Section[,] secArray = new Section[secs.x, secs.z];
@@ -197,7 +207,6 @@ namespace RimWorld
 					}
                 }
 			}
-			Current.Game.DeinitAndRemoveMap_NewTemp(Find.CurrentMap, false);
             CameraJumper.TryJump(spaceMap.Center, spaceMap);
 			spaceMap.weatherManager.curWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
 			spaceMap.weatherManager.lastWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
@@ -207,7 +216,11 @@ namespace RimWorld
 			foreach (Room r in spaceMap.regionGrid.allRooms)
 				r.Temperature = 21;
 			AccessExtensions.Utility.RecacheSpaceMaps();
-        }
+			//remove map and WO
+			WorldObject originParent = originMap.Parent;
+			Current.Game.DeinitAndRemoveMap_NewTemp(originMap, false);
+			Find.World.worldObjects.Remove(originParent);
+		}
 
 		List<IntVec3> GetSpawnCells(Map spaceMap) //spawn placer > crypto > salvbay > bridge
 		{

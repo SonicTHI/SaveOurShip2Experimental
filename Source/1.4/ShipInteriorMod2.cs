@@ -148,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V81f1 active");
+			Log.Message("SOS2EXP V81f2 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -6076,8 +6076,8 @@ namespace SaveOurShip2
     {
 		public static bool Prefix()
         {
-			return !WorldSwitchUtility.LoadShipFlag || !WorldSwitchUtility.StartShipFlag;
-        }
+			return !WorldSwitchUtility.LoadShipFlag;
+		}
     }
 
 	[HarmonyPatch(typeof(MapGenerator), "GenerateMap")]

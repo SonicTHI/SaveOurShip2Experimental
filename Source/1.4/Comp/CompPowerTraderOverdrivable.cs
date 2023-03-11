@@ -211,7 +211,7 @@ namespace RimWorld
 
         public override string CompInspectStringExtra()
         {
-            return base.CompInspectStringExtra() + "\nInstability: " + instability;
+            return base.CompInspectStringExtra() + "\nInstability: " + instability.ToString("F2");
         }
     }
 }

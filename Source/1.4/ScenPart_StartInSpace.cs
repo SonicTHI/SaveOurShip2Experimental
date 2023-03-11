@@ -15,19 +15,21 @@ namespace RimWorld
 {
     class ScenPart_StartInSpace : ScenPart
 	{
-		List<Building> spawns = new List<Building>();
+		static List<Building> spawns = new List<Building>();
+		static EnemyShipDef pickedEnemyShipDef;
+		static bool damageStart = true;
+		static bool station = true;
 		public override bool CanCoexistWith(ScenPart other)
 		{
 			return !(other is ScenPart_AfterlifeVault || other is ScenPart_LoadShip);
 		}
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
-		internal EnemyShipDef enemyShipDef;
-		bool damageStart = true;
+		EnemyShipDef enemyShipDef;
 		public override void ExposeData()
 		{
 			base.ExposeData();
-			Scribe_Defs.Look<EnemyShipDef>(ref this.enemyShipDef, "enemyShipDef");
+			Scribe_Defs.Look<EnemyShipDef>(ref enemyShipDef, "enemyShipDef");
 		}
 		public override void DoEditInterface(Listing_ScenEdit listing)
 		{
@@ -35,7 +37,7 @@ namespace RimWorld
 			Rect rect = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 2f);
 			Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 2f, scenPartRect.width, scenPartRect.height / 2f);
 			//selection 1
-			if (Widgets.ButtonText(rect, this.enemyShipDef.label, true, true, true))
+			if (Widgets.ButtonText(rect, enemyShipDef.label, true, true, true))
 			{
 				bool station = false;
 				if (this.def.defName.Equals("StartInSpaceDungeon"))
@@ -49,7 +51,7 @@ namespace RimWorld
 					EnemyShipDef localTd = localTd2;
 					list.Add(new FloatMenuOption(localTd.label + " (" + localTd.defName + ")", delegate ()
 					{
-						this.enemyShipDef = localTd;
+						enemyShipDef = localTd;
 					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
 				}
 				Find.WindowStack.Add(new FloatMenu(list));
@@ -60,11 +62,11 @@ namespace RimWorld
 				List<FloatMenuOption> toggleDamage = new List<FloatMenuOption>();
 				toggleDamage.Add(new FloatMenuOption("Damage ship: True", delegate ()
 				{
-					this.damageStart = true;
+					damageStart = true;
 				}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
 				toggleDamage.Add(new FloatMenuOption("Damage ship: False", delegate ()
 				{
-					this.damageStart = false;
+					damageStart = false;
 				}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
 				Find.WindowStack.Add(new FloatMenu(toggleDamage));
 
@@ -72,57 +74,57 @@ namespace RimWorld
 		}
 		public override string Summary(Scenario scen)
 		{
-			return "ScenPart_PlayerFaction".Translate(this.enemyShipDef.label);
+			return "ScenPart_PlayerFaction".Translate(enemyShipDef.label);
 		}
 		public override void Randomize()
 		{
-			this.enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
+			enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
 		}
 		public override bool HasNullDefs()
 		{
-			return base.HasNullDefs() || this.enemyShipDef == null;
+			return base.HasNullDefs() || enemyShipDef == null;
 		}
 		public override IEnumerable<string> ConfigErrors()
 		{
-			if (this.enemyShipDef == null)
+			if (enemyShipDef == null)
 			{
 				yield return "thingDef is null";
 			}
 			yield break;
 		}
 		//ship selection end
-		public override void PostGameStart()
-        {
-			Map originMap = Find.CurrentMap;
-			if (originMap.Size.x < enemyShipDef.sizeX + 20 || originMap.Size.z < enemyShipDef.sizeZ + 20)
-            {
-				Log.Error("SOS2: map size too small for ship: " + enemyShipDef.label + ", aborting!");
-				Scribe.ForceStop();
-				GenScene.GoToMainMenu();
-				return;
-            }
-			List<Pawn> startingPawns = Find.CurrentMap.mapPawns.PawnsInFaction(Faction.OfPlayer);
+
+
+		public void DoEarlyInit()
+		{
+			WorldSwitchUtility.StartShipFlag = true;
+			pickedEnemyShipDef = this.enemyShipDef;
+			station = this.def.defName.Equals("StartInSpaceDungeon");
+		}
+		public static Map GenerateShipSpaceMap() //MapGenerator.GenerateMap override via patch
+		{
 			int newTile = ShipInteriorMod2.FindWorldTile();
 			Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
 			((WorldObjectOrbitingShip)spaceMap.Parent).radius = 150;
 			((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
-			List<Building> cores = new List<Building>();
 			Current.ProgramState = ProgramState.MapInitializing;
-			bool station = this.def.defName.Equals("StartInSpaceDungeon");
-			if (station && enemyShipDef.defName == "0") //random dungeon
+
+			if (station && pickedEnemyShipDef.defName == "0") //random dungeon
 			{
-				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
+				pickedEnemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
 				damageStart = false;
 			}
-			else if (enemyShipDef.defName == "0") //random ship, damage lvl 1
+			else if (pickedEnemyShipDef.defName == "0") //random ship, damage lvl 1
 			{
-				enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
+				pickedEnemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
 			}
-			ShipInteriorMod2.GenerateShip(enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0, (spaceMap.Size.x - enemyShipDef.sizeX) / 2, (spaceMap.Size.z - enemyShipDef.sizeZ) / 2);
+			List<Building> cores = new List<Building>();
+			ShipInteriorMod2.GenerateShip(pickedEnemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0, (spaceMap.Size.x - pickedEnemyShipDef.sizeX) / 2, (spaceMap.Size.z - pickedEnemyShipDef.sizeZ) / 2);
+
 			Current.ProgramState = ProgramState.Playing;
-			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
+			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
 			Section[,] secArray = new Section[secs.x, secs.z];
-			typeof(MapDrawer).GetField("sections", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(spaceMap.mapDrawer, secArray);
+			typeof(MapDrawer).GetField("sections", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(spaceMap.mapDrawer, secArray);
 			for (int i = 0; i < secs.x; i++)
 			{
 				for (int j = 0; j < secs.z; j++)
@@ -133,19 +135,32 @@ namespace RimWorld
 					}
 				}
 			}
-			//move player things to space map
-			foreach (Pawn p in startingPawns)
-            {
-				if (p.InContainerEnclosed)
+
+			if (!station) //defog and homezone ships
+			{
+				spaceMap.fogGrid.ClearAllFog();
+				foreach (Building b in spaceMap.listerThings.AllThings.Where(t => t is Building))
 				{
-					p.ParentHolder.GetDirectlyHeldThings().Remove(p);
-				}
-				else
-				{
-					p.DeSpawn();
-					p.SpawnSetup(spaceMap, true);
+					foreach (IntVec3 v in b.OccupiedRect())
+					{
+						spaceMap.areaManager.Home[v] = true;
+					}
 				}
 			}
+			CameraJumper.TryJump(spaceMap.Center, spaceMap);
+			spaceMap.weatherManager.curWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
+			spaceMap.weatherManager.lastWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
+			spaceMap.Parent.SetFaction(Faction.OfPlayer);
+			Find.MapUI.Notify_SwitchedMap();
+			spaceMap.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
+			foreach (Room r in spaceMap.regionGrid.allRooms)
+				r.Temperature = 21;
+			AccessExtensions.Utility.RecacheSpaceMaps();
+			return spaceMap;
+		}
+		public override void PostGameStart() //spawn pawns, things
+		{
+			Map spaceMap = Find.CurrentMap;
 			List<List<Thing>> list = new List<List<Thing>>();
 			foreach (Pawn startingAndOptionalPawn in Find.GameInitData.startingAndOptionalPawns)
 			{
@@ -185,10 +200,10 @@ namespace RimWorld
 					spawnPos = GetSpawnCells(spaceMap); //reuse spawns
 
 				foreach (Thing thingy in thingies)
-                {
+				{
 					thingy.SetForbidden(true, false);
 					GenPlace.TryPlaceThing(thingy, nextPos, spaceMap, ThingPlaceMode.Near);
-                }
+				}
 				if (station)
 					FloodFillerFog.FloodUnfog(nextPos, spaceMap);
 			}
@@ -196,33 +211,8 @@ namespace RimWorld
 			{
 				b.Destroy();
 			}
-			if (!station) //defog and homezone ships
-			{
-				spaceMap.fogGrid.ClearAllFog();
-				foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist)
-                {
-					foreach (IntVec3 v in b.OccupiedRect())
-                    {
-						spaceMap.areaManager.Home[v] = true;
-					}
-                }
-			}
-            CameraJumper.TryJump(spaceMap.Center, spaceMap);
-			spaceMap.weatherManager.curWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
-			spaceMap.weatherManager.lastWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
-			spaceMap.Parent.SetFaction(Faction.OfPlayer);
-			Find.MapUI.Notify_SwitchedMap();
-			spaceMap.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
-			foreach (Room r in spaceMap.regionGrid.allRooms)
-				r.Temperature = 21;
-			AccessExtensions.Utility.RecacheSpaceMaps();
-			//remove map and WO
-			WorldObject originParent = originMap.Parent;
-			Current.Game.DeinitAndRemoveMap_NewTemp(originMap, false);
-			Find.World.worldObjects.Remove(originParent);
 		}
-
-		List<IntVec3> GetSpawnCells(Map spaceMap) //spawn placer > crypto > salvbay > bridge
+		static List<IntVec3> GetSpawnCells(Map spaceMap) //spawn placer > crypto > salvbay > bridge
 		{
 			List<IntVec3> spawncells = new List<IntVec3>();
 			foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist.Where(b => b.def.defName.Equals("PawnSpawnerStart")))

@@ -26,7 +26,7 @@ namespace RimWorld
         {
             get
             {
-                if (!mapComp.InCombat && mapComp.Cloaks.Any(c => c.active))
+                if (mapComp.Cloaks.Any(c => c.active))
                 {
                     disabled = true;
                 }
@@ -123,7 +123,7 @@ namespace RimWorld
         {
             //dont push to null, doors or space
             Room r = vec.GetRoom(parent.Map);
-            if (r == null || r.IsDoorway || (inSpace && ShipInteriorMod2.ExposedToOutside(vec.GetRoom(map))))
+            if (r == null || r.IsDoorway || (inSpace && ShipInteriorMod2.ExposedToOutside(r)))
                 return false;
             if (RemHeatFromNetwork(Props.heatLoss))
             {
@@ -137,7 +137,7 @@ namespace RimWorld
         }
         public override string CompInspectStringExtra()
         {
-            string toReturn = base.CompInspectStringExtra();// = "Stored heat: " + Mathf.Round(heatStored)+"/"+Props.heatCapacity;
+            string toReturn = base.CompInspectStringExtra();
             if (disabled)
             {
                 toReturn += "\n<color=red>Cannot vent: Cloaked</color>";

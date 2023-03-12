@@ -13,6 +13,7 @@ using UnityEngine;
 using Verse.AI.Group;
 using RimWorld.QuestGen;
 using RimworldMod;
+using Verse;
 using System.Net;
 using System.IO;
 using RimworldMod.VacuumIsNotFun;
@@ -50,13 +51,13 @@ namespace SaveOurShip2
 		}
 
 		public static readonly float crittersleepBodySize = 0.7f;
-		public static bool ArchoStuffEnabled = true;//unassigned???
+		public static bool ArchoStuffEnabled = true; //unassigned???
 		public static bool SoSWin = false;
 		public static bool loadedGraphics = false;
 		public static bool renderedThatAlready = false;
-		public static bool AirlockBugFlag = false;//shipmove
-		public static Building shipOriginRoot = null;//used for patched original launch code
-		public static Map shipOriginMap = null;//used to check for shipmove map size problem, reset after move
+		public static bool AirlockBugFlag = false; //shipmove
+		public static Building shipOriginRoot = null; //used for patched original launch code
+		public static Map shipOriginMap = null; //used to check for shipmove map size problem, reset after move
 
 		// Additional array of compatible RoofDefs from other mods.
 		public static RoofDef[] compatibleAirtightRoofs;
@@ -147,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V80f4 active");
+			Log.Message("SOS2EXP V81f2 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -410,17 +411,15 @@ namespace SaveOurShip2
 		{
 			Log.Message("Spawning ship from CR: " + CR + " tradeShip: " + tradeShip + " allowNavyExc: " + allowNavyExc + " randomFleet: " + randomFleet + " minZ: " + minZ + " maxZ: " + maxZ);
 			float adjCR = CR * Mathf.Clamp((float)difficultySoS, 0.1f, 5f);
-			if (CR < 500) //reduce difficulty in this range - would be better as a timed thing
-				adjCR *= 0.8f;
 			List<EnemyShipDef> check = new List<EnemyShipDef>();
 			if (randomFleet)
 			{
-				check = ships.Where(def => ValidShipDef(def, 0.8f * adjCR, 1.2f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				check = ships.Where(def => ValidShipDef(def, 0.7f * adjCR, 1.1f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
 				if (check.Any())
 					return check.RandomElement();
 			}
 			Log.Message("fallback 0");
-			check = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.5f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+			check = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.3f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
 			if (check.Any())
 				return check.RandomElement();
 			Log.Message("fallback 1");
@@ -1248,6 +1247,8 @@ namespace SaveOurShip2
 				r.Temperature = 21;
 			foreach (Thing t in planters)
 			{
+				if (t.GetRoom() == null || ExposedToOutside(t.GetRoom()))
+					continue;
 				ThingDef def = Rand.Element(ThingDef.Named("Plant_Rice"), ThingDef.Named("Plant_Potato"), ThingDef.Named("Plant_Strawberry"));
 				//randomPlants.Where(d => d.plant.sowTags.Contains("Hydroponic") && !d.plant.cavePlant && d.plant.sowResearchPrerequisites == null).RandomElement();
 				if (def != null)
@@ -2006,10 +2007,10 @@ namespace SaveOurShip2
 			}
 
 			//landing - remove space map
-			if (sourceMap != targetMap && !sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
+			if (!targetMapIsSpace && !sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
 			{
 				WorldObject oldParent = sourceMap.Parent;
-				Current.Game.DeinitAndRemoveMap(sourceMap);
+				Current.Game.DeinitAndRemoveMap_NewTemp(sourceMap, false);
 				Find.World.worldObjects.Remove(oldParent);
 			}
 
@@ -2920,7 +2921,7 @@ namespace SaveOurShip2
 				if (a.Open && a.Outerdoor())
 					return false;
 				else
-					rate = 0.75f;
+					rate = 0.5f;
 			}
 			return true;
 		}
@@ -2943,7 +2944,7 @@ namespace SaveOurShip2
 	public static class TemperatureDoesntDiffuseFastInSpace
 	{
 		[HarmonyPostfix]
-		public static void RadiativeHeatTransferOnly(ref float __result, RoomTempTracker __instance, Room ___room)
+		public static void RadiativeHeatTransferOnly(ref float __result, Room ___room)
 		{
 			if (___room.Map.IsSpace())
 			{
@@ -2956,7 +2957,7 @@ namespace SaveOurShip2
 	public static class TemperatureDoesntDiffuseFastInSpaceToo
 	{
 		[HarmonyPostfix]
-		public static void RadiativeHeatTransferOnly(ref float __result, RoomTempTracker __instance, Room ___room)
+		public static void RadiativeHeatTransferOnly(ref float __result, Room ___room)
 		{
 			if (___room.Map.IsSpace())
 			{
@@ -5589,7 +5590,7 @@ namespace SaveOurShip2
 			}
 		}
 	}
-
+	/*
 	[HarmonyPatch(typeof(Page_SelectStartingSite), "ExtraOnGUI")]
 	public class PatchStartingSite
 	{
@@ -5601,7 +5602,7 @@ namespace SaveOurShip2
 				typeof(Page_SelectStartingSite).GetMethod("DoNext", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(__instance, new object[] { });
 			}
 		}
-	}
+	}*/
 
 	[HarmonyPatch(typeof(IncidentWorker_PsychicEmanation), "TryExecuteWorker")]
 	public static class TogglePsychicAmplifierQuest
@@ -6087,27 +6088,35 @@ namespace SaveOurShip2
 		public static bool Prefix()
         {
 			return !WorldSwitchUtility.LoadShipFlag;
-        }
+		}
     }
 
 	[HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
 	public static class DoNotActuallyInitMap
     {
 		public static bool Prefix()
-        {
-			return !WorldSwitchUtility.LoadShipFlag;
-        }
+		{
+			if (WorldSwitchUtility.LoadShipFlag || WorldSwitchUtility.StartShipFlag)
+				return false;
+			return true;
+		}
 
 		public static void Postfix(MapParent parent, ref Map __result)
-        {
+		{
 			if (WorldSwitchUtility.LoadShipFlag)
 			{
 				parent.Destroy();
 				WorldSwitchUtility.LoadShipFlag = false;
 				__result = ScenPart_LoadShip.GenerateShipSpaceMap();
 			}
+			else if (WorldSwitchUtility.StartShipFlag)
+			{
+				parent.Destroy();
+				WorldSwitchUtility.StartShipFlag = false;
+				__result = ScenPart_StartInSpace.GenerateShipSpaceMap();
+			}
 		}
-    }
+	}
 
 	[HarmonyPatch(typeof(Scenario),"GetFirstConfigPage")]
 	public static class LoadTheUniqueIDs
@@ -6116,9 +6125,13 @@ namespace SaveOurShip2
 		{
 			foreach (ScenPart part in __instance.AllParts)
 			{
-				if (part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename())
+				if (part is ScenPart_LoadShip p && p.HasValidFilename())
 				{
-					((ScenPart_LoadShip)part).DoEarlyInit();
+					p.DoEarlyInit();
+				}
+				else if (part is ScenPart_StartInSpace s)
+				{
+					s.DoEarlyInit();
 				}
 			}
 		}

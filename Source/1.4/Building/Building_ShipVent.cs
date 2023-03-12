@@ -20,14 +20,15 @@ namespace RimWorld
         {
             if (this.compPowerTrader.PowerOn)
             {
-                IntVec3 intVec3_1 = this.Position + IntVec3.North.RotatedBy(this.Rotation);
                 bool flag = false; //operating at high power
                 float energyLimit;
                 float tempChange;
                 float conductance;
-                if (!intVec3_1.Impassable(this.Map) && intVec3_1.GetRoom(this.Map).OpenRoofCount <= 0 && !intVec3_1.GetRoom(this.Map).UsesOutdoorTemperature)
+                IntVec3 vec = this.Position + IntVec3.North.RotatedBy(this.Rotation);
+                Room room = vec.GetRoom(Map);
+                if (room != null && room.ProperRoom && room.OpenRoofCount <= 0 && !room.UsesOutdoorTemperature)
                 {
-                    float roomTemp = intVec3_1.GetTemperature(this.Map);
+                    float roomTemp = vec.GetTemperature(this.Map);
                     if (roomTemp < this.compTempControl.targetTemperature - 3)
                     {
                         //heat room up to target temp if enough heat available, else use power (same as vanilla heater)
@@ -39,18 +40,18 @@ namespace RimWorld
                             conductance = Mathf.InverseLerp(120f, 20f, roomTemp);
 
                         energyLimit = this.compTempControl.Props.energyPerSecond * conductance * -1.367f; //-64*-1.3672 = 21*4.1667
-                        tempChange = GenTemperature.ControlTemperatureTempChange(intVec3_1, base.Map, energyLimit, this.compTempControl.targetTemperature);
+                        tempChange = GenTemperature.ControlTemperatureTempChange(vec, base.Map, energyLimit, this.compTempControl.targetTemperature);
                         if (heatComp.RemHeatFromNetwork(energyLimit * 0.05f))
                         {
                             //Log.Message("Rem heat:" + energyLimit * 0.05f + " TC:" + tempChange);
-                            intVec3_1.GetRoom(this.Map).Temperature += tempChange;
+                            room.Temperature += tempChange;
                         }
                         else if (heatWithPower)
                         {
                             flag = !Mathf.Approximately(tempChange, 0f);
                             if (flag)
                             {
-                                intVec3_1.GetRoom(this.Map).Temperature += tempChange;
+                                room.Temperature += tempChange;
                             }
                         }
                     }
@@ -64,12 +65,12 @@ namespace RimWorld
                         if (conductance < 0.0)
                             conductance = 0.0f;
                         energyLimit = this.compTempControl.Props.energyPerSecond * conductance * 4.167f;
-                        tempChange = GenTemperature.ControlTemperatureTempChange(intVec3_1, this.Map, energyLimit, this.compTempControl.targetTemperature);
+                        tempChange = GenTemperature.ControlTemperatureTempChange(vec, this.Map, energyLimit, this.compTempControl.targetTemperature);
                         flag = !Mathf.Approximately(tempChange, 0.0f);
                         if (flag && heatComp.AddHeatToNetwork(-energyLimit * 0.05f))
                         {
                             //Log.Message("Add heat:" + -energyLimit * 0.05f + " TC:" + tempChange);
-                            intVec3_1.GetRoom(this.Map).Temperature += tempChange;
+                            room.Temperature += tempChange;
                         }
                         else flag = false;
                     }

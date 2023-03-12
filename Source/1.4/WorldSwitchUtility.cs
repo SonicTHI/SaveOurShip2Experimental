@@ -30,6 +30,7 @@ namespace SaveOurShip2
         public static List<ScenPart> CachedScenario;
 
         public static bool LoadShipFlag = false; //NOTE: This is set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
+        public static bool StartShipFlag = false; //as above but for ScenPart_StartInSpace
 
         static Faction DonatedToFaction = null;
         static float DonatedAmount = 0;

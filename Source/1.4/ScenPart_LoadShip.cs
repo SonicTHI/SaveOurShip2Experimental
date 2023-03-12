@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -151,6 +152,7 @@ namespace RimWorld
                 ((WorldObjectOrbitingShip)spaceMap.Parent).radius = 150;
                 ((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
                 Current.ProgramState = ProgramState.MapInitializing;
+
                 ShipInteriorMod2.AirlockBugFlag = true;
 
                 Scribe.loader.crossRefs.ResolveAllCrossReferences();
@@ -203,10 +205,11 @@ namespace RimWorld
                 }
 
                 ShipInteriorMod2.AirlockBugFlag = false;
+
                 Current.ProgramState = ProgramState.Playing;
-                IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
+                IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
                 Section[,] secArray = new Section[secs.x, secs.z];
-                typeof(MapDrawer).GetField("sections", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(spaceMap.mapDrawer, secArray);
+                typeof(MapDrawer).GetField("sections", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(spaceMap.mapDrawer, secArray);
                 for (int i = 0; i < secs.x; i++)
                 {
                     for (int j = 0; j < secs.z; j++)
@@ -220,8 +223,8 @@ namespace RimWorld
 
                 spaceMap.fogGrid.ClearAllFog();
                 CameraJumper.TryJump(spaceMap.Center, spaceMap);
-                spaceMap.weatherManager.curWeather = WeatherDef.Named("OuterSpaceWeather");
-                spaceMap.weatherManager.lastWeather = WeatherDef.Named("OuterSpaceWeather");
+                spaceMap.weatherManager.curWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
+                spaceMap.weatherManager.lastWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
                 spaceMap.Parent.SetFaction(Faction.OfPlayer);
                 Find.MapUI.Notify_SwitchedMap();
                 spaceMap.regionAndRoomUpdater.RebuildAllRegionsAndRooms();

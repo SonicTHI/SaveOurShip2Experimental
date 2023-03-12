@@ -29,7 +29,7 @@ namespace RimWorld
                 IntVec3 intVec3_3 = this.parent.Position + (IntVec3.South.RotatedBy(this.parent.Rotation) * 2);
                 IntVec3 intVec3_4 = this.parent.Position + (IntVec3.South.RotatedBy(this.parent.Rotation) * 3);
 
-                if (intVec3_4.Impassable(this.parent.Map) || intVec3_3.Impassable(this.parent.Map) || intVec3_2.Impassable(this.parent.Map))
+                if (intVec3_4.Impassable(parent.Map) || intVec3_3.Impassable(parent.Map) || intVec3_2.Impassable(parent.Map) || (intVec3_4.GetRoom(parent.Map)?.IsDoorway ?? false) || (intVec3_3.GetRoom(parent.Map)?.IsDoorway ?? false) || (intVec3_2.GetRoom(parent.Map)?.IsDoorway ?? false))
                 {
                     desire = 0.0f;
                 }

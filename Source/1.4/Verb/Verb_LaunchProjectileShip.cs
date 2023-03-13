@@ -152,8 +152,7 @@ namespace RimWorld
                         {
                             if (t.Faction == Faction.OfPlayer)
                             {
-                                if (!player)
-                                    player = true;
+                                player = true;
                                 if (SaveOurShip2.ModSettings_SoS.easyMode)
                                 {
                                     HealthUtility.DamageUntilDowned((Pawn)t, false);

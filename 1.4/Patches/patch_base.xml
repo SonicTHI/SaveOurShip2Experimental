@@ -60,14 +60,18 @@
 						<thingDef>ShipTorpedo_HighExplosive</thingDef>
 						<countRange>0~10</countRange>
 					</li>
-				</value>
-			</li>
-			<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Orbital_CombatSupplier"]/stockGenerators</xpath>
-				<value>
 					<li Class="StockGenerator_SingleDef">
 						<thingDef>ShipTorpedo_EMP</thingDef>
 						<countRange>0~4</countRange>
+					</li>
+					<li Class="StockGenerator_SingleDef">
+						<thingDef>ShipTorpedo_Antimatter</thingDef>
+						<countRange>0~1</countRange>
+					</li>
+					<li Class="StockGenerator_Category">
+						<categoryDef>ShipBlueprints</categoryDef>
+						<thingDefCountRange>1~1</thingDefCountRange>
+						<countRange>1~1</countRange>
 					</li>
 				</value>
 			</li>
@@ -78,29 +82,10 @@
 						<thingDef>ShipTorpedo_HighExplosive</thingDef>
 						<countRange>0~3</countRange>
 					</li>
-				</value>
-			</li>
-			<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Caravan_Outlander_CombatSupplier"]/stockGenerators</xpath>
-				<value>
 					<li Class="StockGenerator_SingleDef">
 						<thingDef>ShipTorpedo_EMP</thingDef>
 						<countRange>0~1</countRange>
 					</li>
-				</value>
-			</li>
-			<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Orbital_CombatSupplier" or defName="Caravan_Outlander_CombatSupplier"]/stockGenerators</xpath>
-				<value>
-					<li Class="StockGenerator_SingleDef">
-						<thingDef>ShipTorpedo_Antimatter</thingDef>
-						<countRange>0~1</countRange>
-					</li>
-				</value>
-			</li>
-			<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Orbital_CombatSupplier" or defName="Caravan_Outlander_CombatSupplier"]/stockGenerators</xpath>
-				<value>
 					<li Class="StockGenerator_Category">
 						<categoryDef>ShipBlueprints</categoryDef>
 						<thingDefCountRange>0~1</thingDefCountRange>

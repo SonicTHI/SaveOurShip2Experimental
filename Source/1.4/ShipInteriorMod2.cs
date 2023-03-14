@@ -148,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V81f3 active");
+			Log.Message("SOS2EXP V81f4 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -871,11 +871,13 @@ namespace SaveOurShip2
 									for (int i = 0; i < torp.torpComp.Props.maxTorpedoes; i++)
 									{
 										if (size > 10000 && Rand.Chance(0.05f))
-											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_Antimatter"), 1);
-										else if (size > 5000 && Rand.Chance(0.2f))
-											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_EMP"), 1);
+											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_Antimatter, 1);
+										else if (size > 5000 && Rand.Chance(0.15f))
+											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_EMP, 1);
+										else if (size < 2500 && Rand.Chance(0.2f))
+											continue;
 										else
-											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
+											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive, 1);
 									}
 								}
 							}

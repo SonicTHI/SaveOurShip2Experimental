@@ -36,7 +36,7 @@ namespace RimWorld
                     heatGenerated *= 1 + Mathf.Pow(overdriveComp.overdriveSetting, 1.5f);
                 else if (parent is Building_ShipCloakingDevice c && c.active)
                 {
-                    heatGenerated += this.myNet.StorageCapacity * 0.008f;
+                    heatGenerated += this.myNet.StorageCapacity * 0.0055f;
                 }
                 if (!AddHeatToNetwork(heatGenerated))
                     GenTemperature.PushHeat(parent, heatGenerated);

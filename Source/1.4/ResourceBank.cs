@@ -78,6 +78,9 @@ namespace SaveOurShip2
 			public static ThingDef ShipHullTileMech;
 			public static ThingDef ShipHullTileArchotech;
 			public static ThingDef ShipHullfoamTile;
+			public static ThingDef ShipTorpedo_HighExplosive;
+			public static ThingDef ShipTorpedo_EMP;
+			public static ThingDef ShipTorpedo_Antimatter;
 		}
 
 		[DefOf]

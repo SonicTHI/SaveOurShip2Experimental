@@ -551,13 +551,13 @@ namespace RimWorld
                 if (ShipCombatMaster)
                 {
                     if (OriginMapComp.Heading == 1)
-                        Range -= 0.1f * OriginMapComp.MapEnginePower;
+                        Range -= OriginMapComp.MapEnginePower;
                     else if (OriginMapComp.Heading == -1)
-                        Range += 0.1f * OriginMapComp.MapEnginePower;
+                        Range += OriginMapComp.MapEnginePower;
                     if (Heading == 1)
-                        Range -= 0.1f * MapEnginePower;
+                        Range -= MapEnginePower;
                     else if (Heading == -1)
-                        Range += 0.1f * MapEnginePower;
+                        Range += MapEnginePower;
                     if (Range > 400)
                         Range = 400;
                     else if (Range < 0)
@@ -737,13 +737,13 @@ namespace RimWorld
                             engine.Off();
                     }
                     else
-                        engine.Off();						 
+                        engine.Off();
                 }
                 BuildingsCount += ship.Buildings.Count;
             }
             //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);
             if (anyMapEngineCanActivate)
-                MapEnginePower *= 500f / Mathf.Pow(BuildingsCount, 1.1f);
+                MapEnginePower *= 25f / Mathf.Pow(BuildingsCount, 1.1f);
             else
                 MapEnginePower = 0;
             //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);

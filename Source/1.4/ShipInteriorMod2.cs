@@ -148,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V81f4 active");
+			Log.Message("SOS2EXP V81f5 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -2593,7 +2593,7 @@ namespace SaveOurShip2
 					if (proj.turret != null)
 					{
 						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 210 - proj.range + proj.rangeAtStart, baseY - 24, 12, 12), 
+							new Rect(screenHalf - 210 - proj.range + enemyShipComp.Range, baseY - 24, 12, 12), 
 							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.projectileEnemy.MatSingle.mainTexture);
 					}
 				}

@@ -191,14 +191,14 @@ namespace RimWorld
                 turret = turret,
                 target = target,
                 range = 0,
-                rangeAtStart = mapComp.Range,
+                //rangeAtStart = mapComp.Range,
                 spawnProjectile = spawnProjectile,
                 missRadius = this.verbProps.ForcedMissRadius,
                 burstLoc = burstLoc,
                 speed = turret.heatComp.Props.projectileSpeed,
                 Map = turret.Map
             };
-        mapComp.Projectiles.Add(proj);
+            mapComp.Projectiles.Add(proj);
         }
         public override bool CanHitTarget(LocalTargetInfo targ)
         {

@@ -235,7 +235,7 @@ namespace SaveOurShip2
         public int PlayerFactionBounty;
         public int LastBountyRaidTick;				   
 		public List<PreviousWorld> PastWorlds=new List<PreviousWorld>();
-        private List<string> UnlocksInt = new List<string>();
+        public List<string> Unlocks = new List<string>();
         public bool startedEndgame;
         public Dictionary<int, byte> PawnsInSpaceCache = new Dictionary<int, byte>();
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
@@ -254,23 +254,13 @@ namespace SaveOurShip2
                 Log.Warning("SOS2: Insect faction not found! SOS2 gameplay experience will be affected.");
         }
 
-        public List<string> Unlocks
-        {
-            get
-            {
-                if (UnlocksInt == null)
-                    UnlocksInt = new List<string>();
-                return UnlocksInt;
-            }
-        }
-
 		public override void ExposeData() {
 			base.ExposeData ();
             Scribe_Values.Look<int>(ref ShipsHaveInsidesVersion,"SoSVersion",0);
             WorldSwitchUtility.LoadWorldFlag = true;
 			Scribe_Collections.Look<PreviousWorld> (ref PastWorlds, "PastWorlds", LookMode.Deep, new object[0]);
             WorldSwitchUtility.LoadWorldFlag = false;
-            Scribe_Collections.Look<string>(ref UnlocksInt, "Unlocks", LookMode.Value);
+            Scribe_Collections.Look<string>(ref Unlocks, "Unlocks", LookMode.Value);
             Scribe_Values.Look<int>(ref PlayerFactionBounty, "PlayerFactionBounty", 0);
             Scribe_Values.Look<int>(ref LastBountyRaidTick, "LastBountyRaidTicks", 0);
             Scribe_Values.Look<bool>(ref startedEndgame, "StartedEndgame");

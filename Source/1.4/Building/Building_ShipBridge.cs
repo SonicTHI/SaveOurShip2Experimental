@@ -285,7 +285,7 @@ namespace RimWorld
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatEscapeDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/Escape_Icon")
                     };
-                    if (masterMapComp.Range < 400)
+                    if (masterMapComp.Range < 395)
                     {
                         escape.disabled = true;
                         escape.disabledReason = TranslatorFormattedStringExtensions.Translate("NotAtMaxShipRange");

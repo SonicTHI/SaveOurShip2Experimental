@@ -42,6 +42,8 @@ namespace RimWorld
 
         public void AfterTarget(Building b)
         {
+            if (IntVec3.Zero.GetTerrain(b.Map) != ResourceBank.TerrainDefOf.EmptySpace) //moon
+                return;
             List<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true).ToList();
             if (positions.Contains(position) || positions.NullOrEmpty())
                 return;

@@ -78,32 +78,7 @@ namespace RimWorld
                 {
                     action = delegate
                     {
-                        List<Building> buildings = new List<Building>();
-                        List<Thing> things = new List<Thing>();
-                        foreach (Thing t in this.parent.Map.listerThings.AllThings)
-                        {
-                            if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
-                            {
-                                buildings.Add(b);
-                            }
-                            else if (t is DetachedShipPart)
-                                things.Add(t);
-                        }
-                        if (buildings.Any())
-                        {
-                            foreach (Building b in buildings)
-                            {
-                                if (b is Building_Storage s)
-                                    s.settings.filter.SetDisallowAll();
-                                b.SetFaction(Faction.OfPlayer);
-                            }
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksSuccess", buildings.Count), parent, MessageTypeDefOf.PositiveEvent);
-                        }
-                        //remove floating tiles
-                        foreach (Thing t in things)
-                        {
-                            t.Destroy();
-                        }
+                        Claim();
                     },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommandDesc"),
@@ -133,6 +108,35 @@ namespace RimWorld
                 yield return removeTargetWreck;
             }
 		}
+        private void Claim()
+        {
+            List<Building> buildings = new List<Building>();
+            List<Thing> things = new List<Thing>();
+            foreach (Thing t in this.parent.Map.listerThings.AllThings)
+            {
+                if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
+                {
+                    buildings.Add(b);
+                }
+                else if (t is DetachedShipPart)
+                    things.Add(t);
+            }
+            if (buildings.Any())
+            {
+                foreach (Building b in buildings)
+                {
+                    if (b is Building_Storage s)
+                        s.settings.filter.SetDisallowAll();
+                    b.SetFaction(Faction.OfPlayer);
+                }
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksSuccess", buildings.Count), parent, MessageTypeDefOf.PositiveEvent);
+            }
+            //remove floating tiles
+            foreach (Thing t in things)
+            {
+                t.Destroy();
+            }
+        }
         public override void CompTickRare()
         {
             base.CompTickRare();

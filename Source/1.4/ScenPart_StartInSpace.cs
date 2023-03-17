@@ -15,10 +15,9 @@ namespace RimWorld
 {
     class ScenPart_StartInSpace : ScenPart
 	{
-		static List<Building> spawns = new List<Building>();
 		static EnemyShipDef pickedEnemyShipDef;
-		static bool damageStart = true;
-		static bool station = true;
+		static bool pickedDamageStart = true;
+		static bool pickedStation = true;
 		public override bool CanCoexistWith(ScenPart other)
 		{
 			return !(other is ScenPart_AfterlifeVault || other is ScenPart_LoadShip);
@@ -26,6 +25,7 @@ namespace RimWorld
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
 		EnemyShipDef enemyShipDef;
+		bool damageStart;
 		public override void ExposeData()
 		{
 			base.ExposeData();
@@ -99,7 +99,8 @@ namespace RimWorld
 		{
 			WorldSwitchUtility.StartShipFlag = true;
 			pickedEnemyShipDef = this.enemyShipDef;
-			station = this.def.defName.Equals("StartInSpaceDungeon");
+			pickedDamageStart = damageStart;
+			pickedStation = this.def.defName.Equals("StartInSpaceDungeon");
 		}
 		public static Map GenerateShipSpaceMap() //MapGenerator.GenerateMap override via patch
 		{
@@ -109,17 +110,17 @@ namespace RimWorld
 			((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
 			Current.ProgramState = ProgramState.MapInitializing;
 
-			if (station && pickedEnemyShipDef.defName == "0") //random dungeon
+			if (pickedStation && pickedEnemyShipDef.defName == "0") //random dungeon
 			{
 				pickedEnemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
-				damageStart = false;
+				pickedDamageStart = false;
 			}
 			else if (pickedEnemyShipDef.defName == "0") //random ship, damage lvl 1
 			{
 				pickedEnemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
 			}
 			List<Building> cores = new List<Building>();
-			ShipInteriorMod2.GenerateShip(pickedEnemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, damageStart ? 1 : 0, (spaceMap.Size.x - pickedEnemyShipDef.sizeX) / 2, (spaceMap.Size.z - pickedEnemyShipDef.sizeZ) / 2);
+			ShipInteriorMod2.GenerateShip(pickedEnemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, pickedDamageStart ? 1 : 0, (spaceMap.Size.x - pickedEnemyShipDef.sizeX) / 2, (spaceMap.Size.z - pickedEnemyShipDef.sizeZ) / 2);
 
 			Current.ProgramState = ProgramState.Playing;
 			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
@@ -136,7 +137,7 @@ namespace RimWorld
 				}
 			}
 
-			if (!station) //defog and homezone ships
+			if (!pickedStation) //defog and homezone ships
 			{
 				spaceMap.fogGrid.ClearAllFog();
 				foreach (Building b in spaceMap.listerThings.AllThings.Where(t => t is Building))
@@ -190,30 +191,34 @@ namespace RimWorld
 					}
 				}
 			}
-			List<IntVec3> spawnPos = GetSpawnCells(spaceMap);
+			List<Building> spawns = new List<Building>();
+			List<IntVec3> spawnPos = GetSpawnCells(spaceMap, out spawns);
 			foreach (List<Thing> thingies in list)
 			{
 				IntVec3 nextPos = spaceMap.Center;
 				nextPos = spawnPos.RandomElement();
 				spawnPos.Remove(nextPos);
 				if (spawnPos.Count == 0)
-					spawnPos = GetSpawnCells(spaceMap); //reuse spawns
+					spawnPos = GetSpawnCells(spaceMap, out spawns); //reuse spawns
 
 				foreach (Thing thingy in thingies)
 				{
 					thingy.SetForbidden(true, false);
 					GenPlace.TryPlaceThing(thingy, nextPos, spaceMap, ThingPlaceMode.Near);
 				}
-				if (station)
+				if (pickedStation)
 					FloodFillerFog.FloodUnfog(nextPos, spaceMap);
 			}
 			foreach (Building b in spawns.Where(b => !b.Destroyed)) //remove spawn points
 			{
 				b.Destroy();
 			}
+			spawns.Clear();
+			spawnPos.Clear();
 		}
-		static List<IntVec3> GetSpawnCells(Map spaceMap) //spawn placer > crypto > salvbay > bridge
+		static List<IntVec3> GetSpawnCells(Map spaceMap, out List<Building> spawns) //spawn placer > crypto > salvbay > bridge
 		{
+			spawns = new List<Building>();
 			List<IntVec3> spawncells = new List<IntVec3>();
 			foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist.Where(b => b.def.defName.Equals("PawnSpawnerStart")))
 			{

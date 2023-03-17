@@ -67,9 +67,9 @@ namespace RimWorld
                         energyLimit = this.compTempControl.Props.energyPerSecond * conductance * 4.167f;
                         tempChange = GenTemperature.ControlTemperatureTempChange(vec, this.Map, energyLimit, this.compTempControl.targetTemperature);
                         flag = !Mathf.Approximately(tempChange, 0.0f);
-                        if (flag && heatComp.AddHeatToNetwork(-energyLimit * 0.05f))
+                        if (flag && heatComp.AddHeatToNetwork(-energyLimit * 0.06f))
                         {
-                            //Log.Message("Add heat:" + -energyLimit * 0.05f + " TC:" + tempChange);
+                            //Log.Message("Add heat:" + -energyLimit * 0.06f + " TC:" + tempChange);
                             room.Temperature += tempChange;
                         }
                         else flag = false;

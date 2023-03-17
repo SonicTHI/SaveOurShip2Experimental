@@ -638,9 +638,9 @@ namespace RimWorld
                     int torpAM = 0;
                     foreach (ThingDef t in torpComp.LoadedShells)
                     {
-                        if (t == ThingDef.Named("ShipTorpedo_EMP"))
+                        if (t == ResourceBank.ThingDefOf.ShipTorpedo_EMP)
                             torpEMP++;
-                        else if (t == ThingDef.Named("ShipTorpedo_Antimatter"))
+                        else if (t == ResourceBank.ThingDefOf.ShipTorpedo_Antimatter)
                             torpAM++;
                         else
                             torp++;

@@ -13,7 +13,7 @@ namespace RimWorld
     [StaticConstructorOnStartup]
     public class CompShipHeatSink : CompShipHeat
     {
-        public static readonly float HeatPushMult = 20f; //ratio modifier should be inverse to Building_ShipVent AddHeatToNetwork
+        public static readonly float HeatPushMult = 10f; //bleed ratio modifier - inverse to Building_ShipVent AddHeatToNetwork
         public float heatStored; //used only when a HB is not on a net
         public bool inSpace;
         public CompPower powerComp;

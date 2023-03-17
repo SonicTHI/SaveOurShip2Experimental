@@ -148,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V81f2 active");
+			Log.Message("SOS2EXP V81f6 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -871,11 +871,13 @@ namespace SaveOurShip2
 									for (int i = 0; i < torp.torpComp.Props.maxTorpedoes; i++)
 									{
 										if (size > 10000 && Rand.Chance(0.05f))
-											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_Antimatter"), 1);
-										else if (size > 5000 && Rand.Chance(0.2f))
-											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_EMP"), 1);
+											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_Antimatter, 1);
+										else if (size > 5000 && Rand.Chance(0.15f))
+											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_EMP, 1);
+										else if (size < 2500 && Rand.Chance(0.2f))
+											continue;
 										else
-											torp.torpComp.LoadShell(ThingDef.Named("ShipTorpedo_HighExplosive"), 1);
+											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive, 1);
 									}
 								}
 							}
@@ -1504,7 +1506,7 @@ namespace SaveOurShip2
 				var current = cellsTodo.First();
 				cellsTodo.Remove(current);
 				cellsDone.Add(current);
-				if (current.GetThingList(map).Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))))
+				if (current.GetThingList(map).Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))) || (includeRock && IsRock(current.GetTerrain(map))))
 				{
 					cellsFound.Add(current);
 					cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v)));
@@ -2591,7 +2593,7 @@ namespace SaveOurShip2
 					if (proj.turret != null)
 					{
 						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 210 - proj.range + proj.rangeAtStart, baseY - 24, 12, 12), 
+							new Rect(screenHalf - 210 - proj.range + enemyShipComp.Range, baseY - 24, 12, 12), 
 							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.projectileEnemy.MatSingle.mainTexture);
 					}
 				}
@@ -3239,14 +3241,13 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void NoQuestsTargetSpace(ref Map __result)
 		{
-			if (__result != null && __result.IsSpace())
+			//if more than one map exists retry and exclude space maps
+			if (__result != null && Find.Maps.Count > 1 && __result.IsSpace())
 			{
-				//retry and exclude space maps
-				Log.Message("Tried to fire quest in space map, retrying.");
-				Map map = Find.Maps.Where(m => m.IsPlayerHome && !m.IsSpace() && m.mapPawns.FreeColonists.Count >= 1).FirstOrDefault();
-				if (map == null)
-					map = Find.Maps.Where(m => m.IsPlayerHome && m.mapPawns.FreeColonists.Count >= 1).FirstOrDefault();
-				__result = map;
+				//Log.Message("Tried to fire quest in space map, retrying.");
+				Map map = Find.Maps.Where(m => m.IsPlayerHome && !m.IsSpace() && m.mapPawns.FreeColonists.Count >= 1)?.FirstOrDefault() ?? null;
+				if (map != null)
+					__result = map;
 			}
 		}
 	}
@@ -5848,34 +5849,29 @@ namespace SaveOurShip2
 		}
 	}
 
-	//pointless as the quest should not fire in space at all since it spawns enemy pawns
+	//this type of quest should not fire in space at all
 	[HarmonyPatch(typeof(QuestNode_Root_ShuttleCrash_Rescue), "TryFindShuttleCrashPosition")]
 	public static class CrashOnShuttleBay
 	{
 		public static void Postfix(Map map, Faction faction, IntVec2 size, ref IntVec3 spot, QuestNode_Root_ShuttleCrash_Rescue __instance)
 		{
-			if (map.Biome == ResourceBank.BiomeDefOf.OuterSpaceBiome)
+			if (map.IsSpace())
 			{
-				foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBay")))
+				List<Building> landingSpots = map.listerBuildings.allBuildingsColonist.Where(b => b.def == ThingDef.Named("ShipShuttleBay") || b.def == ThingDef.Named("ShipShuttleBayLarge")).ToList();
+				if (!landingSpots.NullOrEmpty())
 				{
-					ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
-					area.RecalculateBlockingThing();
-					if (area.FirstBlockingThing == null)
+					foreach (Building landingSpot in landingSpots)
 					{
-						spot = area.CenterCell;
-						return;
+						ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
+						area.RecalculateBlockingThing();
+						if (area.FirstBlockingThing == null)
+						{
+							spot = area.CenterCell;
+							break;
+						}
 					}
 				}
-				foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBayLarge")))
-				{
-					ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
-					area.RecalculateBlockingThing();
-					if (area.FirstBlockingThing == null)
-					{
-						spot = area.CenterCell;
-						return;
-					}
-				}
+				/* causes errors on RunInt()
 				QuestPart raidPart = null;
 				foreach (QuestPart part in QuestGen.quest.PartsListForReading)
 				{
@@ -5886,7 +5882,7 @@ namespace SaveOurShip2
 					}
 				}
 				if (raidPart != null)
-					QuestGen.quest.RemovePart(raidPart);
+					QuestGen.quest.RemovePart(raidPart);*/
 			}
 		}
 	}

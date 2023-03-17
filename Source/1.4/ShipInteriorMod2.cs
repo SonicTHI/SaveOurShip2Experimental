@@ -148,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V81f5 active");
+			Log.Message("SOS2EXP V81f6 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1506,7 +1506,7 @@ namespace SaveOurShip2
 				var current = cellsTodo.First();
 				cellsTodo.Remove(current);
 				cellsDone.Add(current);
-				if (current.GetThingList(map).Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))))
+				if (current.GetThingList(map).Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))) || (includeRock && IsRock(current.GetTerrain(map))))
 				{
 					cellsFound.Add(current);
 					cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v)));

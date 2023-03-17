@@ -41,9 +41,12 @@ namespace RimWorld
             if (myNet != null)
             {
                 output += TranslatorFormattedStringExtensions.Translate("ShipHeatStored", Mathf.Round(myNet.StorageUsed), myNet.StorageCapacity);
+                float ratio = RatioInNetwork();
+                if (ratio > 0.9f)
+                    output += "\n<color=red>DANGER! Heat level critical!</color>";
                 if (Prefs.DevMode)
                 {
-                    output += "\nGrid:" + myNet.GridID + " Ratio:" + RatioInNetwork().ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, RatioInNetwork()).ToString("F0");
+                    output += "\nGrid:" + myNet.GridID + " Ratio:" + ratio.ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, ratio).ToString("F0");
                 }
             }
             else

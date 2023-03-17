@@ -79,13 +79,14 @@ namespace RimWorld
                     {
                         //higher outdoor temp, push less heat out
                         float heat = Props.heatVent * GenMath.LerpDoubleClamped(0, 100, 2.5f, 0, map.mapTemperature.OutdoorTemp);
+                        //Log.Message("Remove heat:" + heat);
                         RemHeatFromNetwork(heat);
                     }
                 }
                 if (myNet.StorageUsed > 0)
                 {
                     float ratio = RatioInNetwork();
-                    if (ratio > 0.90f)
+                    if (ratio > 0.9f)
                     {
                         this.parent.TakeDamage(new DamageInfo(DamageDefOf.Burn, 10));
                     }

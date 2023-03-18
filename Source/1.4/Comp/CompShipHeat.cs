@@ -41,12 +41,11 @@ namespace RimWorld
             if (myNet != null)
             {
                 output += TranslatorFormattedStringExtensions.Translate("ShipHeatStored", Mathf.Round(myNet.StorageUsed), myNet.StorageCapacity);
-                float ratio = RatioInNetwork();
-                if (ratio > 0.9f)
+                if (myNet.RatioInNetwork > 0.9f)
                     output += "\n<color=red>DANGER! Heat level critical!</color>";
                 if (Prefs.DevMode)
                 {
-                    output += "\nGrid:" + myNet.GridID + " Ratio:" + ratio.ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, ratio).ToString("F0");
+                    output += "\nGrid:" + myNet.GridID + " Ratio:" + myNet.RatioInNetwork.ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, myNet.RatioInNetwork).ToString("F0");
                 }
             }
             else
@@ -84,14 +83,6 @@ namespace RimWorld
         public float AvailableCapacityInNetwork()
         {
             return myNet.StorageCapacity - myNet.StorageUsed;
-        }
-        public float RatioInNetwork()
-        {
-            if (myNet == null || myNet.StorageCapacity <= 0)
-            {
-                return 0;
-            }
-            return Mathf.Clamp(myNet.StorageUsed / myNet.StorageCapacity, 0, 1);
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {

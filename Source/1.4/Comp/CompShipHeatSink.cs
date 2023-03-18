@@ -45,7 +45,8 @@ namespace RimWorld
         }
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
-            GenTemperature.PushHeat(pos, map, Props.heatCapacity * RatioInNetwork() * HeatPushMult);
+            if (myNet != null)
+                GenTemperature.PushHeat(pos, map, Props.heatCapacity * myNet.RatioInNetwork * HeatPushMult);
             base.PostDestroy(mode, previousMap);
         }
         public override void PostDeSpawn(Map map)
@@ -58,7 +59,7 @@ namespace RimWorld
             //save heat to sinks on save, value clamps
             if (myNet != null && Scribe.mode == LoadSaveMode.Saving)
             {
-                heatStored = Props.heatCapacity * RatioInNetwork();
+                heatStored = Props.heatCapacity * myNet.RatioInNetwork;
             }
             Scribe_Values.Look<float>(ref heatStored, "heatStored");
         }
@@ -85,10 +86,12 @@ namespace RimWorld
                 }
                 if (myNet.StorageUsed > 0)
                 {
-                    float ratio = RatioInNetwork();
-                    if (ratio > 0.9f)
+                    float ratio = myNet.RatioInNetwork;
+                    if (ratio > 0.7f)
                     {
-                        this.parent.TakeDamage(new DamageInfo(DamageDefOf.Burn, 10));
+                        FleckMaker.ThrowHeatGlow(parent.Position, parent.Map, parent.DrawSize.x * 0.5f * Mathf.Pow(ratio, 3));
+                        if (ratio > 0.9f)
+                            this.parent.TakeDamage(new DamageInfo(DamageDefOf.Burn, 10));
                     }
                     if (Props.antiEntropic) //convert heat
                     {

@@ -13,7 +13,6 @@ using UnityEngine;
 using Verse.AI.Group;
 using RimWorld.QuestGen;
 using RimworldMod;
-using Verse;
 using System.Net;
 using System.IO;
 using RimworldMod.VacuumIsNotFun;
@@ -148,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V81f7 active");
+			Log.Message("SOS2EXP V81f8 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1817,7 +1816,7 @@ namespace SaveOurShip2
 									fuelStored += engineComp.refuelComp.Fuel;
 									if (ModsConfig.BiotechActive)
 									{
-										foreach (IntVec3 v in engineComp.rectToKill)
+										foreach (IntVec3 v in engineComp.ExhaustArea)
 											v.Pollute(sourceMap, true);
 									}
 								}
@@ -2475,7 +2474,7 @@ namespace SaveOurShip2
 						if (net2 != null)
 						{
 							Rect rect4 = new Rect(screenHalf - 435, baseY - 40, 200, 35);
-							Widgets.FillableBar(rect4.ContractedBy(6), bridge.heatComp.RatioInNetwork(),
+							Widgets.FillableBar(rect4.ContractedBy(6), net2.RatioInNetwork,
 								ResourceBank.HeatTex);
 							rect4.y += 7;
 							rect4.x = screenHalf - 420;
@@ -2507,7 +2506,7 @@ namespace SaveOurShip2
 						if (net2 != null)
 						{
 							Rect rect4 = new Rect(screenHalf + 235, baseY - 40, 200, 35);
-							Widgets.FillableBar(rect4.ContractedBy(6), bridge.heatComp.RatioInNetwork(),
+							Widgets.FillableBar(rect4.ContractedBy(6), net2.RatioInNetwork,
 								ResourceBank.HeatTex);
 							rect4.y += 7;
 							rect4.x = screenHalf + 255;

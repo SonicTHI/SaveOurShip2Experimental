@@ -37,7 +37,7 @@ namespace RimWorld
             {
                 foreach (CompShipHeatSink sink in net.Sinks)
                 {
-                    sink.heatStored = sink.Props.heatCapacity * sink.RatioInNetwork();
+                    sink.heatStored = sink.Props.heatCapacity * sink.myNet.RatioInNetwork;
                 }
             }
             //rebuild all nets on map
@@ -674,7 +674,7 @@ namespace RimWorld
                     }
                     if (!ship.HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
                     {
-                        if (ship.HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && bridge.RatioInNetwork() > 0.7f) //start purge
+                        if (ship.HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && bridge.myNet.RatioInNetwork > 0.7f) //start purge
                         {
                             foreach (CompShipHeatPurge purge in ship.HeatPurges)
                             {

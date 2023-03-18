@@ -1189,7 +1189,7 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>140</heatPerPulse>
-				<energyToFire>4800</energyToFire>
+				<energyToFire>2400</energyToFire>
 				<optRange>150</optRange>
 				<maxRange>150</maxRange>
 				<projectileSpeed>10</projectileSpeed>
@@ -1216,7 +1216,7 @@
 			<shipPart>true</shipPart>
 			<turretGunDef>ShipTurret_SpinalMountTopPsychic</turretGunDef>
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
-			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
+			<turretBurstCooldownTime>90.0</turretBurstCooldownTime>
 		</building>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryWeapon">
@@ -1332,7 +1332,7 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<heatPerPulse>140</heatPerPulse>
-				<energyToFire>4800</energyToFire>
+				<energyToFire>2400</energyToFire>
 				<optRange>150</optRange>
 				<maxRange>250</maxRange>
 				<projectileSpeed>3</projectileSpeed>
@@ -1357,7 +1357,7 @@
 			<shipPart>true</shipPart>
 			<turretGunDef>ShipTurret_SpinalMountTopMechanite</turretGunDef>
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
-			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
+			<turretBurstCooldownTime>90.0</turretBurstCooldownTime>
 		</building>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryWeapon">
@@ -1441,7 +1441,7 @@
 		<impactSoundType>Blunt</impactSoundType>
 		<armorCategory>Sharp</armorCategory>
 		<minDamageToFragment>15</minDamageToFragment>
-		<defaultDamage>4</defaultDamage>
+		<defaultDamage>135</defaultDamage>
 		<defaultStoppingPower>0.5</defaultStoppingPower>
 		<defaultArmorPenetration>0.10</defaultArmorPenetration>
 		<buildingDamageFactor>1</buildingDamageFactor>

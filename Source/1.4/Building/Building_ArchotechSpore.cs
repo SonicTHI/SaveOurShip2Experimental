@@ -304,7 +304,7 @@ namespace RimWorld
                     {
                         object[] parms3 = new object[] { worstA, worstB, parms[1], parms2[1], null, null, null, null };
                         typeof(InteractionWorker_RomanceAttempt).GetMethod("GetNewLoversLetter", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(worker, parms3);
-                        Find.LetterStack.ReceiveLetter((string)parms3[5], ((string)parms3[4]).Translate(parms3[0], parms3[1], parms3[2], parms3[3]), LetterDefOf.PositiveEvent);
+                        Find.LetterStack.ReceiveLetter((string)parms3[5], TranslatorFormattedStringExtensions.Translate((string)parms3[4], (string)parms3[0], (string)parms3[1], (string)parms3[2], (string)parms3[3]), LetterDefOf.PositiveEvent);
                     }
                     LovePartnerRelationUtility.TryToShareBed(worstA, worstB);
                 }

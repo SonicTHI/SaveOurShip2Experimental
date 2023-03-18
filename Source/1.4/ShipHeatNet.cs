@@ -17,8 +17,26 @@ namespace RimWorld
         public List<CompShipHeat> Turrets = new List<CompShipHeat>();
         public List<CompShipHeat> Cloaks = new List<CompShipHeat>();
         public int GridID;
-        public float StorageCapacity = 0;
-        public float StorageUsed = 0;
+        public float StorageCapacity { get; private set; }
+        public float StorageUsed { get; private set; }
+
+        private bool ratioDirty = true; //if we add/rem heat, etc
+        private float ratioInNetwork = 0;
+        public float RatioInNetwork
+        {
+            get
+            {
+                if (ratioDirty)
+                {
+                    if (StorageCapacity <= 0)
+                    {
+                        StorageCapacity = 0;
+                    }
+                    ratioInNetwork = Mathf.Clamp(StorageUsed / StorageCapacity, 0, 1);
+                }
+                return ratioInNetwork;
+            }
+        }
 
         public void Register(CompShipHeat comp)
         {
@@ -33,6 +51,7 @@ namespace RimWorld
                     sink.heatStored = 0;
                     //Log.Message("grid: "+ GridID +" add:"+ bank.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity);
                     Sinks.Add(sink);
+                    ratioDirty = true;
                     if (comp is CompShipHeatPurge purge)
                     {
                         HeatPurges.Add(purge);
@@ -65,6 +84,7 @@ namespace RimWorld
                 StorageCapacity -= sink.Props.heatCapacity;
                 //Log.Message("grid: " + GridID + " rem:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
                 Sinks.Remove(sink);
+                ratioDirty = true;
                 if (comp is CompShipHeatPurge purge)
                     HeatPurges.Remove(purge);
             }
@@ -84,12 +104,14 @@ namespace RimWorld
         public void AddHeat(float amount)
         {
             StorageUsed += amount;
+            ratioDirty = true;
         }
         public void RemoveHeat(float amount)
         {
             StorageUsed -= amount;
             if (StorageUsed < 0 || float.IsNaN(StorageUsed))
                 StorageUsed = 0;
+            ratioDirty = true;
         }
         public bool AnyShieldOn()
         {

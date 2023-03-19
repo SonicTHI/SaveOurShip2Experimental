@@ -25,8 +25,8 @@ namespace RimWorld
         public float ShipHeat = 0;
         public int shipIndex = -1;
         public bool TacCon = false;
-        public bool rotatable = true;
-        
+        public SortedSet<ThingDef> nonRotatableObjects = new SortedSet<ThingDef>();
+
         bool selected = false;
         public List<Building> cachedShipParts;
         List<Building> cachedPods;
@@ -105,6 +105,7 @@ namespace RimWorld
                     Log.Message("recached: " + this);
                     cachedShipParts = ShipUtility.ShipBuildingsAttachedTo(this);
                     cachedPods = new List<Building>();
+                    nonRotatableObjects.Clear();
                     foreach (Building b in cachedShipParts)
                     {
                         if (b.TryGetComp<CompCryptoLaunchable>() != null)
@@ -112,7 +113,9 @@ namespace RimWorld
                             cachedPods.Add(b);
                         }
                         if (b.def.rotatable == false && b.def.size.x != b.def.size.z)
-                            rotatable = false;
+                        {
+                            nonRotatableObjects.Add(b.def);
+                        }
                     }
                     fail = InterstellarFailReasons();
                     selected = true;
@@ -468,10 +471,24 @@ namespace RimWorld
                             moveShipFlip.Disable();
                             moveShipRot.Disable();
                         }
-                        else if (!rotatable)
+                        else if (nonRotatableObjects.Count > 0)
                         {
                             moveShipRot.Disable();
-                            moveShipRot.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotNo");
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotNo"));
+                            // Limiting the list of non-rotatable objects.
+                            int maxCount = 5;
+                            int addedLines = 0;
+                            foreach (var bd in nonRotatableObjects)
+                            {
+                                sb.AppendLine(bd.label);
+                                addedLines++;
+                                if (addedLines > maxCount )
+                                    break;
+                            }
+                            if (addedLines < nonRotatableObjects.Count)
+                                sb.AppendLine("...");
+                            moveShipRot.disabledReason = sb.ToString();
                         }
                         yield return moveShip;
                         yield return moveShipFlip;

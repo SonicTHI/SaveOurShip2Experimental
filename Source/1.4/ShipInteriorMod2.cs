@@ -1831,7 +1831,6 @@ namespace SaveOurShip2
 				}
 				if (devMode)
 					watch.Record("takeoffEngineEffects");
-
 			}
 
 			//move things
@@ -1894,7 +1893,11 @@ namespace SaveOurShip2
 						}
 						catch (Exception e)
 						{
-							Log.Warning(e.Message + "\n" + e.StackTrace);
+							var sb = new StringBuilder();
+							sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
+							if (devMode)
+								sb.AppendLine(e.StackTrace);
+							Log.Warning(sb.ToString());
 						}
 
 						//post move
@@ -1907,8 +1910,11 @@ namespace SaveOurShip2
 					}
 					catch (Exception e)
 					{
-						//Log.Warning(e.Message+"\n"+e.StackTrace);
-						Log.Error(e.Message);
+						var sb = new StringBuilder();
+						sb.AppendFormat("Error moving {0}: {1}\n", spawnThing.def.label, e.Message);
+						if (devMode)
+							sb.AppendLine(e.StackTrace);
+						Log.Error(sb.ToString());
 					}
 				}
 			}

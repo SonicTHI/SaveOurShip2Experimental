@@ -533,10 +533,12 @@ namespace RimWorld
                                 {
                                     action = delegate
                                     {
-                                        AttackableShip station = new AttackableShip();
-                                        station.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("ArchotechGardenStation");
-                                        station.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
-                                        station.shipFaction = Faction.OfMechanoids;
+                                        AttackableShip station = new AttackableShip
+                                        {
+                                            attackableShip = DefDatabase<EnemyShipDef>.GetNamed("StationArchotechGarden"),
+                                            spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
+                                            shipFaction = Faction.OfMechanoids
+                                        };
                                         mapComp.StartShipEncounter(this, station);
                                     },
                                     icon = ContentFinder<Texture2D>.Get("UI/ArchotechStation_Icon_Quest"),
@@ -551,10 +553,12 @@ namespace RimWorld
                                 {
                                     action = delegate
                                     {
-                                        AttackableShip attacker = new AttackableShip();
-                                        attacker.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge");
-                                        attacker.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
-                                        attacker.shipFaction = Faction.OfMechanoids;
+                                        AttackableShip attacker = new AttackableShip
+                                        {
+                                            attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge"),
+                                            spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
+                                            shipFaction = Faction.OfMechanoids
+                                        };
                                         mapComp.StartShipEncounter(this, attacker);
                                         MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
                                     },

@@ -1186,7 +1186,7 @@ namespace RimWorld
                 {
                     foreach (Thing t in cell.GetThingList(map))
                     {
-                        if (t is Building b && b.def.mineable == false && b.def != ResourceBank.ThingDefOf.ShipAirlockBeam && b.def != ResourceBank.ThingDefOf.ShipAirlockBeamWall && b.def != ResourceBank.ThingDefOf.ShipAirlockBeamTile && buildings.Add(b))
+                        if (t is Building b && b.def.mineable == false && b.def != ResourceBank.ThingDefOf.ShipAirlockBeamWall && b.def != ResourceBank.ThingDefOf.ShipAirlockBeamTile && buildings.Add(b))
                         {
                             nextGen.Add(b);
                         }

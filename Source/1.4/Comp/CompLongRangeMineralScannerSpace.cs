@@ -183,7 +183,10 @@ namespace RimWorld
             else if (chance > 7 && chance < 12) //ship wreck
             {
                 DerelictShip ship = new DerelictShip();
-                ship.wreckLevel = Rand.RangeInclusive(2, 3);
+                if (chance == 11)
+                    ship.wreckLevel = 2;
+                else
+                    ship.wreckLevel = 3;
                 if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance))
                 {
                     SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);

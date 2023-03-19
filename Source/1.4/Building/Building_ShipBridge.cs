@@ -471,7 +471,7 @@ namespace RimWorld
                             moveShipFlip.Disable();
                             moveShipRot.Disable();
                         }
-                        else if (nonRotatableObjects.Count > 0)
+                        else if (nonRotatableObjects.Any())
                         {
                             moveShipRot.Disable();
                             StringBuilder sb = new StringBuilder();
@@ -479,9 +479,14 @@ namespace RimWorld
                             // Limiting the list of non-rotatable objects.
                             int maxCount = 5;
                             int addedLines = 0;
+                            bool devMode = Prefs.DevMode;
                             foreach (var bd in nonRotatableObjects)
                             {
-                                sb.AppendLine(bd.label);
+                                // Printing more detailed info for modders.
+                                if (devMode)
+                                    sb.AppendFormat("{0} ({1})\n", bd.label, bd.defName);
+                                else
+                                    sb.AppendLine(bd.label);
                                 addedLines++;
                                 if (addedLines > maxCount )
                                     break;

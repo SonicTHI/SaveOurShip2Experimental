@@ -28,9 +28,14 @@ namespace RimWorld
             {
                 if (ratioDirty)
                 {
+                    if (float.IsNaN(StorageUsed))
+                    {
+                        Log.Warning("NaN prevented in RatioInNetwork!");
+                        StorageUsed = 0;
+                    }
                     if (StorageCapacity <= 0)
                     {
-                        StorageCapacity = 0;
+                        return StorageCapacity = 0;
                     }
                     ratioInNetwork = Mathf.Clamp(StorageUsed / StorageCapacity, 0, 1);
                 }
@@ -79,7 +84,15 @@ namespace RimWorld
             if (comp is CompShipHeatSink sink)
             {
                 //rem from net with a factor
-                sink.heatStored = Mathf.Clamp(StorageUsed * sink.Props.heatCapacity / StorageCapacity, 0, sink.Props.heatCapacity);
+                if (float.IsNaN(StorageUsed))
+                {
+                    Log.Warning("NaN prevented in DeRegister!");
+                    StorageUsed = 0;
+                }
+                if (StorageCapacity <= 0)
+                    sink.heatStored = 0;
+                else
+                    sink.heatStored = Mathf.Clamp(StorageUsed * sink.Props.heatCapacity / StorageCapacity, 0, sink.Props.heatCapacity);
                 RemoveHeat(sink.heatStored);
                 StorageCapacity -= sink.Props.heatCapacity;
                 //Log.Message("grid: " + GridID + " rem:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
@@ -109,7 +122,12 @@ namespace RimWorld
         public void RemoveHeat(float amount)
         {
             StorageUsed -= amount;
-            if (StorageUsed < 0 || float.IsNaN(StorageUsed))
+            if (float.IsNaN(StorageUsed))
+            {
+                Log.Warning("NaN prevented in RemoveHeat!");
+                StorageUsed = 0;
+            }
+            if (StorageUsed < 0)
                 StorageUsed = 0;
             ratioDirty = true;
         }

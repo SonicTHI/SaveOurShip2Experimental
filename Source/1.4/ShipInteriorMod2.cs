@@ -147,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V81f9 active");
+			Log.Message("SOS2EXP V82 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -3230,26 +3230,75 @@ namespace SaveOurShip2
 		}
 	}
 
+	/*[HarmonyPatch(typeof(QuestUtility), "GenerateQuestAndMakeAvailable", new Type[] { typeof(QuestScriptDef), typeof(float) })]
+	public static class OnlyallowedQuestsInSpaceTest
+	{
+		public static bool Prefix()
+		{
+			if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+			{
+				//td make list of acceptable quests, check
+				Log.Warning("Tried to QuestUtility.GenerateQuestAndMakeAvailable(float) with only space map open, aborting.");
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(QuestUtility), "GenerateQuestAndMakeAvailable", new Type[] { typeof(QuestScriptDef), typeof(Slate) })]
+	public static class OnlyallowedQuestsInSpaceTestTwo
+	{
+		public static bool Prefix()
+		{
+			if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+			{
+				//td make list of acceptable quests, check
+				Log.Warning("Tried to QuestUtility.GenerateQuestAndMakeAvailable(Slate) with only space map open, aborting.");
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(IncidentWorker_GiveQuest), "CanFireNowSub")]
+	public static class OnlyallowedQuestsInSpace
+	{
+		public static void Postfix(ref bool __result)
+		{
+			if (__result)
+            {
+				if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+                {
+					//td make list of acceptable quests, check
+					Log.Warning("Tried to IncidentWorker_GiveQuest.CanFireNowSub with only space map open, aborting.");
+					__result = false;
+				}
+			}
+		}
+	}*/
+
 	[HarmonyPatch(typeof(QuestNode_GetMap), "IsAcceptableMap")]
 	public static class NoQuestsInSpace
 	{
-		[HarmonyPostfix]
-		public static void Fixpost(Map map, ref bool __result)
+		public static void Postfix(Map map, ref bool __result)
 		{
-			if (map.Parent != null && map.IsSpace()) __result = false;
+			if (map.Parent != null && map.IsSpace())
+			{
+				Log.Warning("IsAcceptableMap check performed on space map, returning false.");
+				__result = false;
+			}
 		}
 	}
 
 	[HarmonyPatch(typeof(QuestGen_Get), "GetMap")]
 	public static class InSpaceNoQuestsCanUseThis
 	{
-		[HarmonyPostfix]
-		public static void NoQuestsTargetSpace(ref Map __result)
+		public static void Postfix(ref Map __result)
 		{
 			//if more than one map exists retry and exclude space maps
 			if (__result != null && Find.Maps.Count > 1 && __result.IsSpace())
 			{
-				//Log.Message("Tried to fire quest in space map, retrying.");
+				Log.Warning("Tried to fire quest in space map, retrying.");
 				Map map = Find.Maps.Where(m => m.IsPlayerHome && !m.IsSpace() && m.mapPawns.FreeColonists.Count >= 1)?.FirstOrDefault() ?? null;
 				if (map != null)
 					__result = map;

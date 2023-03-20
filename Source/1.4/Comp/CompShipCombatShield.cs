@@ -106,7 +106,7 @@ namespace RimWorld
             if (!AddHeatToNetwork(heatGenerated))
             {
                 if (myNet != null)
-                    myNet.StorageUsed = myNet.StorageCapacity;
+                    AddHeatToNetwork(myNet.StorageCapacity - myNet.StorageUsed);
                 breakComp.DoBreakdown();
                 GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);
                 SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent));

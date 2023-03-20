@@ -2801,7 +2801,7 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPTachinante</defName>
 		<label>ship blueprint (ancient martian corvette)</label>
-		<description>Class: Martian corvette\nAn ancient design that stood the test of time.\n\nMass: 2459\nT/W ratio: 1.768\nCombat rating: 132\n\nWeapons: \n1x torpedo tubes (2)\n6x cannon turret\n\nRequired resources: \nsteel: 12014\nplasteel: 3543\nadvanced component: 120\ngold: 74\npersona core: 1\ncomponent: 391\nuranium: 300\nsilver: 100\n\nRequired research: \nstarflight basics, ship computer core, salvage bay, microelectronics, electricity, flatscreen television, air conditioning, ship torpedoes, machining, hospital bed, hydroponics, rocket propulsion, ship fission reactor, heatsinks, capacitor arrays, ship cannons, ship life support, ship navigation, vitals monitor, basic ship sensors</description>
+		<description>Class: Martian corvette\nAn ancient design that stood the test of time.\n\nMass: 2511\nT/W ratio: 1.737\nCombat rating: 137\n\nWeapons: \n1x torpedo launcher (2)\n6x cannon turret\n\nRequired resources: \nsteel: 12270\nplasteel: 3607\nadvanced component: 124\ngold: 74\npersona core: 1\ncomponent: 397\nsilver: 100\nuranium: 300\n\nRequired research: \nstarflight basics, ship computer core, salvage bay, microelectronics, electricity, flatscreen television, air conditioning, ship torpedoes, machining, hospital bed, hydroponics, rocket propulsion, ship fission reactor, heatsinks, capacitor arrays, ship cannons, ship life support, ship navigation, vitals monitor, basic ship sensors</description>
 		<statBases>
 			<MarketValue>4000</MarketValue>
 		</statBases>

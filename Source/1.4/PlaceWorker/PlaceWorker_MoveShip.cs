@@ -31,7 +31,7 @@ namespace RimWorld
                 //CellRect rect = ship.shipSketch.OccupiedRect.MovedBy(loc);
                 foreach (SketchEntity current in ship.shipSketch.Entities)
                 {
-                    if (!current.OccupiedRect.MovedBy(loc).InBounds(map))
+                    if (GenGrid.InNoBuildEdgeArea(current.pos + loc, map))
                         return false;
                     if (current.IsSpawningBlocked(current.pos + loc, map))
                         return false;

@@ -13,12 +13,8 @@ using UnityEngine;
 
 namespace RimWorld
 {
-    [StaticConstructorOnStartup]
     public class Building_ShipAirlock : Building_Door
     {
-        public static ThingDef dockWallDef = ThingDef.Named("ShipAirlockBeamWall");
-        public static ThingDef insideDef = ThingDef.Named("ShipAirlockBeamTile");
-        public static ThingDef dockDef = ThingDef.Named("ShipAirlockBeam");
         List<Building> extenders = new List<Building>();
 
         public ShipHeatMapComp mapComp;
@@ -209,7 +205,7 @@ namespace RimWorld
         public bool HasDocking(Building b1, Building b2)
         {
             //check LR for extender, same rot
-            if (b1 != null && b2 != null && b1.def == dockDef && b2.def == dockDef)
+            if (b1 != null && b2 != null && b1.def == ResourceBank.ThingDefOf.ShipAirlockBeam && b2.def == ResourceBank.ThingDefOf.ShipAirlockBeam)
             {
                 polarity = 0;
                 var r1 = b1.Rotation.AsByte;
@@ -260,13 +256,13 @@ namespace RimWorld
             {
                 IntVec3 center = this.Position + facing * i * polarity;
                 Thing thing;
-                thing = ThingMaker.MakeThing(dockWallDef);
+                thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, center - rightSide, this.Map);
                 extenders.Add(thing as Building);
-                thing = ThingMaker.MakeThing(insideDef);
+                thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamTile);
                 GenSpawn.Spawn(thing, center, this.Map);
                 extenders.Add(thing as Building);
-                thing = ThingMaker.MakeThing(dockWallDef);
+                thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, center + rightSide, this.Map);
                 extenders.Add(thing as Building);
             }

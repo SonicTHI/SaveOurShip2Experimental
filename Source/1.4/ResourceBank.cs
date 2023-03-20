@@ -81,6 +81,9 @@ namespace SaveOurShip2
 			public static ThingDef ShipTorpedo_HighExplosive;
 			public static ThingDef ShipTorpedo_EMP;
 			public static ThingDef ShipTorpedo_Antimatter;
+			public static ThingDef ShipAirlockBeamWall;
+			public static ThingDef ShipAirlockBeamTile;
+			public static ThingDef ShipAirlockBeam;
 		}
 
 		[DefOf]

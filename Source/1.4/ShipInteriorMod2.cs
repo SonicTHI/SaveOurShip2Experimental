@@ -13,7 +13,6 @@ using UnityEngine;
 using Verse.AI.Group;
 using RimWorld.QuestGen;
 using RimworldMod;
-using Verse;
 using System.Net;
 using System.IO;
 using RimworldMod.VacuumIsNotFun;
@@ -148,7 +147,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V81f6 active");
+			Log.Message("SOS2EXP V82 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1817,7 +1816,7 @@ namespace SaveOurShip2
 									fuelStored += engineComp.refuelComp.Fuel;
 									if (ModsConfig.BiotechActive)
 									{
-										foreach (IntVec3 v in engineComp.rectToKill)
+										foreach (IntVec3 v in engineComp.ExhaustArea)
 											v.Pollute(sourceMap, true);
 									}
 								}
@@ -1832,7 +1831,6 @@ namespace SaveOurShip2
 				}
 				if (devMode)
 					watch.Record("takeoffEngineEffects");
-
 			}
 
 			//move things
@@ -1895,7 +1893,11 @@ namespace SaveOurShip2
 						}
 						catch (Exception e)
 						{
-							Log.Warning(e.Message + "\n" + e.StackTrace);
+							var sb = new StringBuilder();
+							sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
+							if (devMode)
+								sb.AppendLine(e.StackTrace);
+							Log.Warning(sb.ToString());
 						}
 
 						//post move
@@ -1908,8 +1910,11 @@ namespace SaveOurShip2
 					}
 					catch (Exception e)
 					{
-						//Log.Warning(e.Message+"\n"+e.StackTrace);
-						Log.Error(e.Message);
+						var sb = new StringBuilder();
+						sb.AppendFormat("Error moving {0}: {1}\n", spawnThing.def.label, e.Message);
+						if (devMode)
+							sb.AppendLine(e.StackTrace);
+						Log.Error(sb.ToString());
 					}
 				}
 			}
@@ -2475,7 +2480,7 @@ namespace SaveOurShip2
 						if (net2 != null)
 						{
 							Rect rect4 = new Rect(screenHalf - 435, baseY - 40, 200, 35);
-							Widgets.FillableBar(rect4.ContractedBy(6), bridge.heatComp.RatioInNetwork(),
+							Widgets.FillableBar(rect4.ContractedBy(6), net2.RatioInNetwork,
 								ResourceBank.HeatTex);
 							rect4.y += 7;
 							rect4.x = screenHalf - 420;
@@ -2507,7 +2512,7 @@ namespace SaveOurShip2
 						if (net2 != null)
 						{
 							Rect rect4 = new Rect(screenHalf + 235, baseY - 40, 200, 35);
-							Widgets.FillableBar(rect4.ContractedBy(6), bridge.heatComp.RatioInNetwork(),
+							Widgets.FillableBar(rect4.ContractedBy(6), net2.RatioInNetwork,
 								ResourceBank.HeatTex);
 							rect4.y += 7;
 							rect4.x = screenHalf + 255;
@@ -3225,26 +3230,75 @@ namespace SaveOurShip2
 		}
 	}
 
+	/*[HarmonyPatch(typeof(QuestUtility), "GenerateQuestAndMakeAvailable", new Type[] { typeof(QuestScriptDef), typeof(float) })]
+	public static class OnlyallowedQuestsInSpaceTest
+	{
+		public static bool Prefix()
+		{
+			if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+			{
+				//td make list of acceptable quests, check
+				Log.Warning("Tried to QuestUtility.GenerateQuestAndMakeAvailable(float) with only space map open, aborting.");
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(QuestUtility), "GenerateQuestAndMakeAvailable", new Type[] { typeof(QuestScriptDef), typeof(Slate) })]
+	public static class OnlyallowedQuestsInSpaceTestTwo
+	{
+		public static bool Prefix()
+		{
+			if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+			{
+				//td make list of acceptable quests, check
+				Log.Warning("Tried to QuestUtility.GenerateQuestAndMakeAvailable(Slate) with only space map open, aborting.");
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(IncidentWorker_GiveQuest), "CanFireNowSub")]
+	public static class OnlyallowedQuestsInSpace
+	{
+		public static void Postfix(ref bool __result)
+		{
+			if (__result)
+            {
+				if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+                {
+					//td make list of acceptable quests, check
+					Log.Warning("Tried to IncidentWorker_GiveQuest.CanFireNowSub with only space map open, aborting.");
+					__result = false;
+				}
+			}
+		}
+	}*/
+
 	[HarmonyPatch(typeof(QuestNode_GetMap), "IsAcceptableMap")]
 	public static class NoQuestsInSpace
 	{
-		[HarmonyPostfix]
-		public static void Fixpost(Map map, ref bool __result)
+		public static void Postfix(Map map, ref bool __result)
 		{
-			if (map.Parent != null && map.IsSpace()) __result = false;
+			if (map.Parent != null && map.IsSpace())
+			{
+				Log.Warning("IsAcceptableMap check performed on space map, returning false.");
+				__result = false;
+			}
 		}
 	}
 
 	[HarmonyPatch(typeof(QuestGen_Get), "GetMap")]
 	public static class InSpaceNoQuestsCanUseThis
 	{
-		[HarmonyPostfix]
-		public static void NoQuestsTargetSpace(ref Map __result)
+		public static void Postfix(ref Map __result)
 		{
 			//if more than one map exists retry and exclude space maps
 			if (__result != null && Find.Maps.Count > 1 && __result.IsSpace())
 			{
-				//Log.Message("Tried to fire quest in space map, retrying.");
+				Log.Warning("Tried to fire quest in space map, retrying.");
 				Map map = Find.Maps.Where(m => m.IsPlayerHome && !m.IsSpace() && m.mapPawns.FreeColonists.Count >= 1)?.FirstOrDefault() ?? null;
 				if (map != null)
 					__result = map;
@@ -5896,9 +5950,9 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref navyShipChance, "navyShipChance", 0.2);
 			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
 
-			Scribe_Values.Look(ref easyMode, "easyMode");
+			Scribe_Values.Look(ref easyMode, "easyMode", false);
 			Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
-			Scribe_Values.Look(ref renderPlanet, "renderPlanet", true);
+			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
 
 			Scribe_Values.Look(ref minTravelTime, "minTravelTime", 5);
@@ -5908,15 +5962,18 @@ namespace SaveOurShip2
 			base.ExposeData();
 		}
 
-		public static double difficultySoS = 1,
+		public static double
+			difficultySoS = 1,
 			frequencySoS = 1,
 			navyShipChance = 0.2,
 			fleetChance = 0.3;
-		public static bool easyMode,
+		public static bool
+			easyMode = false,
 			useVacuumPathfinding = true,
-			renderPlanet = true,
+			renderPlanet = false,
 			useSplashScreen = true;
-		public static int minTravelTime = 5,
+		public static int
+			minTravelTime = 5,
 			maxTravelTime = 100,
 			offsetUIx,
 			offsetUIy;

@@ -37,7 +37,7 @@ namespace RimWorld
             {
                 foreach (CompShipHeatSink sink in net.Sinks)
                 {
-                    sink.heatStored = sink.Props.heatCapacity * sink.RatioInNetwork();
+                    sink.heatStored = sink.Props.heatCapacity * sink.myNet.RatioInNetwork;
                 }
             }
             //rebuild all nets on map
@@ -563,7 +563,7 @@ namespace RimWorld
                     else if (Range < 0)
                         Range = 0;
                     //no end if player has pawns on enemy ship
-                    if (Range >= 400 && enemyRetreating && !ShipCombatMasterMap.mapPawns.AnyColonistSpawned)
+                    if (Range >= 395 && enemyRetreating && !ShipCombatMasterMap.mapPawns.AnyColonistSpawned)
                     {
                         EndBattle(this.map, true);
                         return;
@@ -674,7 +674,7 @@ namespace RimWorld
                     }
                     if (!ship.HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
                     {
-                        if (ship.HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && bridge.RatioInNetwork() > 0.7f) //start purge
+                        if (ship.HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && bridge.myNet.RatioInNetwork > 0.7f) //start purge
                         {
                             foreach (CompShipHeatPurge purge in ship.HeatPurges)
                             {
@@ -743,7 +743,7 @@ namespace RimWorld
             }
             //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);
             if (anyMapEngineCanActivate)
-                MapEnginePower *= 25f / Mathf.Pow(BuildingsCount, 1.1f);
+                MapEnginePower *= 40f / Mathf.Pow(BuildingsCount, 1.1f);
             else
                 MapEnginePower = 0;
             //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);
@@ -1186,12 +1186,9 @@ namespace RimWorld
                 {
                     foreach (Thing t in cell.GetThingList(map))
                     {
-                        if (t is Building building)
+                        if (t is Building b && b.def.mineable == false && b.def != ResourceBank.ThingDefOf.ShipAirlockBeamWall && b.def != ResourceBank.ThingDefOf.ShipAirlockBeamTile && buildings.Add(b))
                         {
-                            if (building.def.mineable == false && buildings.Add(building))
-                            {
-                                nextGen.Add(building);
-                            }
+                            nextGen.Add(b);
                         }
                     }
                 }

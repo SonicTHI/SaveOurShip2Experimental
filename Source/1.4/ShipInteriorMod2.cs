@@ -62,6 +62,7 @@ namespace SaveOurShip2
 		public static RoofDef[] compatibleAirtightRoofs;
 		// Contains terrain types that are considered a "rock".
 		public static TerrainDef[] rockTerrains;
+		public static string[] allowedQuests;
 
 		public static List<ThingDef> randomPlants;
 		public static Dictionary<ThingDef, ThingDef> wreckDictionary;
@@ -147,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V82 active");
+			Log.Message("SOS2EXP V82f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -201,6 +202,10 @@ namespace SaveOurShip2
 				TerrainDef.Named("Marble_RoughHewn"),
 				TerrainDef.Named("Granite_Rough"),
 				TerrainDef.Named("Granite_RoughHewn"),
+			};
+			allowedQuests = new string[]
+			{
+				"PawnLend",
 			};
 
 			/*foreach (TraitDef AITrait in DefDatabase<TraitDef>.AllDefs.Where(t => t.exclusionTags.Contains("AITrait")))
@@ -848,7 +853,7 @@ namespace SaveOurShip2
 								{
 									refuel = refuelComp.Props.fuelCapacity * Rand.Gaussian(0.7f, 0.2f);
 									var reactorComp = b.TryGetComp<CompPowerTraderOverdrivable>();
-									if (reactorComp != null && shipActive)
+									if (reactorComp != null && shipActive && reactorComp.overdriveSetting != 1)
 										reactorComp.FlickOverdrive(1);
 								}
 								else
@@ -3230,82 +3235,6 @@ namespace SaveOurShip2
 		}
 	}
 
-	/*[HarmonyPatch(typeof(QuestUtility), "GenerateQuestAndMakeAvailable", new Type[] { typeof(QuestScriptDef), typeof(float) })]
-	public static class OnlyallowedQuestsInSpaceTest
-	{
-		public static bool Prefix()
-		{
-			if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
-			{
-				//td make list of acceptable quests, check
-				Log.Warning("Tried to QuestUtility.GenerateQuestAndMakeAvailable(float) with only space map open, aborting.");
-				return false;
-			}
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(QuestUtility), "GenerateQuestAndMakeAvailable", new Type[] { typeof(QuestScriptDef), typeof(Slate) })]
-	public static class OnlyallowedQuestsInSpaceTestTwo
-	{
-		public static bool Prefix()
-		{
-			if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
-			{
-				//td make list of acceptable quests, check
-				Log.Warning("Tried to QuestUtility.GenerateQuestAndMakeAvailable(Slate) with only space map open, aborting.");
-				return false;
-			}
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(IncidentWorker_GiveQuest), "CanFireNowSub")]
-	public static class OnlyallowedQuestsInSpace
-	{
-		public static void Postfix(ref bool __result)
-		{
-			if (__result)
-            {
-				if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
-                {
-					//td make list of acceptable quests, check
-					Log.Warning("Tried to IncidentWorker_GiveQuest.CanFireNowSub with only space map open, aborting.");
-					__result = false;
-				}
-			}
-		}
-	}*/
-
-	[HarmonyPatch(typeof(QuestNode_GetMap), "IsAcceptableMap")]
-	public static class NoQuestsInSpace
-	{
-		public static void Postfix(Map map, ref bool __result)
-		{
-			if (map.Parent != null && map.IsSpace())
-			{
-				Log.Warning("IsAcceptableMap check performed on space map, returning false.");
-				__result = false;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(QuestGen_Get), "GetMap")]
-	public static class InSpaceNoQuestsCanUseThis
-	{
-		public static void Postfix(ref Map __result)
-		{
-			//if more than one map exists retry and exclude space maps
-			if (__result != null && Find.Maps.Count > 1 && __result.IsSpace())
-			{
-				Log.Warning("Tried to fire quest in space map, retrying.");
-				Map map = Find.Maps.Where(m => m.IsPlayerHome && !m.IsSpace() && m.mapPawns.FreeColonists.Count >= 1)?.FirstOrDefault() ?? null;
-				if (map != null)
-					__result = map;
-			}
-		}
-	}
-
 	[HarmonyPatch(typeof(RCellFinder), "TryFindRandomExitSpot")]
 	public static class NoPrisonBreaksInSpace
 	{
@@ -3389,6 +3318,93 @@ namespace SaveOurShip2
 		}
 	}
 
+	[HarmonyPatch(typeof(RoyalTitlePermitWorker), "AidDisabled")]
+	public static class RoyalTitlePermitWorkerInSpace
+	{
+		[HarmonyPostfix]
+		public static void AllowSpacePermits(Map map, ref bool __result)
+		{
+			if (map != null && map.IsSpace() && __result == true)
+				__result = false;
+		}
+	}
+
+	[HarmonyPatch(typeof(Site), "PostMapGenerate")]
+	public static class RaidsStartEarly
+	{
+		public static void Postfix(Site __instance)
+		{
+			if (__instance.parts.Where(part => part.def.tags.Contains("SoSMayday")).Any())
+			{
+				__instance.GetComponent<TimedDetectionRaids>().StartDetectionCountdown(Rand.Range(6000, 12000), 1);
+			}
+		}
+	}
+
+	//quests, events
+
+	/*prevents any quests from firing at all
+	[HarmonyPatch(typeof(QuestUtility), "GenerateQuestAndMakeAvailable", new Type[] { typeof(QuestScriptDef), typeof(Slate) })]
+	public static class OnlyallowedQuestsInSpaceTestTwo
+	{
+		public static bool Prefix()
+		{
+			if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+			{
+				//td make list of acceptable quests, check
+				Log.Warning("SOS2: QuestUtility.GenerateQuestAndMakeAvailable(Slate) was called with only space map open.");
+				return true;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(QuestNode_GetMap), "IsAcceptableMap")]
+	public static class NoQuestsInSpace
+	{
+		public static void Postfix(Map map, ref bool __result)
+		{
+			if (map.Parent != null && map.IsSpace())
+			{
+				Log.Warning("SOS2: QuestNode_GetMap.IsAcceptableMap check performed on space map, returning false.");
+				__result = false;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(QuestGen_Get), "GetMap")]
+	public static class InSpaceNoQuestsCanUseThis
+	{
+		public static void Postfix(ref Map __result, int? preferMapWithMinFreeColonists)
+		{
+			//if more than one map exists prefer that instead of space home
+			if (__result != null && Find.Maps.Count > 1 && __result.IsSpace())
+			{
+				int minCount = preferMapWithMinFreeColonists ?? 1;
+				Log.Warning("SOS2: QuestGen_Get.GetMap Tried to fire quest in space map, retrying.");
+				Map map = Find.Maps.Where(m => m.IsPlayerHome && !m.IsSpace() && m.mapPawns.FreeColonists.Count >= minCount)?.FirstOrDefault() ?? null;
+				if (map != null)
+					__result = map;
+			}
+		}
+	}*/
+
+	//fired from IncidentWorker
+	[HarmonyPatch(typeof(IncidentWorker_GiveQuest), "CanFireNowSub")] //should prevent any random quest firing via storyteller on space map if not on allowed list, IncidentWorker_GiveQuest_Map as well
+	public static class OnlyallowedQuestsInSpace
+	{
+		public static void Postfix(ref bool __result, IncidentParms parms)
+		{
+			if (__result && Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+			{
+				if (ShipInteriorMod2.allowedQuests.Contains(parms.questScriptDef.defName))
+					return;
+				Log.Warning("SOS2: IncidentWorker_GiveQuest.CanFireNowSub tried to fire quest in space with only space map open, aborting.");
+				__result = false;
+			}
+		}
+	}
+
 	[HarmonyPatch(typeof(RoyalTitlePermitWorker_CallAid), "CallAid")]
 	public static class CallAidInSpace
 	{
@@ -3466,29 +3482,6 @@ namespace SaveOurShip2
 			}
 			else
 				return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(RoyalTitlePermitWorker), "AidDisabled")]
-	public static class RoyalTitlePermitWorkerInSpace
-	{
-		[HarmonyPostfix]
-		public static void AllowSpacePermits(Map map, ref bool __result)
-		{
-			if (map != null && map.IsSpace() && __result == true)
-				__result = false;
-		}
-	}
-
-	[HarmonyPatch(typeof(Site), "PostMapGenerate")]
-	public static class RaidsStartEarly
-	{
-		public static void Postfix(Site __instance)
-		{
-			if (__instance.parts.Where(part => part.def.tags.Contains("SoSMayday")).Any())
-			{
-				__instance.GetComponent<TimedDetectionRaids>().StartDetectionCountdown(Rand.Range(6000, 12000), 1);
-			}
 		}
 	}
 

@@ -148,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V83 active");
+			Log.Message("SOS2EXP V83f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -381,7 +381,7 @@ namespace SaveOurShip2
 			impactSite.Tile = tile;
 			Find.WorldObjects.Add(impactSite);
 		}
-		public static SpaceNavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true, bool bountyHunts = true)
+		public static SpaceNavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true, bool bountyHunts = false)
 		{
 			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
 			{
@@ -1150,7 +1150,7 @@ namespace SaveOurShip2
 				Faction invaderFac = null;
 				if ((wreckLevel == 2 && Rand.Chance(0.7f)) || (wreckLevel ==3 && Rand.Chance(0.4f)))
 				{
-					SpaceNavyDef navy = ValidRandomNavy(Faction.OfPlayer, false);
+					SpaceNavyDef navy = ValidRandomNavy(Faction.OfPlayer);
 					if (navy != null)
 					{
 						var mapComp = map.GetComponent<ShipHeatMapComp>();

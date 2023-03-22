@@ -6,7 +6,7 @@ SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamco
 
 **As of V78, 1.3 version is no longer included and has not been maintained since V69.**
 
-**While this version is officialy endorsed, it is not made by RHX media and you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from SOS2EXP back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case.
+**While this version is officially endorsed, it is not made by RHX media and you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from SOS2EXP back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case.
 
 **Make a separate save while NOT IN A SHIP BATTLE before switching to this version and unsubscribe from SOS2 on STEAM!**
 
@@ -22,7 +22,7 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 **MAJOR FEATURE LIST:**
 
-* **Continue playing or start fresh:** the new release is backwards compatible but your ship might require some maintenance such as replacing large bridges with consoles, adding coolant tanks for more capacity or making more room for a larger crew. Making a save out of combat is recommend just in case. If however you plan to start on a ship you can pick from a varied selection of rebuilt options by customizing your starting scenario.
+* **Continue playing or start fresh:** the new release is backwards compatible but your ship might require some maintenance such as replacing large bridges with consoles, adding coolant tanks for more capacity or making more room for a larger crew. If however you plan to start on a ship you can pick from a varied selection of rebuilt options by customizing your starting scenario. Making a save before switching to this version out of combat is highly recommended. If however you want to be extra safe, land your ship on the planet and make sure no space maps are open.
 
 * **Rebuilt ship roster:** almost every ship in the mod has been redesigned and built from the ground up utilizing new systems and mechanics making for a more interesting and varied experience. New ships and fleets have also been added. Many thanks to the ship wrights that helped with this: HG, Oninnaise, UrbanMonkey, VVither_Skeleton.
 
@@ -34,9 +34,9 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Redone heat system:** simplified, with less cheese and far better performance. Radiators have been removed while heatsinks now vent heat through the roof even when shielded. Coolant tanks have been added that offer a much larger heat capacity but without the ability to vent it to space.
 
-* **New planet travel system:** with new Rimworld releases and many mods constantly altering the game start procedure this has been reworked into a more easily maintained system that lets you start a new game with your old ship by editing the scenario, adding a "Load ship" part and selecting your ship. Revisiting old planets is no longer possible.
+* **New ending and planet travel system:** completing the Royalty ending now grants you an imperial destroyer instead of ending the game. Traveling to another planet now ends the game but saves your ship and everything on it to a file that can be loaded by editing a staring scenario, adding a "Load ship" part and selecting your saved ship. Revisiting old planets is no longer possible. The ship start scenario has also been updated with similar code to ensure better compatibility and easier maintenance/updates in the future.
 
-* **Hologram rework:** Biotech's new gene system and other changes caused too many issues with holograms so they have been reworked into formgel swarm like beeings.
+* **Hologram rework:** Biotech's new gene system and other changes caused too many issues with holograms so they have been reworked into formgel swarm like beings.
 
 * **Random fleet system:** face off against randomly generated fleets of ships in various configurations and sizes.
 
@@ -46,7 +46,7 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Bridge system overhaul:** old large bridges have become obsolete with two new consoles taking on and expanding the functionality. Some functions like scanning have been moved to advanced sensors or the new science console while the tactical variant lets you select various weapons types across your ship provided they are connected to it by the ships heat network.
 
-* **Docking ports:** allow you to temporarily connect ships by using extenders with breathable air up to 3 tiles away and can also connect to each other.
+* **Docking ports:** allow you to temporarily connect ships by using extenders with breathable air, power, heat and chemfuel pipes (if using Rimefeller) up to 3 tiles away and can also connect to each other.
 
 * **Performance optimizations:** from faster EVA checks to a completely rebuilt ship combat system - a lot has been done to improve the performance of this mod.
 
@@ -54,7 +54,7 @@ Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2P
 
 * **Tons of other minor adjustments, balance changes and bugfixes.**
 
-* **Extendability:** while not perfect it is now easier to mod in new types of ship buildings or adding EVA functionality to other mods. A navy system has also ben added so modders can add factions with their own pawns, ships and colors.
+* **Extendability:** while not perfect it is now easier to mod in new types of ship buildings or adding EVA functionality to other mods. A navy system has also been added so modders can add factions with their own pawns, ships and colors.
 
 * **Creation kit:** now includes new tools for fleet and blueprint creation as well as improvements to existing ones.
 

@@ -148,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V82f1 active");
+			Log.Message("SOS2EXP V83 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -336,7 +336,7 @@ namespace SaveOurShip2
 			}
 			return -1;
 		}
-		public static void GeneratePlayerShipMap(IntVec3 size, Map origin)
+		public static Map GeneratePlayerShipMap(IntVec3 size)
 		{
 			WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
 			orbiter.radius = 150;
@@ -344,9 +344,9 @@ namespace SaveOurShip2
 			orbiter.SetFaction(Faction.OfPlayer);
 			orbiter.Tile = FindWorldTile();
 			Find.WorldObjects.Add(orbiter);
-			var mapComp = origin.GetComponent<ShipHeatMapComp>();
-			mapComp.ShipCombatOriginMap = MapGenerator.GenerateMap(size, orbiter, orbiter.MapGeneratorDef);
-			mapComp.ShipCombatOriginMap.fogGrid.ClearAllFog();
+			Map map = MapGenerator.GenerateMap(size, orbiter, orbiter.MapGeneratorDef);
+			map.fogGrid.ClearAllFog();
+			return map;
 		}
 		public static void GenerateImpactSite()
 		{
@@ -3788,17 +3788,10 @@ namespace SaveOurShip2
 			if (ShipInteriorMod2.shipOriginRoot != null)
 			{
 				ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
-				WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
-				orbiter.radius = 150;
-				orbiter.theta = -3;
-				orbiter.SetFaction(Faction.OfPlayer);
-				orbiter.Tile = ShipInteriorMod2.FindWorldTile();
-				Find.WorldObjects.Add(orbiter);
-				Map myMap = MapGenerator.GenerateMap(ShipInteriorMod2.shipOriginRoot.Map.Size, orbiter, orbiter.MapGeneratorDef);
-				myMap.fogGrid.ClearAllFog();
+				Map map = ShipInteriorMod2.GeneratePlayerShipMap(ShipInteriorMod2.shipOriginRoot.Map.Size);
 
-				ShipInteriorMod2.MoveShip(ShipInteriorMod2.shipOriginRoot, myMap, IntVec3.Zero);
-				myMap.weatherManager.TransitionTo(ResourceBank.WeatherDefOf.OuterSpaceWeather);
+				ShipInteriorMod2.MoveShip(ShipInteriorMod2.shipOriginRoot, map, IntVec3.Zero);
+				map.weatherManager.TransitionTo(ResourceBank.WeatherDefOf.OuterSpaceWeather);
 				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"),
 					TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
 				ShipInteriorMod2.shipOriginRoot = null;

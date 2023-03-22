@@ -23,7 +23,7 @@ namespace RimWorld
         {
             IntVec3 myPos = this.parent.Position;
             Map myMap = this.parent.Map;
-			if (myPos.CloseToEdge(myMap, (Props.buildingDef.size.x + 1) / 2))
+			if (myMap != null && myPos.CloseToEdge(myMap, (Props.buildingDef.size.x + 1) / 2))
 				return;
 			Building transformed = (Building)ThingMaker.MakeThing(Props.buildingDef);
             transformed.Position = myPos;

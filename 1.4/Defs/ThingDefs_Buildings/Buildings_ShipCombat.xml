@@ -2374,9 +2374,6 @@
 				<cornerTL>Damage/Corner</cornerTL>
 			</damageData>
 		</graphicData>
-		<altitudeLayer>WorldClipper</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<fillPercent>0.4</fillPercent>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<comps>
 			<li Class="CompProperties_Flickable"/>

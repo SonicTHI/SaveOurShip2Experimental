@@ -671,10 +671,9 @@ namespace RimWorld
                                 if (mapComp.ShipCombatOriginMap == null)
                                 {
                                     Map m = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault()).Map;
-                                    if (m != null)
-                                        mapComp.ShipCombatOriginMap = m;
-                                    else
-                                        ShipInteriorMod2.GeneratePlayerShipMap(this.Map.Size, this.Map);
+                                    if (m == null)
+                                        m = ShipInteriorMod2.GeneratePlayerShipMap(this.Map.Size);
+                                    mapComp.ShipCombatOriginMap = m;
                                 }
                                 ShipInteriorMod2.MoveShipSketch(this, mapComp.ShipCombatOriginMap, 0);
                             },

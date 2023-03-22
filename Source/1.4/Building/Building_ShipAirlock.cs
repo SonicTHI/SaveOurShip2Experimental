@@ -153,7 +153,7 @@ namespace RimWorld
             if (startTick > 0 && Find.TickManager.TicksGame > startTick)
             {
                 startTick = 0;
-                if (!mapComp.InCombat)
+                if (!mapComp.InCombat && CanDock(Rotation.FacingCell, Rotation.RighthandCell))
                     Dock();
             }
         }

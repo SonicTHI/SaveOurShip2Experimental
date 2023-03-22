@@ -112,6 +112,8 @@
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
     <Compile Include="Jobs\JobDriver_LoadShipBuilding.cs" />
     <Compile Include="Jobs\JobGiver_LoadShipBuilding.cs" />
+    <Compile Include="Quest\QuestNode_RoyalAscentShip.cs" />
+    <Compile Include="Quest\QuestPart_RoyalAscentShip.cs" />
     <Compile Include="ResourceBank.cs" />
     <Compile Include="CompProps\CompProperties_HologramRemover.cs" />
     <Compile Include="Comp\CompHologramRemover.cs" />

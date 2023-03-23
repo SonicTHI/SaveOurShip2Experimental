@@ -239,10 +239,10 @@ namespace SaveOurShip2
     public static class MechGizmoFix
     {
         [HarmonyPostfix]
-        public static void ShuttlesArentMechs(Pawn __instance, ref bool __result)
+        public static bool ShuttlesArentMechs(bool __result, Pawn __instance)
         {
-            if (__instance.TryGetComp<CompBecomeBuilding>() != null)
-                __result = false;
+            if (AccessExtensions.Utility.shuttleCache.Contains(__instance)) return false;
+            return __result;
         }
     }
     [HarmonyPatch(typeof(Pawn_DraftController))]

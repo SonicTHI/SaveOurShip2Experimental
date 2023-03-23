@@ -2649,13 +2649,13 @@ namespace SaveOurShip2
 		public static void DrawShip(int group, ColonistBarColonistDrawer __instance)
 		{
 			List<ColonistBar.Entry> entries = Find.ColonistBar.Entries;
-			foreach (ColonistBar.Entry entry in entries)
+			var length = entries.Count;
+			for (int i = 0; i < length; i++)
 			{
+				ColonistBar.Entry entry = entries[i];
 				if (entry.group == group && entry.pawn == null && entry.map.IsSpace())
 				{
-					Rect rect = (Rect)typeof(ColonistBarColonistDrawer)
-					.GetMethod("GroupFrameRect", BindingFlags.NonPublic | BindingFlags.Instance)
-					.Invoke(__instance, new object[] { group });
+					Rect rect = __instance.GroupFrameRect(group);
 					var mapComp = entry.map.GetComponent<ShipHeatMapComp>();
 					if (mapComp.IsGraveyard) //wreck
 						Verse.Widgets.DrawTextureFitted(rect, ResourceBank.shipBarNeutral.MatSingle.mainTexture, 1);
@@ -5868,13 +5868,24 @@ namespace SaveOurShip2
     {
 		public static bool Prefix(District __instance)
         {
-			return Find.Maps.Where(map => Find.Maps.IndexOf(map)==__instance.mapIndex).Count()>0;
+			var maps = Find.Maps;
+			for (int i = maps.Count; i-- > 0;) if (i == __instance.mapIndex) return true;
+			return false;
         }
 
 		public static void Postfix(District __instance, ref Map __result)
         {
-			if (Find.Maps.Where(map => Find.Maps.IndexOf(map) == __instance.mapIndex).Count() <= 0)
-				__result = Find.Maps.FirstOrDefault();
+			var maps = Find.Maps;
+			bool found = false;
+			for (int i = maps.Count; i-- > 0;)
+			{
+				if (i == __instance.mapIndex)
+				{
+					found = true;
+					break;
+				}
+			}
+			if (!found) __result = Find.Maps.FirstOrDefault();
 		}
 	}
 

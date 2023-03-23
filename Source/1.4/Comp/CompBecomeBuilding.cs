@@ -135,7 +135,13 @@ namespace RimWorld
             base.PostSpawnSetup(respawningAfterLoad);
 			if (parent.TryGetComp<CompShuttleCosmetics>() != null)
 				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);
+			Current.Game.GetComponent<RimworldMod.EnvironmentCachingUtility>().shuttleCache.Add(parent);
         }
+
+		public override void PostDeSpawn(Map map)
+		{
+			Current.Game.GetComponent<RimworldMod.EnvironmentCachingUtility>().shuttleCache.Remove(parent);
+		}
     }
 }
 

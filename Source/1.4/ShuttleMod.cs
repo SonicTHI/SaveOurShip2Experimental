@@ -492,11 +492,9 @@ namespace SaveOurShip2
     {
         public static void Postfix(PawnCapacityDef capacity, PawnCapacitiesHandler __instance, ref bool __result)
         {
-            if(capacity==PawnCapacityDefOf.Manipulation)
+            if(capacity==PawnCapacityDefOf.Manipulation && __instance.pawn.GetComp<CompBecomeBuilding>() != null)
             {
-                Pawn pawn = (Pawn)typeof(PawnCapacitiesHandler).GetField("pawn", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
-                if (pawn.TryGetComp<CompBecomeBuilding>() != null)
-                    __result = false;
+                __result = false;
             }
         }
     }
@@ -506,7 +504,7 @@ namespace SaveOurShip2
     {
         public static bool Prefix(Pawn_MeleeVerbs __instance)
         {
-            return __instance.Pawn.TryGetComp<CompBecomeBuilding>() == null;
+            return __instance.Pawn.GetComp<CompBecomeBuilding>() == null;
         }
     }
 

@@ -2432,11 +2432,22 @@ namespace SaveOurShip2
 		[HarmonyPostfix]
 		public static void DrawShipRange(ColonistBar __instance)
 		{
-			Map mapPlayer = Find.Maps.Where(m => m.GetComponent<ShipHeatMapComp>().InCombat && !m.GetComponent<ShipHeatMapComp>().ShipCombatMaster).FirstOrDefault();
+			Map mapPlayer = null;
+			ShipHeatMapComp playerShipComp = null;
+			var maps = Find.Maps;
+			for (int i = maps.Count; i-- > 0;)
+			{
+				Map map = maps[i];
+				playerShipComp = map.GetComponent<ShipHeatMapComp>();
+				if (playerShipComp.InCombat && !playerShipComp.ShipCombatMaster)
+				{
+					mapPlayer = map;
+					break;
+				}
+			}
 			if (mapPlayer != null)
 			{
-				var playerShipComp = mapPlayer.GetComponent<ShipHeatMapComp>();
-				var enemyShipComp = mapPlayer.GetComponent<ShipHeatMapComp>().MasterMapComp;
+				var enemyShipComp = playerShipComp.MasterMapComp;
 				if (enemyShipComp == null || playerShipComp.MapRootList.Count == 0 || playerShipComp.MapRootList[0] == null || !playerShipComp.MapRootList[0].Spawned)
 					return;
 				if (!playerShipComp.InCombat && playerShipComp.IsGraveyard)
@@ -2448,21 +2459,22 @@ namespace SaveOurShip2
 
 				//player heat & energy bars
 				float baseY = __instance.Size.y + 40 + SaveOurShip2.ModSettings_SoS.offsetUIy;
-				for (int i = 0; i < playerShipComp.MapRootList.Count; i++)
+				var mapRootList = playerShipComp.MapRootList;
+				for (int i = mapRootList.Count; i-- > 0;)
 				{
 					try //td rem this once this is 100% safe
 					{
-						var bridge = (Building_ShipBridge)playerShipComp.MapRootList[i];
+						var bridge = (Building_ShipBridge)mapRootList[i];
 						baseY += 45;
 						string str = bridge.ShipName;
 						int strSize = 0;
-						if (playerShipComp.MapRootList.Count > 1)
+						if (mapRootList.Count > 1)
 						{
 							strSize = 5 + str.Length * 8;
 						}
 						Rect rect2 = new Rect(screenHalf - 630 - strSize, baseY - 40, 395 + strSize, 35);
 						Verse.Widgets.DrawMenuSection(rect2);
-						if (playerShipComp.MapRootList.Count > 1)
+						if (mapRootList.Count > 1)
 							Widgets.Label(rect2.ContractedBy(7), str);
 
 						PowerNet net = bridge.powerComp.PowerNet;
@@ -2503,11 +2515,12 @@ namespace SaveOurShip2
 				}
 				//enemy heat & energy bars
 				baseY = __instance.Size.y + 40 + SaveOurShip2.ModSettings_SoS.offsetUIy;
-				for (int i = 0; i < enemyShipComp.MapRootList.Count; i++)
+				mapRootList = enemyShipComp.MapRootList;
+				for (int i = mapRootList.Count; i-- > 0;)
 				{
 					try //td rem this once this is 100% safe
 					{
-						var bridge = (Building_ShipBridge)enemyShipComp.MapRootList[i];
+						var bridge = (Building_ShipBridge)mapRootList[i];
 						baseY += 45;
 						string str = bridge.ShipName;
 						Rect rect2 = new Rect(screenHalf + 235, baseY - 40, 395, 35);
@@ -2718,21 +2731,23 @@ namespace SaveOurShip2
 			}
 			//TODO replace this when interplanetary travel is ready
 			//Find.PlaySettings.showWorldFeatures = false;
+			
 			RenderTexture oldTexture = Find.WorldCamera.targetTexture;
 			RenderTexture oldSkyboxTexture = RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture;
 
-			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.Planet;
-			Find.WorldCameraDriver.JumpTo(Find.CurrentMap.Tile);
-			Find.WorldCameraDriver.altitude = altitude;
-			Find.WorldCameraDriver.GetType()
-				.GetField("desiredAltitude", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-				.SetValue(Find.WorldCameraDriver, altitude);
+			var renderer = Find.World.renderer;
+			renderer.wantedMode = RimWorld.Planet.WorldRenderMode.Planet;
+			
+			var worldCameraDriver = Find.WorldCameraDriver;
+			worldCameraDriver.JumpTo(Find.CurrentMap.Tile);
+			worldCameraDriver.altitude = altitude;
+			worldCameraDriver.desiredAltitude = altitude;
 
 			float num = (float)UI.screenWidth / (float)UI.screenHeight;
 
-			Find.WorldCameraDriver.Update();
-			Find.World.renderer.CheckActivateWorldCamera();
-			Find.World.renderer.DrawWorldLayers();
+			worldCameraDriver.Update();
+			renderer.CheckActivateWorldCamera();
+			renderer.DrawWorldLayers();
 			WorldRendererUtility.UpdateWorldShadersParams();
 			//TODO replace this when interplanetary travel is ready
 			/*List<WorldLayer> layers = (List<WorldLayer>)typeof(WorldRenderer).GetField("layers", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Find.World.renderer);
@@ -2742,26 +2757,28 @@ namespace SaveOurShip2
                     layer.Render();
             }
             Find.PlaySettings.showWorldFeatures = false;*/
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = ResourceBank.target;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.aspect = num;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.Render();
+			var worldSkyboxCamera = RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera;
+			worldSkyboxCamera.targetTexture = ResourceBank.target;
+			worldSkyboxCamera.aspect = num;
+			worldSkyboxCamera.Render();
 
-			Find.WorldCamera.targetTexture = ResourceBank.target;
-			Find.WorldCamera.aspect = num;
-			Find.WorldCamera.Render();
+			var worldCamera = Find.WorldCamera;
+			worldCamera.targetTexture = ResourceBank.target;
+			worldCamera.aspect = num;
+			worldCamera.Render();
 
 			RenderTexture.active = ResourceBank.target;
 			ResourceBank.virtualPhoto.ReadPixels(new Rect(0, 0, 2048, 2048), 0, 0);
 			ResourceBank.virtualPhoto.Apply();
 			RenderTexture.active = null;
 
-			Find.WorldCamera.targetTexture = oldTexture;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = oldSkyboxTexture;
-			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.None;
-			Find.World.renderer.CheckActivateWorldCamera();
+			worldCamera.targetTexture = oldTexture;
+			worldSkyboxCamera.targetTexture = oldSkyboxTexture;
+			renderer.wantedMode = RimWorld.Planet.WorldRenderMode.None;
+			renderer.CheckActivateWorldCamera();
 
-			if (!((List<WorldLayer>)typeof(WorldRenderer).GetField("layers", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Find.World.renderer)).FirstOrFallback().ShouldRegenerate)
-				ShipInteriorMod2.renderedThatAlready = true;
+			
+			if (!renderer.layers.FirstOrFallback().ShouldRegenerate) ShipInteriorMod2.renderedThatAlready = true;
 		}
 	}
 
@@ -3528,7 +3545,8 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(TimedDetectionRaids __instance)
 		{
-			return ((MapParent)__instance.parent).HasMap && ((MapParent)__instance.parent).Map.mapPawns.AnyColonistSpawned;
+			Map map = ((MapParent)__instance.parent).Map;
+			return map == null || map.Biome != ResourceBank.BiomeDefOf.OuterSpaceBiome || map.mapPawns.AnyColonistSpawned;
 		}
 	}
 
@@ -4108,10 +4126,12 @@ namespace SaveOurShip2
 	[HarmonyPatch(typeof(ThingListGroupHelper), "Includes")]
 	public static class ReactorsCanBeRefueled
 	{
+		static Type compRefuelableOverdrivable = typeof(CompRefuelableOverdrivable);
+
 		[HarmonyPostfix]
 		public static void CheckClass(ThingRequestGroup group, ThingDef def, ref bool __result)
 		{
-			if (group == ThingRequestGroup.Refuelable && def.HasComp(typeof(CompRefuelableOverdrivable)))
+			if (!__result && group == ThingRequestGroup.Refuelable && def.HasComp(compRefuelableOverdrivable))
 				__result = true;
 		}
 	}
@@ -5207,12 +5227,14 @@ namespace SaveOurShip2
 		public static void Postfix(JobDriver_Meditate __instance)
 		{
 			int num = GenRadial.NumCellsInRadius(MeditationUtility.FocusObjectSearchRadius);
+			var pawnPosition = __instance.pawn.Position;
+			Map map = __instance.pawn.Map;
 			for (int i = 0; i < num; i++)
 			{
-				IntVec3 c = __instance.pawn.Position + GenRadial.RadialPattern[i];
-				if (c.InBounds(__instance.pawn.Map))
+				IntVec3 c = pawnPosition + GenRadial.RadialPattern[i];
+				if (c.InBounds(map))
 				{
-					Building_ArchotechSpore spore = c.GetFirstThing<Building_ArchotechSpore>(__instance.pawn.Map);
+					Building_ArchotechSpore spore = c.GetFirstThing<Building_ArchotechSpore>(map);
 					if (spore != null)
 					{
 						spore.MeditationTick();

@@ -10,7 +10,6 @@ namespace RimWorld
     [StaticConstructorOnStartup]
     public class CompEngineTrail : ThingComp
     {
-        public HashSet<IntVec3> ExhaustArea = new HashSet<IntVec3>();
         private static Graphic trailGraphic = GraphicDatabase.Get(typeof(Graphic_Multi), "Things/Building/Ship/Ship_Engine_Trail_Double", ShaderDatabase.MoteGlow, new Vector2(7, 16.5f), Color.white, Color.white);
         private static Graphic trailGraphicSingle = GraphicDatabase.Get(typeof(Graphic_Multi), "Things/Building/Ship/Ship_Engine_Trail_Single", ShaderDatabase.MoteGlow, new Vector2(7, 16.5f), Color.white, Color.white);
         private static Graphic trailGraphicLarge = GraphicDatabase.Get(typeof(Graphic_Multi), "Things/Building/Ship/NuclearEngineTrail", ShaderDatabase.MoteGlow, new Vector2(7, 26.5f), Color.white, Color.white);
@@ -34,6 +33,7 @@ namespace RimWorld
         }
         public bool active = false;
         int size;
+        public HashSet<IntVec3> ExhaustArea = new HashSet<IntVec3>();
         public ShipHeatMapComp mapComp;
         public CompFlickable flickComp;
         public CompRefuelable refuelComp;
@@ -84,6 +84,7 @@ namespace RimWorld
             powerComp = parent.TryGetComp<CompPowerTrader>();
             mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
             size = parent.def.size.x;
+            ExhaustArea.Clear();
             CellRect rectToKill;
             if (size > 3)
                 rectToKill = parent.OccupiedRect().MovedBy(killOffsetL[parent.Rotation.AsInt]).ExpandedBy(2);

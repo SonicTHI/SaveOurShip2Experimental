@@ -148,7 +148,7 @@ namespace SaveOurShip2
 
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V83f1 active");
+			Log.Message("SOS2EXP V83f3 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -206,6 +206,8 @@ namespace SaveOurShip2
 			allowedQuests = new string[]
 			{
 				"PawnLend",
+				"VFEA_OpportunitySite_SealedVault",
+				"VFEM_OpportunitySite_LootedVault"
 			};
 
 			/*foreach (TraitDef AITrait in DefDatabase<TraitDef>.AllDefs.Where(t => t.exclusionTags.Contains("AITrait")))
@@ -3540,7 +3542,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(TimedDetectionRaids), "CompTick")]
+	[HarmonyPatch(typeof(TimedDetectionRaids), "CompTick")] //prevents raids on scanned sites
 	public static class NoScanRaids
 	{
 		public static bool Prefix(TimedDetectionRaids __instance)

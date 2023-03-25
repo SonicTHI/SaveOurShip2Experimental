@@ -154,7 +154,10 @@ namespace RimWorld
             {
                 startTick = 0;
                 if (!mapComp.InCombat && CanDock(Rotation.FacingCell, Rotation.RighthandCell))
+                {
                     Dock();
+                    unfoldComp.Target = (dist - 1) * 0.3334f;
+                }
             }
         }
         public override IEnumerable<Gizmo> GetGizmos()
@@ -179,7 +182,7 @@ namespace RimWorld
                             if (!docked)
                             {
                                 startTick = Find.TickManager.TicksGame + 170;
-                                unfoldComp.Target = (dist - 1) * 0.33f;
+                                unfoldComp.Target = (dist - 1) * 0.3334f;
                             }
                             else
                                 UnDock();

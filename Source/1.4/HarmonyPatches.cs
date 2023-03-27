@@ -1456,8 +1456,13 @@ namespace SaveOurShip2
 		}
 	}
 
-	public static class NoShortCircuitCapacitors //This patch is applied manually in ShipInteriorMod2.Initialize.
+	[HarmonyPatch(typeof(ShortCircuitUtility), nameof(ShortCircuitUtility.DoShortCircuit))]
+	public static class NoShortCircuitCapacitors
 	{
+		static bool Prepare()
+		{
+			return !ModLister.HasActiveModWithName("RT Fuse");
+		}
 		public static bool Prefix(Building culprit, out bool __state)
 		{
 			__state = false;

@@ -28,7 +28,7 @@ namespace RimWorld
 					return new AcceptanceReport(TranslatorFormattedStringExtensions.Translate("MustPlaceOnShipHull"));
 			}
 			//special check for bays
-			if (def.defName.Equals("ShipSalvageBay") || def.defName.Equals("ShipShuttleBay") || def.defName.Equals("ShipShuttleBayLarge"))
+			if (def == ResourceBank.ThingDefOf.ShipSalvageBay || def == ResourceBank.ThingDefOf.ShipShuttleBay|| def == ResourceBank.ThingDefOf.ShipShuttleBayLarge)
 			{
 				occupiedRect = new CellRect(loc.x, loc.z, 1, 1).ExpandedBy(2);
 				foreach (IntVec3 vec in occupiedRect)
@@ -37,7 +37,7 @@ namespace RimWorld
 						return false;
 					foreach (Thing b in vec.GetThingList(map))
 					{
-						if (b.def.defName.Equals("ShipShuttleBay") || b.def.defName.Equals("ShipSalvageBay") || b.def.defName.Equals("ShipShuttleBayLarge") || b.def.passability == Traversability.PassThroughOnly || b.def.IsBlueprint)
+						if (b.def == ResourceBank.ThingDefOf.ShipShuttleBay || b.def == ResourceBank.ThingDefOf.ShipSalvageBay || b.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || b.def.passability == Traversability.PassThroughOnly || b.def.IsBlueprint)
 							return false;
 					}
 				}

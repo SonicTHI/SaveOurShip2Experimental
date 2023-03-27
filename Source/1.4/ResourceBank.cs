@@ -84,6 +84,9 @@ namespace SaveOurShip2
 			public static ThingDef ShipAirlockBeamWall;
 			public static ThingDef ShipAirlockBeamTile;
 			public static ThingDef ShipAirlockBeam;
+			public static ThingDef ShipShuttleBay;
+			public static ThingDef ShipShuttleBayLarge;
+			public static ThingDef ShipSalvageBay;
 		}
 
 		[DefOf]

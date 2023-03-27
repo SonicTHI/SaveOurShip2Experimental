@@ -795,7 +795,7 @@ namespace RimWorld
             if (!mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Add(this);
             //Log.Message("Spawned: " + this + " to " + this.Map);
-            if (this.def.defName.Equals("ShipConsoleTactical"))
+            if (this.TryGetComp<CompShipHeatTacCon>() != null)
             {
                 TacCon = true;
             }

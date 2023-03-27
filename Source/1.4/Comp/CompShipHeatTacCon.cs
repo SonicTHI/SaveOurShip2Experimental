@@ -18,7 +18,7 @@ namespace RimWorld
             {
                 yield return gizmo;
             }
-            if (myNet == null)
+            if (myNet == null || this.parent.Faction != Faction.OfPlayer)
                 yield break;
             HashSet<Def> defs = new HashSet<Def>();
             foreach (var t in myNet.Turrets)

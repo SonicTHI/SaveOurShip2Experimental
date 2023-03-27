@@ -2374,6 +2374,7 @@
 				<cornerTL>Damage/Corner</cornerTL>
 			</damageData>
 		</graphicData>
+		<altitudeLayer>WorldClipper</altitudeLayer>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<comps>
 			<li Class="CompProperties_Flickable"/>

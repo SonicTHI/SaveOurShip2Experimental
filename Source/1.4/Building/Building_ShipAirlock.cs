@@ -208,7 +208,7 @@ namespace RimWorld
         public bool HasDocking(Building b1, Building b2)
         {
             //check LR for extender, same rot
-            if (b1 != null && b2 != null && b1.def == ResourceBank.ThingDefOf.ShipAirlockBeam && b2.def == ResourceBank.ThingDefOf.ShipAirlockBeam)
+            if (b1 != null && b2 != null && b1.def == ResourceBank.ThingDefOf.ShipAirlockBeam && b1.def == b2.def)
             {
                 polarity = 0;
                 var r1 = b1.Rotation.AsByte;

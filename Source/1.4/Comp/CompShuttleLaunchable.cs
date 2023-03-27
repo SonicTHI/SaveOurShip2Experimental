@@ -137,7 +137,7 @@ namespace RimWorld
 				List<CompTransporter> transportersInGroup = this.TransportersInGroup;
 				for (int i = 0; i < transportersInGroup.Count; i++)
 				{
-					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !(transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def.defName.Equals("ShipShuttleBay") || t.def.defName.Equals("ShipShuttleBayLarge"))))
+					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !(transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge)))
 					{
 						return true;
 					}
@@ -219,23 +219,25 @@ namespace RimWorld
             var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
             CameraJumper.TryJump(CameraJumper.GetWorldTarget(this.parent));
             Find.WorldSelector.ClearSelection();
+
+            var refuelComp = this.parent.TryGetComp<CompRefuelable>();
             if (this.parent.Map.Parent is WorldObjectOrbitingShip)
             {
                 Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
-                    if (!target.IsValid || this.parent.TryGetComp<CompRefuelable>() == null || this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax == 1.0f || ((this.parent.Map == mapComp.ShipCombatMasterMap || this.parent.Map == mapComp.ShipCombatOriginMap) && target.WorldObject is WorldObjectOrbitingShip && this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax >= 0.25f))
+                    if (!target.IsValid || refuelComp == null || refuelComp.FuelPercentOfMax == 1.0f || ((this.parent.Map == mapComp.ShipCombatMasterMap || this.parent.Map == mapComp.ShipCombatOriginMap) && target.WorldObject is WorldObjectOrbitingShip && refuelComp.FuelPercentOfMax >= 0.25f))
                     {
                         return null;
                     }
                     if (target.WorldObject != null && (target.WorldObject is SpaceSite))
                     {
-                        if (this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax >= ((SpaceSite)target.WorldObject).fuelCost / 100f)
+                        if (refuelComp.FuelPercentOfMax >= ((SpaceSite)target.WorldObject).fuelCost / 100f)
                             return null;
                         return TranslatorFormattedStringExtensions.Translate("MessageShuttleNeedsMoreFuel", ((SpaceSite)target.WorldObject).fuelCost);
                     }
                     if (target.WorldObject != null && (target.WorldObject is MoonBase))
                     {
-                        if (this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax >= ((MoonBase)target.WorldObject).fuelCost / 100f)
+                        if (refuelComp.FuelPercentOfMax >= ((MoonBase)target.WorldObject).fuelCost / 100f)
                             return null;
                         return TranslatorFormattedStringExtensions.Translate("MessageShuttleNeedsMoreFuel", ((MoonBase)target.WorldObject).fuelCost);
                     }
@@ -250,7 +252,7 @@ namespace RimWorld
                     {
                         return TranslatorFormattedStringExtensions.Translate("MessageOnlyOtherSpaceSites");
                     }
-                    if (this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax >= ((SpaceSite)this.parent.Map.Parent).fuelCost / 100f)
+                    if (refuelComp.FuelPercentOfMax >= ((SpaceSite)this.parent.Map.Parent).fuelCost / 100f)
                         return null;
                     return TranslatorFormattedStringExtensions.Translate("MessageShuttleNeedsMoreFuel", ((SpaceSite)this.parent.Map.Parent).fuelCost);
                 });
@@ -263,7 +265,7 @@ namespace RimWorld
                     {
                         return TranslatorFormattedStringExtensions.Translate("MessageOnlyOtherSpaceSites");
                     }
-                    if (this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax >= ((MoonBase)this.parent.Map.Parent).fuelCost / 100f)
+                    if (refuelComp.FuelPercentOfMax >= ((MoonBase)this.parent.Map.Parent).fuelCost / 100f)
                         return null;
                     return TranslatorFormattedStringExtensions.Translate("MessageShuttleNeedsMoreFuel", ((MoonBase)this.parent.Map.Parent).fuelCost);
                 });
@@ -315,8 +317,9 @@ namespace RimWorld
                 this.TryLaunch(target, new TransportPodsArrivalAction_VisitSite((SpaceSite)target.WorldObject, PawnsArrivalModeDefOf.EdgeDrop));
                 return true;
             }
+            var refuelComp = this.parent.TryGetComp<CompRefuelable>();
             MapParent targetMapParent = target.WorldObject as MapParent;
-            //target has world object and open map
+            //target has world object, open map
             if (targetMapParent != null && targetMapParent.HasMap)
 			{
                 //to orbiting ship
@@ -337,7 +340,7 @@ namespace RimWorld
                     //from ground
                     else if (!mapComp.InCombat && this.parent.Map != mapComp.ShipCombatMasterMap && !(this.parent.Map == mapComp.ShipCombatOriginMap && targetMapParent.Map == mapComp.ShipCombatMasterMap))
                     {
-                        if (this.parent.TryGetComp<CompRefuelable>() != null && this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax < 0.8f)
+                        if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.8f)
                         {
                             Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToOrbit"), MessageTypeDefOf.RejectInput);
                             return false;
@@ -345,7 +348,7 @@ namespace RimWorld
                     }
                     else
                     {
-                        if (this.parent.TryGetComp<CompRefuelable>() != null && this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax < 0.25f)
+                        if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.25f)
                         {
                             Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBePartiallyFueled"), MessageTypeDefOf.RejectInput);
                             return false;
@@ -377,152 +380,157 @@ namespace RimWorld
                         return true;
                     }
                 }
-                else //not orbiting
+                //space to ground
+                else if (this.parent.Map.Parent is WorldObjectOrbitingShip)
                 {
-                    //ship to ground
-                    if (this.parent.Map.Parent.def.defName.Equals("ShipOrbiting"))
+                    if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.15f)
                     {
-                        if (this.parent.TryGetComp<CompRefuelable>() != null && this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax < 0.15f)
-                        {
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToLand"), MessageTypeDefOf.RejectInput);
-                            return false;
-                        }
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToLand"), MessageTypeDefOf.RejectInput);
+                        return false;
                     }
-                    //planetside
-                    else
+                }
+                //ground to ground
+                else
+                {
+                    int num = Find.WorldGrid.TraversalDistanceBetween(this.parent.Map.Tile, target.Tile);
+                    if (num > this.MaxLaunchDistance)
                     {
-                        int num = Find.WorldGrid.TraversalDistanceBetween(this.parent.Map.Tile, target.Tile);
-                        if (num > this.MaxLaunchDistance)
-                        {
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTransportPodsDestinationIsTooFar",new NamedArgument[]
-                                {
-                        CompLaunchable.FuelNeededToLaunchAtDist((float)num).ToString("0.#")
-                                }), MessageTypeDefOf.RejectInput);
-                            return false;
-                        }
-                    }
-                    ChooseMapTarget(targetMapParent);
-                    return true;
-                }
-			}
-			bool flag=false;
-            //moon with no map
-            if (target.WorldObject != null && target.WorldObject.def.defName.Equals("MoonPillarSite"))
-            {
-                if (this.parent.TryGetComp<CompRefuelable>() != null && this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax < 0.25f)
-                {
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToLand"), MessageTypeDefOf.RejectInput);
-                    return false;
-                }
-                this.TryLaunch(target, new TransportPodsArrivalAction_MoonBase(targetMapParent));
-                return true;
-            }
-            //ship to ground
-            if (targetMapParent != null && !(this.parent.Map.Parent is WorldObjectOrbitingShip) && !(targetMapParent is WorldObjectOrbitingShip))
-            {
-                int num = Find.WorldGrid.TraversalDistanceBetween(this.parent.Map.Tile, target.Tile);
-                if (num > this.MaxLaunchDistance)
-                {
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTransportPodsDestinationIsTooFar",new NamedArgument[]
-                        {
-                        CompLaunchable.FuelNeededToLaunchAtDist((float)num).ToString("0.#")
-                        }), MessageTypeDefOf.RejectInput);
-                    return false;
-                }
-                Settlement settlement = targetMapParent as Settlement;
-                List<FloatMenuOption> list = new List<FloatMenuOption>();
-                if (settlement != null && settlement.Visitable)
-                {
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("VisitSettlement",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            if (!this.LoadingInProgressOrReadyToLaunch)
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTransportPodsDestinationIsTooFar", new NamedArgument[]
                             {
-                                return;
-                            }
-                            this.TryLaunch(target, new TransportPodsArrivalAction_VisitSettlement(settlement));
-                            CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                        CompLaunchable.FuelNeededToLaunchAtDist((float)num).ToString("0.#")
+                            }), MessageTypeDefOf.RejectInput);
+                        return false;
+                    }
                 }
-                if (settlement != null && settlement.Attackable)
-                {
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("AttackAndDropAtEdge",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            TryLaunch(target, new TransportPodsArrivalAction_AttackSettlement(settlement, PawnsArrivalModeDefOf.EdgeDrop));
-                            //CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("AttackAndDropInCenter",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            TryLaunch(target, new TransportPodsArrivalAction_AttackSettlement(settlement, PawnsArrivalModeDefOf.CenterDrop));
-                            //CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
-                }
-                else if (targetMapParent is Site)
-                {
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("DropAtEdge",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            TryLaunch(target, new TransportPodsArrivalAction_VisitSite((Site)targetMapParent, PawnsArrivalModeDefOf.EdgeDrop));
-                            //CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("DropInCenter",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            TryLaunch(target, new TransportPodsArrivalAction_VisitSite((Site)targetMapParent, PawnsArrivalModeDefOf.CenterDrop));
-                            //CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
-                }
-                if (list.Any<FloatMenuOption>())
-                {
-                    Find.WorldTargeter.closeWorldTabWhenFinished = false;
-                    Find.WindowStack.Add(new FloatMenu(list));
-                    return true;
-                }
-                flag = true;
-            }
-            //ship to caravan
-            else if (target.WorldObject != null && target.WorldObject is Caravan && (this.parent.Map.Parent is WorldObjectOrbitingShip))
-            {
-                if (this.parent.TryGetComp<CompRefuelable>() != null && this.parent.TryGetComp<CompRefuelable>().FuelPercentOfMax < 0.15f)
-                {
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToLand"), MessageTypeDefOf.RejectInput);
-                    return false;
-                }
-                this.TryLaunch(target, new TransportPodsArrivalAction_GiveToCaravan((Caravan)target.WorldObject));
+                ChooseMapTarget(targetMapParent);
                 return true;
             }
-            else if (target.WorldObject != null && !(this.parent.Map.Parent is WorldObjectOrbitingShip))
+
+            //target has world object, no map
+            if (target.WorldObject != null)
             {
-                int num = Find.WorldGrid.TraversalDistanceBetween(this.parent.Map.Tile, target.Tile);
-                if (num > this.MaxLaunchDistance)
+                bool flag = false;
+                //moon with no map
+                if (target.WorldObject.def.defName.Equals("MoonPillarSite"))
                 {
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTransportPodsDestinationIsTooFar",new NamedArgument[]
-                        {
+                    if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.25f)
+                    {
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToLand"), MessageTypeDefOf.RejectInput);
+                        return false;
+                    }
+                    this.TryLaunch(target, new TransportPodsArrivalAction_MoonBase(targetMapParent));
+                    return true;
+                }
+                //ship to ground
+                if (targetMapParent != null && !(this.parent.Map.Parent is WorldObjectOrbitingShip) && !(targetMapParent is WorldObjectOrbitingShip))
+                {
+                    int num = Find.WorldGrid.TraversalDistanceBetween(this.parent.Map.Tile, target.Tile);
+                    if (num > this.MaxLaunchDistance)
+                    {
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTransportPodsDestinationIsTooFar", new NamedArgument[]
+                            {
                         CompLaunchable.FuelNeededToLaunchAtDist((float)num).ToString("0.#")
-                        }), MessageTypeDefOf.RejectInput);
+                            }), MessageTypeDefOf.RejectInput);
+                        return false;
+                    }
+                    Settlement settlement = targetMapParent as Settlement;
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    if (settlement != null && settlement.Visitable)
+                    {
+                        list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("VisitSettlement", new NamedArgument[]
+                            {
+                            target.WorldObject.Label
+                            }), delegate
+                            {
+                                if (!this.LoadingInProgressOrReadyToLaunch)
+                                {
+                                    return;
+                                }
+                                this.TryLaunch(target, new TransportPodsArrivalAction_VisitSettlement(settlement));
+                                CameraJumper.TryHideWorld();
+                            }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                    }
+                    if (settlement != null && settlement.Attackable)
+                    {
+                        list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("AttackAndDropAtEdge", new NamedArgument[]
+                            {
+                            target.WorldObject.Label
+                            }), delegate
+                            {
+                                TryLaunch(target, new TransportPodsArrivalAction_AttackSettlement(settlement, PawnsArrivalModeDefOf.EdgeDrop));
+                            //CameraJumper.TryHideWorld();
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                        list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("AttackAndDropInCenter", new NamedArgument[]
+                            {
+                            target.WorldObject.Label
+                            }), delegate
+                            {
+                                TryLaunch(target, new TransportPodsArrivalAction_AttackSettlement(settlement, PawnsArrivalModeDefOf.CenterDrop));
+                            //CameraJumper.TryHideWorld();
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                    }
+                    else if (targetMapParent is Site)
+                    {
+                        list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("DropAtEdge", new NamedArgument[]
+                            {
+                            target.WorldObject.Label
+                            }), delegate
+                            {
+                                TryLaunch(target, new TransportPodsArrivalAction_VisitSite((Site)targetMapParent, PawnsArrivalModeDefOf.EdgeDrop));
+                            //CameraJumper.TryHideWorld();
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                        list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("DropInCenter", new NamedArgument[]
+                            {
+                            target.WorldObject.Label
+                            }), delegate
+                            {
+                                TryLaunch(target, new TransportPodsArrivalAction_VisitSite((Site)targetMapParent, PawnsArrivalModeDefOf.CenterDrop));
+                            //CameraJumper.TryHideWorld();
+                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
+                    }
+                    if (list.Any<FloatMenuOption>())
+                    {
+                        Find.WorldTargeter.closeWorldTabWhenFinished = false;
+                        Find.WindowStack.Add(new FloatMenu(list));
+                        return true;
+                    }
+                    flag = true;
+                }
+                //ship to caravan
+                else if (target.WorldObject is Caravan && (this.parent.Map.Parent is WorldObjectOrbitingShip))
+                {
+                    if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.15f)
+                    {
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToLand"), MessageTypeDefOf.RejectInput);
+                        return false;
+                    }
+                    this.TryLaunch(target, new TransportPodsArrivalAction_GiveToCaravan((Caravan)target.WorldObject));
+                    return true;
+                }
+                //ground to ground
+                else if (!(this.parent.Map.Parent is WorldObjectOrbitingShip))
+                {
+                    int num = Find.WorldGrid.TraversalDistanceBetween(this.parent.Map.Tile, target.Tile);
+                    if (num > this.MaxLaunchDistance)
+                    {
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTransportPodsDestinationIsTooFar", new NamedArgument[]
+                            {
+                        CompLaunchable.FuelNeededToLaunchAtDist((float)num).ToString("0.#")
+                            }), MessageTypeDefOf.RejectInput);
+                        return false;
+                    }
+                    flag = true;
+                }
+                else
+                    flag = true;
+                if (!flag)
+                {
                     return false;
                 }
-                flag = true;
             }
-            else
-                flag = true;
-			if (!flag)
-			{
-				return false;
-			}
-			if (Find.World.Impassable(target.Tile))
+            
+            //target has no world object, no map
+            if (Find.World.Impassable(target.Tile))
 			{
 				Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTransportPodsDestinationIsInvalid"), MessageTypeDefOf.RejectInput);
 				return false;
@@ -644,12 +652,12 @@ namespace RimWorld
         }
         public static IntVec3 FirstShuttleBayOpen(Map shipMap, ThingDef whichShuttle)
         {
-            foreach (Thing thing in shipMap.listerBuildings.allBuildingsColonist.Where(t => t.def.defName.Equals("ShipShuttleBay") || t.def.defName.Equals("ShipShuttleBayLarge")))
+            foreach (Thing thing in shipMap.listerBuildings.allBuildingsColonist.Where(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
             {
                 if (thing.def.Size.Area < whichShuttle.Size.Area)
                     continue;
 
-                IntVec3 cell = CellFinder.FindNoWipeSpawnLocNear(thing.Position, shipMap, whichShuttle, Rot4.South, thing.def.defName.Equals("ShipShuttleBay")?2:3);
+                IntVec3 cell = CellFinder.FindNoWipeSpawnLocNear(thing.Position, shipMap, whichShuttle, Rot4.South, thing.def == ResourceBank.ThingDefOf.ShipShuttleBay ? 2:3);
 
                 if (cell == thing.Position)
                 {

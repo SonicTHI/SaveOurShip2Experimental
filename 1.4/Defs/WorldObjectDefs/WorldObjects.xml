@@ -48,6 +48,7 @@
 			<li Class="WorldObjectCompProperties_PrisonerWillingToJoin"/>
 			<li Class="WorldObjectCompProperties_TimedForcedExitShip"/>
 			<li Class="WorldObjectCompProperties_EnterCooldown"/>
+			<li Class="WorldObjectCompProperties_TimedDetectionRaids"/>
 		</comps>
 		<mapGenerator>EmptySpaceMap</mapGenerator>
 	</WorldObjectDef>

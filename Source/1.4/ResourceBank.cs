@@ -99,6 +99,7 @@ namespace SaveOurShip2
 			public static TerrainDef ShipWreckageTerrain;
 			public static TerrainDef FakeFloorInsideShipFoam;
         }
+
 		[DefOf]
         public static class RoofDefOf
         {
@@ -118,6 +119,7 @@ namespace SaveOurShip2
 		[DefOf]
         public static class MemeDefOf
         {
+			[MayRequireIdeology]
 			public static MemeDef Structure_Archist;
 		}
 

@@ -174,22 +174,22 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-					<xpath>/Defs/EnemyShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
+					<xpath>Defs/EnemyShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
 					<value><navyExclusive>true</navyExclusive></value>
 				</li>
 				<!-- EVA -->
 				<li Class="PatchOperationAdd">
-					<xpath>/Defs/ThingDef[@Name="ApparelArmorReconBase" or @Name="ApparelArmorCataphractBase" or @Name="ApparelArmorHelmetCataphractBase"]/apparel</xpath>
+					<xpath>Defs/ThingDef[@Name="ApparelArmorReconBase" or @Name="ApparelArmorCataphractBase" or @Name="ApparelArmorHelmetCataphractBase"]/apparel</xpath>
 					<value><tags><li>EVA</li></tags></value></li>
 				<li Class="PatchOperationReplace">
-					<xpath>/Defs/ThingDef[@Name="ApparelArmorReconBase"]/statBases/Insulation_Cold</xpath>
+					<xpath>Defs/ThingDef[@Name="ApparelArmorReconBase"]/statBases/Insulation_Cold</xpath>
 					<value><Insulation_Cold>80</Insulation_Cold></value></li>
 				<li Class="PatchOperationReplace">
-					<xpath>/Defs/ThingDef[@Name="ApparelArmorCataphractBase"]/statBases/Insulation_Cold</xpath>
+					<xpath>Defs/ThingDef[@Name="ApparelArmorCataphractBase"]/statBases/Insulation_Cold</xpath>
 					<value><Insulation_Cold>100</Insulation_Cold></value></li>
 				<!-- traders -->
 				<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+				<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
 					<value>
 						<li Class="StockGenerator_SingleDef">
 							<thingDef>ShipTorpedo_HighExplosive</thingDef>
@@ -198,7 +198,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+				<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
 					<value>
 						<li Class="StockGenerator_SingleDef">
 							<thingDef>ShipTorpedo_EMP</thingDef>
@@ -207,12 +207,18 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+				<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
 					<value>
 						<li Class="StockGenerator_SingleDef">
 							<thingDef>ShipTorpedo_Antimatter</thingDef>
 							<countRange>1~2</countRange>
 						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+				<xpath>Defs/QuestScriptDef[defName="EndGame_RoyalAscent"]/root/nodes/li[25]/node/nodes/li[4]</xpath>
+					<value>
+						<li Class="QuestNode_RoyalAscentShip"><inSignal>pickupShipThing.SentSatisfied</inSignal></li>
 					</value>
 				</li>
 			</operations>
@@ -227,7 +233,7 @@
 			<operations>
 				<!-- mech buildable -->
 				<li Class="PatchOperationAdd">
-					<xpath>/Defs/ThingDef[@Name="ShipCornerMech" or defName = "Ship_BeamMech_Unpowered" or defName = "Ship_BeamMech" or  defName="ShipAirlockMech" or defName="ShipHullTileMech" or defName="ShipInside_SolarGeneratorMech" or defName="ShipInside_PassiveVentMechanoid"]</xpath>
+					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName = "Ship_BeamMech_Unpowered" or defName = "Ship_BeamMech" or  defName="ShipAirlockMech" or defName="ShipHullTileMech" or defName="ShipInside_SolarGeneratorMech" or defName="ShipInside_PassiveVentMechanoid"]</xpath>
 					<value><designationCategory>Ship</designationCategory></value>
 				</li>
 				<li Class="PatchOperationAdd">

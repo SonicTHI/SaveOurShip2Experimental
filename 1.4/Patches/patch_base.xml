@@ -4,31 +4,31 @@
 		<operations>
 			<!-- randy -->
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/StorytellerDef[defName="Randy"]/comps/li[1]/allowedTargetTags</xpath>
+				<xpath>Defs/StorytellerDef[defName="Randy"]/comps/li[1]/allowedTargetTags</xpath>
 				<value><li>Map_SpaceHome</li></value></li>
 			<!-- events -->
 			<li Class="PatchOperationAdd">
-			<xpath>/Defs/IncidentDef[defName="PsychicSoothe" or defName="PsychicDrone" or defName = "OrbitalTraderArrival"]/targetTags</xpath>
+			<xpath>Defs/IncidentDef[defName="PsychicSoothe" or defName="PsychicDrone" or defName = "OrbitalTraderArrival"]/targetTags</xpath>
 				<value><li>Map_SpaceHome</li></value></li>
 			<!-- EVA -->
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/ThingDef[@Name="ApparelArmorPowerBase" or @Name="ApparelArmorHelmetPowerBase"]/apparel</xpath>
+				<xpath>Defs/ThingDef[@Name="ApparelArmorPowerBase" or @Name="ApparelArmorHelmetPowerBase"]/apparel</xpath>
 				<value><tags><li>EVA</li></tags></value></li>
 			<li Class="PatchOperationReplace">
-				<xpath>/Defs/ThingDef[@Name="ApparelArmorPowerBase"]/statBases/Insulation_Cold</xpath>
+				<xpath>Defs/ThingDef[@Name="ApparelArmorPowerBase"]/statBases/Insulation_Cold</xpath>
 				<value><Insulation_Cold>90</Insulation_Cold></value></li>
 			<!-- buildable -->
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/ThingDef[defName="VanometricPowerCell"]/costList</xpath>
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]/costList</xpath>
 				<value><ArchotechExoticParticles>4</ArchotechExoticParticles></value></li>
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
 				<value><researchPrerequisites><li>ArchotechVanometrics</li></researchPrerequisites></value></li>
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
 				<value><designationCategory>Power</designationCategory></value></li>
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/ThingDef[defName="Shell_AntigrainWarhead"]</xpath>
+				<xpath>Defs/ThingDef[defName="Shell_AntigrainWarhead"]</xpath>
 				<value>
 					<costList>
 						<Steel>20</Steel>
@@ -54,7 +54,7 @@
 			</li>
 			<!-- traders -->
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Orbital_CombatSupplier"]/stockGenerators</xpath>
+				<xpath>Defs/TraderKindDef[defName="Orbital_CombatSupplier"]/stockGenerators</xpath>
 				<value>
 					<li Class="StockGenerator_SingleDef">
 						<thingDef>ShipTorpedo_HighExplosive</thingDef>
@@ -76,7 +76,7 @@
 				</value>
 			</li>
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/TraderKindDef[defName="Caravan_Outlander_CombatSupplier"]/stockGenerators</xpath>
+				<xpath>Defs/TraderKindDef[defName="Caravan_Outlander_CombatSupplier"]/stockGenerators</xpath>
 				<value>
 					<li Class="StockGenerator_SingleDef">
 						<thingDef>ShipTorpedo_HighExplosive</thingDef>
@@ -95,7 +95,7 @@
 			</li>
 			<!-- misc -->
 			<li Class="PatchOperationAdd">
-				<xpath>/Defs/ThingDef[defName="HiTechResearchBench"]/comps/li[3]/linkableFacilities</xpath>
+				<xpath>Defs/ThingDef[defName="HiTechResearchBench"]/comps/li[3]/linkableFacilities</xpath>
 				<value><li>ArchotechUplink</li></value></li>
 		</operations>
 	</Operation>

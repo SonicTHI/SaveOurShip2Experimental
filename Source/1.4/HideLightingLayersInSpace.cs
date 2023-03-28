@@ -53,6 +53,7 @@ namespace SaveOurShip2
     }
 
     // Since this targets an internal class, it's manually patched in the ShipInteriorMod2 constructor
+    [HarmonyPatch(typeof(SectionLayer_Terrain), nameof(SectionLayer_Terrain.Regenerate))]
     public class SectionRegenerateHelper
     {
 

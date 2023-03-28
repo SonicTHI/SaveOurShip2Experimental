@@ -31,7 +31,6 @@ namespace SaveOurShip2
 			Harmony pat = new Harmony("ShipInteriorMod2");
 			
 			//Legacy methods. All 3 of these could technically be merged
-			ShipInteriorMod2.Initialize(pat);
 			ShipInteriorMod2.DefsLoaded();
 			ShipInteriorMod2.SceneLoaded();
 			
@@ -99,31 +98,6 @@ namespace SaveOurShip2
 		public static List<ThingDef> randomPlants;
 		public static Dictionary<ThingDef, ThingDef> wreckDictionary;
 
-		public static void Initialize(Harmony pat)
-		{
-			// Must be manually patched as SectionLayer_Terrain is internal
-			var regenerateMethod = AccessTools.TypeByName("SectionLayer_Terrain").GetMethod("Regenerate");
-			var regeneratePostfix = typeof(SectionRegenerateHelper).GetMethod("Postfix");
-			pat.Patch(regenerateMethod, postfix: new HarmonyMethod(regeneratePostfix));
-
-			if (ModLister.HasActiveModWithName("RT Fuse"))
-			{
-				Log.Message("SOS2: Enabling compatibility with RT Fuze");
-			}
-			else
-			{
-				var doShortCircuitMethod = typeof(ShortCircuitUtility).GetMethod("DoShortCircuit");
-				var prefix = typeof(NoShortCircuitCapacitors).GetMethod("disableEventQuestionMark");
-				var postfix = typeof(NoShortCircuitCapacitors).GetMethod("tellThePlayerTheDayWasSaved");
-				pat.Patch(doShortCircuitMethod, new HarmonyMethod(prefix), new HarmonyMethod(postfix));
-			}
-
-			//Similarly, with firefighting
-			//TODO - temporarily disabled until we can figure out why we're getting "invalid IL" errors
-			/*var FirefightMethod = AccessTools.TypeByName("JobGiver_FightFiresNearPoint").GetMethod("TryGiveJob", BindingFlags.NonPublic | BindingFlags.Instance);
-            var FirefightPostfix = typeof(FixFireBugC).GetMethod("Postfix");
-            HarmonyInst.Patch(FirefightMethod, postfix: new HarmonyMethod(FirefightPostfix));*/
-		}
 		public override void DoSettingsWindowContents(Rect inRect)
 		{
 			Listing_Standard options = new Listing_Standard();

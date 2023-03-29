@@ -9,6 +9,7 @@ using Verse.AI;
 using Verse.Sound;
 using HarmonyLib;
 using System.Text;
+using System.Reflection.Emit;
 using UnityEngine;
 using Verse.AI.Group;
 using RimWorld.QuestGen;
@@ -930,11 +931,39 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(TimedDetectionRaids), "CompTick")]
-	public static class NoScanRaids //prevents raids on scanned sites
+	static class NoScanRaids //prevents raids on scanned sites
 	{
-		public static bool Prefix(TimedDetectionRaids __instance)
+		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
 		{
-			return ((MapParent)__instance.parent).HasMap && ((MapParent)__instance.parent).Map.mapPawns.AnyColonistSpawned;
+			var label = generator.DefineLabel();
+
+			//Find the return to jump the Valdiate() to
+			foreach (var instruction in instructions)
+			{
+				if (instruction.opcode == OpCodes.Ret)
+				{
+					instruction.labels.Add(label);
+					break;
+				}
+			}
+			
+			bool found = false;
+			foreach (var instruction in instructions)
+			{
+				yield return instruction;
+				if (!found && instruction.opcode == OpCodes.Brfalse)
+				{
+					yield return new CodeInstruction(OpCodes.Ldloc_0); //Grabs MapParent mapParent
+					yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(NoScanRaids), nameof(Validate)));
+					yield return new CodeInstruction(OpCodes.Brfalse, label);
+					found = true;
+				}
+			}
+			if (!found) Log.Error("SOS2: transpiler failed: " + nameof(NoScanRaids) + ". Did RimWorld update?");
+		}
+		public static bool Validate(MapParent mapParent)
+		{
+			return mapParent.Map.mapPawns.AnyColonistSpawned;
 		}
 	}
 

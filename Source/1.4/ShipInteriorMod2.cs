@@ -150,7 +150,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V83f7 active");
+			Log.Message("SOS2EXP V83f8 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -207,7 +207,23 @@ namespace SaveOurShip2
 			};
 			allowedQuests = new string[]
 			{
+				//vanilla
+				"OpportunitySite_BanditCamp",
+				"OpportunitySite_PeaceTalks",
+				"TradeRequest",
+				"OpportunitySite_ItemStash",
+				//roy
 				"PawnLend",
+				"Hospitality_Prisoners",
+				"Hospitality_Animals",
+				//ideo
+				"OpportunitySite_WorkSite",
+				"Hack_WorshippedTerminal",
+				"RelicHunt",
+				"AncientComplex_Standard",
+				//bt
+				"OpportunitySite_AncientComplex_Mechanitor",
+				//mod
 				"VFEA_OpportunitySite_SealedVault",
 				"VFEM_OpportunitySite_LootedVault"
 			};

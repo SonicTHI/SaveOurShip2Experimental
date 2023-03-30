@@ -215,6 +215,16 @@
 						</li>
 					</value>
 				</li>
+				<!-- quest roy endgame -->
+				<li Class="PatchOperationReplace">
+				<xpath>Defs/QuestScriptDef[defName="EndGame_RoyalAscent"]/root/nodes/li[23]/inSignalDisable</xpath>
+					<value>
+						<inSignalDisable>pickupShipThing.SentSatisfied</inSignalDisable>
+					</value>
+				</li>
+				<li Class="PatchOperationRemove">
+				<xpath>Defs/QuestScriptDef[defName="EndGame_RoyalAscent"]/root/nodes/li[25]/node/nodes/li[1]/parms/acceptColonists</xpath>
+				</li>
 				<li Class="PatchOperationReplace">
 				<xpath>Defs/QuestScriptDef[defName="EndGame_RoyalAscent"]/root/nodes/li[25]/node/nodes/li[4]</xpath>
 					<value>

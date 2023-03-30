@@ -3744,100 +3744,74 @@ namespace SaveOurShip2
 	}
 
 	//quests, events
-	/*prevents any quests from firing at all
-	[HarmonyPatch(typeof(QuestUtility), "GenerateQuestAndMakeAvailable", new Type[] { typeof(QuestScriptDef), typeof(Slate) })]
-	public static class OnlyallowedQuestsInSpaceTestTwo
+	[HarmonyPatch(typeof(NaturalRandomQuestChooser), "ChooseNaturalRandomQuest")]
+	public static class QuestsInSpace //if player has space home map and no ground home map pick from whitelisted questdefs only
 	{
-		public static bool Prefix()
+		public static bool Prefix(out bool __state)
 		{
-			if (Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
+			__state = false;
+			if (Find.Maps.Any(m => m.IsPlayerHome && m.IsSpace()) && !Find.Maps.Any(m => m.IsPlayerHome && !m.IsSpace()))
 			{
-				//td make list of acceptable quests, check
-				Log.Warning("SOS2: QuestUtility.GenerateQuestAndMakeAvailable(Slate) was called with only space map open.");
-				return true;
+				//Log.Warning("SOS2 quest override: only space home map found, switching to SOS2 whitelisted quests.");
+				__state = true;
 			}
+			if (__state)
+				return false;
 			return true;
+		}
+		public static void Postfix(ref QuestScriptDef __result, float points, IIncidentTarget target, bool __state)
+		{
+			if (!__state)
+				return;
+			if (TryGetSpaceQuest(false, out var chosen3))
+			{
+				//Log.Warning("SOS2 quest override: new quest is: " + chosen3.defName);
+				__result = chosen3;
+			}
+			else
+			{
+				//Log.Warning("SOS2 quest override: Couldn't find any random quest for space.");
+				__result = null;
+			}
+			return;
+			bool TryGetSpaceQuest(bool incPop, out QuestScriptDef chosen)
+			{
+				return DefDatabase<QuestScriptDef>.AllDefs.Where((QuestScriptDef x) => x.IsRootRandomSelected && x.rootIncreasesPopulation == incPop && ShipInteriorMod2.allowedQuests.Contains(x.defName) && x.CanRun(points)).TryRandomElementByWeight((QuestScriptDef x) => NaturalRandomQuestChooser.GetNaturalRandomSelectionWeight(x, points, target.StoryState), out chosen);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(QuestGen_Get), "GetMap")] //called for some quests via TestRunInt in CanRun above
+	public static class PreferGroundMapsForQuests //if more than one home map exists prefer that instead of space home
+	{
+		public static void Postfix(ref Map __result, int? preferMapWithMinFreeColonists)
+		{
+			if (__result != null && Find.Maps.Count > 1 && __result.IsSpace())
+			{
+				//int minCount = preferMapWithMinFreeColonists ?? 1;
+				Map map = Find.Maps.Where(m => m.IsPlayerHome && !m.IsSpace())?.FirstOrDefault() ?? null; // && m.mapPawns.FreeColonists.Count >= minCount
+				if (map != null)
+                {
+					//Log.Warning("SOS2 quest override: changed target map from: " + __result + " to: " + map);
+					__result = map;
+				}
+			}
 		}
 	}
 
 	[HarmonyPatch(typeof(QuestNode_GetMap), "IsAcceptableMap")]
-	public static class NoQuestsInSpace
+	public static class IsAcceptableMapNotInspace //if a quest is using this it wont run on a space map
 	{
-		public static void Postfix(Map map, ref bool __result)
-		{
-			if (map.Parent != null && map.IsSpace())
-			{
-				Log.Warning("SOS2: QuestNode_GetMap.IsAcceptableMap check performed on space map, returning false.");
-				__result = false;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(QuestGen_Get), "GetMap")]
-	public static class InSpaceNoQuestsCanUseThis
-	{
-		public static void Postfix(ref Map __result, int? preferMapWithMinFreeColonists)
-		{
-			//if more than one map exists prefer that instead of space home
-			if (__result != null && Find.Maps.Count > 1 && __result.IsSpace())
-			{
-				int minCount = preferMapWithMinFreeColonists ?? 1;
-				Log.Warning("SOS2: QuestGen_Get.GetMap Tried to fire quest in space map, retrying.");
-				Map map = Find.Maps.Where(m => m.IsPlayerHome && !m.IsSpace() && m.mapPawns.FreeColonists.Count >= minCount)?.FirstOrDefault() ?? null;
-				if (map != null)
-					__result = map;
-			}
-		}
-	}*/
-
-	/*this type of quest should not fire in space at all
-	[HarmonyPatch(typeof(QuestNode_Root_ShuttleCrash_Rescue), "TryFindShuttleCrashPosition")]
-	public static class CrashOnShuttleBay
-	{
-		public static void Postfix(Map map, Faction faction, IntVec2 size, ref IntVec3 spot, QuestNode_Root_ShuttleCrash_Rescue __instance)
+		public static void Postfix(Map map, Slate slate, ref bool __result)
 		{
 			if (map.IsSpace())
 			{
-				List<Building> landingSpots = map.listerBuildings.allBuildingsColonist.Where(b => b.def == ThingDef.Named("ShipShuttleBay") || b.def == ThingDef.Named("ShipShuttleBayLarge")).ToList();
-				if (!landingSpots.NullOrEmpty())
+				//if player has space home map and no ground home map whitelist was already checked
+				if (Find.Maps.Any(m => m.IsPlayerHome && m.IsSpace()) && !Find.Maps.Any(m => m.IsPlayerHome && !m.IsSpace()))
 				{
-					foreach (Building landingSpot in landingSpots)
-					{
-						ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
-						area.RecalculateBlockingThing();
-						if (area.FirstBlockingThing == null)
-						{
-							spot = area.CenterCell;
-							break;
-						}
-					}
-				}
-				/* causes errors on RunInt()
-				QuestPart raidPart = null;
-				foreach (QuestPart part in QuestGen.quest.PartsListForReading)
-				{
-					if (part is QuestPart_PawnsArrive)
-					{
-						raidPart = part;
-						break;
-					}
-				}
-				if (raidPart != null)
-					QuestGen.quest.RemovePart(raidPart);
-			}
-		}
-	}*/
-
-	[HarmonyPatch(typeof(IncidentWorker_GiveQuest), "CanFireNowSub")]
-	public static class OnlyallowedQuestsInSpace //should prevent any random quest firing via storyteller on space map if not on allowed list, IncidentWorker_GiveQuest_Map as well, fired from IncidentWorker
-	{
-		public static void Postfix(ref bool __result, IncidentParms parms)
-		{
-			if (__result && Find.Maps.Count == 1 && Find.Maps.FirstOrDefault().IsSpace())
-			{
-				if (ShipInteriorMod2.allowedQuests.Contains(parms.questScriptDef.defName))
 					return;
-				Log.Warning("SOS2: IncidentWorker_GiveQuest.CanFireNowSub tried to fire quest (" + parms.questScriptDef.defName + ") in space with only space map open, aborting.");
+				}
+				//Log.Warning("SOS2 quest override: random quest called QuestNode_GetMap on space map, returning false");
 				__result = false;
 			}
 		}

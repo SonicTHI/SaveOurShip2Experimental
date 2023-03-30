@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>AsteroidBaseStart05</defName>
+		<defName>StartSiteAsteroidC</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>6</offsetX>
 		<offsetZ>6</offsetZ>
 		<sizeX>240</sizeX>
 		<sizeZ>233</sizeZ>
-		<label>Lithobrake Starship (Extreme Difficulty)</label>
+		<label>Lithobrake Starship in Asteroid (Extreme Difficulty)</label>
 		<combatPoints>1532</combatPoints>
 		<neverRandom>True</neverRandom>
 		<neverAttacks>True</neverAttacks>

@@ -106,10 +106,10 @@
 
   <ScenarioDef Name="SoSDungeon">
     <defName>SoSDungeon</defName>
-    <label>Derelict Station</label>
-    <description>You left home to join a crew bound for the stars, signed up for a long-duration mining operation out on the Rim.\n\nAt least, that's what you thought you were getting into.\n\nUpon awakening in your cryptosleep casket to the sound of warning klaxons, you find yourself at the center of an asteroid. The mining base is abandoned. The life support and artificial ecosystem have run amok, filling the habitation spheres with wild plant life. How long have you been buried in here?</description>
+    <label>Space Station</label>
+    <description>You left home to join a crew bound for the stars, signed up for a long-duration operation out on the Rim.\n\nAt least, that's what you thought you were getting into.\n\nUpon awakening in your cryptosleep casket to the sound of warning klaxons, you find yourself on a space station. Likely abandoned, the life support and artificial ecosystem have run amok, filling the habitation spheres with wild plant life. How long have you been buried in here?</description>
     <scenario>
-      <summary>Three survivors aboard a damaged asteroid base.</summary>
+      <summary>Three survivors aboard a space station.</summary>
       <playerFaction>
         <def>PlayerFaction</def>
         <factionDef>PlayerColony</factionDef>

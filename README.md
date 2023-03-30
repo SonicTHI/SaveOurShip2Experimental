@@ -1,30 +1,42 @@
-# SaveOurShip2Experimental
+# SAVE OUR SHIP 2 EXPERIMENTAL
 
-**READ CAREFULLY AND IN FULL BEFORE DOING ANYTHING:**
+## **READ CAREFULLY AND IN FULL BEFORE DOING ANYTHING!**
 
-SOS2 EXPERIMENTAL is the maintained version of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131). It includes over a years worth of bugfixes, performance optimizations, mechanics changes and some new features that might need more testing.
+### **INTRODUCTION AND DISCLAIMER:**
 
-**As of V78, 1.3 version is no longer included and has not been maintained since V69.**
+**SOS2 EXPERIMENTAL** (SOS2EXP) is the maintained version of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131) for RimWorld 1.4. It includes over a years worth of bugfixes, performance optimizations, mechanics changes and some new features that might need more testing. An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2EXP.
 
 **While this version is officially endorsed, it is not made by RHX media and you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from SOS2EXP back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case.
+
+___
+### **INSTALLATION AND UPDATING:**
 
 **Make a separate save while NOT IN A SHIP BATTLE before switching to this version and unsubscribe from SOS2 on STEAM!**
 
 **To download the latest build click above: Code -> Download ZIP.** With major changes a stable build might also be available under Releases.
 
-When updating to a new SOS2EXP version: Make sure to delete the old folder then extract the new one.
+Extract the zip to your RimWorld/Mods directory.
 
-You can report issues or give feedback here or in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - **(read the rules) Make sure you are on the latest version, check the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) before reporting and if possible try replicating the bug with only the required mods installed. When making a report provide errors, logs, screenshots and be descriptive. "X is broken/not working" tells us nothing.**
+When updating to a new SOS2EXP version: Delete the old folder then extract the new one.
 
-An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2EXP.
+___
+### **TROUBLESHOOTING AND ISSUE REPORTING:**
 
-Also check [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2PACX-1vT1tWMpG9R7bU6asg5ICf6AmQGzUHmxnL8OPOWFzV1o4L_Dsli6OQbHfFXY4CTxX6vpCEvJjycMPniB/pubhtml) for general SOS2 info, FAQs and mod compatibility. Note that some mods that do work with the STEAM build might not with SOS2EXP - particularly mods that alter, extend or otherwise interact with SOS2.
+Check the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0) for known issues and [the official SOS2 sheet](https://docs.google.com/spreadsheets/d/e/2PACX-1vT1tWMpG9R7bU6asg5ICf6AmQGzUHmxnL8OPOWFzV1o4L_Dsli6OQbHfFXY4CTxX6vpCEvJjycMPniB/pubhtml) for general SOS2 info, FAQs and mod compatibility. Note that some mods that do work with the STEAM build might not with SOS2EXP - particularly mods that alter, extend or otherwise interact with SOS2.
 
-**MAJOR FEATURE LIST:**
+* **Before reporting make sure you are on the latest SOS2EXP version.** Version info is shown on startup in the debug log (*Enable development mode!*).
+* Make sure your log is clear of any other red errors from other mods and you are not using mods listed as incompatible with SOS2EXP!
+* If possible try replicating the bug with only the required mods installed (*Harmony, Wall light*).
+* When making a report provide a **FULL LOG**! (*Open debug log - tilde or top left icon -> Files -> Open Save Folder -> Player.log*) A good description and screenshots of the bug are appreciated.
+* You can report issues or give feedback here or in **#save-our-ship** on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - **read the server rules!**
+
+**FAILURE TO FOLLOW THE ABOVE WILL RESULT IN YOUR REPORT BEING CLOSED/IGNORED!**
+___
+### **MAJOR FEATURE LIST:**
 
 * **Continue playing or start fresh:** the new release is backwards compatible but your ship might require some maintenance such as replacing large bridges with consoles, adding coolant tanks for more capacity or making more room for a larger crew. If however you plan to start on a ship you can pick from a varied selection of rebuilt options by customizing your starting scenario. Making a save before switching to this version out of combat is highly recommended. If however you want to be extra safe, land your ship on the planet and make sure no space maps are open.
 
-* **Rebuilt ship roster:** almost every ship in the mod has been redesigned and built from the ground up utilizing new systems and mechanics making for a more interesting and varied experience. New ships and fleets have also been added. Many thanks to the ship wrights that helped with this: HG, Oninnaise, UrbanMonkey, VVither_Skeleton.
+* **Rebuilt ship roster:** every ship in the mod has been redesigned and built from the ground up utilizing new systems and mechanics making for a more interesting and varied experience. New ships have also been added. Many thanks to the ship wrights that helped with this: HG, Oninnaise, UrbanMonkey, VVither_Skeleton.
 
 * **Ship blueprints:** sold by weapon merchants. These items allow you to build entire ships and are fully reusable and customizable. You will still need the required technologies and resources to do so (these are listed on each blueprint).
 

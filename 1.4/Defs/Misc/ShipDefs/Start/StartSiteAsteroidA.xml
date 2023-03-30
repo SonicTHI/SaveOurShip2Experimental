@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>AsteroidBaseStart01</defName>
+		<defName>StartSiteAsteroidA</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>8</offsetX>
 		<offsetZ>7</offsetZ>

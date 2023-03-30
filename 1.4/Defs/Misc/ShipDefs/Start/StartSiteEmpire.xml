@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartBaseEmpire</defName>
+		<defName>StartSiteEmpire</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>26</offsetX>
 		<offsetZ>47</offsetZ>
 		<sizeX>206</sizeX>
 		<sizeZ>138</sizeZ>
-		<label>Imperial battleship wreck</label>
+		<label>Imperial Battleship Wreck (High Difficulty)</label>
 		<combatPoints>2385</combatPoints>
 		<neverRandom>True</neverRandom>
 		<startingShip>True</startingShip>

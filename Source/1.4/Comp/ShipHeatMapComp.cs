@@ -453,8 +453,9 @@ namespace RimWorld
             MasterMapComp.StartBattleCache();
             //set range DL:1-9
             byte detectionLevel = 7;
-            List<Building_ShipAdvSensor> Sensors = Find.World.GetComponent<PastWorldUWO2>().Sensors.Where(s => s.Map == this.map).ToList();
-            List<Building_ShipAdvSensor> SensorsEnemy = Find.World.GetComponent<PastWorldUWO2>().Sensors.Where(s => s.Map == MasterMapComp.map).ToList();
+            var worldComp = Find.World.GetComponent<PastWorldUWO2>();
+            List<Building_ShipAdvSensor> Sensors = worldComp.Sensors.Where(s => s.Map == this.map).ToList();
+            List<Building_ShipAdvSensor> SensorsEnemy = worldComp.Sensors.Where(s => s.Map == MasterMapComp.map).ToList();
             if (Sensors.Where(sensor => sensor.def.defName.Equals("Ship_SensorClusterAdv") && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
             {
                 //ShipCombatMasterMap.fogGrid.ClearAllFog();
@@ -694,26 +695,29 @@ namespace RimWorld
                 }
                 foreach (var turret in ship.Turrets)
                 {
-                    //var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
-                    //if (torp != null && !torp.Loaded)
-                    //    continue;
+                    var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
+                    if (torp != null && !torp.Loaded)
+                        continue;
+                    var fuel = turret.TryGetComp<CompRefuelable>();
+                    if (fuel != null && fuel.Fuel == 0f)
+                        continue;
                     TurretNum++;
                     int threat = turret.heatComp.Props.threat;
                     totalThreat += threat;
-                    if (turret.heatComp.Props.maxRange > 150)//long
+                    if (turret.heatComp.Props.maxRange > 150) //long
                     {
                         threatPerSegment[0] += threat / 6f;
                         threatPerSegment[1] += threat / 4f;
                         threatPerSegment[2] += threat / 2f;
                         threatPerSegment[3] += threat;
                     }
-                    else if (turret.heatComp.Props.maxRange > 100)//med
+                    else if (turret.heatComp.Props.maxRange > 100) //med
                     {
                         threatPerSegment[0] += threat / 4f;
                         threatPerSegment[1] += threat / 2f;
                         threatPerSegment[2] += threat;
                     }
-                    else if (turret.heatComp.Props.maxRange > 50)//short
+                    else if (turret.heatComp.Props.maxRange > 50) //short
                     {
                         threatPerSegment[0] += threat / 2f;
                         threatPerSegment[1] += threat;

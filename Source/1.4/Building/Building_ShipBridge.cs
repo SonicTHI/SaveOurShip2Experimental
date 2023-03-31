@@ -25,7 +25,7 @@ namespace RimWorld
         public float ShipHeat = 0;
         public int shipIndex = -1;
         public bool TacCon = false;
-        public SortedSet<ThingDef> nonRotatableObjects = new SortedSet<ThingDef>();
+        public HashSet<ThingDef> nonRotatableObjects = new HashSet<ThingDef>();
 
         bool selected = false;
         public List<Building> cachedShipParts;

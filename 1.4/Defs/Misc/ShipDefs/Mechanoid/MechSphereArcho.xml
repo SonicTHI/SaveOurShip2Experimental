@@ -10,6 +10,7 @@
 		<label>Mysterious Archotech Sphere</label>
 		<combatPoints>1677</combatPoints>
 		<randomTurretPoints>120</randomTurretPoints>
+		<rarityLevel>2</rarityLevel>
 		<navyExclusive>true</navyExclusive>
 		<neverWreck>true</neverWreck>
 		<core>

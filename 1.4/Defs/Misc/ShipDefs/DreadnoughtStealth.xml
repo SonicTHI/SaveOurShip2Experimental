@@ -9,6 +9,7 @@
 		<sizeZ>118</sizeZ>
 		<label>Glitterworld dreadnought</label>
 		<combatPoints>4309</combatPoints>
+		<rarityLevel>2</rarityLevel>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>102</x>

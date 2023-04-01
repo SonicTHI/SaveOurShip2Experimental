@@ -150,7 +150,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V83f8 active");
+			Log.Message("SOS2EXP V84 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -430,53 +430,58 @@ namespace SaveOurShip2
 		}
 		public static EnemyShipDef RandomValidShipFrom(List<EnemyShipDef> ships, float CR, bool tradeShip, bool allowNavyExc, bool randomFleet = false, int minZ = 0, int maxZ = 0)
 		{
-			Log.Message("Spawning ship from CR: " + CR + " tradeShip: " + tradeShip + " allowNavyExc: " + allowNavyExc + " randomFleet: " + randomFleet + " minZ: " + minZ + " maxZ: " + maxZ);
+			int rarity = Rand.RangeInclusive(1, 2);
+			Log.Message("Spawning ship from CR: " + CR + " tradeShip: " + tradeShip + " allowNavyExc: " + allowNavyExc + " randomFleet: " + randomFleet + " rarityLevel: " + rarity + " minZ: " + minZ + " maxZ: " + maxZ);
 			float adjCR = CR * Mathf.Clamp((float)difficultySoS, 0.1f, 5f);
 			List<EnemyShipDef> check = new List<EnemyShipDef>();
 			if (randomFleet)
 			{
-				check = ships.Where(def => ValidShipDef(def, 0.7f * adjCR, 1.1f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				check = ships.Where(def => ValidShipDef(def, 0.7f * adjCR, 1.1f * adjCR, tradeShip, allowNavyExc, randomFleet, rarity, minZ, maxZ)).ToList();
 				if (check.Any())
 					return check.RandomElement();
 			}
 			Log.Message("fallback 0");
-			check = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.3f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+			check = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.3f * adjCR, tradeShip, allowNavyExc, randomFleet, rarity, minZ, maxZ)).ToList();
 			if (check.Any())
 				return check.RandomElement();
 			Log.Message("fallback 1");
-			check = ships.Where(def => ValidShipDef(def, 0.25f * adjCR, 2f * adjCR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+			check = ships.Where(def => ValidShipDef(def, 0.25f * adjCR, 2f * adjCR, tradeShip, allowNavyExc, randomFleet, 0, minZ, maxZ)).ToList();
 			if (check.Any())
 				return check.RandomElement();
 			//too high or too low adjCR - ignore difficulty
 			Log.Warning("SOS2: difficulty set too low/high or no suitable ships found for your CR, using fallback");
 			if (CR < 1000)
-				check = ships.Where(def => ValidShipDef(def, 0f * CR, 1f * CR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				check = ships.Where(def => ValidShipDef(def, 0f * CR, 1f * CR, tradeShip, allowNavyExc, randomFleet, 0, minZ, maxZ)).ToList();
 			else
-				check = ships.Where(def => ValidShipDef(def, 0.5f * CR, 100f * CR, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				check = ships.Where(def => ValidShipDef(def, 0.5f * CR, 100f * CR, tradeShip, allowNavyExc, randomFleet, 0, minZ, maxZ)).ToList();
 			if (check.Any())
 				return check.RandomElement();
 			//last fallback, not for fleets or navy exclusive
 			if (tradeShip)
 			{
 				Log.Message("trade ship fallback");
-				check = ships.Where(def => ValidShipDef(def, 0, 100000f, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				check = ships.Where(def => ValidShipDef(def, 0, 100000f, tradeShip, allowNavyExc, randomFleet, 0, minZ, maxZ)).ToList();
 				if (check.Any())
 					return check.RandomElement();
 				Log.Warning("SOS2: navy has no trade ships, choosing any random.");
-				return DefDatabase<EnemyShipDef>.AllDefs.Where(def => ValidShipDef(def, 0f, 100000f, tradeShip, false, randomFleet, minZ, maxZ)).RandomElement();
+				return DefDatabase<EnemyShipDef>.AllDefs.Where(def => ValidShipDef(def, 0f, 100000f, tradeShip, false, randomFleet, 0, minZ, maxZ)).RandomElement();
 			}
 			else if (!allowNavyExc && !randomFleet)
 			{
 				Log.Warning("SOS2: found no suitable enemy ship, choosing any random.");
-				check = ships.Where(def => ValidShipDef(def, 0, 100000f, tradeShip, allowNavyExc, randomFleet, minZ, maxZ)).ToList();
+				check = ships.Where(def => ValidShipDef(def, 0, 100000f, tradeShip, allowNavyExc, randomFleet, 0, minZ, maxZ)).ToList();
 				if (check.Any())
 					return check.RandomElement();
 				ships.Where(def => !def.neverAttacks && !def.neverRandom && (allowNavyExc || !def.navyExclusive)).RandomElement();
 			}
 			return null;
 		}
-		public static bool ValidShipDef(EnemyShipDef def, float CRmin, float CRmax, bool tradeShip, bool allowNavyExc, bool randomFleet, int minZ = 0, int maxZ = 0)
+		public static bool ValidShipDef(EnemyShipDef def, float CRmin, float CRmax, bool tradeShip, bool allowNavyExc, bool randomFleet, int rarity = 0, int minZ = 0, int maxZ = 0)
 		{
+			if (rarity > 0 && def.rarityLevel > rarity)
+            {
+				return false;
+            }
 			if (tradeShip)
 			{
 				if (!def.tradeShip)
@@ -2359,6 +2364,10 @@ namespace SaveOurShip2
 			}
 			map.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
 		}
+		public static bool CompatibleWithShipLoad(ScenPart item)
+		{
+			return !(item is ScenPart_PlayerFaction || item is ScenPart_PlayerPawnsArriveMethod || item is ScenPart_ScatterThings || item is ScenPart_Naked || item is ScenPart_NoPossessions || item is ScenPart_GameStartDialog || item is ScenPart_AfterlifeVault || item is ScenPart_SetNeedLevel || item is ScenPart_StartingAnimal || item is ScenPart_StartingMech || item is ScenPart_StartingResearch || item is ScenPart_StartingThing_Defined || item is ScenPart_StartInSpace || item is ScenPart_ThingCount || item is ScenPart_ConfigPage_ConfigureStartingPawnsBase);
+		}
 		public static bool IsHologram(Pawn pawn)
 		{
 			return pawn.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null;
@@ -2431,10 +2440,6 @@ namespace SaveOurShip2
 			if (hasLung)
 				return 1;
 			return 0;
-		}
-		public static bool CompatibleWithShipLoad(ScenPart item)
-		{
-			return !(item is ScenPart_PlayerFaction || item is ScenPart_PlayerPawnsArriveMethod || item is ScenPart_ScatterThings || item is ScenPart_Naked || item is ScenPart_NoPossessions || item is ScenPart_GameStartDialog || item is ScenPart_AfterlifeVault || item is ScenPart_SetNeedLevel || item is ScenPart_StartingAnimal || item is ScenPart_StartingMech || item is ScenPart_StartingResearch || item is ScenPart_StartingThing_Defined || item is ScenPart_StartInSpace || item is ScenPart_ThingCount || item is ScenPart_ConfigPage_ConfigureStartingPawnsBase);
 		}
 	}
 }

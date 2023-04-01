@@ -9,6 +9,7 @@
 		<sizeZ>50</sizeZ>
 		<label>Stealth frigate</label>
 		<combatPoints>569</combatPoints>
+		<rarityLevel>2</rarityLevel>
 		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>

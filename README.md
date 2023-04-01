@@ -36,7 +36,7 @@ ___
 
 * **Continue playing or start fresh:** the new release is backwards compatible but your ship might require some maintenance such as replacing large bridges with consoles, adding coolant tanks for more capacity or making more room for a larger crew. If however you plan to start on a ship you can pick from a varied selection of rebuilt options by customizing your starting scenario. Making a save before switching to this version out of combat is highly recommended. If however you want to be extra safe, land your ship on the planet and make sure no space maps are open.
 
-* **Rebuilt ship roster:** every ship in the mod has been redesigned and built from the ground up utilizing new systems and mechanics making for a more interesting and varied experience. New ships have also been added. Many thanks to the ship wrights that helped with this: HG, Oninnaise, UrbanMonkey, VVither_Skeleton, Rage Nova.
+* **[Rebuilt ship roster](https://imgur.com/a/YXXBs9p):** every ship in the mod has been redesigned and built from the ground up utilizing new systems and mechanics making for a more interesting and varied experience. New ships have also been added. Many thanks to the ship wrights that helped with this: HG, Oninnaise, UrbanMonkey, VVither_Skeleton, Rage Nova.
 
 * **Ship blueprints:** sold by weapon merchants. These items allow you to build entire ships and are fully reusable and customizable. You will still need the required technologies and resources to do so (these are listed on each blueprint).
 

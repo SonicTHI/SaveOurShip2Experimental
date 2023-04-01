@@ -137,36 +137,7 @@ namespace RimWorld
                 Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(DefDatabase<QuestScriptDef>.GetNamed("SpaceSiteQuest"), slate);
                 Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null);
             }
-            else if (chance == 3) //premade sites, very low chance
-            {
-                DerelictShip ship = new DerelictShip();
-                if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance))
-                {
-                    SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
-                    if (navy != null)
-                    {
-                        ship.derelictShip = navy.enemyShipDefs.Where(def => def.spaceSite).RandomElement();
-                        ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
-                        ship.spaceNavyDef = navy;
-                        if (ship.derelictShip.neverWreck)
-                            ship.wreckLevel = 0;
-                        else
-                            ship.wreckLevel = Rand.RangeInclusive(0, 3);
-                    }
-                }
-                if (ship.derelictShip == null)
-                {
-                    ship.derelictShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.spaceSite).RandomElement();
-                    ship.shipFaction = Faction.OfAncientsHostile;
-                }
-                Log.Message("Created ship with def: " + ship.derelictShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
-                parent.Map.passingShipManager.AddShip(ship);
-                if (worker != null)
-                    Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
-                else
-                    Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
-            }
-            else if (chance > 4 && chance < 8) //tradeship, already has faction, navy resolves in SpawnEnemyShip
+            else if (chance > 3 && chance < 7) //tradeship, already has faction, navy resolves in SpawnEnemyShip
             {
                 IncidentParms parms = new IncidentParms();
                 parms.target = parent.Map;
@@ -180,9 +151,40 @@ namespace RimWorld
                         Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTraderScan"), TranslatorFormattedStringExtensions.Translate("SoSTraderScanDesc", "its AI"), LetterDefOf.PositiveEvent);
                 }
             }
+            else if (chance == 7) //premade sites, very low chance
+            {
+                DerelictShip ship = new DerelictShip();
+                int rarity = Rand.RangeInclusive(1, 2);
+                if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance))
+                {
+                    SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
+                    if (navy != null)
+                    {
+                        ship.derelictShip = navy.enemyShipDefs.Where(def => def.spaceSite && def.rarityLevel <= Rand.RangeInclusive(1, 2)).RandomElement();
+                        ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
+                        ship.spaceNavyDef = navy;
+                        if (ship.derelictShip.neverWreck)
+                            ship.wreckLevel = 0;
+                        else
+                            ship.wreckLevel = Rand.RangeInclusive(0, 3);
+                    }
+                }
+                if (ship.derelictShip == null)
+                {
+                    ship.derelictShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.spaceSite && def.rarityLevel <= rarity).RandomElement();
+                    ship.shipFaction = Faction.OfAncientsHostile;
+                }
+                Log.Message("Created ship with def: " + ship.derelictShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
+                parent.Map.passingShipManager.AddShip(ship);
+                if (worker != null)
+                    Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
+                else
+                    Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
+            }
             else if (chance > 7 && chance < 12) //ship wreck
             {
                 DerelictShip ship = new DerelictShip();
+                int rarity = Rand.RangeInclusive(1, 2);
                 if (chance == 11)
                     ship.wreckLevel = 2;
                 else
@@ -193,13 +195,13 @@ namespace RimWorld
                     if (navy != null)
                     {
                         ship.spaceNavyDef = navy;
-                        ship.derelictShip = navy.enemyShipDefs.Where(def => def.saveSysVer == 2 && !def.neverRandom && !def.spaceSite && !def.neverWreck).RandomElement();
+                        ship.derelictShip = navy.enemyShipDefs.Where(def => !def.neverRandom && !def.spaceSite && !def.neverWreck && def.rarityLevel <= rarity).RandomElement();
                         ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
                     }
                 }
                 if (ship.derelictShip == null)
                 {
-                    ship.derelictShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.saveSysVer == 2 && !def.neverRandom && !def.spaceSite && !def.neverWreck && !def.navyExclusive).RandomElement();
+                    ship.derelictShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverRandom && !def.spaceSite && !def.neverWreck && def.rarityLevel <= rarity && !def.navyExclusive).RandomElement();
                     ship.shipFaction = Faction.OfAncientsHostile;
                 }
 
@@ -213,19 +215,20 @@ namespace RimWorld
             else //random ship
             {
                 AttackableShip ship = new AttackableShip();
+                int rarity = Rand.RangeInclusive(1, 2);
                 if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance))
                 {
                     SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy();
                     if (navy != null)
                     {
                         ship.spaceNavyDef = navy;
-                        ship.attackableShip = navy.enemyShipDefs.Where(def => !def.neverRandom && !def.neverAttacks).RandomElement();
+                        ship.attackableShip = navy.enemyShipDefs.Where(def => !def.neverRandom && !def.neverAttacks && def.rarityLevel <= rarity).RandomElement();
                         ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
                     }
                 }
                 if (ship.attackableShip == null)
                 {
-                    ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverRandom && !def.neverAttacks && !def.navyExclusive).RandomElement();
+                    ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverRandom && !def.neverAttacks && !def.navyExclusive && def.rarityLevel <= rarity).RandomElement();
                     ship.shipFaction = Faction.OfAncientsHostile;
                 }
 

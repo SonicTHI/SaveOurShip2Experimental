@@ -10,6 +10,7 @@
 		<label>Colossus class dreadnought</label>
 		<combatPoints>3734</combatPoints>
 		<randomTurretPoints>300</randomTurretPoints>
+		<rarityLevel>2</rarityLevel>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>77</x>

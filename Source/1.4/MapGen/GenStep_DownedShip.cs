@@ -29,8 +29,9 @@ namespace RimWorld
         protected override void ScatterAt(IntVec3 c, Map map, GenStepParams stepparams, int stackCount = 1)
         {
             List<Building> cores = new List<Building>();
+            int rarity = Rand.RangeInclusive(1, 2);
             //limited to 100x100 due to unsettable map size, no fleets
-            EnemyShipDef ship = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.saveSysVer == 2 && def.ships.NullOrEmpty() && !def.neverRandom && !def.spaceSite && !def.neverWreck && def.sizeX < 100 && def.sizeZ < 100).RandomElement();
+            EnemyShipDef ship = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.ships.NullOrEmpty() && !def.neverRandom && !def.spaceSite && !def.neverWreck && def.rarityLevel <= rarity && def.sizeX < 100 && def.sizeZ < 100).RandomElement();
             ShipInteriorMod2.GenerateShip(ship, map, null, Faction.OfAncients, null, out cores, false, true, 4, (map.Size.x - ship.sizeX) / 2, (map.Size.z - ship.sizeZ) / 2);
         }
     }

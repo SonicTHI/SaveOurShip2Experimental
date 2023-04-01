@@ -101,6 +101,7 @@ namespace RimWorld
         public int offsetZ = 0;
         public int sizeX = 0;
         public int sizeZ = 0;
+        public int rarityLevel = 1; //1 - common, 2 - rare, 3 - gacha rare (not used ATM), 0 - ignore rarity checks in code
         public int combatPoints;
         public int randomTurretPoints;
         public int cargoValue;

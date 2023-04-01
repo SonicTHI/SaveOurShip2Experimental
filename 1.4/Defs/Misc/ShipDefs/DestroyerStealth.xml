@@ -9,6 +9,7 @@
 		<sizeZ>74</sizeZ>
 		<label>Stealth destroyer</label>
 		<combatPoints>943</combatPoints>
+		<rarityLevel>2</rarityLevel>
 		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>

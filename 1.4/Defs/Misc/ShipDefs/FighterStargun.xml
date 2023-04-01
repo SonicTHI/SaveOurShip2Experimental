@@ -9,6 +9,7 @@
 		<sizeZ>16</sizeZ>
 		<label>Heavily armed fighter</label>
 		<combatPoints>121</combatPoints>
+		<rarityLevel>2</rarityLevel>
 		<customPaintjob>true</customPaintjob>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>

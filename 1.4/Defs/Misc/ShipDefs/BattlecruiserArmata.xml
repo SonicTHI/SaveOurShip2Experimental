@@ -9,6 +9,7 @@
 		<sizeZ>66</sizeZ>
 		<label>Armata class battlecruiser</label>
 		<combatPoints>2410</combatPoints>
+		<rarityLevel>2</rarityLevel>
 		<cargoValue>500</cargoValue>
 		<customPaintjob>true</customPaintjob>
 		<core>

@@ -166,9 +166,6 @@
 								<li>EmpireCruiser</li>
 								<li>EmpireDestroyer</li>
 								<li>EmpireFighter</li>
-								<li>EmpireFleetCruisers</li>
-								<li>EmpireFleetDestroyerEscort</li>
-								<li>EmpireFleetStrikeWing</li>
 							</enemyShipDefs>
 						</SpaceNavyDef>
 					</value>

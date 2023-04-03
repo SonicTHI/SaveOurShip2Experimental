@@ -207,9 +207,9 @@ namespace RimWorld
                 ShipInteriorMod2.AirlockBugFlag = false;
 
                 Current.ProgramState = ProgramState.Playing;
-                IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
+                IntVec2 secs = spaceMap.mapDrawer.SectionCount;
                 Section[,] secArray = new Section[secs.x, secs.z];
-                typeof(MapDrawer).GetField("sections", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(spaceMap.mapDrawer, secArray);
+                spaceMap.mapDrawer.sections = secArray;
                 for (int i = 0; i < secs.x; i++)
                 {
                     for (int j = 0; j < secs.z; j++)

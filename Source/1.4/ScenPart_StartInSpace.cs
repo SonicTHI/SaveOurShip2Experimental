@@ -13,19 +13,25 @@ using Verse;
 
 namespace RimWorld
 {
-    class ScenPart_StartInSpace : ScenPart
+	[Flags]
+	public enum ShipStartFlags
 	{
-		static EnemyShipDef pickedEnemyShipDef;
-		static bool pickedDamageStart = true;
-		static bool pickedStation = true;
-		public override bool CanCoexistWith(ScenPart other)
+		None = 0,
+		Ship = 1,
+		Station = 2,
+		LoadShip = 4 //if this can be merged?
+	}
+	class ScenPart_StartInSpace : ScenPart
+	{
+		public override bool CanCoexistWith(ScenPart other) //not working in menu
 		{
 			return !(other is ScenPart_AfterlifeVault || other is ScenPart_LoadShip);
 		}
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
-		EnemyShipDef enemyShipDef;
-		bool damageStart;
+		public EnemyShipDef enemyShipDef;
+		public bool damageStart;
+		public ShipStartFlags startType;
 		public override void ExposeData()
 		{
 			base.ExposeData();
@@ -33,20 +39,32 @@ namespace RimWorld
 		}
 		public override void DoEditInterface(Listing_ScenEdit listing)
 		{
-			Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 2f);
-			Rect rect = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 2f);
-			Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 2f, scenPartRect.width, scenPartRect.height / 2f);
+			Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 3f);
+			Rect rect1 = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 3f);
+			Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
+			Rect rect3 = new Rect(scenPartRect.x, scenPartRect.y + 2 * scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
 			//selection 1
-			if (Widgets.ButtonText(rect, enemyShipDef.label, true, true, true))
+			if (Widgets.ButtonText(rect1, "Start on: " + startType.ToString(), true, true, true))
 			{
-				bool station = false;
-				if (this.def.defName.Equals("StartInSpaceDungeon"))
-					station = true;
+				List<FloatMenuOption> toggleType = new List<FloatMenuOption>();
+				toggleType.Add(new FloatMenuOption("Start on: ship", delegate ()
+				{
+					startType = ShipStartFlags.Ship;
+					enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
+				}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+				toggleType.Add(new FloatMenuOption("Start on: station", delegate ()
+				{
+					startType = ShipStartFlags.Station;
+					enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
+				}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+				Find.WindowStack.Add(new FloatMenu(toggleType));
+
+			}
+			//selection 2
+			if (Widgets.ButtonText(rect2, enemyShipDef.label, true, true, true))
+			{
 				List<FloatMenuOption> list = new List<FloatMenuOption>();
-				foreach (EnemyShipDef localTd2 in from t in DefDatabase<EnemyShipDef>.AllDefs
-												  where (!station && t.startingShip == true && t.startingDungeon == false || (station && t.startingShip == true && t.startingDungeon == true || t.defName == "0"))
-												  orderby t.defName
-												  select t)
+				foreach (EnemyShipDef localTd2 in DefDatabase<EnemyShipDef>.AllDefs.Where(t => startType == ShipStartFlags.Ship && t.startingShip == true && t.startingDungeon == false || startType == ShipStartFlags.Station && t.startingShip == true && t.startingDungeon == true || t.defName == "0").OrderBy(t => t.defName))
 				{
 					EnemyShipDef localTd = localTd2;
 					list.Add(new FloatMenuOption(localTd.label + " (" + localTd.defName + ")", delegate ()
@@ -56,8 +74,8 @@ namespace RimWorld
 				}
 				Find.WindowStack.Add(new FloatMenu(list));
 			}
-			//selection 2
-			if (Widgets.ButtonText(rect2, "Damage ship: " + damageStart.ToString(), true, true, true))
+			//selection 3
+			if (startType == ShipStartFlags.Ship && Widgets.ButtonText(rect3, "Damage ship: " + damageStart.ToString(), true, true, true))
 			{
 				List<FloatMenuOption> toggleDamage = new List<FloatMenuOption>();
 				toggleDamage.Add(new FloatMenuOption("Damage ship: True", delegate ()
@@ -94,13 +112,9 @@ namespace RimWorld
 		}
 		//ship selection end
 
-
 		public void DoEarlyInit()
 		{
 			WorldSwitchUtility.StartShipFlag = true;
-			pickedEnemyShipDef = this.enemyShipDef;
-			pickedDamageStart = damageStart;
-			pickedStation = this.def.defName.Equals("StartInSpaceDungeon");
 		}
 		public static Map GenerateShipSpaceMap() //MapGenerator.GenerateMap override via patch
 		{
@@ -110,22 +124,24 @@ namespace RimWorld
 			((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
 			Current.ProgramState = ProgramState.MapInitializing;
 
-			if (pickedStation && pickedEnemyShipDef.defName == "0") //random dungeon
+			ScenPart_StartInSpace scen = (ScenPart_StartInSpace)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_StartInSpace);
+
+			if (scen.startType == ShipStartFlags.Station && scen.enemyShipDef.defName == "0") //random dungeon
 			{
-				pickedEnemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
-				pickedDamageStart = false;
+				scen.enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
+				scen.damageStart = false;
 			}
-			else if (pickedEnemyShipDef.defName == "0") //random ship, damage lvl 1
+			else if (scen.enemyShipDef.defName == "0") //random ship, damage lvl 1
 			{
-				pickedEnemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
+				scen.enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
 			}
 			List<Building> cores = new List<Building>();
-			ShipInteriorMod2.GenerateShip(pickedEnemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, pickedDamageStart ? 1 : 0, (spaceMap.Size.x - pickedEnemyShipDef.sizeX) / 2, (spaceMap.Size.z - pickedEnemyShipDef.sizeZ) / 2);
+			ShipInteriorMod2.GenerateShip(scen.enemyShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, scen.damageStart ? 1 : 0, (spaceMap.Size.x - scen.enemyShipDef.sizeX) / 2, (spaceMap.Size.z - scen.enemyShipDef.sizeZ) / 2);
 
 			Current.ProgramState = ProgramState.Playing;
-			IntVec2 secs = (IntVec2)typeof(MapDrawer).GetProperty("SectionCount", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(spaceMap.mapDrawer);
+			IntVec2 secs = spaceMap.mapDrawer.SectionCount;
 			Section[,] secArray = new Section[secs.x, secs.z];
-			typeof(MapDrawer).GetField("sections", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(spaceMap.mapDrawer, secArray);
+			spaceMap.mapDrawer.sections = secArray;
 			for (int i = 0; i < secs.x; i++)
 			{
 				for (int j = 0; j < secs.z; j++)
@@ -137,7 +153,7 @@ namespace RimWorld
 				}
 			}
 
-			if (!pickedStation) //defog and homezone ships
+			if (scen.startType == ShipStartFlags.Ship) //defog and homezone ships
 			{
 				spaceMap.fogGrid.ClearAllFog();
 				foreach (Building b in spaceMap.listerThings.AllThings.Where(t => t is Building))
@@ -161,6 +177,7 @@ namespace RimWorld
 		}
 		public override void PostGameStart() //spawn pawns, things
 		{
+			ScenPart_StartInSpace scen = (ScenPart_StartInSpace)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_StartInSpace);
 			Map spaceMap = Find.CurrentMap;
 			List<List<Thing>> list = new List<List<Thing>>();
 			foreach (Pawn startingAndOptionalPawn in Find.GameInitData.startingAndOptionalPawns)
@@ -206,7 +223,7 @@ namespace RimWorld
 					thingy.SetForbidden(true, false);
 					GenPlace.TryPlaceThing(thingy, nextPos, spaceMap, ThingPlaceMode.Near);
 				}
-				if (pickedStation)
+				if (scen.startType == ShipStartFlags.Station)
 					FloodFillerFog.FloodUnfog(nextPos, spaceMap);
 			}
 			foreach (Building b in spawns.Where(b => !b.Destroyed)) //remove spawn points

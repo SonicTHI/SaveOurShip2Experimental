@@ -29,6 +29,7 @@
 		
 		<li Class="ScenPart_StartInSpace">
           <def>StartInSpace</def>
+          <startType>Ship</startType>
           <enemyShipDef>0</enemyShipDef>
           <damageStart>true</damageStart>
           <visible>true</visible>
@@ -131,7 +132,8 @@
         </li>
 		
 		<li Class="ScenPart_StartInSpace">
-          <def>StartInSpaceDungeon</def>
+          <def>StartInSpace</def>
+          <startType>Station</startType>
           <enemyShipDef>0</enemyShipDef>
           <damageStart>false</damageStart>
           <visible>true</visible>

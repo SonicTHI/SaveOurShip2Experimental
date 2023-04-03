@@ -10,14 +10,6 @@
   </ScenPartDef>
   
   <ScenPartDef>
-    <defName>StartInSpaceDungeon</defName>
-    <label>start in space (dungeon)</label>
-    <category>Misc</category>
-    <scenPartClass>ScenPart_StartInSpace</scenPartClass>
-    <maxUses>1</maxUses>
-  </ScenPartDef>
-  
-  <ScenPartDef>
     <defName>AfterlifeVault</defName>
     <label>start in afterlife vault</label>
     <category>Misc</category>

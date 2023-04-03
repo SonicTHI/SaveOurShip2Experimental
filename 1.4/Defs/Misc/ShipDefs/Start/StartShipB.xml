@@ -7,7 +7,7 @@
 		<offsetZ>101</offsetZ>
 		<sizeX>44</sizeX>
 		<sizeZ>48</sizeZ>
-		<label>Damaged Corvette</label>
+		<label>Corvette</label>
 		<combatPoints>180</combatPoints>
 		<neverRandom>True</neverRandom>
 		<startingShip>True</startingShip>

@@ -165,7 +165,7 @@ namespace RimWorld
             if (graphicsDirty)
                 Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
             HologramDestroyed(false);
-            typeof(Pawn_AgeTracker).GetMethod("RecalculateLifeStageIndex", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Consciousness.ageTracker, new object[] { });
+            Consciousness.ageTracker.RecalculateLifeStageIndex();
         }
 
         public void HologramDestroyed(bool decohere, bool goneForGood = false)
@@ -508,8 +508,7 @@ namespace RimWorld
             Consciousness.story.HairColor = HologramColor;
             Consciousness.story.skinColorOverride = null;
             Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
-            typeof(Pawn_AgeTracker).GetMethod("RecalculateLifeStageIndex", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Consciousness.ageTracker, new object[] { });
-
+            Consciousness.ageTracker.RecalculateLifeStageIndex();
             Consciousness.DeSpawn();
             Consciousness.SpawnSetup(parent.Map, false);
             Consciousness = null;

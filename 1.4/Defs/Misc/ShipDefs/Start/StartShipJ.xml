@@ -7,7 +7,7 @@
 		<offsetZ>92</offsetZ>
 		<sizeX>86</sizeX>
 		<sizeZ>64</sizeZ>
-		<label>Damaged Ironclad class frigate</label>
+		<label>Ironclad class frigate</label>
 		<combatPoints>738</combatPoints>
 		<randomTurretPoints>260</randomTurretPoints>
 		<neverRandom>True</neverRandom>

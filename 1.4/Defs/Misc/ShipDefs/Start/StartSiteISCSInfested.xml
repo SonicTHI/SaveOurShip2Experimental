@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>StartShipK_Infested</defName>
+		<defName>StartSiteISCSInfested</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>43</offsetX>
 		<offsetZ>104</offsetZ>
 		<sizeX>159</sizeX>
 		<sizeZ>40</sizeZ>
-		<label>ISCS Start (Extreme Difficulty)</label>
+		<label>Cargo ship (Extreme Difficulty)</label>
 		<combatPoints>441</combatPoints>
 		<neverRandom>True</neverRandom>
-		<startingShip>True</startingShip>
+		<!--startingShip>True</startingShip>
+		<startingDungeon>True</startingDungeon-->
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>108</x>

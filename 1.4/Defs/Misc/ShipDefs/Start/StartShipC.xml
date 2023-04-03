@@ -7,7 +7,7 @@
 		<offsetZ>116</offsetZ>
 		<sizeX>49</sizeX>
 		<sizeZ>36</sizeZ>
-		<label>Damaged Exploration Vessel</label>
+		<label>Exploration Vessel</label>
 		<combatPoints>198</combatPoints>
 		<neverRandom>True</neverRandom>
 		<startingShip>True</startingShip>

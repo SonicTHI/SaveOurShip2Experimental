@@ -62,12 +62,12 @@ namespace RimWorld
             else
             {
                 Messages.Message("Doors successfully opened!", null, MessageTypeDefOf.PositiveEvent);
-                foreach (Thing thing in this.parent.Map.spawnedThings)
+                foreach (Thing t in this.parent.Map.spawnedThings)
                 {
-                    if (thing is Building_Door)
+                    if (t is Building_Door d)
                     {
-                        typeof(Building_Door).GetField("holdOpenInt", BindingFlags.Instance | BindingFlags.NonPublic).SetValue((Building_Door)thing, true);
-                        ((Building_Door)thing).StartManualOpenBy(pawn);
+                        d.holdOpenInt = true;
+                        d.StartManualOpenBy(pawn);
                     }
                 }
                 this.parent.Map.fogGrid.ClearAllFog();

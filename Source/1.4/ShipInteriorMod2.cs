@@ -150,7 +150,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V84 active");
+			Log.Message("SOS2EXP V84f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1973,8 +1973,8 @@ namespace SaveOurShip2
 						targetMap.zoneManager.RegisterZone(zone);
 					}
 				}
-				typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(targetMap.zoneManager, new object[0]);
-				typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(sourceMap.zoneManager, new object[0]);
+				targetMap.zoneManager.RebuildZoneGrid();
+				sourceMap.zoneManager.RebuildZoneGrid();
 
 				//regen affected map layers
 				List<Section> sourceSec = new List<Section>();
@@ -2096,7 +2096,7 @@ namespace SaveOurShip2
 				CompPower powerComp = powerThing.TryGetComp<CompPower>();
 				if (powerComp != null)
 				{
-					typeof(CompPower).GetMethod("TryManualReconnect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(powerComp, new object[0]);
+					powerComp.TryManualReconnect();
 					//Traverse.Create<CompPower>().Method("TryManualReconnect", powerComp);
 					//Traverse.Create(powerComp).Method("TryManualReconnect");
 					//powerComp.ResetPowerVars();
@@ -2339,7 +2339,7 @@ namespace SaveOurShip2
 					if (allOn)
 						map.zoneManager.DeregisterZone(zone);
 				}
-				typeof(ZoneManager).GetMethod("RebuildZoneGrid", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(map.zoneManager, new object[0]);
+				map.zoneManager.RebuildZoneGrid();
 				foreach (IntVec3 pos in map)
 				{
 					var sec = map.mapDrawer.SectionAt(pos);

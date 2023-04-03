@@ -7,7 +7,7 @@
 		<offsetZ>114</offsetZ>
 		<sizeX>59</sizeX>
 		<sizeZ>22</sizeZ>
-		<label>Damaged old Martian corvette</label>
+		<label>Old Martian corvette</label>
 		<combatPoints>137</combatPoints>
 		<neverRandom>True</neverRandom>
 		<neverFleet>True</neverFleet>

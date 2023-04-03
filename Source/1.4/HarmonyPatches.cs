@@ -346,9 +346,7 @@ namespace SaveOurShip2
 			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.Planet;
 			Find.WorldCameraDriver.JumpTo(Find.CurrentMap.Tile);
 			Find.WorldCameraDriver.altitude = altitude;
-			Find.WorldCameraDriver.GetType()
-				.GetField("desiredAltitude", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-				.SetValue(Find.WorldCameraDriver, altitude);
+			Find.WorldCameraDriver.desiredAltitude = altitude;
 
 			float num = (float)UI.screenWidth / (float)UI.screenHeight;
 
@@ -357,8 +355,8 @@ namespace SaveOurShip2
 			Find.World.renderer.DrawWorldLayers();
 			WorldRendererUtility.UpdateWorldShadersParams();
 			//TODO replace this when interplanetary travel is ready
-			/*List<WorldLayer> layers = (List<WorldLayer>)typeof(WorldRenderer).GetField("layers", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Find.World.renderer);
-            foreach(WorldLayer layer in layers)
+			/*
+            foreach(WorldLayer layer in Find.World.renderer.layers)
             {
                 if (layer is WorldLayer_Stars)
                     layer.Render();
@@ -382,7 +380,7 @@ namespace SaveOurShip2
 			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.None;
 			Find.World.renderer.CheckActivateWorldCamera();
 
-			if (!((List<WorldLayer>)typeof(WorldRenderer).GetField("layers", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(Find.World.renderer)).FirstOrFallback().ShouldRegenerate)
+			if (!Find.World.renderer.layers.FirstOrFallback().ShouldRegenerate)
 				ShipInteriorMod2.renderedThatAlready = true;
 		}
 	}
@@ -1710,10 +1708,7 @@ namespace SaveOurShip2
 			Building_ShipTurret building_TurretGun = Find.Selector.SingleSelectedObject as Building_ShipTurret;
 			if (building_TurretGun != null)
 			{
-				__result = (IStoreSettingsParent)typeof(ITab_Storage)
-					.GetMethod("GetThingOrThingCompStoreSettingsParent",
-						BindingFlags.Instance | BindingFlags.NonPublic)
-					.Invoke(__instance, new object[] { building_TurretGun.gun });
+				__result = __instance.GetThingOrThingCompStoreSettingsParent(building_TurretGun.gun);
 				return;
 			}
 		}
@@ -1833,13 +1828,8 @@ namespace SaveOurShip2
 		public static void Postfix(ref IEnumerable<Toil> __result,
 			JobDriver_CarryToCryptosleepCasket __instance)
 		{
-			Pawn Takee = (Pawn)typeof(JobDriver_CarryToCryptosleepCasket)
-				.GetMethod("get_Takee", BindingFlags.Instance | BindingFlags.NonPublic)
-				.Invoke(__instance, new object[0]);
-			Building_CryptosleepCasket DropPod =
-				(Building_CryptosleepCasket)typeof(JobDriver_CarryToCryptosleepCasket)
-					.GetMethod("get_DropPod", BindingFlags.Instance | BindingFlags.NonPublic)
-					.Invoke(__instance, new object[0]);
+			Pawn Takee = __instance.Takee;
+			Building_CryptosleepCasket DropPod = __instance.DropPod;
 			List<Toil> myResult = new List<Toil>();
 			__instance.FailOnDestroyedOrNull(TargetIndex.A);
 			__instance.FailOnDestroyedOrNull(TargetIndex.B);
@@ -1905,10 +1895,7 @@ namespace SaveOurShip2
 
 							Job job = new Job(jDef, current, building_CryptosleepCasket);
 							job.count = current.stackCount;
-							int eggsAlreadyInNest =
-								(typeof(Building_CryptosleepCasket)
-									.GetField("innerContainer", BindingFlags.Instance | BindingFlags.NonPublic)
-									.GetValue(building_CryptosleepCasket) as ThingOwner).Count;
+							int eggsAlreadyInNest = building_CryptosleepCasket.innerContainer.Count;
 							if (job.count + eggsAlreadyInNest > 16)
 								job.count = 16 - eggsAlreadyInNest;
 							pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
@@ -1930,9 +1917,7 @@ namespace SaveOurShip2
 					ThingRequest.ForDef(ThingDef.Named("Cryptonest")), PathEndMode.InteractionCell,
 					TraverseParms.For(p, Danger.Deadly, TraverseMode.ByPawn, false), 9999f, delegate (Thing x) {
 						bool arg_33_0;
-						if (((ThingOwner)typeof(Building_CryptosleepCasket)
-							.GetField("innerContainer", BindingFlags.NonPublic | BindingFlags.Instance)
-							.GetValue((Building_CryptosleepCasket)x)).TotalStackCount < 16)
+						if (((Building_CryptosleepCasket)x).innerContainer.TotalStackCount < 16)
 						{
 							LocalTargetInfo target = x;
 							bool ignoreOtherReservations2 = ignoreOtherReservations;
@@ -2498,11 +2483,9 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(PawnCapacityDef capacity, PawnCapacitiesHandler __instance, ref bool __result)
 		{
-			if (capacity == PawnCapacityDefOf.Manipulation)
+			if (capacity == PawnCapacityDefOf.Manipulation && __instance.pawn.TryGetComp<CompBecomeBuilding>() != null)
 			{
-				Pawn pawn = (Pawn)typeof(PawnCapacitiesHandler).GetField("pawn", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
-				if (pawn.TryGetComp<CompBecomeBuilding>() != null)
-					__result = false;
+				__result = false;
 			}
 		}
 	}
@@ -3554,8 +3537,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Ideo ideo, ref bool __result)
 		{
-			List<Faction> factions = (List<Faction>)typeof(FactionManager).GetField("allFactions", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Find.FactionManager);
-			foreach (Faction faction in factions)
+			foreach (Faction faction in Find.FactionManager.allFactions)
 			{
 				if (faction.ideos != null && faction.ideos.AllIdeos.Contains(ideo))
 				{

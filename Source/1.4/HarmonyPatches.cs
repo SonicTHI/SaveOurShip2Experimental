@@ -28,7 +28,7 @@ namespace SaveOurShip2
 		{
 			Map mapPlayer = null;
 			ShipHeatMapComp playerShipComp = null;
-			var list = RimWorld.ShipHeatMapComp.shipHeatMapCompCache;
+			var list = AccessExtensions.Utility.shipHeatMapCompCache;
 			for (int i = list.Count; i-- > 0;)
 			{
 				playerShipComp = list[i];

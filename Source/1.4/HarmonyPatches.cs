@@ -26,10 +26,20 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ColonistBar __instance)
 		{
-			Map mapPlayer = Find.Maps.Where(m => m.GetComponent<ShipHeatMapComp>().InCombat && !m.GetComponent<ShipHeatMapComp>().ShipCombatMaster).FirstOrDefault();
+			Map mapPlayer = null;
+			ShipHeatMapComp playerShipComp = null;
+			var list = AccessExtensions.Utility.shipHeatMapCompCache;
+			for (int i = list.Count; i-- > 0;)
+			{
+				playerShipComp = list[i];
+				if (playerShipComp.InCombat && !playerShipComp.ShipCombatMaster)
+				{
+					mapPlayer = playerShipComp.map;
+					break;
+				}
+			}
 			if (mapPlayer != null)
 			{
-				var playerShipComp = mapPlayer.GetComponent<ShipHeatMapComp>();
 				var enemyShipComp = mapPlayer.GetComponent<ShipHeatMapComp>().MasterMapComp;
 				if (enemyShipComp == null || playerShipComp.MapRootList.Count == 0 || playerShipComp.MapRootList[0] == null || !playerShipComp.MapRootList[0].Spawned)
 					return;

@@ -9,6 +9,7 @@ namespace RimworldMod
 
         private Dictionary<int, bool> spaceMaps = new Dictionary<int, bool>();
         public HashSet<Thing> shuttleCache = new HashSet<Thing>();
+        public List<RimWorld.ShipHeatMapComp> shipHeatMapCompCache = new List<RimWorld.ShipHeatMapComp>();
 
         public EnvironmentCachingUtility(Game game)
         {

@@ -23,6 +23,12 @@ namespace RimWorld
         {
             grid = new int[map.cellIndices.NumGridCells];
             heatGridDirty = true;
+            RimworldMod.AccessExtensions.Utility.shipHeatMapCompCache.Add(this);
+        }
+        public override void MapRemoved()
+        {
+            RimworldMod.AccessExtensions.Utility.shipHeatMapCompCache.Remove(this);
+            base.MapRemoved();
         }
         public override void MapComponentUpdate()
         {

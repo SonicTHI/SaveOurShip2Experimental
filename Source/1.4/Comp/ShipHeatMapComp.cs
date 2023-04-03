@@ -12,6 +12,7 @@ namespace RimWorld
 {
     public class ShipHeatMapComp : MapComponent
     {
+        public static List<ShipHeatMapComp> shipHeatMapCompCache = new List<ShipHeatMapComp>();
         List<ShipHeatNet> cachedNets = new List<ShipHeatNet>();
         public List<CompShipHeat> cachedPipes = new List<CompShipHeat>();
 
@@ -23,6 +24,12 @@ namespace RimWorld
         {
             grid = new int[map.cellIndices.NumGridCells];
             heatGridDirty = true;
+            shipHeatMapCompCache.Add(this);
+        }
+        public override void MapRemoved()
+        {
+            shipHeatMapCompCache.Remove(this);
+            base.MapRemoved();
         }
         public override void MapComponentUpdate()
         {

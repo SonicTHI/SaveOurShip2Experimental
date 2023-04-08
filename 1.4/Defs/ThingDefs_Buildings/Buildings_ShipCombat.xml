@@ -251,7 +251,7 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
 				<heatCapacity>200</heatCapacity>
-				<heatVent>6</heatVent>
+				<heatVent>8</heatVent>
 				<heatLoss>2</heatLoss>
 				<threat>2</threat>
 			</li>
@@ -299,7 +299,7 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
 				<heatCapacity>1000</heatCapacity>
-				<heatVent>24</heatVent>
+				<heatVent>32</heatVent>
 				<heatLoss>6</heatLoss>
 				<threat>12</threat>
 			</li>

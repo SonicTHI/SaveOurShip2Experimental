@@ -1520,7 +1520,7 @@
 		<defaultPlacingRot>South</defaultPlacingRot>
 		<tickerType>Normal</tickerType>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<description>Allows colonists to scan for objects of interest or observe sites from orbit.</description>
+		<description>Allows colonists to scan for objects of interest, observe sites from orbit and scan enemy ship interiors in combat.</description>
 		<designationCategory>Ship</designationCategory>
 		<costList>
 			<Steel>20</Steel>
@@ -2134,11 +2134,6 @@
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
-		<building>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-		</building>
 		<costList>
 			<Steel>80</Steel>
 			<Plasteel>120</Plasteel>

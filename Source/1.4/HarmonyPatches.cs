@@ -1147,7 +1147,64 @@ namespace SaveOurShip2
 			__result = containedBuildings.ToList();
 		}
 	}
+	
+	[HarmonyPatch(typeof(Building), "SpawnSetup")]
+	public static class DoSpawn
+	{
+		//adds normal building weight/count to ship
+		[HarmonyPostfix]
+		public static void OnSpawn(Building __instance, Map map, bool respawningAfterLoad)
+		{
+			if (respawningAfterLoad)
+				return;
+			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			if (mapComp.CacheOff || mapComp.ShipsOnMapNew.NullOrEmpty() || __instance.TryGetComp<CompSoShipPart>() != null)
+				return;
+			foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
+            {
+				if (mapComp.ShipCells.ContainsKey(vec))
+				{
+					var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
+					ship.Buildings.Add(__instance);
+					ship.BuildingCount++;
+					ship.Mass += (__instance.def.Size.x * __instance.def.Size.z) * 3;
+					return;
+				}
+            }
+		}
+	}
 
+	[HarmonyPatch(typeof(Building), "DeSpawn")]
+	public static class DoPreDeSpawn
+	{
+		//can we have predespawn at home? no, we have despawn at home, despawn at home: postdespawn
+		//lets me actually get the building being removed
+		[HarmonyPrefix]
+		public static bool PreDeSpawn(Building __instance)
+		{
+			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
+			if (mapComp.CacheOff || mapComp.ShipsOnMapNew.NullOrEmpty())
+				return true;
+			var shipComp = __instance.TryGetComp<CompSoShipPart>();
+			if (shipComp != null) //predespawn for ship parts
+				shipComp.PreDeSpawn();
+			else //rems normal building weight/count to ship
+			{
+				foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
+				{
+					if (mapComp.ShipCells.ContainsKey(vec))
+					{
+						var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
+						ship.Buildings.Remove(__instance);
+						ship.BuildingCount--;
+						ship.Mass -= (__instance.def.Size.x * __instance.def.Size.z) * 3;
+						return true;
+					}
+				}
+			}
+			return true;
+		}
+	}
 	[HarmonyPatch(typeof(ShipUtility), "LaunchFailReasons")]
 	public static class FindLaunchFailReasons
 	{

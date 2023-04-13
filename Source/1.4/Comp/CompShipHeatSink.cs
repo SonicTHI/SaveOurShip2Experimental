@@ -46,7 +46,7 @@ namespace RimWorld
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
             if (myNet != null)
-                GenTemperature.PushHeat(pos, map, Props.heatCapacity * myNet.RatioInNetwork * HeatPushMult);
+                PushHeat(0, Props.heatCapacity * myNet.RatioInNetwork * HeatPushMult);
             base.PostDestroy(mode, previousMap);
         }
         public override void PostDeSpawn(Map map)
@@ -106,36 +106,40 @@ namespace RimWorld
                         }
                         return;
                     }
-                    //bleed into or adjacent room
-                    if (parent.def.passability != Traversability.Impassable) //tanks
-                    {
-                        TryPushHeat(ratio, parent.Position);
-                        return;
-                    }
-                    else //sinks are walls, check adjacent
-                    {
-                        foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(parent).ToList())
-                        {
-                            if (TryPushHeat(ratio, vec))
-                                return;
-                        }
-                    }
+                    PushHeat(ratio);
                 }
             }
         }
-        public bool TryPushHeat(float ratio, IntVec3 vec, float heat = 0)
+        public void PushHeat(float ratio, float heat = 0) //bleed into or adjacent room
+        {
+            if (heat == 0)
+                heat = Props.heatLoss * HeatPushMult * ratio;
+            
+            if (parent.def.passability != Traversability.Impassable) //tanks
+            {
+                TryPushHeat(pos, heat);
+            }
+            else //sinks are walls, check adjacent
+            {
+                foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(parent).ToList())
+                {
+                    if (TryPushHeat(vec, heat))
+                        return;
+                }
+            }
+        }
+        private bool TryPushHeat(IntVec3 vec, float heat)
         {
             //dont push to null, doors or space
-            Room r = vec.GetRoom(parent.Map);
-            if (r == null || r.IsDoorway || (inSpace && ShipInteriorMod2.ExposedToOutside(r)))
-                return false;
-            if (RemHeatFromNetwork(Props.heatLoss))
+            Room r = vec.GetRoom(map);
+            if (r != null && !r.IsDoorway && !(inSpace && (r.OpenRoofCount > 0 || r.TouchesMapEdge)))
             {
-                if (heat == 0)
-                    heat = Props.heatLoss * HeatPushMult * ratio;
-                GenTemperature.PushHeat(vec, parent.Map, heat);
-                //Log.Message("" + vec);
-                return true;
+                if (RemHeatFromNetwork(Props.heatLoss))
+                {
+                    GenTemperature.PushHeat(vec, map, heat);
+                    //Log.Message("" + vec);
+                    return true;
+                }
             }
             return false;
         }

@@ -23,9 +23,9 @@
 				<li Class="JobGiver_LoadTorpedoes">
 					<maxDistFromPoint>39</maxDistFromPoint>
 				</li>
-				<li Class="JobGiver_LoadShipBuilding">
+				<!--li Class="JobGiver_LoadShipBuilding">
 					<maxDistFromPoint>39</maxDistFromPoint>
-				</li>
+				</li-->
 				<li Class="JobGiver_SeekSafeTemperature"/>
 				<li Class="JobGiver_ManShipBridge">
 					<maxDistFromPoint>99</maxDistFromPoint>

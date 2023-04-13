@@ -150,7 +150,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V84f1 active");
+			Log.Message("SOS2EXP V85 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -214,7 +214,7 @@ namespace SaveOurShip2
 				"OpportunitySite_ItemStash",
 				//roy
 				"PawnLend",
-				"Hospitality_Prisoners",
+				//"Hospitality_Prisoners", might cause raids
 				"Hospitality_Animals",
 				//ideo
 				"OpportunitySite_WorkSite",

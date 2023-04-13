@@ -24,6 +24,8 @@ namespace RimWorld
         public float ShipHeatCap = 0;
         public float ShipHeat = 0;
         public int shipIndex = -1;
+        public int Index = -1;
+        public SoShipCache Ship;
         public bool TacCon = false;
         public HashSet<ThingDef> nonRotatableObjects = new HashSet<ThingDef>();
 
@@ -77,7 +79,7 @@ namespace RimWorld
 
 		[DebuggerHidden]
 		public override IEnumerable<Gizmo> GetGizmos()
-		{
+        {
             var heatNet = this.TryGetComp<CompShipHeat>().myNet;
             bool ckActive = Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
             if (!TacCon)
@@ -572,6 +574,30 @@ namespace RimWorld
                         //dev stuff
                         if (Prefs.DevMode)
                         {
+                            Command_Toggle toggleCache = new Command_Toggle
+                            {
+                                toggleAction = delegate
+                                {
+                                    mapComp.CacheOff = !mapComp.CacheOff;
+                                    if (!mapComp.CacheOff)
+                                    {
+                                        Log.Message("recaching all ships");
+                                        mapComp.RecacheMap();
+                                    }
+                                    else
+                                    {
+                                        Log.Message("ship cache reset");
+                                        mapComp.ResetCache();
+                                    }
+                                },
+                                defaultLabel = "Dev: toggle experimental cache",
+                                isActive = () => !mapComp.CacheOff
+                            };
+                            if (mapComp.CacheOff)
+                                toggleCache.icon = ContentFinder<Texture2D>.Get("UI/Ship_Bow_Icon");
+                            else
+                                toggleCache.icon = ContentFinder<Texture2D>.Get("UI/Ship_Bow_Icon_Quest");
+                            yield return toggleCache;
                             Command_Action startBattle = new Command_Action
                             {
                                 action = delegate
@@ -804,6 +830,16 @@ namespace RimWorld
             {
                 countdownComp.ResetForceExitAndRemoveMapCountdown();
                 Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
+            }
+            if (!mapComp.CacheOff)
+            {
+                //bridge placed on wreck, make ship
+                if (mapComp.ShipCells.ContainsKey(Position) && !mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[Position].Item1))
+                {
+                    mapComp.ShipsOnMapNew.Add(thingIDNumber, new SoShipCache());
+                    mapComp.ShipsOnMapNew[thingIDNumber].RebuildCache(this);
+                }
+
             }
         }
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)

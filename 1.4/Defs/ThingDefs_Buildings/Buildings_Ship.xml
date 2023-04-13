@@ -1909,7 +1909,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. Must be kept clear of obstructions.</description>
+		<description>Provides docking facilities for shuttles. Must be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -1957,7 +1957,7 @@
 			<MaxHitPoints>700</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for one or more shuttles. This version is large enough to support the superheavy dropship. Must be kept clear of obstructions.</description>
+		<description>Provides docking facilities for shuttles. This version is large enough to support the superheavy dropship. Must be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
 		<size>(7,7)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>

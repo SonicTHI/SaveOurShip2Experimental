@@ -98,6 +98,7 @@
 		<equippedStatOffsets>
 			<MoveSpeed>-0.04</MoveSpeed>
 			<ToxicResistance>0.5</ToxicResistance>
+            <ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
 		</equippedStatOffsets>
 		<thingCategories>
 			<li>ArmorHeadgear</li>
@@ -247,6 +248,7 @@
 		<equippedStatOffsets>
 			<MoveSpeed>-0.04</MoveSpeed>
 			<ToxicResistance>0.5</ToxicResistance>
+            <ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
 		</equippedStatOffsets>
 		<costList>
 			<ComponentSpacer>2</ComponentSpacer>

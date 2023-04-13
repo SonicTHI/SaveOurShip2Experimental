@@ -226,7 +226,7 @@
 		<defName>ShipHeatsink</defName>
 		<label>heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 200Hu\nHeat vented to space: 3Hu/s\nHeat loss: 1Hu/s</description>
+		<description>A heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 200Hu\nHeat vented to space: 4Hu/s\nHeat loss: 1Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/Heatsink</texPath>
@@ -274,7 +274,7 @@
 		<defName>ShipHeatsinkLarge</defName>
 		<label>large heatsink</label>
 		<altitudeLayer>WorldClipper</altitudeLayer>
-		<description>A large heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 12Hu/s\nHeat loss: 3Hu/s</description>
+		<description>A large heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Does not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 16Hu/s\nHeat loss: 3Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatsinkLarge</texPath>

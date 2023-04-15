@@ -10,15 +10,44 @@ using SaveOurShip2;
 
 namespace RimWorld
 {
+    [StaticConstructorOnStartup]
     public class CompSoShipPart : ThingComp
     {
         //CompSoShipPart types that are cached:
         //xml tagged building shipPart: anything attachable - walls, hullfoam, plating, engines, corners, hardpoints, spinal barrels
-        //SoShipPart isHull (props isHull): walls, corners, hullfoam fills these if destroyed, wrecks form from these
-        //SoShipPart isPlating (props isPlating): can not be placed under buildings, wrecks form from these
-        //SoShipPart hermetic: hold air in vacuum - walls, corners, engines, hullfoam, extenders, spinal barrels
-        //SoShipPart: other parts that are cached - not attached, no corePath
+        //SoShipPart props isHull: walls, walllikes, corners, hullfoam fills, wrecks form from these
+        //SoShipPart props isPlating: plating, airlocks - can not be placed under buildings, hullfoam fills, wrecks form from these, spawns ship terrain beneath, count as 1 for weight calcs
+        //SoShipPart props isHardpoint: spawns ship terrain beneath, reduce damage for turrets
+        //SoShipPart hermetic: hold air in vacuum - walls, airlocks, corners, engines, hullfoam, extenders, spinal barrels
+        //SoShipPart: other parts that are cached - not attached, no corePath (bridges)
+        //other tags:
+        //SoShipPart props roof: forces and spawns ship roof above (should only be isPlating but currently also walls, walllikes)
+        //SoShipPart props mechanoid, archotech, wreckage, foam: override for plating type
 
+        //roof textures
+        public static GraphicData roofedData = new GraphicData();
+        public static GraphicData roofedDataMech = new GraphicData();
+        public static Graphic roofedGraphicTile;
+        public static Graphic roofedGraphicTileMech;
+        static CompSoShipPart()
+        {
+            roofedData.texPath = "Things/Building/Ship/Ship_Roof";
+            roofedData.graphicClass = typeof(Graphic_Single);
+            roofedData.shaderType = ShaderTypeDefOf.MetaOverlay;
+            roofedGraphicTile = new Graphic_256(roofedData.Graphic);
+            roofedDataMech.texPath = "Things/Building/Ship/Ship_RoofMech";
+            roofedDataMech.graphicClass = typeof(Graphic_Single);
+            roofedDataMech.shaderType = ShaderTypeDefOf.MetaOverlay;
+            roofedGraphicTileMech = new Graphic_256(roofedDataMech.Graphic);
+        }
+
+        bool isTile;
+        bool isMechTile;
+        bool isArchoTile;
+        bool isFoamTile; //no gfx for foam roof
+        List<IntVec3> cellsUnder;
+        Map map;
+        public ShipHeatMapComp mapComp;
         public CompProperties_SoShipPart Props
         {
             get
@@ -26,11 +55,9 @@ namespace RimWorld
                 return (CompProperties_SoShipPart)props;
             }
         }
-        public ShipHeatMapComp mapComp;
         public override string CompInspectStringExtra()
         {
             StringBuilder stringBuilder = new StringBuilder();
-
             if (Prefs.DevMode)
             {
                 if (!mapComp.ShipCells.ContainsKey(parent.Position))
@@ -55,21 +82,49 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
+            isTile = parent.def == ResourceBank.ThingDefOf.ShipHullTile;
+            isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
+            isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
+            isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
+            map = parent.Map;
+            mapComp = map.GetComponent<ShipHeatMapComp>();
+            cellsUnder = new List<IntVec3>();
             //plating - check adj, merge
             //hull - check on + adj, merge
             //other - check on + adj, merge
-            HashSet<IntVec3> cellsUnder = new HashSet<IntVec3>();
             HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
-            foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent)) //init cells if not already in ShipCells
+            foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent))
+            {
+                cellsUnder.Add(vec);
+            }
+            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint)) //set terrain
+            {
+                foreach (IntVec3 v in cellsUnder)
+                {
+                    SetShipTerrain(v);
+                }
+            }
+            if (ShipInteriorMod2.AirlockBugFlag) //MoveShip - cache is off
+            {
+                return;
+            }
+            foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
             {
                 if (!mapComp.ShipCells.ContainsKey(vec))
                 {
                     mapComp.ShipCells.Add(vec, null);
                 }
-                cellsUnder.Add(vec);
             }
-            if (mapComp.CacheOff) //on load, moveship, enemy ship spawn cache is off
+            if (Props.roof)
+            {
+                foreach (IntVec3 pos in cellsUnder)
+                {
+                    var oldRoof = map.roofGrid.RoofAt(pos);
+                    if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
+                        map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
+                }
+            }
+            if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
             {
                 return;
             }
@@ -120,9 +175,9 @@ namespace RimWorld
                 return;
             }
             var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[parent.Position].Item1];
-            HashSet<Building> Buildings = new HashSet<Building>();
-            HashSet<IntVec3> Area = new HashSet<IntVec3>();
-            foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent)) //check if any other ship parts exist, if not remove ship area
+            HashSet<Building> buildings = new HashSet<Building>();
+            HashSet<IntVec3> areaNoParts = new HashSet<IntVec3>();
+            foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
             {
                 bool partExists = false;
                 foreach (Thing t in vec.GetThingList(parent.Map))
@@ -135,17 +190,17 @@ namespace RimWorld
                         }
                         else
                         {
-                            Buildings.Add(b);
+                            buildings.Add(b);
                         }
                     }
                 }
                 if (!partExists) //no shippart remains, remove from area, remove non ship buildings if fully off ship
                 {
-                    Area.Add(vec);
+                    areaNoParts.Add(vec);
                     mapComp.ShipCells.Remove(vec);
                     if (ship != null)
                     {
-                        foreach (Building b in Buildings) //remove other buildings that are no longer supported by ship parts
+                        foreach (Building b in buildings) //remove other buildings that are no longer supported by ship parts
                         {
                             bool allOffShip = false;
                             foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
@@ -169,9 +224,88 @@ namespace RimWorld
             if (ship != null)
             {
                 ship.RemoveFromCache(parent as Building);
-                ship.AreaDestroyed.AddRange(Area);
+                ship.AreaDestroyed.AddRange(areaNoParts);
                 if (!mapComp.InCombat) //perform check immediately
                     ship.CheckForDetach();
+            }
+        }
+        public override void PostDeSpawn(Map map)
+        {
+            base.PostDeSpawn(map);
+            if (!(Props.isPlating || Props.isHardpoint || Props.isHull)) //hull temp to remove terrain under it
+                return;
+            foreach (IntVec3 pos in cellsUnder)
+            {
+                bool stillHasTile = false;
+                foreach (Thing t in map.thingGrid.ThingsAt(pos))
+                {
+                    var shipComp = t.TryGetComp<CompSoShipPart>();
+                    if (shipComp != null && (shipComp.Props.isPlating || shipComp.Props.isHardpoint))
+                    {
+                        stillHasTile = true;
+                        break;
+                    }
+                }
+                if (!stillHasTile)
+                {
+                    TerrainDef manualTerrain = map.terrainGrid.TerrainAt(pos); //RimWorld freaks out about regions if we don't do the leavings manually
+                    map.terrainGrid.RemoveTopLayer(pos, false);
+                    List<ThingDefCountClass> list = manualTerrain.CostListAdjusted(null);
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        ThingDefCountClass thingDefCountClass = list[i];
+                        int num = GenMath.RoundRandom((float)thingDefCountClass.count * manualTerrain.resourcesFractionWhenDeconstructed);
+                        if (num > 0)
+                        {
+                            Thing thing = ThingMaker.MakeThing(thingDefCountClass.thingDef);
+                            thing.stackCount = num;
+                            //Log.Message(string.Format("Spawning wrecks {0} at {1}", thing.def.defName, pos));
+                            GenPlace.TryPlaceThing(thing, pos, map, ThingPlaceMode.Near);
+                        }
+                    }
+                    if (Props.roof)
+                        map.roofGrid.SetRoof(pos, null);
+                }
+            }
+        }
+        public override void PostDraw()
+        {
+            base.PostDraw();
+            if (!Props.roof)
+                return;
+            if ((Find.PlaySettings.showRoofOverlay || parent.Position.Fogged(parent.Map)) && parent.Position.Roofed(parent.Map))
+            {
+                foreach (Thing t in parent.Position.GetThingList(parent.Map).Where(t => t is Building))
+                {
+                    if (t.TryGetComp<CompShipHeat>() != null && t.def.altitudeLayer == AltitudeLayer.WorldClipper)
+                    {
+                        return;
+                    }
+                }
+                if (isTile)
+                {
+                    Graphics.DrawMesh(material: roofedGraphicTile.MatSingleFor(parent), mesh: roofedGraphicTile.MeshAt(parent.Rotation), position: new Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), rotation: Quaternion.identity, layer: 0);
+                }
+                else if (isMechTile || isArchoTile)
+                {
+                    Graphics.DrawMesh(material: roofedGraphicTileMech.MatSingleFor(parent), mesh: roofedGraphicTileMech.MeshAt(parent.Rotation), position: new Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), rotation: Quaternion.identity, layer: 0);
+                }
+            }
+        }
+        public void SetShipTerrain(IntVec3 v)
+        {
+            if (!map.terrainGrid.TerrainAt(v).layerable)
+            {
+                if (Props.archotech)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech);
+                else if (Props.mechanoid)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipMech);
+                else if (Props.foam)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam);
+                else if (Props.wreckage)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.ShipWreckageTerrain);
+                else
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
             }
         }
     }

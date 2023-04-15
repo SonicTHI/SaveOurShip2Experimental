@@ -1029,7 +1029,7 @@ namespace RimWorld
 
             //Log.Message(builder.ToString());
 
-            ShipInteriorMod2.SoSWin = true;
+            Find.World.GetComponent<PastWorldUWO2>().SoSWin = true;
             GameVictoryUtility.ShowCredits(builder.ToString());
         }
     }

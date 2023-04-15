@@ -193,7 +193,7 @@ namespace SaveOurShip2
                 }
             }
 
-            ShipInteriorMod2.renderedThatAlready = false;
+            Find.World.GetComponent<PastWorldUWO2>().renderedThatAlready = false;
 
             float EnergyCost = 100000;
             foreach (CompPowerBattery capacitor in bridge.PowerComp.PowerNet.batteryComps)
@@ -237,6 +237,9 @@ namespace SaveOurShip2
 		public List<PreviousWorld> PastWorlds=new List<PreviousWorld>();
         public List<string> Unlocks = new List<string>();
         public bool startedEndgame;
+        public bool SoSWin = false;
+        public bool renderedThatAlready = false;
+        public bool CacheOff = true; //moveship, spawnship, removeship
         public Dictionary<int, byte> PawnsInSpaceCache = new Dictionary<int, byte>();
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
 

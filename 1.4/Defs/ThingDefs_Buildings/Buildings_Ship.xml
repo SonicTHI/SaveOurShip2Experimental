@@ -59,8 +59,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
+				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
@@ -120,12 +120,12 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -341,8 +341,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
+				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_PowerPlantSolarShip">
 				<compClass>CompPowerPlantSolarShip</compClass>
 				<basePowerConsumption>-1</basePowerConsumption>
@@ -432,6 +432,7 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -446,7 +447,6 @@
 				<graphicPath>Things/Building/Ship/Ship_Vent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -501,7 +501,9 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -509,7 +511,6 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -614,12 +615,12 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -686,8 +687,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
+				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_ShipHull</li>
@@ -736,9 +737,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
-			</li>
-			<li Class="CompProperties_RoofMe">
-				<roof>false</roof>
+				<isHardpoint>true</isHardpoint>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
@@ -2491,9 +2490,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
+				<roof>true</roof>
 			</li>
 		</comps>
 		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
@@ -2538,9 +2536,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
+				<roof>true</roof>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -2641,9 +2638,8 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
+				<roof>true</roof>
 			</li>
 		</comps>
 		<rotatable>false</rotatable>
@@ -3131,7 +3127,6 @@
 				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 			</li>
 			<li>
@@ -3222,7 +3217,6 @@
 				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 			</li>
 			<li>

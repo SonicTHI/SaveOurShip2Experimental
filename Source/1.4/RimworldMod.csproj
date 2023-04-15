@@ -314,8 +314,6 @@
     <Compile Include="Quest\QuestNode_GenerateThingSetArchotech.cs" />
     <Compile Include="Quest\QuestPart_ArchotechSpawn.cs" />
     <Compile Include="Obsolete\PlaceWorker_InsideStarship.cs" />
-    <Compile Include="Comp\CompRoofMe.cs" />
-    <Compile Include="CompProps\CompProperties_RoofMe.cs" />
     <Compile Include="ScenPart_StartInSpace.cs" />
     <Compile Include="SectionLayer_ShipHeat.cs" />
     <Compile Include="Obsolete\ShipCombatManager.cs" />

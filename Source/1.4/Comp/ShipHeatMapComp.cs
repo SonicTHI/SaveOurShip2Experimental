@@ -209,7 +209,27 @@ namespace RimWorld
         List<Building> cores = new List<Building>();
 
         //SC cache new
-        public bool CacheOff = true; //moveship, spawnship, removeship
+        bool cacheStateDirty = true;
+        bool cacheOff;
+        public bool CacheOff //moveship, spawnship, removeship
+        {
+            get
+            {
+                if (cacheStateDirty)
+                    return cacheOff = Find.World.GetComponent<PastWorldUWO2>().CacheOff;
+                else
+                    return cacheOff;
+            }
+            set
+            {
+                if (value != cacheOff)
+                {
+                    cacheStateDirty = false;
+                    Find.World.GetComponent<PastWorldUWO2>().CacheOff = value;
+                    cacheOff = value;
+                }
+            }
+        }
         //cells occupied by shipParts, if value is null = uncached(wreck), item1 = index, item2 = path
         private Dictionary<IntVec3, Tuple<int, int>> shipCells;
         public Dictionary<IntVec3, Tuple<int, int>> ShipCells

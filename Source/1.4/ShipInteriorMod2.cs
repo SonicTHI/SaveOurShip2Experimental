@@ -84,10 +84,7 @@ namespace SaveOurShip2
 		}
 
 		public static readonly float crittersleepBodySize = 0.7f;
-		public static bool ArchoStuffEnabled = true; //unassigned???
-		public static bool SoSWin = false;
 		public static bool loadedGraphics = false;
-		public static bool renderedThatAlready = false;
 		public static bool AirlockBugFlag = false; //shipmove
 		public static Building shipOriginRoot = null; //used for patched original launch code
 		public static Map shipOriginMap = null; //used to check for shipmove map size problem, reset after move
@@ -150,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V85 active");
+			Log.Message("SOS2EXP V85f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -214,7 +211,7 @@ namespace SaveOurShip2
 				"OpportunitySite_ItemStash",
 				//roy
 				"PawnLend",
-				//"Hospitality_Prisoners", might cause raids
+				//"Hospitality_Prisoners", can cause raids
 				"Hospitality_Animals",
 				//ideo
 				"OpportunitySite_WorkSite",
@@ -1683,10 +1680,6 @@ namespace SaveOurShip2
 			List<Tuple<IntVec3, float>> posTemp = new List<Tuple<IntVec3, float>>();
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
 			List<Tuple<IntVec3, RoofDef>> roofToCopy = new List<Tuple<IntVec3, RoofDef>>();
-			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
-			// source area of the ship.
-			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);
-
 			List<IntVec3> fireExplosions = new List<IntVec3>();
 			List<CompEngineTrail> nukeExplosions = new List<CompEngineTrail>();
 			IntVec3 rot = IntVec3.Zero;
@@ -1707,6 +1700,30 @@ namespace SaveOurShip2
 			Map sourceMap = core.Map;
 			if (targetMap == null)
 				targetMap = core.Map;
+
+			var sourceMapComp = sourceMap.GetComponent<ShipHeatMapComp>();
+			var targetMapComp = targetMap.GetComponent<ShipHeatMapComp>();
+			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
+			HashSet<IntVec3> sourceArea;
+			SoShipCache ship = new SoShipCache();
+			if (core is Building_ShipBridge bridge && bridge.Index != -1) //if ship cache is active and this is a ship
+			{
+				sourceArea = sourceMapComp.ShipsOnMapNew[bridge.Index].Area;
+				if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
+				{
+					Log.Message("Moving ship " + bridge.Index + " to map: " + targetMap);
+					targetMapComp.ShipsOnMapNew.Add(bridge.Index, sourceMapComp.ShipsOnMapNew[bridge.Index]);
+					ship = targetMapComp.ShipsOnMapNew[bridge.Index];
+					ship.map = targetMap;
+					ship.mapComp = targetMapComp;
+					sourceMapComp.ShipsOnMapNew.Remove(bridge.Index);
+				}
+				else
+					ship = sourceMapComp.ShipsOnMapNew[bridge.Index];
+			}
+			else
+				sourceArea = FindAreaAttached(core, includeRock);
+
 			bool targetMapIsSpace = targetMap.IsSpace();
 			bool sourceMapIsSpace = sourceMap.IsSpace();
 			bool inCombat = sourceMap.GetComponent<ShipHeatMapComp>().InCombat;
@@ -1715,6 +1732,12 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
+				//ship cache: move ShipCells
+				if (!sourceMapComp.CacheOff)
+				{
+					targetMapComp.ShipCells.Add(adjustedPos, new Tuple<int, int>(sourceMapComp.ShipCells[pos].Item1, sourceMapComp.ShipCells[pos].Item2));
+					sourceMapComp.ShipCells.Remove(pos);
+				}
 				//store room temps
 				Room room = pos.GetRoom(sourceMap);
 				if (room != null && !roomsToTemp.Contains(room) && !ExposedToOutside(room))
@@ -1791,6 +1814,10 @@ namespace SaveOurShip2
 					targetMap.areaManager.Home[adjustedPos] = true;
 				}
 			}
+			if (ship != null) //ship cache: offset area
+            {
+				ship.Area = targetArea;
+            }
 			if (devMode)
 				watch.Record("processSourceArea");
 

@@ -1360,7 +1360,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 				return;
-			if (___map.GetComponent<ShipHeatMapComp>().ShipCells.ContainsKey(c))
+			if (___map.GetComponent<ShipHeatMapComp>()?.ShipCells?.ContainsKey(c) ?? false)
 			{
 				foreach (Thing t in ___map.thingGrid.ThingsAt(c))
 				{

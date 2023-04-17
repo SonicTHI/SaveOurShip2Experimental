@@ -93,7 +93,7 @@ namespace RimWorld
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommandDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")
                 };
-                if (mapComp.InCombat || this.parent.Map.mapPawns.AllPawns.Where(p => p.HostileTo(Faction.OfPlayer) && !p.InCryptosleep && !p.Downed).Any())
+                if (mapComp.InCombat || this.parent.Map.mapPawns.AllPawns.Any(p => p.HostileTo(Faction.OfPlayer)))// && !p.InCryptosleep && !p.Downed))
                 {
                     moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
                     moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));

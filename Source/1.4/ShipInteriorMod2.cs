@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V85f1 active");
+			Log.Message("SOS2EXP V85f2 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -212,7 +212,7 @@ namespace SaveOurShip2
 				//roy
 				"PawnLend",
 				//"Hospitality_Prisoners", can cause raids
-				"Hospitality_Animals",
+				//"Hospitality_Animals", can cause raids
 				//ideo
 				"OpportunitySite_WorkSite",
 				"Hack_WorshippedTerminal",
@@ -2316,6 +2316,14 @@ namespace SaveOurShip2
 			List<Zone> zones = new List<Zone>();
 			foreach (IntVec3 pos in area)
 			{
+				//remove from cache
+				var mapComp = map.GetComponent<ShipHeatMapComp>();
+				if (!mapComp.CacheOff)
+				{
+					mapComp.ShipCells.Remove(pos);
+					if (mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[pos].Item1))
+						mapComp.ShipsOnMapNew.Remove(mapComp.ShipCells[pos].Item1);
+				}
 				map.roofGrid.SetRoof(pos, null);
 				things.AddRange(pos.GetThingList(map));
 				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))

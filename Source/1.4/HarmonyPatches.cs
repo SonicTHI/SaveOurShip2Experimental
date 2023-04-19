@@ -308,19 +308,20 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ref string __result)
 		{
-			if (!Find.CurrentMap.IsSpace()) return;
+			Map map = Find.CurrentMap;
+			if (!map.IsSpace()) return;
 
-			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(Find.CurrentMap)))
+			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(map)))
 			{
 				if (__result.StartsWith("IndoorsUnroofed".Translate() + " (1)"))
                 {
-					__result = "Breach detected!" + __result.Remove(0, "IndoorsUnroofed".Translate().Length + 4);
+					__result = "Breach detected!".Colorize(Color.red) + __result.Remove(0, "IndoorsUnroofed".Translate().Length + 4);
 				}
 				__result += " (Vacuum)";
 			}
 			else
 			{
-				if (Find.CurrentMap.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any())
+				if (map.GetComponent<ShipHeatMapComp>().VecHasEVA(UI.MouseCell()))
 					__result += " (Breathable Atmosphere)";
 				else
 					__result += " (Non-Breathable Atmosphere)";
@@ -1166,13 +1167,15 @@ namespace SaveOurShip2
 				return;
 			foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance)) //if any part spawned on ship
             {
-				if (mapComp.ShipCells.ContainsKey(vec) && mapComp.ShipCells[vec] != null)
+				if (mapComp.ShipCells.ContainsKey(vec) && mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[vec].Item1))
 				{
 					var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
-					ship.Buildings.Add(__instance);
-					ship.BuildingCount++;
-					ship.Mass += (__instance.def.Size.x * __instance.def.Size.z) * 3;
-					return;
+					if (!ship.Buildings.Contains(__instance)) //need to check every cell as some smartass could place it on 2 ships
+					{
+						ship.Buildings.Add(__instance);
+						ship.BuildingCount++;
+						ship.Mass += (__instance.def.Size.x * __instance.def.Size.z) * 3;
+					}
 				}
             }
 		}
@@ -1187,22 +1190,24 @@ namespace SaveOurShip2
 		public static bool PreDeSpawn(Building __instance)
 		{
 			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.CacheOff || mapComp.ShipsOnMapNew.NullOrEmpty())
+			if (mapComp.CacheOff)
 				return true;
 			var shipComp = __instance.TryGetComp<CompSoShipPart>();
 			if (shipComp != null) //predespawn for ship parts
 				shipComp.PreDeSpawn();
-			else //rems normal building weight/count to ship
+			else if (!mapComp.ShipsOnMapNew.NullOrEmpty()) //rems normal building weight/count to ship
 			{
 				foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
 				{
-					if (mapComp.ShipCells.ContainsKey(vec))
+					if (mapComp.ShipCells.ContainsKey(vec) && mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[vec].Item1))
 					{
 						var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
-						ship.Buildings.Remove(__instance);
-						ship.BuildingCount--;
-						ship.Mass -= (__instance.def.Size.x * __instance.def.Size.z) * 3;
-						return true;
+						if (ship.Buildings.Contains(__instance))
+						{
+							ship.Buildings.Remove(__instance);
+							ship.BuildingCount--;
+							ship.Mass -= (__instance.def.Size.x * __instance.def.Size.z) * 3;
+						}
 					}
 				}
 			}
@@ -1365,7 +1370,7 @@ namespace SaveOurShip2
 				foreach (Thing t in ___map.thingGrid.ThingsAt(c))
 				{
 					var shipPart = t.TryGetComp<CompSoShipPart>();
-					if (shipPart != null && (shipPart.Props.isPlating || shipPart.Props.isHardpoint))
+					if (shipPart != null && (shipPart.Props.isPlating || shipPart.Props.isHardpoint || shipPart.Props.isHull))
 					{
 						shipPart.SetShipTerrain(c);
 						break;
@@ -1420,14 +1425,20 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(IEnumerable<IntVec3> cells, Map map)
 		{
+			if (!map.IsSpace())
+				return;
+			var mapComp = map.GetComponent<ShipHeatMapComp>();
 			foreach (IntVec3 cell in cells)
 			{
-				if (map.IsSpace() && !cell.Roofed(map))
+				if (!cell.Roofed(map))
 				{
-					var mapComp = map.GetComponent<ShipHeatMapComp>();
-					if (mapComp.HullFoamDistributors.Count > 0)
+					int shipIndex = mapComp.ShipIndexOnVec(cell);
+					if (shipIndex == -1)
+						continue;
+					var ship = mapComp.ShipsOnMapNew[shipIndex];
+					if (ship.FoamDistributors.Any())
 					{
-						foreach (CompHullFoamDistributor dist in mapComp.HullFoamDistributors)
+						foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
 						{
 							if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
 							{
@@ -1456,14 +1467,17 @@ namespace SaveOurShip2
 			if (!__instance.def.CanHaveFaction || __instance is Frame)
 				return true;
 			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-			if (!mapComp.InCombat)
-				return true;
-			mapComp.DirtyShip(__instance);
-			if (__instance.def.blueprintDef != null)
+			if (mapComp.InCombat)
+				mapComp.DirtyShip(__instance);
+
+			int shipIndex = mapComp.ShipIndexOnVec(__instance.Position);
+			if (shipIndex != -1) //is this on a ship
 			{
-				if (mapComp.HullFoamDistributors.Count > 0 && (__instance.TryGetComp<CompSoShipPart>()?.Props.isHull ?? false))
+				var shipPart = __instance.TryGetComp<CompSoShipPart>();
+				var ship = mapComp.ShipsOnMapNew[shipIndex];
+				if (ship.FoamDistributors.Any() && (shipPart.Props.isHull || shipPart.Props.isPlating))
 				{
-					foreach (CompHullFoamDistributor dist in mapComp.HullFoamDistributors)
+					foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
 					{
 						if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
 						{
@@ -1473,7 +1487,7 @@ namespace SaveOurShip2
 						}
 					}
 				}
-				if (__instance.Faction == Faction.OfPlayer)
+				if (__instance.Faction == Faction.OfPlayer && __instance.def.blueprintDef != null && __instance.def.researchPrerequisites.All(r => r.IsFinished)) //place blueprints
 					GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
 					__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
 			}

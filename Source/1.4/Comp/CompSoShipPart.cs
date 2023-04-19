@@ -15,7 +15,7 @@ namespace RimWorld
     {
         //CompSoShipPart types that are cached:
         //xml tagged building shipPart: anything attachable - walls, hullfoam, plating, engines, corners, hardpoints, spinal barrels
-        //SoShipPart props isHull: walls, walllikes, corners, hullfoam fills, wrecks form from these
+        //SoShipPart props isHull: walls, walllikes, hullfoam fills, wrecks form from these, spawns ship terrain beneath
         //SoShipPart props isPlating: plating, airlocks - can not be placed under buildings, hullfoam fills, wrecks form from these, spawns ship terrain beneath, count as 1 for weight calcs
         //SoShipPart props isHardpoint: spawns ship terrain beneath, reduce damage for turrets
         //SoShipPart hermetic: hold air in vacuum - walls, airlocks, corners, engines, hullfoam, extenders, spinal barrels
@@ -97,7 +97,7 @@ namespace RimWorld
             {
                 cellsUnder.Add(vec);
             }
-            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint)) //set terrain
+            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint || Props.isHull)) //set terrain
             {
                 foreach (IntVec3 v in cellsUnder)
                 {
@@ -144,11 +144,11 @@ namespace RimWorld
                 int mass = 0;
                 foreach (IntVec3 vec in cellsToMerge) //find largest ship
                 {
-                    var shipCell = mapComp.ShipCells[vec];
-                    if (shipCell != null && shipCell.Item1 != -1 && mapComp.ShipsOnMapNew.ContainsKey(shipCell.Item1) && mapComp.ShipsOnMapNew[shipCell.Item1].Mass > mass)
+                    int shipIndex = mapComp.ShipIndexOnVec(vec);
+                    if (shipIndex != -1 && mapComp.ShipsOnMapNew[shipIndex].Mass > mass)
                     {
                         mergeTo = vec;
-                        mass = mapComp.ShipsOnMapNew[shipCell.Item1].Mass;
+                        mass = mapComp.ShipsOnMapNew[shipIndex].Mass;
                     }
                 }
                 if (mergeTo != IntVec3.Zero)
@@ -176,15 +176,14 @@ namespace RimWorld
             }
             var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[parent.Position].Item1];
             HashSet<Building> buildings = new HashSet<Building>();
-            HashSet<IntVec3> areaNoParts = new HashSet<IntVec3>();
             foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
             {
                 bool partExists = false;
                 foreach (Thing t in vec.GetThingList(parent.Map))
                 {
-                    if (t is Building b)
+                    if (t is Building b && b != parent)
                     {
-                        if (b != parent && b.TryGetComp<CompSoShipPart>() != null)
+                        if (b.TryGetComp<CompSoShipPart>() != null)
                         {
                             partExists = true;
                         }
@@ -196,7 +195,8 @@ namespace RimWorld
                 }
                 if (!partExists) //no shippart remains, remove from area, remove non ship buildings if fully off ship
                 {
-                    areaNoParts.Add(vec);
+                    ship.Area.Remove(vec);
+                    ship.AreaDestroyed.Add(vec);
                     mapComp.ShipCells.Remove(vec);
                     if (ship != null)
                     {
@@ -220,11 +220,29 @@ namespace RimWorld
                     }
                 }
             }
-            //remove from cache
-            if (ship != null)
+            if (ship != null) //remove from cache
             {
+                //if last bridge remove ship or end combat
+                if (parent is Building_ShipBridge && ship.Bridges.Any(b => b != parent && !b.Destroyed))
+                {
+                    if (!mapComp.InCombat)
+                    {
+                        foreach (IntVec3 vec in ship.Area) //remove path
+                            mapComp.ShipCells[vec] = new Tuple<int, int>(((Building_ShipBridge)parent).Index, -1);
+
+                        mapComp.ShipsOnMapNew.Remove(parent.thingIDNumber);
+                    }
+                    else //if last ship end combat else move to grave
+                    {
+                        /*if (mapComp.ShipsOnMapNew.Count > 1)
+                            mapComp.MoveShipToGraveyard(((Building_ShipBridge)parent).Index);
+                        else
+                            mapComp.EndBattle(parent.Map, false);*/
+                    }
+                    return;
+                }
                 ship.RemoveFromCache(parent as Building);
-                ship.AreaDestroyed.AddRange(areaNoParts);
+
                 if (!mapComp.InCombat) //perform check immediately
                     ship.CheckForDetach();
             }

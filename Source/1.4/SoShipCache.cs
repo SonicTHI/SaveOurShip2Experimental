@@ -37,7 +37,6 @@ namespace RimWorld
         public int ThreatRaw = 0;
         public Map map;
         public ShipHeatMapComp mapComp;
-        public bool Rotatable = true;
         public bool PathDirty = true;
         public int Threat
         {
@@ -46,13 +45,16 @@ namespace RimWorld
                 return ThreatRaw + Mass / 100;
             }
         }
-
+        public bool Rotatable
+        {
+            get { return !BuildingsNonRot.Any(); }
+        }
         public float ThrustRaw = 0;
-        public float Thrust
+        public float ThrustRatio
         {
             get
             {
-                return ThrustRaw * 40f / Mathf.Pow(BuildingCount, 1.1f);
+                return ThrustRaw * 500f / Mathf.Pow(BuildingCount, 1.1f);
             }
         }
         public IntVec3 LowestCorner
@@ -104,6 +106,7 @@ namespace RimWorld
         public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //add to when destroyed in combat
         public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
         public HashSet<Building> Buildings = new HashSet<Building>(); //all
+        public HashSet<Building> BuildingsNonRot = new HashSet<Building>();
         public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
         public List<CompCryptoLaunchable> Pods = new List<CompCryptoLaunchable>();
         public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
@@ -221,6 +224,10 @@ namespace RimWorld
             {
                 Buildings.Add(b);
                 BuildingCount++;
+                if (b.def.rotatable == false && b.def.size.x != b.def.size.z)
+                {
+                    BuildingsNonRot.Add(b);
+                }
                 if (b.def.building.shipPart)
                 {
                     foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
@@ -281,9 +288,13 @@ namespace RimWorld
                 BuildingCount--;
                 Buildings.Remove(b);
                 Parts.Remove(b);
+                if (BuildingsNonRot.Contains(b))
+                {
+                    BuildingsNonRot.Remove(b);
+                }
                 if (b.def.building.shipPart)
                 {
-                    foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
+                    /*foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
                     {
                         if (Area.Contains(v) && v.GetThingList(b.Map).Any(u => u != b && u.TryGetComp<CompSoShipPart>() != null))
                         {
@@ -291,7 +302,7 @@ namespace RimWorld
                                 AreaDestroyed.Add(v);
                             Area.Remove(v);
                         }
-                    }
+                    }*/
                     if (b.TryGetComp<CompSoShipPart>().Props.isPlating)
                     {
                         Mass -= 1;

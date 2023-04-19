@@ -757,7 +757,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsinkAntiEntropy</defName>
 		<label>anti-entropic heatbank</label>
-		<description>An advanced heatbank designed by an archotech. Uses exotic physics to convert excess heat back into usable energy.\n\nHeat capacity: 200Hu\nHeat conversion: 5Hu/s to 1kW/s</description>
+		<description>An advanced heatbank designed by an archotech. Uses exotic physics to convert excess heat back into usable energy. Requires energy storage to function.\n\nHeat capacity: 200Hu\nHeat conversion: 5Hu/s to 1kW/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankAntiEntropic</texPath>

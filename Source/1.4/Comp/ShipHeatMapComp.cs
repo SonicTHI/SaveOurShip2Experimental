@@ -177,8 +177,6 @@ namespace RimWorld
         //td get these into shipcache?
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
-        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
-        public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
         public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>();
         public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>();
         //SC vars
@@ -209,28 +207,8 @@ namespace RimWorld
         List<Building> cores = new List<Building>();
 
         //SC cache new
-        bool cacheStateDirty = true;
-        bool cacheOff;
-        public bool CacheOff //moveship, spawnship, removeship
-        {
-            get
-            {
-                if (cacheStateDirty)
-                    return cacheOff = Find.World.GetComponent<PastWorldUWO2>().CacheOff;
-                else
-                    return cacheOff;
-            }
-            set
-            {
-                if (value != cacheOff)
-                {
-                    cacheStateDirty = false;
-                    Find.World.GetComponent<PastWorldUWO2>().CacheOff = value;
-                    cacheOff = value;
-                }
-            }
-        }
-        //cells occupied by shipParts, if value is null = uncached(wreck), item1 = index, item2 = path
+        public bool CacheOff = true;
+        //cells occupied by shipParts, if cacheoff = null, item1 = index, item2 = path, if path is -1 = wreck
         private Dictionary<IntVec3, Tuple<int, int>> shipCells;
         public Dictionary<IntVec3, Tuple<int, int>> ShipCells
         {
@@ -252,11 +230,12 @@ namespace RimWorld
                 if (shipsOnMapNew == null)
                 {
                     shipsOnMapNew = new Dictionary<int, SoShipCache>();
+                    RecacheMap();
+                    CacheOff = false;
                 }
                 return shipsOnMapNew;
             }
         }
-
         public void ResetCache()
         {
             ShipsOnMapNew.Clear();
@@ -345,6 +324,20 @@ namespace RimWorld
             }
             Log.Message("Attached: " + cellsDone.Count + " to ship/wreck: " + mergeToIndex);
         }
+        public int ShipIndexOnVec(IntVec3 vec) //return index if ship on cell, else return -1
+        {
+            //td rem null check when init made
+            if (!ShipsOnMapNew.NullOrEmpty() && ShipCells.ContainsKey(vec) && ShipCells[vec].Item2 != -1)
+                return ShipCells[vec].Item1;
+            return -1;
+        }
+        public bool VecHasEVA(IntVec3 vec)
+        {
+            if (ShipIndexOnVec(vec) != -1 && ShipsOnMapNew[ShipCells[vec].Item1].LifeSupports.Any(s => s.active))
+                return true;
+            return false;
+        }
+        //SC cache new end
 
         public List<ShipCache> shipsOnMap;
         public List<ShipCache> ShipsOnMap//rebuild shipsOnMap cache if it is null
@@ -421,7 +414,7 @@ namespace RimWorld
             float radius = 150f;
             float theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta - 0.1f + 0.002f * Rand.Range(0, 20);
             float phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).phi - 0.01f + 0.001f * Rand.Range(-20, 20);
-            
+
             if (passingShip is AttackableShip attackableShip)
             {
                 shipDef = attackableShip.attackableShip;
@@ -439,10 +432,18 @@ namespace RimWorld
             else //using player ship combat rating
             {
                 CR = MapThreat(this.map) * 0.9f;
+                if (CR > 30)
+                {
+                    int daysPassed = GenDate.DaysPassedSinceSettle;
+                    if (daysPassed < 30) //reduce difficulty early on
+                        CR *= 0.5f;
+                    else if (daysPassed < 60)
+                        CR *= 0.75f;
+                }
+                if (CR < 30) //minimum rating
+                    CR = 30;
                 if (CR > 100 && !fleet)
                     fleet = Rand.Chance((float)ModSettings_SoS.fleetChance);
-                if (CR < 500) //reduce difficulty in this range - would be better as a timed thing
-                    CR *= 0.9f;
                 if (passingShip is TradeShip)
                 {
                     //find suitable navyDef
@@ -534,6 +535,7 @@ namespace RimWorld
                 //keep this for troubleshooting
                 Log.Message("SOS2: spawning shipdef: " + shipDef + ", of faction: " + faction + ", of navy: " + navyDef + ", wrecklvl: " + wreckLevel);
                 ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, faction, MasterMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
+                MasterMapComp.RecacheMap();
             }
             //post ship spawn
             //if (cores != null)
@@ -1152,6 +1154,40 @@ namespace RimWorld
                     if (building.def.CanHaveFaction)
                         building.SetFaction(Faction.OfPlayer);
                 }					  
+            }
+            MapRootList.RemoveAt(shipIndex);
+            ShipsOnMap.Remove(ShipsOnMap[shipIndex]);
+            //Log.Message("Ships remaining: " + MapRootList.Count);
+        }
+        public void MoveShipToGraveyard(int shipIndex, Building b = null, Faction fac = null)
+        {
+            if (MapRootList.Count > 1)//move to graveyard if not last ship
+            {
+                if (b == null)
+                {
+                    foreach (IntVec3 at in ShipsOnMap[shipIndex].ShipAreaAtStart)
+                    {
+                        if (at.GetFirstBuilding(this.map) != null)
+                        {
+                            b = at.GetFirstBuilding(this.map);
+                            break;
+                        }
+                    }
+                }
+                if (b != null)
+                {
+                    if (ShipGraveyard == null)
+                        SpawnGraveyard();
+                    ShipInteriorMod2.MoveShip(b, ShipGraveyard, new IntVec3(0, 0, 0), fac);
+                }
+            }
+            else if (fac != null)//last ship hacked
+            {
+                foreach (Building building in ShipsOnMap[shipIndex].Buildings)
+                {
+                    if (building.def.CanHaveFaction)
+                        building.SetFaction(Faction.OfPlayer);
+                }
             }
             MapRootList.RemoveAt(shipIndex);
             ShipsOnMap.Remove(ShipsOnMap[shipIndex]);

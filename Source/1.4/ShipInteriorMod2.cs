@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V85f2 active");
+			Log.Message("SOS2EXP V85f3 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1537,6 +1537,11 @@ namespace SaveOurShip2
 			}
 			return cellsFound;
 		}
+		public static HashSet<IntVec3> FindAreaAttachedNew(Building root, bool includeRock = false)
+		{
+			var cells = root.Map.GetComponent<ShipHeatMapComp>().ShipCells;
+			return cells.Keys.Where(v => cells[v].Item1 == cells[root.Position].Item1).ToHashSet();
+		}
 		public class TimeHelper
 		{
 			private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
@@ -1601,7 +1606,7 @@ namespace SaveOurShip2
 				return;
 			List<Building> cachedParts;
 			if (b is Building_ShipBridge bridge)
-				cachedParts = bridge.cachedShipParts;
+				cachedParts = bridge.Ship.Buildings.ToList();
 			else
 				cachedParts = FindBuildingsAttached(b, includeRock);
 
@@ -1709,7 +1714,7 @@ namespace SaveOurShip2
 			if (core is Building_ShipBridge bridge && bridge.Index != -1) //if ship cache is active and this is a ship
 			{
 				sourceArea = sourceMapComp.ShipsOnMapNew[bridge.Index].Area;
-				if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
+				/*if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
 				{
 					Log.Message("Moving ship " + bridge.Index + " to map: " + targetMap);
 					targetMapComp.ShipsOnMapNew.Add(bridge.Index, sourceMapComp.ShipsOnMapNew[bridge.Index]);
@@ -1719,7 +1724,7 @@ namespace SaveOurShip2
 					sourceMapComp.ShipsOnMapNew.Remove(bridge.Index);
 				}
 				else
-					ship = sourceMapComp.ShipsOnMapNew[bridge.Index];
+					ship = sourceMapComp.ShipsOnMapNew[bridge.Index];*/
 			}
 			else
 				sourceArea = FindAreaAttached(core, includeRock);

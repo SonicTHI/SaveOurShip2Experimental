@@ -239,7 +239,6 @@ namespace SaveOurShip2
         public bool startedEndgame;
         public bool SoSWin = false;
         public bool renderedThatAlready = false;
-        public bool CacheOff = true; //moveship, spawnship, removeship
         public Dictionary<int, byte> PawnsInSpaceCache = new Dictionary<int, byte>();
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
 

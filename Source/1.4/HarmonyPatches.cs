@@ -324,7 +324,7 @@ namespace SaveOurShip2
 				if (map.GetComponent<ShipHeatMapComp>().VecHasEVA(UI.MouseCell()))
 					__result += " (Breathable Atmosphere)";
 				else
-					__result += " (Non-Breathable Atmosphere)";
+					__result += " (Non-Breathable Atmosphere)".Colorize(Color.yellow);
 			}
 		}
 	}

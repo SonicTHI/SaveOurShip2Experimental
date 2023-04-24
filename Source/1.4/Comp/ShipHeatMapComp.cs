@@ -207,6 +207,13 @@ namespace RimWorld
         List<Building> cores = new List<Building>();
 
         //SC cache new
+        //after spawn init all, after moveship: assign same as from map to new map
+        public override void FinalizeInit()
+        {
+            base.FinalizeInit();
+            RecacheMap();
+            Log.Message("SOS2 init cache on map: " + map);
+        }
         public bool CacheOff = true;
         //cells occupied by shipParts, if cacheoff = null, item1 = index, item2 = path, if path is -1 = wreck
         private Dictionary<IntVec3, Tuple<int, int>> shipCells;
@@ -230,8 +237,6 @@ namespace RimWorld
                 if (shipsOnMapNew == null)
                 {
                     shipsOnMapNew = new Dictionary<int, SoShipCache>();
-                    RecacheMap();
-                    CacheOff = false;
                 }
                 return shipsOnMapNew;
             }
@@ -241,7 +246,7 @@ namespace RimWorld
             ShipsOnMapNew.Clear();
             foreach (IntVec3 vec in ShipCells.Keys.ToList())
             {
-                ShipCells[vec] = null;
+                ShipCells[vec] = new Tuple<int, int>(-1, -1);
             }
         }
         public void RecacheMap() //rebuild all ships, wrecks //td call this after all things loaded
@@ -261,7 +266,7 @@ namespace RimWorld
             }
             foreach (IntVec3 vec in ShipCells.Keys.ToList()) //wrecks from leftovers
             {
-                if (ShipCells[vec] == null)
+                if (ShipCells[vec].Item1 == -1)
                 {
                     int mergeToIndex = vec.GetThingList(map).FirstOrDefault(b => b.TryGetComp<CompSoShipPart>() != null).thingIDNumber;
                     AttachAll(vec, mergeToIndex);
@@ -326,9 +331,10 @@ namespace RimWorld
         }
         public int ShipIndexOnVec(IntVec3 vec) //return index if ship on cell, else return -1
         {
-            //td rem null check when init made
-            if (!ShipsOnMapNew.NullOrEmpty() && ShipCells.ContainsKey(vec) && ShipCells[vec].Item2 != -1)
+            if (ShipCells.ContainsKey(vec) && ShipCells[vec].Item2 != -1)
+            {
                 return ShipCells[vec].Item1;
+            }
             return -1;
         }
         public bool VecHasEVA(IntVec3 vec)

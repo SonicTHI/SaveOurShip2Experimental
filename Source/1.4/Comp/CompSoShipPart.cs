@@ -112,7 +112,7 @@ namespace RimWorld
             {
                 if (!mapComp.ShipCells.ContainsKey(vec))
                 {
-                    mapComp.ShipCells.Add(vec, null);
+                    mapComp.ShipCells.Add(vec, new Tuple<int, int>(-1, -1));
                 }
             }
             if (Props.roof)
@@ -142,7 +142,7 @@ namespace RimWorld
                 cellsToMerge.AddRange(cellsUnder);
                 IntVec3 mergeTo = IntVec3.Zero;
                 int mass = 0;
-                foreach (IntVec3 vec in cellsToMerge) //find largest ship
+                foreach (IntVec3 vec in cellsToMerge) //find largest ship & attach to it
                 {
                     int shipIndex = mapComp.ShipIndexOnVec(vec);
                     if (shipIndex != -1 && mapComp.ShipsOnMapNew[shipIndex].Mass > mass)
@@ -155,7 +155,7 @@ namespace RimWorld
                 {
                     mergeToIndex = mapComp.ShipCells[mergeTo].Item1;
                 }
-                else //no ships, attach to wreck
+                else //no ships, attach to existing wreck
                 {
                     mergeTo = cellsToMerge.FirstOrDefault();
                     mergeToIndex = mergeTo.GetThingList(parent.Map).FirstOrDefault(b => b.TryGetComp<CompSoShipPart>() != null).thingIDNumber;

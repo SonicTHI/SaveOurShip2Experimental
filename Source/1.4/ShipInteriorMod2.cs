@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V85f3 active");
+			Log.Message("SOS2EXP V85f4 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1703,28 +1703,31 @@ namespace SaveOurShip2
 
 			shipOriginMap = null;
 			Map sourceMap = core.Map;
-			if (targetMap == null)
-				targetMap = core.Map;
+            var sourceMapComp = sourceMap.GetComponent<ShipHeatMapComp>();
+            sourceMapComp.CacheOff = true;
+            if (targetMap == null)
+                targetMap = core.Map;
 
-			var sourceMapComp = sourceMap.GetComponent<ShipHeatMapComp>();
-			var targetMapComp = targetMap.GetComponent<ShipHeatMapComp>();
-			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
+            var targetMapComp = targetMap.GetComponent<ShipHeatMapComp>();
+            targetMapComp.CacheOff = true;
+
+            HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
 			HashSet<IntVec3> sourceArea;
 			SoShipCache ship = new SoShipCache();
 			if (core is Building_ShipBridge bridge && bridge.Index != -1) //if ship cache is active and this is a ship
 			{
 				sourceArea = sourceMapComp.ShipsOnMapNew[bridge.Index].Area;
-				/*if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
+				if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
 				{
-					Log.Message("Moving ship " + bridge.Index + " to map: " + targetMap);
+					Log.Message("Moving ship cache " + bridge.Index + " to map: " + targetMap);
 					targetMapComp.ShipsOnMapNew.Add(bridge.Index, sourceMapComp.ShipsOnMapNew[bridge.Index]);
 					ship = targetMapComp.ShipsOnMapNew[bridge.Index];
 					ship.map = targetMap;
 					ship.mapComp = targetMapComp;
 					sourceMapComp.ShipsOnMapNew.Remove(bridge.Index);
 				}
-				else
-					ship = sourceMapComp.ShipsOnMapNew[bridge.Index];*/
+				else //for area adjust
+					ship = sourceMapComp.ShipsOnMapNew[bridge.Index];
 			}
 			else
 				sourceArea = FindAreaAttached(core, includeRock);
@@ -1737,14 +1740,11 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
-				//ship cache: move ShipCells
-				if (!sourceMapComp.CacheOff)
-				{
-					targetMapComp.ShipCells.Add(adjustedPos, new Tuple<int, int>(sourceMapComp.ShipCells[pos].Item1, sourceMapComp.ShipCells[pos].Item2));
-					sourceMapComp.ShipCells.Remove(pos);
-				}
-				//store room temps
-				Room room = pos.GetRoom(sourceMap);
+                //ship cache: move ShipCells
+                targetMapComp.ShipCells.Add(adjustedPos, new Tuple<int, int>(sourceMapComp.ShipCells[pos].Item1, sourceMapComp.ShipCells[pos].Item2));
+                sourceMapComp.ShipCells.Remove(pos);
+                //store room temps
+                Room room = pos.GetRoom(sourceMap);
 				if (room != null && !roomsToTemp.Contains(room) && !ExposedToOutside(room))
 				{
 					roomsToTemp.Add(room);
@@ -1813,7 +1813,7 @@ namespace SaveOurShip2
 					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(pos, sourceRoof));
 				}
 				sourceMap.roofGrid.SetRoof(pos, null);
-				if (playerMove)
+				if (core is Building_ShipBridge && playerMove) //home zone ships
 				{
 					sourceMap.areaManager.Home[pos] = false;
 					targetMap.areaManager.Home[adjustedPos] = true;
@@ -1979,9 +1979,10 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("moveThings");
 			AirlockBugFlag = false;
-
-			//move zones
-			if (zonesToCopy.Any())
+            sourceMapComp.CacheOff = false;
+            targetMapComp.CacheOff = false;
+            //move zones
+            if (zonesToCopy.Any())
 			{
 				foreach (Zone zone in zonesToCopy) //only move fully contained zones
 				{
@@ -2315,21 +2316,20 @@ namespace SaveOurShip2
 			RemoveShip(area.ToList(), map, true);
 		}
 		public static void RemoveShip(List<IntVec3> area, Map map, bool planetTravel)
-		{
-			AirlockBugFlag = true;
+        {
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+			mapComp.CacheOff = true;
+            if (mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[area.First()].Item1))
+                mapComp.ShipsOnMapNew.Remove(mapComp.ShipCells[area.First()].Item1);
+            AirlockBugFlag = true;
 			List<Thing> things = new List<Thing>();
 			List<Zone> zones = new List<Zone>();
 			foreach (IntVec3 pos in area)
 			{
 				//remove from cache
-				var mapComp = map.GetComponent<ShipHeatMapComp>();
-				if (!mapComp.CacheOff)
-				{
-					mapComp.ShipCells.Remove(pos);
-					if (mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[pos].Item1))
-						mapComp.ShipsOnMapNew.Remove(mapComp.ShipCells[pos].Item1);
-				}
-				map.roofGrid.SetRoof(pos, null);
+                mapComp.ShipCells.Remove(pos);
+
+                map.roofGrid.SetRoof(pos, null);
 				things.AddRange(pos.GetThingList(map));
 				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))
 				{
@@ -2360,9 +2360,10 @@ namespace SaveOurShip2
 				map.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
 			}
 			AirlockBugFlag = false;
+            mapComp.CacheOff = false;
 
-			//regen affected map layers
-			List<Section> sourceSec = new List<Section>();
+            //regen affected map layers
+            List<Section> sourceSec = new List<Section>();
 			if (zones.Any())
 			{
 				foreach (Zone zone in zones) //only remove fully contained zones

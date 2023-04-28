@@ -13,6 +13,7 @@
 		<rarityLevel>2</rarityLevel>
 		<navyExclusive>true</navyExclusive>
 		<neverWreck>true</neverWreck>
+		<neverFleet>true</neverFleet>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>29</x>

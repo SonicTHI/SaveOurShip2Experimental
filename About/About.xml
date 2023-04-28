@@ -29,15 +29,18 @@
 		<li>Ludeon.RimWorld.Biotech</li>
 	</loadAfter>
 	<incompatibleWith>
-		<li>majorhoff.rimthreaded</li>
-		<li>erdelf.MinifyEverything</li>
-		<li>rwmt.multiplayer</li>
-		<li>lukakama.rimworldrealfow</li>
-		<li>storm.sos2ex</li>
-		<li>drzhivago.docworld</li>
-		<li>powerlunatic.flawlesselectronics</li>
-		<li>ryder.saveourshipsimplified</li>
 		<li>ceteam.combatextended</li>
+		<li>rwmt.multiplayer</li>
+		<li>automatic.gunplay</li>
+		<li>majorhoff.rimthreaded</li>
+		<li>user19990313777.runtimegc</li>
+		<li>erdelf.MinifyEverything</li>
+		<li>lukakama.rimworldrealfow</li>
+		<li>merthsoft.designatorshapes</li>
+		<li>VanillaExpanded.HelixienGas</li>
+		<li>powerlunatic.flawlesselectronics</li>
+		<li>drzhivago.docworld</li>
+		<li>storm.sos2ex</li>
 		<li>taranchuk.performanceoptimizer</li>
 	</incompatibleWith>
 </ModMetaData>

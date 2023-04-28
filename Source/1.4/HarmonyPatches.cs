@@ -3680,7 +3680,8 @@ namespace SaveOurShip2
 				Page_ConfigureIdeo page_ConfigureIdeo = new Page_ConfigureIdeo();
 				page_ConfigureIdeo.prev = __instance.prev;
 				page_ConfigureIdeo.next = __instance.next;
-				__instance.next.prev = page_ConfigureIdeo;
+				if (__instance.next != null)
+					__instance.next.prev = page_ConfigureIdeo;
 				Find.WindowStack.Add(page_ConfigureIdeo);
 				__instance.Close();
 			}

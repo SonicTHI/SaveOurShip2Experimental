@@ -2299,7 +2299,7 @@
 	</DesignatorDropdownGroupDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>Ship_CryptosleepCasket</defName>
-		<label>auto-eject cryptosleep casket</label>
+		<label>ship cryptosleep casket</label>
 		<designatorDropdown>Ship_Cryptos</designatorDropdown>
 		<description>A cryptosleep casket with multiple built-in timers and contingencies. Can be opened without manual intervention. In the event of catastrophic ship failure, it can also act as an escape pod.\n\nIt would be a good idea to have at least one of these aboard any starship.</description>
 		<thingClass>Building_CryptosleepCasket</thingClass>

@@ -2377,7 +2377,6 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in area)
 			{
 				//remove from cache
-				var mapComp = map.GetComponent<ShipHeatMapComp>();
 				if (!mapComp.CacheOff)
 				{
 					if (mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[pos].Item1))

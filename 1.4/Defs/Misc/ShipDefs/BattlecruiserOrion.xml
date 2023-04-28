@@ -211,7 +211,7 @@
 			<li>
 				<key>^</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
+					<shapeOrDef>SoSSunLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -236,13 +236,13 @@
 			<li>
 				<key>b</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>c</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 					<color>RGBA(1.000, 0.000, 0.000, 1.000)</color>
 				</value>
 			</li>
@@ -296,14 +296,14 @@
 			<li>
 				<key>k</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 					<color>RGBA(0.000, 1.000, 0.000, 1.000)</color>
 				</value>
 			</li>
 			<li>
 				<key>l</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 					<color>RGBA(0.000, 0.000, 1.000, 1.000)</color>
 				</value>
 			</li>

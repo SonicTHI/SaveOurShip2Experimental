@@ -110,14 +110,14 @@
 			<li>
 				<key>N</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 					<color>RGBA(0.000, 1.000, 0.000, 1.000)</color>
 				</value>
 			</li>
 			<li>
 				<key>O</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>

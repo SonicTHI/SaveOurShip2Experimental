@@ -35,6 +35,8 @@ namespace RimWorld
             powerComp = parent.TryGetComp<CompPowerTrader>();
             breakComp = parent.TryGetComp<CompBreakdownable>();
             parent.Map.GetComponent<ShipHeatMapComp>().Shields.Add(this);
+            if (!respawningAfterLoad)
+                radiusSet = radius = Props.shieldDefault;
         }
         public override void PostDeSpawn(Map map)
         {
@@ -156,8 +158,8 @@ namespace RimWorld
             base.PostExposeData();
             Scribe_Values.Look(ref lastIntercepted, "lastIntercepted");
             Scribe_Values.Look(ref shutDown, "shutDown");
-            Scribe_Values.Look(ref radius, "radius",40);
-            Scribe_Values.Look(ref radiusSet, "radiusSet",40);
+            Scribe_Values.Look(ref radius, "radius", Props.shieldDefault);
+            Scribe_Values.Look(ref radiusSet, "radiusSet", Props.shieldDefault);
         }
         public override void PostDraw()
         {
@@ -219,7 +221,7 @@ namespace RimWorld
             {
                 action = delegate ()
                 {
-                    radiusSet = 40f;
+                    radiusSet = Props.shieldDefault;
                     powerComp.PowerOutput = -1500;
                     SoundDefOf.Tick_Tiny.PlayOneShotOnCamera(null);
                 },
@@ -256,7 +258,7 @@ namespace RimWorld
         {
             SoundDefOf.DragSlider.PlayOneShotOnCamera(null);
             radiusSet += radius;
-            radiusSet = Mathf.Clamp(radiusSet, 20f, 60f);
+            radiusSet = Mathf.Clamp(radiusSet, Props.shieldMin, Props.shieldMax);
         }
     }
 }

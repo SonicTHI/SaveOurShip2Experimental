@@ -50,8 +50,10 @@ namespace RimWorld
 		{
 			get
 			{
-				return ((Building_CryptosleepCasket)this.parent).GetDirectlyHeldThings().NullOrEmpty();
-            }
+                		if(this.parent is Building_CryptosleepCasket casket)
+				    return casket.GetDirectlyHeldThings().NullOrEmpty();
+                		return !((Building_Bed)this.parent).AnyOccupants;
+            		}
 		}
 
 		private void StartChoosingDestination()
@@ -241,10 +243,17 @@ namespace RimWorld
 			}
 			Map map = this.parent.Map;
             int groupID = Find.UniqueIDsManager.GetNextTransporterGroupID();
-            ThingOwner directlyHeldThings = ((Building_CryptosleepCasket)this.parent).GetDirectlyHeldThings();
             ActiveDropPod activeDropPod = (ActiveDropPod)ThingMaker.MakeThing(ThingDefOf.ActiveDropPod, null);
             activeDropPod.Contents = new ActiveDropPodInfo();
-            activeDropPod.Contents.innerContainer.TryAddRangeOrTransfer(directlyHeldThings, true, true);
+
+            if (this.parent is Building_CryptosleepCasket casket)
+                activeDropPod.Contents.innerContainer.TryAddRangeOrTransfer(casket.GetDirectlyHeldThings(), true, true);
+            else if (this.parent is Building_Bed bed)
+            {
+                Pawn pawn = bed.CurOccupants.First();
+                pawn.DeSpawn();
+                activeDropPod.Contents.innerContainer.TryAdd(pawn);
+            }
 
             FlyShipLeaving dropPodLeaving = (FlyShipLeaving)SkyfallerMaker.MakeSkyfaller(ThingDefOf.DropPodLeaving, activeDropPod);
             dropPodLeaving.groupID = groupID;

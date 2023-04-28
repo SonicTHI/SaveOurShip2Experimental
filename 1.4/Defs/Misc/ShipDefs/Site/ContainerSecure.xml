@@ -56,7 +56,7 @@
 			<li>
 				<key>E</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 					<color>RGBA(0.353, 0.353, 0.353, 1.000)</color>
 				</value>
 			</li>

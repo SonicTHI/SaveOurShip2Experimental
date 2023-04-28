@@ -87,6 +87,7 @@ namespace SaveOurShip2
 			public static ThingDef ShipShuttleBay;
 			public static ThingDef ShipShuttleBayLarge;
 			public static ThingDef ShipSalvageBay;
+			public static ThingDef SoS2DummyObject;
 		}
 
 		[DefOf]

@@ -280,7 +280,7 @@
 			<li>
 				<key>j</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
+					<shapeOrDef>SoSSunLightEnabler</shapeOrDef>
 					<color>RGBA(0.886, 0.314, 2.020, 1.000)</color>
 				</value>
 			</li>
@@ -334,7 +334,7 @@
 			<li>
 				<key>r</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>

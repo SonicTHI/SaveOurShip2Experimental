@@ -29,5 +29,8 @@ namespace RimWorld
         public float heatMultiplier = 1.0f;
         public Color color = Color.white;
         public Color laserColor = Color.red;
+        public int shieldMin = 20;
+        public int shieldMax = 60;
+        public int shieldDefault = 40;
     }
 }

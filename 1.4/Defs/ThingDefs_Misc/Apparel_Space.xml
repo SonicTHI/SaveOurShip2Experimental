@@ -68,6 +68,76 @@
       </defaultOutfitTags>
 		</apparel>
 	</ThingDef>
+	<ThingDef ParentName="ArmorMachineableBase">
+		<defName>Apparel_SpaceSuitBodyChild</defName>
+		<label>kid EVA suit</label>
+		<description>A suit designed to keep a child alive in outer space. Includes small thrusters for movement.</description>
+		<techLevel>Spacer</techLevel>
+		<recipeMaker>
+			<unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
+			<researchPrerequisite>ShipSpaceSuits</researchPrerequisite>
+			<recipeUsers Inherit="False">
+				<li>FabricationBench</li>
+			</recipeUsers>
+		</recipeMaker>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/EVA/KidEVA_Child_south</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+		</graphicData>
+		<statBases>
+			<WorkToMake>17000</WorkToMake>
+			<MaxHitPoints>340</MaxHitPoints>
+			<Mass>10</Mass>
+			<ArmorRating_Blunt>0.4</ArmorRating_Blunt>
+			<ArmorRating_Sharp>0.4</ArmorRating_Sharp>
+			<ArmorRating_Heat>0.75</ArmorRating_Heat>
+			<Insulation_Cold>100</Insulation_Cold>
+			<Insulation_Heat>25</Insulation_Heat>
+		</statBases>
+		<equippedStatOffsets>
+			<MoveSpeed>-0.25</MoveSpeed>
+			<WorkSpeedGlobal>-0.075</WorkSpeedGlobal>
+		</equippedStatOffsets>
+		<thingCategories>
+			<li>ApparelArmor</li>
+		</thingCategories>
+		<stuffCategories>
+			<li>Fabric</li>
+			<li>Leathery</li>
+		</stuffCategories>
+		<costStuffCount>35</costStuffCount>
+		<costList>
+			<ComponentSpacer>1</ComponentSpacer>
+			<Plasteel>5</Plasteel>
+		</costList>
+		<generateCommonality>2</generateCommonality>
+		<apparel>
+			<bodyPartGroups>
+				<li>Torso</li>
+				<li>Neck</li>
+				<li>Shoulders</li>
+				<li>Arms</li>
+				<li>Legs</li>
+				<li>Hands</li>
+				<li>Feet</li>
+			</bodyPartGroups>
+			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/EVA/KidEVA</wornGraphicPath>
+		    <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+		    <developmentalStageFilter>Child</developmentalStageFilter>
+			<useWornGraphicMask>true</useWornGraphicMask>
+			<layers>
+				<li>Middle</li>
+				<li>Shell</li>
+			</layers>
+			<tags>
+				<li>Spacer</li>
+				<li>EVA</li>
+			</tags>
+			<defaultOutfitTags>
+      </defaultOutfitTags>
+		</apparel>
+	</ThingDef>
 	<ThingDef ParentName="HatMakeableBase">
 		<defName>Apparel_SpaceSuitHelmet</defName>
 		<label>EVA helmet</label>
@@ -114,6 +184,66 @@
 				<li>FullHead</li>
 			</bodyPartGroups>
 			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Helmet</wornGraphicPath>
+			<useWornGraphicMask>true</useWornGraphicMask>
+			<layers>
+				<li>Overhead</li>
+			</layers>
+			<tags>
+				<li>Spacer</li>
+				<li>EVA</li>
+			</tags>
+			<defaultOutfitTags>
+      </defaultOutfitTags>
+		</apparel>
+	</ThingDef>
+	<ThingDef ParentName="HatMakeableBase">
+		<defName>Apparel_SpaceSuitHelmetChild</defName>
+		<label>kid EVA helmet</label>
+		<description>A helmet designed to keep a child alive in outer space. Recycles oxygen and provides resistance to toxic airborne particulates.</description>
+		<techLevel>Spacer</techLevel>
+		<recipeMaker>
+			<unfinishedThingDef>UnfinishedTechArmor</unfinishedThingDef>
+			<researchPrerequisite>ShipSpaceSuits</researchPrerequisite>
+			<recipeUsers Inherit="False">
+				<li>FabricationBench</li>
+			</recipeUsers>
+		</recipeMaker>
+		<graphicData>
+			<texPath>Things/Pawn/Humanlike/Apparel/EVA/KidHelmetEVA_east</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+		</graphicData>
+		<statBases>
+			<WorkToMake>16000</WorkToMake>
+			<MaxHitPoints>160</MaxHitPoints>
+			<Mass>2.7</Mass>
+			<ArmorRating_Blunt>0.4</ArmorRating_Blunt>
+			<ArmorRating_Sharp>0.4</ArmorRating_Sharp>
+			<ArmorRating_Heat>0.75</ArmorRating_Heat>
+			<Insulation_Cold>50</Insulation_Cold>
+			<Insulation_Heat>25</Insulation_Heat>
+		</statBases>
+		<equippedStatOffsets>
+			<MoveSpeed>-0.04</MoveSpeed>
+			<ToxicResistance>0.5</ToxicResistance>
+            <ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
+		</equippedStatOffsets>
+		<thingCategories>
+			<li>ArmorHeadgear</li>
+		</thingCategories>
+		<costList>
+			<ComponentSpacer>1</ComponentSpacer>
+			<Plasteel>5</Plasteel>
+			<Gold>1</Gold>
+		</costList>
+		<generateCommonality>2</generateCommonality>
+		<apparel>
+			<bodyPartGroups>
+				<li>FullHead</li>
+			</bodyPartGroups>
+			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/EVA/KidHelmetEVA</wornGraphicPath>
+		    <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+		    <developmentalStageFilter>Child</developmentalStageFilter>
 			<useWornGraphicMask>true</useWornGraphicMask>
 			<layers>
 				<li>Overhead</li>

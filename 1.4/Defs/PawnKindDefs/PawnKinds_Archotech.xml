@@ -4,7 +4,7 @@
   <ThingDef ParentName="AnimalThingBase">
     <defName>Archocat</defName>
     <label>archocat</label>
-    <description>A perfected version of the domestic cat, this adorable ball of fluff wants nothing more than to spend its days playing with a ship's crew. In addition to frequent nuzzling, the archocat emits a psychic purr which improves nearby colonists' mood. It can technically be trained to "haul" by batting objects across the floor.\n\nLike all archolife, its cells power themselves vanometrically and it absorbs atoms directly from the air, so it does not need to eat. Archolife can survive vacuum exposure, has no known maximum age, and regenerates scarred or missing body parts. It can even generate a shield in combat.</description>
+    <description>A perfected version of the domestic cat, this adorable ball of fluff wants nothing more than to spend its days playing with a ship's crew. In addition to frequent nuzzling, the archocat emits a psychic purr which improves nearby colonists' mood. It can technically be trained to "haul" by batting objects across the floor.\n\nUniquely among archolife, the archocat can be psychically convinced to change its body shape and coat color. This seems to be effortless for the creature but it only ever takes one of two discrete forms - a fluffy tortoiseshell or a lithe calico with a stumpy tail. It is unknown whether this is a physical limitation or a psychological one, and your archotech spore treats the whole matter as a joke that the rest of your colonists are not in on.\n\nLike all archolife, its cells power themselves vanometrically and it absorbs atoms directly from the air, so it does not need to eat. Archolife can survive vacuum exposure, has no known maximum age, and regenerates scarred or missing body parts. It can even generate a shield in combat.</description>
     <statBases>
       <MoveSpeed>6.4</MoveSpeed>
       <MarketValue>1000</MarketValue>
@@ -16,6 +16,26 @@
 	    <shield>1</shield>
 		<purr>true</purr>
 	  </li>
+	  <li Class="CompProperties_ArcholifeCosmetics">
+			<graphics>
+				<li>
+					<texPath>Things/Pawn/Animal/Archocat</texPath>
+					<graphicClass>Graphic_Multi</graphicClass>
+					<drawSize>1</drawSize>
+					<shaderType>Cutout</shaderType>
+				</li>
+				<li>
+					<texPath>Things/Pawn/Animal/Hitomi</texPath>
+					<graphicClass>Graphic_Single</graphicClass>
+					<drawSize>1</drawSize>
+					<shaderType>Cutout</shaderType>
+				</li>
+			</graphics>
+			<names>
+				<li>Eclectic</li>
+				<li>Hitomi</li>
+			</names>
+		</li>
     </comps>
     <tools>
       <li>
@@ -1336,6 +1356,7 @@
       <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
       <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
 	  <herdMigrationAllowed>false</herdMigrationAllowed>
+      <nuzzleMtbHours>3</nuzzleMtbHours>
     </race>
     <comps>
       <li Class="CompProperties_Archolife">

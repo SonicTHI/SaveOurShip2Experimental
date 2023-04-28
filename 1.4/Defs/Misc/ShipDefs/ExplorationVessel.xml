@@ -142,7 +142,7 @@
 			<li>
 				<key>S</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -154,7 +154,7 @@
 			<li>
 				<key>U</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
+					<shapeOrDef>SoSSunLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>

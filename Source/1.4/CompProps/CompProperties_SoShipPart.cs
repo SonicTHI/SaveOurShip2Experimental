@@ -10,6 +10,11 @@ namespace RimWorld
 		public bool isHull = false;
 		public bool hermetic = false;
 
+		public bool canLight = false;
+		public ThingDef light;
+		public int lightPower = 15;
+		public int sunLightPower = 2500;
+
 		public bool roof = false;
 
 		//types for terrain, roof

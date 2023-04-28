@@ -1283,7 +1283,11 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix()
 		{
-			if (ShipInteriorMod2.shipOriginRoot != null)
+			if (WorldSwitchUtility.SaveShipFlag)
+			{
+				WorldSwitchUtility.SaveShip((Building_ShipBridge)ShipInteriorMod2.shipOriginRoot);
+			}
+			else if (ShipInteriorMod2.shipOriginRoot != null)
 			{
 				ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
 				Map map = ShipInteriorMod2.GeneratePlayerShipMap(ShipInteriorMod2.shipOriginRoot.Map.Size);
@@ -2925,7 +2929,8 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
+	//No longer necessary in 1.4
+	/*[HarmonyPatch(typeof(Pawn), "GetGizmos")]
 	public static class AnimalsHaveGizmosToo
 	{
 		public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
@@ -2938,7 +2943,7 @@ namespace SaveOurShip2
 				__result = giz;
 			}
 		}
-	}
+	}*/
 
 	[HarmonyPatch(typeof(CompSpawnerPawn), "TrySpawnPawn")]
 	public static class SpaceCreaturesAreHungry
@@ -4365,4 +4370,78 @@ namespace SaveOurShip2
 
 		}
 	}*/
+
+	//Space crib
+	[HarmonyPatch(typeof(GenTemperature), "TryGetTemperatureForCell")]
+	public static class BabiesAreSafeInSpaceCaskets
+	{
+		public static void Postfix(IntVec3 c, Map map, ref float tempResult)
+		{
+			List<Thing> list = map.thingGrid.ThingsListAtFast(c);
+			foreach (Thing thing in list)
+			{
+				if (thing is Building_SpaceCrib)
+					tempResult = 21f;
+			}
+		}
+
+		//Well, shit, that didn't work. Gonna have to do this the slow way.
+		/*public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+			//First, find the second-last return statement
+
+			List<int> returns = new List<int>();
+			for(int i=0;i<instructions.Count();i++)
+            {
+				CodeInstruction instr = instructions.ElementAt(i);
+				if (instr.opcode == OpCodes.Ret)
+					returns.Add(i);
+            }
+			int secondLastRet = returns[returns.Count - 2];
+
+			List<CodeInstruction> newInstructions = new List<CodeInstruction>();
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldloc_0));
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldloc_1));
+			newInstructions.Add(CodeInstruction.Call("System.Collections.Generic.List`1[[Verse.Thing, Assembly-CSharp, Version=1.4.8446.19495, Culture=neutral, PublicKeyToken=null]]:get_Item"));
+			newInstructions.Add(new CodeInstruction(OpCodes.Isinst, typeof(Building_SpaceCrib)));
+			newInstructions.Add(new CodeInstruction(OpCodes.Brfalse, 5)); //This is the line that keeps breaking the stupid transpiler, can't figure out what it expects as the offset
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldarg, 2));
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldc_I4, 21));
+			newInstructions.Add(new CodeInstruction(OpCodes.Stind_R4));
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldc_I4, 1));
+			newInstructions.Add(new CodeInstruction(OpCodes.Ret));
+
+			List<CodeInstruction> toReturn = new List<CodeInstruction>();
+			for (int i = 0; i <= secondLastRet; i++)
+				toReturn.Add(instructions.ElementAt(i));
+			foreach (CodeInstruction instr in newInstructions)
+				toReturn.Add(instr);
+			for (int i = secondLastRet + 1; i < instructions.Count(); i++)
+				toReturn.Add(instructions.ElementAt(i));
+			return toReturn;			
+        }*/
+
+		public static void ActuallyNotPostfixPostfix(ref float tempResult, List<Thing> list)
+		{
+			foreach (Thing thing in list)
+			{
+				if (thing is Building_SpaceCrib)
+				{
+					tempResult = 21f;
+					return;
+				}
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(PawnGraphicSet), "SetAllGraphicsDirty")]
+	public static class PreserveCosmetics
+    {
+		public static void Postfix(PawnGraphicSet __instance)
+        {
+			CompArcholifeCosmetics cosmetics = __instance.pawn.TryGetComp<CompArcholifeCosmetics>();
+			if (cosmetics != null)
+				CompArcholifeCosmetics.ChangeAnimalGraphics(__instance.pawn, cosmetics.Props, cosmetics);
+        }
+    }
 }

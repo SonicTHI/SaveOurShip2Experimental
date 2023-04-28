@@ -70,7 +70,7 @@
 			<li>
 				<key>G</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -319,7 +319,7 @@
 			<li>
 				<key>o</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
+					<shapeOrDef>SoSSunLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>

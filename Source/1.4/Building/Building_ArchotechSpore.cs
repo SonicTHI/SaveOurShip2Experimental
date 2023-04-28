@@ -1021,7 +1021,7 @@ namespace RimWorld
 
             builder.AppendLine(GameVictoryUtility.InMemoryOfSection());
 
-            builder.AppendLine("Save Our Ship 2 was developed by Kentington and Thain, with additional code by SonicTHI");
+            builder.AppendLine("Save Our Ship 2 was developed by Kentington and Thain, with community maintenance and feature expansions by SonicTHI and Owlchemist");
             builder.AppendLine("Special thanks to art/code contributors Oskar Potocki, K', Sarg, Karim, Saakra, and Revolus");
             builder.AppendLine();
             builder.AppendLine("Shipwrights: (Insert Boi here), AlfadorZero, choppytehbear, Dammerung, DianaWinters, Foxtrot, Inert, Jameson, Moonshine Dusk");

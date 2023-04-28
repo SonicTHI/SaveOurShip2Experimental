@@ -24,7 +24,8 @@ namespace RimWorld
             {
                 if (InstallBlueprintUtility.ExistingBlueprintFor(this) != null)
                     ShipInteriorMod2.MoveShip(shipRoot, targetMap, InstallBlueprintUtility.ExistingBlueprintFor(this).Position - bottomLeftPos, fac, shipRotNum, includeRock);
-                this.Destroy(DestroyMode.Vanish);
+                if(!this.Destroyed)
+                    this.Destroy(DestroyMode.Vanish);
             }
         }
 

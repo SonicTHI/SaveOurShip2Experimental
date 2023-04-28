@@ -98,6 +98,8 @@ namespace RimWorld
                     GameComponent compToClobber = null;
                     foreach (GameComponent existingComp in Current.Game.components)
                     {
+                        if (component == null || existingComp == null) //Apparently a null can sometimes sneak into this list
+                            continue;
                         if (existingComp.GetType() == component.GetType())
                         {
                             compToClobber = existingComp;
@@ -163,7 +165,7 @@ namespace RimWorld
                     {
                         if (!thing.Destroyed)
                         {
-                            thing.SpawnSetup(spaceMap, false);
+                            thing.SpawnSetup(spaceMap, thing is Building_ShipBridge);
                             if(thing.def.CanHaveFaction)
                                 thing.SetFaction(Faction.OfPlayer);
                             if(thing is IThingHolder holder && holder.GetDirectlyHeldThings()!=null)
@@ -233,6 +235,9 @@ namespace RimWorld
                 AccessExtensions.Utility.RecacheSpaceMaps();
                 foreach (Ideo ideo in Find.IdeoManager.IdeosInViewOrder)
                     ReCacheIdeo(ideo);
+
+                spaceMap.GetComponent<ShipHeatMapComp>().ResetCache();
+                spaceMap.GetComponent<ShipHeatMapComp>().RecacheMap();
 
                 return spaceMap;
             }

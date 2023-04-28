@@ -99,7 +99,7 @@
 			<Flammability>0</Flammability>
 			<Beauty>1</Beauty>
 		</statBases>
-		<description>The outer structural elements of an archotech-designed ship's hull. Includes conduits for power and coolant.</description>
+		<description>The outer structural elements of an archotech-designed ship's hull. Includes conduits for power and coolant. Integrated lighting system can be toggled at will if the Advanced Lighting research project is completed.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
 			<li Class="CompProperties_SoShipPart">
@@ -107,6 +107,10 @@
 				<hermetic>true</hermetic>
 				<archotech>true</archotech>
 				<roof>true</roof>
+				<canLight>true</canLight>
+				<light>Ship_Beam_Light_Archo</light>
+				<lightPower>5</lightPower>
+				<sunLightPower>1000</sunLightPower>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
@@ -138,6 +142,59 @@
 		</costList>
 		<designationHotKey>Misc1</designationHotKey>
 		<designationCategory>Ship</designationCategory>
+	</ThingDef>
+	
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_Beam_Light_Archo</defName>
+		<label>ship light</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<Flammability>0</Flammability>
+		</statBases>
+		<building>
+			<isEdifice>false</isEdifice>
+			<shipPart>true</shipPart>
+		</building>
+		<rotatable>false</rotatable>
+		<destroyable>false</destroyable>
+		<useHitPoints>false</useHitPoints>
+		<selectable>false</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<description>Integrated lighting attached to a ship's hull.</description>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
+		<comps>
+			<li Class="CompProperties_ShipLight">
+				<lightGraphic>
+					<texPath>Things/Building/Ship/ShipWallLightArcho</texPath>
+					<graphicClass>Graphic_Multi</graphicClass>
+					<drawSize>1</drawSize>
+					<shaderType>Cutout</shaderType>
+				</lightGraphic>
+				<sunLightGraphic>
+					<texPath>Things/Building/Ship/ShipSunLight</texPath>
+					<graphicClass>Graphic_Multi</graphicClass>
+					<drawSize>1</drawSize>
+					<shaderType>Cutout</shaderType>
+				</sunLightGraphic>
+				<lightRadius>14</lightRadius>
+				<overlightRadius>14</overlightRadius>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompSoSPowerTrader</compClass>
+				<basePowerConsumption>5</basePowerConsumption>
+			</li>
+		    <li Class="CompProperties_Schedule">
+			  <compClass>CompSoSSchedule</compClass>
+			  <startTime>0.25</startTime>
+			  <endTime>0.8</endTime>
+			  <offMessage>Off for plant resting period</offMessage>
+		    </li>
+		</comps>
+		<tickerType>Rare</tickerType>
 	</ThingDef>
 	<!-- corners -->
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerArchotech" Abstract="True">
@@ -762,7 +819,7 @@
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankAntiEntropic</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2,4)</drawSize>
+			<drawSize>(2,2)</drawSize>
 		</graphicData>
 		<building>
 		</building>

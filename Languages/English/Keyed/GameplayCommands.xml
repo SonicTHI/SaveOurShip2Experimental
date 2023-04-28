@@ -217,4 +217,16 @@
 	<SoSEmergencyJTFarDesc>Use your Johnson-Tanaka drive to immediately reach long range. This costs {0}Wd of energy and will require repairs to the drive.</SoSEmergencyJTFarDesc>
 	<SoSEmergencyJTNear>Emergency boost (close range)</SoSEmergencyJTNear>
 	<SoSEmergencyJTNearDesc>Use your Johnson-Tanaka drive to immediately reach close range. This costs {0}Wd of energy and will require repairs to the drive.</SoSEmergencyJTNearDesc>
+	
+	<ArcholifeChangeSkin>Change animal appearance</ArcholifeChangeSkin>
+	<ArcholifeChangeSkinDesc>This creature seems able to change shape at will, but only between a few discrete forms.</ArcholifeChangeSkinDesc>
+	<ShipWallLight>Toggle lighting</ShipWallLight>
+	<ShipWallLightDesc>Toggle this ship part's integrated lighting system</ShipWallLightDesc>
+	<ShipWallLightSun>Sun Mode</ShipWallLightSun>
+	<ShipWallLightSunDesc>Toggle a special high-power lighting mode designed for hydroponics bays</ShipWallLightSunDesc>
+	<ShipWallLightColor>Lighting color</ShipWallLightColor>
+	<ShipWallLightColorDesc>Select a color for this ship part's lighting</ShipWallLightColorDesc>
+	<ShipWallLightDisco>Disco Mode</ShipWallLightDisco>
+	<ShipWallLightDiscoDesc>Set this light to cycle through the color spectrum</ShipWallLightDiscoDesc>
+	<ShipWallLightAdjacency>No adjacent rooms</ShipWallLightAdjacency>
 </LanguageData>

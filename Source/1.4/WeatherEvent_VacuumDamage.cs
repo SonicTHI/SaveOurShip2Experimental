@@ -61,11 +61,21 @@ namespace RimWorld
             }
             foreach (Pawn thePawn in pawnsToDamage)
             {
+                if (thePawn.InBed() && thePawn.CurrentBed() is Building_SpaceCrib crib)
+                {
+                    crib.UpdateState(true);
+                    continue;
+                }
                 thePawn.TakeDamage(new DamageInfo(DefDatabase<DamageDef>.GetNamed("VacuumDamage"), 1));
                 HealthUtility.AdjustSeverity(thePawn, HediffDef.Named("SpaceHypoxia"), 0.025f);
             }
             foreach (Pawn thePawn in pawnsToSuffocate)
             {
+                if (thePawn.InBed() && thePawn.CurrentBed() is Building_SpaceCrib crib)
+                {
+                    crib.UpdateState(true);
+                    continue;
+                }
                 HealthUtility.AdjustSeverity(thePawn, HediffDef.Named("SpaceHypoxia"), 0.0125f);
             }
         }

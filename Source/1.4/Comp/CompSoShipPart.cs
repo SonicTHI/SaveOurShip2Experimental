@@ -18,7 +18,9 @@ namespace RimWorld
         //SoShipPart props isHull: walls, walllikes, hullfoam fills, wrecks form from these, spawns ship terrain beneath
         //SoShipPart props isPlating: plating, airlocks - can not be placed under buildings, hullfoam fills, wrecks form from these, spawns ship terrain beneath, count as 1 for weight calcs
         //SoShipPart props isHardpoint: spawns ship terrain beneath, reduce damage for turrets
-        //SoShipPart hermetic: hold air in vacuum - walls, airlocks, corners, engines, hullfoam, extenders, spinal barrels
+        //SoShipPart props hermetic: hold air in vacuum - walls, airlocks, corners, engines, hullfoam, extenders, spinal barrels
+        //SoShipPart props canLight: can spawn a wall light - powered walls (basic, mech, archo)
+        //SoShipPart props light: def of the wall light to be attached
         //SoShipPart: other parts that are cached - not attached, no corePath (bridges)
         //other tags:
         //SoShipPart props roof: forces and spawns ship roof above (should only be isPlating but currently also walls, walllikes)
@@ -29,6 +31,10 @@ namespace RimWorld
         public static GraphicData roofedDataMech = new GraphicData();
         public static Graphic roofedGraphicTile;
         public static Graphic roofedGraphicTileMech;
+        //icon
+        public static Texture2D ShipWallLightIcon;
+        public static Texture2D ShipSunLightIcon;
+        public static Texture2D DiscoModeIcon;
         static CompSoShipPart()
         {
             roofedData.texPath = "Things/Building/Ship/Ship_Roof";
@@ -39,12 +45,22 @@ namespace RimWorld
             roofedDataMech.graphicClass = typeof(Graphic_Single);
             roofedDataMech.shaderType = ShaderTypeDefOf.MetaOverlay;
             roofedGraphicTileMech = new Graphic_256(roofedDataMech.Graphic);
+            ShipWallLightIcon = (Texture2D)GraphicDatabase.Get<Graphic_Single>("Things/Building/Ship/ShipWallLightIcon").MatSingle.mainTexture;
+            ShipSunLightIcon = (Texture2D)GraphicDatabase.Get<Graphic_Single>("Things/Building/Ship/ShipSunLightIcon").MatSingle.mainTexture;
+            DiscoModeIcon = (Texture2D)GraphicDatabase.Get<Graphic_Single>("Things/Building/Ship/DiscoModeIcon").MatSingle.mainTexture;
         }
 
         bool isTile;
         bool isMechTile;
         bool isArchoTile;
         bool isFoamTile; //no gfx for foam roof
+
+        public bool hasLight = false;
+        public bool sunLight = false;
+        public ColorInt lightColor = new ColorInt(Color.white);
+        public Building myLight = null;
+        public bool discoMode = false;
+
         List<IntVec3> cellsUnder;
         Map map;
         public ShipHeatMapComp mapComp;
@@ -82,6 +98,7 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
+
             isTile = parent.def == ResourceBank.ThingDefOf.ShipHullTile;
             isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
             isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
@@ -106,13 +123,15 @@ namespace RimWorld
             }
             if (ShipInteriorMod2.AirlockBugFlag) //MoveShip - cache is off
             {
+                if (hasLight) //Despawned light in MoveShip - regenerate manually so we don't get power bugs
+                    SpawnLight(lightColor, sunLight);
                 return;
             }
             foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
             {
                 if (!mapComp.ShipCells.ContainsKey(vec))
                 {
-                    mapComp.ShipCells.Add(vec, new Tuple<int, int>(-1, -1));
+                    mapComp.ShipCells.Add(vec, null);
                 }
             }
             if (Props.roof)
@@ -142,7 +161,7 @@ namespace RimWorld
                 cellsToMerge.AddRange(cellsUnder);
                 IntVec3 mergeTo = IntVec3.Zero;
                 int mass = 0;
-                foreach (IntVec3 vec in cellsToMerge) //find largest ship & attach to it
+                foreach (IntVec3 vec in cellsToMerge) //find largest ship
                 {
                     int shipIndex = mapComp.ShipIndexOnVec(vec);
                     if (shipIndex != -1 && mapComp.ShipsOnMapNew[shipIndex].Mass > mass)
@@ -155,7 +174,7 @@ namespace RimWorld
                 {
                     mergeToIndex = mapComp.ShipCells[mergeTo].Item1;
                 }
-                else //no ships, attach to existing wreck
+                else //no ships, attach to wreck
                 {
                     mergeTo = cellsToMerge.FirstOrDefault();
                     mergeToIndex = mergeTo.GetThingList(parent.Map).FirstOrDefault(b => b.TryGetComp<CompSoShipPart>() != null).thingIDNumber;
@@ -174,6 +193,12 @@ namespace RimWorld
             {
                 return;
             }
+
+            if(!mapComp.ShipCells.ContainsKey(parent.Position) || !mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[parent.Position].Item1))
+            {
+                return;
+            }
+
             var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[parent.Position].Item1];
             HashSet<Building> buildings = new HashSet<Building>();
             foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
@@ -250,6 +275,8 @@ namespace RimWorld
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
+            if (myLight != null)
+                myLight.DeSpawn();
             if (!(Props.isPlating || Props.isHardpoint || Props.isHull)) //hull temp to remove terrain under it
                 return;
             foreach (IntVec3 pos in cellsUnder)
@@ -289,6 +316,7 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
+
             if (!Props.roof)
                 return;
             if ((Find.PlaySettings.showRoofOverlay || parent.Position.Fogged(parent.Map)) && parent.Position.Roofed(parent.Map))
@@ -325,6 +353,144 @@ namespace RimWorld
                 else
                     map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
             }
+        }
+        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        {
+            foreach (Gizmo giz in base.CompGetGizmosExtra())
+                yield return giz;
+            if (Props.canLight && ((parent.Faction==Faction.OfPlayer && ResearchProjectDefOf.ColoredLights.IsFinished) || DebugSettings.godMode))
+            {
+                Command_Action toggleLight = new Command_Action
+                {
+                    action = delegate
+                    {
+                        if(hasLight)
+                        {
+                            hasLight = false;
+                            if (myLight != null)
+                                myLight.DeSpawn();
+                            else
+                                Log.Error("Tried to disable ship lighting at position " + parent.Position + " when no light exists. Please report this bug to the SoS2 team.");
+                        }
+                        else
+                        {
+                            SpawnLight(lightColor, false);
+                        }
+                    },
+                    icon = ShipWallLightIcon,
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipWallLight"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipWallLightDesc"),
+                    disabled = !AnyAdjacentRoom(),
+                    disabledReason = TranslatorFormattedStringExtensions.Translate("ShipWallLightAdjacency")
+                };
+
+                yield return toggleLight;
+
+                if (hasLight)
+                {
+                    Command_Toggle toggleSun = new Command_Toggle
+                    {
+                        toggleAction = delegate
+                        {
+                            sunLight = !sunLight;
+                            if (myLight != null)
+                                myLight.DeSpawn();
+                            else
+                                Log.Error("Tried to enable sunlight mode at position " + parent.Position + " when no light exists. Please report this bug to the SoS2 team.");
+                            SpawnLight(lightColor, sunLight);
+                        },
+                        isActive = delegate { return sunLight; },
+                        icon = ShipSunLightIcon,
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipWallLightSun"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipWallLightSunDesc")
+                    };
+
+                    yield return toggleSun;
+
+                    Command_Toggle toggleDisco = new Command_Toggle
+                    {
+                        toggleAction = delegate
+                        {
+                            discoMode = !discoMode;
+                        },
+                        isActive = delegate { return discoMode; },
+                        icon = DiscoModeIcon,
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipWallLightDisco"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipWallLightDiscoDesc")
+                    };
+
+                    yield return toggleDisco;
+                }
+
+                if(hasLight)
+                {
+                    foreach (Gizmo giz in myLight.GetGizmos())
+                        yield return giz;
+                }
+            }
+        }
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            if (Props.canLight)
+            {
+                Scribe_Values.Look<bool>(ref hasLight, "hasLight", false);
+                Scribe_Values.Look<bool>(ref sunLight, "sunLight", false);
+                Scribe_Values.Look<bool>(ref discoMode, "discoMode", false);
+                if (hasLight)
+                {
+                    Scribe_Values.Look<ColorInt>(ref lightColor, "lightColor", new ColorInt(Color.white));
+                    Scribe_References.Look<Building>(ref myLight, "myLight");
+                }
+            }
+        }
+        bool AnyAdjacentRoom()
+        {
+            IntVec3 pos = parent.Position + new IntVec3(0, 0, -1);
+            if (pos.GetEdifice(map) == null || pos.GetEdifice(map).def.passability!=Traversability.Impassable)
+                return true;
+            pos += new IntVec3(1, 0, 1);
+            if (pos.GetEdifice(map) == null || pos.GetEdifice(map).def.passability != Traversability.Impassable)
+                return true;
+            pos += new IntVec3(-2, 0, 0);
+            if (pos.GetEdifice(map) == null || pos.GetEdifice(map).def.passability != Traversability.Impassable)
+                return true;
+            pos += new IntVec3(1, 0, 1);
+            if (pos.GetEdifice(map) == null || pos.GetEdifice(map).def.passability != Traversability.Impassable)
+                return true;
+            return false;
+        }
+        public void SpawnLight(ColorInt? color = null, bool sun = false)
+        {
+            if (!Props.canLight)
+            {
+                Log.Error("Attempted to spawn light on non-lightable ship part " + parent);
+                return;
+            }
+            hasLight = true;
+            sunLight = sun;
+            myLight = (Building)GenSpawn.Spawn(Props.light, parent.Position, parent.Map);
+            CompPowerTrader trader = myLight.TryGetComp<CompPowerTrader>();
+            if (trader != null)
+            {
+                trader.ConnectToTransmitter(parent.TryGetComp<CompPower>());
+                if (sunLight)
+                    trader.Props.basePowerConsumption = Props.sunLightPower;
+                else
+                    trader.Props.basePowerConsumption = Props.lightPower;
+                trader.PowerOn = true;
+            }
+            CompShipLight lightComp = myLight.TryGetComp<CompShipLight>();
+            if (lightComp != null)
+            {
+                if (color.HasValue)
+                    lightColor = color.Value;
+                else
+                    lightColor = ColorIntUtility.AsColorInt(Color.white);
+                lightComp.SetupLighting(this, sun);
+            }
+            else
+                Log.Error("Failed to initialize ship lighting at position " + parent.Position + " - please report this bug to the SoS2 team.");
         }
     }
 }

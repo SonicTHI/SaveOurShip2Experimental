@@ -13,6 +13,7 @@ namespace RimWorld
     {
         public int overdriveSetting = 0;
         public float instability = 0;
+        bool useMiniatureGraphics = false;
 
         private Texture2D cachedCommandTex1;
         private Texture2D cachedCommandTex2;
@@ -21,6 +22,10 @@ namespace RimWorld
         private static Graphic turbineGraphic = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Reactor_Turbine", ShaderDatabase.Cutout, new Vector2(3, 3), Color.white, Color.white);
         private static Graphic turbineGraphicOverdrive = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Reactor_Turbine_Overdrive", ShaderDatabase.Cutout, new Vector2(3, 3), Color.white, Color.white);
         private static Graphic turbineGraphicSuperOverdrive = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Reactor_Turbine_Super_Overdrive", ShaderDatabase.Cutout, new Vector2(3, 3), Color.white, Color.white);
+
+        private static Graphic turbineGraphicMini = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Reactor_Turbine_Mini", ShaderDatabase.Cutout, new Vector2(1.5f, 1.5f), Color.white, Color.white);
+        private static Graphic turbineGraphicMiniOverdrive = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Reactor_Turbine_Overdrive_Mini", ShaderDatabase.Cutout, new Vector2(1.5f, 1.5f), Color.white, Color.white);
+        private static Graphic turbineGraphicMiniSuperOverdrive = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Reactor_Turbine_Super_Overdrive_Mini", ShaderDatabase.Cutout, new Vector2(1.5f, 1.5f), Color.white, Color.white);
 
         Sustainer reactorSustainer;
 
@@ -70,14 +75,28 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
-            if ((refuelableComp != null && !refuelableComp.HasFuel) || (flickableComp != null && !flickableComp.SwitchIsOn))
-                turbineGraphic.Draw(parent.DrawPos + new Vector3(0, 0, 0.33f), parent.Rotation, parent);
-            else if (overdriveSetting < 2)
-                turbineGraphic.Draw(parent.DrawPos + new Vector3(0, 0, 0.33f), parent.Rotation, parent, Find.TickManager.TicksGame * 0.25f * (1 + overdriveSetting));
-            else if (overdriveSetting == 2)
-                turbineGraphicOverdrive.Draw(parent.DrawPos + new Vector3(0, 0, 0.33f), parent.Rotation, parent, Find.TickManager.TicksGame * 0.75f);
+            if (useMiniatureGraphics)
+            {
+                if ((refuelableComp != null && !refuelableComp.HasFuel) || (flickableComp != null && !flickableComp.SwitchIsOn))
+                    turbineGraphicMini.Draw(parent.DrawPos, parent.Rotation, parent);
+                else if (overdriveSetting < 2)
+                    turbineGraphicMini.Draw(parent.DrawPos, parent.Rotation, parent, Find.TickManager.TicksGame * 0.25f * (1 + overdriveSetting));
+                else if (overdriveSetting == 2)
+                    turbineGraphicMiniOverdrive.Draw(parent.DrawPos, parent.Rotation, parent, Find.TickManager.TicksGame * 0.75f);
+                else
+                    turbineGraphicMiniSuperOverdrive.Draw(parent.DrawPos, parent.Rotation, parent, Find.TickManager.TicksGame);
+            }
             else
-                turbineGraphicSuperOverdrive.Draw(parent.DrawPos + new Vector3(0, 0, 0.33f), parent.Rotation, parent, Find.TickManager.TicksGame);
+            {
+                if ((refuelableComp != null && !refuelableComp.HasFuel) || (flickableComp != null && !flickableComp.SwitchIsOn))
+                    turbineGraphic.Draw(parent.DrawPos + new Vector3(0, 0, 0.33f), parent.Rotation, parent);
+                else if (overdriveSetting < 2)
+                    turbineGraphic.Draw(parent.DrawPos + new Vector3(0, 0, 0.33f), parent.Rotation, parent, Find.TickManager.TicksGame * 0.25f * (1 + overdriveSetting));
+                else if (overdriveSetting == 2)
+                    turbineGraphicOverdrive.Draw(parent.DrawPos + new Vector3(0, 0, 0.33f), parent.Rotation, parent, Find.TickManager.TicksGame * 0.75f);
+                else
+                    turbineGraphicSuperOverdrive.Draw(parent.DrawPos + new Vector3(0, 0, 0.33f), parent.Rotation, parent, Find.TickManager.TicksGame);
+            }
         }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -212,6 +231,13 @@ namespace RimWorld
         public override string CompInspectStringExtra()
         {
             return base.CompInspectStringExtra() + "\nInstability: " + instability.ToString("F2");
+        }
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            if (parent.def.Size.x < 5) //Stupid to hardcode this but it's quicker than adding a whole new CompProperties
+                useMiniatureGraphics = true;
         }
     }
 }

@@ -308,18 +308,23 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ref string __result)
 		{
-			if (!Find.CurrentMap.IsSpace()) return;
+			Map map = Find.CurrentMap;
+			if (!map.IsSpace()) return;
 
-			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(Find.CurrentMap)))
+			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(map)))
 			{
+				if (__result.StartsWith("IndoorsUnroofed".Translate() + " (1)"))
+                {
+					__result = "Breach detected!".Colorize(Color.red) + __result.Remove(0, "IndoorsUnroofed".Translate().Length + 4);
+				}
 				__result += " (Vacuum)";
 			}
 			else
 			{
-				if (Find.CurrentMap.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any())
+				if (map.GetComponent<ShipHeatMapComp>().VecHasEVA(UI.MouseCell()))
 					__result += " (Breathable Atmosphere)";
 				else
-					__result += " (Non-Breathable Atmosphere)";
+					__result += " (Non-Breathable Atmosphere)".Colorize(Color.yellow);
 			}
 		}
 	}
@@ -331,28 +336,27 @@ namespace SaveOurShip2
 		public const float altitude = 1100f;
 		public static void Prefix()
 		{
-			Map map = Find.CurrentMap;
+			var worldComp = Find.World.GetComponent<PastWorldUWO2>();
 
 			// if we aren't in space, abort!
-			if ((ShipInteriorMod2.renderedThatAlready && !SaveOurShip2.ModSettings_SoS.renderPlanet) || !map.IsSpace())
+			if ((worldComp.renderedThatAlready && !ModSettings_SoS.renderPlanet) || !Find.CurrentMap.IsSpace())
 			{
 				return;
 			}
+			var camera = Find.WorldCamera;
 			//TODO replace this when interplanetary travel is ready
 			//Find.PlaySettings.showWorldFeatures = false;
-			RenderTexture oldTexture = Find.WorldCamera.targetTexture;
-			RenderTexture oldSkyboxTexture = RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture;
-
-			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.Planet;
-			Find.WorldCameraDriver.JumpTo(Find.CurrentMap.Tile);
-			Find.WorldCameraDriver.altitude = altitude;
-			Find.WorldCameraDriver.desiredAltitude = altitude;
-
-			float num = (float)UI.screenWidth / (float)UI.screenHeight;
-
-			Find.WorldCameraDriver.Update();
-			Find.World.renderer.CheckActivateWorldCamera();
-			Find.World.renderer.DrawWorldLayers();
+			RenderTexture oldTexture = camera.targetTexture;
+			RenderTexture oldSkyboxTexture = WorldCameraManager.WorldSkyboxCamera.targetTexture;
+			var worldRender = Find.World.renderer;
+			var cameraDriver = Find.WorldCameraDriver;
+			worldRender.wantedMode = WorldRenderMode.Planet;
+			cameraDriver.JumpTo(Find.CurrentMap.Tile);
+			cameraDriver.altitude = altitude;
+			cameraDriver.desiredAltitude = altitude;
+			cameraDriver.Update();
+			worldRender.CheckActivateWorldCamera();
+			worldRender.DrawWorldLayers();
 			WorldRendererUtility.UpdateWorldShadersParams();
 			//TODO replace this when interplanetary travel is ready
 			/*
@@ -362,26 +366,27 @@ namespace SaveOurShip2
                     layer.Render();
             }
             Find.PlaySettings.showWorldFeatures = false;*/
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = ResourceBank.target;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.aspect = num;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.Render();
+			WorldCameraManager.WorldSkyboxCamera.targetTexture = ResourceBank.target;
+			float num = (float)UI.screenWidth / (float)UI.screenHeight;
+			WorldCameraManager.WorldSkyboxCamera.aspect = num;
+			WorldCameraManager.WorldSkyboxCamera.Render();
 
-			Find.WorldCamera.targetTexture = ResourceBank.target;
-			Find.WorldCamera.aspect = num;
-			Find.WorldCamera.Render();
+			camera.targetTexture = ResourceBank.target;
+			camera.aspect = num;
+			camera.Render();
 
 			RenderTexture.active = ResourceBank.target;
 			ResourceBank.virtualPhoto.ReadPixels(new Rect(0, 0, 2048, 2048), 0, 0);
 			ResourceBank.virtualPhoto.Apply();
 			RenderTexture.active = null;
 
-			Find.WorldCamera.targetTexture = oldTexture;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = oldSkyboxTexture;
-			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.None;
-			Find.World.renderer.CheckActivateWorldCamera();
+			camera.targetTexture = oldTexture;
+			WorldCameraManager.WorldSkyboxCamera.targetTexture = oldSkyboxTexture;
+			worldRender.wantedMode = WorldRenderMode.None;
+			worldRender.CheckActivateWorldCamera();
 
-			if (!Find.World.renderer.layers.FirstOrFallback().ShouldRegenerate)
-				ShipInteriorMod2.renderedThatAlready = true;
+			if (!worldRender.layers.FirstOrFallback().ShouldRegenerate)
+				worldComp.renderedThatAlready = true;
 		}
 	}
 
@@ -1147,7 +1152,68 @@ namespace SaveOurShip2
 			__result = containedBuildings.ToList();
 		}
 	}
+	
+	[HarmonyPatch(typeof(Building), "SpawnSetup")]
+	public static class DoSpawn
+	{
+		//adds normal building weight/count to ship
+		[HarmonyPostfix]
+		public static void OnSpawn(Building __instance, Map map, bool respawningAfterLoad)
+		{
+			if (respawningAfterLoad)
+				return;
+			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			if (mapComp.CacheOff || mapComp.ShipsOnMapNew.NullOrEmpty() || __instance.TryGetComp<CompSoShipPart>() != null)
+				return;
+			foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance)) //if any part spawned on ship
+            {
+				if (mapComp.ShipCells.ContainsKey(vec) && mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[vec].Item1))
+				{
+					var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
+					if (!ship.Buildings.Contains(__instance)) //need to check every cell as some smartass could place it on 2 ships
+					{
+						ship.Buildings.Add(__instance);
+						ship.BuildingCount++;
+						ship.Mass += (__instance.def.Size.x * __instance.def.Size.z) * 3;
+					}
+				}
+            }
+		}
+	}
 
+	[HarmonyPatch(typeof(Building), "DeSpawn")]
+	public static class DoPreDeSpawn
+	{
+		//can we have predespawn at home? no, we have despawn at home, despawn at home: postdespawn
+		//lets me actually get the building being removed
+		[HarmonyPrefix]
+		public static bool PreDeSpawn(Building __instance)
+		{
+			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
+			if (mapComp.CacheOff)
+				return true;
+			var shipComp = __instance.TryGetComp<CompSoShipPart>();
+			if (shipComp != null) //predespawn for ship parts
+				shipComp.PreDeSpawn();
+			else if (!mapComp.ShipsOnMapNew.NullOrEmpty()) //rems normal building weight/count to ship
+			{
+				foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
+				{
+					if (mapComp.ShipCells.ContainsKey(vec) && mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[vec].Item1))
+					{
+						var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
+						if (ship.Buildings.Contains(__instance))
+						{
+							ship.Buildings.Remove(__instance);
+							ship.BuildingCount--;
+							ship.Mass -= (__instance.def.Size.x * __instance.def.Size.z) * 3;
+						}
+					}
+				}
+			}
+			return true;
+		}
+	}
 	[HarmonyPatch(typeof(ShipUtility), "LaunchFailReasons")]
 	public static class FindLaunchFailReasons
 	{
@@ -1299,13 +1365,16 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 				return;
-			foreach (Thing t in ___map.thingGrid.ThingsAt(c))
+			if (___map.GetComponent<ShipHeatMapComp>()?.ShipCells?.ContainsKey(c) ?? false)
 			{
-				var roofComp = t.TryGetComp<CompRoofMe>();
-				if (roofComp != null)
+				foreach (Thing t in ___map.thingGrid.ThingsAt(c))
 				{
-					roofComp.SetShipTerrain(c);
-					break;
+					var shipPart = t.TryGetComp<CompSoShipPart>();
+					if (shipPart != null && (shipPart.Props.isPlating || shipPart.Props.isHardpoint || shipPart.Props.isHull))
+					{
+						shipPart.SetShipTerrain(c);
+						break;
+					}
 				}
 			}
 		}
@@ -1318,9 +1387,10 @@ namespace SaveOurShip2
 		{
 			if (def == null || def.isThickRoof)
 				return true;
-			foreach (Thing t in c.GetThingList(___map))
+			foreach (Thing t in c.GetThingList(___map).Where(t => t is Building))
 			{
-				if (t.TryGetComp<CompRoofMe>()?.Props.roof ?? false)
+				var shipPart = t.TryGetComp<CompSoShipPart>();
+				if (shipPart != null && shipPart.Props.roof)
 				{
 					var cellIndex = ___map.cellIndices.CellToIndex(c);
 					if (___roofGrid[cellIndex] == def)
@@ -1355,14 +1425,20 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(IEnumerable<IntVec3> cells, Map map)
 		{
+			if (!map.IsSpace())
+				return;
+			var mapComp = map.GetComponent<ShipHeatMapComp>();
 			foreach (IntVec3 cell in cells)
 			{
-				if (map.IsSpace() && !cell.Roofed(map))
+				if (!cell.Roofed(map))
 				{
-					var mapComp = map.GetComponent<ShipHeatMapComp>();
-					if (mapComp.HullFoamDistributors.Count > 0)
+					int shipIndex = mapComp.ShipIndexOnVec(cell);
+					if (shipIndex == -1)
+						continue;
+					var ship = mapComp.ShipsOnMapNew[shipIndex];
+					if (ship.FoamDistributors.Any())
 					{
-						foreach (CompHullFoamDistributor dist in mapComp.HullFoamDistributors)
+						foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
 						{
 							if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
 							{
@@ -1391,14 +1467,17 @@ namespace SaveOurShip2
 			if (!__instance.def.CanHaveFaction || __instance is Frame)
 				return true;
 			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-			if (!mapComp.InCombat)
-				return true;
-			mapComp.DirtyShip(__instance);
-			if (__instance.def.blueprintDef != null)
+			if (mapComp.InCombat)
+				mapComp.DirtyShip(__instance);
+
+			int shipIndex = mapComp.ShipIndexOnVec(__instance.Position);
+			if (shipIndex != -1) //is this on a ship
 			{
-				if (mapComp.HullFoamDistributors.Count > 0 && (__instance.TryGetComp<CompSoShipPart>()?.Props.isHull ?? false))
+				var shipPart = __instance.TryGetComp<CompSoShipPart>();
+				var ship = mapComp.ShipsOnMapNew[shipIndex];
+				if (ship.FoamDistributors.Any() && (shipPart.Props.isHull || shipPart.Props.isPlating))
 				{
-					foreach (CompHullFoamDistributor dist in mapComp.HullFoamDistributors)
+					foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
 					{
 						if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
 						{
@@ -1408,7 +1487,7 @@ namespace SaveOurShip2
 						}
 					}
 				}
-				if (__instance.Faction == Faction.OfPlayer)
+				if (__instance.Faction == Faction.OfPlayer && __instance.def.blueprintDef != null && __instance.def.researchPrerequisites.All(r => r.IsFinished)) //place blueprints
 					GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
 					__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
 			}
@@ -1455,9 +1534,15 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(ref DamageInfo dinfo, Building_Turret __instance)
 		{
-			ThingWithComps t = __instance.Position.GetFirstThingWithComp<CompRoofMe>(__instance.Map);
-			if (t != null && !t.GetComp<CompRoofMe>().Props.roof && !t.GetComp<CompRoofMe>().Props.wreckage)
-				dinfo.SetAmount(dinfo.Amount / 2);
+			foreach (Thing t in __instance.Position.GetThingList(__instance.Map))
+			{
+				var shipPart = t.TryGetComp<CompSoShipPart>();
+				if (shipPart != null && shipPart.Props.isHardpoint)
+				{
+					dinfo.SetAmount(dinfo.Amount / 2);
+					break;
+				}
+			}
 			return true;
 		}
 	}
@@ -3964,7 +4049,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(IncidentParms parms)
 		{
-			if (ShipInteriorMod2.ArchoStuffEnabled && !WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechSpore"))
+			if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechSpore"))
 			{
 				Map spaceMap = null;
 				foreach (Map map in Find.Maps)
@@ -4012,9 +4097,9 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Window __instance)
 		{
-			if (__instance is Screen_Credits && ShipInteriorMod2.SoSWin)
+			if (__instance is Screen_Credits && Find.World.GetComponent<PastWorldUWO2>().SoSWin)
 			{
-				ShipInteriorMod2.SoSWin = false;
+				Find.World.GetComponent<PastWorldUWO2>().SoSWin = false;
 				GenScene.GoToMainMenu();
 			}
 		}

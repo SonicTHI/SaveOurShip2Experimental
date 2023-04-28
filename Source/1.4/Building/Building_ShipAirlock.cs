@@ -171,8 +171,8 @@ namespace RimWorld
                 IntVec3 facing = this.Rotation.FacingCell;
                 IntVec3 rightSide = this.Rotation.RighthandCell;
 
-                Building b1 = (this.Position - rightSide).GetFirstBuilding(this.Map);
-                Building b2 = (this.Position + rightSide).GetFirstBuilding(this.Map);
+                Thing b1 = (Position - rightSide).GetThingList(Map).FirstOrFallback(b => b.def == ResourceBank.ThingDefOf.ShipAirlockBeam);
+                Thing b2 = (Position + rightSide).GetThingList(Map).FirstOrFallback(b => b.def == ResourceBank.ThingDefOf.ShipAirlockBeam);
                 if (HasDocking(b1, b2))
                 {
                     Command_Toggle toggleDock = new Command_Toggle
@@ -205,7 +205,7 @@ namespace RimWorld
             }
         }
         // Checks if airlock is surrounded by docking beams.
-        public bool HasDocking(Building b1, Building b2)
+        public bool HasDocking(Thing b1, Thing b2)
         {
             //check LR for extender, same rot
             if (b1 != null && b2 != null && b1.def == ResourceBank.ThingDefOf.ShipAirlockBeam && b1.def == b2.def)

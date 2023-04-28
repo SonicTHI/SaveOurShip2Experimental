@@ -15,21 +15,38 @@ namespace RimWorld
     {
         //CompSoShipPart types that are cached:
         //xml tagged building shipPart: anything attachable - walls, hullfoam, plating, engines, corners, hardpoints, spinal barrels
-        //SoShipPart isHull (props isHull): walls, corners, hullfoam fills these if destroyed, wrecks form from these
-        //SoShipPart isPlating (props isPlating): can not be placed under buildings, wrecks form from these
-        //SoShipPart hermetic: hold air in vacuum - walls, corners, engines, hullfoam, extenders, spinal barrels
-        //SoShipPart: other parts that are cached - not attached, no corePath
+        //SoShipPart props isHull: walls, walllikes, hullfoam fills, wrecks form from these, spawns ship terrain beneath
+        //SoShipPart props isPlating: plating, airlocks - can not be placed under buildings, hullfoam fills, wrecks form from these, spawns ship terrain beneath, count as 1 for weight calcs
+        //SoShipPart props isHardpoint: spawns ship terrain beneath, reduce damage for turrets
+        //SoShipPart hermetic: hold air in vacuum - walls, airlocks, corners, engines, hullfoam, extenders, spinal barrels
+        //SoShipPart: other parts that are cached - not attached, no corePath (bridges)
+        //other tags:
+        //SoShipPart props roof: forces and spawns ship roof above (should only be isPlating but currently also walls, walllikes)
+        //SoShipPart props mechanoid, archotech, wreckage, foam: override for plating type
 
+        //roof textures
+        public static GraphicData roofedData = new GraphicData();
+        public static GraphicData roofedDataMech = new GraphicData();
+        public static Graphic roofedGraphicTile;
+        public static Graphic roofedGraphicTileMech;
+        static CompSoShipPart()
+        {
+            roofedData.texPath = "Things/Building/Ship/Ship_Roof";
+            roofedData.graphicClass = typeof(Graphic_Single);
+            roofedData.shaderType = ShaderTypeDefOf.MetaOverlay;
+            roofedGraphicTile = new Graphic_256(roofedData.Graphic);
+            roofedDataMech.texPath = "Things/Building/Ship/Ship_RoofMech";
+            roofedDataMech.graphicClass = typeof(Graphic_Single);
+            roofedDataMech.shaderType = ShaderTypeDefOf.MetaOverlay;
+            roofedGraphicTileMech = new Graphic_256(roofedDataMech.Graphic);
+        }
 
-        //old - commented code  here and in SoShipCache refers to this, change to above
-        //xml tagged building shipPart only: never merge, only hold air - extenders
-        //shipPart + xml tagged building shipPart: anything attachable - walls, plating, engines, corners, hardpoints, spinal barrels
-        //shipPart hull (props isHull): walls, corners, hullfoam fills these if destroyed, wrecks form from these
-        //shipPart plating (props isPlating): can not be placed under buildings, wrecks form from these
-        //shipPart: other parts that are cached - not attached, no corePath
-
-        //public int shipIndex = -1; //main bridge thingid
-        //public int corePath = -1; //how far away the main bridge is
+        bool isTile;
+        bool isMechTile;
+        bool isArchoTile;
+        bool isFoamTile; //no gfx for foam roof
+        List<IntVec3> cellsUnder;
+        Map map;
         public ShipHeatMapComp mapComp;
         public CompProperties_SoShipPart Props
         {
@@ -38,381 +55,276 @@ namespace RimWorld
                 return (CompProperties_SoShipPart)props;
             }
         }
-        /*
         public override string CompInspectStringExtra()
         {
             StringBuilder stringBuilder = new StringBuilder();
             if (Prefs.DevMode)
             {
-                if (this.parent.def.building.shipPart)
-                    stringBuilder.Append("shipIndex: " + shipIndex + " / corePath: " + corePath);
+                if (!mapComp.ShipCells.ContainsKey(parent.Position))
+                {
+                    stringBuilder.Append("cache is null for this pos!");
+                }
+                var shipCells = mapComp.ShipCells[parent.Position];
+                int index = -1;
+                int path = -1;
+                if (shipCells != null)
+                {
+                    index = shipCells.Item1;
+                    path = shipCells.Item2;
+                }
+                if (parent.def.building.shipPart)
+                    stringBuilder.Append("shipIndex: " + index + " / corePath: " + path);
                 else
-                    stringBuilder.Append("shipIndex: " + shipIndex);
+                    stringBuilder.Append("shipIndex: " + index);
             }
             return stringBuilder.ToString();
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
-            if (mapComp.CacheOff)
+            isTile = parent.def == ResourceBank.ThingDefOf.ShipHullTile;
+            isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
+            isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
+            isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
+            map = parent.Map;
+            mapComp = map.GetComponent<ShipHeatMapComp>();
+            cellsUnder = new List<IntVec3>();
+            //plating - check adj, merge
+            //hull - check on + adj, merge
+            //other - check on + adj, merge
+            HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
+            foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent))
+            {
+                cellsUnder.Add(vec);
+            }
+            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint || Props.isHull)) //set terrain
+            {
+                foreach (IntVec3 v in cellsUnder)
+                {
+                    SetShipTerrain(v);
+                }
+            }
+            if (ShipInteriorMod2.AirlockBugFlag) //MoveShip - cache is off
             {
                 return;
             }
-            //shipPart or part placed on plating
-            //shipPart: if any plating under has valid shipIndex, set to this, set to all other plating under
-            //part: if any plating under has valid shipIndex, set to this, return
-            int index = -1;
-            if (!this.Props.isPlating)
+            foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
             {
-                List<CompSoShipPart> shipPartsOnPlating = new List<CompSoShipPart>();
-                foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(this.parent))
+                if (!mapComp.ShipCells.ContainsKey(vec))
                 {
-                    foreach (Thing t in vec.GetThingList(this.parent.Map))
-                    {
-                        if (t is Building b)
-                        {
-                            var shipPart = b.TryGetComp<CompSoShipPart>();
-                            if (shipPart != null && shipPart.Props.isPlating)
-                            {
-                                shipPartsOnPlating.Add(shipPart); //add all found shipPart to list
-                                if (index < 0 && shipPart.shipIndex > -1) //set shipIndex to first valid
-                                {
-                                    index = shipPart.shipIndex;
-                                    corePath = shipPart.corePath;
-                                    if (!b.def.building.shipPart) //part - set and return
-                                    {
-                                        mapComp.ShipsOnMap[index].AddToCache(this.parent as Building);
-                                        return;
-                                    }
-                                }
-                                else if (index == shipPart.shipIndex && corePath > shipPart.corePath)
-                                {
-                                    corePath = shipPart.corePath;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (index > -1) //set same shipIndex under shipPart
-                {
-                    foreach (CompSoShipPart p in shipPartsOnPlating)
-                    {
-                        p.shipIndex = index;
-                        p.corePath = corePath;
-                    }
+                    mapComp.ShipCells.Add(vec, new Tuple<int, int>(-1, -1));
                 }
             }
-            List<int> shipsToMerge = new List<int>();
+            if (Props.roof)
+            {
+                foreach (IntVec3 pos in cellsUnder)
+                {
+                    var oldRoof = map.roofGrid.RoofAt(pos);
+                    if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
+                        map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
+                }
+            }
+            if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
+            {
+                return;
+            }
             //plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this
             //plating or shipPart with different or no shipIndex: merge connected to this ship
-            if (this.parent.def.building.shipPart)
+            foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(parent))
             {
-                foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(this.parent))
-                {
-                    foreach (Thing t in vec.GetThingList(this.parent.Map))
-                    {
-                        if (t is Building b && b.def.building.shipPart)
-                        {
-                            var shipPart = b.TryGetComp<CompSoShipPart>();
-                            if (shipPart != null && shipPart.shipIndex > -1) //found ship has shipIndex
-                            {
-                                if (index < 0) //assign first shipIndex
-                                {
-                                    index = shipPart.shipIndex;
-                                    if (corePath < 0)
-                                        corePath = shipPart.corePath + 1;
-                                }
-                                else //this and found have shipIndex
-                                {
-                                    if (index != shipPart.shipIndex) //another ship found
-                                    {
-                                        //if larger, add prev to list + set this to new, else add new to merge
-                                        if (mapComp.ShipsOnMap[shipPart.shipIndex].Mass > mapComp.ShipsOnMap[index].Mass)
-                                        {
-                                            shipsToMerge.Add(index);
-                                            index = shipPart.shipIndex;
-                                            if (corePath < 0)
-                                                corePath = shipPart.corePath + 1;
-                                        }
-                                        else
-                                            shipsToMerge.Add(shipPart.shipIndex);
-                                    }
-                                    else if (corePath > -1 && corePath + 1 > shipPart.corePath) //same ship, get lower corePath
-                                    {
-                                        corePath = shipPart.corePath + 1;
-                                    }
-                                }
-                                break; //stop after first ship part on cell
-                            }
-                        }
-                    }
-                }
+                if (!mapComp.ShipCells.ContainsKey(vec))
+                    continue;
+                cellsToMerge.Add(vec);
             }
-            //if we have an index, merge all
-            if (index > -1)
+            if (cellsToMerge.Any()) //if any other parts under or adj, merge in order to: largest ship, any ship, wreck
             {
-                shipIndex = index;
-                mapComp.ShipsOnMap[shipIndex].AddToCache(this.parent as Building);
-                if (shipsToMerge.Any())
+                int mergeToIndex;
+                cellsToMerge.AddRange(cellsUnder);
+                IntVec3 mergeTo = IntVec3.Zero;
+                int mass = 0;
+                foreach (IntVec3 vec in cellsToMerge) //find largest ship & attach to it
                 {
-                    foreach (int i in shipsToMerge) //remove all ships being merged
+                    int shipIndex = mapComp.ShipIndexOnVec(vec);
+                    if (shipIndex != -1 && mapComp.ShipsOnMapNew[shipIndex].Mass > mass)
                     {
-                        mapComp.ShipsOnMap.Remove(i);
+                        mergeTo = vec;
+                        mass = mapComp.ShipsOnMapNew[shipIndex].Mass;
                     }
-                    AttachAllTo(this.parent as Building);
                 }
+                if (mergeTo != IntVec3.Zero)
+                {
+                    mergeToIndex = mapComp.ShipCells[mergeTo].Item1;
+                }
+                else //no ships, attach to existing wreck
+                {
+                    mergeTo = cellsToMerge.FirstOrDefault();
+                    mergeToIndex = mergeTo.GetThingList(parent.Map).FirstOrDefault(b => b.TryGetComp<CompSoShipPart>() != null).thingIDNumber;
+                }
+                mapComp.AttachAll(mergeTo, mergeToIndex);
+            }
+            else //else make new entry
+            {
+                foreach (IntVec3 vec in cellsUnder)
+                    mapComp.ShipCells[vec] = new Tuple<int, int>(parent.thingIDNumber, -1);
             }
         }
-        public static void AttachAllTo(Building start) //merge and build corePath
+        public void PreDeSpawn() //called in building.destroy, before comps get removed
         {
-            var map = start.Map;
-            var mapComp = map.GetComponent<ShipHeatMapComp>();
-            var startShipPart = start.TryGetComp<CompSoShipPart>();
-            var ship = mapComp.ShipsOnMap[startShipPart.shipIndex];
-            var cellsTodo = new HashSet<IntVec3>();
-            var cellsDone = new HashSet<IntVec3>();
-            cellsTodo.Add(start.Position);
-
-            //do
-            //find parts cardinal to all prev.pos, exclude prev.pos, if found part, if corePath -1 set corePath to i, shipIndex to core.shipIndex, set corePath
-            //till no more parts
-            int i = startShipPart.corePath;
-            while (cellsTodo.Count > 0)
-            {
-                List<IntVec3> current = cellsTodo.ToList();
-                foreach (IntVec3 vec in current) //do all of the current corePath
-                {
-                    List<Building> otherBuildings = new List<Building>();
-                    bool partFound = false;
-                    foreach (Thing t in vec.GetThingList(map))
-                    {
-                        if (t is Building b)
-                        {
-                            var shipPart = b.TryGetComp<CompSoShipPart>();
-                            if (shipPart != null)
-                            {
-                                shipPart.shipIndex = startShipPart.shipIndex; //shipIndex to core.shipIndex
-                                ship.AddToCache(b);
-                                if (b.def.building.shipPart) //if corePath -1 set corePath to i
-                                {
-                                    shipPart.corePath = i;
-                                }
-                                partFound = true;
-                            }
-                            else
-                                otherBuildings.Add(b);
-                        }
-                    }
-                    //add other buildings to weight
-                    if (partFound)
-                    {
-                        foreach (Building b in otherBuildings)
-                        {
-                            ship.BuildingCount++;
-                            ship.Mass += b.def.Size.x * b.def.Size.z * 3;
-                        }
-                    }
-
-                    cellsTodo.Remove(vec);
-                    cellsDone.Add(vec);
-                }
-                foreach (IntVec3 vec in current) //find parts cardinal to all prev.pos, exclude prev.pos
-                {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && v.GetThingList(map).Any(t => t is Building b && b.def.building.shipPart && b.GetComp<CompSoShipPart>().shipIndex != startShipPart.shipIndex)));
-                }
-                i++;
-                //Log.Message("parts at i: "+ current.Count + "/" + i);
-            }
-        }
-        public void PreDeSpawn(Map map, bool detach) //called in building.destroy, before comps get removed
-        {
-            if (shipIndex == -1)
+            if (ShipInteriorMod2.AirlockBugFlag) //moveship cleans entire area, caches //td
             {
                 return;
             }
-            if (this.parent.def.building.shipPart && detach)
+            var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[parent.Position].Item1];
+            HashSet<Building> buildings = new HashSet<Building>();
+            foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
             {
-                HashSet<Building> toDeindex = new HashSet<Building>();
-                List<IntVec3> toCheck = FindAreaToDetach(this.parent as Building);
-                if (toCheck.Any()) //path all back to bridge, if not possible, detach
+                bool partExists = false;
+                foreach (Thing t in vec.GetThingList(parent.Map))
                 {
-                    Log.Message("Detached cells: " + toCheck.Count);
-                    Building_ShipBridge foundBridge = null;
-                    if (mapComp.InCombat) //ic make wreck
+                    if (t is Building b && b != parent)
                     {
-                        mapComp.ShipsOnMap[shipIndex].RemoveFromCache(this.parent as Building);
-                        Detach(toCheck, map, shipIndex);
+                        if (b.TryGetComp<CompSoShipPart>() != null)
+                        {
+                            partExists = true;
+                        }
+                        else
+                        {
+                            buildings.Add(b);
+                        }
+                    }
+                }
+                if (!partExists) //no shippart remains, remove from area, remove non ship buildings if fully off ship
+                {
+                    ship.Area.Remove(vec);
+                    ship.AreaDestroyed.Add(vec);
+                    mapComp.ShipCells.Remove(vec);
+                    if (ship != null)
+                    {
+                        foreach (Building b in buildings) //remove other buildings that are no longer supported by ship parts
+                        {
+                            bool allOffShip = false;
+                            foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
+                            {
+                                if (!mapComp.ShipCells.ContainsKey(vec))
+                                {
+                                    allOffShip = true;
+                                    break;
+                                }
+                            }
+                            if (allOffShip)
+                            {
+                                ship.BuildingCount--;
+                                ship.Mass -= b.def.Size.x * b.def.Size.z * 3;
+                            }
+                        }
+                    }
+                }
+            }
+            if (ship != null) //remove from cache
+            {
+                //if last bridge remove ship or end combat
+                if (parent is Building_ShipBridge && ship.Bridges.Any(b => b != parent && !b.Destroyed))
+                {
+                    if (!mapComp.InCombat)
+                    {
+                        foreach (IntVec3 vec in ship.Area) //remove path
+                            mapComp.ShipCells[vec] = new Tuple<int, int>(((Building_ShipBridge)parent).Index, -1);
+
+                        mapComp.ShipsOnMapNew.Remove(parent.thingIDNumber);
+                    }
+                    else //if last ship end combat else move to grave
+                    {
+                        /*if (mapComp.ShipsOnMapNew.Count > 1)
+                            mapComp.MoveShipToGraveyard(((Building_ShipBridge)parent).Index);
+                        else
+                            mapComp.EndBattle(parent.Map, false);*/
+                    }
+                    return;
+                }
+                ship.RemoveFromCache(parent as Building);
+
+                if (!mapComp.InCombat) //perform check immediately
+                    ship.CheckForDetach();
+            }
+        }
+        public override void PostDeSpawn(Map map)
+        {
+            base.PostDeSpawn(map);
+            if (!(Props.isPlating || Props.isHardpoint || Props.isHull)) //hull temp to remove terrain under it
+                return;
+            foreach (IntVec3 pos in cellsUnder)
+            {
+                bool stillHasTile = false;
+                foreach (Thing t in map.thingGrid.ThingsAt(pos))
+                {
+                    var shipComp = t.TryGetComp<CompSoShipPart>();
+                    if (shipComp != null && (shipComp.Props.isPlating || shipComp.Props.isHardpoint))
+                    {
+                        stillHasTile = true;
+                        break;
+                    }
+                }
+                if (!stillHasTile)
+                {
+                    TerrainDef manualTerrain = map.terrainGrid.TerrainAt(pos); //RimWorld freaks out about regions if we don't do the leavings manually
+                    map.terrainGrid.RemoveTopLayer(pos, false);
+                    List<ThingDefCountClass> list = manualTerrain.CostListAdjusted(null);
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        ThingDefCountClass thingDefCountClass = list[i];
+                        int num = GenMath.RoundRandom((float)thingDefCountClass.count * manualTerrain.resourcesFractionWhenDeconstructed);
+                        if (num > 0)
+                        {
+                            Thing thing = ThingMaker.MakeThing(thingDefCountClass.thingDef);
+                            thing.stackCount = num;
+                            //Log.Message(string.Format("Spawning wrecks {0} at {1}", thing.def.defName, pos));
+                            GenPlace.TryPlaceThing(thing, pos, map, ThingPlaceMode.Near);
+                        }
+                    }
+                    if (Props.roof)
+                        map.roofGrid.SetRoof(pos, null);
+                }
+            }
+        }
+        public override void PostDraw()
+        {
+            base.PostDraw();
+            if (!Props.roof)
+                return;
+            if ((Find.PlaySettings.showRoofOverlay || parent.Position.Fogged(parent.Map)) && parent.Position.Roofed(parent.Map))
+            {
+                foreach (Thing t in parent.Position.GetThingList(parent.Map).Where(t => t is Building))
+                {
+                    if (t.TryGetComp<CompShipHeat>() != null && t.def.altitudeLayer == AltitudeLayer.WorldClipper)
+                    {
                         return;
                     }
-                    foreach (IntVec3 v in toCheck) //ooc deindex or make new ship if bridge found
-                    {
-                        foreach (Thing t in v.GetThingList(map))
-                        {
-                            if (t is Building u)
-                            {
-                                var shipPart = u.TryGetComp<CompSoShipPart>();
-                                if (shipPart != null)
-                                {
-                                    if (u is Building_ShipBridge bridge)
-                                    {
-                                        foundBridge = bridge;
-                                    }
-                                    toDeindex.Add(u);
-                                }
-                                //remove other buildings from weight
-                                mapComp.ShipsOnMap[shipIndex].BuildingCount--;
-                                mapComp.ShipsOnMap[shipIndex].Mass -= u.def.Size.x * u.def.Size.z * 3;
-                            }
-                        }
-                    }
-                    if (foundBridge != null) //make new ship
-                    {
-                        Log.Message("Ship separation, added new ship: " + foundBridge.thingIDNumber);
-                        foundBridge.shipComp.shipIndex = -1;
-                        foundBridge.CacheShip(this.parent as Building);
-                    }
-                    else //release as wreck
-                    {
-                        foreach (Building i in toDeindex)
-                        {
-                            mapComp.ShipsOnMap[shipIndex].RemoveFromCache(i);
-                        }
-                    }
+                }
+                if (isTile)
+                {
+                    Graphics.DrawMesh(material: roofedGraphicTile.MatSingleFor(parent), mesh: roofedGraphicTile.MeshAt(parent.Rotation), position: new Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), rotation: Quaternion.identity, layer: 0);
+                }
+                else if (isMechTile || isArchoTile)
+                {
+                    Graphics.DrawMesh(material: roofedGraphicTileMech.MatSingleFor(parent), mesh: roofedGraphicTileMech.MeshAt(parent.Rotation), position: new Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), rotation: Quaternion.identity, layer: 0);
                 }
             }
-            mapComp.ShipsOnMap[shipIndex].RemoveFromCache(this.parent as Building);
         }
-        public List<IntVec3> FindAreaToDetach(Building root)
+        public void SetShipTerrain(IntVec3 v)
         {
-            var map = root.Map;
-            var rootShipPart = root.TryGetComp<CompSoShipPart>();
-            var cellsToDetach = new HashSet<IntVec3>();
-            var cellsTodo = new HashSet<IntVec3>();
-            var cellsDone = GenAdj.CellsOccupiedBy(root).ToList();
-
-            //add only adjacent cells that have a shipPart part and a higher corePath
-            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root).Where(v => v.GetThingList(map).Any(t => t is Building b && !b.Destroyed && b.def.building.shipPart && b != root && b.TryGetComp<CompSoShipPart>() != null && b.GetComp<CompSoShipPart>().corePath > corePath)));
-            //check cells till you find lower than root core, if not return all found cells
-            while (cellsTodo.Count > 0)
+            if (!map.terrainGrid.TerrainAt(v).layerable)
             {
-                //Log.Message("todo cell count: " + cellsTodo.Count);
-                var current = cellsTodo.First();
-                //Log.Message("cell: " + current.x +","+ current.z);
-                cellsTodo.Remove(current);
-                cellsDone.Add(current);
-                var containedThings = current.GetThingList(map);
-
-                if (!containedThings.Any(t => t is Building b && !b.Destroyed && b.def.building.shipPart))
-                {
-                    //if no ship shipPart part on current tile skip
-                    continue;
-                }
-
-                foreach (Thing t in containedThings)
-                {
-                    if (t is Building b)
-                    {
-                        var shipPart = b.TryGetComp<CompSoShipPart>();
-                        if (b.def.building.shipPart && shipPart != null)
-                        {
-                            if (shipPart.corePath < rootShipPart.corePath) //if part with lower corePath found exit
-                            {
-                                //Log.Message("lower corePath found: " + shipPart.corePath);
-                                return new List<IntVec3>();
-                            }
-
-                            if (cellsToDetach.Add(b.Position)) //add current tile
-                            {
-                                //extend search range
-                                cellsTodo.AddRange(GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b)).Where(cell => !cellsDone.Contains(cell)));
-                            }
-                        }
-                    }
-                }
+                if (Props.archotech)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech);
+                else if (Props.mechanoid)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipMech);
+                else if (Props.foam)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam);
+                else if (Props.wreckage)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.ShipWreckageTerrain);
+                else
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
             }
-            return cellsToDetach.ToList();
         }
-        public static void Detach(List<IntVec3> detachArea, Map map, int shipIndex) //td clean this up
-        {
-            var mapComp = map.GetComponent<ShipHeatMapComp>();
-            //Log.Message("Detaching " + detached.Count + " tiles");
-            ShipInteriorMod2.AirlockBugFlag = true;
-            HashSet<Thing> toDestroy = new HashSet<Thing>();
-            HashSet<Thing> toReplace = new HashSet<Thing>();
-            HashSet<Pawn> toKill = new HashSet<Pawn>();
-            int minX = int.MaxValue;
-            int maxX = int.MinValue;
-            int minZ = int.MaxValue;
-            int maxZ = int.MinValue;
-            foreach (IntVec3 at in detachArea)
-            {
-                //Log.Message("Detaching location " + at);
-                foreach (Thing t in at.GetThingList(map).Where(t => t.def.destroyable && !t.Destroyed))
-                {
-                    if (t is Pawn p)
-                    {
-                        if (p.Faction != Faction.OfPlayer && Rand.Chance(0.75f))
-                        {
-                            toKill.Add(p);
-                            toDestroy.Add(t);
-                        }
-                    }
-                    else if (!(t is Blueprint))
-                        toDestroy.Add(t);
-                    if (t is Building b && b.TryGetComp<CompSoShipPart>() != null)
-                    {
-                        toReplace.Add(b);
-                        if (t.Position.x < minX)
-                            minX = t.Position.x;
-                        if (t.Position.x > maxX)
-                            maxX = t.Position.x;
-                        if (t.Position.z < minZ)
-                            minZ = t.Position.z;
-                        if (t.Position.z > maxZ)
-                            maxZ = t.Position.z;
-                    }
-                }
-            }
-            if (toReplace.Any()) //any shipPart, make a floating wreck
-            {
-                DetachedShipPart part = (DetachedShipPart)ThingMaker.MakeThing(ThingDef.Named("DetachedShipPart"));
-                part.Position = new IntVec3(minX, 0, minZ);
-                part.xSize = maxX - minX + 1;
-                part.zSize = maxZ - minZ + 1;
-                part.wreckage = new byte[part.xSize, part.zSize];
-                foreach (Thing t in toReplace)
-                {
-                    var comp = t.TryGetComp<CompSoShipPart>();
-                    if (comp.Props.isHull)
-                        part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 1;
-                    else if (comp.Props.isPlating)
-                        part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
-                }
-                part.SpawnSetup(map, false);
-            }
-            foreach (Pawn p in toKill)
-            {
-                p.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
-            }
-            foreach (Thing t in toDestroy)
-            {
-                if (t is Building && map.IsPlayerHome && t.def.blueprintDef != null)
-                {
-                    GenConstruct.PlaceBlueprintForBuild(t.def, t.Position, map, t.Rotation, Faction.OfPlayer, t.Stuff);
-                }
-                if (t.def.destroyable && !t.Destroyed)
-                    t.Destroy(DestroyMode.Vanish);
-            }
-            foreach (IntVec3 c in detachArea)
-            {
-                map.terrainGrid.RemoveTopLayer(c, false);
-                map.roofGrid.SetRoof(c, null);
-            }
-            ShipInteriorMod2.AirlockBugFlag = false;
-            if (map == mapComp.ShipCombatOriginMap)
-                mapComp.hasAnyPlayerPartDetached = true;
-        }
-        */
     }
 }

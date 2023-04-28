@@ -31,19 +31,16 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
+		<description>The outer structural elements of a ship's hull that have been damaged beyond repair. No longer spaceworthy.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<wreckage>true</wreckage>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_RoofMe">
-				<wreckage>true</wreckage>
-				<roof>false</roof>
 			</li>
 		</comps>
 		<rotatable>false</rotatable>
@@ -86,6 +83,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<wreckage>true</wreckage>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -93,10 +91,6 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_RoofMe">
-				<wreckage>true</wreckage>
-				<roof>false</roof>
-			</li>
 		</comps>
 		<designationHotKey>Misc2</designationHotKey>
 		<statBases>
@@ -168,10 +162,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
-			</li>
-			<li Class="CompProperties_RoofMe">
 				<wreckage>true</wreckage>
-				<roof>true</roof>
 			</li>
 		</comps>
 		<placeWorkers>

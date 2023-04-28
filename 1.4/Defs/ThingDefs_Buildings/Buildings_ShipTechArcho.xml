@@ -41,9 +41,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
 				<archotech>true</archotech>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
@@ -106,13 +105,12 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
+				<archotech>true</archotech>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_RoofMe">
-				<archotech>true</archotech>
 			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
@@ -313,9 +311,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
 				<archotech>true</archotech>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_PowerPlantSolarShip">
 				<compClass>CompPowerPlantSolarShip</compClass>
@@ -402,6 +399,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
+				<archotech>true</archotech>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -415,9 +414,6 @@
 			<li Class="CompProperties_Overlay">
 				<graphicPath>Things/Building/Ship/Ship_Vent</graphicPath>
 				<size>(1,1,1)</size>
-			</li>
-			<li Class="CompProperties_RoofMe">
-				<archotech>true</archotech>
 			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
@@ -470,7 +466,9 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
+				<archotech>true</archotech>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -478,9 +476,6 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_RoofMe">
-				<archotech>true</archotech>
-			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -577,9 +572,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
-			</li>
-			<li Class="CompProperties_RoofMe">
 				<archotech>true</archotech>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_SoSUnlock">
 				<unlock>ArchotechUplink</unlock>
@@ -763,7 +757,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsinkAntiEntropy</defName>
 		<label>anti-entropic heatbank</label>
-		<description>An advanced heatbank designed by an archotech. Uses exotic physics to convert excess heat back into usable energy.\n\nHeat capacity: 200Hu\nHeat conversion: 4Hu/s to 1kW/s</description>
+		<description>An advanced heatbank designed by an archotech. Uses exotic physics to convert excess heat back into usable energy. Requires energy storage to function.\n\nHeat capacity: 200Hu\nHeat conversion: 5Hu/s to 1kW/s</description>
 		<size>(2,2)</size>
 		<graphicData>
 			<texPath>Things/Building/Ship/HeatbankAntiEntropic</texPath>
@@ -788,7 +782,7 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
 				<heatCapacity>200</heatCapacity>
-				<heatVent>8</heatVent>
+				<heatVent>10</heatVent>
 				<threat>3</threat>
 				<antiEntropic>true</antiEntropic>
 			</li>
@@ -1766,7 +1760,6 @@
 				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 			</li>
 			<li Class="CompProperties_SoSUnlock">

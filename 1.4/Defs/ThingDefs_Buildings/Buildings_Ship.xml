@@ -59,8 +59,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
-				<roof>true</roof>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
@@ -120,12 +120,12 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
-				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -341,8 +341,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
-				<roof>true</roof>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_PowerPlantSolarShip">
 				<compClass>CompPowerPlantSolarShip</compClass>
 				<basePowerConsumption>-1</basePowerConsumption>
@@ -432,7 +432,6 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
-				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -447,6 +446,7 @@
 				<graphicPath>Things/Building/Ship/Ship_Vent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -501,9 +501,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
-				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
-				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -511,6 +509,7 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Forbiddable"/>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -615,12 +614,12 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
-				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
@@ -687,8 +686,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
-				<roof>true</roof>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_ShipHull</li>
@@ -737,7 +736,9 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
-				<isHardpoint>true</isHardpoint>
+			</li>
+			<li Class="CompProperties_RoofMe">
+				<roof>false</roof>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
@@ -1908,7 +1909,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. Must be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
+		<description>Provides docking facilities for shuttles. Must be kept clear of obstructions.</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -1956,7 +1957,7 @@
 			<MaxHitPoints>700</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. This version is large enough to support the superheavy dropship. Must be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
+		<description>Provides docking facilities for one or more shuttles. This version is large enough to support the superheavy dropship. Must be kept clear of obstructions.</description>
 		<size>(7,7)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2490,8 +2491,9 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
-				<roof>true</roof>
 			</li>
 		</comps>
 		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
@@ -2536,8 +2538,9 @@
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
-				<roof>true</roof>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -2638,8 +2641,9 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_RoofMe">
 				<foam>true</foam>
-				<roof>true</roof>
 			</li>
 		</comps>
 		<rotatable>false</rotatable>
@@ -3127,6 +3131,7 @@
 				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 			</li>
 			<li>
@@ -3217,6 +3222,7 @@
 				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
+			<li Class="CompProperties_RoofMe"/>
 			<li Class="CompProperties_ShipHeat">
 			</li>
 			<li>

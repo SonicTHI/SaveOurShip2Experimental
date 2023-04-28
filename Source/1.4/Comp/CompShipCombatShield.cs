@@ -16,7 +16,7 @@ namespace RimWorld
         private static readonly Material ShieldMaterial = MaterialPool.MatFrom("Things/Building/Ship/ShieldBubbleSOS", ShaderDatabase.MoteGlow);
         private static readonly Material ConeMaterial = MaterialPool.MatFrom("Other/ForceFieldCone", ShaderDatabase.MoteGlow);
         private static readonly MaterialPropertyBlock PropBlock = new MaterialPropertyBlock();
-        public static float HeatDamageMult = 3.5f;
+        public static float HeatDamageMult = 3f;
 
         public float radiusSet=40;
         public float radius=40;

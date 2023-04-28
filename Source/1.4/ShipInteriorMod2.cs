@@ -84,10 +84,7 @@ namespace SaveOurShip2
 		}
 
 		public static readonly float crittersleepBodySize = 0.7f;
-		public static bool ArchoStuffEnabled = true; //unassigned???
-		public static bool SoSWin = false;
 		public static bool loadedGraphics = false;
-		public static bool renderedThatAlready = false;
 		public static bool AirlockBugFlag = false; //shipmove
 		public static Building shipOriginRoot = null; //used for patched original launch code
 		public static Map shipOriginMap = null; //used to check for shipmove map size problem, reset after move
@@ -150,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V84f1 active");
+			Log.Message("SOS2EXP V85f6 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -214,8 +211,8 @@ namespace SaveOurShip2
 				"OpportunitySite_ItemStash",
 				//roy
 				"PawnLend",
-				"Hospitality_Prisoners",
-				"Hospitality_Animals",
+				//"Hospitality_Prisoners", can cause raids
+				//"Hospitality_Animals", can cause raids
 				//ideo
 				"OpportunitySite_WorkSite",
 				"Hack_WorshippedTerminal",

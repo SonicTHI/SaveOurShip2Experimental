@@ -312,6 +312,10 @@ namespace SaveOurShip2
 
 			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(Find.CurrentMap)))
 			{
+				if (__result.StartsWith("IndoorsUnroofed".Translate() + " (1)"))
+                {
+					__result = "Breach detected!" + __result.Remove(0, "IndoorsUnroofed".Translate().Length + 4);
+				}
 				__result += " (Vacuum)";
 			}
 			else
@@ -331,28 +335,27 @@ namespace SaveOurShip2
 		public const float altitude = 1100f;
 		public static void Prefix()
 		{
-			Map map = Find.CurrentMap;
+			var worldComp = Find.World.GetComponent<PastWorldUWO2>();
 
 			// if we aren't in space, abort!
-			if ((ShipInteriorMod2.renderedThatAlready && !SaveOurShip2.ModSettings_SoS.renderPlanet) || !map.IsSpace())
+			if ((worldComp.renderedThatAlready && !ModSettings_SoS.renderPlanet) || !Find.CurrentMap.IsSpace())
 			{
 				return;
 			}
+			var camera = Find.WorldCamera;
 			//TODO replace this when interplanetary travel is ready
 			//Find.PlaySettings.showWorldFeatures = false;
-			RenderTexture oldTexture = Find.WorldCamera.targetTexture;
-			RenderTexture oldSkyboxTexture = RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture;
-
-			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.Planet;
-			Find.WorldCameraDriver.JumpTo(Find.CurrentMap.Tile);
-			Find.WorldCameraDriver.altitude = altitude;
-			Find.WorldCameraDriver.desiredAltitude = altitude;
-
-			float num = (float)UI.screenWidth / (float)UI.screenHeight;
-
-			Find.WorldCameraDriver.Update();
-			Find.World.renderer.CheckActivateWorldCamera();
-			Find.World.renderer.DrawWorldLayers();
+			RenderTexture oldTexture = camera.targetTexture;
+			RenderTexture oldSkyboxTexture = WorldCameraManager.WorldSkyboxCamera.targetTexture;
+			var worldRender = Find.World.renderer;
+			var cameraDriver = Find.WorldCameraDriver;
+			worldRender.wantedMode = WorldRenderMode.Planet;
+			cameraDriver.JumpTo(Find.CurrentMap.Tile);
+			cameraDriver.altitude = altitude;
+			cameraDriver.desiredAltitude = altitude;
+			cameraDriver.Update();
+			worldRender.CheckActivateWorldCamera();
+			worldRender.DrawWorldLayers();
 			WorldRendererUtility.UpdateWorldShadersParams();
 			//TODO replace this when interplanetary travel is ready
 			/*
@@ -362,26 +365,27 @@ namespace SaveOurShip2
                     layer.Render();
             }
             Find.PlaySettings.showWorldFeatures = false;*/
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = ResourceBank.target;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.aspect = num;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.Render();
+			WorldCameraManager.WorldSkyboxCamera.targetTexture = ResourceBank.target;
+			float num = (float)UI.screenWidth / (float)UI.screenHeight;
+			WorldCameraManager.WorldSkyboxCamera.aspect = num;
+			WorldCameraManager.WorldSkyboxCamera.Render();
 
-			Find.WorldCamera.targetTexture = ResourceBank.target;
-			Find.WorldCamera.aspect = num;
-			Find.WorldCamera.Render();
+			camera.targetTexture = ResourceBank.target;
+			camera.aspect = num;
+			camera.Render();
 
 			RenderTexture.active = ResourceBank.target;
 			ResourceBank.virtualPhoto.ReadPixels(new Rect(0, 0, 2048, 2048), 0, 0);
 			ResourceBank.virtualPhoto.Apply();
 			RenderTexture.active = null;
 
-			Find.WorldCamera.targetTexture = oldTexture;
-			RimWorld.Planet.WorldCameraManager.WorldSkyboxCamera.targetTexture = oldSkyboxTexture;
-			Find.World.renderer.wantedMode = RimWorld.Planet.WorldRenderMode.None;
-			Find.World.renderer.CheckActivateWorldCamera();
+			camera.targetTexture = oldTexture;
+			WorldCameraManager.WorldSkyboxCamera.targetTexture = oldSkyboxTexture;
+			worldRender.wantedMode = WorldRenderMode.None;
+			worldRender.CheckActivateWorldCamera();
 
-			if (!Find.World.renderer.layers.FirstOrFallback().ShouldRegenerate)
-				ShipInteriorMod2.renderedThatAlready = true;
+			if (!worldRender.layers.FirstOrFallback().ShouldRegenerate)
+				worldComp.renderedThatAlready = true;
 		}
 	}
 
@@ -1147,7 +1151,7 @@ namespace SaveOurShip2
 			__result = containedBuildings.ToList();
 		}
 	}
-
+	
 	[HarmonyPatch(typeof(ShipUtility), "LaunchFailReasons")]
 	public static class FindLaunchFailReasons
 	{
@@ -1299,16 +1303,16 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 				return;
-			foreach (Thing t in ___map.thingGrid.ThingsAt(c))
-			{
-				var roofComp = t.TryGetComp<CompRoofMe>();
-				if (roofComp != null)
-				{
-					roofComp.SetShipTerrain(c);
-					break;
-				}
-			}
-		}
+            foreach (Thing t in ___map.thingGrid.ThingsAt(c))
+            {
+                var roofComp = t.TryGetComp<CompRoofMe>();
+                if (roofComp != null)
+                {
+                    roofComp.SetShipTerrain(c);
+                    break;
+                }
+            }
+        }
 	}
 
 	[HarmonyPatch(typeof(RoofGrid), "SetRoof")]
@@ -1318,7 +1322,7 @@ namespace SaveOurShip2
 		{
 			if (def == null || def.isThickRoof)
 				return true;
-			foreach (Thing t in c.GetThingList(___map))
+			foreach (Thing t in c.GetThingList(___map).Where(t => t is Building))
 			{
 				if (t.TryGetComp<CompRoofMe>()?.Props.roof ?? false)
 				{
@@ -1457,7 +1461,7 @@ namespace SaveOurShip2
 		{
 			ThingWithComps t = __instance.Position.GetFirstThingWithComp<CompRoofMe>(__instance.Map);
 			if (t != null && !t.GetComp<CompRoofMe>().Props.roof && !t.GetComp<CompRoofMe>().Props.wreckage)
-				dinfo.SetAmount(dinfo.Amount / 2);
+					dinfo.SetAmount(dinfo.Amount / 2);
 			return true;
 		}
 	}
@@ -3964,7 +3968,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(IncidentParms parms)
 		{
-			if (ShipInteriorMod2.ArchoStuffEnabled && !WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechSpore"))
+			if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechSpore"))
 			{
 				Map spaceMap = null;
 				foreach (Map map in Find.Maps)
@@ -4012,9 +4016,9 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Window __instance)
 		{
-			if (__instance is Screen_Credits && ShipInteriorMod2.SoSWin)
+			if (__instance is Screen_Credits && Find.World.GetComponent<PastWorldUWO2>().SoSWin)
 			{
-				ShipInteriorMod2.SoSWin = false;
+				Find.World.GetComponent<PastWorldUWO2>().SoSWin = false;
 				GenScene.GoToMainMenu();
 			}
 		}

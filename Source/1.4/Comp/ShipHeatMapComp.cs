@@ -51,7 +51,7 @@ namespace RimWorld
             for (int i = 0; i < grid.Length; i++)
                 grid[i] = -1;
             int gridID = 0;
-            foreach(CompShipHeat comp in cachedPipes)
+            foreach (CompShipHeat comp in cachedPipes)
             {
                 if (comp.parent.Map == null || grid[comp.parent.Map.cellIndices.CellToIndex(comp.parent.Position)] > -1)
                     continue;
@@ -206,9 +206,9 @@ namespace RimWorld
         public List<ShipCombatProjectile> TorpsInRange;
         public List<Building> MapRootListAll = new List<Building>();//all bridges on map
         public List<Building> MapRootList;//primary bridges
+        List<Building> cores = new List<Building>();
 
         public List<ShipCache> shipsOnMap;
-        List<Building> cores = new List<Building>();
         public List<ShipCache> ShipsOnMap//rebuild shipsOnMap cache if it is null
         {
             get
@@ -681,7 +681,7 @@ namespace RimWorld
                     }
                     if (!ship.HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
                     {
-                        if (ship.HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && bridge.myNet.RatioInNetwork > 0.7f) //start purge
+                        if (ship.HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && bridge != null && bridge.myNet != null && bridge.myNet.RatioInNetwork > 0.7f) //start purge
                         {
                             foreach (CompShipHeatPurge purge in ship.HeatPurges)
                             {

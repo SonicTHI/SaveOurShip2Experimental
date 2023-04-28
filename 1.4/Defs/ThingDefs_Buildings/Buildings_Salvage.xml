@@ -31,7 +31,7 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
+		<description>The outer structural elements of a ship's hull that have been damaged beyond repair. No longer spaceworthy.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
 			<li Class="CompProperties_SoShipPart">

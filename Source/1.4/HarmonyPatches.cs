@@ -321,7 +321,7 @@ namespace SaveOurShip2
 			}
 			else
 			{
-				if (map.GetComponent<ShipHeatMapComp>().VecHasEVA(UI.MouseCell()))
+				if (Find.CurrentMap.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any())
 					__result += " (Breathable Atmosphere)";
 				else
 					__result += " (Non-Breathable Atmosphere)".Colorize(Color.yellow);
@@ -1153,67 +1153,6 @@ namespace SaveOurShip2
 		}
 	}
 	
-	[HarmonyPatch(typeof(Building), "SpawnSetup")]
-	public static class DoSpawn
-	{
-		//adds normal building weight/count to ship
-		[HarmonyPostfix]
-		public static void OnSpawn(Building __instance, Map map, bool respawningAfterLoad)
-		{
-			if (respawningAfterLoad)
-				return;
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.CacheOff || mapComp.ShipsOnMapNew.NullOrEmpty() || __instance.TryGetComp<CompSoShipPart>() != null)
-				return;
-			foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance)) //if any part spawned on ship
-            {
-				if (mapComp.ShipCells.ContainsKey(vec) && mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[vec].Item1))
-				{
-					var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
-					if (!ship.Buildings.Contains(__instance)) //need to check every cell as some smartass could place it on 2 ships
-					{
-						ship.Buildings.Add(__instance);
-						ship.BuildingCount++;
-						ship.Mass += (__instance.def.Size.x * __instance.def.Size.z) * 3;
-					}
-				}
-            }
-		}
-	}
-
-	[HarmonyPatch(typeof(Building), "DeSpawn")]
-	public static class DoPreDeSpawn
-	{
-		//can we have predespawn at home? no, we have despawn at home, despawn at home: postdespawn
-		//lets me actually get the building being removed
-		[HarmonyPrefix]
-		public static bool PreDeSpawn(Building __instance)
-		{
-			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.CacheOff)
-				return true;
-			var shipComp = __instance.TryGetComp<CompSoShipPart>();
-			if (shipComp != null) //predespawn for ship parts
-				shipComp.PreDeSpawn();
-			else if (!mapComp.ShipsOnMapNew.NullOrEmpty()) //rems normal building weight/count to ship
-			{
-				foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
-				{
-					if (mapComp.ShipCells.ContainsKey(vec) && mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[vec].Item1))
-					{
-						var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
-						if (ship.Buildings.Contains(__instance))
-						{
-							ship.Buildings.Remove(__instance);
-							ship.BuildingCount--;
-							ship.Mass -= (__instance.def.Size.x * __instance.def.Size.z) * 3;
-						}
-					}
-				}
-			}
-			return true;
-		}
-	}
 	[HarmonyPatch(typeof(ShipUtility), "LaunchFailReasons")]
 	public static class FindLaunchFailReasons
 	{
@@ -1369,18 +1308,15 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 				return;
-			if (___map.GetComponent<ShipHeatMapComp>()?.ShipCells?.ContainsKey(c) ?? false)
-			{
-				foreach (Thing t in ___map.thingGrid.ThingsAt(c))
-				{
-					var shipPart = t.TryGetComp<CompSoShipPart>();
-					if (shipPart != null && (shipPart.Props.isPlating || shipPart.Props.isHardpoint || shipPart.Props.isHull))
-					{
-						shipPart.SetShipTerrain(c);
-						break;
-					}
-				}
-			}
+            foreach (Thing t in ___map.thingGrid.ThingsAt(c))
+            {
+                var roofComp = t.TryGetComp<CompSoShipPart>();
+                if (roofComp != null)
+                {
+                    roofComp.SetShipTerrain(c);
+                    break;
+                }
+            }
 		}
 	}
 
@@ -1393,8 +1329,7 @@ namespace SaveOurShip2
 				return true;
 			foreach (Thing t in c.GetThingList(___map).Where(t => t is Building))
 			{
-				var shipPart = t.TryGetComp<CompSoShipPart>();
-				if (shipPart != null && shipPart.Props.roof)
+				if (t.TryGetComp<CompSoShipPart>()?.Props.roof ?? false)
 				{
 					var cellIndex = ___map.cellIndices.CellToIndex(c);
 					if (___roofGrid[cellIndex] == def)
@@ -1431,18 +1366,14 @@ namespace SaveOurShip2
 		{
 			if (!map.IsSpace())
 				return;
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
 			foreach (IntVec3 cell in cells)
 			{
-				if (!cell.Roofed(map))
+				if (map.IsSpace() && !cell.Roofed(map))
 				{
-					int shipIndex = mapComp.ShipIndexOnVec(cell);
-					if (shipIndex == -1)
-						continue;
-					var ship = mapComp.ShipsOnMapNew[shipIndex];
-					if (ship.FoamDistributors.Any())
+					var mapComp = map.GetComponent<ShipHeatMapComp>();
+					if (mapComp.HullFoamDistributors.Count > 0)
 					{
-						foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
+						foreach (CompHullFoamDistributor dist in mapComp.HullFoamDistributors)
 						{
 							if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
 							{
@@ -1471,17 +1402,14 @@ namespace SaveOurShip2
 			if (!__instance.def.CanHaveFaction || __instance is Frame)
 				return true;
 			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.InCombat)
-				mapComp.DirtyShip(__instance);
-
-			int shipIndex = mapComp.ShipIndexOnVec(__instance.Position);
-			if (shipIndex != -1) //is this on a ship
+			if (!mapComp.InCombat)
+				return true;
+			mapComp.DirtyShip(__instance);
+			if (__instance.def.blueprintDef != null)
 			{
-				var shipPart = __instance.TryGetComp<CompSoShipPart>();
-				var ship = mapComp.ShipsOnMapNew[shipIndex];
-				if (ship.FoamDistributors.Any() && (shipPart.Props.isHull || shipPart.Props.isPlating))
+				if (mapComp.HullFoamDistributors.Count > 0 && (__instance.TryGetComp<CompSoShipPart>()?.Props.isHull ?? false))
 				{
-					foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
+					foreach (CompHullFoamDistributor dist in mapComp.HullFoamDistributors)
 					{
 						if (dist.parent.TryGetComp<CompRefuelable>().Fuel > 0 && dist.parent.TryGetComp<CompPowerTrader>().PowerOn)
 						{
@@ -1491,7 +1419,7 @@ namespace SaveOurShip2
 						}
 					}
 				}
-				if (__instance.Faction == Faction.OfPlayer && __instance.def.blueprintDef != null && __instance.def.researchPrerequisites.All(r => r.IsFinished)) //place blueprints
+				if (__instance.def.CanHaveFaction && __instance.Faction == Faction.OfPlayer && __instance.def.blueprintDef != null && __instance.def.researchPrerequisites.All(r => r.IsFinished)) //place blueprints
 					GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
 					__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
 			}

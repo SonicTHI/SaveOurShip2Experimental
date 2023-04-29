@@ -236,9 +236,6 @@ namespace RimWorld
                 foreach (Ideo ideo in Find.IdeoManager.IdeosInViewOrder)
                     ReCacheIdeo(ideo);
 
-                spaceMap.GetComponent<ShipHeatMapComp>().ResetCache();
-                spaceMap.GetComponent<ShipHeatMapComp>().RecacheMap();
-
                 return spaceMap;
             }
             return null;

@@ -71,30 +71,6 @@ namespace RimWorld
                 return (CompProperties_SoShipPart)props;
             }
         }
-        public override string CompInspectStringExtra()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            if (Prefs.DevMode)
-            {
-                if (!mapComp.ShipCells.ContainsKey(parent.Position))
-                {
-                    stringBuilder.Append("cache is null for this pos!");
-                }
-                var shipCells = mapComp.ShipCells[parent.Position];
-                int index = -1;
-                int path = -1;
-                if (shipCells != null)
-                {
-                    index = shipCells.Item1;
-                    path = shipCells.Item2;
-                }
-                if (parent.def.building.shipPart)
-                    stringBuilder.Append("shipIndex: " + index + " / corePath: " + path);
-                else
-                    stringBuilder.Append("shipIndex: " + index);
-            }
-            return stringBuilder.ToString();
-        }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -106,10 +82,6 @@ namespace RimWorld
             map = parent.Map;
             mapComp = map.GetComponent<ShipHeatMapComp>();
             cellsUnder = new List<IntVec3>();
-            //plating - check adj, merge
-            //hull - check on + adj, merge
-            //other - check on + adj, merge
-            HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
             foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent))
             {
                 cellsUnder.Add(vec);
@@ -127,13 +99,6 @@ namespace RimWorld
                     SpawnLight(lightColor, sunLight);
                 return;
             }
-            foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
-            {
-                if (!mapComp.ShipCells.ContainsKey(vec))
-                {
-                    mapComp.ShipCells.Add(vec, null);
-                }
-            }
             if (Props.roof)
             {
                 foreach (IntVec3 pos in cellsUnder)
@@ -143,133 +108,21 @@ namespace RimWorld
                         map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
                 }
             }
-            if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
-            {
-                return;
-            }
-            //plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this
-            //plating or shipPart with different or no shipIndex: merge connected to this ship
-            foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(parent))
-            {
-                if (!mapComp.ShipCells.ContainsKey(vec))
-                    continue;
-                cellsToMerge.Add(vec);
-            }
-            if (cellsToMerge.Any()) //if any other parts under or adj, merge in order to: largest ship, any ship, wreck
-            {
-                int mergeToIndex;
-                cellsToMerge.AddRange(cellsUnder);
-                IntVec3 mergeTo = IntVec3.Zero;
-                int mass = 0;
-                foreach (IntVec3 vec in cellsToMerge) //find largest ship
-                {
-                    int shipIndex = mapComp.ShipIndexOnVec(vec);
-                    if (shipIndex != -1 && mapComp.ShipsOnMapNew[shipIndex].Mass > mass)
-                    {
-                        mergeTo = vec;
-                        mass = mapComp.ShipsOnMapNew[shipIndex].Mass;
-                    }
-                }
-                if (mergeTo != IntVec3.Zero)
-                {
-                    mergeToIndex = mapComp.ShipCells[mergeTo].Item1;
-                }
-                else //no ships, attach to wreck
-                {
-                    mergeTo = cellsToMerge.FirstOrDefault();
-                    mergeToIndex = mergeTo.GetThingList(parent.Map).FirstOrDefault(b => b.TryGetComp<CompSoShipPart>() != null).thingIDNumber;
-                }
-                mapComp.AttachAll(mergeTo, mergeToIndex);
-            }
-            else //else make new entry
-            {
-                foreach (IntVec3 vec in cellsUnder)
-                    mapComp.ShipCells[vec] = new Tuple<int, int>(parent.thingIDNumber, -1);
-            }
         }
-        public void PreDeSpawn() //called in building.destroy, before comps get removed
+        public void SetShipTerrain(IntVec3 v)
         {
-            if (ShipInteriorMod2.AirlockBugFlag) //moveship cleans entire area, caches //td
+            if (!map.terrainGrid.TerrainAt(v).layerable)
             {
-                return;
-            }
-
-            if(!mapComp.ShipCells.ContainsKey(parent.Position) || !mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[parent.Position].Item1))
-            {
-                return;
-            }
-
-            var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[parent.Position].Item1];
-            HashSet<Building> buildings = new HashSet<Building>();
-            foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
-            {
-                bool partExists = false;
-                foreach (Thing t in vec.GetThingList(parent.Map))
-                {
-                    if (t is Building b && b != parent)
-                    {
-                        if (b.TryGetComp<CompSoShipPart>() != null)
-                        {
-                            partExists = true;
-                        }
-                        else
-                        {
-                            buildings.Add(b);
-                        }
-                    }
-                }
-                if (!partExists) //no shippart remains, remove from area, remove non ship buildings if fully off ship
-                {
-                    ship.Area.Remove(vec);
-                    ship.AreaDestroyed.Add(vec);
-                    mapComp.ShipCells.Remove(vec);
-                    if (ship != null)
-                    {
-                        foreach (Building b in buildings) //remove other buildings that are no longer supported by ship parts
-                        {
-                            bool allOffShip = false;
-                            foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
-                            {
-                                if (!mapComp.ShipCells.ContainsKey(vec))
-                                {
-                                    allOffShip = true;
-                                    break;
-                                }
-                            }
-                            if (allOffShip)
-                            {
-                                ship.BuildingCount--;
-                                ship.Mass -= b.def.Size.x * b.def.Size.z * 3;
-                            }
-                        }
-                    }
-                }
-            }
-            if (ship != null) //remove from cache
-            {
-                //if last bridge remove ship or end combat
-                if (parent is Building_ShipBridge && ship.Bridges.Any(b => b != parent && !b.Destroyed))
-                {
-                    if (!mapComp.InCombat)
-                    {
-                        foreach (IntVec3 vec in ship.Area) //remove path
-                            mapComp.ShipCells[vec] = new Tuple<int, int>(((Building_ShipBridge)parent).Index, -1);
-
-                        mapComp.ShipsOnMapNew.Remove(parent.thingIDNumber);
-                    }
-                    else //if last ship end combat else move to grave
-                    {
-                        /*if (mapComp.ShipsOnMapNew.Count > 1)
-                            mapComp.MoveShipToGraveyard(((Building_ShipBridge)parent).Index);
-                        else
-                            mapComp.EndBattle(parent.Map, false);*/
-                    }
-                    return;
-                }
-                ship.RemoveFromCache(parent as Building);
-
-                if (!mapComp.InCombat) //perform check immediately
-                    ship.CheckForDetach();
+                if (Props.archotech)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech);
+                else if (Props.mechanoid)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipMech);
+                else if (Props.foam)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam);
+                else if (Props.wreckage)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.ShipWreckageTerrain);
+                else
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
             }
         }
         public override void PostDeSpawn(Map map)
@@ -277,15 +130,12 @@ namespace RimWorld
             base.PostDeSpawn(map);
             if (myLight != null)
                 myLight.DeSpawn();
-            if (!(Props.isPlating || Props.isHardpoint || Props.isHull)) //hull temp to remove terrain under it
-                return;
             foreach (IntVec3 pos in cellsUnder)
             {
                 bool stillHasTile = false;
-                foreach (Thing t in map.thingGrid.ThingsAt(pos))
+                foreach(Thing t in map.thingGrid.ThingsAt(pos))
                 {
-                    var shipComp = t.TryGetComp<CompSoShipPart>();
-                    if (shipComp != null && (shipComp.Props.isPlating || shipComp.Props.isHardpoint))
+                    if (t.TryGetComp<CompSoShipPart>()!=null)
                     {
                         stillHasTile = true;
                         break;
@@ -336,22 +186,6 @@ namespace RimWorld
                 {
                     Graphics.DrawMesh(material: roofedGraphicTileMech.MatSingleFor(parent), mesh: roofedGraphicTileMech.MeshAt(parent.Rotation), position: new Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), rotation: Quaternion.identity, layer: 0);
                 }
-            }
-        }
-        public void SetShipTerrain(IntVec3 v)
-        {
-            if (!map.terrainGrid.TerrainAt(v).layerable)
-            {
-                if (Props.archotech)
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech);
-                else if (Props.mechanoid)
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipMech);
-                else if (Props.foam)
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam);
-                else if (Props.wreckage)
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.ShipWreckageTerrain);
-                else
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
             }
         }
         public override IEnumerable<Gizmo> CompGetGizmosExtra()

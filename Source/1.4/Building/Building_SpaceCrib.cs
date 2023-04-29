@@ -28,7 +28,7 @@ namespace RimWorld
             else
             {
                 
-                if (!Find.CurrentMap.GetComponent<ShipHeatMapComp>().VecHasEVA(Position))
+                if (!Find.CurrentMap.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any())
                     closed = true;
             }
 

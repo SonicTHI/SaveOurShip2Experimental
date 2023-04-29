@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V86 active");
+			Log.Message("SOS2EXP V86f1 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1727,10 +1727,6 @@ namespace SaveOurShip2
 			List<Tuple<IntVec3, float>> posTemp = new List<Tuple<IntVec3, float>>();
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
 			List<Tuple<IntVec3, RoofDef>> roofToCopy = new List<Tuple<IntVec3, RoofDef>>();
-			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
-			// source area of the ship.
-			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);
-
 			List<IntVec3> fireExplosions = new List<IntVec3>();
 			List<CompEngineTrail> nukeExplosions = new List<CompEngineTrail>();
 			IntVec3 rot = IntVec3.Zero;
@@ -1748,13 +1744,15 @@ namespace SaveOurShip2
 				watch.Record("prepare");
 
 			shipOriginMap = null;
+			bool playerMove = core.Faction == Faction.OfPlayer;
 			Map sourceMap = core.Map;
+			bool sourceMapIsSpace = sourceMap.IsSpace();
+			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);
+			
             if (targetMap == null)
                 targetMap = core.Map;
 			bool targetMapIsSpace = targetMap.IsSpace();
-			bool sourceMapIsSpace = sourceMap.IsSpace();
-			bool inCombat = sourceMap.GetComponent<ShipHeatMapComp>().InCombat;
-			bool playerMove = core.Faction == Faction.OfPlayer;
+			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
 
 			foreach (IntVec3 pos in sourceArea)
 			{
@@ -1767,8 +1765,9 @@ namespace SaveOurShip2
 					float temp = room.Temperature;
 					posTemp.Add(new Tuple<IntVec3, float>(adjustedPos, temp));
 				}
-				//clear LZ
+				//add to target areas
 				targetArea.Add(adjustedPos);
+				//clear LZ
 				foreach (Thing t in adjustedPos.GetThingList(targetMap))
 				{
 					if (!toDestroy.Contains(t))

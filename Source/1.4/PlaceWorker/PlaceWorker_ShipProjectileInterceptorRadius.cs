@@ -9,8 +9,16 @@ namespace RimWorld
     {
 		public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, Color ghostCol, Thing thing = null)
 		{
-			GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 20);
-			GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 60);
+			if (def.Size.x < 5)
+            {
+                GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 10);
+                GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 20);
+            }
+			else
+            {
+                GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 20);
+                GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 60);
+            }
 		}
 	}
 }

@@ -300,11 +300,19 @@ namespace RimWorld
             }
             else //using player ship combat rating
             {
-                CR = MapThreat(this.map) * 0.9f;
+                CR = MapThreat() * 0.9f;
+                if (CR > 30)
+                {
+                    int daysPassed = GenDate.DaysPassedSinceSettle;
+                    if (daysPassed < 30) //reduce difficulty early on
+                        CR *= 0.5f;
+                    else if (daysPassed < 60)
+                        CR *= 0.75f;
+                }
+                if (CR < 30) //minimum rating
+                    CR = 30;
                 if (CR > 100 && !fleet)
                     fleet = Rand.Chance((float)ModSettings_SoS.fleetChance);
-                if (CR < 500) //reduce difficulty in this range - would be better as a timed thing
-                    CR *= 0.9f;
                 if (passingShip is TradeShip)
                 {
                     //find suitable navyDef
@@ -401,7 +409,7 @@ namespace RimWorld
             //if (cores != null)
             //    Log.Message("Spawned enemy cores: " + cores.Count);
         }
-        public int MapThreat(Map map)
+        public int MapThreat()
         {
             int ShipThreat = 0;
             int ShipMass = 0;
@@ -544,15 +552,6 @@ namespace RimWorld
         public override void MapComponentTick()
         {
             base.MapComponentTick();
-            //heatgrid part
-            /*if (!heatGridDirty)
-            {
-                foreach (ShipHeatNet cachedNet in cachedNets)
-                {
-                    cachedNet.Tick();
-                }
-            }*/
-
             if (InCombat && (this.map == ShipCombatOriginMap || this.map == ShipCombatMasterMap))
             {
                 if (ShipCombatMaster)

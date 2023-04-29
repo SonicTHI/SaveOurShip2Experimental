@@ -45,15 +45,14 @@ namespace RimWorld
                     else
                         pawnsToDamage.Add(pawn);
                 }
-                //in ship, no air
-                else if (!room.Map.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any() && eva != 1)
+                else if (eva != 1 && !map.GetComponent<ShipHeatMapComp>().LifeSupports.Any(s => s.active)) //in ship, no air
                 {
-                    if (eva == 3)
-                    {
-                        eva = ActivateBubble(pawn);
-                    }
-                    else
-                        pawnsToSuffocate.Add(pawn);
+					if (eva == 3)
+					{
+						eva = ActivateBubble(pawn);
+					}
+					else
+						pawnsToSuffocate.Add(pawn);
                 }
             }
             foreach (Pawn thePawn in pawnsToDamage)

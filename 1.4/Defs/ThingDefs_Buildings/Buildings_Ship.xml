@@ -1934,15 +1934,15 @@
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
-		<defName>Ship_Reactor_Mini</defName>
-		<label>miniaturized fission reactor</label>
+		<defName>Ship_Reactor_Small</defName>
+		<label>small fission reactor</label>
 		<designatorDropdown>Ship_Reactors</designatorDropdown>
 		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/ShipReactorMini</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2,2)</drawSize>
+			<drawSize>(3,3)</drawSize>
 			<damageData>
 				<cornerTL>Damage/Corner</cornerTL>
 				<cornerTR>Damage/Corner</cornerTR>
@@ -1967,28 +1967,28 @@
 			<Flammability>0.1</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>A compact, self-contained fission reactor. Burns uranium fuel pods. Vents heat into a heatsink network if available, or into the surrounding room if not.\n\nIts base power production of 2,000W can be boosted with several increasingly risky overdrive modes.</description>
-		<size>(2,2)</size>
+		<description>A compact, self-contained fission reactor. Burns uranium fuel pods. Vents heat into a heatsink network if available, or into the surrounding room if not.\n\nIts base power production of 3,000W can be boosted with several increasingly risky overdrive modes.</description>
+		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<costList>
-			<Steel>100</Steel>
-			<Plasteel>40</Plasteel>
-			<Silver>20</Silver>
-			<ComponentSpacer>4</ComponentSpacer>
+			<Steel>200</Steel>
+			<Plasteel>75</Plasteel>
+			<Silver>25</Silver>
+			<ComponentSpacer>7</ComponentSpacer>
 		</costList>
 		<comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTraderOverdrivable</compClass>
-				<basePowerConsumption>-2000</basePowerConsumption>
+				<basePowerConsumption>-3000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
 				<compClass>CompRefuelableOverdrivable</compClass>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>250</initialConfigurableTargetFuelLevel>
-				<fuelConsumptionRate>2</fuelConsumptionRate>
-				<fuelCapacity>250</fuelCapacity>
+				<initialConfigurableTargetFuelLevel>500</initialConfigurableTargetFuelLevel>
+				<fuelConsumptionRate>3</fuelConsumptionRate>
+				<fuelCapacity>500</fuelCapacity>
 				<fuelFilter>
 					<thingDefs>
 						<li>ShuttleFuelPods</li>
@@ -1998,7 +1998,7 @@
 			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>
-				<heatPerSecond>2</heatPerSecond>
+				<heatPerSecond>3</heatPerSecond>
 			</li>
 			<li Class="CompProperties_Glower">
 				<glowRadius>4</glowRadius>

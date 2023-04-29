@@ -74,13 +74,14 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-
+            map = parent.Map;
+            mapComp = map.GetComponent<ShipHeatMapComp>();
+            if (!parent.def.building.shipPart)
+                return;
             isTile = parent.def == ResourceBank.ThingDefOf.ShipHullTile;
             isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
             isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
             isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
-            map = parent.Map;
-            mapComp = map.GetComponent<ShipHeatMapComp>();
             cellsUnder = new List<IntVec3>();
             foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent))
             {
@@ -109,33 +110,22 @@ namespace RimWorld
                 }
             }
         }
-        public void SetShipTerrain(IntVec3 v)
-        {
-            if (!map.terrainGrid.TerrainAt(v).layerable)
-            {
-                if (Props.archotech)
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech);
-                else if (Props.mechanoid)
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipMech);
-                else if (Props.foam)
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam);
-                else if (Props.wreckage)
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.ShipWreckageTerrain);
-                else
-                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
-            }
-        }
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
             if (myLight != null)
                 myLight.DeSpawn();
+            if (!parent.def.building.shipPart)
+                return;
+            if (!(Props.isPlating || Props.isHardpoint || Props.isHull))
+                return;
             foreach (IntVec3 pos in cellsUnder)
             {
                 bool stillHasTile = false;
-                foreach(Thing t in map.thingGrid.ThingsAt(pos))
+                foreach(Thing t in pos.GetThingList(map))
                 {
-                    if (t.TryGetComp<CompSoShipPart>()!=null)
+                    var shipComp = t.TryGetComp<CompSoShipPart>();
+                    if (shipComp != null && (shipComp.Props.isPlating || shipComp.Props.isHardpoint))
                     {
                         stillHasTile = true;
                         break;
@@ -166,7 +156,6 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
-
             if (!Props.roof)
                 return;
             if ((Find.PlaySettings.showRoofOverlay || parent.Position.Fogged(parent.Map)) && parent.Position.Roofed(parent.Map))
@@ -186,6 +175,22 @@ namespace RimWorld
                 {
                     Graphics.DrawMesh(material: roofedGraphicTileMech.MatSingleFor(parent), mesh: roofedGraphicTileMech.MeshAt(parent.Rotation), position: new Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), rotation: Quaternion.identity, layer: 0);
                 }
+            }
+        }
+        public void SetShipTerrain(IntVec3 v)
+        {
+            if (!map.terrainGrid.TerrainAt(v).layerable)
+            {
+                if (Props.archotech)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech);
+                else if (Props.mechanoid)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipMech);
+                else if (Props.foam)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam);
+                else if (Props.wreckage)
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.ShipWreckageTerrain);
+                else
+                    map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
             }
         }
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -217,9 +222,7 @@ namespace RimWorld
                     disabled = !AnyAdjacentRoom(),
                     disabledReason = TranslatorFormattedStringExtensions.Translate("ShipWallLightAdjacency")
                 };
-
                 yield return toggleLight;
-
                 if (hasLight)
                 {
                     Command_Toggle toggleSun = new Command_Toggle
@@ -238,9 +241,7 @@ namespace RimWorld
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipWallLightSun"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipWallLightSunDesc")
                     };
-
                     yield return toggleSun;
-
                     Command_Toggle toggleDisco = new Command_Toggle
                     {
                         toggleAction = delegate
@@ -252,10 +253,8 @@ namespace RimWorld
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipWallLightDisco"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipWallLightDiscoDesc")
                     };
-
                     yield return toggleDisco;
                 }
-
                 if(hasLight)
                 {
                     foreach (Gizmo giz in myLight.GetGizmos())

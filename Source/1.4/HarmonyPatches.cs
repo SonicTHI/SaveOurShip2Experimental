@@ -321,7 +321,7 @@ namespace SaveOurShip2
 			}
 			else
 			{
-				if (Find.CurrentMap.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any())
+				if (map.GetComponent<ShipHeatMapComp>().LifeSupports.Any(s => s.active))
 					__result += " (Breathable Atmosphere)";
 				else
 					__result += " (Non-Breathable Atmosphere)".Colorize(Color.yellow);
@@ -1037,7 +1037,7 @@ namespace SaveOurShip2
 				diaOption2.action = delegate
 				{
 					Building bridge = __instance.Map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();
-					if (Rand.Chance(0.025f * negotiator.skills.GetSkill(SkillDefOf.Social).levelInt + negotiator.Map.GetComponent<ShipHeatMapComp>().MapThreat(__instance.Map) / 400 - bounty / 40))
+					if (Rand.Chance(0.025f * negotiator.skills.GetSkill(SkillDefOf.Social).levelInt + negotiator.Map.GetComponent<ShipHeatMapComp>().MapThreat() / 400 - bounty / 40))
 					{
 						//social + shipstr vs bounty for piracy dialog
 						Find.WindowStack.Add(new Dialog_Pirate(__instance.Map.listerBuildings.allBuildingsColonist.Where(t => t.def.defName.Equals("ShipSalvageBay")).Count(), __instance));
@@ -1310,10 +1310,10 @@ namespace SaveOurShip2
 				return;
             foreach (Thing t in ___map.thingGrid.ThingsAt(c))
             {
-                var roofComp = t.TryGetComp<CompSoShipPart>();
-                if (roofComp != null)
+                var shipPart = t.TryGetComp<CompSoShipPart>();
+                if (shipPart != null && (shipPart.Props.isPlating || shipPart.Props.isHardpoint || shipPart.Props.isHull))
                 {
-                    roofComp.SetShipTerrain(c);
+                    shipPart.SetShipTerrain(c);
                     break;
                 }
             }
@@ -1329,7 +1329,8 @@ namespace SaveOurShip2
 				return true;
 			foreach (Thing t in c.GetThingList(___map).Where(t => t is Building))
 			{
-				if (t.TryGetComp<CompSoShipPart>()?.Props.roof ?? false)
+				var shipPart = t.TryGetComp<CompSoShipPart>();
+				if (shipPart != null && shipPart.Props.roof)
 				{
 					var cellIndex = ___map.cellIndices.CellToIndex(c);
 					if (___roofGrid[cellIndex] == def)

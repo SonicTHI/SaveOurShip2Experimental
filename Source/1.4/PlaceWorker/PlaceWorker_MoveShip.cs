@@ -18,7 +18,7 @@ namespace RimWorld
             }
         }
 
-        public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
+        public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
             if (thing is ShipMoveBlueprint ship)
             {
@@ -28,23 +28,12 @@ namespace RimWorld
                     targetMapLarger = true;
                 }
                 AcceptanceReport result = true;
-                //CellRect rect = ship.shipSketch.OccupiedRect.MovedBy(loc);
                 foreach (SketchEntity current in ship.shipSketch.Entities)
                 {
-                    if (GenGrid.InNoBuildEdgeArea(current.pos + loc, map))
-                        return false;
-                    if (current.IsSpawningBlocked(current.pos + loc, map))
-                        return false;
-                    if (map.fogGrid.IsFogged(current.pos + loc))
-                        return false;
-                    if (map.roofGrid.Roofed(current.pos + loc))
+                    IntVec3 c = current.pos + center;
+                    if (GenGrid.InNoBuildEdgeArea(c, map) || current.IsSpawningBlocked(c, map) || map.fogGrid.IsFogged(c) || map.roofGrid.Roofed(c) || (targetMapLarger && (c.x > ShipInteriorMod2.shipOriginMap.Size.x || c.z > ShipInteriorMod2.shipOriginMap.Size.z)))
                     {
-                        current.DrawGhost(current.pos + loc, new Color(0.8f, 0.2f, 0.2f, 0.35f));
-                        result = false;
-                    }
-                    if (targetMapLarger && ((current.pos + loc).x > ShipInteriorMod2.shipOriginMap.Size.x || (current.pos + loc).z > ShipInteriorMod2.shipOriginMap.Size.z))
-                    {
-                        current.DrawGhost(current.pos + loc, new Color(0.8f, 0.2f, 0.2f, 0.35f));
+                        current.DrawGhost(c, new Color(0.8f, 0.2f, 0.2f, 0.35f));
                         result = false;
                     }
                 }

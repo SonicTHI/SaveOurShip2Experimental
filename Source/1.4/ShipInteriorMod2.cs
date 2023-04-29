@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V85f6 active");
+			Log.Message("SOS2EXP V86 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -308,6 +308,19 @@ namespace SaveOurShip2
 					CompShuttleCosmetics.graphics.Add(thingToResolve.defName, graphicsResolved);
 					CompShuttleCosmetics.graphicsHover.Add(thingToResolve.defName, graphicsHoverResolved);
 				}
+				foreach (ThingDef thingToResolve in CompArcholifeCosmetics.GraphicsToResolve.Keys)
+                {
+					Graphic_Multi[] graphicsResolved = new Graphic_Multi[CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics.Count];
+					for (int i = 0; i < CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics.Count; i++)
+                    {
+						Graphic_Multi graphic = new Graphic_Multi();
+						GraphicRequest req = new GraphicRequest(typeof(Graphic_Multi), CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i].texPath, ShaderDatabase.Cutout, CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i].drawSize, Color.white, Color.white, CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i], 0, null, "");
+						graphic.Init(req);
+						graphicsResolved[i] = graphic;
+                    }
+
+					CompArcholifeCosmetics.graphics.Add(thingToResolve.defName, graphicsResolved);
+                }
 				loadedGraphics = true;
 			}
 		}
@@ -670,6 +683,8 @@ namespace SaveOurShip2
 			if (ModsConfig.RoyaltyActive)
 				royActive = true;
 
+			Dictionary<IntVec3, Color> spawnLights = new Dictionary<IntVec3, Color>();
+			Dictionary<IntVec3, Color> spawnSunLights = new Dictionary<IntVec3, Color>();
 
 			int size = shipDef.sizeX * shipDef.sizeZ;
 			List<Building> wreckDestroy = new List<Building>();
@@ -778,6 +793,14 @@ namespace SaveOurShip2
 							lord.AddPawn(pawn);
 						GenSpawn.Spawn(pawn, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map);
 						pawnsOnShip.Add(pawn);
+					}
+					else if(shape.shapeOrDef == "SoSLightEnabler")
+                    {
+						spawnLights.Add(new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), shape.color != Color.clear ? shape.color : Color.white);
+					}
+					else if (shape.shapeOrDef == "SoSSunLightEnabler")
+					{
+						spawnSunLights.Add(new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), shape.color != Color.clear ? shape.color : Color.white);
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
@@ -1220,6 +1243,30 @@ namespace SaveOurShip2
 						}
 						QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("ShipCombat"), null, parms), Find.TickManager.TicksGame + Rand.RangeInclusive(2000, 8000));
 						Find.Storyteller.incidentQueue.Add(qi);
+					}
+				}
+			}
+			foreach(IntVec3 position in spawnLights.Keys)
+            {
+				Building edifice = position.GetEdifice(map);
+				if (edifice != null)
+				{
+					CompSoShipPart part = edifice.TryGetComp<CompSoShipPart>();
+					if (part != null)
+					{
+						part.SpawnLight(ColorIntUtility.AsColorInt(spawnLights[position]), false);
+					}
+				}
+			}
+			foreach (IntVec3 position in spawnSunLights.Keys)
+			{
+				Building edifice = position.GetEdifice(map);
+				if (edifice != null)
+				{
+					CompSoShipPart part = edifice.TryGetComp<CompSoShipPart>();
+					if (part != null)
+					{
+						part.SpawnLight(null, true);
 					}
 				}
 			}
@@ -1702,8 +1749,8 @@ namespace SaveOurShip2
 
 			shipOriginMap = null;
 			Map sourceMap = core.Map;
-			if (targetMap == null)
-				targetMap = core.Map;
+            if (targetMap == null)
+                targetMap = core.Map;
 			bool targetMapIsSpace = targetMap.IsSpace();
 			bool sourceMapIsSpace = sourceMap.IsSpace();
 			bool inCombat = sourceMap.GetComponent<ShipHeatMapComp>().InCombat;
@@ -1782,7 +1829,7 @@ namespace SaveOurShip2
 					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(pos, sourceRoof));
 				}
 				sourceMap.roofGrid.SetRoof(pos, null);
-				if (playerMove)
+				if (core is Building_ShipBridge && playerMove) //home zone ships
 				{
 					sourceMap.areaManager.Home[pos] = false;
 					targetMap.areaManager.Home[adjustedPos] = true;
@@ -1909,7 +1956,7 @@ namespace SaveOurShip2
 							spawnThing.Position += adjustment;
 						try
 						{
-							if (!spawnThing.Destroyed)
+							if (!spawnThing.Destroyed && spawnThing.TryGetComp<CompShipLight>()==null)
 							{
 								spawnThing.SpawnSetup(targetMap, false);
 							}
@@ -1944,9 +1991,8 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("moveThings");
 			AirlockBugFlag = false;
-
-			//move zones
-			if (zonesToCopy.Any())
+            //move zones
+            if (zonesToCopy.Any())
 			{
 				foreach (Zone zone in zonesToCopy) //only move fully contained zones
 				{
@@ -2280,8 +2326,8 @@ namespace SaveOurShip2
 			RemoveShip(area.ToList(), map, true);
 		}
 		public static void RemoveShip(List<IntVec3> area, Map map, bool planetTravel)
-		{
-			AirlockBugFlag = true;
+        {
+            AirlockBugFlag = true;
 			List<Thing> things = new List<Thing>();
 			List<Zone> zones = new List<Zone>();
 			foreach (IntVec3 pos in area)
@@ -2318,8 +2364,8 @@ namespace SaveOurShip2
 			}
 			AirlockBugFlag = false;
 
-			//regen affected map layers
-			List<Section> sourceSec = new List<Section>();
+            //regen affected map layers
+            List<Section> sourceSec = new List<Section>();
 			if (zones.Any())
 			{
 				foreach (Zone zone in zones) //only remove fully contained zones

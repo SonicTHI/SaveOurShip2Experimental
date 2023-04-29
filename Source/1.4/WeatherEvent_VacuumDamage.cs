@@ -24,46 +24,55 @@ namespace RimWorld
         }
         public override void FireEvent()
         {
-            List<Pawn> allPawns = base.map.mapPawns.AllPawnsSpawned;
+            List<Pawn> allPawns = map.mapPawns.AllPawnsSpawned;
             List<Pawn> pawnsToDamage = new List<Pawn>();
             List<Pawn> pawnsToSuffocate = new List<Pawn>();
             foreach (Pawn pawn in allPawns.Where(p => !p.Dead))
             {
                 byte eva = ShipInteriorMod2.EVAlevel(pawn);
-                if (eva < 4)//limited EVA
+                if (eva > 3)
+                    continue;
+                Room room = pawn.Position.GetRoom(map);
+                if (ShipInteriorMod2.ExposedToOutside(room))
                 {
-                    Room room = pawn.Position.GetRoom(base.map);
-                    if (ShipInteriorMod2.ExposedToOutside(room))
+                    RunFromVacuum(pawn);
+                    if (eva == 3)//has inactive bubble
                     {
-                        RunFromVacuum(pawn);
-                        if (eva == 3)//has inactive bubble
-                        {
-                            eva = ActivateBubble(pawn);
-                        }
-                        else if (eva == 2)//has skin
-                            pawnsToSuffocate.Add(pawn);
-                        else
-                            pawnsToDamage.Add(pawn);
+                        eva = ActivateBubble(pawn);
                     }
-                    //in ship, no air
-                    else if (!room.Map.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any() && eva != 1)
+                    else if (eva == 2)//has skin
+                        pawnsToSuffocate.Add(pawn);
+                    else
+                        pawnsToDamage.Add(pawn);
+                }
+                //in ship, no air
+                else if (!room.Map.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any() && eva != 1)
+                {
+                    if (eva == 3)
                     {
-                        if (eva == 3)
-                        {
-                            eva = ActivateBubble(pawn);
-                        }
-                        else
-                            pawnsToSuffocate.Add(pawn);
+                        eva = ActivateBubble(pawn);
                     }
+                    else
+                        pawnsToSuffocate.Add(pawn);
                 }
             }
             foreach (Pawn thePawn in pawnsToDamage)
             {
+                if (thePawn.InBed() && thePawn.CurrentBed() is Building_SpaceCrib crib)
+                {
+                    crib.UpdateState(true);
+                    continue;
+                }
                 thePawn.TakeDamage(new DamageInfo(DefDatabase<DamageDef>.GetNamed("VacuumDamage"), 1));
                 HealthUtility.AdjustSeverity(thePawn, HediffDef.Named("SpaceHypoxia"), 0.025f);
             }
             foreach (Pawn thePawn in pawnsToSuffocate)
             {
+                if (thePawn.InBed() && thePawn.CurrentBed() is Building_SpaceCrib crib)
+                {
+                    crib.UpdateState(true);
+                    continue;
+                }
                 HealthUtility.AdjustSeverity(thePawn, HediffDef.Named("SpaceHypoxia"), 0.0125f);
             }
         }

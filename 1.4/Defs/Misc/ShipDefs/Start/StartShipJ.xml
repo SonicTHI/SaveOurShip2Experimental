@@ -45,7 +45,7 @@
 			<li>
 				<key>C</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -390,7 +390,7 @@
 			<li>
 				<key>z</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 					<color>RGBA(1.000, 0.000, 0.000, 1.000)</color>
 				</value>
 			</li>
@@ -445,7 +445,7 @@
 			<li>
 				<key></key>
 				<value>
-					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
+					<shapeOrDef>SoSSunLightEnabler</shapeOrDef>
 				</value>
 			</li>
 			<li>

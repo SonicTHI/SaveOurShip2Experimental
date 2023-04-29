@@ -134,7 +134,7 @@
 			<li>
 				<key>R</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 					<color>RGBA(1.000, 0.000, 0.000, 1.000)</color>
 				</value>
 			</li>

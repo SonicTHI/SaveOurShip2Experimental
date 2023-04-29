@@ -131,6 +131,62 @@
 		</costList>
 		<seeThroughFog>true</seeThroughFog>
 	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipCombatShieldGeneratorMini</defName>
+		<label>miniaturized shield generator</label>
+		<designatorDropdown>Ship_Shields</designatorDropdown>
+		<description>A small shielding device which projects a momentum repulsor field. Shots can go out, but not in.\n\nDue to its small size, generates 125% of a standard shield generator's heat when it blocks attacks. If no heatsink capacity is available, the shield will be damaged and require repairs.\n\nCaptains are advised to drop shields once coolant reaches very high temperature, or risk heatsink damage.</description>
+		<size>(1,1)</size>
+		<receivesSignals>true</receivesSignals>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<Flammability>0.5</Flammability>
+			<WorkToBuild>4000</WorkToBuild>
+		</statBases>
+		<graphicData>
+			<texPath>Things/Building/Ship/ShieldGeneratorMini</texPath>
+			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<drawSize>(1,1)</drawSize>
+		</graphicData>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+			<li>PlaceWorker_ShipProjectileInterceptorRadius</li>
+		</placeWorkers>
+		<comps>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipCombatShield</compClass>
+				<heatMultiplier>1.25</heatMultiplier>
+				<shieldMin>10</shieldMin>
+				<shieldMax>30</shieldMax>
+				<shieldDefault>20</shieldDefault>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>1500</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Breakdownable"/>
+		</comps>
+		<rotatable>false</rotatable>
+		<selectable>true</selectable>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<designationCategory>Ship</designationCategory>
+		<constructEffect>ConstructMetal</constructEffect>
+		<tickerType>Normal</tickerType>
+		<researchPrerequisites>
+			<li>ShipShields</li>
+		</researchPrerequisites>
+		<costList>
+			<Plasteel>30</Plasteel>
+			<Silver>200</Silver>
+			<Steel>10</Steel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
 	<ThingDef ParentName="BuildingBase" Name="ShipHeatConduit">
 		<defName>ShipHeatConduit</defName>
 		<label>thermal conduit</label>

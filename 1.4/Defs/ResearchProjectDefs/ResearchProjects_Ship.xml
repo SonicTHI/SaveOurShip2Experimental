@@ -209,8 +209,8 @@
 
   <ResearchProjectDef ParentName="ShipResearchProjectBase">
     <defName>ShipCryptosleep</defName>
-    <label>automatic ejection</label>
-    <description>Construct a specialized cryptosleep casket which does not need to be opened manually and can function as an escape pod. It would be a good idea to have at least one aboard a starship.</description>
+    <label>escape pods</label>
+    <description>Construct a specialized cryptosleep casket capable of surviving atmospheric re-entry, and which does not need to be opened manually. It would be a good idea to have at least one aboard a starship.</description>
     <baseCost>800</baseCost>
     <techLevel>Spacer</techLevel>
     <prerequisites>

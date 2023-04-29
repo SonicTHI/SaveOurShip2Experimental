@@ -101,6 +101,12 @@ namespace Verse
 
         public override Material MatAt(Rot4 rot, Thing thing = null)
         {
+            if (thing != null && thing is Building_SpaceCrib crib)
+            {
+                if (crib.iAmClosed)
+                    return this.mat;
+                return this.matOff;
+            }
             if (thing.TryGetComp<CompPowerTrader>() == null || (thing.TryGetComp<CompPowerTrader>().PowerNet != null && thing.TryGetComp<CompPowerTrader>().PowerOn && (thing.TryGetComp<CompRefuelable>()==null || thing.TryGetComp<CompRefuelable>().Fuel>0)))
             {
                 return this.mat;

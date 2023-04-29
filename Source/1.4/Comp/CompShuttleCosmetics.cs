@@ -59,14 +59,14 @@ namespace RimWorld
             if(triggeredByChange)
                 parent.GetComp<CompShuttleCosmetics>().whichVersion = FloatMenuWithCallback.whichOptionWasChosen;
             int whichVersion = parent.GetComp<CompShuttleCosmetics>().whichVersion;
-            if (parent is Pawn)
+            if (parent is Pawn pawn)
             {
-                ((Pawn)parent).Drawer.renderer.graphics.nakedGraphic = graphicsHover[parent.def.defName][whichVersion];
-                ((Pawn)parent).Drawer.renderer.graphics.ClearCache();
+                pawn.Drawer.renderer.graphics.nakedGraphic = graphicsHover[parent.def.defName][whichVersion];
+                pawn.Drawer.renderer.graphics.ClearCache();
             }
             else
             {
-                typeof(Thing).GetField("graphicInt", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(parent, graphics[parent.def.defName][whichVersion]);
+                parent.graphicInt=graphics[parent.def.defName][whichVersion];
                 parent.DirtyMapMesh(parent.Map);
             }
         }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 	<packageId>kentington.saveourship2</packageId>
-	<author>Kentington, Thain, SonicTHI</author>
+	<author>Kentington, Thain, SonicTHI, Owlchemist</author>
 	<name>Save Our Ship 2</name>
 	<description>A comprehensive overhaul of spaceflight.</description>
 	<url/>
@@ -14,11 +14,6 @@
 			<displayName>Harmony</displayName>
 			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
 			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
-		</li>
-		<li>
-			<packageId>Murmur.WallLight</packageId>
-			<displayName>Wall Light</displayName>
-			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=1423699208</steamWorkshopUrl>
 		</li>
 	</modDependencies>
 	<loadAfter>

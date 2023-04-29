@@ -308,13 +308,14 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ref string __result)
 		{
-			if (!Find.CurrentMap.IsSpace()) return;
+			Map map = Find.CurrentMap;
+			if (!map.IsSpace()) return;
 
-			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(Find.CurrentMap)))
+			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(map)))
 			{
 				if (__result.StartsWith("IndoorsUnroofed".Translate() + " (1)"))
                 {
-					__result = "Breach detected!" + __result.Remove(0, "IndoorsUnroofed".Translate().Length + 4);
+					__result = "Breach detected!".Colorize(Color.red) + __result.Remove(0, "IndoorsUnroofed".Translate().Length + 4);
 				}
 				__result += " (Vacuum)";
 			}
@@ -323,7 +324,7 @@ namespace SaveOurShip2
 				if (Find.CurrentMap.GetComponent<ShipHeatMapComp>().LifeSupports.Where(s => s.active).Any())
 					__result += " (Breathable Atmosphere)";
 				else
-					__result += " (Non-Breathable Atmosphere)";
+					__result += " (Non-Breathable Atmosphere)".Colorize(Color.yellow);
 			}
 		}
 	}
@@ -1221,7 +1222,11 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix()
 		{
-			if (ShipInteriorMod2.shipOriginRoot != null)
+			if (WorldSwitchUtility.SaveShipFlag)
+			{
+				WorldSwitchUtility.SaveShip((Building_ShipBridge)ShipInteriorMod2.shipOriginRoot);
+			}
+			else if (ShipInteriorMod2.shipOriginRoot != null)
 			{
 				ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
 				Map map = ShipInteriorMod2.GeneratePlayerShipMap(ShipInteriorMod2.shipOriginRoot.Map.Size);
@@ -1305,14 +1310,14 @@ namespace SaveOurShip2
 				return;
             foreach (Thing t in ___map.thingGrid.ThingsAt(c))
             {
-                var roofComp = t.TryGetComp<CompRoofMe>();
+                var roofComp = t.TryGetComp<CompSoShipPart>();
                 if (roofComp != null)
                 {
                     roofComp.SetShipTerrain(c);
                     break;
                 }
             }
-        }
+		}
 	}
 
 	[HarmonyPatch(typeof(RoofGrid), "SetRoof")]
@@ -1324,7 +1329,7 @@ namespace SaveOurShip2
 				return true;
 			foreach (Thing t in c.GetThingList(___map).Where(t => t is Building))
 			{
-				if (t.TryGetComp<CompRoofMe>()?.Props.roof ?? false)
+				if (t.TryGetComp<CompSoShipPart>()?.Props.roof ?? false)
 				{
 					var cellIndex = ___map.cellIndices.CellToIndex(c);
 					if (___roofGrid[cellIndex] == def)
@@ -1359,6 +1364,8 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(IEnumerable<IntVec3> cells, Map map)
 		{
+			if (!map.IsSpace())
+				return;
 			foreach (IntVec3 cell in cells)
 			{
 				if (map.IsSpace() && !cell.Roofed(map))
@@ -1412,7 +1419,7 @@ namespace SaveOurShip2
 						}
 					}
 				}
-				if (__instance.Faction == Faction.OfPlayer)
+				if (__instance.def.CanHaveFaction && __instance.Faction == Faction.OfPlayer && __instance.def.blueprintDef != null && __instance.def.researchPrerequisites.All(r => r.IsFinished)) //place blueprints
 					GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
 					__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
 			}
@@ -1459,9 +1466,15 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(ref DamageInfo dinfo, Building_Turret __instance)
 		{
-			ThingWithComps t = __instance.Position.GetFirstThingWithComp<CompRoofMe>(__instance.Map);
-			if (t != null && !t.GetComp<CompRoofMe>().Props.roof && !t.GetComp<CompRoofMe>().Props.wreckage)
+			foreach (Thing t in __instance.Position.GetThingList(__instance.Map))
+			{
+				var shipPart = t.TryGetComp<CompSoShipPart>();
+				if (shipPart != null && shipPart.Props.isHardpoint)
+				{
 					dinfo.SetAmount(dinfo.Amount / 2);
+					break;
+				}
+			}
 			return true;
 		}
 	}
@@ -2844,7 +2857,8 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
+	//No longer necessary in 1.4
+	/*[HarmonyPatch(typeof(Pawn), "GetGizmos")]
 	public static class AnimalsHaveGizmosToo
 	{
 		public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
@@ -2857,7 +2871,7 @@ namespace SaveOurShip2
 				__result = giz;
 			}
 		}
-	}
+	}*/
 
 	[HarmonyPatch(typeof(CompSpawnerPawn), "TrySpawnPawn")]
 	public static class SpaceCreaturesAreHungry
@@ -3594,7 +3608,8 @@ namespace SaveOurShip2
 				Page_ConfigureIdeo page_ConfigureIdeo = new Page_ConfigureIdeo();
 				page_ConfigureIdeo.prev = __instance.prev;
 				page_ConfigureIdeo.next = __instance.next;
-				__instance.next.prev = page_ConfigureIdeo;
+				if (__instance.next != null)
+					__instance.next.prev = page_ConfigureIdeo;
 				Find.WindowStack.Add(page_ConfigureIdeo);
 				__instance.Close();
 			}
@@ -4284,4 +4299,78 @@ namespace SaveOurShip2
 
 		}
 	}*/
+
+	//Space crib
+	[HarmonyPatch(typeof(GenTemperature), "TryGetTemperatureForCell")]
+	public static class BabiesAreSafeInSpaceCaskets
+	{
+		public static void Postfix(IntVec3 c, Map map, ref float tempResult)
+		{
+			List<Thing> list = map.thingGrid.ThingsListAtFast(c);
+			foreach (Thing thing in list)
+			{
+				if (thing is Building_SpaceCrib)
+					tempResult = 21f;
+			}
+		}
+
+		//Well, shit, that didn't work. Gonna have to do this the slow way.
+		/*public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+			//First, find the second-last return statement
+
+			List<int> returns = new List<int>();
+			for(int i=0;i<instructions.Count();i++)
+            {
+				CodeInstruction instr = instructions.ElementAt(i);
+				if (instr.opcode == OpCodes.Ret)
+					returns.Add(i);
+            }
+			int secondLastRet = returns[returns.Count - 2];
+
+			List<CodeInstruction> newInstructions = new List<CodeInstruction>();
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldloc_0));
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldloc_1));
+			newInstructions.Add(CodeInstruction.Call("System.Collections.Generic.List`1[[Verse.Thing, Assembly-CSharp, Version=1.4.8446.19495, Culture=neutral, PublicKeyToken=null]]:get_Item"));
+			newInstructions.Add(new CodeInstruction(OpCodes.Isinst, typeof(Building_SpaceCrib)));
+			newInstructions.Add(new CodeInstruction(OpCodes.Brfalse, 5)); //This is the line that keeps breaking the stupid transpiler, can't figure out what it expects as the offset
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldarg, 2));
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldc_I4, 21));
+			newInstructions.Add(new CodeInstruction(OpCodes.Stind_R4));
+			newInstructions.Add(new CodeInstruction(OpCodes.Ldc_I4, 1));
+			newInstructions.Add(new CodeInstruction(OpCodes.Ret));
+
+			List<CodeInstruction> toReturn = new List<CodeInstruction>();
+			for (int i = 0; i <= secondLastRet; i++)
+				toReturn.Add(instructions.ElementAt(i));
+			foreach (CodeInstruction instr in newInstructions)
+				toReturn.Add(instr);
+			for (int i = secondLastRet + 1; i < instructions.Count(); i++)
+				toReturn.Add(instructions.ElementAt(i));
+			return toReturn;			
+        }*/
+
+		public static void ActuallyNotPostfixPostfix(ref float tempResult, List<Thing> list)
+		{
+			foreach (Thing thing in list)
+			{
+				if (thing is Building_SpaceCrib)
+				{
+					tempResult = 21f;
+					return;
+				}
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(PawnGraphicSet), "SetAllGraphicsDirty")]
+	public static class PreserveCosmetics
+    {
+		public static void Postfix(PawnGraphicSet __instance)
+        {
+			CompArcholifeCosmetics cosmetics = __instance.pawn.TryGetComp<CompArcholifeCosmetics>();
+			if (cosmetics != null)
+				CompArcholifeCosmetics.ChangeAnimalGraphics(__instance.pawn, cosmetics.Props, cosmetics);
+        }
+    }
 }

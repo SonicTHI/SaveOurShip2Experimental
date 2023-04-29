@@ -9831,189 +9831,189 @@
 				<z>54</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>79</x>
 				<z>19</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>73</x>
 				<z>24</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>73</x>
 				<z>26</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>87</x>
 				<z>26</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>87</x>
 				<z>24</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>95</x>
 				<z>25</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>95</x>
 				<z>43</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>65</x>
 				<z>43</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>65</x>
 				<z>34</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>65</x>
 				<z>25</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>70</x>
 				<z>28</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>70</x>
 				<z>22</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>70</x>
 				<z>31</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>70</x>
 				<z>37</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>70</x>
 				<z>40</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>90</x>
 				<z>40</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>90</x>
 				<z>46</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>90</x>
 				<z>22</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>90</x>
 				<z>28</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>73</x>
 				<z>35</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>73</x>
 				<z>33</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>87</x>
 				<z>44</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>87</x>
 				<z>42</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>73</x>
 				<z>42</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>73</x>
 				<z>44</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>78</x>
 				<z>28</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>78</x>
 				<z>31</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>31</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>28</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>37</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>40</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>78</x>
 				<z>40</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>78</x>
 				<z>37</z>
 				<rot>1</rot>
@@ -10029,59 +10029,59 @@
 				<z>52</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>53</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>50</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>47</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>84</x>
 				<z>55</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>76</x>
 				<z>55</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>69</x>
 				<z>62</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>69</x>
 				<z>70</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>84</x>
 				<z>77</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>91</x>
 				<z>70</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>91</x>
 				<z>62</z>
 				<rot>3</rot>
@@ -10157,13 +10157,13 @@
 				<z>62</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>81</x>
 				<z>60</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>79</x>
 				<z>60</z>
 				<rot>1</rot>
@@ -10239,7 +10239,7 @@
 				<z>72</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>84</x>
 				<z>66</z>
 				<rot>3</rot>
@@ -10737,35 +10737,35 @@
 				<z>72</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>75</x>
 				<z>61</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>85</x>
 				<z>61</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>89</x>
 				<z>59</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>71</x>
 				<z>59</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>71</x>
 				<z>73</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>89</x>
 				<z>73</z>
 				<rot>2</rot>
@@ -15248,94 +15248,94 @@
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>67</x>
 				<z>64</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>67</x>
 				<z>68</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>39</x>
 				<z>64</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>33</x>
 				<z>64</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>33</x>
 				<z>68</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>39</x>
 				<z>68</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>28</x>
 				<z>73</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>30</x>
 				<z>73</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>44</x>
 				<z>73</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>42</x>
 				<z>73</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>58</x>
 				<z>59</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>56</x>
 				<z>59</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>42</x>
 				<z>59</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>44</x>
 				<z>59</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>30</x>
 				<z>59</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>28</x>
 				<z>59</z>
 				<rot>1</rot>
@@ -15424,13 +15424,13 @@
 				<z>81</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>79</x>
 				<z>80</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>81</x>
 				<z>80</z>
 				<rot>3</rot>
@@ -15912,19 +15912,19 @@
 				<z>84</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>83</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>78</x>
 				<z>83</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>78</x>
 				<z>85</z>
 				<rot>1</rot>
@@ -15960,13 +15960,13 @@
 				<z>95</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>81</x>
 				<z>95</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>79</x>
 				<z>95</z>
 				<rot>1</rot>
@@ -16197,19 +16197,19 @@
 				<z>89</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>82</x>
 				<z>85</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>81</x>
 				<z>93</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>79</x>
 				<z>93</z>
 				<rot>2</rot>
@@ -17890,82 +17890,82 @@
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>95</x>
 				<z>70</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>101</x>
 				<z>70</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>101</x>
 				<z>62</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>95</x>
 				<z>62</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>127</x>
 				<z>70</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>133</x>
 				<z>70</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>125</x>
 				<z>70</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>133</x>
 				<z>62</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>102</x>
 				<z>64</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>93</x>
 				<z>64</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>93</x>
 				<z>68</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>132</x>
 				<z>64</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>132</x>
 				<z>68</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>126</x>
 				<z>68</z>
 				<rot>2</rot>
@@ -18198,18 +18198,18 @@
 				<z>59</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>112</x>
 				<z>70</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>116</x>
 				<z>62</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>112</x>
 				<z>62</z>
 			</li>
@@ -18454,13 +18454,13 @@
 				<z>86</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>75</x>
 				<z>87</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>75</x>
 				<z>84</z>
 				<rot>3</rot>
@@ -18913,7 +18913,7 @@
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>85</x>
 				<z>83</z>
 				<rot>1</rot>
@@ -18991,12 +18991,12 @@
 				<z>46</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>85</x>
 				<z>46</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>85</x>
 				<z>54</z>
 				<rot>2</rot>
@@ -20001,13 +20001,13 @@
 				<z>65</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>24</x>
 				<z>67</z>
 				<rot>2</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>24</x>
 				<z>65</z>
 			</li>
@@ -21498,24 +21498,24 @@
 				<z>7</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>85</x>
 				<z>6</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>90</x>
 				<z>11</z>
 				<rot>3</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>26</x>
 				<z>67</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>26</x>
 				<z>65</z>
 				<rot>1</rot>
@@ -21772,13 +21772,13 @@
 				<z>59</z>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>15</x>
 				<z>60</z>
 				<rot>1</rot>
 			</li>
 			<li>
-				<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+				<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				<x>15</x>
 				<z>58</z>
 				<rot>1</rot>

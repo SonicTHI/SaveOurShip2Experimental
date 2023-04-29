@@ -108,6 +108,7 @@
     <Compile Include="Building\Building_ShipTurret.cs" />
     <Compile Include="Building\Building_ShipTurretTorpedo.cs" />
     <Compile Include="Building\Building_ShipVent.cs" />
+    <Compile Include="Building\Building_SpaceCrib.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitTribalPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="CompProps\CompProperties_SalvageBay.cs" />
     <Compile Include="Comp\CompAICrewmate.cs" />
     <Compile Include="Comp\CompArchoHullConversion.cs" />
+    <Compile Include="Comp\CompArcholifeCosmetics.cs" />
     <Compile Include="Comp\CompBecomeBuilding.cs" />
     <Compile Include="Comp\CompBecomePawn.cs" />
     <Compile Include="Comp\CompBlackBoxConsole.cs" />
@@ -149,6 +151,7 @@
     <Compile Include="Comp\CompPowerTraderOverdrivable.cs" />
     <Compile Include="CompProps\CompProperties_ArchoHullConversion.cs" />
     <Compile Include="CompProps\CompProperties_Archolife.cs" />
+    <Compile Include="CompProps\CompProperties_ArcholifeCosmetics.cs" />
     <Compile Include="CompProps\CompProperties_BuildingConsciousness.cs" />
     <Compile Include="CompProps\CompProperties_EngineTrail.cs" />
     <Compile Include="CompProps\CompProperties_BecomeBuilding.cs" />
@@ -170,6 +173,7 @@
     <Compile Include="CompProps\CompProperties_PowerPlantSolarShip.cs" />
     <Compile Include="CompProps\CompProperties_ShuttleCosmetics.cs" />
     <Compile Include="CompProps\CompProperties_CryptoLaunchable.cs" />
+    <Compile Include="CompProps\CompProperties_ShipLight.cs" />
     <Compile Include="CompProps\CompProperties_SoShipPart.cs" />
     <Compile Include="CompProps\CompProperties_SpinalMount.cs" />
     <Compile Include="CompProps\CompProperties_ShipHeat.cs" />
@@ -188,7 +192,11 @@
     <Compile Include="Comp\CompArcholife.cs" />
     <Compile Include="Comp\CompShuttleCosmetics.cs" />
     <Compile Include="Comp\CompCryptoLaunchable.cs" />
+    <Compile Include="Comp\CompShipLight.cs" />
+    <Compile Include="Comp\CompSoSGlower.cs" />
     <Compile Include="Comp\CompSoShipPart.cs" />
+    <Compile Include="Comp\CompSoSPowerTrader.cs" />
+    <Compile Include="Comp\CompSoSSchedule.cs" />
     <Compile Include="Comp\CompSpinalMount.cs" />
     <Compile Include="Comp\CompSoSUnlock.cs" />
     <Compile Include="Comp\CompShuttleLaunchable.cs" />
@@ -314,8 +322,6 @@
     <Compile Include="Quest\QuestNode_GenerateThingSetArchotech.cs" />
     <Compile Include="Quest\QuestPart_ArchotechSpawn.cs" />
     <Compile Include="Obsolete\PlaceWorker_InsideStarship.cs" />
-    <Compile Include="Comp\CompRoofMe.cs" />
-    <Compile Include="CompProps\CompProperties_RoofMe.cs" />
     <Compile Include="ScenPart_StartInSpace.cs" />
     <Compile Include="SectionLayer_ShipHeat.cs" />
     <Compile Include="Obsolete\ShipCombatManager.cs" />

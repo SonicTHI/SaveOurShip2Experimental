@@ -23,8 +23,8 @@ namespace RimWorld
         public Thing WhichPawn;
         public Thing RezPlz;
 
-        static Color[] colors = new Color[] { new Color(0, 1f, 0.5f, 0.8f), new Color(0, 0.5f, 1f, 0.8f), new Color(1f, 0.25f, 0.25f, 0.8f), new Color(1f, 0.8f, 0, 0.8f), new Color(0.75f, 0, 1f, 0.8f), new Color(1f, 0.5f, 0, 0.8f), new Color(0.1f, 0.1f, 0.1f, 0.8f), new Color(0.9f, 0.9f, 0.9f, 0.8f) };
-        static string[] colorNames = new string[] { "Green", "Blue", "Red", "Yellow", "Purple", "Orange", "Black", "White" };
+        public static Color[] colors = new Color[] { new Color(0, 1f, 0.5f, 0.8f), new Color(0, 0.5f, 1f, 0.8f), new Color(1f, 0.25f, 0.25f, 0.8f), new Color(1f, 0.8f, 0, 0.8f), new Color(0.75f, 0, 1f, 0.8f), new Color(1f, 0.5f, 0, 0.8f), new Color(0.1f, 0.1f, 0.1f, 0.8f), new Color(0.9f, 0.9f, 0.9f, 0.8f) };
+        public static string[] colorNames = new string[] { "Green", "Blue", "Red", "Yellow", "Purple", "Orange", "Black", "White" };
         public static DamageDef FormgelSlime = DefDatabase<DamageDef>.GetNamed("FormgelSlime");
 
         bool SavedDeep = false;
@@ -177,6 +177,8 @@ namespace RimWorld
                 Consciousness.carryTracker.TryDropCarriedThing(Consciousness.Position, ThingPlaceMode.Near, out thing);
             if (Consciousness.Spawned)
             {
+                foreach(Apparel apparel in Consciousness.apparel.WornApparel)
+                    apparel.wornByCorpseInt = false;
                 Consciousness.apparel.DropAll(Consciousness.Position);
                 Consciousness.inventory.DropAllNearPawn(Consciousness.Position);
             }
@@ -227,7 +229,20 @@ namespace RimWorld
                         if (Find.TickManager.TicksGame < this.HologramRespawnTick)
                         {
                             spawn.disabled = true;
-                            spawn.disabledReason = "SoSSpawnHologramDelay".Translate(GenDate.ToStringTicksToPeriod(this.HologramRespawnTick - Find.TickManager.TicksGame));
+                            spawn.disabledReason = "SoSSpawnHologramDelay".Translate(GenDate.ToStringTicksToPeriod(this.HologramRespawnTick-Find.TickManager.TicksGame));
+                            if (DebugSettings.godMode)
+                            {
+                                Command_Action spawn2 = new Command_Action
+                                {
+                                    action = delegate
+                                    {
+                                        SpawnHologram();
+                                    },
+                                    defaultLabel = "Dev: Spawn formgel immediately",
+                                    defaultDesc = "SoSSpawnHologramDesc".Translate()
+                                };
+                                gizmos.Add(spawn2);
+                            }
                         }
                         gizmos.Add(spawn);
                     }
@@ -440,8 +455,6 @@ namespace RimWorld
         public override void PostDeSpawn(Map map)
         {
             map.GetComponent<ShipHeatMapComp>().Spores.Remove(this);
-            if (ShipInteriorMod2.AirlockBugFlag)
-                HologramDestroyed(false);
             base.PostDeSpawn(map);
         }
 
@@ -470,6 +483,8 @@ namespace RimWorld
                     HediffPawnIsHologram existingHediff = ((Pawn)newConsc).health.hediffSet.GetFirstHediff<HediffPawnIsHologram>();
                     existingHediff.consciousnessSource.GetComp<CompBuildingConsciousness>().Consciousness = null;
                     existingHediff.consciousnessSource.DirtyMapMesh(existingHediff.consciousnessSource.Map);
+                    if (existingHediff.consciousnessSource is Building_ShipBridge bridge)
+                        existingHediff.consciousnessSource.GetComp<CompBuildingConsciousness>().AIName = "Unnamed AI";
                     ((Pawn)newConsc).health.RemoveHediff(existingHediff);
                 }
 
@@ -498,11 +513,13 @@ namespace RimWorld
             {
                 hediffs.Add(hediff);
             }
+            HediffPawnIsHologram.SafeRemoveFlag = true;
             foreach (Hediff hediff in hediffs)
             {
                 if (hediff.def.isBad || hediff.def == Props.holoHediff)
                     Consciousness.health.RemoveHediff(hediff);
             }
+            HediffPawnIsHologram.SafeRemoveFlag = false;
             Consciousness.needs.AddOrRemoveNeedsAsAppropriate();
             HologramColor = new Color(HologramColor.r, HologramColor.g, HologramColor.b, 1);
             Consciousness.story.HairColor = HologramColor;

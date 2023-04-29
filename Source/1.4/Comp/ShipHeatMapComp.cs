@@ -17,7 +17,7 @@ namespace RimWorld
 
         public int[] grid;
         public bool heatGridDirty;
-        bool loaded = false;
+        public bool loaded = false;
 
         public ShipHeatMapComp(Map map) : base(map)
         {

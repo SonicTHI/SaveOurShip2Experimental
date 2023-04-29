@@ -6,7 +6,7 @@
 		<race>Human</race>
 		<combatPower>100</combatPower>
 		<backstoryCategories>
-			<li>Civil</li>
+			<li>Offworld</li>
 		</backstoryCategories>
 		<defaultFactionType>AncientsHostile</defaultFactionType>
 		<backstoryCryptosleepCommonality>1</backstoryCryptosleepCommonality>

@@ -2782,6 +2782,7 @@
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<comps>
 			<li Class="CompProperties_SoShipPart">
+				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
 				<foam>true</foam>
 				<roof>true</roof>

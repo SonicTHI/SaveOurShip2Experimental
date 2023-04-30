@@ -76,8 +76,6 @@ namespace RimWorld
             base.PostSpawnSetup(respawningAfterLoad);
             map = parent.Map;
             mapComp = map.GetComponent<ShipHeatMapComp>();
-            if (!parent.def.building.shipPart)
-                return;
             isTile = parent.def == ResourceBank.ThingDefOf.ShipHullTile;
             isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
             isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
@@ -115,8 +113,6 @@ namespace RimWorld
             base.PostDeSpawn(map);
             if (myLight != null)
                 myLight.DeSpawn();
-            if (!parent.def.building.shipPart)
-                return;
             if (!(Props.isPlating || Props.isHardpoint || Props.isHull))
                 return;
             foreach (IntVec3 pos in cellsUnder)

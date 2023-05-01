@@ -2579,4 +2579,22 @@
 		<solidTime>0</solidTime>
 		<fadeOutTime>0.2</fadeOutTime>
 	</FleckDef>
+	
+  <ThingDef ParentName="MoteBase">
+    <defName>Mote_HeatsinkPurge</defName>
+    <thingClass>MoteAttached</thingClass>
+    <altitudeLayer>MoteOverhead</altitudeLayer>
+    <mote>
+      <fadeInTime>0.01</fadeInTime>
+      <solidTime>0</solidTime>
+      <fadeOutTime>0.4</fadeOutTime>
+      <growthRate>325</growthRate>
+    </mote>
+    <graphicData>
+      <texPath>Things/Mote/SoSHeatPurge</texPath>
+      <graphicClass>Graphic_MoteWithAgeSecs</graphicClass>
+      <shaderType>MoteGlow</shaderType>
+      <drawSize>(0.1, 0.1)</drawSize>
+    </graphicData>
+  </ThingDef>
 </Defs>

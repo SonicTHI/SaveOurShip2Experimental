@@ -17,6 +17,7 @@ namespace RimWorld
         public static Graphic ShipHeatGraphic = new Graphic_LinkedShipConduit(GraphicDatabase.Get<Graphic_Single>("Things/Building/Ship/Atlas_CoolantConduit", ShaderDatabase.Cutout));
 
         public ShipHeatNet myNet=null;
+        public bool venting = false;
 
         public CompProperties_ShipHeat Props
         {
@@ -100,6 +101,11 @@ namespace RimWorld
             //td change to check for adj nets, if at end of line simple remove, else regen
             mapComp.cachedPipes.Remove(this);
             mapComp.heatGridDirty = true;
+        }
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look<bool>(ref venting, "venting");
         }
     }
 }

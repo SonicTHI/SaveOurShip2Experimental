@@ -31,7 +31,7 @@ namespace RimWorld
             base.Tick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (heatComp.myNet == null || mapComp.InCombat)
+                if (heatComp.myNet == null || mapComp.InCombat || heatComp.venting)
                 {
                     flickComp.SwitchIsOn = false;
                     active = false;

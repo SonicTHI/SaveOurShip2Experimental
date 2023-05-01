@@ -273,6 +273,20 @@ namespace RimWorld
 					};
 					yield return toggleShields;
                 }
+                if (heatNet.Sinks.Any() && !heatNet.venting && heatNet.RatioInNetwork > 0.05f)
+                {
+                    Command_Action purge = new Command_Action
+                    {
+                        action = delegate
+                        {
+                            heatNet.StartVent(mapComp, this);
+                        },
+                        icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/ActiveVent"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipHeatPurge"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeDesc")
+                    };
+                    yield return purge;
+                }
                 //incombat
                 if (mapComp.InCombat)
                 {

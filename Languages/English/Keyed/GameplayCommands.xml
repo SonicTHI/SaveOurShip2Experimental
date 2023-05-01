@@ -229,4 +229,6 @@
 	<ShipWallLightDisco>Disco Mode</ShipWallLightDisco>
 	<ShipWallLightDiscoDesc>Set this light to cycle through the color spectrum</ShipWallLightDiscoDesc>
 	<ShipWallLightAdjacency>No adjacent rooms</ShipWallLightAdjacency>
+	<ShipHeatPurge>Active heat vent</ShipHeatPurge>
+	<ShipHeatPurgeDesc>Begin actively venting heat from heatsinks. All shields, weapons, and cloaks on this heat network will shut down, and heatsinks will vent heat five times as quickly.\n\nThis process cannot be canceled until the network is empty, making it a high-risk maneuver in combat. Outside of combat, the sudden heat spike may draw attention...</ShipHeatPurgeDesc>
 </LanguageData>

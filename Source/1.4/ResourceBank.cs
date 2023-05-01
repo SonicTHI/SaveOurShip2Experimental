@@ -66,9 +66,9 @@ namespace SaveOurShip2
 
 
 		[DefOf]
-        public static class ThingDefOf
-        {
-            public static ThingDef MechaniteFire;
+		public static class ThingDefOf
+		{
+			public static ThingDef MechaniteFire;
 			public static ThingDef ShipArchotechSpore;
 			public static ThingDef Ship_Beam;
 			public static ThingDef Ship_Beam_Wrecked;
@@ -88,28 +88,29 @@ namespace SaveOurShip2
 			public static ThingDef ShipShuttleBayLarge;
 			public static ThingDef ShipSalvageBay;
 			public static ThingDef SoS2DummyObject;
+			public static ThingDef Mote_HeatsinkPurge;
 		}
 
 		[DefOf]
-        public static class TerrainDefOf
-        {
-            public static TerrainDef EmptySpace;
+		public static class TerrainDefOf
+		{
+			public static TerrainDef EmptySpace;
 			public static TerrainDef FakeFloorInsideShip;
 			public static TerrainDef FakeFloorInsideShipMech;
 			public static TerrainDef FakeFloorInsideShipArchotech;
 			public static TerrainDef ShipWreckageTerrain;
 			public static TerrainDef FakeFloorInsideShipFoam;
-        }
+		}
 
 		[DefOf]
-        public static class RoofDefOf
-        {
+		public static class RoofDefOf
+		{
 			public static RoofDef RoofShip;
 		}
 
 		[DefOf]
-        public static class HediffDefOf
-        {
+		public static class HediffDefOf
+		{
 			public static HediffDef SpaceHypoxia;
 			public static HediffDef SoSArchotechLung;
 			public static HediffDef SoSArchotechSkin;
@@ -118,34 +119,34 @@ namespace SaveOurShip2
 		}
 
 		[DefOf]
-        public static class MemeDefOf
-        {
+		public static class MemeDefOf
+		{
 			[MayRequireIdeology]
 			public static MemeDef Structure_Archist;
 		}
 
 		[DefOf]
-        public static class BiomeDefOf
-        {
+		public static class BiomeDefOf
+		{
 			public static BiomeDef OuterSpaceBiome;
 		}
 
 		[DefOf]
-        public static class StorytellerDefOf
-        {
+		public static class StorytellerDefOf
+		{
 			public static StorytellerDef Sara;
 		}
 
 		[DefOf]
-        public static class ResearchProjectDefOf
-        {
+		public static class ResearchProjectDefOf
+		{
 			public static ResearchProjectDef ArchotechPillarA;
 			public static ResearchProjectDef ArchotechPillarB;
 		}
 
 		[DefOf]
 		public static class BackstoryDefOf
-        {
+		{
 			public static BackstoryDef SoSHologram;
 		}
 
@@ -153,6 +154,12 @@ namespace SaveOurShip2
 		public static class WeatherDefOf
 		{
 			public static WeatherDef OuterSpaceWeather;
+		}
+
+		[DefOf]
+		public static class SoundDefOf
+        {
+			public static SoundDef ShipPurgeHiss;
 		}
 	}
 }

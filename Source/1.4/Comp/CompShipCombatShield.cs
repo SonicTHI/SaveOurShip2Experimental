@@ -35,7 +35,7 @@ namespace RimWorld
             powerComp = parent.TryGetComp<CompPowerTrader>();
             breakComp = parent.TryGetComp<CompBreakdownable>();
             parent.Map.GetComponent<ShipHeatMapComp>().Shields.Add(this);
-            if (!respawningAfterLoad)
+            if (!respawningAfterLoad && !ShipInteriorMod2.AirlockBugFlag)
                 radiusSet = radius = Props.shieldDefault;
         }
         public override void PostDeSpawn(Map map)

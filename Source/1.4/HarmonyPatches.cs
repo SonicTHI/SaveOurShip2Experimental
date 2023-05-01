@@ -1420,7 +1420,7 @@ namespace SaveOurShip2
 						}
 					}
 				}
-				if (__instance.def.CanHaveFaction && __instance.Faction == Faction.OfPlayer && __instance.def.blueprintDef != null && __instance.def.researchPrerequisites.All(r => r.IsFinished)) //place blueprints
+				if (__instance.Faction == Faction.OfPlayer && __instance.def.IsResearchFinished) //place blueprints
 					GenConstruct.PlaceBlueprintForBuild(__instance.def, __instance.Position, __instance.Map,
 					__instance.Rotation, Faction.OfPlayer, __instance.Stuff);
 			}

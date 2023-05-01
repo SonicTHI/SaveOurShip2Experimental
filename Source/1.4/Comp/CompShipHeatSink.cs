@@ -109,6 +109,17 @@ namespace RimWorld
                     PushHeat(ratio);
                 }
             }
+            if (venting && Props.heatVent > 0 && this.parent.IsHashIntervalTick(25))
+            {
+                Mote obj = (Mote)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Mote_HeatsinkPurge);
+                obj.exactPosition = parent.TrueCenter();
+                obj.instanceColor = new Color(UnityEngine.Random.Range(0f,0.420f),0,UnityEngine.Random.Range(0.69f,1f));
+                obj.rotationRate = 1.2f;
+                if(Rand.Chance(0.2f))
+                    ResourceBank.SoundDefOf.ShipPurgeHiss.PlayOneShot(parent);
+                GenSpawn.Spawn(obj, parent.Position, map);
+                RemHeatFromNetwork(Props.heatVent);
+            }
         }
         public void PushHeat(float ratio, float heat = 0) //bleed into or adjacent room
         {

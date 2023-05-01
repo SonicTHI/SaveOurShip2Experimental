@@ -14,7 +14,6 @@ namespace RimWorld
     public class CompShipHeatPurge : CompShipHeatSink
     {
         static readonly float HEAT_PURGE_RATIO = 20;
-        static SoundDef HissSound = DefDatabase<SoundDef>.GetNamed("ShipPurgeHiss");
 
         public bool purging = false;
         bool start = false;
@@ -87,7 +86,7 @@ namespace RimWorld
                     FleckMaker.ThrowAirPuffUp(parent.DrawPos + new Vector3(0, 0, 1), parent.Map);
                     if (!hiss)
                     {
-                        HissSound.PlayOneShot(parent);
+                        ResourceBank.SoundDefOf.ShipPurgeHiss.PlayOneShot(parent);
                         hiss = true;
                     }
                 }

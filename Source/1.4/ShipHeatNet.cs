@@ -19,6 +19,7 @@ namespace RimWorld
         public int GridID;
         public float StorageCapacity { get; private set; }
         public float StorageUsed { get; private set; }
+        public bool venting;
 
         private bool ratioDirty = true; //if we add/rem heat, etc
         private float ratioInNetwork = 0;
@@ -78,6 +79,8 @@ namespace RimWorld
                 Shields.Add(shield);
             else if (!Connectors.Contains(comp))
                 Connectors.Add(comp);
+            if (comp.venting)
+                venting = true;
         }
         public void DeRegister(CompShipHeat comp)
         {
@@ -159,6 +162,41 @@ namespace RimWorld
             {
                 ((Building_ShipTurret)turret.parent).ResetForcedTarget();
             }
+        }
+
+        public void StartVent(ShipHeatMapComp comp, Building_ShipBridge core)
+        {
+            venting = true;
+            foreach (CompShipHeatSink sink in Sinks)
+                sink.venting = true;
+            foreach (CompShipCombatShield shield in Shields)
+                shield.venting = true;
+            foreach (CompShipHeat turret in Turrets)
+                turret.venting = true;
+            foreach (CompShipHeat cloak in Cloaks)
+                cloak.venting = true;
+            comp.anyPurging = true;
+            if(comp.map.IsPlayerHome && !comp.InCombat)
+            {
+                float attractAttentionChance = RatioInNetwork / 10f;
+                if(Rand.Chance(attractAttentionChance))
+                {
+                    comp.StartShipEncounter(core);
+                }
+            }
+        }
+
+        public void EndVent()
+        {
+            venting = false;
+            foreach (CompShipHeatSink sink in Sinks)
+                sink.venting = false;
+            foreach (CompShipCombatShield shield in Shields)
+                shield.venting = false;
+            foreach (CompShipHeat turret in Turrets)
+                turret.venting = false;
+            foreach (CompShipHeat cloak in Cloaks)
+                cloak.venting = false;
         }
     }
 }

@@ -46,7 +46,7 @@ namespace RimWorld
         {
             get
             {
-                if ((powerComp == null || powerComp.PowerOn))
+                if (!heatComp.venting && (powerComp == null || powerComp.PowerOn))
                 {
                     return true;
                 }

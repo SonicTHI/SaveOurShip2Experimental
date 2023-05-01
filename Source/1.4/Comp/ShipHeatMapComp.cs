@@ -18,6 +18,7 @@ namespace RimWorld
         public int[] grid;
         public bool heatGridDirty;
         public bool loaded = false;
+        public bool anyPurging = false;
 
         public ShipHeatMapComp(Map map) : base(map)
         {
@@ -33,7 +34,7 @@ namespace RimWorld
         public override void MapComponentUpdate()
         {
             base.MapComponentUpdate();
-            if (!heatGridDirty || (Find.TickManager.TicksGame % 60 != 0 && loaded))
+            if ((!heatGridDirty && !anyPurging) || (Find.TickManager.TicksGame % 60 != 0 && loaded))
             {
                 return;
             }
@@ -64,6 +65,15 @@ namespace RimWorld
                 list.Add(net);
             }
             cachedNets = list;
+
+            anyPurging = false;
+            foreach(ShipHeatNet net in cachedNets)
+            {
+                if (net.venting && net.RatioInNetwork <= 0.01f)
+                    net.EndVent();
+                else
+                    anyPurging = true;
+            }
 
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Buildings);
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Things);
@@ -687,14 +697,19 @@ namespace RimWorld
                                 purge.StartPurge();
                             }
                         }
-                        else if (ship.CombatShields.Any(shield => shield.shutDown)) //repower shields
+                        else
                         {
-                            foreach (var shield in ship.CombatShields)
+                            if (ship.CombatShields.Any(shield => shield.shutDown)) //repower shields
                             {
-                                if (shield.flickComp == null)
-                                    continue;
-                                shield.flickComp.SwitchIsOn = true;
+                                foreach (var shield in ship.CombatShields)
+                                {
+                                    if (shield.flickComp == null)
+                                        continue;
+                                    shield.flickComp.SwitchIsOn = true;
+                                }
                             }
+                            if (bridge.myNet.RatioInNetwork > 0.85f && !bridge.myNet.venting)
+                                bridge.myNet.StartVent(this, ship.Bridges.FirstOrDefault());
                         }
                     }
                 }

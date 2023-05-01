@@ -8,17 +8,9 @@ namespace RimWorld
     public class PlaceWorker_ShipProjectileInterceptorRadius : PlaceWorker
     {
 		public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, Color ghostCol, Thing thing = null)
-		{
-			if (def.Size.x < 3)
-            {
-                GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 10);
-                GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 20);
-            }
-			else
-            {
-                GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 20);
-                GenDraw.DrawCircleOutline(center.ToVector3Shifted(), 60);
-            }
+        {
+            GenDraw.DrawCircleOutline(center.ToVector3Shifted(), def.GetCompProperties<CompProperties_ShipHeat>().shieldMin);
+            GenDraw.DrawCircleOutline(center.ToVector3Shifted(), def.GetCompProperties<CompProperties_ShipHeat>().shieldMax);
 		}
 	}
 }

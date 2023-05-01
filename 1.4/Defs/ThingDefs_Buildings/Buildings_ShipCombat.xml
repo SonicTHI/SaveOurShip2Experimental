@@ -158,8 +158,8 @@
 				<compClass>CompShipCombatShield</compClass>
 				<heatMultiplier>1.25</heatMultiplier>
 				<shieldMin>10</shieldMin>
-				<shieldMax>15</shieldMax>
-				<shieldDefault>20</shieldDefault>
+				<shieldMax>20</shieldMax>
+				<shieldDefault>15</shieldDefault>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>

@@ -46,7 +46,7 @@ namespace RimWorld
                     output += "\n<color=red>DANGER! Heat level critical!</color>";
                 if (Prefs.DevMode)
                 {
-                    output += "\nGrid:" + myNet.GridID + " Ratio:" + myNet.RatioInNetwork.ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, myNet.RatioInNetwork).ToString("F0");
+                    output += "\nGrid:" + myNet.GridID + " Ratio:" + myNet.RatioInNetwork.ToString("F2") + " Depl ratio:" + myNet.DepletionRatio.ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, myNet.RatioInNetwork).ToString("F0");
                 }
             }
             else

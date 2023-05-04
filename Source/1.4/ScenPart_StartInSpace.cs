@@ -30,7 +30,7 @@ namespace RimWorld
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
 		public EnemyShipDef enemyShipDef;
-		public bool damageStart;
+        public bool damageStart;
 		public ShipStartFlags startType;
 		public override void ExposeData()
 		{
@@ -39,7 +39,7 @@ namespace RimWorld
 		}
 		public override void DoEditInterface(Listing_ScenEdit listing)
 		{
-			Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 3f);
+            Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 3f);
 			Rect rect1 = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 3f);
 			Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
 			Rect rect3 = new Rect(scenPartRect.x, scenPartRect.y + 2 * scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
@@ -64,12 +64,12 @@ namespace RimWorld
 			if (Widgets.ButtonText(rect2, enemyShipDef.label, true, true, true))
 			{
 				List<FloatMenuOption> list = new List<FloatMenuOption>();
-				foreach (EnemyShipDef localTd2 in DefDatabase<EnemyShipDef>.AllDefs.Where(t => startType == ShipStartFlags.Ship && t.startingShip == true && t.startingDungeon == false || startType == ShipStartFlags.Station && t.startingShip == true && t.startingDungeon == true || t.defName == "0").OrderBy(t => t.defName))
+				foreach (EnemyShipDef localTd2 in DefDatabase<EnemyShipDef>.AllDefs.Where(t => t.defName == "0" || (startType == ShipStartFlags.Ship && t.startingShip == true && t.startingDungeon == false) || (startType == ShipStartFlags.Station && t.startingShip == true && t.startingDungeon == true)).OrderBy(t => t.defName))
 				{
 					EnemyShipDef localTd = localTd2;
 					list.Add(new FloatMenuOption(localTd.label + " (" + localTd.defName + ")", delegate ()
-					{
-						enemyShipDef = localTd;
+                    {
+                        enemyShipDef = localTd;
 					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
 				}
 				Find.WindowStack.Add(new FloatMenu(list));

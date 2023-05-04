@@ -312,7 +312,7 @@ namespace RimWorld
             else //using player ship combat rating
             {
                 CR = MapThreat() * 0.9f;
-                if (CR > 30)
+                if (!Prefs.DevMode && CR > 30)
                 {
                     int daysPassed = GenDate.DaysPassedSinceSettle;
                     if (daysPassed < 30) //reduce difficulty early on

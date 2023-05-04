@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V86f4 active");
+			Log.Message("SOS2EXP V86f5 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1393,15 +1393,19 @@ namespace SaveOurShip2
 				return;
 			List<Thing> toDestroy = new List<Thing>();
 			List<Building> toReplace = new List<Building>();
-			foreach (IntVec3 v in targets)
-			{
-				float exploRadius = Rand.Range(minSize, maxSize);
+            HashSet<IntVec3> area = new HashSet<IntVec3>();
+            foreach (IntVec3 v in targets)
+            {
+                List<Thing> toDestroySet = new List<Thing>();
+                List<Building> toReplaceSet = new List<Building>();
+                HashSet<IntVec3> areaSet = new HashSet<IntVec3>();
+                float exploRadius = Rand.Range(minSize, maxSize);
 				foreach (IntVec3 vec in GenRadial.RadialCellsAround(v, exploRadius, true))
 				{
-					map.roofGrid.SetRoof(vec, null);
+                    areaSet.Add(vec);
 					foreach (Thing t in vec.GetThingList(map).Where(t => !t.Destroyed))
 					{
-						toDestroy.Add(t);
+                        toDestroySet.Add(t);
 					}
 				}
 				foreach (IntVec3 vec in GenRadial.RadialCellsAround(v, exploRadius, exploRadius + 1))
@@ -1410,11 +1414,25 @@ namespace SaveOurShip2
 					{
 						if (wreckDictionary.ContainsKey(t.def))
 						{
-							toReplace.Add(t as Building);
+                            toReplaceSet.Add(t as Building);
 						}
 					}
-				}
-			}
+                }
+                if (wreckLevel == 1 && (toDestroySet.Any(t => t is Building_ShipBridge || t.TryGetComp<CompEngineTrail>() != null)))
+                {
+                    continue; //prevent destroying cruical buildings on starting ships
+                }
+				else
+				{
+                    toDestroy.AddRange(toDestroySet);
+					toReplace.AddRange(toReplaceSet);
+					area.AddRange(areaSet);
+                }
+            }
+			foreach (IntVec3 v in area)
+            {
+                map.roofGrid.SetRoof(v, null);
+            }
 			foreach (Building b in toReplace)
 			{
 				IntVec3 v = b.Position;
@@ -1428,8 +1446,7 @@ namespace SaveOurShip2
 				if (t is Building b)
 				{
 					var refuelComp = b.TryGetComp<CompRefuelable>();
-					if (refuelComp != null)
-						refuelComp.ConsumeFuel(refuelComp.Fuel);
+					refuelComp?.ConsumeFuel(refuelComp.Fuel);
 					if (wreckLevel == 4 && b.def.CostList != null && b.def.CostList.Any(cost => cost.thingDef == ThingDefOf.ComponentSpacer) && Rand.Chance(0.2f))
 						GenPlace.TryPlaceThing(ThingMaker.MakeThing(ThingDef.Named("ShipChunkSalvage")), b.Position, map, ThingPlaceMode.Near);
 					if (!b.Destroyed)

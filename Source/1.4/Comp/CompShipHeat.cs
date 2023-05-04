@@ -81,6 +81,16 @@ namespace RimWorld
             myNet.RemoveHeat(amount);
             return true;
         }
+        public void AddDepletionToNetwork(float amount)
+        {
+            if (myNet != null)
+                myNet.AddDepletion(amount);
+        }
+        public void RemoveDepletionFromNetwork(float amount)
+        {
+            if (myNet != null)
+                myNet.RemoveDepletion(amount);
+        }
         public float AvailableCapacityInNetwork()
         {
             return myNet.StorageCapacity - myNet.StorageUsed;

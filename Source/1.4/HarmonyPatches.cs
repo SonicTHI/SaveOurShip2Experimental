@@ -89,8 +89,8 @@ namespace SaveOurShip2
 						if (net2 != null)
 						{
 							Rect rect4 = new Rect(screenHalf - 435, baseY - 40, 200, 35);
-							Widgets.FillableBar(rect4.ContractedBy(6), net2.RatioInNetwork,
-								ResourceBank.HeatTex);
+							ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetwork, net2.DepletionRatio,
+								ResourceBank.HeatTex, ResourceBank.DepletionTex);
 							rect4.y += 7;
 							rect4.x = screenHalf - 420;
 							rect4.height = Text.LineHeight;
@@ -121,15 +121,15 @@ namespace SaveOurShip2
 						if (net2 != null)
 						{
 							Rect rect4 = new Rect(screenHalf + 235, baseY - 40, 200, 35);
-							Widgets.FillableBar(rect4.ContractedBy(6), net2.RatioInNetwork,
-								ResourceBank.HeatTex);
+							ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetwork, net2.DepletionRatio,
+								ResourceBank.HeatTex, ResourceBank.DepletionTex);
 							rect4.y += 7;
 							rect4.x = screenHalf + 255;
 							rect4.height = Text.LineHeight;
 							if (net2.StorageCapacity > 0)
 								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + net2.StorageCapacity);
 							else
-								Widgets.Label(rect4, "<color=red>Energy: N/A</color>");
+								Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
 						}
 
 						PowerNet net = bridge.powerComp.PowerNet;
@@ -146,7 +146,7 @@ namespace SaveOurShip2
 						if (capacity > 0)
 							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
 						else
-							Widgets.Label(rect3, "<color=red>Heat: N/A</color>");
+							Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
 					}
 					catch (Exception e)
 					{

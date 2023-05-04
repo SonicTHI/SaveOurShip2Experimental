@@ -214,7 +214,7 @@ namespace RimWorld
                         }
                         else
                         {
-                            if (burstCooldownTicksLeft > 0)
+                            if (burstCooldownTicksLeft > 0 && !heatComp.venting)
                             {
                                 burstCooldownTicksLeft--;
                             }
@@ -245,7 +245,7 @@ namespace RimWorld
                     {
                         return;
                     }
-                    else if (burstCooldownTicksLeft > 0)
+                    else if (burstCooldownTicksLeft > 0 && !heatComp.venting)
                     {
                         burstCooldownTicksLeft--;
                     }

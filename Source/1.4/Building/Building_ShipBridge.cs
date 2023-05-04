@@ -160,7 +160,7 @@ namespace RimWorld
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", ShipMass));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", ShipMaxTakeoff));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipEnergy", this.PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity, (heatComp.myNet.Depletion > 0) ? (" ("+heatComp.myNet.Depletion+" depleted)") : ""));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatRating", ShipThreat));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatThrust", ShipThrust.ToString("F3")));
@@ -272,20 +272,6 @@ namespace RimWorld
                         isActive = () => anyShieldOn
 					};
 					yield return toggleShields;
-                }
-                if (heatNet.Sinks.Any() && !heatNet.venting && heatNet.RatioInNetwork > 0.05f)
-                {
-                    Command_Action purge = new Command_Action
-                    {
-                        action = delegate
-                        {
-                            heatNet.StartVent(mapComp, this);
-                        },
-                        icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/ActiveVent"),
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipHeatPurge"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeDesc")
-                    };
-                    yield return purge;
                 }
                 //incombat
                 if (mapComp.InCombat)
@@ -409,6 +395,22 @@ namespace RimWorld
                             icon = ContentFinder<Texture2D>.Get("UI/Select_All_Weapons_Icon")
                         };
                         yield return selectWeapons;
+                    }
+                    if (heatNet.Sinks.Any())
+                    {
+                        Command_Action vent = new Command_Action
+                        {
+                            action = delegate
+                            {
+                                heatNet.StartVent(mapComp, this);
+                            },
+                            icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/ActiveVent"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipHeatPurge"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeDesc"),
+                            disabled = heatNet.venting || heatNet.RatioInNetwork < 0.1f,
+                            disabledReason = heatNet.venting ? TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeVenting") : TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeNotEnough")
+                        };
+                        yield return vent;
                     }
                 }
                 //not incombat

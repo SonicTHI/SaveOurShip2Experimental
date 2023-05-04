@@ -14,7 +14,8 @@ namespace RimWorld
     public class CompShipHeatSink : CompShipHeat
     {
         public static readonly float HeatPushMult = 20f; //bleed ratio modifier - inverse to Building_ShipVent AddHeatToNetwork
-        public float heatStored; //used only when a HB is not on a net
+        public float heatStored; //used only when a HB is not on a net or during PostExposeData
+        public float depletion; //ditto
         public bool inSpace;
         public CompPower powerComp;
         ShipHeatMapComp mapComp;
@@ -60,6 +61,7 @@ namespace RimWorld
             if (myNet != null && Scribe.mode == LoadSaveMode.Saving)
             {
                 heatStored = Props.heatCapacity * myNet.RatioInNetwork;
+                depletion = Props.heatCapacity * myNet.DepletionRatio;
             }
             Scribe_Values.Look<float>(ref heatStored, "heatStored");
         }
@@ -83,6 +85,11 @@ namespace RimWorld
                         //Log.Message("Remove heat:" + heat);
                         RemHeatFromNetwork(heat);
                     }
+
+                    if (venting)
+                        AddDepletionToNetwork(Props.heatVent);
+                    else if (!mapComp.InCombat)
+                        RemoveDepletionFromNetwork(Props.heatVent / 5);
                 }
                 if (myNet.StorageUsed > 0)
                 {

@@ -17,12 +17,26 @@ namespace RimWorld
         public List<CompShipHeat> Turrets = new List<CompShipHeat>();
         public List<CompShipHeat> Cloaks = new List<CompShipHeat>();
         public int GridID;
-        public float StorageCapacity { get; private set; }
+        public float StorageCapacity 
+        { 
+            get
+            {
+                return StorageCapacityRaw * (1 - depletionRatio);
+            }
+        }
+        public float StorageCapacityRaw
+        {
+            get;
+            private set;
+        }
         public float StorageUsed { get; private set; }
+        public float Depletion { get; private set; }
         public bool venting;
 
         private bool ratioDirty = true; //if we add/rem heat, etc
+        private bool depletionDirty = true; //Depletion has been added/removed
         private float ratioInNetwork = 0;
+        private float depletionRatio = 0;
         public float RatioInNetwork
         {
             get
@@ -34,13 +48,37 @@ namespace RimWorld
                         Log.Warning("NaN prevented in RatioInNetwork!");
                         StorageUsed = 0;
                     }
-                    if (StorageCapacity <= 0)
+                    if (StorageCapacityRaw <= 0)
                     {
-                        return StorageCapacity = 0;
+                        ratioDirty = false;
+                        return StorageCapacityRaw = 0;
                     }
-                    ratioInNetwork = Mathf.Clamp(StorageUsed / StorageCapacity, 0, 1);
+                    ratioInNetwork = Mathf.Clamp(StorageUsed / StorageCapacityRaw, 0, 1);
+                    ratioDirty = false;
                 }
                 return ratioInNetwork;
+            }
+        }
+        public float DepletionRatio
+        {
+            get
+            {
+                if (depletionDirty)
+                {
+                    if (float.IsNaN(Depletion))
+                    {
+                        Log.Warning("NaN prevented in DepletionRatio!");
+                        Depletion = 0;
+                    }
+                    if (Depletion <= 0)
+                    {
+                        depletionDirty = false;
+                        return Depletion = 0;
+                    }
+                    depletionRatio = Mathf.Clamp(Depletion / StorageCapacityRaw, 0, 1);
+                    depletionDirty = false;
+                }
+                return depletionRatio;
             }
         }
 
@@ -51,13 +89,16 @@ namespace RimWorld
                 if (!Sinks.Contains(sink))
                 {
                     //add to net
-                    //Log.Message("grid: " + GridID + " add:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
-                    StorageCapacity += sink.Props.heatCapacity;
+                    //Log.Message("grid: " + GridID + " add:" + sink.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
+                    StorageCapacityRaw += sink.Props.heatCapacity;
                     StorageUsed += sink.heatStored;
+                    Depletion += sink.depletion;
                     sink.heatStored = 0;
-                    //Log.Message("grid: "+ GridID +" add:"+ bank.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity);
+                    sink.depletion = 0;
+                    //Log.Message("grid: "+ GridID +" add:"+ sink.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
                     Sinks.Add(sink);
                     ratioDirty = true;
+                    depletionDirty = true;
                     if (comp is CompShipHeatPurge purge)
                     {
                         HeatPurges.Add(purge);
@@ -87,6 +128,7 @@ namespace RimWorld
             if (comp is CompShipHeatSink sink)
             {
                 //rem from net with a factor
+                //Log.Message("grid: " + GridID + " rem:" + sink.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
                 if (float.IsNaN(StorageUsed))
                 {
                     Log.Warning("NaN prevented in DeRegister!");
@@ -95,12 +137,18 @@ namespace RimWorld
                 if (StorageCapacity <= 0)
                     sink.heatStored = 0;
                 else
-                    sink.heatStored = Mathf.Clamp(StorageUsed * sink.Props.heatCapacity / StorageCapacity, 0, sink.Props.heatCapacity);
+                    sink.heatStored = Mathf.Clamp(StorageUsed * sink.Props.heatCapacity / StorageCapacityRaw, 0, sink.Props.heatCapacity);
+                if (Depletion <= 0)
+                    sink.depletion = 0;
+                else
+                    sink.depletion = Mathf.Clamp(Depletion * sink.Props.heatCapacity / StorageCapacityRaw, 0, sink.Props.heatCapacity);
                 RemoveHeat(sink.heatStored);
-                StorageCapacity -= sink.Props.heatCapacity;
-                //Log.Message("grid: " + GridID + " rem:" + bank.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity);
+                RemoveDepletion(sink.depletion);
+                StorageCapacityRaw -= sink.Props.heatCapacity;
+                //Log.Message("grid: " + GridID + " rem:" + sink.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity + " depletion:" + sink.depletion + " Total:"+Depletion);
                 Sinks.Remove(sink);
                 ratioDirty = true;
+                depletionDirty = true;
                 if (comp is CompShipHeatPurge purge)
                     HeatPurges.Remove(purge);
             }
@@ -133,6 +181,23 @@ namespace RimWorld
             if (StorageUsed < 0)
                 StorageUsed = 0;
             ratioDirty = true;
+        }
+        public void AddDepletion(float amount)
+        {
+            Depletion += amount;
+            depletionDirty = true;
+        }
+        public void RemoveDepletion(float amount)
+        {
+            Depletion -= amount;
+            if (float.IsNaN(Depletion))
+            {
+                Log.Warning("NaN prevented in RemoveDepletion!");
+                Depletion = 0;
+            }
+            if (Depletion < 0)
+                Depletion = 0;
+            depletionDirty = true;
         }
         public bool AnyShieldOn()
         {
@@ -175,15 +240,7 @@ namespace RimWorld
                 turret.venting = true;
             foreach (CompShipHeat cloak in Cloaks)
                 cloak.venting = true;
-            comp.anyPurging = true;
-            if(comp.map.IsPlayerHome && !comp.InCombat)
-            {
-                float attractAttentionChance = RatioInNetwork / 10f;
-                if(Rand.Chance(attractAttentionChance))
-                {
-                    comp.StartShipEncounter(core);
-                }
-            }
+            comp.anyVenting = true;
         }
 
         public void EndVent()

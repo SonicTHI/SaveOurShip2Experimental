@@ -5,7 +5,7 @@
 	<ShipStatsShipMass>Weight: {0}</ShipStatsShipMass>
 	<ShipStatsShipMaxTakeoff>Maximum takeoff weight: {0}</ShipStatsShipMaxTakeoff>
 	<ShipStatsShipEnergy>Stored power: {0} / {1} Wd</ShipStatsShipEnergy>
-	<ShipStatsShipHeat>Stored heat: {0} / {1}</ShipStatsShipHeat>
+	<ShipStatsShipHeat>Stored heat: {0} / {1}{2}</ShipStatsShipHeat>
 	<ShipStatsShipCombatRating>Combat rating: {0}</ShipStatsShipCombatRating>
 	<ShipStatsShipCombatThrust>Thrust/Weight ratio: {0}</ShipStatsShipCombatThrust>
 	<ShipStatsChemfuel>Fuel needed for takeoff: {0}</ShipStatsChemfuel>

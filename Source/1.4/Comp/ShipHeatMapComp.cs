@@ -18,7 +18,7 @@ namespace RimWorld
         public int[] grid;
         public bool heatGridDirty;
         public bool loaded = false;
-        public bool anyPurging = false;
+        public bool anyVenting = false;
 
         public ShipHeatMapComp(Map map) : base(map)
         {
@@ -34,7 +34,7 @@ namespace RimWorld
         public override void MapComponentUpdate()
         {
             base.MapComponentUpdate();
-            if ((!heatGridDirty && !anyPurging) || (Find.TickManager.TicksGame % 60 != 0 && loaded))
+            if ((!heatGridDirty && !anyVenting) || (Find.TickManager.TicksGame % 60 != 0 && loaded))
             {
                 return;
             }
@@ -45,6 +45,7 @@ namespace RimWorld
                 foreach (CompShipHeatSink sink in net.Sinks)
                 {
                     sink.heatStored = sink.Props.heatCapacity * sink.myNet.RatioInNetwork;
+                    sink.depletion = sink.Props.heatCapacity * sink.myNet.DepletionRatio;
                 }
             }
             //rebuild all nets on map
@@ -66,13 +67,13 @@ namespace RimWorld
             }
             cachedNets = list;
 
-            anyPurging = false;
+            anyVenting = false;
             foreach(ShipHeatNet net in cachedNets)
             {
                 if (net.venting && net.RatioInNetwork <= 0.01f)
                     net.EndVent();
                 else
-                    anyPurging = true;
+                    anyVenting = true;
             }
 
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Buildings);

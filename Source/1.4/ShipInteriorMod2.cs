@@ -2483,5 +2483,23 @@ namespace SaveOurShip2
 				return 1;
 			return 0;
 		}
+
+		public static Rect FillableBarWithDepletion(Rect rect, float fillPercent, float fillDepletion, Texture2D fillTex, Texture2D depletionTex)
+		{
+			bool doBorder = rect.height > 15f && rect.width > 20f;
+			if (doBorder)
+			{
+				GUI.DrawTexture(rect, BaseContent.BlackTex);
+				rect = rect.ContractedBy(3f);
+			}
+			Rect heatRect = new Rect(rect);
+			heatRect.width *= fillPercent;
+			GUI.DrawTexture(heatRect, fillTex);
+			Rect depletionRect = new Rect(rect);
+			depletionRect.width *= fillDepletion;
+			depletionRect.x = rect.x + rect.width * (1 - fillDepletion);
+			GUI.DrawTexture(depletionRect, depletionTex);
+			return rect;
+		}
 	}
 }

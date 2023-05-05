@@ -15,6 +15,25 @@ namespace SaveOurShip2
 {
     public static class WorldSwitchUtility
     {
+        public static bool SaveShipFlag = false;
+        public static bool LoadShipFlag = false; //NOTE: This is set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
+        public static bool StartShipFlag = false; //as above but for ScenPart_StartInSpace
+        public static PastWorldUWO2 PastWorldTracker
+        {
+            get
+            {
+                if (PastWorldTrackerInternal == null && Find.World != null)
+                    PastWorldTrackerInternal = (PastWorldUWO2)Find.World.components.Where(x => x is PastWorldUWO2).First();
+                return PastWorldTrackerInternal;
+            }
+        }
+        public static void PurgePWT()
+        {
+            PastWorldTrackerInternal = null;
+        }
+
+
+        //recheck if still in use bellow
         public static bool FactionRelationFlag = false;
         public static bool LoadWorldFlag = false;
         public static Faction SavedPlayerFaction = null;
@@ -29,28 +48,11 @@ namespace SaveOurShip2
         public static bool NoRecache = false;
         public static List<ScenPart> CachedScenario;
 
-        public static bool SaveShipFlag = false;
-        public static bool LoadShipFlag = false; //NOTE: This is set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
-        public static bool StartShipFlag = false; //as above but for ScenPart_StartInSpace
 
         static Faction DonatedToFaction = null;
         static float DonatedAmount = 0;
         static List<WorldComponent> tmpComponents = new List<WorldComponent>();
 
-        public static PastWorldUWO2 PastWorldTracker
-        {
-            get
-            {
-                if (PastWorldTrackerInternal == null && Find.World != null)
-                    PastWorldTrackerInternal = (PastWorldUWO2)Find.World.components.Where(x => x is PastWorldUWO2).First();
-                return PastWorldTrackerInternal;
-            }
-        }
-
-        public static void PurgePWT()
-        {
-            PastWorldTrackerInternal = null;
-        }
 
         public static void ColonyAbandonWarning(Action action)
         {
@@ -269,7 +271,10 @@ namespace SaveOurShip2
             Scribe_Values.Look<bool>(ref startedEndgame, "StartedEndgame");
             Scribe_Values.Look<int>(ref IncidentWorker_ShipCombat.LastAttackTick, "LastShipBattleTick");
 
-
+            if (Scribe.mode != LoadSaveMode.PostLoadInit)
+            {
+                WorldSwitchUtility.PurgePWT();
+            }
             /*if (Scribe.mode!=LoadSaveMode.Saving)
             {
                 if(Unlocks.Contains("JTDrive")) //Back-compatibility: unlock JT drive research project if you got it before techprints were a thing
@@ -338,14 +343,14 @@ namespace SaveOurShip2
             }
         }
 
-        private void GiveMeEntanglementManifold()
+        /*private void GiveMeEntanglementManifold()
         {
             IncidentParms parms = new IncidentParms();
             parms.target = Find.World;
             parms.forced = true;
             QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("SoSFreeEntanglement"), null, parms),Find.TickManager.TicksGame, Find.TickManager.TicksGame+99999999);
             Find.Storyteller.incidentQueue.Add(qi);
-        }
+        }*/
 	}
 }
 

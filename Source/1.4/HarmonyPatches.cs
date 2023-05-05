@@ -4325,7 +4325,7 @@ namespace SaveOurShip2
 			
 			var thing = generator.DeclareLocal(typeof(Thing)); //Store the list[i] into here
 			var label = generator.DefineLabel(); //Prepare a new label
-			var codeWithLabel = new CodeInstruction(OpCodes.Ldloc_S, thing.LocalIndex); //This will be injected into the "Jump point" above.
+			var codeWithLabel = new CodeInstruction(OpCodes.Ldloc_S, thing); //This will be injected into the "Jump point" above.
 			codeWithLabel.labels.Add(label); //Record its label position for the return to go to.
 
 			if (!editor.IsInvalid)

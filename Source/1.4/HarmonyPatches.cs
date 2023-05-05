@@ -4305,62 +4305,62 @@ namespace SaveOurShip2
 	[HarmonyPatch(typeof(GenTemperature), "TryGetTemperatureForCell")]
 	public static class BabiesAreSafeInSpaceCaskets
 	{
-		public static void Postfix(IntVec3 c, Map map, ref float tempResult)
-		{
-			List<Thing> list = map.thingGrid.ThingsListAtFast(c);
-			foreach (Thing thing in list)
-			{
-				if (thing is Building_SpaceCrib)
-					tempResult = 21f;
-			}
-		}
-
-		//Well, shit, that didn't work. Gonna have to do this the slow way.
-		/*public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-			//First, find the second-last return statement
+			var editor = new CodeMatcher(instructions);
+			// --------------------------ORIGINAL--------------------------
+			//for (int i = 0; i < list.Count; i++)
+			//{
+			//if (list[i].def.passability == Traversability.Impassable)
+			editor.Start().MatchStartForward(
+				new CodeMatch(OpCodes.Ldloc_0),
+				new CodeMatch(OpCodes.Ldloc_1),
+				new CodeMatch(OpCodes.Callvirt),
+				//Jump point...
+				new CodeMatch(OpCodes.Ldfld),
+				new CodeMatch(OpCodes.Ldfld),
+				new CodeMatch(OpCodes.Ldc_I4_2),
+				new CodeMatch(OpCodes.Bne_Un_S)
+			);
+			
+			var thing = generator.DeclareLocal(typeof(Thing)); //Store the list[i] into here
+			var label = generator.DefineLabel(); //Prepare a new label
+			var codeWithLabel = new CodeInstruction(OpCodes.Ldloc_S, thing.LocalIndex); //This will be injected into the "Jump point" above.
+			codeWithLabel.labels.Add(label); //Record its label position for the return to go to.
 
-			List<int> returns = new List<int>();
-			for(int i=0;i<instructions.Count();i++)
-            {
-				CodeInstruction instr = instructions.ElementAt(i);
-				if (instr.opcode == OpCodes.Ret)
-					returns.Add(i);
-            }
-			int secondLastRet = returns[returns.Count - 2];
-
-			List<CodeInstruction> newInstructions = new List<CodeInstruction>();
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldloc_0));
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldloc_1));
-			newInstructions.Add(CodeInstruction.Call("System.Collections.Generic.List`1[[Verse.Thing, Assembly-CSharp, Version=1.4.8446.19495, Culture=neutral, PublicKeyToken=null]]:get_Item"));
-			newInstructions.Add(new CodeInstruction(OpCodes.Isinst, typeof(Building_SpaceCrib)));
-			newInstructions.Add(new CodeInstruction(OpCodes.Brfalse, 5)); //This is the line that keeps breaking the stupid transpiler, can't figure out what it expects as the offset
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldarg, 2));
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldc_I4, 21));
-			newInstructions.Add(new CodeInstruction(OpCodes.Stind_R4));
-			newInstructions.Add(new CodeInstruction(OpCodes.Ldc_I4, 1));
-			newInstructions.Add(new CodeInstruction(OpCodes.Ret));
-
-			List<CodeInstruction> toReturn = new List<CodeInstruction>();
-			for (int i = 0; i <= secondLastRet; i++)
-				toReturn.Add(instructions.ElementAt(i));
-			foreach (CodeInstruction instr in newInstructions)
-				toReturn.Add(instr);
-			for (int i = secondLastRet + 1; i < instructions.Count(); i++)
-				toReturn.Add(instructions.ElementAt(i));
-			return toReturn;			
-        }*/
-
-		public static void ActuallyNotPostfixPostfix(ref float tempResult, List<Thing> list)
-		{
-			foreach (Thing thing in list)
+			if (!editor.IsInvalid)
 			{
-				if (thing is Building_SpaceCrib)
-				{
-					tempResult = 21f;
-					return;
-				}
+				// --------------------------MODIFIED--------------------------
+				//for (int i = 0; i < list.Count; i++)
+				//{
+				//var item = list[i];
+				//if (AdjustTemperatureForCrib(item, ref tempResult) return true;)
+				//if (item.def.passability == Traversability.Impassable)
+				return editor
+				.Advance(3)
+				.InsertAndAdvance(new CodeInstruction(OpCodes.Stloc_S, thing)) //Store the thing as a new variable
+				.InsertAndAdvance(new CodeInstruction(OpCodes.Ldloc_S, thing)) //thing
+				.InsertAndAdvance(new CodeInstruction(OpCodes.Ldarg_2)) //float tempResult
+				.InsertAndAdvance(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(BabiesAreSafeInSpaceCaskets), nameof(AdjustTemperatureForCrib))))
+				.InsertAndAdvance(new CodeInstruction(OpCodes.Brfalse_S, label)) //If it's false, move onto the next part of the loop like normal
+				.InsertAndAdvance(new CodeInstruction(OpCodes.Ldc_I4_1)) //Otherwise push a true and return
+				.InsertAndAdvance(new CodeInstruction(OpCodes.Ret))
+				.Insert(codeWithLabel)
+				.InstructionEnumeration();
 			}
+			
+			Log.Error("[SoS2] BabiesAreSafeInSpaceCaskets transpiler failed to find its target. Did RimWorld update?");
+			return editor.InstructionEnumeration();	
+        }
+
+		public static bool AdjustTemperatureForCrib(Thing thing, ref float tempResult)
+		{
+			if (thing is Building_SpaceCrib)
+			{
+				tempResult = 21f;
+				return true;
+			}
+			return false;
 		}
 	}
 

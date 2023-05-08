@@ -173,7 +173,7 @@ namespace RimWorld
                 }
             }
         }
-        public void SetShipTerrain(IntVec3 v)
+        public virtual void SetShipTerrain(IntVec3 v)
         {
             if (!map.terrainGrid.TerrainAt(v).layerable)
             {

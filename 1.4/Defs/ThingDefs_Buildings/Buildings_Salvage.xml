@@ -37,6 +37,10 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<wreckage>true</wreckage>
+				<canLight>true</canLight>
+				<light>Ship_Beam_Light</light>
+				<lightPower>15</lightPower>
+				<sunLightPower>2500</sunLightPower>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>

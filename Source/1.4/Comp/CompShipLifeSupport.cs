@@ -11,11 +11,15 @@ namespace RimWorld
     public class CompShipLifeSupport : ThingComp
     {
         public bool active = true;
+        CompPowerTrader powerComp;
+        CompFlickable flickComp;
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            this.parent.Map.GetComponent<ShipHeatMapComp>().LifeSupports.Add(this);
-            if (this.parent.TryGetComp<CompPowerTrader>().PowerOn && this.parent.TryGetComp<CompFlickable>().SwitchIsOn)
+            parent.Map.GetComponent<ShipHeatMapComp>().LifeSupports.Add(this);
+            powerComp = parent.TryGetComp<CompPowerTrader>();
+            flickComp = parent.TryGetComp<CompFlickable>();
+            if (powerComp.PowerOn && flickComp.SwitchIsOn)
                 active = true;
             //Log.Message("Spawned LS: " + this.parent + " on map: " + this.parent.Map);
         }
@@ -24,7 +28,7 @@ namespace RimWorld
             base.CompTick();
             if (Find.TickManager.TicksGame % 360 == 0)
             {
-                if (this.parent.TryGetComp<CompPowerTrader>().PowerOn && this.parent.TryGetComp<CompFlickable>().SwitchIsOn)
+                if (powerComp.PowerOn && flickComp.SwitchIsOn)
                     active = true;
                 else
                     active = false;

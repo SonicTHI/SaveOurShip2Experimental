@@ -23,7 +23,7 @@ namespace SaveOurShip2
             get
             {
                 if (PastWorldTrackerInternal == null && Find.World != null)
-                    PastWorldTrackerInternal = (PastWorldUWO2)Find.World.components.Where(x => x is PastWorldUWO2).First();
+                    PastWorldTrackerInternal = (PastWorldUWO2)Find.World.components.First(x => x is PastWorldUWO2);
                 return PastWorldTrackerInternal;
             }
         }

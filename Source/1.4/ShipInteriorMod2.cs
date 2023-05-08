@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V86f6 active");
+			Log.Message("SOS2EXP V86f7 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -2275,7 +2275,7 @@ namespace SaveOurShip2
 
 				if (pawn.Ideo != null && pawn.Ideo != Faction.OfPlayer.ideos.PrimaryIdeo)
 					ideosAboardShip.Add(pawn.Ideo);
-				if (pawn.genes.CustomXenotype != null)
+				if (pawn.genes != null && pawn.genes.CustomXenotype != null)
 					xenosAboardShip.Add(pawn.genes.CustomXenotype);
 
 				List<DirectPawnRelation> toPrune = new List<DirectPawnRelation>();

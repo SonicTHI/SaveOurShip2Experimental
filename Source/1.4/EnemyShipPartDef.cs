@@ -6,7 +6,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class EnemyShipPartDef : Def
+    public class EnemyShipPartDef : Def
     {
         public int randomTurretPoints;
         public List<ThingDef> things;

@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V86f7 active");
+			Log.Message("SOS2EXP V86f8 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -760,14 +760,15 @@ namespace SaveOurShip2
 			foreach (ShipShape shape in shipDef.parts)
 			{
 				try
-				{
-					if (shape.shapeOrDef.Equals("PawnSpawnerGeneric"))
+                {
+                    IntVec3 adjPos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
+                    if (shape.shapeOrDef.Equals("PawnSpawnerGeneric"))
 					{
 						PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.stuff), fac);
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
 						if (lord != null)
 							lord.AddPawn(pawn);
-						GenSpawn.Spawn(pawn, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map);
+                        GenSpawn.Spawn(pawn, adjPos, map);
 						pawnsOnShip.Add(pawn);
 					}
 					else if (DefDatabase<EnemyShipPartDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
@@ -791,16 +792,16 @@ namespace SaveOurShip2
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
 						if (lord != null)
 							lord.AddPawn(pawn);
-						GenSpawn.Spawn(pawn, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map);
+						GenSpawn.Spawn(pawn, adjPos, map);
 						pawnsOnShip.Add(pawn);
 					}
-					else if(shape.shapeOrDef == "SoSLightEnabler")
+					else if (shape.shapeOrDef == "SoSLightEnabler")
                     {
-						spawnLights.Add(new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), shape.color != Color.clear ? shape.color : Color.white);
+						spawnLights.Add(adjPos, shape.color != Color.clear ? shape.color : Color.white);
 					}
 					else if (shape.shapeOrDef == "SoSSunLightEnabler")
 					{
-						spawnSunLights.Add(new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), shape.color != Color.clear ? shape.color : Color.white);
+						spawnSunLights.Add(adjPos, shape.color != Color.clear ? shape.color : Color.white);
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
@@ -862,7 +863,7 @@ namespace SaveOurShip2
 								thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
 						}
 						//spawn thing
-						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map, shape.rot);
+						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 						//post spawn
 						if (isBuilding)
 						{
@@ -960,7 +961,7 @@ namespace SaveOurShip2
 						TerrainDef terrain = DefDatabase<TerrainDef>.GetNamed(shape.shapeOrDef);
 						IntVec3 pos = new IntVec3(shape.x, 0, shape.z);
 						if (shipDef.saveSysVer == 2)
-							pos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
+							pos = adjPos;
 						if (pos.InBounds(map))
 							map.terrainGrid.SetTerrain(pos, terrain);
 						if (wreckLevel < 3 && terrain.fertility > 0 && pos.GetEdifice(map) == null)
@@ -986,8 +987,9 @@ namespace SaveOurShip2
 			foreach (ShipShape shape in partsToGenerate)
 			{
 				try
-				{
-					EnemyShipPartDef def = DefDatabase<EnemyShipPartDef>.GetNamed(shape.shapeOrDef);
+                {
+                    IntVec3 adjPos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
+                    EnemyShipPartDef def = DefDatabase<EnemyShipPartDef>.GetNamed(shape.shapeOrDef);
 					if (randomTurretPoints >= def.randomTurretPoints)
 						randomTurretPoints -= def.randomTurretPoints;
 					else
@@ -999,7 +1001,7 @@ namespace SaveOurShip2
 						thing.SetFaction(fac);
 						Pawn sleeper = PawnGenerator.GeneratePawn(new PawnGenerationRequest(PawnKindDefOf.Slave, Faction.OfAncients, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
 						((Building_CryptosleepCasket)thing).TryAcceptThing(sleeper);
-						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map, shape.rot);
+						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 					}
 					else if (def.defName.Length > 8 && def.defName.Substring(def.defName.Length - 8) == "_SPAWNER")
 					{
@@ -1025,7 +1027,7 @@ namespace SaveOurShip2
 							thing.SetFactionDirect(Faction.OfInsects);
 						else
 							thing.SetFaction(fac);
-						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map);
+						GenSpawn.Spawn(thing, adjPos, map);
 					}
 					else if (!def.defName.Equals("Cargo")) //everything else
 					{
@@ -1067,7 +1069,7 @@ namespace SaveOurShip2
 							turret.burstCooldownTicksLeft = 300;
 						if (thing.TryGetComp<CompColorable>() != null)
 							thing.TryGetComp<CompColorable>().SetColor(shape.color);
-						GenSpawn.Spawn(thing, new IntVec3(offset.x + shape.x, 0, offset.z + shape.z), map, shape.rot);
+						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 					}
 					else //cargo
 					{
@@ -1246,32 +1248,25 @@ namespace SaveOurShip2
 					}
 				}
 			}
-			foreach(IntVec3 position in spawnLights.Keys)
+			SpawnLights(map, spawnLights, false);
+            SpawnLights(map, spawnSunLights, true);
+        }
+        public static void SpawnLights(Map map, Dictionary<IntVec3, Color> spawnLights, bool sunLights)
+        {
+            foreach (IntVec3 position in spawnLights.Keys)
             {
-				Building edifice = position.GetEdifice(map);
-				if (edifice != null)
-				{
-					CompSoShipPart part = edifice.TryGetComp<CompSoShipPart>();
-					if (part != null)
-					{
-						part.SpawnLight(ColorIntUtility.AsColorInt(spawnLights[position]), false);
-					}
-				}
-			}
-			foreach (IntVec3 position in spawnSunLights.Keys)
-			{
-				Building edifice = position.GetEdifice(map);
-				if (edifice != null)
-				{
-					CompSoShipPart part = edifice.TryGetComp<CompSoShipPart>();
-					if (part != null)
-					{
-						part.SpawnLight(null, true);
-					}
-				}
-			}
-		}
-		public static void PostGenerateShipDef(Map map, bool clearArea, List<IntVec3> shipArea, List<Thing> planters)
+                Building edifice = position.GetEdifice(map);
+                if (edifice != null)
+                {
+                    CompSoShipPart part = edifice.TryGetComp<CompSoShipPart>();
+                    if (part != null)
+                    {
+                        part.SpawnLight(ColorIntUtility.AsColorInt(spawnLights[position]), sunLights);
+                    }
+                }
+            }
+        }
+        public static void PostGenerateShipDef(Map map, bool clearArea, List<IntVec3> shipArea, List<Thing> planters)
 		{
 			//HashSet<Room> validRooms = new HashSet<Room>();
 			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();

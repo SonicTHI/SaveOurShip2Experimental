@@ -49,7 +49,12 @@ namespace RimWorld
 			}
 			else
 			{
-				targ.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, 0f, -1f, this));
+				if (targ.def.useHitPoints && targ.HitPoints < num && Rand.Chance(0.3f))
+				{
+					targ.Destroy(DestroyMode.Deconstruct);
+				}
+				else
+					targ.TakeDamage(new DamageInfo(DamageDefOf.Flame, num, 0f, -1f, this));
 				lastDamageTick = Find.TickManager.TicksGame;
 			}
 		}

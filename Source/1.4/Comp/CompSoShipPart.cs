@@ -57,6 +57,7 @@ namespace RimWorld
 
         public bool hasLight = false;
         public bool sunLight = false;
+        public Rot4 lightRot = new Rot4();
         public ColorInt lightColor = new ColorInt(Color.white);
         public Building myLight = null;
         public bool discoMode = false;

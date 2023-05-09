@@ -540,50 +540,47 @@ namespace RimWorld
                             }
                             yield return landShip;
                         }
-                        //New code for endgame
-                        if (ResourceBank.ResearchProjectDefOf.ArchotechPillarB.IsFinished)
+                        //endgame missions
+                        if (ResourceBank.ResearchProjectDefOf.ArchotechPillarA.IsFinished && !WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarA"))
                         {
-                            if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarA"))
+                            Command_Action goGetThatPillarA = new Command_Action
                             {
-                                Command_Action goGetThatPillarA = new Command_Action
+                                action = delegate
                                 {
-                                    action = delegate
+                                    AttackableShip station = new AttackableShip
                                     {
-                                        AttackableShip station = new AttackableShip
-                                        {
-                                            attackableShip = DefDatabase<EnemyShipDef>.GetNamed("StationArchotechGarden"),
-                                            spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
-                                            shipFaction = Faction.OfMechanoids
-                                        };
-                                        mapComp.StartShipEncounter(this, station);
-                                    },
-                                    icon = ContentFinder<Texture2D>.Get("UI/ArchotechStation_Icon_Quest"),
-                                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarA"),
-                                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarADesc")
-                                };
-                                yield return goGetThatPillarA;
-                            }
-                            if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarB") && !Find.WorldObjects.AllWorldObjects.Any(ob => ob is MoonBase))
+                                        attackableShip = DefDatabase<EnemyShipDef>.GetNamed("StationArchotechGarden"),
+                                        spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
+                                        shipFaction = Faction.OfMechanoids
+                                    };
+                                    mapComp.StartShipEncounter(this, station);
+                                },
+                                icon = ContentFinder<Texture2D>.Get("UI/ArchotechStation_Icon_Quest"),
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarA"),
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarADesc")
+                            };
+                            yield return goGetThatPillarA;
+                        }
+                        if (ResourceBank.ResearchProjectDefOf.ArchotechPillarB.IsFinished && !WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarB") && !Find.WorldObjects.AllWorldObjects.Any(ob => ob is MoonBase))
+                        {
+                            Command_Action goGetThatPillarB = new Command_Action
                             {
-                                Command_Action goGetThatPillarB = new Command_Action
+                                action = delegate
                                 {
-                                    action = delegate
+                                    AttackableShip attacker = new AttackableShip
                                     {
-                                        AttackableShip attacker = new AttackableShip
-                                        {
-                                            attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge"),
-                                            spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
-                                            shipFaction = Faction.OfMechanoids
-                                        };
-                                        mapComp.StartShipEncounter(this, attacker);
-                                        MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
-                                    },
-                                    icon = ContentFinder<Texture2D>.Get("UI/Moon_Icon_Quest"),
-                                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarB"),
-                                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarBDesc")
-                                };
-                                yield return goGetThatPillarB;
-                            }
+                                        attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge"),
+                                        spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
+                                        shipFaction = Faction.OfMechanoids
+                                    };
+                                    mapComp.StartShipEncounter(this, attacker);
+                                    MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
+                                },
+                                icon = ContentFinder<Texture2D>.Get("UI/Moon_Icon_Quest"),
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarB"),
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarBDesc")
+                            };
+                            yield return goGetThatPillarB;
                         }
                         //dev stuff
                         if (Prefs.DevMode)

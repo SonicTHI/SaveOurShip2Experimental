@@ -143,7 +143,9 @@ namespace SaveOurShip2
 		{
 			public static ResearchProjectDef ArchotechPillarA;
 			public static ResearchProjectDef ArchotechPillarB;
-		}
+            public static ResearchProjectDef ArchotechPillarC;
+            public static ResearchProjectDef ArchotechPillarD;
+        }
 
 		[DefOf]
 		public static class BackstoryDefOf

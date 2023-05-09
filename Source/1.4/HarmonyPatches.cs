@@ -4010,16 +4010,16 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ResearchProjectDef proj)
 		{
-			if (proj.defName.Equals("ArchotechPillarA"))
+			if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarA)
 				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarAMission"); //Handled in Building_ShipBridge
-			else if (proj.defName.Equals("ArchotechPillarB"))
+			else if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarB)
 				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarBMission"); //Handled in Building_ShipBridge
-			else if (proj.defName.Equals("ArchotechPillarC"))
+			else if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarC)
 			{
 				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarCMission");
 				ShipInteriorMod2.GenerateArchotechPillarCSite();
 			}
-			else if (proj.defName.Equals("ArchotechPillarD"))
+			else if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarD)
 			{
 				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarDMission");
 				ShipInteriorMod2.GenerateArchotechPillarDSite();

@@ -10,6 +10,7 @@ using HarmonyLib;
 using SaveOurShip2;
 using RimworldMod;
 using UnityEngine;
+using System.Net.NetworkInformation;
 
 namespace RimWorld
 {
@@ -137,7 +138,8 @@ namespace RimWorld
             mapComp = this.Map.GetComponent<ShipHeatMapComp>();
             unfoldComp = this.TryGetComp<UnfoldComponent>();
         }
-        //docking - doors dont have proper rot, this could be remade but would need components for extenders, etc.
+
+        //docking - doors dont have proper rot
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
             if (docked)
@@ -210,6 +212,8 @@ namespace RimWorld
             //check LR for extender, same rot
             if (b1 != null && b2 != null && b1.def == ResourceBank.ThingDefOf.ShipAirlockBeam && b1.def == b2.def)
             {
+                b1.TryGetComp<CompSoShipDocking>().dockParent = this;
+                b2.TryGetComp<CompSoShipDocking>().dockParent = this;
                 polarity = 0;
                 var r1 = b1.Rotation.AsByte;
                 var r2 = b2.Rotation.AsByte;
@@ -261,12 +265,15 @@ namespace RimWorld
                 Thing thing;
                 thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, center - rightSide, this.Map);
+                thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);
                 thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamTile);
                 GenSpawn.Spawn(thing, center, this.Map);
+                thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);
                 thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, center + rightSide, this.Map);
+                thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);
             }
             docked = true;
@@ -289,7 +296,8 @@ namespace RimWorld
                 }
                 foreach (Building building in toDestroy)
                 {
-                    building.Destroy();
+                    if (!building.Destroyed)
+                        building.Destroy();
                 }
                 unfoldComp.Target = 0.0f;
                 docked = false;

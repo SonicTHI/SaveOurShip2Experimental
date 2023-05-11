@@ -113,6 +113,8 @@
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
+    <Compile Include="CompProps\CompProperties_SoShipDocking.cs" />
+    <Compile Include="Comp\CompSoShipDocking.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="Jobs\JobDriver_LoadShipBuilding.cs" />
     <Compile Include="Jobs\JobGiver_LoadShipBuilding.cs" />

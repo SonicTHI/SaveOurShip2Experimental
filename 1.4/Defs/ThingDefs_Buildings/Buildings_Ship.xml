@@ -489,6 +489,10 @@
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
+				<canLight>true</canLight>
+				<light>Ship_Beam_Light</light>
+				<lightPower>15</lightPower>
+				<sunLightPower>2500</sunLightPower>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -672,6 +676,8 @@
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
+			</li>
+			<li Class="CompProperties_SoShipDocking">
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
@@ -2805,6 +2811,8 @@
 			<li Class="CompProperties_SoShipPart">
 				<hermetic>true</hermetic>
 			</li>
+			<li Class="CompProperties_SoShipDocking">
+			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -2848,6 +2856,8 @@
 				<hermetic>true</hermetic>
 				<foam>true</foam>
 				<roof>true</roof>
+			</li>
+			<li Class="CompProperties_SoShipDocking">
 			</li>
 		</comps>
 		<rotatable>false</rotatable>

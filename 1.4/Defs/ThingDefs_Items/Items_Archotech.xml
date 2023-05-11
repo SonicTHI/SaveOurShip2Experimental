@@ -136,7 +136,7 @@
       <Flammability>0.2</Flammability>
     </statBases>
     <thingCategories>
-      <li>Items</li>
+      <li>Manufactured</li>
     </thingCategories>
     <tradeability>Sellable</tradeability>
     <techLevel>Archotech</techLevel>

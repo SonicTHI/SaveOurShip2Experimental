@@ -1276,7 +1276,7 @@
 		<designationHotKey>Misc5</designationHotKey>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
 	</ThingDef>
-	<!-- bridge -->
+	<!-- consoles -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Bridges</defName>
 	</DesignatorDropdownGroupDef>
@@ -1410,10 +1410,75 @@
 			<li>ShipPilotSeat</li>
 		</researchPrerequisites>
 	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipConsoleScience</defName>
+		<label>science console</label>
+		<designatorDropdown>Ship_Bridges</designatorDropdown>
+		<thingClass>Building_ShipAdvSensor</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/Ship_Console_Science</texPath>
+			<graphicClass>Graphic_MultiOnOff</graphicClass>
+			<shaderType>CutoutComplex</shaderType>
+			<drawSize>(5,3.5)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<hasInteractionCell>True</hasInteractionCell>
+		<interactionCellOffset>(0,0,1)</interactionCellOffset>
+		<stealable>false</stealable>
+		<size>(3,1)</size>
+		<pathCost>30</pathCost>
+		<fillPercent>0.40</fillPercent>
+		<defaultPlacingRot>South</defaultPlacingRot>
+		<tickerType>Normal</tickerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<description>Allows colonists to scan for objects of interest, observe sites from orbit and scan enemy ship interiors in combat.</description>
+		<designationCategory>Ship</designationCategory>
+		<costList>
+			<Steel>20</Steel>
+			<ComponentSpacer>1</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_Mannable"/>
+			<li Class="CompProperties_LongRangeMineralScannerSpace"/>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="CompProperties_ShipHeat">
+				<compClass>CompShipHeat</compClass>
+			</li>
+		</comps>
+		<statBases>
+			<MaxHitPoints>120</MaxHitPoints>
+			<WorkToBuild>5000</WorkToBuild>
+			<Mass>8</Mass>
+			<Flammability>0</Flammability>
+			<Beauty>1</Beauty>
+		</statBases>
+		<building>
+			<isSittable>true</isSittable>
+		</building>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<researchPrerequisites>
+			<li>ShipPilotSeat</li>
+		</researchPrerequisites>
+	</ThingDef>
+	<!-- core -->
 	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_ComputerCore</defName>
 		<label>ship computer core</label>
-		<designatorDropdown>Ship_Bridges</designatorDropdown>
 		<thingClass>Building_ShipBridge</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/ShipComputerCore</texPath>
@@ -1553,71 +1618,6 @@
 		</placeWorkers>
 		<designationHotKey>Misc5</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipConsoleScience</defName>
-		<label>science console</label>
-		<designatorDropdown>Ship_Sensors</designatorDropdown>
-		<thingClass>Building_ShipAdvSensor</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/Ship_Console_Science</texPath>
-			<graphicClass>Graphic_MultiOnOff</graphicClass>
-			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(5,3.5)</drawSize>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-			</damageData>
-		</graphicData>
-		<altitudeLayer>Building</altitudeLayer>
-		<hasInteractionCell>True</hasInteractionCell>
-		<interactionCellOffset>(0,0,1)</interactionCellOffset>
-		<stealable>false</stealable>
-		<size>(3,1)</size>
-		<pathCost>30</pathCost>
-		<fillPercent>0.40</fillPercent>
-		<defaultPlacingRot>South</defaultPlacingRot>
-		<tickerType>Normal</tickerType>
-		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<description>Allows colonists to scan for objects of interest, observe sites from orbit and scan enemy ship interiors in combat.</description>
-		<designationCategory>Ship</designationCategory>
-		<costList>
-			<Steel>20</Steel>
-			<ComponentSpacer>1</ComponentSpacer>
-		</costList>
-		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_Mannable"/>
-			<li Class="CompProperties_LongRangeMineralScannerSpace"/>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>50</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
-			</li>
-		</comps>
-		<statBases>
-			<MaxHitPoints>120</MaxHitPoints>
-			<WorkToBuild>5000</WorkToBuild>
-			<Mass>8</Mass>
-			<Flammability>0</Flammability>
-			<Beauty>1</Beauty>
-		</statBases>
-		<building>
-			<isSittable>true</isSittable>
-		</building>
-		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
-		</placeWorkers>
-		<researchPrerequisites>
-			<li>ShipPilotSeat</li>
-		</researchPrerequisites>
 	</ThingDef>
 	<!-- ls -->
 	<DesignatorDropdownGroupDef>

@@ -108,8 +108,8 @@ namespace RimWorld
                             if (batteries.Any())
                             {
                                 batteries.RandomElement().AddEnergy(2);
-                                RemHeatFromNetwork(Props.heatVent);
                             }
+                            RemHeatFromNetwork(Props.heatVent);
                         }
                         return;
                     }

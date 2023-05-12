@@ -95,7 +95,7 @@ namespace SaveOurShip2
 							rect4.x = screenHalf - 420;
 							rect4.height = Text.LineHeight;
 							if (net2.StorageCapacity > 0)
-								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + net2.StorageCapacity);
+								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
 							else
 								Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
 						}
@@ -127,7 +127,7 @@ namespace SaveOurShip2
 							rect4.x = screenHalf + 255;
 							rect4.height = Text.LineHeight;
 							if (net2.StorageCapacity > 0)
-								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + net2.StorageCapacity);
+								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
 							else
 								Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
 						}
@@ -4263,7 +4263,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	/*[HarmonyPatch(typeof(CompShipPart),"PostSpawnSetup")]
+    /*[HarmonyPatch(typeof(CompShipPart),"PostSpawnSetup")]
 	public static class RemoveVacuum{
 		public static void Postfix (CompShipPart __instance)
 		{
@@ -4271,7 +4271,7 @@ namespace SaveOurShip2
 				__instance.parent.Map.terrainGrid.SetTerrain (__instance.parent.Position,TerrainDef.Named("FakeFloorInsideShip"));
 		}
 	}*/
-	/*[HarmonyPatch(typeof(GenConstruct), "BlocksConstruction")]
+    /*[HarmonyPatch(typeof(GenConstruct), "BlocksConstruction")]
 	public static class HullTilesDontWipe
 	{
 		public static void Postfix(Thing constructible, Thing t, ref bool __result)
@@ -4301,8 +4301,8 @@ namespace SaveOurShip2
 		}
 	}*/
 
-	//Space crib
-	[HarmonyPatch(typeof(GenTemperature), "TryGetTemperatureForCell")]
+    //Space crib - disabled, good transpiler example
+    /*[HarmonyPatch(typeof(GenTemperature), "TryGetTemperatureForCell")]
 	public static class BabiesAreSafeInSpaceCaskets
 	{
 		public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -4362,9 +4362,9 @@ namespace SaveOurShip2
 			}
 			return false;
 		}
-	}
+	}*/
 
-	[HarmonyPatch(typeof(PawnGraphicSet), "SetAllGraphicsDirty")]
+    [HarmonyPatch(typeof(PawnGraphicSet), "SetAllGraphicsDirty")]
 	public static class PreserveCosmetics
     {
 		public static void Postfix(PawnGraphicSet __instance)

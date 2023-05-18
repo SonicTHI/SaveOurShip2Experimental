@@ -222,6 +222,8 @@
 	<ArcholifeChangeSkinDesc>This creature seems able to change shape at will, but only between a few discrete forms.</ArcholifeChangeSkinDesc>
 	<ShipWallLight>Toggle lighting</ShipWallLight>
 	<ShipWallLightDesc>Toggle this ship part's integrated lighting system</ShipWallLightDesc>
+	<ShipWallLightRotate>Rotate lighting</ShipWallLightRotate>
+	<ShipWallLightRotateDesc>Rotate this ship part's integrated lighting system</ShipWallLightRotateDesc>
 	<ShipWallLightSun>Sun Mode</ShipWallLightSun>
 	<ShipWallLightSunDesc>Toggle a special high-power lighting mode designed for hydroponics bays</ShipWallLightSunDesc>
 	<ShipWallLightColor>Lighting color</ShipWallLightColor>

@@ -1582,7 +1582,18 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(CompGenepackContainer), "EjectContents")]
+    [HarmonyPatch(typeof(CompBiosculpterPod), "EjectContents")]
+    public static class DisableForMoveSculpt
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(CompGenepackContainer), "EjectContents")]
 	public static class DisableForMoveGene
 	{
 		public static bool Prefix()

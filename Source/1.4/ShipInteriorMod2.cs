@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V86f11 active");
+			Log.Message("SOS2EXP V86f12 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -683,8 +683,7 @@ namespace SaveOurShip2
 			if (ModsConfig.RoyaltyActive)
 				royActive = true;
 
-			Dictionary<IntVec3, Color> spawnLights = new Dictionary<IntVec3, Color>();
-			Dictionary<IntVec3, Color> spawnSunLights = new Dictionary<IntVec3, Color>();
+			Dictionary<IntVec3, Tuple<int,ColorInt,bool>> spawnLights = new Dictionary<IntVec3, Tuple<int, ColorInt, bool>>();
 
 			int size = shipDef.sizeX * shipDef.sizeZ;
 			List<Building> wreckDestroy = new List<Building>();
@@ -797,11 +796,7 @@ namespace SaveOurShip2
 					}
 					else if (shape.shapeOrDef == "SoSLightEnabler")
                     {
-						spawnLights.Add(adjPos, shape.color != Color.clear ? shape.color : Color.white);
-					}
-					else if (shape.shapeOrDef == "SoSSunLightEnabler")
-					{
-						spawnSunLights.Add(adjPos, shape.color != Color.clear ? shape.color : Color.white);
+						spawnLights.Add(adjPos, new Tuple<int, ColorInt, bool> (shape.rot.AsInt, ColorIntUtility.AsColorInt(shape.color != Color.clear ? shape.color : Color.white), shape.alt));
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
@@ -1248,12 +1243,13 @@ namespace SaveOurShip2
 					}
 				}
 			}
-			SpawnLights(map, spawnLights, false);
-            SpawnLights(map, spawnSunLights, true);
+			SpawnLights(map, spawnLights);
         }
-        public static void SpawnLights(Map map, Dictionary<IntVec3, Color> spawnLights, bool sunLights)
+        public static void SpawnLights(Map map, Dictionary<IntVec3, Tuple<int, ColorInt, bool>> shape)
         {
-            foreach (IntVec3 position in spawnLights.Keys)
+            //Dictionary<IntVec3, Color> spawnLights
+            //shape.color != Color.clear ? shape.color : Color.white
+            foreach (IntVec3 position in shape.Keys)
             {
                 Building edifice = position.GetEdifice(map);
                 if (edifice != null)
@@ -1261,7 +1257,7 @@ namespace SaveOurShip2
                     CompSoShipPart part = edifice.TryGetComp<CompSoShipPart>();
                     if (part != null)
                     {
-                        part.SpawnLight(ColorIntUtility.AsColorInt(spawnLights[position]), sunLights);
+                        part.SpawnLight(shape[position].Item1, shape[position].Item2, shape[position].Item3);
                     }
                 }
             }

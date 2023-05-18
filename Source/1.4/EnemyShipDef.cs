@@ -18,12 +18,12 @@ namespace RimWorld
         public int width;
         public int height;
         public Rot4 rot;
-        public bool captain;
+        public bool alt; //alternate mode, for sun lights, etc.
         public float radius;
 
         public override int GetHashCode()
         {
-            return (shapeOrDef +","+ stuff + "," + width+","+height+","+captain+","+radius+","+color).GetHashCode();
+            return (shapeOrDef +","+ stuff + "," + width+","+height+","+alt+","+radius+","+color).GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -31,7 +31,7 @@ namespace RimWorld
             if (!(obj is ShipShape))
                 return false;
             ShipShape otherShape = (ShipShape)obj;
-            return otherShape.shapeOrDef == shapeOrDef && otherShape.stuff == stuff && otherShape.width == width && otherShape.height == height && otherShape.captain == captain && otherShape.radius == radius;
+            return otherShape.shapeOrDef == shapeOrDef && otherShape.stuff == stuff && otherShape.width == width && otherShape.height == height && otherShape.alt == alt && otherShape.radius == radius;
 
         }
 
@@ -44,7 +44,7 @@ namespace RimWorld
             Scribe_Values.Look<int>(ref width, "width");
             Scribe_Values.Look<int>(ref height, "height");
             //Scribe_Values.Look<Rot4>(ref rot, "rot");
-            Scribe_Values.Look<bool>(ref captain, "captain");
+            Scribe_Values.Look<bool>(ref alt, "alt");
             Scribe_Values.Look<float>(ref radius, "radius");
             Scribe_Values.Look<Color>(ref color, "color");
         }
@@ -188,7 +188,7 @@ namespace RimWorld
                 shape.z = int.Parse(parms[1]);
                 shape.rot = new Rot4(int.Parse(parms[2]));
                 ShipShape symbol = symbolTable[parms[3]];
-                shape.captain = symbol.captain;
+                shape.alt = symbol.alt;
                 shape.height = symbol.height;
                 shape.radius = symbol.radius;
                 shape.shapeOrDef = symbol.shapeOrDef;

@@ -276,7 +276,7 @@
 			<li>
 				<key>i</key>
 				<value>
-					<shapeOrDef>SoSSunLightEnabler</shapeOrDef>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef><alt>True</alt>
 				</value>
 			</li>
 			<li>

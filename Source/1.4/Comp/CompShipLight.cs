@@ -16,7 +16,8 @@ namespace RimWorld
         public CompSoShipPart shipComp;
         int lightDirections = 0;
         List<CompGlower> glowers = new List<CompGlower>();
-        bool sunLight;
+        public bool sunLight;
+        public int Rot;
 
         ShipHeatMapComp mapCompInt;
         CompPowerTrader powerCompInt;
@@ -57,10 +58,11 @@ namespace RimWorld
         {
             base.PostPrintOnto(layer);
 
-            if(MapComp != null && MapComp.loaded) //If the region isn't dirty because it's being loaded, but because someone built something nearby
+            if (MapComp != null && MapComp.loaded) //If the region isn't dirty because it's being loaded, but because someone built something nearby
                 UpdateLight(shipComp.lightColor, false, false);
 
-            if (lightDirections != 0)
+            DrawLight(new Rot4(Rot), layer);
+            /*if (lightDirections != 0)
             {
                 if ((lightDirections & 1) == 1)
                     DrawLight(Rot4.South, layer);
@@ -70,13 +72,14 @@ namespace RimWorld
                     DrawLight(Rot4.West, layer);
                 if ((lightDirections & 8) == 8)
                     DrawLight(Rot4.North, layer);
-            }
+            }*/
         }
         public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_References.Look<Building>(ref shipPart, "shipPart");
-            Scribe_Values.Look<int>(ref lightDirections, "lightDirs");
+            //Scribe_Values.Look<int>(ref lightDirections, "lightDirs");
+            Scribe_Values.Look<int>(ref Rot, "Rot");
             Scribe_Values.Look<bool>(ref sunLight, "sun");
         }
         void DrawLight(Rot4 rot, SectionLayer layer)
@@ -95,12 +98,23 @@ namespace RimWorld
 
             if (!onLoad)
             {
-                lightDirections = 0;
+                //lightDirections = 0;
                 RemoveGlowers(parent.Map);
             }
 
             if (PowerComp == null || PowerComp.PowerOn)
             {
+                IntVec3 pos = new IntVec3();
+                if (Rot == 0)
+                    pos = parent.Position + new IntVec3(0, 0, 1);
+                else if (Rot == 1)
+                    pos = parent.Position + new IntVec3(1, 0, 0);
+                else if (Rot == 2)
+                    pos = parent.Position + new IntVec3(0, 0, -1);
+                else if (Rot == 3)
+                    pos = parent.Position + new IntVec3(-1, 0, 0);
+                AddGlower(pos, color, sunLight);
+                /*
                 Map map = parent.Map;
                 IntVec3 pos = parent.Position + new IntVec3(0, 0, -1);
                 if (!onLoad)
@@ -145,10 +159,10 @@ namespace RimWorld
                     }
                 }
                 else if ((lightDirections & 8) == 8)
-                    AddGlower(pos, color, sunLight);
+                    AddGlower(pos, color, sunLight);*/
             }
 
-            if(dirty && parent.Spawned)
+            if (dirty && parent.Spawned)
                 parent.DirtyMapMesh(parent.Map);
         }
         bool CanLight(IntVec3 pos, Map map)
@@ -223,11 +237,12 @@ namespace RimWorld
                     yield return giz;
             }
         }
-        public void SetupLighting(CompSoShipPart comp, bool sun)
+        public void SetupLighting(CompSoShipPart comp, bool sun, int rot)
         {
             shipComp = comp;
             shipPart = (Building)comp.parent;
             sunLight = sun;
+            Rot = rot;
             UpdateLight(shipComp.lightColor);
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)

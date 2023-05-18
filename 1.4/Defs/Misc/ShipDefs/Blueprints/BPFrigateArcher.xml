@@ -352,8 +352,7 @@
 			<li>
 				<key>t</key>
 				<value>
-					<shapeOrDef>SoSSunLightEnabler</shapeOrDef>
-					<color>RGBA(0.886, 0.314, 2.020, 1.000)</color>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef><alt>True</alt>
 				</value>
 			</li>
 			<li>
@@ -408,8 +407,7 @@
 			<li>
 				<key>~</key>
 				<value>
-					<shapeOrDef>SoSSunLightEnabler</shapeOrDef>
-					<color>RGBA(0.851, 0.851, 0.816, 1.000)</color>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef><alt>True</alt>
 				</value>
 			</li>
 			<li>

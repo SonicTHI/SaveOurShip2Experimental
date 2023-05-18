@@ -57,7 +57,8 @@ namespace RimWorld
 
         public bool hasLight = false;
         public bool sunLight = false;
-        public Rot4 lightRot = new Rot4();
+        public int lightRot = -1;
+        List<bool> rotCanLight;
         public ColorInt lightColor = new ColorInt(Color.white);
         public Building myLight = null;
         public bool discoMode = false;
@@ -96,7 +97,7 @@ namespace RimWorld
             if (ShipInteriorMod2.AirlockBugFlag) //MoveShip - cache is off
             {
                 if (hasLight) //Despawned light in MoveShip - regenerate manually so we don't get power bugs
-                    SpawnLight(lightColor, sunLight);
+                    SpawnLight(lightRot, lightColor, sunLight);
                 return;
             }
             if (Props.roof)
@@ -112,7 +113,7 @@ namespace RimWorld
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
-            if (myLight != null)
+            if (myLight != null && myLight.Spawned)
                 myLight.DeSpawn();
             if (!(Props.isPlating || Props.isHardpoint || Props.isHull))
                 return;
@@ -196,11 +197,12 @@ namespace RimWorld
                 yield return giz;
             if (Props.canLight && ((parent.Faction==Faction.OfPlayer && ResearchProjectDefOf.ColoredLights.IsFinished) || DebugSettings.godMode))
             {
+                rotCanLight = CanLightVecs();
                 Command_Action toggleLight = new Command_Action
                 {
                     action = delegate
                     {
-                        if(hasLight)
+                        if (hasLight)
                         {
                             hasLight = false;
                             if (myLight != null)
@@ -210,18 +212,51 @@ namespace RimWorld
                         }
                         else
                         {
-                            SpawnLight(lightColor, false);
+                            if (lightRot == -1)
+                            {
+                                for (int i = 0; i < 4; i++)
+                                {
+                                    if (rotCanLight[i])
+                                    {
+                                        lightRot = i;
+                                        break;
+                                    }
+                                }
+                            }
+                            SpawnLight(lightRot, lightColor, sunLight);
                         }
                     },
                     icon = ShipWallLightIcon,
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipWallLight"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipWallLightDesc"),
-                    disabled = !AnyAdjacentRoom(),
+                    disabled = rotCanLight.All(b => b == false),
                     disabledReason = TranslatorFormattedStringExtensions.Translate("ShipWallLightAdjacency")
                 };
                 yield return toggleLight;
                 if (hasLight)
                 {
+                    Command_Action rotateLight = new Command_Action
+                    {
+                        action = delegate
+                        {
+                            for (int i = 1; i < 4; i++) //check other 3 rots, swap to first valid CW
+                            {
+                                int rot = (lightRot + i) % 4;
+                                if (rotCanLight[rot])
+                                {
+                                    myLight.DeSpawn();
+                                    SpawnLight(rot, lightColor, sunLight);
+                                    break;
+                                }
+                            }
+                        },
+                        icon = ShipWallLightIcon,
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipWallLightRotate"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipWallLightRotateDesc"),
+                        disabled = rotCanLight.Count(b => b == false) > 2,
+                        disabledReason = TranslatorFormattedStringExtensions.Translate("ShipWallLightAdjacency")
+                    };
+                    yield return rotateLight;
                     Command_Toggle toggleSun = new Command_Toggle
                     {
                         toggleAction = delegate
@@ -231,7 +266,7 @@ namespace RimWorld
                                 myLight.DeSpawn();
                             else
                                 Log.Error("Tried to enable sunlight mode at position " + parent.Position + " when no light exists. Please report this bug to the SoS2 team.");
-                            SpawnLight(lightColor, sunLight);
+                            SpawnLight(lightRot, lightColor, sunLight);
                         },
                         isActive = delegate { return sunLight; },
                         icon = ShipSunLightIcon,
@@ -266,6 +301,7 @@ namespace RimWorld
             {
                 Scribe_Values.Look<bool>(ref hasLight, "hasLight", false);
                 Scribe_Values.Look<bool>(ref sunLight, "sunLight", false);
+                Scribe_Values.Look<int>(ref lightRot, "lightRot", -1);
                 Scribe_Values.Look<bool>(ref discoMode, "discoMode", false);
                 if (hasLight)
                 {
@@ -274,29 +310,36 @@ namespace RimWorld
                 }
             }
         }
-        bool AnyAdjacentRoom()
+        List<bool> CanLightVecs()
         {
-            IntVec3 pos = parent.Position + new IntVec3(0, 0, -1);
-            if (pos.GetEdifice(map) == null || pos.GetEdifice(map).def.passability!=Traversability.Impassable)
-                return true;
-            pos += new IntVec3(1, 0, 1);
-            if (pos.GetEdifice(map) == null || pos.GetEdifice(map).def.passability != Traversability.Impassable)
-                return true;
-            pos += new IntVec3(-2, 0, 0);
-            if (pos.GetEdifice(map) == null || pos.GetEdifice(map).def.passability != Traversability.Impassable)
-                return true;
-            pos += new IntVec3(1, 0, 1);
-            if (pos.GetEdifice(map) == null || pos.GetEdifice(map).def.passability != Traversability.Impassable)
-                return true;
-            return false;
+            List<bool> rotCanLight = new List<bool>() { false, false, false, false };
+            if (CanLight(parent.Position + new IntVec3(0, 0, 1), map))
+                rotCanLight[0] = true;
+            if (CanLight(parent.Position + new IntVec3(1, 0, 0), map))
+                rotCanLight[1] = true;
+            if (CanLight(parent.Position + new IntVec3(0, 0, -1), map))
+                rotCanLight[2] = true;
+            if (CanLight(parent.Position + new IntVec3(-1, 0, 0), map))
+                rotCanLight[3] = true;
+            if (parent is Building_ShipVent)
+            {
+                rotCanLight[parent.Rotation.AsInt] = false;
+            }
+            return rotCanLight;
         }
-        public void SpawnLight(ColorInt? color = null, bool sun = false)
+        bool CanLight(IntVec3 pos, Map map)
+        {
+            Building edifice = pos.GetEdifice(map);
+            return (edifice == null || (!(edifice is Building_Door) && edifice.def.passability != Traversability.Impassable));
+        }
+        public void SpawnLight(int rot, ColorInt? color = null, bool sun = false)
         {
             if (!Props.canLight)
             {
                 Log.Error("Attempted to spawn light on non-lightable ship part " + parent);
                 return;
             }
+            lightRot = rot;
             hasLight = true;
             sunLight = sun;
             myLight = (Building)GenSpawn.Spawn(Props.light, parent.Position, parent.Map);
@@ -317,7 +360,19 @@ namespace RimWorld
                     lightColor = color.Value;
                 else
                     lightColor = ColorIntUtility.AsColorInt(Color.white);
-                lightComp.SetupLighting(this, sun);
+                if (rot == -1)
+                {
+                    rotCanLight = CanLightVecs();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (rotCanLight[i])
+                        {
+                            lightRot = i;
+                            break;
+                        }
+                    }
+                }
+                lightComp.SetupLighting(this, sun, rot);
             }
             else
                 Log.Error("Failed to initialize ship lighting at position " + parent.Position + " - please report this bug to the SoS2 team.");

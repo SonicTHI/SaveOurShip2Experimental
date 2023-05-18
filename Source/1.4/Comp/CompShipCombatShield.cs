@@ -18,8 +18,8 @@ namespace RimWorld
         private static readonly MaterialPropertyBlock PropBlock = new MaterialPropertyBlock();
         public static float HeatDamageMult = 3.5f;
 
-        public float radiusSet=40;
-        public float radius=40;
+        public float radiusSet = -1;
+        public float radius = -1;
         public bool shutDown;
         private int lastIntercepted = -69;
         private float lastInterceptAngle;
@@ -35,7 +35,7 @@ namespace RimWorld
             powerComp = parent.TryGetComp<CompPowerTrader>();
             breakComp = parent.TryGetComp<CompBreakdownable>();
             parent.Map.GetComponent<ShipHeatMapComp>().Shields.Add(this);
-            if (!respawningAfterLoad && !ShipInteriorMod2.AirlockBugFlag)
+            if (radiusSet == -1)
                 radiusSet = radius = Props.shieldDefault;
         }
         public override void PostDeSpawn(Map map)

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using RimworldMod;
 using UnityEngine;
 using Verse;
-using RimworldMod.VacuumIsNotFun;
 
 namespace SaveOurShip2
 {

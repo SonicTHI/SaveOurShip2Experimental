@@ -565,7 +565,7 @@
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<seeThroughFog>true</seeThroughFog>
-		<uiIconPath>Things/Building/Ship/HullPlate</uiIconPath>
+		<uiIconPath>Things/Building/Ship/HullPlateMech</uiIconPath>
 		<building>
 			<ai_chillDestination>false</ai_chillDestination>
 			<isInert>true</isInert>

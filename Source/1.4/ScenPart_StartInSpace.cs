@@ -1,7 +1,6 @@
 ﻿using RimWorld.Planet;
 using RimworldMod;
 using RimWorld;
-using RimworldMod.VacuumIsNotFun;
 using SaveOurShip2;
 using System;
 using System.Collections.Generic;

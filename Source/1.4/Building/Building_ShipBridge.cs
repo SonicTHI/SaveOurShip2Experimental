@@ -10,7 +10,6 @@ using System.Reflection;
 using System.Text;
 using Verse.AI;
 using RimworldMod;
-using RimworldMod.VacuumIsNotFun;
 
 namespace RimWorld
 {

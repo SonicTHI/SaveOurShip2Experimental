@@ -13,7 +13,6 @@ using System.Reflection.Emit;
 using UnityEngine;
 using Verse.AI.Group;
 using RimWorld.QuestGen;
-using RimworldMod.VacuumIsNotFun;
 using System.Collections;
 using SaveOurShip2;
 using RimworldMod;

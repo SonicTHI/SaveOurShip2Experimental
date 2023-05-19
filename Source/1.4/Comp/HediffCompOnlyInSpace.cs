@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using RimworldMod;
-using RimworldMod.VacuumIsNotFun;
 using Verse;
 
 namespace RimWorld

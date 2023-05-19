@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
-using RimworldMod.VacuumIsNotFun;
 using HarmonyLib;
 
 namespace RimWorld

@@ -12,8 +12,8 @@
 	<SoS.Settings.FleetChance>Random fleet chance (Min: {0} Max: {1} Default: {2} Current: {3})</SoS.Settings.FleetChance>
 	<SoS.Settings.FleetChance.Desc>Chance for random unknown enemy ships and traders to be fleets.</SoS.Settings.FleetChance.Desc>
 	
-	<SoS.Settings.EasyMode>Easy mode</SoS.Settings.EasyMode>
-	<SoS.Settings.EasyMode.Desc>If checked, this will prevent player pawns dying to point defense and pods landing in outer rooms of your ship.</SoS.Settings.EasyMode.Desc>
+	<SoS.Settings.EasyMode>Easy boarding mode</SoS.Settings.EasyMode>
+	<SoS.Settings.EasyMode.Desc>If checked, will prevent player pawns dying to point defense and enable player pods landing outside of enemy ships in combat.</SoS.Settings.EasyMode.Desc>
 	
 	<SoS.Settings.UseVacuumPathfinding>Use vacuum pathfinding</SoS.Settings.UseVacuumPathfinding>
 	<SoS.Settings.UseVacuumPathfinding.Desc>If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.</SoS.Settings.UseVacuumPathfinding.Desc>

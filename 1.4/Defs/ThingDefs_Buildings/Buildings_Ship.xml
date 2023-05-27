@@ -2906,9 +2906,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPBomberHeavy</defName>
 		<label>ship blueprint (heavy bomber)</label>
-		<description>Class: Heavy bomber\nA heavily armed ship but incapable of extended operations in space.\n\nMass: 1105\nT/W ratio: 3.221\nCombat rating: 131\n\nWeapons: \n1x large railgun turret\n2x laser turret\n2x torpedo tube\n2x plasma turret\n\nRequired resources: \nsteel: 5270\nplasteel: 1876\nadvanced component: 85\ncomponent: 164\nuranium: 160\nsilver: 800\n\nRequired research: \nstarflight basics, ship navigation, electricity, cruiser armaments, air conditioning, heatsinks, firefoam, capacitor arrays, rocket propulsion, laser turrets, ship torpedoes, plasma turrets, ship shields, ship life support</description>
+		<description>Class: Heavy bomber\nA heavily armed ship but incapable of extended operations in space.\n\nMass: 1092\nSize: 28 x 26\nT/W ratio: 3.161\nCombat rating: 110\n\nWeapons: \n1x large railgun turret\n2x laser turret\n2x torpedo launcher\n\nRequired resources: \nsteel: 5057\nplasteel: 1777\nadvanced component: 77\ncomponent: 162\nuranium: 120\nsilver: 225\n\nRequired research: \nstarflight basics, ship navigation, cruiser armaments, ultra mechtech, air conditioning, heatsinks, ship fission reactor, rocket propulsion, laser turrets, firefoam, ship shields, capacitor arrays, ship torpedoes, ship life support</description>
 		<statBases>
-			<MarketValue>2000</MarketValue>
+			<MarketValue>1000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -2919,9 +2919,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCargoFirefly</defName>
 		<label>ship blueprint (firefly transport)</label>
-		<description>Class: Firefly class transport\nAn unarmed transport ship with a large cargo hold.\n\nMass: 4759\nT/W ratio: 1.650\nCombat rating: 59\n\nWeapons: none\n\nRequired resources: \nsteel: 24229\nplasteel: 5840\nadvanced component: 184\ngold: 74\npersona core: 1\ncomponent: 742\nuranium: 170\nentanglement manifold: 1\nsilver: 100\n\nRequired research: \nstarflight basics, ship computer core, ship navigation, rocket propulsion, microelectronics, basic ship sensors, automatic ejection, electricity, air conditioning, ship life support, solar panel, shuttle bay, Johnson-Tanaka Drive, capacitor arrays, firefoam, ship fission reactor, heatsinks, salvage bay, hospital bed, complex furniture, vitals monitor, machining</description>
+		<description>Class: Firefly class transport\nAn unarmed transport ship with a large cargo hold.\n\nMass: 4705\nSize: 79 x 50\nT/W ratio: 1.648\nCombat rating: 63\n\nWeapons: \nnone\nRequired resources: \nsteel: 24379\nplasteel: 5890\nadvanced component: 202\ncomponent: 740\ngold: 16\nuranium: 170\nentanglement manifold: 1\nsilver: 100\n\nRequired research: \nstarflight basics, ship navigation, advanced ship sensors, microelectronics, rocket propulsion, escape pods, air conditioning, electricity, solar panel, ship life support, salvage bay, vitals monitor, shuttle bay, complex furniture, heatsinks, machining, ship fission reactor, firefoam, hospital bed, capacitor arrays, Johnson-Tanaka Drive</description>
 		<statBases>
-			<MarketValue>4000</MarketValue>
+			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -2932,9 +2932,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvette</defName>
 		<label>ship blueprint (corvette)</label>
-		<description>Class: Corvette\nA small corvette.\n\nMass: 1892\nT/W ratio: 2.383\nCombat rating: 132\n\nWeapons: \n2x torpedo tube\n4x laser turret\n2x railgun turret\n\nRequired resources: \nsteel: 9232\nplasteel: 2992\nadvanced component: 132\ncomponent: 314\nsilver: 900\ngold: 4\nuranium: 120\n\nRequired research: \nstarflight basics, ship navigation, heatsinks, air conditioning, electricity, ship shields, microelectronics, salvage bay, basic ship sensors, ship fission reactor, ship torpedoes, ship life support, machining, firefoam, rocket propulsion, tube television, laser turrets, capacitor arrays, railgun turrets</description>
+		<description>Class: Corvette\nA small corvette.\n\nMass: 1860\nSize: 36 x 20\nT/W ratio: 2.383\nCombat rating: 132\n\nWeapons: \n2x torpedo launcher\n4x laser turret\n2x railgun turret\n\nRequired resources: \nsteel: 9172\nplasteel: 2992\nadvanced component: 132\ncomponent: 314\nsilver: 900\ngold: 4\nuranium: 120\n\nRequired research: \nstarflight basics, ship navigation, heatsinks, air conditioning, ship shields, microelectronics, salvage bay, basic ship sensors, ship fission reactor, ship torpedoes, ship life support, machining, firefoam, rocket propulsion, tube television, laser turrets, capacitor arrays, railgun turrets</description>
 		<statBases>
-			<MarketValue>4000</MarketValue>
+			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -2945,9 +2945,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvetteGunship</defName>
 		<label>ship blueprint (corvette gunship)</label>
-		<description>Class: Corvette gunship\nA slow but heavily armed corvette.\n\nMass: 3747\nT/W ratio: 1.403\nCombat rating: 263\n\nWeapons: \n8x laser turret\n2x large plasma turret\n2x large railgun turret\n\nRequired resources: \nsteel: 19962\nplasteel: 6392\nadvanced component: 245\ncomponent: 651\nuranium: 530\ngold: 4\nsilver: 1700\n\nRequired research: \nstarflight basics, ship navigation, laser turrets, air conditioning, basic ship sensors, electricity, microelectronics, cruiser armaments, ship shields, heatsinks, capacitor arrays, firefoam, flatscreen television, rocket propulsion, automatic ejection, ship life support, salvage bay, machining, ship fission reactor, hospital bed, vitals monitor</description>
+		<description>Class: Corvette\nA slow but heavily armed corvette.\n\nMass: 3685\nSize: 69 x 26\nT/W ratio: 1.403\nCombat rating: 262\n\nWeapons: \n8x laser turret\n2x large railgun turret\n2x large plasma turret\n\nRequired resources: \nsteel: 19819\nadvanced component: 245\nplasteel: 6390\ncomponent: 651\nuranium: 530\ngold: 4\nsilver: 1700\n\nRequired research: \nship navigation, starflight basics, laser turrets, air conditioning, basic ship sensors, microelectronics, ship shields, heatsinks, cruiser armaments, firefoam, capacitor arrays, flatscreen television, electricity, hospital bed, escape pods, rocket propulsion, ship fission reactor, machining, salvage bay, ship life support, vitals monitor</description>
 		<statBases>
-			<MarketValue>4000</MarketValue>
+			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -2958,9 +2958,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvetteTorp</defName>
 		<label>ship blueprint (torpedo corvette)</label>
-		<description>Class: Torpedo corvette\nA heavily armed torpedo corvette.\n\nMass: 3799\nT/W ratio: 1.857\nCombat rating: 313\n\nWeapons: \n6x laser turret\n2x large plasma turret\n2x torpedo tubes (2)\n\nRequired resources: \nsteel: 20777\nplasteel: 6049\nadvanced component: 254\ncomponent: 652\nuranium: 325\nsilver: 900\ngold: 74\npersona core: 1\n\nRequired research: \nstarflight basics, ship navigation, laser turrets, electricity, tube television, cruiser armaments, air conditioning, microelectronics, capacitor arrays, rocket propulsion, heatsinks, hospital bed, automatic ejection, ship shields, basic ship sensors, vitals monitor, ship life support, purge ports, ship fission reactor, machining, salvage bay, ship torpedoes, firefoam, ship computer core</description>
+		<description>Class: Corvette\nA heavily armed torpedo corvette.\n\nMass: 3731\nSize: 60 x 36\nT/W ratio: 1.853\nCombat rating: 313\n\nWeapons: \n6x laser turret\n2x large plasma turret\n2x torpedo launcher (2)\n\nRequired resources: \nsteel: 21001\nplasteel: 6070\nadvanced component: 275\ncomponent: 651\nuranium: 325\nsilver: 900\ngold: 20\n\nRequired research: \nstarflight basics, ship navigation, laser turrets, cruiser armaments, air conditioning, microelectronics, capacitor arrays, electricity, escape pods, tube television, rocket propulsion, heatsinks, hospital bed, ship shields, ship life support, vitals monitor, basic ship sensors, ship fission reactor, ship torpedoes, firefoam, purge ports, advanced ship sensors, salvage bay, machining</description>
 		<statBases>
-			<MarketValue>4000</MarketValue>
+			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -2971,9 +2971,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvetteWinged</defName>
 		<label>ship blueprint (corvette)</label>
-		<description>Class: Corvette\nA winged corvette.\n\nMass: 3154\nT/W ratio: 1.763\nCombat rating: 179\n\nWeapons: \n1x large railgun turret\n6x laser turret\n2x torpedo tube\n\nRequired resources: \nsteel: 15313\nplasteel: 4794\nadvanced component: 172\ncomponent: 547\nuranium: 220\ngold: 4\nsilver: 900\n\nRequired research: \nstarflight basics, ship navigation, electricity, capacitor arrays, cruiser armaments, microelectronics, basic ship sensors, salvage bay, air conditioning, automatic ejection, tube television, ship shields, ship life support, vitals monitor, hospital bed, ship fission reactor, laser turrets, rocket propulsion, heatsinks, ship torpedoes</description>
+		<description>Class: Corvette\nA winged corvette.\n\nMass: 3092\nSize: 44 x 48\nT/W ratio: 1.763\nCombat rating: 178\n\nWeapons: \n1x large railgun turret\n6x laser turret\n2x torpedo launcher\n\nRequired resources: \nsteel: 15183\nadvanced component: 172\nplasteel: 4794\ncomponent: 547\nuranium: 220\nsilver: 900\ngold: 4\n\nRequired research: \nship navigation, starflight basics, capacitor arrays, cruiser armaments, air conditioning, microelectronics, ship life support, ship shields, salvage bay, heatsinks, escape pods, tube television, vitals monitor, hospital bed, basic ship sensors, rocket propulsion, laser turrets, ship torpedoes, ship fission reactor</description>
 		<statBases>
-			<MarketValue>4000</MarketValue>
+			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -2984,9 +2984,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPFrigateArcher</defName>
 		<label>ship blueprint (archer frigate)</label>
-		<description>Class: Archer class frigate\nAn agile frigate that prefers to engage targets from long range with its large railgun.\n\nMass: 7518\nT/W ratio: 1.911\nCombat rating: 576\n\nWeapons: \n10x laser turret\n2x torpedo tube\n1x spinal barrel: railgun\n2x large plasma turret\n\nRequired resources: \nsteel: 39649\nadvanced component: 528\ngold: 106\npersona core: 1\nplasteel: 12097\ncomponent: 1091\nuranium: 750\nsilver: 1100\ncloth: 130\nwood: 55\n\nRequired research: \nship computer core, starflight basics, automatic ejection, electricity, ship shields, ship life support, advanced ship sensors, microelectronics, air conditioning, ship navigation, complex furniture, hospital bed, vitals monitor, ship fission reactor, multi-analyzer, fabrication, machining, drug production, flatscreen television, firefoam, hullfoam, complex clothing, laser turrets, capital ship armaments, heatsinks, capacitor arrays, rocket propulsion, hydroponics, ship torpedoes, purge ports, cruiser armaments, shuttle bay, salvage bay</description>
+		<description>Class: Archer class frigate\nAn agile frigate that prefers to engage targets from long range with its large railgun.\n\nMass: 7422\nSize: 76 x 44\nT/W ratio: 1.909\nCombat rating: 575\n\nWeapons: \n10x laser turret\n2x large plasma turret\n1x spinal barrel: railgun\n2x torpedo launcher\n\nRequired resources: \nsteel: 39694\nadvanced component: 548\nplasteel: 12097\ncomponent: 1091\nuranium: 750\nsilver: 1100\ngold: 52\ncloth: 130\nwood: 55\n\nRequired research: \nship navigation, starflight basics, laser turrets, capital ship armaments, microelectronics, escape pods, air conditioning, hullfoam, ship shields, advanced ship sensors, heatsinks, hospital bed, ship life support, capacitor arrays, cruiser armaments, rocket propulsion, machining, fabrication, ship fission reactor, purge ports, firefoam, shuttle bay, salvage bay, multi-analyzer, hydroponics, ship torpedoes, electricity, complex furniture, drug production, complex clothing, vitals monitor, flatscreen television</description>
 		<statBases>
-			<MarketValue>6000</MarketValue>
+			<MarketValue>3000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -2997,9 +2997,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPFrigateWinged</defName>
 		<label>ship blueprint (frigate)</label>
-		<description>Class: Frigate\nA large and powerful frigate.\n\nMass: 8343\nT/W ratio: 1.784\nCombat rating: 630\n\nWeapons: \n2x torpedo tubes (2)\n10x laser turret\n1x large laser turret\n1x spinal barrel: railgun\n2x large railgun turret\n2x plasma turret\n\nRequired resources: \nsteel: 44317\nadvanced component: 541\ngold: 106\npersona core: 1\nplasteel: 13233\ncomponent: 1322\ncloth: 50\nwood: 25\nsilver: 1100\nuranium: 800\n\nRequired research: \nship computer core, starflight basics, complex furniture, flatscreen television, electricity, air conditioning, heatsinks, ship torpedoes, advanced ship sensors, ship shields, automatic ejection, ship fission reactor, fabrication, microelectronics, hullfoam, hospital bed, hydroponics, ship life support, vitals monitor, laser turrets, capacitor arrays, rocket propulsion, purge ports, firefoam, cruiser armaments, multi-analyzer, capital ship armaments, plasma turrets, shuttle bay, ship navigation, salvage bay, machining</description>
+		<description>Class: Frigate\nA large and powerful frigate.\n\nMass: 8249\nSize: 77 x 60\nT/W ratio: 1.781\nCombat rating: 629\n\nWeapons: \n2x plasma turret\n2x torpedo launcher (2)\n2x large railgun turret\n10x laser turret\n1x spinal barrel: railgun\n1x large laser turret\n\nRequired resources: \nsteel: 44394\nadvanced component: 566\nplasteel: 13290\ncomponent: 1323\nuranium: 800\ncloth: 50\nwood: 25\ngold: 52\nsilver: 1100\n\nRequired research: \nship navigation, starflight basics, salvage bay, electricity, capacitor arrays, microelectronics, shuttle bay, plasma turrets, air conditioning, escape pods, ship life support, ship torpedoes, hospital bed, hydroponics, vitals monitor, hullfoam, machining, complex furniture, advanced ship sensors, ship shields, firefoam, cruiser armaments, laser turrets, heatsinks, rocket propulsion, capital ship armaments, ship fission reactor, multi-analyzer, fabrication, purge ports, flatscreen television</description>
 		<statBases>
-			<MarketValue>6000</MarketValue>
+			<MarketValue>3000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -3010,9 +3010,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPTachinante</defName>
 		<label>ship blueprint (ancient martian corvette)</label>
-		<description>Class: Martian corvette\nAn ancient design that stood the test of time.\n\nMass: 2511\nT/W ratio: 1.737\nCombat rating: 137\n\nWeapons: \n1x torpedo launcher (2)\n6x cannon turret\n\nRequired resources: \nsteel: 12270\nplasteel: 3607\nadvanced component: 124\ngold: 74\npersona core: 1\ncomponent: 397\nsilver: 100\nuranium: 300\n\nRequired research: \nstarflight basics, ship computer core, salvage bay, microelectronics, electricity, flatscreen television, air conditioning, ship torpedoes, machining, hospital bed, hydroponics, rocket propulsion, ship fission reactor, heatsinks, capacitor arrays, ship cannons, ship life support, ship navigation, vitals monitor, basic ship sensors</description>
+		<description>Class: Ancient martian corvette\nAn ancient design that stood the test of time.\n\nMass: 2459\nSize: 59 x 22\nT/W ratio: 1.737\nCombat rating: 136\n\nWeapons: \n6x cannon turret\n1x torpedo launcher (2)\n\nRequired resources: \nsteel: 12505\nplasteel: 3607\nadvanced component: 144\ngold: 20\ncomponent: 397\nuranium: 300\nsilver: 100\n\nRequired research: \nstarflight basics, ship navigation, basic ship sensors, ship cannons, microelectronics, air conditioning, hydroponics, rocket propulsion, ship fission reactor, heatsinks, capacitor arrays, electricity, machining, salvage bay, advanced ship sensors, flatscreen television, ship torpedoes, hospital bed, vitals monitor, ship life support</description>
 		<statBases>
-			<MarketValue>4000</MarketValue>
+			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
@@ -3023,9 +3023,9 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPTransportSmall</defName>
 		<label>ship blueprint (small transport)</label>
-		<description>Class: Small transport\nA small lightly armed transport ship.\n\nMass: 1459\nT/W ratio: 2.019\nCombat rating: 44\n\nWeapons: \n2x laser turret\n\nRequired resources: \nsteel: 7191\nplasteel: 2214\nadvanced component: 93\ncomponent: 247\ngold: 4\nsilver: 900\nuranium: 40\n\nRequired research: \nstarflight basics, ship navigation, microelectronics, basic ship sensors, air conditioning, electricity, flatscreen television, ship shields, machining, heatsinks, ship life support, ship fission reactor, vitals monitor, hospital bed, laser turrets, capacitor arrays, rocket propulsion</description>
+		<description>Class: Small transport\nA small lightly armed transport ship.\n\nMass: 1469\nSize: 30 x 22\nT/W ratio: 1.978\nCombat rating: 44\n\nWeapons: \n2x laser turret\n\nRequired resources: \nsteel: 7296\nplasteel: 2084\nadvanced component: 91\ncomponent: 249\ngold: 4\nuranium: 40\nsilver: 250\n\nRequired research: \nstarflight basics, ship navigation, microelectronics, flatscreen television, air conditioning, ship life support, basic ship sensors, salvage bay, heatsinks, laser turrets, ship fission reactor, ship shields, machining, hospital bed, vitals monitor, firefoam, rocket propulsion, capacitor arrays</description>
 		<statBases>
-			<MarketValue>2000</MarketValue>
+			<MarketValue>1000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">

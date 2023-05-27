@@ -2809,7 +2809,7 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(Pawn pawn)
 		{
-			if (pawn.kindDef.defName.Contains("Space"))
+			if (pawn.kindDef.defName.StartsWith("Apparel_Space"))
 			{
 				return false;
 			}
@@ -2868,8 +2868,8 @@ namespace SaveOurShip2
 		}
 	}
 
-	//No longer necessary in 1.4
-	/*[HarmonyPatch(typeof(Pawn), "GetGizmos")]
+	/*No longer necessary in 1.4
+	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
 	public static class AnimalsHaveGizmosToo
 	{
 		public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)

@@ -8,8 +8,10 @@
 		<sizeX>28</sizeX>
 		<sizeZ>26</sizeZ>
 		<label>Heavy bomber</label>
-		<combatPoints>131</combatPoints>
-		<neverRandom>true</neverRandom>
+		<combatPoints>130</combatPoints>
+		<randomTurretPoints>20</randomTurretPoints>
+		<neverRandom>True</neverRandom>
+		<neverFleet>True</neverFleet>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>20</x>
@@ -32,172 +34,185 @@
 			<li>
 				<key>A</key>
 				<value>
-					<shapeOrDef>ShipAirlock</shapeOrDef>
+					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>B</key>
 				<value>
-					<shapeOrDef>Ship_Corner_OneTwo</shapeOrDef>
+					<shapeOrDef>ShipTurret_Kinetic_Large</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>C</key>
 				<value>
-					<shapeOrDef>Armchair</shapeOrDef>
-					<stuff>Synthread</stuff>
+					<shapeOrDef>ShipHullTileMech</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>D</key>
+				<value>
+					<shapeOrDef>Ship_Beam_Unpowered</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>E</key>
+				<value>
+					<shapeOrDef>ShipAirlock</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>F</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>G</key>
 				<value>
 					<shapeOrDef>Shelf</shapeOrDef>
 					<stuff>Steel</stuff>
 				</value>
 			</li>
 			<li>
-				<key>E</key>
-				<value>
-					<shapeOrDef>SoSLightEnabler</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>F</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>G</key>
-				<value>
-					<shapeOrDef>Ship_Beam_Unpowered</shapeOrDef>
-				</value>
-			</li>
-			<li>
 				<key>H</key>
-				<value>
-					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>I</key>
-				<value>
-					<shapeOrDef>FirefoamPopper</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>J</key>
 				<value>
 					<shapeOrDef>Ship_LifeSupport_Small</shapeOrDef>
 				</value>
 			</li>
 			<li>
+				<key>I</key>
+				<value>
+					<shapeOrDef>Ship_Corner_OneTwo</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>J</key>
+				<value>
+					<shapeOrDef>Armchair</shapeOrDef>
+					<stuff>Synthread</stuff>
+				</value>
+			</li>
+			<li>
 				<key>K</key>
 				<value>
-					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
+					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>L</key>
 				<value>
-					<shapeOrDef>ShipHullTileMech</shapeOrDef>
+					<shapeOrDef>Ship_Corner_OneOne</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>M</key>
 				<value>
-					<shapeOrDef>ShipTurret_Kinetic_Large</shapeOrDef>
+					<shapeOrDef>Ship_Corner_OneOneFlip</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>N</key>
 				<value>
-					<shapeOrDef>Ship_Corner_OneOne</shapeOrDef>
+					<shapeOrDef>ShipTurret_Laser</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>O</key>
 				<value>
-					<shapeOrDef>Ship_Corner_OneOneFlip</shapeOrDef>
+					<shapeOrDef>ShipTorpedoOne</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>P</key>
 				<value>
-					<shapeOrDef>Ship_Engine</shapeOrDef>
+					<shapeOrDef>ShipHeatsink</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>Q</key>
 				<value>
-					<shapeOrDef>ShipCapacitorSmall</shapeOrDef>
+					<shapeOrDef>ShipPartTurretSmall</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>R</key>
 				<value>
-					<shapeOrDef>ChemfuelPoweredGenerator</shapeOrDef>
+					<shapeOrDef>ShipInside_PassiveVent</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>S</key>
 				<value>
-					<shapeOrDef>ShipTurret_Laser</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>T</key>
-				<value>
-					<shapeOrDef>ShipTorpedoOne</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>U</key>
-				<value>
-					<shapeOrDef>ShipHeatsink</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>V</key>
-				<value>
-					<shapeOrDef>Bed</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>W</key>
-				<value>
-					<shapeOrDef>Table1x2c</shapeOrDef>
-					<stuff>Steel</stuff>
-				</value>
-			</li>
-			<li>
-				<key>X</key>
-				<value>
-					<shapeOrDef>ShipCombatShieldGenerator</shapeOrDef>
+					<shapeOrDef>ShipCombatShieldGeneratorMini</shapeOrDef>
 					<radius>20</radius>
 				</value>
 			</li>
 			<li>
-				<key>Y</key>
+				<key>T</key>
 				<value>
 					<shapeOrDef>DiningChair</shapeOrDef>
 					<stuff>Steel</stuff>
 				</value>
 			</li>
 			<li>
+				<key>U</key>
+				<value>
+					<shapeOrDef>Bed</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key>V</key>
+				<value>
+					<shapeOrDef>Table1x2c</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key>W</key>
+				<value>
+					<shapeOrDef>Ship_Engine</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>X</key>
+				<value>
+					<shapeOrDef>Ship_Reactor_Small</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>Y</key>
+				<value>
+					<shapeOrDef>ShipCapacitorSmall</shapeOrDef>
+				</value>
+			</li>
+			<li>
 				<key>Z</key>
 				<value>
-					<shapeOrDef>ShipInside_PassiveVent</shapeOrDef>
+					<shapeOrDef>ShipHeatManifold</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>[</key>
 				<value>
-					<shapeOrDef>ShipTurret_Plasma</shapeOrDef>
+					<shapeOrDef>ShelfSmall</shapeOrDef>
+					<stuff>Steel</stuff>
+				</value>
+			</li>
+			<li>
+				<key>\</key>
+				<value>
+					<shapeOrDef>FirefoamPopper</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>]</key>
+				<value>
+					<shapeOrDef>SoSLightEnabler</shapeOrDef>
 				</value>
 			</li>
 		</symbolTable>
-		<bigString>20,14,0,?|20,13,0,?|20,12,0,?|20,15,0,@|21,15,0,@|22,15,0,@|19,15,0,A|18,15,0,@|17,15,0,@|17,16,1,B|19,14,0,?|19,13,0,?|19,13,1,C|18,13,0,?|18,12,0,?|17,12,0,D|18,11,0,@|18,11,0,E|19,11,0,@|18,10,3,F|16,10,0,G|16,8,2,H|15,9,0,@|14,9,0,?|14,10,0,?|14,11,0,?|14,12,0,?|14,13,0,?|14,14,0,?|14,15,0,?|14,16,0,?|14,16,0,I|14,17,0,?|14,18,0,?|14,19,0,@|14,20,1,H|15,10,0,@|16,11,0,@|16,12,0,?|16,12,0,J|16,13,0,?|16,14,0,?|17,14,2,D|17,11,0,@|17,12,0,?|17,13,0,?|19,12,0,?|19,12,1,C|20,11,0,@|21,11,0,@|22,11,0,@|24,11,3,K|24,12,0,L|23,13,2,M|25,12,0,G|25,13,0,G|25,14,0,G|24,15,1,H|24,13,0,L|23,13,0,L|22,13,0,?|23,14,0,L|23,12,0,L|22,12,0,L|21,12,0,@|21,13,1,A|21,14,0,@|22,14,0,L|18,14,0,?|16,15,0,@|17,14,0,?|16,16,0,G|16,18,2,K|15,7,0,@|14,6,3,K|12,6,0,@|12,5,0,@|12,4,0,@|12,3,0,@|12,1,2,H|11,0,0,G|10,0,0,F|10,2,0,G|9,2,3,N|9,3,0,@|8,3,2,O|8,4,0,@|7,4,3,B|6,5,0,@|5,5,3,B|4,7,1,P|3,9,2,O|3,10,0,@|2,10,3,B|2,11,0,G|2,12,0,?|2,13,2,Q|2,13,0,?|2,14,0,?|2,14,0,I|2,15,0,G|1,16,1,F|3,11,0,?|3,11,0,R|4,11,0,?|5,11,0,?|5,11,0,R|5,12,0,?|5,13,0,?|5,14,0,?|5,14,0,R|5,15,0,?|5,16,0,?|6,16,3,Q|5,17,0,@|4,19,1,P|4,21,1,F|4,12,0,?|6,7,0,@|7,7,0,?|8,7,2,S|7,8,0,?|7,9,0,A|7,10,0,?|7,11,0,?|7,12,0,?|7,13,0,?|7,14,0,?|7,15,0,?|7,16,0,?|7,17,0,A|7,18,0,?|7,19,0,?|8,20,2,S|7,20,0,?|7,21,0,@|6,22,1,F|6,8,1,A|5,9,0,@|6,6,0,@|7,5,0,@|8,5,0,@|9,5,0,?|10,5,0,T|10,5,0,?|10,4,0,?|10,6,0,?|10,7,0,?|10,7,0,U|11,7,0,?|11,8,0,?|12,8,0,@|13,8,0,?|12,9,0,@|12,10,0,?|13,10,3,V|11,10,0,?|11,11,2,W|11,11,0,?|11,12,0,?|12,13,0,X|11,13,0,?|11,14,0,?|11,15,0,?|11,15,0,D|11,16,0,?|11,17,0,@|11,18,0,?|10,18,0,U|11,19,0,?|11,20,0,?|10,21,0,T|11,21,0,?|11,22,0,?|11,23,0,@|11,24,0,G|11,25,0,G|11,26,0,G|12,11,0,?|12,11,3,Y|11,9,0,@|10,9,0,@|9,9,2,Z|9,8,0,?|9,10,0,?|8,10,0,U|9,11,0,?|9,12,0,?|8,12,0,U|9,13,0,?|9,14,0,?|8,14,0,U|9,15,0,?|9,16,0,?|9,17,0,Z|9,17,2,E|9,18,0,?|9,19,0,?|9,20,0,?|9,21,0,?|9,22,0,?|9,23,0,@|8,23,0,N|9,24,3,O|9,7,0,?|10,8,0,?|9,6,0,?|8,6,0,?|9,4,0,?|10,3,0,@|11,1,0,G|11,2,0,G|11,3,0,@|11,4,0,?|11,5,0,?|11,6,0,?|12,7,0,@|13,7,0,@|14,7,0,@|15,8,0,@|13,9,0,?|14,8,0,?|13,10,0,?|13,11,0,?|15,11,0,@|13,12,0,?|15,12,0,?|15,12,1,Z|13,13,0,?|15,13,0,?|15,13,1,A|13,14,0,?|15,14,0,?|15,14,0,@|15,14,3,E|13,15,0,?|15,15,0,@|13,16,0,?|15,16,0,@|13,17,0,?|15,17,0,@|13,18,0,?|15,18,0,@|13,19,0,@|15,19,0,@|27,12,3,K|28,13,0,G|27,14,1,H|27,13,0,G|26,13,0,G|24,14,0,L|4,9,0,@|4,10,0,@|1,11,0,G|0,11,0,F|0,13,0,G|0,14,0,B|1,12,0,G|3,12,0,?|1,13,0,@|3,13,0,?|1,14,0,G|3,14,0,?|3,14,0,R|1,15,0,G|3,15,0,?|3,16,0,@|3,17,0,N|5,10,0,?|6,10,3,Q|6,11,0,?|6,12,0,?|4,13,0,?|6,13,0,?|4,14,0,?|6,14,0,?|4,15,0,?|6,15,0,?|4,16,0,@|6,16,0,?|4,17,0,@|6,17,0,@|6,18,1,A|6,19,0,@|6,20,0,@|6,21,0,@|7,6,0,?|8,7,0,?|8,8,0,?|6,9,0,@|8,9,0,@|8,9,2,E|6,10,0,?|8,10,0,?|8,11,0,?|8,12,0,?|8,13,0,?|8,14,0,?|8,15,0,?|8,16,0,?|8,17,2,Z|8,17,0,E|8,18,0,?|8,19,0,?|8,20,0,?|8,21,0,@|8,22,0,@|10,10,0,?|10,10,0,@|10,11,0,?|10,11,0,@|10,12,0,?|10,12,0,@|12,12,0,?|10,13,0,?|10,13,1,Z|12,13,0,?|10,14,0,?|10,14,0,@|12,14,0,?|10,15,0,?|10,15,0,@|12,15,0,?|10,16,0,?|10,16,1,A|12,16,0,?|10,17,0,@|12,17,0,@|10,18,0,?|12,18,0,@|10,19,0,?|12,19,0,@|10,20,0,?|12,20,0,@|10,21,0,?|12,21,0,@|10,22,0,?|12,22,0,@|10,23,0,@|12,23,0,@|10,24,0,G|12,25,2,K|10,25,0,B|13,8,0,[|13,17,0,[</bigString>
+		<bigString>20,12,0,?|20,13,0,?|20,14,0,?|21,12,0,@|21,11,0,@|22,11,0,@|24,11,3,A|23,13,2,B|23,12,0,C|23,13,0,C|24,13,0,C|25,13,0,D|26,13,0,D|27,13,0,D|28,13,0,D|24,12,0,C|22,12,0,C|21,13,1,E|21,14,0,@|21,15,0,@|22,15,0,@|24,15,1,F|22,14,0,C|20,15,0,@|19,15,0,E|18,15,0,@|18,14,0,?|18,13,0,?|18,12,0,?|17,12,0,G|17,12,0,?|16,12,0,?|16,12,0,H|16,13,0,?|16,14,0,?|17,14,2,G|16,15,0,@|16,16,0,D|17,16,1,I|17,13,0,?|17,14,0,?|17,15,0,@|19,14,0,?|19,13,0,?|19,13,1,J|19,12,0,?|19,12,1,J|19,11,0,@|20,11,0,@|23,14,0,C|22,13,0,?|24,14,0,C|25,14,0,D|25,12,0,D|27,14,1,F|27,12,3,A|18,10,3,K|16,10,0,D|16,8,2,F|15,7,0,@|14,6,3,A|12,6,0,@|12,5,0,@|12,4,0,@|12,3,0,@|12,1,2,F|11,0,0,D|10,0,0,K|10,2,0,D|9,2,3,L|9,3,0,@|8,3,2,M|8,4,0,@|7,4,3,I|7,5,0,@|8,7,2,N|7,6,0,?|8,6,0,?|10,5,0,O|9,6,0,?|10,6,0,?|10,7,0,?|10,7,0,P|11,7,0,?|11,8,0,?|12,8,0,@|13,8,0,Q|13,8,0,?|14,8,0,?|14,9,0,?|14,10,0,?|14,11,0,?|15,11,3,R|8,5,0,@|9,4,0,?|10,4,0,?|10,3,0,@|11,1,0,D|11,2,0,D|11,3,0,@|11,4,0,?|11,5,0,?|11,6,0,?|12,7,0,@|13,7,0,@|14,7,0,@|15,8,0,@|15,9,0,@|15,10,0,@|17,11,0,@|15,12,0,?|15,12,1,R|16,11,0,@|15,13,0,?|15,13,1,E|14,13,0,?|13,13,0,?|13,13,0,S|13,12,0,?|13,12,0,@|12,12,0,?|12,12,0,@|12,11,0,?|12,11,3,T|12,10,0,?|13,10,3,U|11,10,0,?|11,11,2,V|10,10,0,?|10,10,0,@|10,9,0,@|9,9,2,R|9,8,0,?|8,8,0,?|7,8,0,?|6,8,1,E|6,7,0,@|4,7,1,W|5,5,3,I|3,9,2,M|3,10,0,D|2,10,3,I|1,11,0,D|0,11,0,K|0,13,0,D|0,14,0,I|1,15,0,D|1,16,1,K|3,16,0,D|3,15,0,D|4,13,0,X|3,14,0,?|3,13,0,?|4,13,0,?|5,13,0,?|6,13,0,?|7,13,0,?|9,13,3,Y|8,13,0,?|9,13,0,?|10,13,0,?|10,13,0,@|11,13,0,?|12,13,3,Y|11,14,0,?|12,14,0,?|12,15,0,?|13,15,0,?|14,15,0,?|14,15,3,G|14,16,0,?|13,17,0,Q|14,17,0,?|15,17,0,@|15,18,0,@|16,18,2,A|2,14,0,D|4,14,0,?|4,15,0,@|5,15,0,?|5,15,0,P|5,16,0,?|5,17,0,@|4,19,1,W|6,18,1,E|7,18,0,?|8,18,0,?|9,18,0,?|10,18,0,P|10,18,0,?|11,18,0,?|12,18,0,@|13,18,0,?|13,19,0,@|14,19,0,@|14,20,1,F|6,17,0,@|6,16,0,?|7,16,0,?|7,15,0,?|8,14,0,Z|8,15,0,?|9,15,0,?|9,16,0,?|10,16,0,?|10,16,1,E|11,16,0,?|10,15,0,?|10,15,0,@|8,16,0,?|6,15,0,?|3,17,0,L|4,21,1,K|6,21,0,@|6,20,0,@|8,20,2,N|7,20,0,?|8,20,0,?|10,21,0,O|9,20,0,?|10,20,0,?|11,20,0,?|12,20,0,@|12,21,0,@|6,22,1,K|8,22,0,@|8,23,0,L|9,23,0,@|10,23,0,@|11,23,0,@|12,23,0,@|9,22,0,?|7,21,0,@|4,16,0,@|2,15,0,D|1,14,0,D|1,13,0,D|1,12,0,D|2,12,0,D|2,11,0,D|3,11,0,D|4,11,0,@|5,11,0,?|5,10,0,P|5,10,0,?|5,9,0,@|6,10,0,?|7,10,0,?|7,11,0,?|8,11,0,Z|8,11,0,?|9,11,0,?|9,10,3,Y|8,10,0,?|6,11,0,?|4,10,0,@|4,9,0,@|6,9,0,@|7,9,0,E|8,9,0,@|9,10,0,?|10,11,0,?|10,11,0,@|11,11,0,?|11,12,0,?|11,12,0,@|12,13,0,?|13,14,0,?|14,14,0,?|15,14,0,?|15,14,0,@|15,15,0,@|15,16,0,@|6,5,0,@|7,7,0,?|6,6,0,@|8,7,0,?|9,7,0,?|9,5,0,?|10,5,0,?|10,8,0,?|11,9,0,@|12,9,0,@|13,9,0,?|13,10,0,?|14,12,0,?|14,12,0,E|13,11,0,?|2,13,0,D|3,12,0,?|4,12,0,?|5,14,0,?|5,12,0,?|6,14,0,?|6,14,1,[|6,12,0,?|6,12,1,[|7,14,0,?|7,12,0,?|8,14,0,?|8,12,0,?|9,14,0,?|9,12,0,?|10,14,0,?|10,14,0,@|10,12,0,?|10,12,0,@|11,15,0,?|12,16,0,?|13,16,0,?|14,18,0,?|13,17,0,?|15,19,0,@|4,17,0,@|6,19,0,@|7,19,0,?|7,17,0,E|8,19,0,?|9,19,0,?|10,19,0,?|10,17,0,@|11,19,0,?|11,17,0,@|12,19,0,@|12,17,2,R|8,21,0,@|9,21,0,?|10,21,0,?|11,21,0,?|12,22,0,@|9,24,3,M|10,24,0,D|10,25,0,I|11,26,0,D|12,25,2,A|11,25,0,D|10,22,0,?|11,24,0,D|11,22,0,?|9,17,0,R|8,17,2,R|18,11,0,@|12,14,0,\|11,14,0,[|12,16,2,[|13,12,2,]|8,9,2,]|15,14,3,]|9,17,2,]|8,17,0,]|18,11,0,]</bigString>
 	</EnemyShipDef>
 </Defs>

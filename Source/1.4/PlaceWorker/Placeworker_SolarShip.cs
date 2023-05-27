@@ -25,7 +25,7 @@ namespace RimWorld
             for (int i = 1; i < 7; i++)
             {
                 IntVec3 loc2 = center + (IntVec3.South.RotatedBy(rot) * i);
-                if (i < 4 && loc2.Impassable(map))
+                if (i < 4 && (loc2.Impassable(map) || !loc2.InBounds(map)))
                     return (AcceptanceReport)TranslatorFormattedStringExtensions.Translate("MustPlaceSolarShipWithFreeSpaces");
                 Building b = loc2.GetFirstBuilding(Find.CurrentMap);
                 if (b != null && (b.def.defName.Equals("ShipInside_PassiveCooler") || b.def.defName.Equals("ShipInside_PassiveCoolerAdvanced") || b.def.defName.Equals("ShipInside_SolarGenerator")) && b.Rotation == rot.Opposite)

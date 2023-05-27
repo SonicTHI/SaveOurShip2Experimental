@@ -12,6 +12,8 @@ namespace RimWorld.Planet
     {
         public override void CompTick()
         {
+            if (Find.TickManager.TicksGame % 60 != 0)
+                return;
             MapParent mapParent = (MapParent)this.parent;
             if (mapParent.HasMap)
             {

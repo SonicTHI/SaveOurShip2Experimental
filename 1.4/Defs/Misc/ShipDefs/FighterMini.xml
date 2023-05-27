@@ -86,82 +86,82 @@
 			<li>
 				<key>J</key>
 				<value>
-					<shapeOrDef>Armchair</shapeOrDef>
-					<stuff>Synthread</stuff>
+					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>K</key>
 				<value>
-					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
+					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>L</key>
 				<value>
-					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
+					<shapeOrDef>Ship_Engine_Small</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>M</key>
 				<value>
-					<shapeOrDef>Ship_Engine_Small</shapeOrDef>
-				</value>
-			</li>
-			<li>
-				<key>N</key>
-				<value>
 					<shapeOrDef>ShipHeatsink</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>O</key>
-				<value>
-					<shapeOrDef>Bedroll</shapeOrDef>
-					<stuff>Synthread</stuff>
-				</value>
-			</li>
-			<li>
-				<key>P</key>
+				<key>N</key>
 				<value>
 					<shapeOrDef>Shelf</shapeOrDef>
 					<stuff>Steel</stuff>
 				</value>
 			</li>
 			<li>
-				<key>Q</key>
+				<key>O</key>
 				<value>
 					<shapeOrDef>SpaceCrewMarine</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>R</key>
+				<key>P</key>
 				<value>
 					<shapeOrDef>ShipAirlockBeam</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>S</key>
+				<key>Q</key>
 				<value>
 					<shapeOrDef>MealSurvivalPack</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>T</key>
+				<key>R</key>
 				<value>
 					<shapeOrDef>MedicineIndustrial</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>U</key>
+				<key>S</key>
 				<value>
 					<shapeOrDef>Ship_LifeSupport_Small</shapeOrDef>
 				</value>
 			</li>
 			<li>
-				<key>V</key>
+				<key>T</key>
 				<value>
 					<shapeOrDef>ShipInside_PassiveVent</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>U</key>
+				<value>
+					<shapeOrDef>Armchair</shapeOrDef>
+					<stuff>Cloth</stuff>
+				</value>
+			</li>
+			<li>
+				<key>V</key>
+				<value>
+					<shapeOrDef>Bedroll</shapeOrDef>
+					<stuff>Cloth</stuff>
 				</value>
 			</li>
 			<li>
@@ -171,6 +171,6 @@
 				</value>
 			</li>
 		</symbolTable>
-		<bigString>10,5,0,?|9,5,0,?|7,5,0,?|10,6,0,?|9,6,0,?|7,6,0,?|10,7,0,?|9,7,0,?|7,7,0,?|14,5,0,?|13,5,0,?|12,5,0,?|14,6,0,?|13,6,0,?|12,6,0,?|14,7,0,?|13,7,0,?|12,7,0,?|12,2,0,?|11,2,0,?|12,10,0,?|11,10,0,?|12,4,0,?|12,8,0,?|2,6,0,@|2,7,0,@|12,9,0,?|10,3,0,A|10,9,0,A|7,8,0,A|6,8,0,A|7,4,0,A|13,1,0,A|13,11,0,A|2,8,1,B|3,4,3,C|1,6,0,@|2,5,0,@|6,4,0,A|4,4,0,A|8,3,0,A|9,3,0,A|8,9,0,A|9,9,0,A|4,8,0,A|5,8,0,A|3,5,0,A|3,7,0,A|1,5,3,C|0,7,1,B|0,6,0,@|10,2,0,A|13,9,0,A|15,8,0,A|15,4,0,A|13,3,0,A|9,4,0,?|9,8,0,?|10,4,0,?|10,8,0,?|11,4,0,?|11,5,0,?|11,6,0,?|11,7,0,?|11,8,0,?|5,5,0,?|5,6,0,?|5,7,0,?|6,5,0,?|6,6,0,?|6,7,0,?|4,5,0,?|4,6,0,?|4,7,0,?|10,10,0,A|10,11,0,A|10,1,0,A|8,10,0,D|8,1,0,D|8,1,0,E|8,10,0,E|13,10,0,A|13,2,0,A|10,4,0,F|10,7,0,F|9,4,0,G|9,7,0,G|8,4,0,A|8,8,0,A|8,6,1,H|3,6,0,?|3,6,0,I|5,6,3,J|15,6,1,H|6,3,3,K|6,9,1,L|5,4,0,A|15,2,3,M|15,9,3,M|11,3,0,?|11,9,0,?|12,3,0,?|13,4,0,A|14,4,0,A|13,8,0,A|14,8,0,A|11,2,0,N|11,9,0,N|14,12,1,K|14,0,3,L|9,12,1,L|9,0,3,K|11,1,0,A|12,1,0,A|11,11,0,A|12,11,0,A|11,0,0,@|12,0,0,@|14,1,0,@|15,1,0,@|14,11,0,@|15,11,0,@|11,12,0,@|12,12,0,@|13,5,1,G|7,7,3,O|6,5,0,P|6,6,0,Q|15,5,3,R|15,7,3,R|6,5,0,S|7,5,0,T|5,7,0,U|13,7,1,G|8,7,1,V|8,5,3,V|6,8,2,W|13,4,3,W</bigString>
+		<bigString>10,5,0,?|9,5,0,?|7,5,0,?|10,6,0,?|9,6,0,?|7,6,0,?|10,7,0,?|9,7,0,?|7,7,0,?|14,5,0,?|13,5,0,?|12,5,0,?|14,6,0,?|13,6,0,?|12,6,0,?|14,7,0,?|13,7,0,?|12,7,0,?|12,2,0,?|11,2,0,?|12,10,0,?|11,10,0,?|12,4,0,?|12,8,0,?|2,6,0,@|2,7,0,@|12,9,0,?|10,3,0,A|10,9,0,A|7,8,0,A|6,8,0,A|7,4,0,A|13,1,0,A|13,11,0,A|2,8,1,B|3,4,3,C|1,6,0,@|2,5,0,@|6,4,0,A|4,4,0,A|8,3,0,A|9,3,0,A|8,9,0,A|9,9,0,A|4,8,0,A|5,8,0,A|3,5,0,A|3,7,0,A|1,5,3,C|0,7,1,B|0,6,0,@|10,2,0,A|13,9,0,A|15,8,0,A|15,4,0,A|13,3,0,A|9,4,0,?|9,8,0,?|10,4,0,?|10,8,0,?|11,4,0,?|11,5,0,?|11,6,0,?|11,7,0,?|11,8,0,?|5,5,0,?|5,6,0,?|5,7,0,?|6,5,0,?|6,6,0,?|6,7,0,?|4,5,0,?|4,6,0,?|4,7,0,?|10,10,0,A|10,11,0,A|10,1,0,A|8,10,0,D|8,1,0,D|8,1,0,E|8,10,0,E|13,10,0,A|13,2,0,A|10,4,0,F|10,7,0,F|9,4,0,G|9,7,0,G|8,4,0,A|8,8,0,A|8,6,1,H|3,6,0,?|3,6,0,I|15,6,1,H|6,3,3,J|6,9,1,K|5,4,0,A|15,2,3,L|15,9,3,L|11,3,0,?|11,9,0,?|12,3,0,?|13,4,0,A|14,4,0,A|13,8,0,A|14,8,0,A|11,2,0,M|11,9,0,M|14,12,1,J|14,0,3,K|9,12,1,K|9,0,3,J|11,1,0,A|12,1,0,A|11,11,0,A|12,11,0,A|11,0,0,@|12,0,0,@|14,1,0,@|15,1,0,@|14,11,0,@|15,11,0,@|11,12,0,@|12,12,0,@|13,5,1,G|6,5,0,N|6,6,0,O|15,5,3,P|15,7,3,P|6,5,0,Q|7,5,0,R|5,7,0,S|13,7,1,G|8,7,1,T|8,5,3,T|5,6,3,U|7,7,3,V|6,8,2,W|13,4,3,W</bigString>
 	</EnemyShipDef>
 </Defs>

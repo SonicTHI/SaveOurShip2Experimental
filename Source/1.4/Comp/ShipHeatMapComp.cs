@@ -177,7 +177,7 @@ namespace RimWorld
                 Scribe_Values.Look<bool>(ref hasAnyPlayerPartDetached, "PlayerPartDetached");
                 Scribe_Values.Look<bool>(ref startedBoarderLoad, "StartedBoarding");
                 Scribe_Values.Look<bool>(ref launchedBoarders, "LaunchedBoarders");
-                Scribe_Values.Look<int>(ref BoardStartTick, "BoardStartTick");
+                Scribe_Values.Look<int>(ref BattleStartTick, "BattleStartTick");
                 Scribe_Values.Look<bool>(ref Scanned, "Scanned");
             }
             else if (Scribe.mode != LoadSaveMode.Saving)
@@ -278,7 +278,7 @@ namespace RimWorld
         public bool startedBoarderLoad = false;
         public bool launchedBoarders = false;
         public bool Scanned = false;
-        public int BoardStartTick = 0;
+        public int BattleStartTick = 0;
         public int lastPDTick = 0;
         readonly float[] minRange = new[] { 0f, 60f, 110f, 160f };
         readonly float[] maxRange = new[] { 40f, 90f, 140f, 190f };
@@ -525,7 +525,7 @@ namespace RimWorld
                 hasAnyPlayerPartDetached = false;
                 startedBoarderLoad = false;
                 launchedBoarders = false;
-                BoardStartTick = Find.TickManager.TicksGame + 5000;
+                BattleStartTick = Find.TickManager.TicksGame;
                 if (!cores.NullOrEmpty())
                 {
                     MapRootList = cores;
@@ -779,7 +779,7 @@ namespace RimWorld
                 if (anyMapEngineCanActivate) //set AI heading
                 {
                     //retreat
-                    if (enemyRetreating || totalThreat / (OriginMapComp.totalThreat * ModSettings_SoS.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f)
+                    if (enemyRetreating || totalThreat / (OriginMapComp.totalThreat * ModSettings_SoS.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f || Find.TickManager.TicksGame > BattleStartTick + 90000)
                     {
                         Heading = -1;
                         enemyRetreating = true;
@@ -817,7 +817,7 @@ namespace RimWorld
                 }
                 else //engines dead or disabled
                 {
-                    if (threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1)
+                    if ((threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1) || Find.TickManager.TicksGame > BattleStartTick + 120000)
                     {
                         //no turrets to fight with - exit
                         EndBattle(this.map, false);
@@ -858,7 +858,7 @@ namespace RimWorld
                     }
                 }
                 //AI boarding code
-                if ((hasAnyPlayerPartDetached || Find.TickManager.TicksGame > BoardStartTick) && !startedBoarderLoad && !enemyRetreating)
+                if ((hasAnyPlayerPartDetached || Find.TickManager.TicksGame > BattleStartTick + 5000) && !startedBoarderLoad && !enemyRetreating)
                 {
                     List <CompTransporter> transporters = new List<CompTransporter>();
                     float transporterMass = 0;

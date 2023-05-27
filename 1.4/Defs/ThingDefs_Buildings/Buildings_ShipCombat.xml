@@ -451,7 +451,7 @@
 		<graphicData>
 			<texPath>Things/Building/Ship/PurgePort</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(2.1,4.7)</drawSize>
+			<drawSize>(2,2)</drawSize>
 		</graphicData>
 		<statBases>
 			<MaxHitPoints>800</MaxHitPoints>

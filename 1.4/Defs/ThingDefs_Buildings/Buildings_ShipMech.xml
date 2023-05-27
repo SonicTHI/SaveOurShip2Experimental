@@ -28,7 +28,7 @@
 				<edgeRight>Damage/Edge</edgeRight>
 			</damageData>
 		</graphicData>
-		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
+		<uiIconPath>Things/Building/Ship/ShipBeamModularMech_east</uiIconPath>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
@@ -86,7 +86,7 @@
 				<edgeRight>Damage/Edge</edgeRight>
 			</damageData>
 		</graphicData>
-		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
+		<uiIconPath>Things/Building/Ship/ShipBeamModularMech_north</uiIconPath>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>

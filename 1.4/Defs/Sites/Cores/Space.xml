@@ -21,7 +21,7 @@
     </genStep>
   </GenStepDef>
   
-  <SitePartDef>
+  <!--SitePartDef>
     <defName>SpaceShipDebris</defName>
     <label>ship debris</label>
 	<description>A fragment of a derelict ship. Sensors indicate multiple hull breaches and minimal power signature.</description>
@@ -41,7 +41,7 @@
       <count>1</count>
       <nearMapCenter>true</nearMapCenter>
     </genStep>
-  </GenStepDef>
+  </GenStepDef-->
 
   <SitePartDef>
     <defName>SpaceHackableSatellite</defName>

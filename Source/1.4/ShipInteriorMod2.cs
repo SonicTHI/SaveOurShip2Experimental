@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V86f12 active");
+			Log.Message("SOS2EXP V87 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -680,10 +680,15 @@ namespace SaveOurShip2
 			if (ModsConfig.IdeologyActive && (fac != Faction.OfAncientsHostile || fac != Faction.OfAncients || fac != Faction.OfMechanoids))
 				ideoActive = true;
 			bool royActive = false;
-			if (ModsConfig.RoyaltyActive)
-				royActive = true;
+            bool isMechs = false; //for roy mech turret override
+            if (ModsConfig.RoyaltyActive)
+            {
+                royActive = true;
+				if (fac == Faction.OfMechanoids)
+					isMechs = true;
+            }
 
-			Dictionary<IntVec3, Tuple<int,ColorInt,bool>> spawnLights = new Dictionary<IntVec3, Tuple<int, ColorInt, bool>>();
+            Dictionary<IntVec3, Tuple<int,ColorInt,bool>> spawnLights = new Dictionary<IntVec3, Tuple<int, ColorInt, bool>>();
 
 			int size = shipDef.sizeX * shipDef.sizeZ;
 			List<Building> wreckDestroy = new List<Building>();
@@ -822,6 +827,15 @@ namespace SaveOurShip2
 								else if (def.defName.Equals("Ship_Engine_Interplanetary_Large"))
 									def = DefDatabase<ThingDef>.GetNamed("Ship_Engine_Large");
 							}
+							else if (isMechs && def.building.IsTurret)
+							{
+								if (def.defName.Equals("Turret_MiniTurret"))
+                                    def = DefDatabase<ThingDef>.GetNamed("Turret_AutoMiniTurret");
+                                else if (def.defName.Equals("Building_TurretGun"))
+                                    def = DefDatabase<ThingDef>.GetNamed("Turret_AutoChargeBlaster");
+                                else if (def.defName.Equals("Turret_Sniper"))
+                                    def = DefDatabase<ThingDef>.GetNamed("Turret_AutoInferno");
+                            }
 						}
 						//make thing
 						if (def.MadeFromStuff)

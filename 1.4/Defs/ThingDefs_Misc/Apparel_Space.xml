@@ -36,12 +36,11 @@
 		</thingCategories>
 		<stuffCategories>
 			<li>Fabric</li>
-			<li>Leathery</li>
 		</stuffCategories>
-		<costStuffCount>70</costStuffCount>
+		<costStuffCount>60</costStuffCount>
 		<costList>
 			<ComponentSpacer>2</ComponentSpacer>
-			<Plasteel>10</Plasteel>
+			<Plasteel>20</Plasteel>
 		</costList>
 		<generateCommonality>2</generateCommonality>
 		<apparel>
@@ -104,12 +103,11 @@
 		</thingCategories>
 		<stuffCategories>
 			<li>Fabric</li>
-			<li>Leathery</li>
 		</stuffCategories>
-		<costStuffCount>35</costStuffCount>
+		<costStuffCount>30</costStuffCount>
 		<costList>
 			<ComponentSpacer>1</ComponentSpacer>
-			<Plasteel>5</Plasteel>
+			<Plasteel>10</Plasteel>
 		</costList>
 		<generateCommonality>2</generateCommonality>
 		<apparel>
@@ -412,8 +410,7 @@
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<techLevel>Spacer</techLevel>
-		<generateCommonality>0</generateCommonality>
-		<generateAllowChance>0</generateAllowChance>
+		<generateCommonality>1</generateCommonality>
 		<statBases>
 			<Mass>3</Mass>
 			<WorkToMake>1400</WorkToMake>

@@ -661,7 +661,7 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>200</speed>
+			<speed>150</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -681,7 +681,7 @@
 		<projectile>
 			<explosionRadius>1.1</explosionRadius>
 			<damageDef>BombACI</damageDef>
-			<speed>200</speed>
+			<speed>150</speed>
 		</projectile>
 	</ThingDef>
 	<ThingDef ParentName="BaseGrenadeProjectile">
@@ -1123,7 +1123,7 @@
 		<thingClass>Projectile_SoSFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
-			<speed>200</speed>
+			<speed>150</speed>
 			<explosionRadius>0</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -1142,7 +1142,7 @@
 		<projectile>
 			<explosionRadius>1.9</explosionRadius>
 			<damageDef>ShipLaserSmall</damageDef>
-			<speed>200</speed>
+			<speed>150</speed>
 		</projectile>
 	</ThingDef>
 	<ThingDef ParentName="BaseGrenadeProjectile">

@@ -3837,9 +3837,23 @@ namespace SaveOurShip2
 				__result = false;
 			}
 		}
-	}
+    }
 
-	[HarmonyPatch(typeof(RoyalTitlePermitWorker_CallAid), "CallAid")]
+    [HarmonyPatch(typeof(QuestNode_Root_PollutionRaid), "TestRunInt")]
+    public static class NoPollutionRaidsInspace
+    {
+        public static void Postfix(Slate slate, ref bool __result)
+        {
+            if (__result)
+            {
+                Map map = slate.Get<Map>("map", null, false);
+				if (map.IsSpace())
+					__result = false;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(RoyalTitlePermitWorker_CallAid), "CallAid")]
 	public static class CallAidInSpace
 	{
 		public static bool Prefix(RoyalTitlePermitWorker_CallAid __instance, Pawn caller, Map map, IntVec3 spawnPos, Faction faction, bool free, float biocodeChance = 1f)

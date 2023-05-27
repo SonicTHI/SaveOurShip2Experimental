@@ -15,6 +15,11 @@
 			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
 			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
 		</li>
+		<!--li>
+			<packageId>Murmur.WallLight</packageId>
+			<displayName>Wall Light</displayName>
+			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=1423699208</steamWorkshopUrl>
+		</li-->
 	</modDependencies>
 	<loadAfter>
 		<li>brrainz.harmony</li>
@@ -27,6 +32,7 @@
 		<li>ceteam.combatextended</li>
 		<li>rwmt.multiplayer</li>
 		<li>automatic.gunplay</li>
+		<li>mlie.yayoscombat3</li>
 		<li>majorhoff.rimthreaded</li>
 		<li>user19990313777.runtimegc</li>
 		<li>erdelf.MinifyEverything</li>

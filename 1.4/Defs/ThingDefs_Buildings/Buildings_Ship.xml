@@ -2906,7 +2906,7 @@
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPBomberHeavy</defName>
 		<label>ship blueprint (heavy bomber)</label>
-		<description>Class: Heavy bomber\nA heavily armed ship but incapable of extended operations in space.\n\nMass: 1092\nSize: 28 x 26\nT/W ratio: 3.161\nCombat rating: 110\n\nWeapons: \n1x large railgun turret\n2x laser turret\n2x torpedo launcher\n\nRequired resources: \nsteel: 5057\nplasteel: 1777\nadvanced component: 77\ncomponent: 162\nuranium: 120\nsilver: 225\n\nRequired research: \nstarflight basics, ship navigation, cruiser armaments, ultra mechtech, air conditioning, heatsinks, ship fission reactor, rocket propulsion, laser turrets, firefoam, ship shields, capacitor arrays, ship torpedoes, ship life support</description>
+		<description>Class: Heavy bomber\nA heavily armed ship but incapable of extended operations in space.\n\nMass: 1092\nSize: 28 x 26\nT/W ratio: 3.161\nCombat rating: 110\n\nWeapons: \n1x large railgun turret\n2x laser turret\n2x torpedo launcher\n\nRequired resources: \nsteel: 5057\nplasteel: 1777\nadvanced component: 77\ncomponent: 162\nuranium: 120\nsilver: 225\n\nRequired research: \nstarflight basics, ship navigation, cruiser armaments, air conditioning, heatsinks, ship fission reactor, rocket propulsion, laser turrets, firefoam, ship shields, capacitor arrays, ship torpedoes, ship life support</description>
 		<statBases>
 			<MarketValue>1000</MarketValue>
 		</statBases>

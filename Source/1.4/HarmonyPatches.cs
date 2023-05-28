@@ -1581,7 +1581,51 @@ namespace SaveOurShip2
 		}
 	}
 
-    [HarmonyPatch(typeof(CompBiosculpterPod), "EjectContents")]
+    [HarmonyPatch(typeof(CompGenepackContainer), "EjectContents")]
+    public static class DisableForMoveGene
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(CompThingContainer), "PostDeSpawn")]
+    public static class DisableForMoveContainer
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(Building_MechGestator), "EjectContentsAndRemovePawns")]
+    public static class DisableForMoveGestator
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(CompWasteProducer), "ProduceWaste")]
+    public static class DisableForMoveWaste
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }
+
+    /*[HarmonyPatch(typeof(CompBiosculpterPod), "EjectContents")] disabled due to move respawn issues
     public static class DisableForMoveSculpt
     {
         public static bool Prefix()
@@ -1592,51 +1636,7 @@ namespace SaveOurShip2
         }
     }
 
-    [HarmonyPatch(typeof(CompGenepackContainer), "EjectContents")]
-	public static class DisableForMoveGene
-	{
-		public static bool Prefix()
-		{
-			if (ShipInteriorMod2.AirlockBugFlag)
-				return false;
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(CompThingContainer), "PostDeSpawn")]
-	public static class DisableForMoveContainer
-	{
-		public static bool Prefix()
-		{
-			if (ShipInteriorMod2.AirlockBugFlag)
-				return false;
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(Building_MechGestator), "EjectContentsAndRemovePawns")]
-	public static class DisableForMoveGestator
-	{
-		public static bool Prefix()
-		{
-			if (ShipInteriorMod2.AirlockBugFlag)
-				return false;
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(CompWasteProducer), "ProduceWaste")]
-	public static class DisableForMoveWaste
-	{
-		public static bool Prefix()
-		{
-			if (ShipInteriorMod2.AirlockBugFlag)
-				return false;
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(CompDeathrestBindable), "PostDeSpawn")]
+    [HarmonyPatch(typeof(CompDeathrestBindable), "PostDeSpawn")]
 	public static class DisableForMoveDeath
 	{
 		public static bool Prefix()
@@ -1645,31 +1645,9 @@ namespace SaveOurShip2
 				return false;
 			return true;
 		}
-	}
-
-	/*td rem this if patch bellow works
-	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
-	public static class DisableForMoveCharger
-	{
-		public static bool Prefix(ref Pawn ___currentlyChargingMech, out Pawn __state)
-		{
-			__state = null;
-			if (ShipInteriorMod2.AirlockBugFlag)
-			{
-				__state = ___currentlyChargingMech;
-				___currentlyChargingMech = null;
-			}
-			return true;
-		}
-		public static void Postfix(ref Pawn ___currentlyChargingMech, Pawn __state)
-		{
-			if (ShipInteriorMod2.AirlockBugFlag)
-			{
-				___currentlyChargingMech = __state;
-			}
-		}
 	}*/
-	[HarmonyPatch]
+
+    [HarmonyPatch]
 	public class PatchCharger
 	{
 		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]

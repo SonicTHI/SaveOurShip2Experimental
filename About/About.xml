@@ -15,11 +15,11 @@
 			<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
 			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
 		</li>
-		<!--li>
+		<li>
 			<packageId>Murmur.WallLight</packageId>
 			<displayName>Wall Light</displayName>
 			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=1423699208</steamWorkshopUrl>
-		</li-->
+		</li>
 	</modDependencies>
 	<loadAfter>
 		<li>brrainz.harmony</li>
@@ -39,6 +39,7 @@
 		<li>impassablemapmaker.kv.rw</li>
 		<li>lukakama.rimworldrealfow</li>
 		<li>merthsoft.designatorshapes</li>
+		<li>saakra.empire</li>
 		<li>automatic.traderships</li>
 		<li>VanillaExpanded.HelixienGas</li>
 		<li>windowsxp.realisticplanets</li>

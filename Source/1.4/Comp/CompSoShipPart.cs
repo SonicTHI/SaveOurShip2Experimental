@@ -195,7 +195,7 @@ namespace RimWorld
         {
             foreach (Gizmo giz in base.CompGetGizmosExtra())
                 yield return giz;
-            if (Props.canLight && ((parent.Faction==Faction.OfPlayer && ResearchProjectDefOf.ColoredLights.IsFinished) || DebugSettings.godMode))
+            if (hasLight)//Props.canLight && ((parent.Faction==Faction.OfPlayer && ResearchProjectDefOf.ColoredLights.IsFinished) || DebugSettings.godMode))
             {
                 rotCanLight = CanLightVecs();
                 Command_Action toggleLight = new Command_Action
@@ -210,7 +210,7 @@ namespace RimWorld
                             else
                                 Log.Error("Tried to disable ship lighting at position " + parent.Position + " when no light exists. Please report this bug to the SoS2 team.");
                         }
-                        else
+                        /*else
                         {
                             if (lightRot == -1)
                             {
@@ -224,7 +224,7 @@ namespace RimWorld
                                 }
                             }
                             SpawnLight(lightRot, lightColor, sunLight);
-                        }
+                        }*/
                     },
                     icon = ShipWallLightIcon,
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipWallLight"),
@@ -233,7 +233,7 @@ namespace RimWorld
                     disabledReason = TranslatorFormattedStringExtensions.Translate("ShipWallLightAdjacency")
                 };
                 yield return toggleLight;
-                if (hasLight)
+                /*if (hasLight)
                 {
                     Command_Action rotateLight = new Command_Action
                     {
@@ -287,11 +287,11 @@ namespace RimWorld
                     };
                     yield return toggleDisco;
                 }
-                if(hasLight)
+                if (hasLight)
                 {
                     foreach (Gizmo giz in myLight.GetGizmos())
                         yield return giz;
-                }
+                }*/
             }
         }
         public override void PostExposeData()

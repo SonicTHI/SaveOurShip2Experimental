@@ -267,13 +267,13 @@
 			<li>
 				<key>h</key>
 				<value>
-					<shapeOrDef>SoSLightEnabler</shapeOrDef>
+					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>i</key>
 				<value>
-					<shapeOrDef>SoSLightEnabler</shapeOrDef>
+					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
 					<color>RGBA(0.000, 1.000, 0.000, 1.000)</color>
 				</value>
 			</li>

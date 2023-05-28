@@ -708,14 +708,13 @@
 			<li>
 				<key>¬</key>
 				<value>
-					<shapeOrDef>SoSLightEnabler</shapeOrDef>
+					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>­</key>
 				<value>
-					<shapeOrDef>SoSLightEnabler</shapeOrDef>
-					<alt>True</alt>
+					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
 				</value>
 			</li>
 			<li>

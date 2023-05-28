@@ -214,10 +214,10 @@ namespace RimWorld
         {
             fieldStrength += 0.00005f;
             MeditationTicks++;
-            if(MeditationTicks > 6000)
+            if (MeditationTicks > 6000)
             {
                 MeditationTicks = 0;
-                Consciousness.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named("ArchotechSporeMeditation"));
+                Consciousness?.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named("ArchotechSporeMeditation"));
             }
         }
 

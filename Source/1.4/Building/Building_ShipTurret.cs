@@ -592,6 +592,8 @@ namespace RimWorld
         protected void BurstComplete()
         {
             burstCooldownTicksLeft = BurstCooldownTime().SecondsToTicks();
+            if (GroundDefenseMode)
+                burstCooldownTicksLeft *= 2;
         }
 
         protected float BurstCooldownTime()

@@ -631,7 +631,7 @@
 				<label>shoot slug</label>
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
-				<minRange>29.9</minRange>
+				<minRange>39.9</minRange>
 				<range>500</range>
 				<warmupTime>0.5</warmupTime>
 				<forcedMissRadius>1</forcedMissRadius>
@@ -1096,7 +1096,7 @@
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>500</range>
-				<minRange>29.9</minRange>
+				<minRange>39.9</minRange>
 				<warmupTime>0</warmupTime>
 				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
@@ -1391,7 +1391,7 @@
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1000</range>
-				<minRange>29.9</minRange>
+				<minRange>39.9</minRange>
 				<warmupTime>1.5</warmupTime>
 				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>
@@ -1690,7 +1690,7 @@
 				<verbClass>Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1500</range>
-				<minRange>29.9</minRange>
+				<minRange>39.9</minRange>
 				<warmupTime>0.5</warmupTime>
 				<forcedMissRadius>1</forcedMissRadius>
 				<noiseRadius>4</noiseRadius>

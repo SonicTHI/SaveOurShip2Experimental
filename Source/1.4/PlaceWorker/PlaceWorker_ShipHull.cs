@@ -12,7 +12,7 @@ namespace RimWorld
 			CellRect occupiedRect = GenAdj.OccupiedRect(loc, rot, def.Size);
 			foreach (IntVec3 vec in occupiedRect)
 			{
-				if (map.roofGrid.RoofAt(loc) == RoofDefOf.RoofRockThick)
+				if (vec.Fogged(map) || map.roofGrid.RoofAt(loc) == RoofDefOf.RoofRockThick)
 					return false;
 				foreach (Thing t in vec.GetThingList(map))
 				{

@@ -17,6 +17,9 @@
 		<killedLeavings>
 			<ChunkSlagSteel>1</ChunkSlagSteel>
 		</killedLeavings>
+		<placeWorkers>
+			<li>PlaceWorker_ShipHull</li>
+		</placeWorkers>
 	</ThingDef>
 	<!-- hull -->
 	<DesignatorDropdownGroupDef>
@@ -593,6 +596,9 @@
 		<researchPrerequisites>
 			<li>ShipBasics</li>
 		</researchPrerequisites>
+		<placeWorkers>
+			<li>PlaceWorker_ShipHull</li>
+		</placeWorkers>
 		<statBases>
 			<WorkToBuild>1200</WorkToBuild>
 			<MaxHitPoints>500</MaxHitPoints>

@@ -522,6 +522,9 @@
 			</li>
 		</comps>
 		<designationHotKey>Misc2</designationHotKey>
+		<placeWorkers>
+			<li>PlaceWorker_ShipHull</li>
+		</placeWorkers>
 		<statBases>
 			<WorkToBuild>1200</WorkToBuild>
 			<MaxHitPoints>500</MaxHitPoints>

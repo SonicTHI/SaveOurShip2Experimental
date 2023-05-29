@@ -410,7 +410,8 @@
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
 		<techLevel>Spacer</techLevel>
-		<generateCommonality>1</generateCommonality>
+		<generateCommonality>0</generateCommonality>
+		<generateAllowChance>0</generateAllowChance>
 		<statBases>
 			<Mass>3</Mass>
 			<WorkToMake>1400</WorkToMake>

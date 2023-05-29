@@ -138,14 +138,6 @@ namespace RimWorld
         }
         public override void OrderAttack(LocalTargetInfo targ)
         {
-            if (forcedTarget != targ)
-            {
-                forcedTarget = targ;
-                if (burstCooldownTicksLeft <= 0)
-                {
-                    TryStartShootSomething(false);
-                }
-            }
             if (holdFire)
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecauseHoldFire", def.label), this, MessageTypeDefOf.RejectInput, historical: false);
@@ -177,6 +169,24 @@ namespace RimWorld
                     return;
                 }
             }
+            if (forcedTarget != targ)
+            {
+                forcedTarget = targ;
+                if (burstCooldownTicksLeft <= 0)
+                {
+                    TryStartShootSomething(false);
+                }
+            }
+        }
+        public bool InRange(LocalTargetInfo target)
+        {
+            float range = Position.DistanceTo(target.Cell);
+            //Log.Message(range + " " + AttackVerb.verbProps.minRange);
+            if (range > AttackVerb.verbProps.minRange && range < AttackVerb.verbProps.range)
+            {
+                return true;
+            }
+            return false;
         }
         public override void Tick()
         {
@@ -195,7 +205,7 @@ namespace RimWorld
             }
             if (GroundDefenseMode)
             {
-                if (forcedTarget.IsValid && !CanSetForcedTarget)
+                if (forcedTarget.IsValid && !CanSetForcedTarget && !InRange(forcedTarget))
                 {
                     ResetForcedTarget();
                 }
@@ -327,7 +337,7 @@ namespace RimWorld
                     ResetCurrentTarget();
                     return;
                 }
-                if (forcedTarget.IsValid)
+                if (forcedTarget.IsValid && InRange(forcedTarget))
                 {
                     currentTargetInt = forcedTarget;
                 }
@@ -593,7 +603,7 @@ namespace RimWorld
         {
             burstCooldownTicksLeft = BurstCooldownTime().SecondsToTicks();
             if (GroundDefenseMode)
-                burstCooldownTicksLeft *= 2;
+                burstCooldownTicksLeft = (int)(burstCooldownTicksLeft * 1.5f);
         }
 
         protected float BurstCooldownTime()

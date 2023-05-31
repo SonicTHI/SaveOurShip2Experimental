@@ -801,32 +801,59 @@ namespace RimWorld
                 };
                 yield return command_Toggle;
             }
-            if (CanExtractTorpedo)
-            {
-                Command_Action command_Action = new Command_Action
-                {
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandExtractShipTorpedo"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandExtractShipTorpedoDesc"),
-                    icon = torpComp.LoadedShells[0].uiIcon,
-                    iconAngle = torpComp.LoadedShells[0].uiIconAngle,
-                    iconOffset = torpComp.LoadedShells[0].uiIconOffset,
-                    iconDrawScale = GenUI.IconDrawScale(torpComp.LoadedShells[0]),
-                    action = delegate
-                    {
-                        ExtractShells();
-                    }
-                };
-                yield return command_Action;
-            }
             if (torpComp != null)
             {
+                if (CanExtractTorpedo)
+                {
+                    Command_Action command_Action = new Command_Action
+                    {
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandExtractShipTorpedo"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandExtractShipTorpedoDesc"),
+                        icon = torpComp.LoadedShells[0].uiIcon,
+                        iconAngle = torpComp.LoadedShells[0].uiIconAngle,
+                        iconOffset = torpComp.LoadedShells[0].uiIconOffset,
+                        iconDrawScale = GenUI.IconDrawScale(torpComp.LoadedShells[0]),
+                        action = delegate
+                        {
+                            ExtractShells();
+                        }
+                    };
+                    yield return command_Action;
+                }
+                List<ThingDef> torpTypes = new List<ThingDef>();
+                foreach (ThingDef torp in torpComp.LoadedShells)
+                {
+                    if (!torpTypes.Contains(torp))
+                        torpTypes.Add(torp);
+                }
+                foreach (ThingDef torp in torpTypes)
+                {
+                    Command_Toggle command_Toggle = new Command_Toggle
+                    {
+                        defaultLabel = torp.label,
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandShipTorpedoAllowedDesc"),
+                        icon = torp.uiIcon,
+                        iconAngle = torp.uiIconAngle,
+                        iconOffset = torp.uiIconOffset,
+                        iconDrawScale = GenUI.IconDrawScale(torp),
+                        toggleAction = delegate
+                        {
+                            if (torpComp.PreventShells.Contains(torp))
+                                torpComp.PreventShells.Remove(torp);
+                            else
+                                torpComp.PreventShells.Add(torp);
+                        },
+                        isActive = () => !torpComp.PreventShells.Contains(torp)
+                    };
+                    yield return command_Toggle;
+                }
                 StorageSettings storeSettings = torpComp.GetStoreSettings();
                 foreach (Gizmo item in StorageSettingsClipboard.CopyPasteGizmosFor(storeSettings))
                 {
                     yield return item;
                 }
             }
-            if (heatComp.Props.pointDefense)
+            else if (heatComp.Props.pointDefense)
             {
                 Command_Toggle command_Toggle = new Command_Toggle
                 {

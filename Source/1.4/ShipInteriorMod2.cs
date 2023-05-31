@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V88f3 active");
+			Log.Message("SOS2EXP V88f4 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -512,6 +512,7 @@ namespace SaveOurShip2
 		}
 		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
+			//SC map.GetComponent<ShipHeatMapComp>().CacheOff = true;
 			List<IntVec3> area = new List<IntVec3>();
 			List<Thing> planters = new List<Thing>();
 			List<IntVec3> areaOut;
@@ -549,6 +550,7 @@ namespace SaveOurShip2
 			//use player points to spawn ships of the same navy, fit z, random x
 			//main + twin, twin, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
 			//60-20-20,50-50,40-40-10-10
+			//SC map.GetComponent<ShipHeatMapComp>().CacheOff = true;
 			List<EnemyShipDef> ships;
 			bool allowNavyExc = true;
 			if (navyDef != null)
@@ -1257,7 +1259,7 @@ namespace SaveOurShip2
 					}
 				}
 			}
-			SpawnLights(map, spawnLights);
+			//SL SpawnLights(map, spawnLights);
         }
         public static void SpawnLights(Map map, Dictionary<IntVec3, Tuple<int, ColorInt, bool>> shape)
         {
@@ -1343,6 +1345,7 @@ namespace SaveOurShip2
 			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
 			if (Current.ProgramState == ProgramState.Playing)
 				map.mapDrawer.RegenerateEverythingNow();
+            //SC map.GetComponent<ShipHeatMapComp>().RecacheMap();
 		}
 		public static bool AnyBridgeIn(Room room)
 		{
@@ -1606,6 +1609,11 @@ namespace SaveOurShip2
 			}
 			return cellsFound;
 		}
+		/*SC public static HashSet<IntVec3> FindAreaAttachedNew(Building root, bool includeRock = false)
+		{
+			var cells = root.Map.GetComponent<ShipHeatMapComp>().ShipCells;
+			return cells.Keys.Where(v => cells[v].Item1 == cells[root.Position].Item1).ToHashSet();
+		}*/
 		public class TimeHelper
 		{
 			private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
@@ -1670,7 +1678,7 @@ namespace SaveOurShip2
 				return;
 			List<Building> cachedParts;
 			if (b is Building_ShipBridge bridge)
-				cachedParts = bridge.cachedShipParts;
+				cachedParts = bridge.cachedShipParts; //SC cachedParts = bridge.Ship.Buildings.ToList();
 			else
 				cachedParts = FindBuildingsAttached(b, includeRock);
 
@@ -1765,6 +1773,34 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("prepare");
 
+			/*SC shipOriginMap = null;
+			bool playerMove = core.Faction == Faction.OfPlayer;
+			Map sourceMap = core.Map;
+			bool sourceMapIsSpace = sourceMap.IsSpace();
+            var sourceMapComp = sourceMap.GetComponent<ShipHeatMapComp>();
+            sourceMapComp.CacheOff = true;
+            int shipIndex = sourceMapComp.ShipCells[core.Position].Item1;
+            HashSet<int> shipIndexes = new HashSet<int> { shipIndex };
+            var ship = sourceMapComp.ShipsOnMapNew[shipIndex];
+			HashSet<IntVec3> sourceArea = ship.Area;
+			
+            if (targetMap == null)
+                targetMap = core.Map;
+			bool targetMapIsSpace = targetMap.IsSpace();
+            var targetMapComp = targetMap.GetComponent<ShipHeatMapComp>();
+            targetMapComp.CacheOff = true;
+            HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
+
+            if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
+            {
+                Log.Message("Moving ship cache " + shipIndex + " to map: " + targetMap);
+                targetMapComp.ShipsOnMapNew.Add(shipIndex, sourceMapComp.ShipsOnMapNew[shipIndex]);
+                ship = targetMapComp.ShipsOnMapNew[shipIndex];
+                ship.map = targetMap;
+                ship.mapComp = targetMapComp;
+                sourceMapComp.ShipsOnMapNew.Remove(shipIndex);
+            }*/
+			//SC rem
 			shipOriginMap = null;
 			bool playerMove = core.Faction == Faction.OfPlayer;
 			Map sourceMap = core.Map;
@@ -1775,10 +1811,14 @@ namespace SaveOurShip2
                 targetMap = core.Map;
 			bool targetMapIsSpace = targetMap.IsSpace();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
+			//SC rem end
 
 			foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
+                /*SC //ship cache: move ShipCells
+                targetMapComp.ShipCells.Add(adjustedPos, new Tuple<int, int>(sourceMapComp.ShipCells[pos].Item1, sourceMapComp.ShipCells[pos].Item2));
+                sourceMapComp.ShipCells.Remove(pos);*/
 				//store room temps
 				Room room = pos.GetRoom(sourceMap);
 				if (room != null && !roomsToTemp.Contains(room) && !ExposedToOutside(room))
@@ -1856,6 +1896,18 @@ namespace SaveOurShip2
 					targetMap.areaManager.Home[adjustedPos] = true;
 				}
 			}
+			/*SC if (adjustment != IntVec3.Zero) //ship cache: offset area, find adjacent ships
+            {
+                ship.Area = targetArea;
+                foreach (IntVec3 pos in targetArea)
+                {
+                    foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, new IntVec2(1, 1)).Where(v => !targetArea.Contains(v) && targetMapComp.ShipCells.ContainsKey(v)))
+                    {
+                        shipIndexes.Add(targetMapComp.ShipCells[vec].Item1);
+                    }
+                }
+                Log.Message("Area: " + shipIndexes.Count);
+            }*/
 			if (devMode)
 				watch.Record("processSourceArea");
 
@@ -2012,6 +2064,13 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("moveThings");
 			AirlockBugFlag = false;
+			/*SC sourceMapComp.CacheOff = false;
+            targetMapComp.CacheOff = false;
+			if (shipIndexes.Count > 1) //ship cache: adjacent ships found, merge in order: largest ship, ship, wreck
+            {
+                Log.Message("ŞOS2: ship move found adjacent ships, merging");
+                targetMapComp.CheckAndMerge(shipIndexes);
+            }*/
             //move zones
             if (zonesToCopy.Any())
 			{
@@ -2348,11 +2407,17 @@ namespace SaveOurShip2
 		}
 		public static void RemoveShip(List<IntVec3> area, Map map, bool planetTravel)
         {
+            /*SC var mapComp = map.GetComponent<ShipHeatMapComp>();
+			mapComp.CacheOff = true;
+            if (mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[area.First()].Item1))
+                mapComp.ShipsOnMapNew.Remove(mapComp.ShipCells[area.First()].Item1);*/
             AirlockBugFlag = true;
 			List<Thing> things = new List<Thing>();
 			List<Zone> zones = new List<Zone>();
 			foreach (IntVec3 pos in area)
 			{
+				//remove from cache
+                //SC mapComp.ShipCells.Remove(pos);
 				map.roofGrid.SetRoof(pos, null);
 				things.AddRange(pos.GetThingList(map));
 				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))

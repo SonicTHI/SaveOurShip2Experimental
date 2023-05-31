@@ -8,12 +8,21 @@ namespace RimWorld
 {
     public class CompChangeableProjectilePlural : ThingComp, IStoreSettingsParent
     {
-        private List<ThingDef> loadedShells=new List<ThingDef>();
-        public int selectedTorp = 0;
-        public StorageSettings allowedShellsSettings;
-
         public CompProperties_ChangeableProjectilePlural Props => (CompProperties_ChangeableProjectilePlural)props;
-
+        public StorageSettings allowedShellsSettings;
+        private List<ThingDef> preventShells = new List<ThingDef>();
+        public List<ThingDef> PreventShells
+        {
+            get
+            {
+                if (preventShells == null)
+                {
+                    preventShells = new List<ThingDef>();
+                }
+                return preventShells;
+            }
+        }
+        private List<ThingDef> loadedShells = new List<ThingDef>();
         public List<ThingDef> LoadedShells
         {
             get
@@ -21,29 +30,38 @@ namespace RimWorld
                 return loadedShells;
             }
         }
+        private int selectedTorp = 0;
+        public int SelectedTorp
+        {
+            get
+            {
+                if (!preventShells.NullOrEmpty())
+                {
+                    int i = loadedShells.FindIndex(s => !PreventShells.Contains(s));
+                    if (i > -1)
+                        return i;
+                }
+                return selectedTorp;
+            }
+        }
         public ThingDef Projectile
         {
             get
             {
-                if (!Loaded)
-                {
-                    return null;
-                }
-                return LoadedShells[selectedTorp].projectileWhenLoaded;
+                return LoadedShells[SelectedTorp].projectileWhenLoaded;
             }
         }
-
+        public bool LoadedNotPrevent => LoadedShells.Any(s => !PreventShells.Contains(s));
         public bool Loaded => LoadedShells.Any();
         public bool FullyLoaded => LoadedShells.Count >= Props.maxTorpedoes;
-
         public bool StorageTabVisible => true;
 
         public override void PostExposeData()
         {
+            Scribe_Collections.Look<ThingDef>(ref preventShells, "preventShells");
             Scribe_Collections.Look<ThingDef>(ref loadedShells, "loadedShells");
             Scribe_Deep.Look(ref allowedShellsSettings, "allowedShellsSettings");
         }
-
         public override void Initialize(CompProperties props)
         {
             base.Initialize(props);
@@ -53,17 +71,14 @@ namespace RimWorld
                 allowedShellsSettings.CopyFrom(parent.def.building.defaultStorageSettings);
             }
         }
-
         public virtual void Notify_ProjectileLaunched()
         {
-            loadedShells.RemoveAt(selectedTorp);
+            loadedShells.RemoveAt(SelectedTorp);
         }
-
         public void LoadShell(ThingDef shell, int count)
         {
             loadedShells.Add(shell);
         }
-
         public List<Thing> RemoveShells()
         {
             List<Thing> output = new List<Thing>();

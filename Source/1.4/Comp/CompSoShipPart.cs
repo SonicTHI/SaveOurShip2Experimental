@@ -73,6 +73,30 @@ namespace RimWorld
                 return (CompProperties_SoShipPart)props;
             }
         }
+        /*SC public override string CompInspectStringExtra()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            if (Prefs.DevMode)
+            {
+                if (!mapComp.ShipCells.ContainsKey(parent.Position))
+                {
+                    stringBuilder.Append("cache is null for this pos!");
+                }
+                var shipCells = mapComp.ShipCells[parent.Position];
+                int index = -1;
+                int path = -1;
+                if (shipCells != null)
+                {
+                    index = shipCells.Item1;
+                    path = shipCells.Item2;
+                }
+                if (parent.def.building.shipPart)
+                    stringBuilder.Append("shipIndex: " + index + " / corePath: " + path);
+                else
+                    stringBuilder.Append("shipIndex: " + index);
+            }
+            return stringBuilder.ToString();
+        }*/
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -87,6 +111,13 @@ namespace RimWorld
             {
                 cellsUnder.Add(vec);
             }
+            if (!respawningAfterLoad && !ShipInteriorMod2.AirlockBugFlag && (Props.isPlating || Props.isHardpoint || Props.isHull)) 
+            {
+                foreach (IntVec3 v in cellsUnder) //clear floor on construction
+                {
+                    RemoveOtherTerrain(v);
+                }
+            }
             if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint || Props.isHull)) //set terrain
             {
                 foreach (IntVec3 v in cellsUnder)
@@ -100,6 +131,13 @@ namespace RimWorld
                     SpawnLight(lightRot, lightColor, sunLight);
                 return;
             }
+            /*SC foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
+            {
+                if (!mapComp.ShipCells.ContainsKey(vec))
+                {
+                    mapComp.ShipCells.Add(vec, new Tuple<int, int>(-1, -1));
+                }
+            }*/
             if (Props.roof)
             {
                 foreach (IntVec3 pos in cellsUnder)
@@ -109,7 +147,84 @@ namespace RimWorld
                         map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
                 }
             }
+            /*SC if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
+            {
+                return;
+            }
+            //plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this
+            //plating or shipPart with different or no shipIndex: merge connected to this ship
+            foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(parent))
+            {
+                if (!mapComp.ShipCells.ContainsKey(vec))
+                    continue;
+                cellsToMerge.Add(vec);
+            }
+            if (cellsToMerge.Any()) //if any other parts under or adj, merge in order to: largest ship, any ship, wreck
+            {
+                cellsToMerge.AddRange(cellsUnder);
+                mapComp.CheckAndMerge(cellsToMerge);
+            }
+            else //else make new ship/wreck
+            {
+                mapComp.ShipsOnMapNew.Add(this.parent.thingIDNumber, new SoShipCache());
+                mapComp.ShipsOnMapNew[this.parent.thingIDNumber].RebuildCache(this.parent as Building);
+            }*/
         }
+
+        /*SC public void PreDeSpawn() //called in building.destroy, before comps get removed
+        {
+            if (!parent.def.building.shipPart)
+                return;
+            if (ShipInteriorMod2.AirlockBugFlag) //moveship cleans entire area, caches //td
+            {
+                return;
+            }
+            var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[parent.Position].Item1];
+            HashSet<Building> buildings = new HashSet<Building>();
+            foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
+            {
+                bool partExists = false;
+                foreach (Thing t in vec.GetThingList(parent.Map))
+                {
+                    if (t is Building b && b != parent)
+                    {
+                        if (b.def.building.shipPart)
+                        {
+                            partExists = true;
+                        }
+                        else
+                        {
+                            buildings.Add(b);
+                        }
+                    }
+                }
+                if (!partExists) //no shippart remains, remove from area, remove non ship buildings if fully off ship
+                {
+                    foreach (Building b in buildings) //remove other buildings that are no longer supported by ship parts
+                    {
+                        bool allOffShip = true;
+                        foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
+                        {
+                            if (mapComp.ShipCells.ContainsKey(vec))
+                            {
+                                allOffShip = false;
+                                break;
+                            }
+                        }
+                        if (allOffShip)
+                        {
+                            ship.RemoveFromCache(b);
+                        }
+                    }
+                    ship.Area.Remove(vec);
+                    ship.AreaDestroyed.Add(vec);
+                    mapComp.ShipCells.Remove(vec);
+                }
+            }
+            ship.RemoveFromCache(parent as Building);
+            if (!mapComp.InCombat) //perform check immediately
+                ship.CheckForDetach();
+        }*/
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
@@ -191,11 +306,18 @@ namespace RimWorld
                     map.terrainGrid.SetTerrain(v, ResourceBank.TerrainDefOf.FakeFloorInsideShip);
             }
         }
+        public virtual void RemoveOtherTerrain(IntVec3 v)
+        {
+            if (map.terrainGrid.TerrainAt(v).layerable && map.terrainGrid.TerrainAt(v) != ResourceBank.TerrainDefOf.FakeFloorInsideShipArchotech && map.terrainGrid.TerrainAt(v) != ResourceBank.TerrainDefOf.FakeFloorInsideShipMech && map.terrainGrid.TerrainAt(v) != ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam && map.terrainGrid.TerrainAt(v) != ResourceBank.TerrainDefOf.ShipWreckageTerrain && map.terrainGrid.TerrainAt(v) != ResourceBank.TerrainDefOf.FakeFloorInsideShip)
+            {
+                map.terrainGrid.RemoveTopLayer(v);
+            }
+        }
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo giz in base.CompGetGizmosExtra())
                 yield return giz;
-            if (hasLight)//Props.canLight && ((parent.Faction==Faction.OfPlayer && ResearchProjectDefOf.ColoredLights.IsFinished) || DebugSettings.godMode))
+            if (hasLight)//SL Props.canLight && ((parent.Faction==Faction.OfPlayer && ResearchProjectDefOf.ColoredLights.IsFinished) || DebugSettings.godMode))
             {
                 rotCanLight = CanLightVecs();
                 Command_Action toggleLight = new Command_Action
@@ -210,7 +332,7 @@ namespace RimWorld
                             else
                                 Log.Error("Tried to disable ship lighting at position " + parent.Position + " when no light exists. Please report this bug to the SoS2 team.");
                         }
-                        /*else
+                        /*SL else
                         {
                             if (lightRot == -1)
                             {
@@ -233,7 +355,7 @@ namespace RimWorld
                     disabledReason = TranslatorFormattedStringExtensions.Translate("ShipWallLightAdjacency")
                 };
                 yield return toggleLight;
-                /*if (hasLight)
+                /*SL if (hasLight)
                 {
                     Command_Action rotateLight = new Command_Action
                     {

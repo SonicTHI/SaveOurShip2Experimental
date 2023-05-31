@@ -22,7 +22,7 @@ namespace RimWorld
                 if (base.EquipmentSource != null)
                 {
                     CompChangeableProjectilePlural comp = base.EquipmentSource.GetComp<CompChangeableProjectilePlural>();
-                    if (comp != null && comp.Loaded)
+                    if (comp != null && comp.LoadedNotPrevent)
                     {
                         return comp.Projectile;
                     }

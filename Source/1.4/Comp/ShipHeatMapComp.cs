@@ -12,7 +12,7 @@ namespace RimWorld
 {
     public class ShipHeatMapComp : MapComponent
     {
-        List<ShipHeatNet> cachedNets = new List<ShipHeatNet>();
+        public List<ShipHeatNet> cachedNets = new List<ShipHeatNet>();
         public List<CompShipHeat> cachedPipes = new List<CompShipHeat>();
 
         public int[] grid;
@@ -158,10 +158,10 @@ namespace RimWorld
                 Scribe_Collections.Look<ShipCombatProjectile>(ref Projectiles, "ShipProjectiles");
                 Scribe_Collections.Look<ShipCombatProjectile>(ref TorpsInRange, "ShipTorpsInRange");
                 //SC cache
-                Scribe_Collections.Look<Building>(ref MapRootList, "MapRootList", LookMode.Reference);
+                Scribe_Collections.Look<Building>(ref MapRootList, "MapRootList", LookMode.Reference); //SC rem
                 Scribe_Collections.Look<Building>(ref MapRootListAll, "MapRootListAll", LookMode.Reference);
                 Scribe_Values.Look<bool>(ref BridgeDestroyed, "BridgeDestroyed");
-                shipsOnMap = null; //reset cache on load IC
+                shipsOnMap = null; //reset cache on load IC //SC rem
                 originMapComp = null;
                 masterMapComp = null;
                 //SC master only
@@ -180,7 +180,7 @@ namespace RimWorld
                 Scribe_Values.Look<int>(ref BattleStartTick, "BattleStartTick");
                 Scribe_Values.Look<bool>(ref Scanned, "Scanned");
             }
-            else if (Scribe.mode != LoadSaveMode.Saving)
+            else if (Scribe.mode != LoadSaveMode.Saving) //SC rem
             {
                 MapRootList = null;
             }
@@ -188,8 +188,8 @@ namespace RimWorld
         //td get these into shipcache?
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
-        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
-        public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>();
+        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>(); //SC rem
+        public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>(); //SC rem
         public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>();
         public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>();
         //SC vars
@@ -216,11 +216,11 @@ namespace RimWorld
         public List<ShipCombatProjectile> Projectiles;
         public List<ShipCombatProjectile> TorpsInRange;
         public List<Building> MapRootListAll = new List<Building>();//all bridges on map
-        public List<Building> MapRootList;//primary bridges
+        public List<Building> MapRootList;//primary bridges //SC rem
         List<Building> cores = new List<Building>();
 
-        public List<ShipCache> shipsOnMap;
-        public List<ShipCache> ShipsOnMap//rebuild shipsOnMap cache if it is null
+        public List<ShipCache> shipsOnMap; //SC rem
+        public List<ShipCache> ShipsOnMap//rebuild shipsOnMap cache if it is null //SC rem
         {
             get
             {
@@ -236,6 +236,199 @@ namespace RimWorld
                 return shipsOnMap;
             }
         }
+        //SC cache new
+        //after spawn init all, after moveship: assign same as from map to new map
+        /*public override void FinalizeInit()
+        {
+            base.FinalizeInit();
+            RecacheMap();
+            Log.Message("SOS2 initalized cache on map: " + map);
+        }
+        public bool CacheOff = true;
+        //cells occupied by shipParts, if cacheoff = null, item1 = index, item2 = path, if path is -1 = wreck
+        private Dictionary<IntVec3, Tuple<int, int>> shipCells;
+        public Dictionary<IntVec3, Tuple<int, int>> ShipCells
+        {
+            get
+            {
+                if (shipCells == null)
+                {
+                    shipCells = new Dictionary<IntVec3, Tuple<int, int>>();
+                }
+                return shipCells;
+            }
+        }
+        //bridgeId, ship
+        private Dictionary<int, SoShipCache> shipsOnMapNew;
+        public Dictionary<int, SoShipCache> ShipsOnMapNew
+        {
+            get
+            {
+                if (shipsOnMapNew == null)
+                {
+                    shipsOnMapNew = new Dictionary<int, SoShipCache>();
+                }
+                return shipsOnMapNew;
+            }
+        }
+        public void ResetCache()
+        {
+            ShipsOnMapNew.Clear();
+            foreach (IntVec3 vec in ShipCells.Keys.ToList())
+            {
+                ShipCells[vec] = new Tuple<int, int>(-1, -1);
+            }
+        }
+        public void RecacheMap() //rebuild all ships, wrecks //td call this after all things loaded
+        {
+            foreach (Building b in MapRootListAll)
+            {
+                ((Building_ShipBridge)b).Index = -1;
+                ((Building_ShipBridge)b).Ship = null;
+            }
+            for (int i = 0; i < MapRootListAll.Count; i++) //for each bridge make a ship, assign index
+            {
+                if (((Building_ShipBridge)MapRootListAll[i]).Index == -1) //skip any with valid index
+                {
+                    ShipsOnMapNew.Add(MapRootListAll[i].thingIDNumber, new SoShipCache());
+                    ShipsOnMapNew[MapRootListAll[i].thingIDNumber].RebuildCache(MapRootListAll[i]);
+                }
+            }
+            foreach (IntVec3 vec in ShipCells.Keys.ToList()) //ship wrecks from leftovers
+            {
+                if (ShipCells[vec].Item1 == -1)
+                {
+                    Thing t = vec.GetThingList(map).FirstOrDefault(b => b.TryGetComp<CompSoShipPart>() != null);
+                    int mergeToIndex = t.thingIDNumber;
+
+                    ShipsOnMapNew.Add(mergeToIndex, new SoShipCache());
+                    ShipsOnMapNew[mergeToIndex].RebuildCache(t as Building);
+                }
+            }
+            CacheOff = false;
+        }
+        public void CheckAndMerge(HashSet<int> indexes) //slower, finds best ship to merge to, removes all other ships
+        {
+            int mergeToIndex = -1;
+            int mass = 0;
+            Building origin = null;
+            HashSet<int> ships = new HashSet<int>();
+            foreach (int i in indexes) //find largest ship
+            {
+                ships.Add(i);
+                if (!ShipsOnMapNew[i].IsWreck && ShipsOnMapNew[i].Mass > mass)
+                {
+                    mass = ShipsOnMapNew[i].Mass;
+                    mergeToIndex = ShipsOnMapNew[i].Index;
+                    origin = ShipsOnMapNew[i].Core;
+                }
+            }
+            if (mergeToIndex == -1) //merging to wrecks only
+            {
+                foreach (int i in indexes)
+                {
+                    if (ShipsOnMapNew[i].Mass > mass)
+                    {
+                        mass = ShipsOnMapNew[i].Mass;
+                        mergeToIndex = ShipsOnMapNew[i].Index;
+                        origin = ShipsOnMapNew[i].Buildings.First();
+                    }
+                }
+            }
+            foreach (int i in ships) //delete all ships
+            {
+                ShipsOnMapNew.Remove(i);
+            }
+            //full rebuild
+            ShipsOnMapNew.Add(mergeToIndex, new SoShipCache());
+            ShipsOnMapNew[mergeToIndex].RebuildCache(origin);
+        }
+        public void CheckAndMerge(HashSet<IntVec3> cellsToMerge) //faster, attaches as a tumor
+        {
+            int mergeToIndex;
+            IntVec3 mergeTo = IntVec3.Zero;
+            int mass = 0;
+            HashSet<int> ships = new HashSet<int>();
+            foreach (IntVec3 vec in cellsToMerge) //find largest ship
+            {
+                int shipIndex = ShipIndexOnVec(vec);
+                ships.Add(shipIndex);
+                if (shipIndex != -1 && ShipsOnMapNew[shipIndex].Mass > mass)
+                {
+                    mergeTo = vec;
+                    mass = ShipsOnMapNew[shipIndex].Mass;
+                }
+            }
+            if (mergeTo == IntVec3.Zero) //merging to wrecks only
+            {
+                foreach (IntVec3 vec in cellsToMerge)
+                {
+                    int shipIndex = ShipIndexOnVec(vec);
+                    if (ShipsOnMapNew[shipIndex].Mass > mass)
+                    {
+                        mergeTo = vec;
+                        mass = ShipsOnMapNew[shipIndex].Mass;
+                    }
+                }
+            }
+            mergeToIndex = ShipCells[mergeTo].Item1;
+            ships.Remove(mergeToIndex);
+            foreach (int i in ships) //delete all ships except mergeto
+            {
+                ShipsOnMapNew.Remove(i);
+            }
+            AttachAll(mergeTo, mergeToIndex);
+        }
+        public void AttachAll(IntVec3 mergeTo, int mergeToIndex) //merge and build corePath if ship
+        {
+            SoShipCache ship = ShipsOnMapNew[mergeToIndex];
+            int path = ShipCells[mergeTo].Item2;
+            HashSet<IntVec3> cellsTodo = new HashSet<IntVec3>();
+            HashSet<IntVec3> cellsDone = new HashSet<IntVec3>();
+            cellsTodo.Add(mergeTo);
+
+            //find cells cardinal that are in shiparea index and dont have same index, assign mergeTo corePath/index
+            while (cellsTodo.Count > 0)
+            {
+                List<IntVec3> current = cellsTodo.ToList();
+                foreach (IntVec3 vec in current) //do all of the current corePath
+                {
+                    ShipCells[vec] = new Tuple<int, int>(mergeToIndex, path); //assign new index, corepath
+                    foreach (Thing t in vec.GetThingList(map))
+                    {
+                        if (t is Building b)
+                        {
+                            ship.AddToCache(b);
+                        }
+                    }
+                    cellsTodo.Remove(vec);
+                    cellsDone.Add(vec);
+                }
+                foreach (IntVec3 vec in current) //find parts cardinal to all prev.pos, exclude prev.pos, mergeto ship
+                {
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => ShipCells.ContainsKey(v) && !cellsDone.Contains(v) && ShipCells[v]?.Item1 != mergeToIndex));
+                }
+                if (!ship.IsWreck)
+                    path++;
+                //Log.Message("parts at i: "+ current.Count + "/" + i);
+            }
+            Log.Message("Attached: " + cellsDone.Count + " to ship/wreck: " + mergeToIndex);
+        }
+        public int ShipIndexOnVec(IntVec3 vec) //return index if ship on cell, else return -1
+        {
+            if (ShipCells.ContainsKey(vec))
+            {
+                return ShipCells[vec].Item1;
+            }
+            return -1;
+        }
+        public bool VecHasEVA(IntVec3 vec)
+        {
+            if (ShipsOnMapNew[ShipCells[vec].Item1].LifeSupports.Any(s => s.active))
+                return true;
+            return false;
+        }*/
+        //SC cache new end
         public ShipHeatMapComp originMapComp;
         public ShipHeatMapComp OriginMapComp
         {
@@ -420,7 +613,7 @@ namespace RimWorld
             //if (cores != null)
             //    Log.Message("Spawned enemy cores: " + cores.Count);
         }
-        public int MapThreat()
+        public int MapThreat() //SC rem
         {
             int ShipThreat = 0;
             int ShipMass = 0;
@@ -440,6 +633,15 @@ namespace RimWorld
             ShipThreat += ShipMass / 100;
             return ShipThreat;
         }
+        /*SC public int MapThreat()
+        {
+            int threat = 0;
+            foreach (int ship in ShipsOnMapNew.Keys)
+            {
+                threat += ShipsOnMapNew[ship].Threat;
+            }
+            return threat;
+        }*/
 
         public void StartShipEncounter(Building playerShipRoot, PassingShip passingShip = null, Map enemyMap = null, Faction fac = null, int range = 0, bool fleet = false, bool bounty = false)
         {
@@ -526,12 +728,23 @@ namespace RimWorld
                 startedBoarderLoad = false;
                 launchedBoarders = false;
                 BattleStartTick = Find.TickManager.TicksGame;
-                if (!cores.NullOrEmpty())
+                if (!cores.NullOrEmpty()) //SC rem
                 {
                     MapRootList = cores;
                     return;
                 }
             }
+			/*SC
+            foreach (int index in shipsOnMapNew.Keys)
+            {
+                var ship = shipsOnMapNew[index];
+                if (!ship.IsWreck)
+                {
+                    ship.BuildingCountAtCombatStart = ship.BuildingCount;
+                }
+            }
+			*/
+			//SC rem
             //find one bridge per ship
             MapRootList = new List<Building>();
             foreach (Building root in MapRootListAll)
@@ -642,6 +855,7 @@ namespace RimWorld
                 //ship destruction code
                 if (BridgeDestroyed || Find.TickManager.TicksGame % 20 == 0)
                 {
+					//SC rem
                     BridgeDestroyed = false;
                     for (int i = 0; i < ShipsOnMap.Count; i++)
                     {
@@ -651,6 +865,13 @@ namespace RimWorld
                             callSlowTick = true;
                         }
                     }
+					/*SC
+                    foreach (int i in ShipsOnMapNew.Keys)
+                    {
+                        if (ShipsOnMapNew[i].CheckForDetach())
+                            callSlowTick = true;
+                    }
+					*/
                     if (MapRootList.NullOrEmpty() || MapRootListAll.NullOrEmpty()) //if all ships gone, end combat
                     {
                         //Log.Message("Map defeated: " + this.map);
@@ -679,7 +900,34 @@ namespace RimWorld
             float powerCapacity = 0;
             float powerRemaining = 0;
             //threat and engine power calcs
-            foreach (ShipCache ship in ShipsOnMap)
+			/*SC
+            foreach (Building_ShipBridge bridge in MapRootList)
+            {
+                var ship = ShipsOnMapNew[bridge.Index];
+                if (ShipCombatMaster)
+                {
+                    foreach (var battery in ship.Batteries)
+                    {
+                        powerCapacity += battery.Props.storedEnergyMax;
+                        powerRemaining += battery.StoredEnergy;
+                    }
+                    ship.PurgeCheck();
+                }
+                threatPerSegment.Zip(ship.ActualThreatPerSegment(), (x, y) => x + y);
+                turretNum += ship.Turrets.Count;
+
+                if (ship.Engines.FirstOrDefault() != null)
+                    EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
+                float enginePower = ship.EnginePower(EngineRot, Heading);
+                if (ship.CanMove)
+                {
+                    MapEnginePower += enginePower;
+                    anyMapEngineCanActivate = true;
+                }
+                BuildingsCount += ship.Buildings.Count;
+            }
+			*/
+            foreach (ShipCache ship in ShipsOnMap) //SC rem
             {
                 if (ShipCombatMaster)
                 {
@@ -935,7 +1183,7 @@ namespace RimWorld
                 }
             }
         }
-        //cache functions
+        //cache functions //SC rem
         public void DirtyShip(Building building)//called ondestroy of ship part
         {
             //Log.Message("Attempting to dirty ship");
@@ -1034,6 +1282,27 @@ namespace RimWorld
             ShipsOnMap.Remove(ShipsOnMap[shipIndex]);
             //Log.Message("Ships remaining: " + MapRootList.Count);
         }
+        /*SC public void RemoveShipFromBattle(int shipIndex, Building b = null, Faction fac = null)
+        {
+            if (ShipsOnMapNew.Count > 1) //move to graveyard if not last ship
+            {
+                if (b == null)
+                {
+                    b = ShipsOnMapNew[shipIndex].Parts.FirstOrDefault();
+                }
+                if (b != null)
+                {
+                    if (ShipGraveyard == null)
+                        SpawnGraveyard();
+                    ShipInteriorMod2.MoveShip(b, ShipGraveyard, new IntVec3(0, 0, 0), fac);
+                }
+            }
+            else if (fac != null) //last ship hacked
+            {
+                ShipsOnMapNew[shipIndex].Capture(fac);
+            }
+            Log.Message("Ships remaining: " + ShipsOnMapNew.Count);
+        }*/
         public void SpawnGraveyard()//if not present, create a graveyard
         {
             float adj;
@@ -1088,6 +1357,7 @@ namespace RimWorld
         }
         public void EndBattle(Map loser, bool fled, int burnTimeElapsed = 0)
         {
+			//td destroy all proj
             OriginMapComp.InCombat = false;
             MasterMapComp.InCombat = false;
             OriginMapComp.ShipBuildingsOff();
@@ -1169,7 +1439,7 @@ namespace RimWorld
         }
     }
 
-    public class ShipCache
+    public class ShipCache //SC rem
     {
         public HashSet<IntVec3> ShipAreaAtStart = new HashSet<IntVec3>();
         public List<Building_ShipBridge> BridgesAtStart = new List<Building_ShipBridge>();
@@ -1298,10 +1568,6 @@ namespace RimWorld
                         }
                     }
                 }
-                /*else if (building.TryGetComp<CompHullFoamDistributor>() != null)
-                    FoamDistributors.Add(building.GetComp<CompHullFoamDistributor>());
-                else if (building.TryGetComp<CompShipLifeSupport>() != null)
-                    LifeSupports.Add(building.GetComp<CompShipLifeSupport>());*/
 
                 if (resetCache)
                 {

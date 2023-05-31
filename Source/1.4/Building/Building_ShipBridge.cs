@@ -16,19 +16,23 @@ namespace RimWorld
 	public class Building_ShipBridge : Building
     {
         public string ShipName = "Unnamed Ship";
+		//SC rem
         public int ShipThreat = 0;
         public int ShipMass = 0;
         public float ShipMaxTakeoff = 0;
         public float ShipThrust = 0;
         public float ShipHeatCap = 0;
         public float ShipHeat = 0;
+		//SC rem end
         public int shipIndex = -1;
+        //SC public int Index = -1;
+        //SC public SoShipCache Ship;
         public bool TacCon = false;
-        public HashSet<ThingDef> nonRotatableObjects = new HashSet<ThingDef>();
+        public HashSet<ThingDef> nonRotatableObjects = new HashSet<ThingDef>(); //SC rem
 
         bool selected = false;
-        public List<Building> cachedShipParts;
-        List<Building> cachedPods;
+        public List<Building> cachedShipParts; //SC rem
+        List<Building> cachedPods; //SC rem
         List<string> fail;
 
         public ShipHeatMapComp mapComp;
@@ -45,11 +49,22 @@ namespace RimWorld
         private List<string> InterstellarFailReasons()
         {
             List<string> result = new List<string>();
+			//SC Ship.Sensors
             if (!cachedShipParts.Any((Building pa) => pa.def == ThingDefOf.Ship_ComputerCore || pa.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_ComputerCore.label);
             if (!cachedShipParts.Any((Building pa) => pa.def == ThingDefOf.Ship_SensorCluster || pa.def ==ThingDef.Named("Ship_SensorClusterAdv")))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
             int playerJTPower = 0;
+            /*SC if (Ship.Engines.Any(e => e.Props.energy))
+            {
+                foreach (CompEngineTrail e in Ship.Engines.Where(e => e.Props.energy))
+                {
+                    int mult = 10000;
+                    if (e.parent.def.size.x > 3)
+                        mult = 30000;
+                    playerJTPower += mult;
+                }
+            }*/
             if (cachedShipParts.Any((Building pa) => pa.TryGetComp<CompEngineTrail>() != null))
             {
                 foreach (Building b in cachedShipParts.Where(b => b.TryGetComp<CompEngineTrail>() != null && b.GetComp<CompEngineTrail>().Props.energy))
@@ -78,6 +93,8 @@ namespace RimWorld
 		public override IEnumerable<Gizmo> GetGizmos()
 		{
             var heatNet = this.TryGetComp<CompShipHeat>().myNet;
+            //SC if (Ship == null)
+            //    Ship = mapComp.ShipsOnMapNew[Index];
             bool ckActive = Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
             if (!TacCon)
             {
@@ -101,6 +118,7 @@ namespace RimWorld
                 }
                 if (!selected)
                 {
+					//SC rem
                     Log.Message("recached: " + this);
                     cachedShipParts = ShipUtility.ShipBuildingsAttachedTo(this);
                     cachedPods = new List<Building>();
@@ -116,6 +134,7 @@ namespace RimWorld
                             nonRotatableObjects.Add(b.def);
                         }
                     }
+					//SC rem end
                     fail = InterstellarFailReasons();
                     selected = true;
                 }
@@ -148,7 +167,7 @@ namespace RimWorld
                 {
                     action = delegate
                     {
-                        RecalcStats();
+                        RecalcStats(); //SC rem, Ship.x
                         float capacity = 0;
                         foreach (CompPowerBattery bat in this.GetComp<CompPower>().PowerNet.batteryComps)
                             capacity += bat.Props.storedEnergyMax;
@@ -193,7 +212,7 @@ namespace RimWorld
             }
             if (this.Map.IsSpace())
             {
-                if (cachedPods.Any())
+                if (cachedPods.Any()) //SC Ship.Pods
                 {
                     Command_Action abandon = new Command_Action
                     {
@@ -224,6 +243,7 @@ namespace RimWorld
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandScuttleShipDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/Scuttle_Icon")
                     };
+                    //SC if (Ship.Pods.Where(pod => pod.parent is Building_CryptosleepCasket c && c.GetDirectlyHeldThings().Any()).Count() == 0)
                     if (cachedPods.Where(pod => pod is Building_CryptosleepCasket c && c.GetDirectlyHeldThings().Any()).Count() == 0)
                     {
                         abandon.disabled = true;
@@ -486,7 +506,7 @@ namespace RimWorld
                             moveShipFlip.Disable();
                             moveShipRot.Disable();
                         }
-                        else if (nonRotatableObjects.Any())
+                        else if (nonRotatableObjects.Any()) //SC Ship.BuildingsNonRot
                         {
                             moveShipRot.Disable();
                             StringBuilder sb = new StringBuilder();
@@ -781,6 +801,11 @@ namespace RimWorld
 		}
         private bool ChoseWorldTarget(GlobalTargetInfo target)
         {
+            /*SC foreach (CompCryptoLaunchable pod in Ship.Pods)
+            {
+                pod.ChoseWorldTarget(target);
+            }*/
+			//SC rem
             foreach (Building pod in cachedPods)
             {
                 pod.TryGetComp<CompCryptoLaunchable>().ChoseWorldTarget(target);
@@ -817,6 +842,15 @@ namespace RimWorld
                 countdownComp.ResetForceExitAndRemoveMapCountdown();
                 Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
             }
+            /*SC if (!mapComp.CacheOff)
+            {
+                //bridge placed on wreck, make ship
+                if (mapComp.ShipCells.ContainsKey(Position) && !mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[Position].Item1))
+                {
+                    mapComp.ShipsOnMapNew.Add(thingIDNumber, new SoShipCache());
+                    mapComp.ShipsOnMapNew[thingIDNumber].RebuildCache(this);
+                }
+            }*/
         }
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
@@ -828,8 +862,23 @@ namespace RimWorld
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
+			/*SC if (Ship.Bridges.Any(b => b != this && !b.Destroyed)) //if last bridge remove ship or end combat
+            {
+                if (!mapComp.InCombat)
+                {
+                    mapComp.ShipsOnMapNew.Remove(Index);
+                }
+                else //if last ship end combat else move to grave
+                {
+                    if (mapComp.ShipsOnMapNew.Count > 1)
+                        mapComp.RemoveShipFromBattle(Index);
+                    else
+                        mapComp.EndBattle(Map, false);
+                }
+                return;
+            }*/
             //Log.Message("Destroyed: " + this + " from " + this.Map);
-            if (mapComp.InCombat) //force check on next tick
+            if (mapComp.InCombat) //force check on next tick //SC rem
             {
                 mapComp.BridgeDestroyed = true;
             }
@@ -855,7 +904,7 @@ namespace RimWorld
                 TickRare();
         }
 		
-		public void RecalcStats()
+		public void RecalcStats() //SC rem
         {
             ShipThreat = 0;
             ShipMass = 0;
@@ -921,6 +970,8 @@ namespace RimWorld
             }
             else
             {
+				//SC Ship.Capture(Faction.OfPlayer);
+				//SC rem
                 cachedShipParts = ShipUtility.ShipBuildingsAttachedTo(this);
                 foreach (Building b in cachedShipParts)
                 {

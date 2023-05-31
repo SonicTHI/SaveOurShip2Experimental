@@ -115,6 +115,7 @@
 	<CommandShipOptimalRangeDesc>Enable to only fire on targets within optimal range</CommandShipOptimalRangeDesc>
 	<CommandShipPointDefense>Point Defense mode</CommandShipPointDefense>
 	<CommandShipPointDefenseDesc>Use this turret to intercept incoming torpedoes and shuttles</CommandShipPointDefenseDesc>
+	<CommandShipTorpedoAllowedDesc>Toggle to prevent or allow firing of this type of torpedo.</CommandShipTorpedoAllowedDesc>
 	<ShipCombatPodDestroyedPlayer>Your shuttle was destroyed by enemy point defense!</ShipCombatPodDestroyedPlayer>
 	<ShipCombatPodDestroyedEnemy>Enemy shuttle was destroyed by your point defense!</ShipCombatPodDestroyedEnemy>
 	

@@ -40,6 +40,16 @@ namespace RimWorld
                     active = true;
                 else
                     active = false;
+                if (active)
+                {
+                    foreach (ShipHeatNet net in mapComp.cachedNets)
+                    {
+                        if (net != null && net.StorageCapacityRaw > 0)
+                        {
+                            net.AddDepletion(0.1f);
+                        }
+                    }
+                }
             }
         }
 

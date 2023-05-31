@@ -45,6 +45,7 @@ namespace RimWorld
                     else
                         pawnsToDamage.Add(pawn);
                 }
+                //SC else if (eva != 1 && !map.GetComponent<ShipHeatMapComp>().VecHasEVA(pawn.Position)) //in ship, no air
                 else if (eva != 1 && !map.GetComponent<ShipHeatMapComp>().LifeSupports.Any(s => s.active)) //in ship, no air
                 {
 					if (eva == 3)

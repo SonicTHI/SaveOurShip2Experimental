@@ -9,7 +9,7 @@ namespace RimWorld.Planet
 {
 	public class TimedForcedExitShip : WorldObjectComp
 	{
-		private int ticksLeftToForceExitAndRemoveMap = -1;
+        public int ticksLeftToForceExitAndRemoveMap = -1;
 		private static List<Pawn> tmpPawns = new List<Pawn>();
 		public bool ForceExitAndRemoveMapCountdownActive
 		{

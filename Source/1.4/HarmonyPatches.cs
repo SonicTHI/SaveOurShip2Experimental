@@ -270,7 +270,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(LetterStack), "LettersOnGUI")]
+	[HarmonyPatch(typeof(LetterStack), "LettersOnGUI")] //add burnup timer
 	public static class TimerOnGUI
 	{
 		public static bool Prefix(ref float baseY)
@@ -285,8 +285,14 @@ namespace SaveOurShip2
 					Rect rect = new Rect(num, baseY - 16f, 193f, 26f);
 					Text.Anchor = TextAnchor.MiddleRight;
 					string detectionCountdownTimeLeftString = timecomp.ForceExitAndRemoveMapCountdownTimeLeftString;
-					string text = "ShipBurnUpCountdown".Translate(detectionCountdownTimeLeftString);
-					float x = Text.CalcSize(text).x;
+					string text;
+                    if (timecomp.ticksLeftToForceExitAndRemoveMap < 5000)
+                        text = "ShipBurnUpCountdown".Translate(detectionCountdownTimeLeftString).Colorize(Color.red);
+                    else if (timecomp.ticksLeftToForceExitAndRemoveMap < 30000)
+                        text = "ShipBurnUpCountdown".Translate(detectionCountdownTimeLeftString).Colorize(Color.yellow);
+                    else
+                        text = "ShipBurnUpCountdown".Translate(detectionCountdownTimeLeftString);
+                    float x = Text.CalcSize(text).x;
 					Rect rect2 = new Rect(rect.xMax - x, rect.y, x, rect.height);
 					if (Mouse.IsOver(rect2))
 					{
@@ -302,7 +308,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(GlobalControls), "TemperatureString")]
+	[HarmonyPatch(typeof(GlobalControls), "TemperatureString")] //add breach and breathability info to UI
 	public static class ShowBreathability
 	{
 		public static void Postfix(ref string __result)
@@ -438,7 +444,7 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(MapTemperature), "OutdoorTemp", MethodType.Getter)]
-	public static class FixOutdoorTemp
+	public static class ForceOutdoorTempInSpace
 	{
 		public static void Postfix(ref float __result, Map ___map)
 		{
@@ -447,16 +453,16 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(MapTemperature), "SeasonalTemp", MethodType.Getter)]
-	public static class FixSeasonalTemp
-	{
+    public static class ForceSeasonalTempInSpace
+    {
 		public static void Postfix(ref float __result, Map ___map)
 		{
 			if (___map.IsSpace()) __result = -100f;
 		}
 	}
 
-	[HarmonyPatch(typeof(Room), "OpenRoofCount", MethodType.Getter)]
-	public static class SpaceRoomCheck //check if cache is invalid, if roofed and in space run postfix to check the room
+	[HarmonyPatch(typeof(Room), "OpenRoofCount", MethodType.Getter)] //set to 1 if in space and missing roof/ship hull
+	public static class SpaceRoomCheck
 	{
 		public static bool Prefix(ref int ___cachedOpenRoofCount, out bool __state)
 		{
@@ -504,8 +510,8 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(GenTemperature), "EqualizeTemperaturesThroughBuilding")]
-	public static class NoVentingToSpace //block vents and open airlocks in vac, closed airlocks vent slower
+	[HarmonyPatch(typeof(GenTemperature), "EqualizeTemperaturesThroughBuilding")] //block vents and open airlocks in vac, closed airlocks vent slower
+    public static class NoVentingToSpace
 	{
 		public static bool Prefix(Building b, ref float rate, bool twoWay)
 		{
@@ -1152,6 +1158,64 @@ namespace SaveOurShip2
 		}
 	}
 	
+	/*SC [HarmonyPatch(typeof(Building), "SpawnSetup")]
+	public static class DoSpawn
+	{
+		//adds normal building weight/count to ship
+		[HarmonyPostfix]
+		public static void OnSpawn(Building __instance, Map map, bool respawningAfterLoad)
+		{
+			if (respawningAfterLoad)
+				return;
+			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			if (mapComp.CacheOff || mapComp.ShipsOnMapNew.NullOrEmpty() || __instance.TryGetComp<CompSoShipPart>() != null)
+				return;
+			foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance)) //if any part spawned on ship
+            {
+				if (mapComp.ShipCells.ContainsKey(vec))
+				{
+					var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
+					if (!ship.Buildings.Contains(__instance)) //need to check every cell as some smartass could place it on 2 ships
+					{
+						ship.AddToCache(__instance);
+					}
+				}
+            }
+		}
+	}
+
+	[HarmonyPatch(typeof(Building), "DeSpawn")]
+	public static class DoPreDeSpawn
+	{
+		//can we have predespawn at home? no, we have despawn at home, despawn at home: postdespawn
+		//lets me actually get the building being removed
+		[HarmonyPrefix]
+		public static bool PreDeSpawn(Building __instance)
+		{
+			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
+			if (mapComp.CacheOff)
+				return true;
+			var shipComp = __instance.TryGetComp<CompSoShipPart>();
+			if (shipComp != null) //predespawn for ship parts
+				shipComp.PreDeSpawn();
+			else if (!mapComp.ShipsOnMapNew.NullOrEmpty()) //rems normal building weight/count to ship
+			{
+				foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
+				{
+					if (mapComp.ShipCells.ContainsKey(vec))
+					{
+						var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
+						if (ship.Buildings.Contains(__instance))
+						{
+							ship.RemoveFromCache(__instance);
+						}
+					}
+				}
+			}
+			return true;
+		}
+	}*/
+	
 	[HarmonyPatch(typeof(ShipUtility), "LaunchFailReasons")]
 	public static class FindLaunchFailReasons
 	{
@@ -1207,7 +1271,7 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(ShipCountdown), "InitiateCountdown", new Type[] { typeof(Building) })]
-	public static class InitShipRefs
+	public static class SetShipGroundMap
 	{
 		public static bool Prefix(Building launchingShipRoot)
 		{
@@ -1217,7 +1281,7 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(ShipCountdown), "CountdownEnded")]
-	public static class SaveShip
+	public static class LaunchShipToSpace
 	{
 		public static bool Prefix()
 		{
@@ -1228,7 +1292,12 @@ namespace SaveOurShip2
 			else if (ShipInteriorMod2.shipOriginRoot != null)
 			{
 				ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
-				Map map = ShipInteriorMod2.GeneratePlayerShipMap(ShipInteriorMod2.shipOriginRoot.Map.Size);
+				IntVec3 size = ShipInteriorMod2.shipOriginRoot.Map.Size;
+                if (size.x < Find.World.info.initialMapSize.x && size.y < Find.World.info.initialMapSize.y)
+				{
+					size = Find.World.info.initialMapSize;
+				}
+				Map map = ShipInteriorMod2.GeneratePlayerShipMap(size);
 
 				ShipInteriorMod2.MoveShip(ShipInteriorMod2.shipOriginRoot, map, IntVec3.Zero);
 				map.weatherManager.TransitionTo(ResourceBank.WeatherDefOf.OuterSpaceWeather);
@@ -1300,13 +1369,14 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(TerrainGrid), "DoTerrainChangedEffects")]
-	public static class RecreateShipTile //restores ship terrain after tile removal
+	[HarmonyPatch(typeof(TerrainGrid), "DoTerrainChangedEffects")] //restores ship terrain after tile removal
+	public static class RecreateShipTile
 	{
 		public static void Postfix(TerrainGrid __instance, IntVec3 c, Map ___map)
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 				return;
+			//SC if (___map.GetComponent<ShipHeatMapComp>()?.ShipCells?.ContainsKey(c) ?? false)
             foreach (Thing t in ___map.thingGrid.ThingsAt(c))
             {
                 var shipPart = t.TryGetComp<CompSoShipPart>();
@@ -1319,8 +1389,8 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(RoofGrid), "SetRoof")]
-	public static class RebuildShipRoof //roofing ship tiles makes ship roof
+	[HarmonyPatch(typeof(RoofGrid), "SetRoof")] //roofing ship tiles makes ship roof
+	public static class RebuildShipRoof
 	{
 		public static bool Prefix(IntVec3 c, RoofDef def, Map ___map, ref CellBoolDrawer ___drawerInt, ref RoofDef[] ___roofGrid)
 		{

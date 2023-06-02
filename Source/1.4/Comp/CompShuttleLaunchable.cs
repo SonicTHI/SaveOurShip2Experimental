@@ -223,7 +223,7 @@ namespace RimWorld
             var refuelComp = this.parent.TryGetComp<CompRefuelable>();
             if (this.parent.Map.Parent is WorldObjectOrbitingShip)
             {
-                Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
+                Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
                     if (!target.IsValid || refuelComp == null || refuelComp.FuelPercentOfMax == 1.0f || ((this.parent.Map == mapComp.ShipCombatMasterMap || this.parent.Map == mapComp.ShipCombatOriginMap) && target.WorldObject is WorldObjectOrbitingShip && refuelComp.FuelPercentOfMax >= 0.25f))
                     {
@@ -329,12 +329,12 @@ namespace RimWorld
                     IntVec3 shuttleBayPos = FirstShuttleBayOpen(targetMapParent.Map, parent.def);
                     if (this.parent.Map.Parent is SpaceSite || this.parent.Map.Parent is MoonBase)
                     {
-                        if (shuttleBayPos == IntVec3.Zero)
+                        if (shuttleBayPos != IntVec3.Zero)
                         {
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("NeedOpenShuttleBay"), MessageTypeDefOf.RejectInput);
-                            return false;
+                            this.TryLaunch(targetMapParent, new TransportPodsArrivalAction_LandInSpecificCell(targetMapParent, shuttleBayPos));
+                            return true;
                         }
-                        this.TryLaunch(targetMapParent, new TransportPodsArrivalAction_LandInSpecificCell(targetMapParent, shuttleBayPos));
+                        ChooseMapTarget(targetMapParent);
                         return true;
                     }
                     //from ground

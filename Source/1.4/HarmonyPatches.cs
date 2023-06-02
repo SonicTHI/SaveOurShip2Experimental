@@ -1706,8 +1706,50 @@ namespace SaveOurShip2
         }
     }
 
+    [HarmonyPatch(typeof(ThingOwner), "TryDropAll")] prevents drops but other things not set
+    public static class DisableForMoveThingOwner
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }*/
+
+    [HarmonyPatch(typeof(CompAssignableToPawn), "PostSpawnSetup")] //beds?
+    public static class DisableForMoveAssignableOn
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }
+    [HarmonyPatch(typeof(CompAssignableToPawn), "PostDeSpawn")]
+    public static class DisableForMoveAssignableOff
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(CompDeathrestBindable), "PostSpawnSetup")] //deathrest
+    public static class DisableForMoveDeathOn
+    {
+        public static bool Prefix()
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+                return false;
+            return true;
+        }
+    }
     [HarmonyPatch(typeof(CompDeathrestBindable), "PostDeSpawn")]
-	public static class DisableForMoveDeath
+    public static class DisableForMoveDeathOff
 	{
 		public static bool Prefix()
 		{
@@ -1715,7 +1757,7 @@ namespace SaveOurShip2
 				return false;
 			return true;
 		}
-	}*/
+	}
 
     [HarmonyPatch]
 	public class PatchCharger
@@ -1802,7 +1844,7 @@ namespace SaveOurShip2
 
 	[HarmonyPatch(typeof(Projectile), "Launch", new Type[] {
 		typeof(Thing), typeof(Vector3), typeof(LocalTargetInfo), typeof(LocalTargetInfo),
-		typeof(ProjectileHitFlags), typeof(bool), typeof(Thing), typeof(ThingDef) })]
+		typeof(ProjectileHitFlags), typeof(bool), typeof(Thing), typeof(ThingDef) })] //td? move this into ship turret/launch code
 	public static class TransferAmplifyBonus
 	{
 		public static void Postfix(Projectile __instance, Thing equipment, ref float ___weaponDamageMultiplier)

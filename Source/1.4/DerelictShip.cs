@@ -16,6 +16,7 @@ namespace RimWorld
         public DerelictShip() : base()
         {
             loadID = Find.UniqueIDsManager.GetNextPassingShipID();
+            ticksUntilDeparture = Rand.RangeInclusive(40000, 80000);
         }
 
         protected override AcceptanceReport CanCommunicateWith(Pawn negotiator)

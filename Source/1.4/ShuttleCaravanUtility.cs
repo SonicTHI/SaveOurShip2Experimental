@@ -73,7 +73,7 @@ namespace SaveOurShip2
 			myMaxLaunchDistance = MaxLaunchDistance;
 			int tile = van.Tile;
 			Find.WorldSelector.ClearSelection();
-			Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(ShuttleCaravanUtility.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, false, delegate
+			Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, false, delegate
 				{
 					GenDraw.DrawWorldRadiusRing(tile, (int)MaxLaunchDistance);
 				}, delegate(GlobalTargetInfo target)

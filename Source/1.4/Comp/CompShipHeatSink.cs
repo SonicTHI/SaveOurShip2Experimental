@@ -63,6 +63,7 @@ namespace RimWorld
                 heatStored = Props.heatCapacity * myNet.RatioInNetwork;
                 depletion = Props.heatCapacity * myNet.DepletionRatio;
             }
+            Scribe_Values.Look<float>(ref depletion, "depletion");
             Scribe_Values.Look<float>(ref heatStored, "heatStored");
         }
         public override void CompTick()

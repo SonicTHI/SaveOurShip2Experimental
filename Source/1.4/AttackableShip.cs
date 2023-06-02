@@ -15,6 +15,7 @@ namespace RimWorld
         public AttackableShip() : base()
         {
             loadID = Find.UniqueIDsManager.GetNextPassingShipID();
+            ticksUntilDeparture = Rand.RangeInclusive(60000, 120000);
         }
 
         protected override AcceptanceReport CanCommunicateWith(Pawn negotiator)

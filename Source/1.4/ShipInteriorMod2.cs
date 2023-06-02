@@ -45,7 +45,7 @@ namespace SaveOurShip2
 		{
 			Scribe_Values.Look(ref difficultySoS, "difficultySoS", 1.0);
 			Scribe_Values.Look(ref frequencySoS, "frequencySoS", 1.0);
-			Scribe_Values.Look(ref navyShipChance, "navyShipChance", 0.2);
+			Scribe_Values.Look(ref navyShipChance, "navyShipChance", 0.4);
 			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
 
 			Scribe_Values.Look(ref easyMode, "easyMode", false);
@@ -63,7 +63,7 @@ namespace SaveOurShip2
 		public static double
 			difficultySoS = 1,
 			frequencySoS = 1,
-			navyShipChance = 0.2,
+			navyShipChance = 0.4,
 			fleetChance = 0.3;
 		public static bool
 			easyMode = false,
@@ -147,7 +147,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V88f4 active");
+			Log.Message("SOS2EXP V88f5 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1849,19 +1849,38 @@ namespace SaveOurShip2
 							a.UnDock();
 						}
 						var engineComp = b.TryGetComp<CompEngineTrail>();
-						var powerComp = b.TryGetComp<CompPower>();
-						if (engineComp != null)
+                        var transportComp = b.TryGetComp<CompTransporter>();
+                        if (engineComp != null)
 							engineComp.Off();
-						if (powerComp != null)
-							toRePower.Add(powerComp);
-					}
-					else if (!sourceMapIsSpace && t is Pawn p && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
-                    {
-						//do not allow kidnapping other fac pawns/animals
-						Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipMoveFailPawns"), null, MessageTypeDefOf.NegativeEvent);
-						return;
+						if (transportComp != null)
+						{
+							toSave.AddRange(transportComp.innerContainer.ToList());
+                            transportComp.CancelLoad();
+                        }
                     }
-					if (!toSave.Contains(t))
+					else if (t is Pawn p)
+                    {
+						if (p.IsCarrying()) //drop and add carried things
+						{
+							Thing carriedt;
+							p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out carriedt);
+                            if (!toSave.Contains(carriedt))
+                                toSave.Add(carriedt);
+                        }
+						if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
+                        {
+                            //do not allow kidnapping other fac pawns/animals
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipLaunchFailPawns"), null, MessageTypeDefOf.NegativeEvent);
+                            return;
+                        }
+						/*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
+                        {
+							Log.Message("Pawn holding thing: " + p.holdingOwner);
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipMoveFailPawns", p.holdingOwner.Owner.ToString()), null, MessageTypeDefOf.NegativeEvent);
+                            return;
+                        }*/
+                    }
+                    if (!toSave.Contains(t))
 					{
 						toSave.Add(t);
 					}
@@ -2179,19 +2198,15 @@ namespace SaveOurShip2
 				}
 			}
 
-			//power
-			if (sourceMap != targetMap)
-			{
-				foreach (CompPower powerComp in toRePower)
-				{
-					powerComp.ResetPowerVars();
-				}
-			}
-			if (toRePower.Any())
-				targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
+            //power
+            if (sourceMap != targetMap)
+            {
+                sourceMap.powerNetManager.UpdatePowerNetsAndConnections_First();
+                targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
+            }
 
-			//heat
-			targetMap.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
+            //heat
+            targetMap.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
 
 			if (devMode)
 			{
@@ -2199,46 +2214,6 @@ namespace SaveOurShip2
 				Log.Message("Timing report:\n" + watch.MakeReport());
 				Log.Message("Moved ship with building " + core);
 			}
-			/*Things = 1,
-			FogOfWar = 2,
-			Buildings = 4,
-			GroundGlow = 8,
-			Terrain = 16,
-			Roofs = 32,
-			Snow = 64,
-			Zone = 128,
-			PowerGrid = 256,
-			BuildingsDamage = 512*/
-			//targetMap.mapDrawer.RegenerateEverythingNow();
-			//sourceMap.mapDrawer.RegenerateEverythingNow();
-			//foreach (IntVec3 pos in posToClear)
-			//sourceMap.mapDrawer.MapMeshDirty(pos, MapMeshFlag.PowerGrid);
-			//rewire - call next tick
-			/*foreach (Thing powerThing in targetMap.listerThings.AllThings)
-			{
-				CompPower powerComp = powerThing.TryGetComp<CompPower>();
-				if (powerComp != null)
-				{
-					powerComp.TryManualReconnect();
-					//Traverse.Create<CompPower>().Method("TryManualReconnect", powerComp);
-					//Traverse.Create(powerComp).Method("TryManualReconnect");
-					//powerComp.ResetPowerVars();
-				}
-			}*/
-			/*if (sourceMap.IsSpace() && !sourceMap.IsSpace() || (!sourceMap.IsSpace() && sourceMap.IsSpace())
-			{
-				foreach (Building powerThing in shipParts)
-				{
-					CompPower powerComp = powerThing.TryGetComp<CompPower>();
-					if (powerComp is CompPowerTrader && powerComp.Props.transmitsPower == false)
-					{
-						CompPower compPower = PowerConnectionMaker.BestTransmitterForConnector(powerThing.Position, powerThing.Map);
-						powerComp.ConnectToTransmitter(compPower, false);
-					}
-					powerThing.Map.mapDrawer.MapMeshDirty(powerThing.Position, MapMeshFlag.PowerGrid);
-					powerThing.Map.mapDrawer.MapMeshDirty(powerThing.Position, MapMeshFlag.Things);
-				}
-			}*/
 		}
 		public static void SaveShip(Building core, string file)
 		{

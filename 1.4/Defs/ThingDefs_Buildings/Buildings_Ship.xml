@@ -79,7 +79,6 @@
 		<costList>
 			<Steel>14</Steel>
 			<Plasteel>3</Plasteel>
-			<ComponentIndustrial>1</ComponentIndustrial>
 		</costList>
 		<researchPrerequisites>
 			<li>ShipBasics</li>

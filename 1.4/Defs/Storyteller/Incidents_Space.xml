@@ -16,4 +16,21 @@
     <tale>ShipCombat</tale>
   </IncidentDef>
 
+  <IncidentDef>
+    <defName>SpaceDebris</defName>
+    <label>space debris</label>
+    <category>Misc</category>
+    <targetTags>
+      <li>Map_SpaceHome</li>
+    </targetTags>
+    <workerClass>IncidentWorker_SpaceDebris</workerClass>
+    <letterLabel>Space debris</letterLabel>
+    <letterDef>ThreatSmall</letterDef>
+    <baseChance>0.4</baseChance>
+    <minRefireDays>30</minRefireDays>
+    <disabledWhen>
+    </disabledWhen>
+    <durationDays>0.075~0.1</durationDays>
+    <tale>SpaceDebris</tale>
+  </IncidentDef>
 </Defs>

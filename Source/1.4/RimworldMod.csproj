@@ -113,12 +113,17 @@
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
+    <Compile Include="ChoiceLetter_SpacePodEncounter.cs" />
     <Compile Include="CompProps\CompProperties_SoShipDocking.cs" />
+    <Compile Include="CompProps\CompProperties_RCSThruster.cs" />
     <Compile Include="Comp\CompSoShipDocking.cs" />
+    <Compile Include="GameCondition_SpaceDebris.cs" />
     <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="IncidentWorker_SpaceDebris.cs" />
     <Compile Include="Jobs\JobDriver_LoadShipBuilding.cs" />
     <Compile Include="Jobs\JobGiver_LoadShipBuilding.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_ShipPlating.cs" />
+    <Compile Include="Projectile\Projectile_ExplosiveShipDebris.cs" />
     <Compile Include="Quest\QuestNode_RoyalAscentShip.cs" />
     <Compile Include="Quest\QuestPart_RoyalAscentShip.cs" />
     <Compile Include="ResourceBank.cs" />

@@ -46,6 +46,10 @@ namespace RimWorld
             {
                 return false;
             }
+            if (pawn.WorkTypeIsDisabled(WorkTypeDefOf.Research))
+            {
+                return false;
+            }
             Building building = t as Building;
             if (building == null)
             {

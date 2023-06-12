@@ -13,7 +13,6 @@ namespace RimWorld
 	public class CompShuttleLaunchable : ThingComp
 	{
 		private CompTransporter cachedCompTransporter;
-
 		public static readonly Texture2D TargeterMouseAttachment = ContentFinder<Texture2D>.Get("UI/Overlays/LaunchableMouseAttachment", true);
 		public static readonly Texture2D LaunchCommandTex = ContentFinder<Texture2D>.Get("UI/Commands/LaunchShip", true);
 		public static readonly Texture2D SetTargetFuelLevelCommand = ContentFinder<Texture2D>.Get("UI/Commands/SetTargetFuelLevel", true);
@@ -25,7 +24,6 @@ namespace RimWorld
 				return this.parent as Building;
 			}
 		}
-
 		public CompProperties_ShuttleLaunchable Props
 		{
 			get
@@ -33,24 +31,20 @@ namespace RimWorld
 				return (CompProperties_ShuttleLaunchable)this.props;
 			}
 		}
-
 		public float FuelPerTile
 		{
 			get {
 				return this.Props.fuelPerTile;
 			}
 		}
-
 		public int MaxLaunchDistanceAtFuelLevel(float fuelLevel)
 		{
 			return Mathf.FloorToInt(fuelLevel/FuelPerTile);
 		}
-
 		public float FuelNeededToLaunchAtDist(float dist)
 		{
 			return dist * FuelPerTile;
 		}
-
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()
 		{
 			foreach (Gizmo g in base.CompGetGizmosExtra())
@@ -121,15 +115,6 @@ namespace RimWorld
                 }
             }
 		}
-
-		public Thing FirstThingLeftToLoadInGroup
-		{
-			get
-			{
-				return this.Transporter.FirstThingLeftToLoadInGroup;
-			}
-		}
-
 		public bool AnyInGroupIsUnderRoof
 		{
 			get
@@ -137,7 +122,7 @@ namespace RimWorld
 				List<CompTransporter> transportersInGroup = this.TransportersInGroup;
 				for (int i = 0; i < transportersInGroup.Count; i++)
 				{
-					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !(transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge)))
+					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || (t.def == ResourceBank.ThingDefOf.ShipSalvageBay && transportersInGroup.All(tr => tr.parent.def == ResourceBank.ThingDefOf.PersonalShuttle)))) //td change to proper check per shuttle pos and type
 					{
 						return true;
 					}
@@ -155,15 +140,21 @@ namespace RimWorld
 				}
 				return this.cachedCompTransporter;
 			}
-		}
-		public bool LoadingInProgressOrReadyToLaunch
+        }
+        public Thing FirstThingLeftToLoadInGroup
+        {
+            get
+            {
+                return this.Transporter.FirstThingLeftToLoadInGroup;
+            }
+        }
+        public bool LoadingInProgressOrReadyToLaunch
 		{
 			get
 			{
 				return this.Transporter.LoadingInProgressOrReadyToLaunch;
 			}
 		}
-
 		public bool AllFuelingPortSourcesInGroupHaveAnyFuel
 		{
 			get
@@ -213,7 +204,6 @@ namespace RimWorld
         {
             ChoseWorldTarget(this.parent.Map.GetComponent<ShipHeatMapComp>().ShipCombatTargetMap.Parent);
         }
-
         private void StartChoosingDestination()
 		{
             var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
@@ -361,11 +351,11 @@ namespace RimWorld
                         return true;
                     }
                     //only pods incombat if enemy t/w above
-                    else if (mapComp.InCombat && mapComp.MasterMapComp.MapEnginePower > 0.2f)
+                    else if (!ModSettings_SoS.easyMode && mapComp.InCombat && mapComp.MasterMapComp.MapEnginePower > 0.02f)
                     {
                         foreach (CompTransporter t in this.TransportersInGroup)
                         {
-                            if (!t.parent.def.defName.Equals("PersonalShuttle"))
+                            if (t.parent.def != ResourceBank.ThingDefOf.PersonalShuttle)
                             {
                                 Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleOnlyPods"), MessageTypeDefOf.RejectInput);
                                 return false;
@@ -374,11 +364,8 @@ namespace RimWorld
                         ChooseMapTarget(targetMapParent, true);
                         return true;
                     }
-                    else
-                    {
-                        ChooseMapTarget(targetMapParent);
-                        return true;
-                    }
+                    ChooseMapTarget(targetMapParent);
+                    return true;
                 }
                 //space to ground
                 else if (this.parent.Map.Parent is WorldObjectOrbitingShip)
@@ -567,7 +554,7 @@ namespace RimWorld
                     x = FindFirstRoom(x.Cell, Rot4.North, map, new IntVec2(7, 7));
                 }
                 this.TryLaunch(x.ToGlobalTargetInfo(map), new TransportPodsArrivalAction_LandInSpecificCell(targetMapParent, x.Cell));
-            }, null, actionWhenFinished, CompShuttleLaunchable.TargeterMouseAttachment);
+            }, null, actionWhenFinished, TargeterMouseAttachment);
         }
         public IntVec3 FindFirstRoom(IntVec3 x, Rot4 rot, Map map, IntVec2 size)
         {

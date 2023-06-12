@@ -23,21 +23,9 @@ namespace RimWorld
         {
             Predicate<Thing> validator = delegate (Thing t)
             {
-                if (!t.def.hasInteractionCell)
-                {
-                    return false;
-                }
-                if (!t.def.HasComp(typeof(CompMannable)))
-                {
-                    return false;
-                }
-                if (!pawn.CanReserve(t))
-                {
-                    return false;
-                }
-                if (t.Faction != pawn.Faction)
-                    return false;
-                return true;
+                if (t.def.hasInteractionCell && t.def.HasComp(typeof(CompMannable)) && t.Faction == pawn.Faction && pawn.CanReserve(t))
+                    return true;
+                return false;
             };
             Thing thing = GenClosest.ClosestThingReachable(GetRoot(pawn), pawn.Map, ThingRequest.ForGroup(ThingRequestGroup.BuildingArtificial), PathEndMode.InteractionCell, TraverseParms.For(pawn), maxDistFromPoint, validator);
             if (thing != null)

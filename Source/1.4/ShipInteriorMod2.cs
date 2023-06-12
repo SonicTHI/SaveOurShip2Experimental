@@ -20,6 +20,7 @@ using System.Reflection.Emit;
 using UnityEngine.SceneManagement;
 using System.Linq.Expressions;
 using static SaveOurShip2.ModSettings_SoS;
+using Verse.Noise;
 
 namespace SaveOurShip2
 {
@@ -52,10 +53,11 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
+            Scribe_Values.Look(ref persistShipUI, "persistShipUI", false);
 
-			Scribe_Values.Look(ref minTravelTime, "minTravelTime", 5);
+            Scribe_Values.Look(ref minTravelTime, "minTravelTime", 5);
 			Scribe_Values.Look(ref maxTravelTime, "maxTravelTime", 100);
-			Scribe_Values.Look(ref offsetUIx, "offsetUIx");
+            Scribe_Values.Look(ref offsetUIx, "offsetUIx");
 			Scribe_Values.Look(ref offsetUIy, "offsetUIy");
 			base.ExposeData();
 		}
@@ -69,11 +71,12 @@ namespace SaveOurShip2
 			easyMode = false,
 			useVacuumPathfinding = true,
 			renderPlanet = false,
-			useSplashScreen = true;
+			useSplashScreen = true,
+			persistShipUI = false;
 		public static int
 			minTravelTime = 5,
 			maxTravelTime = 100,
-			offsetUIx,
+            offsetUIx,
 			offsetUIy;
 	}
 	public class ShipInteriorMod2 : Mod
@@ -126,7 +129,8 @@ namespace SaveOurShip2
 			options.CheckboxLabeled("SoS.Settings.RenderPlanet".Translate(), ref renderPlanet, "SoS.Settings.RenderPlanet.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.UseSplashScreen".Translate(), ref useSplashScreen, "SoS.Settings.UseSplashScreens.Desc".Translate());
 			options.Gap();
-			options.Label("SoS.Settings.OffsetUIx".Translate(), -1f, "SoS.Settings.OffsetUIx.Desc".Translate());
+            options.CheckboxLabeled("SoS.Settings.PersistShipUI".Translate(), ref persistShipUI, "SoS.Settings.PersistShipUI.Desc".Translate());
+            options.Label("SoS.Settings.OffsetUIx".Translate(), -1f, "SoS.Settings.OffsetUIx.Desc".Translate());
 			string bufferX = "0";
 			options.TextFieldNumeric<int>(ref offsetUIx, ref bufferX, int.MinValue, int.MaxValue);
 
@@ -147,7 +151,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V88f5 active");
+			Log.Message("SOS2EXP V89 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -772,8 +776,7 @@ namespace SaveOurShip2
 					{
 						PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.stuff), fac);
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
-						if (lord != null)
-							lord.AddPawn(pawn);
+						lord?.AddPawn(pawn);
                         GenSpawn.Spawn(pawn, adjPos, map);
 						pawnsOnShip.Add(pawn);
 					}
@@ -796,8 +799,7 @@ namespace SaveOurShip2
 						else
 							req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.shapeOrDef), fac);
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
-						if (lord != null)
-							lord.AddPawn(pawn);
+						lord?.AddPawn(pawn);
 						GenSpawn.Spawn(pawn, adjPos, map);
 						pawnsOnShip.Add(pawn);
 					}
@@ -829,7 +831,7 @@ namespace SaveOurShip2
 								else if (def.defName.Equals("Ship_Engine_Interplanetary_Large"))
 									def = DefDatabase<ThingDef>.GetNamed("Ship_Engine_Large");
 							}
-							else if (isMechs && def.building.IsTurret)
+							else if (isMechs && def.building.IsTurret) //replace turets with mech version if ROY active
 							{
 								if (def.defName.Equals("Turret_MiniTurret"))
                                     def = DefDatabase<ThingDef>.GetNamed("Turret_AutoMiniTurret");
@@ -881,14 +883,14 @@ namespace SaveOurShip2
 							if (wreckLevel > 1 && !isWrecked)
 								wreckDestroy.Add(thing as Building);
 							if (thing.def.CanHaveFaction)
-							{
-								if (thing.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
+                            {
+                                if (!(thing.def == ResourceBank.ThingDefOf.ShipHullTileWrecked || thing.def == ResourceBank.ThingDefOf.ShipAirlockWrecked || thing.def.thingClass == typeof(Building_ArchotechPillar)))
+                                    thing.SetFaction(fac);
+                                if (thing.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
 								{
 									cellsToFog.Add(thing.Position);
 									continue;
 								}
-								else if (!(thing.def == ResourceBank.ThingDefOf.ShipHullTileWrecked || thing.def == ResourceBank.ThingDefOf.ShipAirlockWrecked || thing.def.thingClass == typeof(Building_ArchotechPillar)))
-									thing.SetFaction(fac);
 							}
 							Building b = thing as Building;
 							var batComp = b.TryGetComp<CompPowerBattery>();
@@ -920,6 +922,10 @@ namespace SaveOurShip2
 							if (ideoActive && b.def.CanBeStyled() && fac.ideos.PrimaryIdeo.style.StyleForThingDef(thing.def) != null)
 							{
 								b.SetStyleDef(fac.ideos.PrimaryIdeo.GetStyleFor(thing.def));
+							}
+							if (b is Building_Storage storage)
+							{
+								storage.settings.Priority = StoragePriority.Low;
 							}
 							else if (b is Building_ShipTurret turret)
 							{
@@ -1915,7 +1921,14 @@ namespace SaveOurShip2
 					targetMap.areaManager.Home[adjustedPos] = true;
 				}
 			}
-			/*SC if (adjustment != IntVec3.Zero) //ship cache: offset area, find adjacent ships
+			if (!targetMapIsSpace) //clear ground map of all floors (would be beter to store it and load it on takeoff)
+            {
+                foreach (IntVec3 pos in targetArea)
+                {
+                    targetMap.terrainGrid.RemoveTopLayer(pos, false);
+                }
+            }
+            /*SC if (adjustment != IntVec3.Zero) //ship cache: offset area, find adjacent ships
             {
                 ship.Area = targetArea;
                 foreach (IntVec3 pos in targetArea)
@@ -1927,7 +1940,7 @@ namespace SaveOurShip2
                 }
                 Log.Message("Area: " + shipIndexes.Count);
             }*/
-			if (devMode)
+            if (devMode)
 				watch.Record("processSourceArea");
 
 			//move live pawns out of target area, destroy non buildings
@@ -1946,7 +1959,7 @@ namespace SaveOurShip2
 				watch.Record("destroySource");
 
 			//takeoff - draw fuel
-			if (!sourceMapIsSpace)
+			if (core is Building_ShipBridge && playerMove)
 			{
 				float fuelNeeded = 0f;
 				float fuelStored = 0f;
@@ -1976,7 +1989,7 @@ namespace SaveOurShip2
 								if (engineComp.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
 								{
 									fuelStored += engineComp.refuelComp.Fuel;
-									if (ModsConfig.BiotechActive)
+									if (ModsConfig.BiotechActive && !sourceMapIsSpace)
 									{
 										foreach (IntVec3 v in engineComp.ExhaustArea)
 											v.Pollute(sourceMap, true);
@@ -1987,6 +2000,13 @@ namespace SaveOurShip2
 						}
 					}
 				}
+				if (sourceMapIsSpace)
+                {
+                    if (targetMap.IsSpace()) //to ground 10%
+                        fuelNeeded *= 0.1f;
+                    else //same map 1%
+                        fuelNeeded *= 0.01f;
+                }
 				foreach (CompRefuelable engine in refuelComps)
 				{
 					engine.ConsumeFuel(fuelNeeded * engine.Fuel / fuelStored);

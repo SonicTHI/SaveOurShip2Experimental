@@ -4,7 +4,7 @@
 
 ### **INTRODUCTION AND DISCLAIMER:**
 
-**SOS2 EXPERIMENTAL** (SOS2EXP) is the maintained version of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131) for RimWorld 1.4. It includes over a years worth of bugfixes, performance optimizations, mechanics changes and some new features that might need more testing. An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2EXP.
+**SOS2 EXPERIMENTAL** (SOS2EXP) is the maintained version of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131) for RimWorld 1.4. It includes over two years worth of bugfixes, performance optimizations, mechanics changes and some new features that might need more testing. An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2EXP.
 
 **While this version is officially endorsed, it is not made by RHX media and you use it at your own risk.** It is backwards compatible with the STEAM release however it adds features that might not get adopted into the STEAM version and might cause issues when trying to move from SOS2EXP back to STEAM. While most of these issues can be solved with the dev mode or some minor save editing, no support will be provided in this case.
 
@@ -15,7 +15,7 @@ ___
 
 **To download the latest build click above: Code -> Download ZIP.** With major changes a stable build might also be available under Releases.
 
-Extract the zip to your RimWorld/Mods directory.
+Installation procedure for non Steam mods: [RW wiki](https://rimworldwiki.com/wiki/Installing_mods)
 
 When updating to a new SOS2EXP version: Delete the old folder then extract the new one.
 
@@ -60,6 +60,8 @@ ___
 
 * **Docking ports:** allow you to temporarily connect ships by using extenders with breathable air, power, heat and chemfuel pipes (if using Rimefeller) up to 3 tiles away and can also connect to each other.
 
+* **New event:** watch out for debris field events that can damage your ship. These can be evaded on the bridge.
+
 * **Performance optimizations:** from faster EVA checks to a completely rebuilt ship combat system - a lot has been done to improve the performance of this mod.
 
 * **New UI and settings menu:** the ship battle UI has been moved bellow the pawn bar. It now shows all ships and can be moved in the SOS2 settings menu. SOS2 settings have been reset to their defaults as we now use the native RW mod tools. Hugslib has been removed as a required mod.
@@ -71,3 +73,8 @@ ___
 * **Creation kit:** now includes new tools for fleet and blueprint creation as well as improvements to existing ones.
 
 **For more details read the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0)** It also includes other info that you might find useful.
+
+___
+### **CONTRBUTION / CODE SUBMISSIONS / PULL REQUESTS:**
+
+**First time submitters: do not make unsolicited pull requests. Contact me first.**

@@ -1134,12 +1134,13 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>A thruster that can move the ship or evade enemy projectiles in battle. Temp - cosmetic only!</description>
+		<description>A small thruster that is required to reposition ships. One is required for every 2000 weight.</description>
 		<size>(1,1)</size>
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
 			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_RCSThruster"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>

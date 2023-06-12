@@ -48,8 +48,13 @@
 	<ShipInsideMoveRot>Rotate ship</ShipInsideMoveRot>
 	<ShipInsideMoveRotNo>Ship has non-rotatable, non-even sided buildings!</ShipInsideMoveRotNo>
 	<ShipInsideMoveRotDesc>Rotate the ship counter clockwise</ShipInsideMoveRotDesc>
+	<ShipInsideMoveFailRCS>Not enough RCS thrusters to move ship, required {0}</ShipInsideMoveFailRCS>
+	<ShipInsideMoveFailFuel>Not enough fuel to move ship, required {0} fuel</ShipInsideMoveFailFuel>
+	<ShipInsideMoveFailPilot>Ship requires a pilot to move.</ShipInsideMoveFailPilot>
 	<ShipInsideLand>Land ship</ShipInsideLand>
 	<ShipInsideLandDesc>Land this ship near </ShipInsideLandDesc>
+	<ShipInsideToggleEngines>Engage ship engines</ShipInsideToggleEngines>
+	<ShipInsideToggleEnginesDesc>Engage ship engines to clear hazards.</ShipInsideToggleEnginesDesc>
 	<ShipMoveDesc>Deselect to confirm location</ShipMoveDesc>
 	<ShipCombatEscape>Escape combat</ShipCombatEscape>
 	<ShipCombatEscapeDesc>Flee from battle, leaving behind anyone aboard the enemy ship</ShipCombatEscapeDesc>

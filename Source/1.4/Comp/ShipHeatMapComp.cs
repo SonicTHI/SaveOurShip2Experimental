@@ -154,6 +154,7 @@ namespace RimWorld
             Scribe_Values.Look<int>(ref EngineRot, "EngineRot");
             if (InCombat)
             {
+                Scribe_Values.Look<int>(ref BurnTimer, "BurnTimer");
                 Scribe_Values.Look<int>(ref Heading, "Heading");
                 Scribe_Collections.Look<ShipCombatProjectile>(ref Projectiles, "ShipProjectiles");
                 Scribe_Collections.Look<ShipCombatProjectile>(ref TorpsInRange, "ShipTorpsInRange");
@@ -184,6 +185,10 @@ namespace RimWorld
             {
                 MapRootList = null;
             }
+            /*else if (Scribe.mode != LoadSaveMode.PostLoadInit) //SC rem
+            {
+                FindPrimaryBridges();
+            }*/
         }
         //td get these into shipcache?
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
@@ -207,6 +212,7 @@ namespace RimWorld
         public int EngineRot;
 
         public float MapEnginePower;
+        public int BurnTimer = 0;
         public int Heading; //+closer, -apart
         public int BuildingsCount;
         public int totalThreat;
@@ -734,7 +740,7 @@ namespace RimWorld
                     return;
                 }
             }
-			/*SC
+            /*SC
             foreach (int index in shipsOnMapNew.Keys)
             {
                 var ship = shipsOnMapNew[index];
@@ -744,8 +750,19 @@ namespace RimWorld
                 }
             }
 			*/
-			//SC rem
+            //SC rem
             //find one bridge per ship
+            FindPrimaryBridges();
+            shipsOnMap = null;//start cache
+            for (int i = 0; i < ShipsOnMap.Count; i++)
+            {
+                BuildingCountAtStart += ShipsOnMap[i].BuildingCountAtStart;
+            }
+            //Log.Message("Shipmap buildcount total " + BuildingCountAtStart);
+        }
+
+        public void FindPrimaryBridges()
+        {
             MapRootList = new List<Building>();
             foreach (Building root in MapRootListAll)
             {
@@ -765,12 +782,6 @@ namespace RimWorld
             foreach (Building b in duplicateRoots)
                 MapRootList.Remove(b);
             Log.Message("Ships: " + MapRootList.Count + " on map: " + this.map);
-            shipsOnMap = null;//start cache
-            for (int i = 0; i < ShipsOnMap.Count; i++)
-            {
-                BuildingCountAtStart += ShipsOnMap[i].BuildingCountAtStart;
-            }
-            //Log.Message("Shipmap buildcount total " + BuildingCountAtStart);
         }
 
         public override void MapComponentTick()
@@ -885,6 +896,52 @@ namespace RimWorld
                     OriginMapComp.SlowTick();
                     SlowTick();
                     callSlowTick = false;
+                }
+            }
+            else if ((Find.TickManager.TicksGame % 60 == 0) && map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
+            {
+                //reduce durration per engine vs mass
+                HashSet<Building> engines = new HashSet<Building>();
+                foreach (Building bridge in MapRootListAll)
+                {
+                    if (!((Building_ShipBridge)bridge).cachedEngines.NullOrEmpty())
+                    {
+                        foreach (Building engine in ((Building_ShipBridge)bridge).cachedEngines)
+                            engines.Add(engine);
+                    }
+                }
+                if (!engines.Any())
+                    return;
+                MapEnginePower = 0;
+                EngineRot = engines.FirstOrDefault().Rotation.AsByte;
+                foreach (Building engine in engines)
+                {
+                    var engineComp = engine.TryGetComp<CompEngineTrail>();
+                    if (engineComp != null && engineComp.CanFire(EngineRot) && engineComp.active)
+                    {
+                        MapEnginePower += engineComp.Props.thrust;
+                    }
+                }
+                if (MapEnginePower > 0)
+                {
+                    MapEnginePower *= 40000f / Mathf.Pow(map.listerBuildings.allBuildingsColonist.Count * 2.5f, 1.1f);
+                    Log.Message("thrust " + MapEnginePower);
+                    var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
+                    if (BurnTimer > cond.TicksLeft)
+                    {
+                        cond.End();
+                        BurnTimer = 0;
+                        foreach (Building engine in engines)
+                        {
+                            var engineComp = engine.TryGetComp<CompEngineTrail>();
+                            engineComp.Off();
+                        }
+                    }
+                    else
+                    {
+                        BurnTimer += (int)MapEnginePower;
+                        //Log.Message("ticks remain " + map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris).TicksLeft);
+                    }
                 }
             }
         }
@@ -1250,7 +1307,7 @@ namespace RimWorld
         }
         public void RemoveShipFromBattle(int shipIndex, Building b = null, Faction fac = null)
         {
-            if (MapRootList.Count > 1)//move to graveyard if not last ship
+            if (MapRootList.Count > 1) //move to graveyard if not last ship
             {
                 if (b == null)
                 {
@@ -1270,7 +1327,7 @@ namespace RimWorld
                     ShipInteriorMod2.MoveShip(b, ShipGraveyard, new IntVec3(0, 0, 0), fac);
                 }						   
             }
-            else if (fac != null)//last ship hacked
+            else if (fac != null) //last ship hacked
             {
                 foreach (Building building in ShipsOnMap[shipIndex].Buildings)
                 {
@@ -1338,9 +1395,11 @@ namespace RimWorld
                 if (b.TryGetComp<CompEngineTrail>() != null)
                     b.TryGetComp<CompEngineTrail>().Off();
             }
-        }
-        public void ShipBuildingsOffEnemy()
-        {
+            foreach (Building b in ShipCombatMasterMap.listerBuildings.allBuildingsColonist) //hacked last ship off
+            {
+                if (b.TryGetComp<CompEngineTrail>() != null)
+                    b.TryGetComp<CompEngineTrail>().Off();
+            }
             foreach (Building b in ShipCombatMasterMap.listerBuildings.allBuildingsNonColonist)
             {
                 if (b.TryGetComp<CompEngineTrail>() != null)
@@ -1361,7 +1420,6 @@ namespace RimWorld
             OriginMapComp.InCombat = false;
             MasterMapComp.InCombat = false;
             OriginMapComp.ShipBuildingsOff();
-            MasterMapComp.ShipBuildingsOffEnemy();
             MasterMapComp.ShipCombatMaster = false;
             if (OriginMapComp.ShipGraveyard != null)
                 OriginMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);

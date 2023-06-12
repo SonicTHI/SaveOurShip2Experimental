@@ -153,7 +153,7 @@ namespace RimWorld
                             if (t.Faction == Faction.OfPlayer)
                             {
                                 player = true;
-                                if (SaveOurShip2.ModSettings_SoS.easyMode)
+                                if (ModSettings_SoS.easyMode)
                                 {
                                     HealthUtility.DamageUntilDowned((Pawn)t, false);
                                     continue;
@@ -168,7 +168,7 @@ namespace RimWorld
                                 p.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
                             }
                         }
-                        if (player && SaveOurShip2.ModSettings_SoS.easyMode)
+                        if (player && ModSettings_SoS.easyMode)
                         {
                             return;
                         }

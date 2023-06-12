@@ -9,9 +9,9 @@ namespace RimWorld
 {
     public class CompRCSThruster : ThingComp
     {
-		public CompProperties_EngineTrail Props
+		public CompProperties_RCSThruster Props
         {
-            get { return props as CompProperties_EngineTrail; }
+            get { return props as CompProperties_RCSThruster; }
         }
         public bool active = false;
         public ShipHeatMapComp mapComp;

@@ -14,7 +14,6 @@ using UnityEngine;
 using Verse.AI.Group;
 using RimWorld.QuestGen;
 using System.Collections;
-using SaveOurShip2;
 using RimworldMod;
 
 namespace SaveOurShip2
@@ -28,7 +27,7 @@ namespace SaveOurShip2
 			Map mapPlayer = null;
 			ShipHeatMapComp playerShipComp = null;
 			var list = AccessExtensions.Utility.shipHeatMapCompCache;
-			for (int i = list.Count; i-- > 0;)
+			for (int i = list.Count; i-- > 0;) //find player map, comp
 			{
 				playerShipComp = list[i];
 				if (playerShipComp.InCombat && !playerShipComp.ShipCombatMaster)
@@ -36,213 +35,235 @@ namespace SaveOurShip2
 					mapPlayer = playerShipComp.map;
 					break;
 				}
-			}
-			if (mapPlayer != null)
-			{
-				var enemyShipComp = mapPlayer.GetComponent<ShipHeatMapComp>().MasterMapComp;
-				if (enemyShipComp == null || playerShipComp.MapRootList.Count == 0 || playerShipComp.MapRootList[0] == null || !playerShipComp.MapRootList[0].Spawned)
-					return;
-				if (!playerShipComp.InCombat && playerShipComp.IsGraveyard)
-				{
-					Map m = playerShipComp.ShipGraveyard;
-					playerShipComp = m.GetComponent<ShipHeatMapComp>();
-				}
-				float screenHalf = (float)UI.screenWidth / 2 + SaveOurShip2.ModSettings_SoS.offsetUIx;
+            }
+            if (mapPlayer == null)
+            {
+                if (!ModSettings_SoS.persistShipUI)
+                    return;
+                for (int i = list.Count; i-- > 0;) //try find ship map OOC
+                {
+                    playerShipComp = list[i];
+                    if (playerShipComp.map.IsPlayerHome && playerShipComp.map.IsSpace())
+                    {
+                        mapPlayer = playerShipComp.map;
+                        break;
+                    }
+                }
+                if (mapPlayer == null)
+                {
+                    return;
+                }
+                else if (playerShipComp.MapRootList.NullOrEmpty())
+                {
+                    playerShipComp.FindPrimaryBridges();
+                }
+            }
+            if (playerShipComp.MapRootList.Count == 0 || playerShipComp.MapRootList[0] == null || !playerShipComp.MapRootList[0].Spawned)
+                return;
+            if (!playerShipComp.InCombat && playerShipComp.IsGraveyard)
+            {
+                Map m = playerShipComp.ShipGraveyard;
+                playerShipComp = m.GetComponent<ShipHeatMapComp>();
+            }
+            float screenHalf = (float)UI.screenWidth / 2 + ModSettings_SoS.offsetUIx - 200;
 
-				//player heat & energy bars
-				float baseY = __instance.Size.y + 40 + SaveOurShip2.ModSettings_SoS.offsetUIy;
-				for (int i = 0; i < playerShipComp.MapRootList.Count; i++)
-				{
-					try //td rem this once this is 100% safe
-					{
-						var bridge = (Building_ShipBridge)playerShipComp.MapRootList[i];
-						baseY += 45;
-						string str = bridge.ShipName;
-						int strSize = 0;
-						if (playerShipComp.MapRootList.Count > 1)
-						{
-							strSize = 5 + str.Length * 8;
-						}
-						Rect rect2 = new Rect(screenHalf - 630 - strSize, baseY - 40, 395 + strSize, 35);
-						Verse.Widgets.DrawMenuSection(rect2);
-						if (playerShipComp.MapRootList.Count > 1)
-							Widgets.Label(rect2.ContractedBy(7), str);
+            //player heat & energy bars
+            float baseY = __instance.Size.y + 40 + ModSettings_SoS.offsetUIy;
+            for (int i = 0; i < playerShipComp.MapRootList.Count; i++)
+            {
+                try //td rem this once this is 100% safe
+                {
+                    var bridge = (Building_ShipBridge)playerShipComp.MapRootList[i];
+                    baseY += 45;
+                    string str = bridge.ShipName;
+                    int strSize = 0;
+                    if (playerShipComp.MapRootList.Count > 1)
+                    {
+                        strSize = 5 + str.Length * 8;
+                    }
+                    Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 395 + strSize, 35);
+                    Verse.Widgets.DrawMenuSection(rect2);
+                    if (playerShipComp.MapRootList.Count > 1)
+                        Widgets.Label(rect2.ContractedBy(7), str);
 
-						PowerNet net = bridge.powerComp.PowerNet;
-						float capacity = 0;
-						foreach (CompPowerBattery bat in net.batteryComps)
-							capacity += bat.Props.storedEnergyMax;
-						Rect rect3 = new Rect(screenHalf - 630, baseY - 40, 200, 35);
-						Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
-							ResourceBank.PowerTex);
-						Text.Font = GameFont.Small;
-						rect3.y += 7;
-						rect3.x = screenHalf - 615;
-						rect3.height = Text.LineHeight;
-						if (capacity > 0)
-							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
-						else
-							Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
+                    PowerNet net = bridge.powerComp.PowerNet;
+                    float capacity = 0;
+                    foreach (CompPowerBattery bat in net.batteryComps)
+                        capacity += bat.Props.storedEnergyMax;
+                    Rect rect3 = new Rect(screenHalf - 430, baseY - 40, 200, 35);
+                    Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
+                        ResourceBank.PowerTex);
+                    Text.Font = GameFont.Small;
+                    rect3.y += 7;
+                    rect3.x = screenHalf - 415;
+                    rect3.height = Text.LineHeight;
+                    if (capacity > 0)
+                        Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
+                    else
+                        Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
 
-						ShipHeatNet net2 = bridge.heatComp.myNet;
-						if (net2 != null)
-						{
-							Rect rect4 = new Rect(screenHalf - 435, baseY - 40, 200, 35);
-							ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetwork, net2.DepletionRatio,
-								ResourceBank.HeatTex, ResourceBank.DepletionTex);
-							rect4.y += 7;
-							rect4.x = screenHalf - 420;
-							rect4.height = Text.LineHeight;
-							if (net2.StorageCapacity > 0)
-								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
-							else
-								Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
-						}
-					}
-					catch (Exception e)
-					{
-						Log.Warning("Ship UI failed on ship: " + i + "\n" + e);
-					}
-				}
-				//enemy heat & energy bars
-				baseY = __instance.Size.y + 40 + SaveOurShip2.ModSettings_SoS.offsetUIy;
-				for (int i = 0; i < enemyShipComp.MapRootList.Count; i++)
-				{
-					try //td rem this once this is 100% safe
-					{
-						var bridge = (Building_ShipBridge)enemyShipComp.MapRootList[i];
-						baseY += 45;
-						string str = bridge.ShipName;
-						Rect rect2 = new Rect(screenHalf + 235, baseY - 40, 395, 35);
-						Verse.Widgets.DrawMenuSection(rect2);
+                    ShipHeatNet net2 = bridge.heatComp.myNet;
+                    if (net2 != null)
+                    {
+                        Rect rect4 = new Rect(screenHalf - 235, baseY - 40, 200, 35);
+                        ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetwork, net2.DepletionRatio,
+                            ResourceBank.HeatTex, ResourceBank.DepletionTex);
+                        rect4.y += 7;
+                        rect4.x = screenHalf - 220;
+                        rect4.height = Text.LineHeight;
+                        if (net2.StorageCapacity > 0)
+                            Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
+                        else
+                            Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Warning("Ship UI failed on ship: " + i + "\n" + e);
+                }
+            }
+            //no UI OOC bellow
+            var enemyShipComp = mapPlayer.GetComponent<ShipHeatMapComp>().MasterMapComp;
+            if (enemyShipComp == null || !enemyShipComp.InCombat)
+                return;
+            //enemy heat & energy bars
+            baseY = __instance.Size.y + 40 + ModSettings_SoS.offsetUIy;
+            for (int i = 0; i < enemyShipComp.MapRootList.Count; i++)
+            {
+                try //td rem this once this is 100% safe
+                {
+                    var bridge = (Building_ShipBridge)enemyShipComp.MapRootList[i];
+                    baseY += 45;
+                    string str = bridge.ShipName;
+                    Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 395, 35);
+                    Verse.Widgets.DrawMenuSection(rect2);
 
-						ShipHeatNet net2 = bridge.heatComp.myNet;
-						if (net2 != null)
-						{
-							Rect rect4 = new Rect(screenHalf + 235, baseY - 40, 200, 35);
-							ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetwork, net2.DepletionRatio,
-								ResourceBank.HeatTex, ResourceBank.DepletionTex);
-							rect4.y += 7;
-							rect4.x = screenHalf + 255;
-							rect4.height = Text.LineHeight;
-							if (net2.StorageCapacity > 0)
-								Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
-							else
-								Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
-						}
+                    ShipHeatNet net2 = bridge.heatComp.myNet;
+                    if (net2 != null)
+                    {
+                        Rect rect4 = new Rect(screenHalf + 435, baseY - 40, 200, 35);
+                        ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetwork, net2.DepletionRatio,
+                            ResourceBank.HeatTex, ResourceBank.DepletionTex);
+                        rect4.y += 7;
+                        rect4.x = screenHalf + 455;
+                        rect4.height = Text.LineHeight;
+                        if (net2.StorageCapacity > 0)
+                            Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
+                        else
+                            Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
+                    }
 
-						PowerNet net = bridge.powerComp.PowerNet;
-						float capacity = 0;
-						foreach (CompPowerBattery bat in net.batteryComps)
-							capacity += bat.Props.storedEnergyMax;
-						Rect rect3 = new Rect(screenHalf + 430, baseY - 40, 200, 35);
-						Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
-							ResourceBank.PowerTex);
-						Text.Font = GameFont.Small;
-						rect3.y += 7;
-						rect3.x = screenHalf + 445;
-						rect3.height = Text.LineHeight;
-						if (capacity > 0)
-							Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
-						else
-							Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
-					}
-					catch (Exception e)
-					{
-						Log.Warning("Ship UI failed on ship: " + i + "\n" + e);
-					}
-				}
+                    PowerNet net = bridge.powerComp.PowerNet;
+                    float capacity = 0;
+                    foreach (CompPowerBattery bat in net.batteryComps)
+                        capacity += bat.Props.storedEnergyMax;
+                    Rect rect3 = new Rect(screenHalf + 630, baseY - 40, 200, 35);
+                    Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
+                        ResourceBank.PowerTex);
+                    Text.Font = GameFont.Small;
+                    rect3.y += 7;
+                    rect3.x = screenHalf + 645;
+                    rect3.height = Text.LineHeight;
+                    if (capacity > 0)
+                        Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
+                    else
+                        Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
+                }
+                catch (Exception e)
+                {
+                    Log.Warning("Ship UI failed on ship: " + i + "\n" + e);
+                }
+            }
 
-				//range bar
-				baseY = __instance.Size.y + 85 + SaveOurShip2.ModSettings_SoS.offsetUIy;
-				Rect rect = new Rect(screenHalf - 225, baseY - 40, 450, 50);
-				Verse.Widgets.DrawMenuSection(rect);
-				Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 200, baseY - 38, 400, 46),
-					new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.ruler.MatSingle.mainTexture);
-				switch (playerShipComp.Heading)
-				{
-					case -1:
-						Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 223, baseY - 28, 36, 36),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipOne.MatSingle.mainTexture);
-						break;
-					case 1:
-						Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 235, baseY - 28, 36, 36),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipOne.MatSingle.mainTexture);
-						break;
-					default:
-						Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 235, baseY - 28, 36, 36),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipZero.MatSingle.mainTexture);
-						break;
-				}
-				switch (enemyShipComp.Heading)
-				{
-					case -1:
-						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 216 + enemyShipComp.Range, baseY - 28, 36, 36),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipOneEnemy.MatSingle.mainTexture);
-						break;
-					case 1:
-						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + enemyShipComp.Range, baseY - 28, 36, 36),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipOneEnemy.MatSingle.mainTexture);
-						break;
-					default:
-						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + enemyShipComp.Range, baseY - 28, 36, 36),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipZeroEnemy.MatSingle.mainTexture);
-						break;
-				}
-				foreach (ShipCombatProjectile proj in playerShipComp.Projectiles)
-				{
-					if (proj.turret != null)
-					{
-						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 210 + proj.range, baseY - 12, 12, 12),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.projectile.MatSingle.mainTexture);
-					}
-				}
-				foreach (ShipCombatProjectile proj in enemyShipComp.Projectiles)
-				{
-					if (proj.turret != null)
-					{
-						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 210 - proj.range + enemyShipComp.Range, baseY - 24, 12, 12),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.projectileEnemy.MatSingle.mainTexture);
-					}
-				}
-				foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
-				{
-					float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
-					int initialTile = (int)Traverse.Create(obj).Field("initialTile").GetValue();
-					if (obj.destinationTile == playerShipComp.ShipCombatMasterMap.Tile && initialTile == mapPlayer.Tile)
-					{
-						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + rng * enemyShipComp.Range, baseY - 16, 12, 12),
-							new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
-					}
-					else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction != Faction.OfPlayer)
-					{
-						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttleEnemy.MatSingle.mainTexture);
-					}
-					else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction == Faction.OfPlayer)
-					{
-						Verse.Widgets.DrawTexturePart(
-							new Rect(screenHalf - 200 + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
-							new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
-					}
-				}
-				if (Mouse.IsOver(rect))
-				{
-					string iconTooltipText = TranslatorFormattedStringExtensions.Translate("ShipCombatTooltip");
-					if (!iconTooltipText.NullOrEmpty())
-					{
-						TooltipHandler.TipRegion(rect, iconTooltipText);
-					}
-				}
-			}
-		}
+            //range bar
+            baseY = __instance.Size.y + 85 + ModSettings_SoS.offsetUIy;
+            Rect rect = new Rect(screenHalf - 25, baseY - 40, 450, 50);
+            Verse.Widgets.DrawMenuSection(rect);
+            Verse.Widgets.DrawTexturePart(new Rect(screenHalf, baseY - 38, 400, 46),
+                new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.ruler.MatSingle.mainTexture);
+            switch (playerShipComp.Heading)
+            {
+                case -1:
+                    Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 23, baseY - 28, 36, 36),
+                        new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipOne.MatSingle.mainTexture);
+                    break;
+                case 1:
+                    Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 35, baseY - 28, 36, 36),
+                        new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipOne.MatSingle.mainTexture);
+                    break;
+                default:
+                    Verse.Widgets.DrawTexturePart(new Rect(screenHalf - 35, baseY - 28, 36, 36),
+                        new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipZero.MatSingle.mainTexture);
+                    break;
+            }
+            switch (enemyShipComp.Heading)
+            {
+                case -1:
+                    Verse.Widgets.DrawTexturePart(
+                        new Rect(screenHalf - 16 + enemyShipComp.Range, baseY - 28, 36, 36),
+                        new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipOneEnemy.MatSingle.mainTexture);
+                    break;
+                case 1:
+                    Verse.Widgets.DrawTexturePart(
+                        new Rect(screenHalf + enemyShipComp.Range, baseY - 28, 36, 36),
+                        new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipOneEnemy.MatSingle.mainTexture);
+                    break;
+                default:
+                    Verse.Widgets.DrawTexturePart(
+                        new Rect(screenHalf + enemyShipComp.Range, baseY - 28, 36, 36),
+                        new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipZeroEnemy.MatSingle.mainTexture);
+                    break;
+            }
+            foreach (ShipCombatProjectile proj in playerShipComp.Projectiles)
+            {
+                if (proj.turret != null)
+                {
+                    Verse.Widgets.DrawTexturePart(
+                        new Rect(screenHalf - 10 + proj.range, baseY - 12, 12, 12),
+                        new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.projectile.MatSingle.mainTexture);
+                }
+            }
+            foreach (ShipCombatProjectile proj in enemyShipComp.Projectiles)
+            {
+                if (proj.turret != null)
+                {
+                    Verse.Widgets.DrawTexturePart(
+                        new Rect(screenHalf - 10 - proj.range + enemyShipComp.Range, baseY - 24, 12, 12),
+                        new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.projectileEnemy.MatSingle.mainTexture);
+                }
+            }
+            foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
+            {
+                float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
+                int initialTile = (int)Traverse.Create(obj).Field("initialTile").GetValue();
+                if (obj.destinationTile == playerShipComp.ShipCombatMasterMap.Tile && initialTile == mapPlayer.Tile)
+                {
+                    Verse.Widgets.DrawTexturePart(
+                        new Rect(screenHalf + rng * enemyShipComp.Range, baseY - 16, 12, 12),
+                        new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
+                }
+                else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction != Faction.OfPlayer)
+                {
+                    Verse.Widgets.DrawTexturePart(
+                        new Rect(screenHalf + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
+                        new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttleEnemy.MatSingle.mainTexture);
+                }
+                else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction == Faction.OfPlayer)
+                {
+                    Verse.Widgets.DrawTexturePart(
+                        new Rect(screenHalf + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
+                        new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
+                }
+            }
+            if (Mouse.IsOver(rect))
+            {
+                string iconTooltipText = TranslatorFormattedStringExtensions.Translate("ShipCombatTooltip");
+                if (!iconTooltipText.NullOrEmpty())
+                {
+                    TooltipHandler.TipRegion(rect, iconTooltipText);
+                }
+            }
+        }
 	}
 
 	[HarmonyPatch(typeof(ColonistBarColonistDrawer), "DrawGroupFrame")]
@@ -820,8 +841,13 @@ namespace SaveOurShip2
 			if (pawn.Map.IsSpace()) __result = false;
 		}
 	}
+    /*HarmonyPatch(typeof(PrisonBreakUtility), "StartPrisonBreak")] //td change to breach doors, find weapons. hack bridge in space
+    public static class PrisonBreaksInSpace
+	{
+		
+	}*/
 
-	[HarmonyPatch(typeof(RoofCollapseCellsFinder), "ConnectsToRoofHolder")]
+    [HarmonyPatch(typeof(RoofCollapseCellsFinder), "ConnectsToRoofHolder")]
 	public static class NoRoofCollapseInSpace
 	{
 		public static void Postfix(ref bool __result, Map map)
@@ -1805,8 +1831,8 @@ namespace SaveOurShip2
 		}
 	}
 
-	//weapons
-	[HarmonyPatch(typeof(BuildingProperties), "IsMortar", MethodType.Getter)]
+    //weapons
+    [HarmonyPatch(typeof(BuildingProperties), "IsMortar", MethodType.Getter)]
 	public static class TorpedoesCanBeLoaded
 	{
 		public static void Postfix(BuildingProperties __instance, ref bool __result)
@@ -3400,9 +3426,9 @@ namespace SaveOurShip2
 					{
 						foreach (Thing t in map.spawnedThings)
 						{
-							if (t is Building_ArchotechSpore)
+							if (t is Building_ArchotechSpore s)
 							{
-								spore = (Building_ArchotechSpore)t;
+								spore = s;
 								break;
 							}
 						}
@@ -4232,10 +4258,10 @@ namespace SaveOurShip2
 			if (__instance.parent.Faction != Faction.OfPlayer)
 				__result = new List<Gizmo>();
 		}
-	}
+    }
 
-	//other
-	[HarmonyPatch(typeof(Thing), "SmeltProducts")]
+    //other
+    [HarmonyPatch(typeof(Thing), "SmeltProducts")]
 	public static class PerfectEfficiency
 	{
 		public static bool Prefix(float efficiency)

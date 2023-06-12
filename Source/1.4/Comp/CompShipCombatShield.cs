@@ -85,6 +85,8 @@ namespace RimWorld
         {
             float heatGenerated = proj.DamageAmount * HeatDamageMult * Props.heatMultiplier;
             heatGenerated *= ProjectileToMult.TryGetValue(proj.def, 1f);
+            if (proj is Projectile_ExplosiveShipDebris)
+                heatGenerated *= 10;
             return heatGenerated;
         }
 

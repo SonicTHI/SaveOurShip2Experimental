@@ -85,12 +85,20 @@ namespace SaveOurShip2
 			public static ThingDef ShipAirlockBeamWall;
 			public static ThingDef ShipAirlockBeamTile;
 			public static ThingDef ShipAirlockBeam;
-			public static ThingDef ShipShuttleBay;
+            public static ThingDef PersonalShuttle;
+            public static ThingDef ShipShuttleBay;
 			public static ThingDef ShipShuttleBayLarge;
 			public static ThingDef ShipSalvageBay;
 			public static ThingDef SoS2DummyObject;
 			public static ThingDef Mote_HeatsinkPurge;
-		}
+            public static ThingDef Proj_ShipDebrisA;
+            public static ThingDef Proj_ShipDebrisB;
+            public static ThingDef Proj_ShipDebrisC;
+            public static ThingDef Proj_ShipDebrisD;
+            public static ThingDef Proj_ShipRockA;
+            public static ThingDef Proj_ShipRockB;
+            public static ThingDef Proj_ShipRockC;
+        }
 
 		[DefOf]
 		public static class TerrainDefOf
@@ -157,12 +165,18 @@ namespace SaveOurShip2
 		public static class WeatherDefOf
 		{
 			public static WeatherDef OuterSpaceWeather;
-		}
+        }
 
-		[DefOf]
+        [DefOf]
+        public static class GameConditionDefOf
+        {
+            public static GameConditionDef SpaceDebris;
+        }
+
+        [DefOf]
 		public static class SoundDefOf
         {
 			public static SoundDef ShipPurgeHiss;
-		}
-	}
+        }
+    }
 }

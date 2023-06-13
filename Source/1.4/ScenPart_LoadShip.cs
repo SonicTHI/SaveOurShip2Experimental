@@ -93,7 +93,45 @@ namespace RimWorld
                     AddIdeo(ideo);
                 foreach (CustomXenotype xeno in xenosAboardShip)
                     Current.Game.customXenotypeDatabase.customXenotypes.Add(xeno);
-                foreach (GameComponent component in components)
+                Current.Game.tickManager = tickManager;
+                Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * Rand.RangeInclusive(ModSettings_SoS.minTravelTime, ModSettings_SoS.maxTravelTime));
+
+                Current.Game.playSettings = playSettings;
+                Current.Game.storyWatcher = storyWatcher;
+                Current.Game.researchManager = researchManager;
+                Current.Game.taleManager = taleManager; //this and log should be discarded
+                Scribe_Deep.Look<PlayLog>(ref playLog, false, "playLog");
+                Current.Game.playLog = playLog; //playerlog calls gameStartAbsTick before set up, use GenTicks.TicksAbs
+                Current.Game.outfitDatabase = outfitDatabase;
+                Current.Game.drugPolicyDatabase = drugPolicyDatabase;
+                Current.Game.foodRestrictionDatabase = foodRestrictionDatabase;
+
+                foreach (CustomXenogerm xeno in customXenogermDatabase.CustomXenogermsForReading)
+                    Current.Game.customXenogermDatabase.Add(xeno);
+
+                Log.Message("1");
+                Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep); //init issue
+                Log.Message("2");
+                if (components.NullOrEmpty())
+                {
+                    Log.Message("comps are null");
+                    return;
+                }
+                List<GameComponent> toClobber = new List<GameComponent>();
+                foreach (GameComponent oldComp in Current.Game.components)
+                {
+                    foreach (GameComponent comp in components)
+                    {
+                        if (oldComp.GetType() == comp.GetType())
+                            toClobber.Add(oldComp);
+                    }
+                }
+                foreach (GameComponent clobber in toClobber)
+                    Current.Game.components.Remove(clobber);
+
+                foreach (GameComponent comp in components)
+                    Current.Game.components.Add(comp);
+                /*foreach (GameComponent component in components)
                 {
                     GameComponent compToClobber = null;
                     foreach (GameComponent existingComp in Current.Game.components)
@@ -109,39 +147,8 @@ namespace RimWorld
                     if (compToClobber != null)
                         Current.Game.components.Remove(compToClobber);
                     Current.Game.components.Add(component);
-                }
+                }*/
 
-                Current.Game.tickManager = tickManager;
-                Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * Rand.RangeInclusive(ModSettings_SoS.minTravelTime, ModSettings_SoS.maxTravelTime));
-
-                Current.Game.playSettings = playSettings;
-                Current.Game.storyWatcher = storyWatcher;
-                Current.Game.researchManager = researchManager;
-                Current.Game.taleManager = taleManager;
-                Current.Game.playLog = playLog;
-                Current.Game.outfitDatabase = outfitDatabase;
-                Current.Game.drugPolicyDatabase = drugPolicyDatabase;
-                Current.Game.foodRestrictionDatabase = foodRestrictionDatabase;
-
-                foreach (CustomXenogerm xeno in customXenogermDatabase.CustomXenogermsForReading)
-                    Current.Game.customXenogermDatabase.Add(xeno);
-
-                List<GameComponent> toClobber = new List<GameComponent>();
-
-                foreach (GameComponent oldComp in Current.Game.components)
-                {
-                    foreach (GameComponent comp in components)
-                    {
-                        if (oldComp.GetType() == comp.GetType())
-                            toClobber.Add(oldComp);
-                    }
-                }
-
-                foreach (GameComponent clobber in toClobber)
-                    Current.Game.components.Remove(clobber);
-
-                foreach (GameComponent comp in components)
-                    Current.Game.components.Add(comp);
             }
         }
 
@@ -241,6 +248,10 @@ namespace RimWorld
             return null;
         }
 
+        public override void PostGameStart()
+        {
+        }
+
         void LoadShip()
         {
             Scribe.mode = LoadSaveMode.Inactive;
@@ -258,7 +269,6 @@ namespace RimWorld
             Scribe_Deep.Look<StoryWatcher>(ref storyWatcher, false, "storyWatcher");
             Scribe_Deep.Look<ResearchManager>(ref researchManager, false, "researchManager");
             Scribe_Deep.Look<TaleManager>(ref taleManager, false, "taleManager");
-            Scribe_Deep.Look<PlayLog>(ref playLog, false, "playLog");
             Scribe_Deep.Look<OutfitDatabase>(ref outfitDatabase, false, "outfitDatabase");
             Scribe_Deep.Look<DrugPolicyDatabase>(ref drugPolicyDatabase, false, "drugPolicyDatabase");
             Scribe_Deep.Look<FoodRestrictionDatabase>(ref foodRestrictionDatabase, false, "foodRestrictionDatabase");
@@ -269,7 +279,6 @@ namespace RimWorld
             //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
             Scribe_Collections.Look<CustomXenotype>(ref xenosAboardShip, "xenotypes", LookMode.Deep);
             Scribe_Deep.Look<CustomXenogermDatabase>(ref customXenogermDatabase, false, "customXenogermDatabase");
-            Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep);
 
             Scribe_Collections.Look<Thing>(ref toLoad, "shipThings", LookMode.Deep);
             Scribe_Collections.Look<Zone>(ref zonesToLoad, "shipZones", LookMode.Deep);

@@ -300,7 +300,8 @@ namespace RimWorld
 
         public override bool ShouldRemoveMapNow(out bool alsoRemoveWorldObject)
         {
-            if (this.def==enemyShip && !this.Map.GetComponent<ShipHeatMapComp>().InCombat && this.Map.GetComponent<ShipHeatMapComp>().BurnUpSet)
+            var mapcomp = Map.GetComponent<ShipHeatMapComp>();
+            if (this.def==enemyShip && !mapcomp.InCombat && mapcomp.BurnUpSet)
             {
                 foreach(TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
                 {
@@ -317,6 +318,10 @@ namespace RimWorld
                         return false;
                     }
                 }
+                /*foreach (Pawn p in Map.mapPawns.AllPawnsSpawned.Where(o => o.Faction == Faction.OfPlayer))
+                {
+                    p.Kill(null);
+                }*/
                 alsoRemoveWorldObject = true;
                 return true;
             }

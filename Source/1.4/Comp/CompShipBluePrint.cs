@@ -128,15 +128,15 @@ namespace RimWorld
                 if (!def.IsBuildingArtificial)
                     continue;
                 var comp = def.GetCompProperties<CompProperties_SoShipPart>();
-                if (tier == 1 && !(comp != null && comp.isPlating))
+                if (tier == 1 && !(comp != null && comp.isPlating && !comp.isHull)) //hull only
                 {
                     continue;
                 }
-                else if (tier == 2 && (!def.building.shipPart || (comp != null && comp.isPlating)))
+                else if (tier == 2 && (!def.building.shipPart || (comp != null && comp.isPlating && !comp.isHull))) //ship parts
                 {
                     continue;
                 }
-                else if (tier == 3 && def.building.shipPart)
+                else if (tier == 3 && def.building.shipPart) //everything else
                 {
                     continue;
                 }

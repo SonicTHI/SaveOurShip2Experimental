@@ -305,7 +305,10 @@ namespace RimWorld
                     {
                         action = delegate
                         {
-                            mapComp.EndBattle(this.Map, true);
+                            if (mapComp.ShipCombatMasterMap.mapPawns.AnyColonistSpawned)
+                                PawnsAbandonWarning();
+                            else
+                                mapComp.EndBattle(this.Map, true);
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatEscape"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatEscapeDesc"),
@@ -1090,6 +1093,23 @@ namespace RimWorld
                 }
             }
             return options;
+        }
+        public void PawnsAbandonWarning()
+        {
+            DiaNode theNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("ShipCombatAbandonPawns"));
+            DiaOption accept = new DiaOption("Accept");
+            accept.resolveTree = true;
+            accept.action = delegate { mapComp.EndBattle(this.Map, true); };
+            theNode.options.Add(accept);
+
+            DiaOption cancel = new DiaOption("Cancel");
+            cancel.resolveTree = true;
+            theNode.options.Add(cancel);
+
+            Dialog_NodeTree dialog_NodeTree = new Dialog_NodeTree(theNode, true, false, null);
+            dialog_NodeTree.silenceAmbientSound = false;
+            dialog_NodeTree.closeOnCancel = true;
+            Find.WindowStack.Add(dialog_NodeTree);
         }
     }
 	public class Dialog_LoadShipDef : Dialog_Rename

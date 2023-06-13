@@ -32,7 +32,7 @@
 	
 	<SpaceSiteFuelCost>Fuel cost: {0}%</SpaceSiteFuelCost>
 	<ShipForceExitAndRemoveMapCountdown>Entering atmosphere in {0}</ShipForceExitAndRemoveMapCountdown>
-	<ShipBurnupPlayer>Orbit failiure!</ShipBurnupPlayer>
+	<ShipBurnupPlayer>Orbit failure!</ShipBurnupPlayer>
 	<ShipBurnupPlayerDesc>With the loss of the last ship bridge this map can no longer maintain its orbit and will enter the atmosphere in {0} days! \n\nEverything on it will be destroyed!</ShipBurnupPlayerDesc>
 	<ShipBurnupPlayerPrevented>Building a ship bridge has allowed you to stabilize the orbit.</ShipBurnupPlayerPrevented>
 	<ShipBurnUpCountdown>Entering atmosphere in {0}!</ShipBurnUpCountdown>
@@ -65,6 +65,7 @@
 	<MessageShuttleMustBeFueledToLand>Shuttle must have at least 15% fuel to land.</MessageShuttleMustBeFueledToLand>
 	<MessageShuttleMustBeFueledToOrbit>Shuttle must have at least 80% fuel to reach orbit.</MessageShuttleMustBeFueledToOrbit>
 	<SoSPodsArrived>Shuttles have arrived at destination.</SoSPodsArrived>
+	<ShipCombatAbandonPawns>WARNING!\n\nFleeing the enemy ship will leave behind any of your colonists still on board!</ShipCombatAbandonPawns>
 	
 	<MustPlaceNearSpinalMountPort>Must place adjacent to a spinal-mount module</MustPlaceNearSpinalMountPort>
 	<MustPlaceInsideShipFramework>Must place in a room bordered only by ship parts.</MustPlaceInsideShipFramework>

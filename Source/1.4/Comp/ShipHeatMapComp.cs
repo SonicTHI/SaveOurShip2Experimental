@@ -1198,7 +1198,7 @@ namespace RimWorld
                 if (startedBoarderLoad && !launchedBoarders && !enemyRetreating)
                 {
                     //abort and reset if player on ship
-                    if (this.map.mapPawns.AllPawnsSpawned.Where(o => o.Faction == Faction.OfPlayer).Any())
+                    if (this.map.mapPawns.AllPawnsSpawned.Any(o => o.Faction == Faction.OfPlayer))
                     {
                         foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
                         {
@@ -1427,7 +1427,7 @@ namespace RimWorld
                 MasterMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
             if (loser == ShipCombatMasterMap)
             {
-                if (!fled)//master lost
+                if (!fled) //master lost
                 {
                     MasterMapComp.IsGraveyard = true;
                     if (OriginMapComp.attackedTradeship)
@@ -1443,7 +1443,7 @@ namespace RimWorld
             }
             else
             {
-                if (!fled)//origin lost
+                if (!fled) //origin lost
                 {
                     ShipCombatOriginMap.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 120000));
                     //Find.GameEnder.CheckOrUpdateGameOver();
@@ -1460,12 +1460,7 @@ namespace RimWorld
                 }
                 else //origin fled or lost with no graveyard
                 {
-                    if (ShipCombatMasterMap.mapPawns.AnyColonistSpawned)//pawns on master: give origin some time
-                    {
-                        ShipCombatOriginMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 120000));
-                    }
-                    else
-                        MasterMapComp.BurnUpSet = true;
+                    MasterMapComp.BurnUpSet = true;
                 }
             }
         }

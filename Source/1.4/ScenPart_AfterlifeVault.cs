@@ -22,7 +22,7 @@ namespace RimWorld
             List<Building> cores = new List<Building>();
             try
             {
-                ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("AfterlifeVaultStart"), map, null, Faction.OfPlayer, null, out cores, true);
+                ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("AfterlifeVaultStart"), map, null, Faction.OfPlayer, null, out cores, true, true);
             }
             catch(Exception e)
             {

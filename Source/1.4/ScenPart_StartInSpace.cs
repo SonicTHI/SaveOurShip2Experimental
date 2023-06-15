@@ -22,16 +22,16 @@ namespace RimWorld
 	}
 	class ScenPart_StartInSpace : ScenPart
 	{
-		public override bool CanCoexistWith(ScenPart other) //not working in menu
-		{
-			return !(other is ScenPart_AfterlifeVault || other is ScenPart_LoadShip);
-		}
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
 		public EnemyShipDef enemyShipDef;
         public bool damageStart;
 		public ShipStartFlags startType;
-		public override void ExposeData()
+        public override bool CanCoexistWith(ScenPart other) //not working in menu
+        {
+            return !(other is ScenPart_AfterlifeVault || other is ScenPart_LoadShip);
+        }
+        public override void ExposeData()
 		{
 			base.ExposeData();
 			Scribe_Defs.Look<EnemyShipDef>(ref enemyShipDef, "enemyShipDef");
@@ -181,9 +181,8 @@ namespace RimWorld
 			List<List<Thing>> list = new List<List<Thing>>();
 			foreach (Pawn startingAndOptionalPawn in Find.GameInitData.startingAndOptionalPawns)
 			{
-				List<Thing> list2 = new List<Thing>();
-				list2.Add(startingAndOptionalPawn);
-				list.Add(list2);
+                List<Thing> list2 = new List<Thing>{ startingAndOptionalPawn };
+                list.Add(list2);
 			}
 			List<Thing> list3 = new List<Thing>();
 			foreach (ScenPart allPart in Find.Scenario.AllParts)

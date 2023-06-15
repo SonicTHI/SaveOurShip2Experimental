@@ -3728,9 +3728,10 @@ namespace SaveOurShip2
 					{
 						allFaction.ideos.ChooseOrGenerateIdeo(new IdeoGenerationParms(allFaction.def));
 					}
-				}
-				Faction.OfPlayer.ideos.SetPrimary(ScenPart_LoadShip.playerFactionIdeo);
-				IdeoUIUtility.selected = ScenPart_LoadShip.playerFactionIdeo;
+                }
+                ScenPart_LoadShip scen = (ScenPart_LoadShip)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_LoadShip);
+                Faction.OfPlayer.ideos.SetPrimary(scen.playerFactionIdeo);
+				IdeoUIUtility.selected = scen.playerFactionIdeo;
 				ScenPart_LoadShip.AddIdeo(Faction.OfPlayer.ideos.PrimaryIdeo);
 				Page_ConfigureIdeo page_ConfigureIdeo = new Page_ConfigureIdeo();
 				page_ConfigureIdeo.prev = __instance.prev;

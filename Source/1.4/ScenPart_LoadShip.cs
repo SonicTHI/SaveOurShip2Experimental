@@ -14,23 +14,25 @@ namespace RimWorld
 {
     class ScenPart_LoadShip : ScenPart
     {
-        static string FILENAME_NONE = "Select ship to load";
-        static string filename = "Select ship to load";
+        static readonly string FILENAME_NONE = "Select ship to load";
+
+        string filename = "Select ship to load";
+        bool discardLog;
+        bool discardTales;
         string playerFactionName;
         FactionDef playerFactionDef;
-        public static Ideo playerFactionIdeo;
         List<GameComponent> components;
+        public Ideo playerFactionIdeo;
         List<Ideo> ideosAboardShip;
         HashSet<CustomXenotype> xenosAboardShip;
         TickManager tickManager;
         CustomXenogermDatabase customXenogermDatabase;
-
-        static List<Thing> toLoad;
-        static List<Zone> zonesToLoad;
-        static List<IntVec3> terrainPos;
-        static List<TerrainDef> terrainDefs;
-        static List<IntVec3> roofPos;
-        static List<RoofDef> roofDefs;
+        List<Thing> toLoad;
+        List<Zone> zonesToLoad;
+        List<IntVec3> terrainPos;
+        List<TerrainDef> terrainDefs;
+        List<IntVec3> roofPos;
+        List<RoofDef> roofDefs;
         PlaySettings playSettings;
         StoryWatcher storyWatcher;
         ResearchManager researchManager;
@@ -39,31 +41,55 @@ namespace RimWorld
         OutfitDatabase outfitDatabase;
         DrugPolicyDatabase drugPolicyDatabase;
         FoodRestrictionDatabase foodRestrictionDatabase;
-
         public override bool CanCoexistWith(ScenPart other)
         {
             return !(other is ScenPart_StartInSpace || other is ScenPart_AfterlifeVault);
         }
-
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look<string>(ref filename, "filename");
         }
-
         public override void DoEditInterface(Listing_ScenEdit listing)
         {
             Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 3f);
-            Rect rect = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 3f);
-            if (Widgets.ButtonText(rect, filename))
+            Rect rect1 = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 3f);
+            Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
+            Rect rect3 = new Rect(scenPartRect.x, scenPartRect.y + 2 * scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
+            if (Widgets.ButtonText(rect1, filename))
             {
                 FloatMenuUtility.MakeMenu(Directory.GetFiles(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2")), (string path) => Path.GetFileNameWithoutExtension(path), (string path) => () => { filename = Path.GetFileNameWithoutExtension(path); });
             }
+            if (Widgets.ButtonText(rect2, "Discard log: " + discardLog.ToString()))
+            {
+                List<FloatMenuOption> toggleLog = new List<FloatMenuOption>();
+                toggleLog.Add(new FloatMenuOption("Discard log: True", delegate ()
+                {
+                    discardLog = true;
+                }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                toggleLog.Add(new FloatMenuOption("Discard log: False", delegate ()
+                {
+                    discardLog = false;
+                }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                Find.WindowStack.Add(new FloatMenu(toggleLog));
+            }
+            if (Widgets.ButtonText(rect3, "Discard tales: " + discardTales.ToString()))
+            {
+                List<FloatMenuOption> toggleTales = new List<FloatMenuOption>();
+                toggleTales.Add(new FloatMenuOption("Discard tales: True", delegate ()
+                {
+                    discardTales = true;
+                }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                toggleTales.Add(new FloatMenuOption("Discard tales: False", delegate ()
+                {
+                    discardTales = false;
+                }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                Find.WindowStack.Add(new FloatMenu(toggleTales));
+            }
         }
-
         public override string Summary(Scenario scen)
         {
-            if(HasValidFilename())
+            if (HasValidFilename())
                 return "Load ship " + filename + "\nThis will disable many other types of scenario part, such as starting pawns.";
             return "";
         }
@@ -99,9 +125,13 @@ namespace RimWorld
                 Current.Game.playSettings = playSettings;
                 Current.Game.storyWatcher = storyWatcher;
                 Current.Game.researchManager = researchManager;
-                Current.Game.taleManager = taleManager; //this and log should be discarded
-                Scribe_Deep.Look<PlayLog>(ref playLog, false, "playLog");
-                Current.Game.playLog = playLog; //playerlog calls gameStartAbsTick before set up, use GenTicks.TicksAbs
+                if (!discardTales)
+                    Current.Game.taleManager = taleManager;
+                if (!discardLog)
+                {
+                    Scribe_Deep.Look<PlayLog>(ref playLog, false, "playLog");
+                    Current.Game.playLog = playLog; //playerlog calls gameStartAbsTick before set up, use GenTicks.TicksAbs
+                }
                 Current.Game.outfitDatabase = outfitDatabase;
                 Current.Game.drugPolicyDatabase = drugPolicyDatabase;
                 Current.Game.foodRestrictionDatabase = foodRestrictionDatabase;
@@ -148,13 +178,13 @@ namespace RimWorld
                         Current.Game.components.Remove(compToClobber);
                     Current.Game.components.Add(component);
                 }*/
-
             }
         }
 
         public static Map GenerateShipSpaceMap()
         {
-            if (filename != FILENAME_NONE)
+            ScenPart_LoadShip scen = (ScenPart_LoadShip)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_LoadShip);
+            if (scen.filename != FILENAME_NONE)
             {
                 int newTile = ShipInteriorMod2.FindWorldTile();
                 Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
@@ -166,7 +196,7 @@ namespace RimWorld
 
                 Scribe.loader.crossRefs.ResolveAllCrossReferences();
 
-                foreach (Thing thing in toLoad)
+                foreach (Thing thing in scen.toLoad)
                 {
                     try
                     {
@@ -197,20 +227,20 @@ namespace RimWorld
                     }
                 }
 
-                foreach (Zone zone in zonesToLoad)
+                foreach (Zone zone in scen.zonesToLoad)
                 {
                     zone.zoneManager = spaceMap.zoneManager;
                     spaceMap.zoneManager.RegisterZone(zone);
                 }
 
-                for (int i = 0; i < terrainPos.Count; i++)
+                for (int i = 0; i < scen.terrainPos.Count; i++)
                 {
-                    spaceMap.terrainGrid.SetTerrain(terrainPos[i], terrainDefs[i]);
+                    spaceMap.terrainGrid.SetTerrain(scen.terrainPos[i], scen.terrainDefs[i]);
                 }
 
-                for (int i = 0; i < roofPos.Count; i++)
+                for (int i = 0; i < scen.roofPos.Count; i++)
                 {
-                    spaceMap.roofGrid.SetRoof(roofPos[i], roofDefs[i]);
+                    spaceMap.roofGrid.SetRoof(scen.roofPos[i], scen.roofDefs[i]);
                 }
 
                 ShipInteriorMod2.AirlockBugFlag = false;
@@ -248,8 +278,17 @@ namespace RimWorld
             return null;
         }
 
-        public override void PostGameStart()
+        public override void PostGameStart() //open player crypto, sickness
         {
+            foreach (Building b in Find.CurrentMap.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompCryptoLaunchable>() != null))
+            {
+                Building_CryptosleepCasket c = b as Building_CryptosleepCasket;
+                if (c.ContainedThing is Pawn p)
+                {
+                    p.health.AddHediff(HediffDefOf.CryptosleepSickness, null, null, null);
+                }
+                c.Open();
+            }
         }
 
         void LoadShip()

@@ -945,7 +945,7 @@ namespace RimWorld
         {
             float fuelNeeded = 0f;
             float fuelHad = 0f;
-            int rcsCount = 0;
+            int rcsCount = 1;
             bool hasPilot = false;
             foreach (Building b in cachedShipParts)
             {

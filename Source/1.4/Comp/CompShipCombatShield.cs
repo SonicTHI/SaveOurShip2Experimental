@@ -119,7 +119,7 @@ namespace RimWorld
                 else
                     Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatShieldBroken"), parent, MessageTypeDefOf.NegativeEvent);
             }
-            if (powerComp != null && powerComp.PowerNet.CurrentStoredEnergy() > heatGenerated /20)
+            if (powerComp != null && powerComp.PowerNet.CurrentStoredEnergy() > heatGenerated / 20)
             {
                 foreach (CompPowerBattery bat in powerComp.PowerNet.batteryComps)
                 {

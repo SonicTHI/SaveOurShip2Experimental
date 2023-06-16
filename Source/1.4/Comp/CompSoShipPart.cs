@@ -15,7 +15,7 @@ namespace RimWorld
     {
         //CompSoShipPart types that are cached:
         //xml tagged building shipPart: anything attachable - walls, hullfoam, plating, engines, corners, hardpoints, spinal barrels
-        //SoShipPart props isHull: walls, walllikes, hullfoam fills, wrecks form from these, spawns ship terrain beneath
+        //SoShipPart props isHull: walls, airlocks, walllikes, hullfoam fills, wrecks form from these, spawns ship terrain beneath
         //SoShipPart props isPlating: plating, airlocks - can not be placed under buildings, hullfoam fills, wrecks form from these, spawns ship terrain beneath, count as 1 for weight calcs
         //SoShipPart props isHardpoint: spawns ship terrain beneath, reduce damage for turrets
         //SoShipPart props hermetic: hold air in vacuum - walls, airlocks, corners, engines, hullfoam, extenders, spinal barrels

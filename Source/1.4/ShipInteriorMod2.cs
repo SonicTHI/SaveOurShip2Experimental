@@ -151,7 +151,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V89f3 active");
+			Log.Message("SOS2EXP V89f4 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -809,14 +809,12 @@ namespace SaveOurShip2
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
-						bool isBuilding = false;
 						bool isWrecked = false;
 						Thing thing = null;
 						ThingDef def = ThingDef.Named(shape.shapeOrDef);
 						//def replacers
 						if (def.IsBuildingArtificial)
 						{
-							isBuilding = true;
 							if (!royActive && def.Equals(ThingDefOf.Throne))
 								def = DefDatabase<ThingDef>.GetNamed("Armchair");
 							else if (wreckLevel > 2 && wreckDictionary.ContainsKey(def)) //replace ship walls/floor
@@ -852,47 +850,39 @@ namespace SaveOurShip2
 						else
 							thing = ThingMaker.MakeThing(def);
 
-						var compQuality = thing.TryGetComp<CompQuality>();
-						if (compQuality != null)
-						{
-							compQuality.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
-						}
-						if (thing.TryGetComp<CompColorable>() != null)
-                        {
-							if (rePaint && isBuilding) //color unpainted navy ships
-							{
-								if (thing.TryGetComp<CompSoShipPart>()?.Props.isHull ?? false)
-									thing.SetColor(navyDef.colorPrimary);
-								else if (def.defName.StartsWith("Ship_Corner"))
-									thing.SetColor(navyDef.colorSecondary);
-							}
-							if (shape.color != Color.clear)
-								thing.SetColor(shape.color);
-						}
-						else if (thing.def.stackLimit > 1)
-						{
-							thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
-							if (thing.stackCount * thing.MarketValue > 500)
-								thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
-						}
 						//spawn thing
 						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
-						//post spawn
-						if (isBuilding)
-						{
-							if (wreckLevel > 1 && !isWrecked)
-								wreckDestroy.Add(thing as Building);
-							if (thing.def.CanHaveFaction)
+                        //post spawn
+                        thing.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
+                        var colorcomp = thing.TryGetComp<CompColorable>();
+                        if (colorcomp != null)
+                        {
+                            if (shape.color != Color.clear)
+                                thing.SetColor(shape.color);
+                        }
+                        if (thing is Building b)
+                        {
+                            var partComp = thing.TryGetComp<CompSoShipPart>();
+                            if (rePaint && colorcomp != null) //color unpainted navy ships
                             {
+                                if (partComp?.Props.isHull ?? false)
+                                    thing.SetColor(navyDef.colorPrimary);
+                                else if (def.defName.StartsWith("Ship_Corner"))
+                                    thing.SetColor(navyDef.colorSecondary);
+                            }
+                            if (wreckLevel > 1 && !isWrecked)
+								wreckDestroy.Add(b);
+
+							if (thing.def.CanHaveFaction) //set faction to all but plating
+                            {
+                                if (partComp != null && partComp.Props.isPlating && !partComp.Props.isHull)
+                                {
+                                    cellsToFog.Add(thing.Position);
+                                    continue;
+                                }
                                 if (!(thing.def == ResourceBank.ThingDefOf.ShipHullTileWrecked || thing.def == ResourceBank.ThingDefOf.ShipAirlockWrecked || thing.def.thingClass == typeof(Building_ArchotechPillar)))
                                     thing.SetFaction(fac);
-                                if (thing.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
-								{
-									cellsToFog.Add(thing.Position);
-									continue;
-								}
 							}
-							Building b = thing as Building;
 							var batComp = b.TryGetComp<CompPowerBattery>();
 							if (batComp != null)
 							{
@@ -968,9 +958,16 @@ namespace SaveOurShip2
 								}
 							}
 						}
-						else if (thing.def.CanHaveFaction)
+						else
 						{
-							thing.SetFaction(fac);
+                            if (thing.def.stackLimit > 1)
+                            {
+                                thing.stackCount = Math.Min(Rand.RangeInclusive(5, 30), thing.def.stackLimit);
+                                if (thing.stackCount * thing.MarketValue > 500)
+                                    thing.stackCount = (int)Mathf.Max(500 / thing.MarketValue, 1);
+                            }
+                            if (thing.def.CanHaveFaction)
+                                thing.SetFaction(fac);
 						}
 					}
 					else if (DefDatabase<TerrainDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
@@ -1108,9 +1105,9 @@ namespace SaveOurShip2
 			if (cargoCells.Any() && wreckLevel < 3)
 			{
 				List<Thing> loot;
-				if (passingShip is TradeShip)
+				if (passingShip is TradeShip tradeShip)
 				{
-					loot = ((TradeShip)passingShip).GetDirectlyHeldThings().ToList();
+					loot = tradeShip.GetDirectlyHeldThings().ToList();
 				}
 				else
 				{

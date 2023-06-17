@@ -41,7 +41,7 @@ namespace RimWorld
         public CompEquippable GunCompEq => gun.TryGetComp<CompEquippable>();
         public override LocalTargetInfo CurrentTarget => currentTargetInt;
         public override Verb AttackVerb => GunCompEq.PrimaryVerb;
-
+        public override bool IsEverThreat => Faction == Faction.OfPlayer; //prevent player pawns auto attacking
         public bool Active
         {
             get
@@ -677,7 +677,6 @@ namespace RimWorld
             top.DrawTurret(Vector3.zero,0);
             base.Draw();
         }
-
         public override void DrawExtraSelectionOverlays()
         {
             if (GroundDefenseMode)

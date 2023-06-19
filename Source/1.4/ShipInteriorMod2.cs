@@ -151,7 +151,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V89f5 active");
+			Log.Message("SOS2EXP V89f6 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1897,19 +1897,19 @@ namespace SaveOurShip2
 				var sourceTerrain = sourceMap.terrainGrid.TerrainAt(pos);
 				if (sourceTerrain.layerable && !IsHull(sourceTerrain))
 				{
-					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceTerrain));
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(adjustedPos, sourceTerrain));
 					sourceMap.terrainGrid.RemoveTopLayer(pos, false);
 				}
 				else if (includeRock && IsRock(sourceTerrain))
 				{
-					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(pos, sourceTerrain));
+					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(adjustedPos, sourceTerrain));
 					sourceMap.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
 				}
 
-				var sourceRoof = sourceMap.roofGrid.RoofAt(pos);
+                RoofDef sourceRoof = sourceMap.roofGrid.RoofAt(pos);
 				if (IsRoofDefAirtight(sourceRoof))
 				{
-					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(pos, sourceRoof));
+					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(adjustedPos, sourceRoof));
 				}
 				sourceMap.roofGrid.SetRoof(pos, null);
 				if (core is Building_ShipBridge && playerMove) //home zone ships
@@ -2168,8 +2168,7 @@ namespace SaveOurShip2
 				var targetTile = targetMap.terrainGrid.TerrainAt(tup.Item1);
 				if (!targetTile.layerable || IsHull(targetTile))
 				{
-					var targetPos = Transform(tup.Item1);
-					targetMap.terrainGrid.SetTerrain(targetPos, tup.Item2);
+					targetMap.terrainGrid.SetTerrain(tup.Item1, tup.Item2);
 				}
 			}
 			if (includeRock)
@@ -2185,8 +2184,7 @@ namespace SaveOurShip2
 			//move roofs
 			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
 			{
-				var targetPos = Transform(tup.Item1);
-				targetMap.roofGrid.SetRoof(targetPos, tup.Item2);
+				targetMap.roofGrid.SetRoof(tup.Item1, tup.Item2);
 			}
 			if (devMode)
 				watch.Record("moveRoof");

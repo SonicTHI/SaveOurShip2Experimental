@@ -1896,7 +1896,7 @@ namespace SaveOurShip2
 		{
 			foreach (var current in GetCryptosleepDefs())
 			{
-				if (current == ThingDef.Named("Cryptonest"))
+				if (current == ResourceBank.ThingDefOf.Cryptonest)
 					continue;
 				var building_CryptosleepCasket =
 					(Building_CryptosleepCasket)GenClosest.ClosestThingReachable(p.Position, p.Map,
@@ -1904,9 +1904,9 @@ namespace SaveOurShip2
 						TraverseParms.For(traveler), 9999f,
 						delegate (Thing x) {
 							bool arg_33_0;
-							if (x.def.defName == "CrittersleepCasket" &&
+							if (x.def == ResourceBank.ThingDefOf.CrittersleepCasket &&
 								p.BodySize <= ShipInteriorMod2.crittersleepBodySize && ___innerContainer.Count < 8 ||
-								x.def.defName == "CrittersleepCasketLarge" &&
+								x.def == ResourceBank.ThingDefOf.CrittersleepCasketLarge &&
 								p.BodySize <= ShipInteriorMod2.crittersleepBodySize && ___innerContainer.Count < 32)
 							{
 								var traveler2 = traveler;
@@ -1932,7 +1932,7 @@ namespace SaveOurShip2
 					TraverseParms.For(traveler), 9999f,
 					delegate (Thing x) {
 						bool arg_33_0;
-						if (x.def.defName != "CrittersleepCasketLarge" && x.def.defName != "CrittersleepCasket" &&
+						if (x.def != ResourceBank.ThingDefOf.CrittersleepCasket && x.def != ResourceBank.ThingDefOf.CrittersleepCasketLarge &&
 							!((Building_CryptosleepCasket)x).HasAnyContents)
 						{
 							var traveler2 = traveler;
@@ -1982,15 +1982,15 @@ namespace SaveOurShip2
 			myResult.Add(Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.OnCell)
 				.FailOnDestroyedNullOrForbidden(TargetIndex.A).FailOnDespawnedNullOrForbidden(TargetIndex.B)
 				.FailOn(() =>
-					(DropPod.def.defName != "CrittersleepCasket" &&
-					 DropPod.def.defName != "CrittersleepCasketLarge") && DropPod.GetDirectlyHeldThings().Count > 0)
+					(DropPod.def != ResourceBank.ThingDefOf.CrittersleepCasket &&
+					 DropPod.def != ResourceBank.ThingDefOf.CrittersleepCasketLarge) && DropPod.GetDirectlyHeldThings().Any)
 				.FailOn(() => !Takee.Downed)
 				.FailOn(() =>
 					!__instance.pawn.CanReach(Takee, PathEndMode.OnCell, Danger.Deadly, false, mode: TraverseMode.ByPawn))
 				.FailOnSomeonePhysicallyInteracting(TargetIndex.A));
 			myResult.Add(Toils_Haul.StartCarryThing(TargetIndex.A, false, false, false));
 			myResult.Add(Toils_Goto.GotoThing(TargetIndex.B, PathEndMode.InteractionCell));
-			Toil prepare = Toils_General.Wait(500);
+			Toil prepare = Toils_General.Wait(500, TargetIndex.B);
 			prepare.FailOnCannotTouch(TargetIndex.B, PathEndMode.InteractionCell);
 			prepare.WithProgressBarToilDelay(TargetIndex.B, false, -0.5f);
 			myResult.Add(prepare);

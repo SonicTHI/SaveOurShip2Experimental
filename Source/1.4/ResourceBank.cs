@@ -85,6 +85,9 @@ namespace SaveOurShip2
 			public static ThingDef ShipAirlockBeamWall;
 			public static ThingDef ShipAirlockBeamTile;
 			public static ThingDef ShipAirlockBeam;
+            public static ThingDef Cryptonest;
+            public static ThingDef CrittersleepCasket;
+            public static ThingDef CrittersleepCasketLarge;
             public static ThingDef PersonalShuttle;
             public static ThingDef ShipShuttleBay;
 			public static ThingDef ShipShuttleBayLarge;

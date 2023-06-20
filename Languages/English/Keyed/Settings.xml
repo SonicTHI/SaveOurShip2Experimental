@@ -13,10 +13,10 @@
 	<SoS.Settings.FleetChance.Desc>Chance for random unknown enemy ships and traders to be fleets.</SoS.Settings.FleetChance.Desc>
 	
 	<SoS.Settings.EasyMode>Easy boarding mode</SoS.Settings.EasyMode>
-	<SoS.Settings.EasyMode.Desc>If checked, will prevent player pawns dying to point defense and enable player pods landing outside of enemy ships in combat.</SoS.Settings.EasyMode.Desc>
+	<SoS.Settings.EasyMode.Desc>If checked, will prevent player pawns from dying to point defense and enable player pods and shuttles landing outside of enemy ships in combat.</SoS.Settings.EasyMode.Desc>
 	
-	<SoS.Settings.UseVacuumPathfinding>Use vacuum pathfinding</SoS.Settings.UseVacuumPathfinding>
-	<SoS.Settings.UseVacuumPathfinding.Desc>If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.</SoS.Settings.UseVacuumPathfinding.Desc>
+	<!--SoS.Settings.UseVacuumPathfinding>Use vacuum pathfinding</SoS.Settings.UseVacuumPathfinding>
+	<SoS.Settings.UseVacuumPathfinding.Desc>If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.</SoS.Settings.UseVacuumPathfinding.Desc-->
 	
 	<SoS.Settings.MinTravelTime>Minimum travel time (Min: {0} Max: {1} Default: {2} Current: {3})</SoS.Settings.MinTravelTime>
 	<SoS.Settings.MinTravelTime.Desc>Minimum number of years that pass when traveling to a new world.</SoS.Settings.MinTravelTime.Desc>
@@ -26,6 +26,9 @@
 	
 	<SoS.Settings.RenderPlanet>Dynamic planet rendering</SoS.Settings.RenderPlanet>
 	<SoS.Settings.RenderPlanet.Desc>If checked, orbital maps will show a day/night cycle on the planet. Disable this option if the game runs slowly in space.</SoS.Settings.RenderPlanet.Desc>
+	
+	<SoS.Settings.PersistShipUI>Persistent UI</SoS.Settings.PersistShipUI>
+	<SoS.Settings.PersistShipUI.Desc>If checked, will show your ship power and heat even out of combat.</SoS.Settings.PersistShipUI.Desc>
 	
 	<SoS.Settings.UseSplashScreen>SoS splash screen</SoS.Settings.UseSplashScreen>
 	<SoS.Settings.UseSplashScreen.Desc>If checked, RimWorld will use SoS2's new splash screen. Restart the game after changing this setting.</SoS.Settings.UseSplashScreen.Desc>

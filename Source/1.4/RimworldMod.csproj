@@ -260,7 +260,6 @@
     <Compile Include="HediffPawnIsHologram.cs" />
     <Compile Include="Hediff_AddedPartNoRemoveSubparts.cs" />
     <Compile Include="HideLightingLayersInSpace.cs" />
-    <Compile Include="H_Vacuum_PathFinder.cs" />
     <Compile Include="Comp\InsectPillarSiteComp.cs" />
     <Compile Include="Jobs\JobDriver_FleeVacuum.cs" />
     <Compile Include="Jobs\JobDriver_InstallConsciousness.cs" />

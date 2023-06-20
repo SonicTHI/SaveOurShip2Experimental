@@ -42,11 +42,11 @@ ___
 
 * **Ground defense:** all small ship weapons are now capable of firing on enemy combatants while your ship is landed. Decimate hordes of enemies with the push of a button so long as they are not already too close or your weapons on cooldown.
 
-* **New boarding system and defense (this can be disabled in options):** instead of landing in open space when the target ship has working engines, pods will now target the outer rooms. Once aboard enemies will breach doors and attempt to murder your crew. You can escape this fate by utilizing PD weapons to shoot down enemy pods in flight but beware - enemy ships can do the same to you.
+* **New boarding system and defense (this can be disabled in options):** shuttles can only reach enemy ships once most of their engines have been disabled. Pods however can be launched at any time and will land in the outer rooms. Once aboard enemies will breach doors and attempt to murder your crew. You can escape this fate by utilizing PD weapons to shoot down enemy pods in flight but beware - enemy ships can do the same to you.
 
-* **Redone heat system:** simplified, with less cheese and far better performance. Radiators have been removed while heatsinks now vent heat through the roof even when shielded. Coolant tanks have been added that offer a much larger heat capacity but without the ability to vent it to space.
+* **Redone heat system:** simplified, with less cheese and far better performance. Radiators have been removed while heatsinks now vent heat through the roof even when shielded. Coolant tanks have been added that offer a much larger heat capacity but without the ability to vent it to space. A new *vent coolant* function is also available from the bridge that sacrifices your maximum capacity for a quick removal of heat.
 
-* **New ending and planet travel system:** completing the Royalty ending now grants you an imperial destroyer instead of ending the game. Traveling to another planet now ends the game but saves your ship and everything on it to a file that can be loaded by editing a staring scenario, adding a "Load ship" part and selecting your saved ship. Revisiting old planets is no longer possible. The ship start scenario has also been updated with similar code to ensure better compatibility and easier maintenance/updates in the future.
+* **New ending and planet travel system:** completing the Royalty ending now grants you an imperial destroyer instead of ending the game. Traveling to another planet now ends the game but saves your ship and everything on it to a file that can be loaded by editing a *Load ship* staring scenario and selecting your saved ship. Revisiting old planets is no longer possible. The ship start scenario has also been updated with similar code to ensure better compatibility and easier maintenance/updates in the future.
 
 * **Hologram rework:** Biotech's new gene system and other changes caused too many issues with holograms so they have been reworked into formgel swarm like beings.
 
@@ -54,7 +54,7 @@ ___
 
 * **Random wreck system:** generates wrecks from ships in the database for you to explore and loot. Other factions and ships might attempt to do the same.
 
-* **Reworked salvage system:** gone are the days of pushing a button and getting a shipload of resources. Use salvage bays to drag defeated ships to your map, repair or deconstruct them for resources or simply let them burn up in atmosphere. A larger crew or taking advantage of other mods or new mechs in Biotech will come in handy.
+* **Reworked salvage system:** gone are the days of pushing a button and getting a shipload of resources. Use salvage bays to drag defeated ships to your map where you can move and rotate them, split them apart and/or graft parts onto your existing ship. You can also repair or deconstruct them for resources or simply let them burn up in atmosphere. A larger crew or taking advantage of other mods or new mechs in Biotech will come in handy.
 
 * **Bridge system overhaul:** old large bridges have become obsolete with two new consoles taking on and expanding the functionality. Some functions like scanning have been moved to advanced sensors or the new science console while the tactical variant lets you select various weapons types across your ship provided they are connected to it by the ships heat network.
 
@@ -64,7 +64,7 @@ ___
 
 * **Performance optimizations:** from faster EVA checks to a completely rebuilt ship combat system - a lot has been done to improve the performance of this mod.
 
-* **New UI and settings menu:** the ship battle UI has been moved bellow the pawn bar. It now shows all ships and can be moved in the SOS2 settings menu. SOS2 settings have been reset to their defaults as we now use the native RW mod tools. Hugslib has been removed as a required mod.
+* **New UI and settings menu:** the ship battle UI has been moved bellow the pawn bar. It now shows all ships and can be moved or made persistent in the SOS2 settings menu. SOS2 settings have been reset to their defaults as we now use the native RW mod tools. Hugslib has been removed as a required mod.
 
 * **Tons of other minor adjustments, balance changes and bugfixes.**
 

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -12,6 +13,7 @@ namespace RimWorld
         private float extension = 0.0f;
         private int timeTillRetract;
         private float target = 0.0f;
+        Rot4 rot;
 
         public CompProperties_Unfold Props
         {
@@ -26,21 +28,19 @@ namespace RimWorld
             Scribe_Values.Look<float>(ref this.target, "target");
             Scribe_Values.Look<float>(ref this.extension, "extension");
         }
-
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            rot = this.parent.Rotation;
+        }
         public override void PostDraw()
         {
             base.PostDraw();
-            Rot4 rot = this.parent.Rotation;
-            if (this.parent is Building_ShipAirlock)
+            if (this.parent is Building_ShipAirlock airlock)
             {
-                IntVec3 leftSide;
-                if (rot.AsByte == 0)
-                    leftSide = IntVec3.West;
-                else
-                    leftSide = IntVec3.North;
-                Building b1 = (this.parent.Position + leftSide).GetFirstBuilding(this.parent.Map);
-                if (b1 != null)
-                rot = b1.Rotation;
+                if (airlock.First == null)
+                    return;
+                rot = airlock.First.Rotation;
             }    
             Matrix4x4 matrix = new Matrix4x4();
             matrix.SetTRS(this.parent.DrawPos + (Props.extendDirection.RotatedBy(rot).ToVector3() * Props.startOffset) + (Props.extendDirection.RotatedBy(rot).ToVector3() * (Props.length / 2) * extension) + Altitudes.AltIncVect, rot.AsQuat, new Vector3(Props.width, 1f, Props.length * extension));

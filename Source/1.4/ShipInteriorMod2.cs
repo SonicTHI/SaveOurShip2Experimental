@@ -50,7 +50,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
 
 			Scribe_Values.Look(ref easyMode, "easyMode", false);
-			Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
+			//Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
             Scribe_Values.Look(ref persistShipUI, "persistShipUI", false);
@@ -69,7 +69,7 @@ namespace SaveOurShip2
 			fleetChance = 0.3;
 		public static bool
 			easyMode = false,
-			useVacuumPathfinding = true,
+			//useVacuumPathfinding = true,
 			renderPlanet = false,
 			useSplashScreen = true,
 			persistShipUI = false;
@@ -117,7 +117,7 @@ namespace SaveOurShip2
 
 			options.Gap();
 			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
-			options.CheckboxLabeled("SoS.Settings.UseVacuumPathfinding".Translate(), ref useVacuumPathfinding, "SoS.Settings.UseVacuumPathfinding.Desc".Translate());
+			//options.CheckboxLabeled("SoS.Settings.UseVacuumPathfinding".Translate(), ref useVacuumPathfinding, "SoS.Settings.UseVacuumPathfinding.Desc".Translate());
 			options.Gap();
 
 			options.Label("SoS.Settings.MinTravelTime".Translate("1", "50", "5", minTravelTime.ToString()), -1f, "SoS.Settings.MinTravelTime.Desc".Translate());
@@ -151,7 +151,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V89f6 active");
+			Log.Message("SOS2EXP V89f7 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())

@@ -428,7 +428,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                heatNet.StartVent(mapComp, this);
+                                heatNet.StartVent();
                             },
                             icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/ActiveVent"),
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipHeatPurge"),

@@ -127,6 +127,8 @@ namespace RimWorld
                     ResourceBank.SoundDefOf.ShipPurgeHiss.PlayOneShot(parent);
                 GenSpawn.Spawn(obj, parent.Position, map);
                 RemHeatFromNetwork(Props.heatVent);
+                if (myNet.RatioInNetwork <= 0.01f)
+                    myNet.EndVent();
             }
         }
         public void PushHeat(float ratio, float heat = 0) //bleed into or adjacent room

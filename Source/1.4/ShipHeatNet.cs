@@ -229,7 +229,7 @@ namespace RimWorld
             }
         }
 
-        public void StartVent(ShipHeatMapComp comp, Building_ShipBridge core)
+        public void StartVent()
         {
             venting = true;
             foreach (CompShipHeatSink sink in Sinks)
@@ -240,7 +240,6 @@ namespace RimWorld
                 turret.venting = true;
             foreach (CompShipHeat cloak in Cloaks)
                 cloak.venting = true;
-            comp.anyVenting = true;
         }
 
         public void EndVent()

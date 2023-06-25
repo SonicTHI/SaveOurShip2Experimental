@@ -1454,7 +1454,7 @@
 		<projectile>
 			<damageDef>ShipPlasmaSmall</damageDef>
 			<speed>200</speed>
-			<explosionRadius>4.9</explosionRadius>
+			<explosionRadius>3.3</explosionRadius>
 			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>
@@ -1755,7 +1755,7 @@
 		<projectile>
 			<damageDef>BombKinetic</damageDef>
 			<speed>500</speed>
-			<explosionRadius>2.9</explosionRadius>
+			<explosionRadius>2.3</explosionRadius>
 			<flyOverhead>true</flyOverhead>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
 		</projectile>

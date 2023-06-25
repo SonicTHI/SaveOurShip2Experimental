@@ -151,7 +151,7 @@ namespace SaveOurShip2
 		}
 		public static void DefsLoaded()
 		{
-			Log.Message("SOS2EXP V89f7 active");
+			Log.Message("SOS2EXP V89f8 active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1752,7 +1752,7 @@ namespace SaveOurShip2
             {
 				devMode = true;
 			}
-			List<Thing> toSave = new List<Thing>();
+			HashSet<Thing> toSave = new HashSet<Thing>();
 			List<Thing> toDestroy = new List<Thing>();
 			List<CompPower> toRePower = new List<CompPower>();
 			List<Zone> zonesToCopy = new List<Zone>();
@@ -1851,24 +1851,23 @@ namespace SaveOurShip2
 						{
 							a.UnDock();
 						}
-						var engineComp = b.TryGetComp<CompEngineTrail>();
-                        var transportComp = b.TryGetComp<CompTransporter>();
-                        if (engineComp != null)
-							engineComp.Off();
-						if (transportComp != null)
+						else
 						{
-							toSave.AddRange(transportComp.innerContainer.ToList());
-                            transportComp.CancelLoad();
+                            b.TryGetComp<CompEngineTrail>()?.Off();
+                            var transportComp = b.TryGetComp<CompTransporter>();
+                            if (transportComp != null)
+                            {
+                                toSave.AddRange(transportComp.innerContainer.ToList());
+                                transportComp.CancelLoad();
+                            }
                         }
                     }
 					else if (t is Pawn p)
                     {
 						if (p.IsCarrying()) //drop and add carried things
 						{
-							Thing carriedt;
-							p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out carriedt);
-                            if (!toSave.Contains(carriedt))
-                                toSave.Add(carriedt);
+							p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out Thing carriedt);
+                            toSave.Add(carriedt);
                         }
 						if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
                         {
@@ -1876,18 +1875,15 @@ namespace SaveOurShip2
                             Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipLaunchFailPawns"), null, MessageTypeDefOf.NegativeEvent);
                             return;
                         }
-						/*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
+                        /*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
                         {
 							Log.Message("Pawn holding thing: " + p.holdingOwner);
                             Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipMoveFailPawns", p.holdingOwner.Owner.ToString()), null, MessageTypeDefOf.NegativeEvent);
                             return;
                         }*/
                     }
-                    if (!toSave.Contains(t))
-					{
-						toSave.Add(t);
-					}
-				}
+                    toSave.Add(t);
+                }
 
 				if (sourceMap.zoneManager.ZoneAt(pos) != null && !zonesToCopy.Contains(sourceMap.zoneManager.ZoneAt(pos)))
 				{

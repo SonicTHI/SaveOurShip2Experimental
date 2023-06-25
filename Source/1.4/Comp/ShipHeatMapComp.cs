@@ -18,7 +18,6 @@ namespace RimWorld
         public int[] grid;
         public bool heatGridDirty;
         public bool loaded = false;
-        public bool anyVenting = false;
 
         public ShipHeatMapComp(Map map) : base(map)
         {
@@ -34,7 +33,7 @@ namespace RimWorld
         public override void MapComponentUpdate()
         {
             base.MapComponentUpdate();
-            if ((!heatGridDirty && !anyVenting) || (Find.TickManager.TicksGame % 60 != 0 && loaded))
+            if (!heatGridDirty || (Find.TickManager.TicksGame % 60 != 0 && loaded))
             {
                 return;
             }
@@ -66,15 +65,6 @@ namespace RimWorld
                 list.Add(net);
             }
             cachedNets = list;
-
-            anyVenting = false;
-            foreach(ShipHeatNet net in cachedNets)
-            {
-                if (net.venting && net.RatioInNetwork <= 0.01f)
-                    net.EndVent();
-                else
-                    anyVenting = true;
-            }
 
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Buildings);
             base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Things);
@@ -1015,7 +1005,7 @@ namespace RimWorld
                                 }
                             }
                             if (bridge.myNet.RatioInNetwork > 0.85f && !bridge.myNet.venting)
-                                bridge.myNet.StartVent(this, ship.Bridges.FirstOrDefault());
+                                bridge.myNet.StartVent();
                         }
                     }
                 }

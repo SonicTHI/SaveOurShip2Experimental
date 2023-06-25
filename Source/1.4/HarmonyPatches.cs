@@ -1831,6 +1831,16 @@ namespace SaveOurShip2
 		}
 	}
 
+    [HarmonyPatch(typeof(Designator_Deconstruct), "CanDesignateThing")]
+    public static class ChangeReason
+    {
+        public static void Postfix(ref AcceptanceReport __result, Thing t)
+        {
+            if (!__result.Accepted && t.Map.IsSpace() && __result.Reason.Equals("MessageMustDesignateDeconstructibleMechCluster".Translate()))
+                __result = new AcceptanceReport("Use salvage bay to claim after all enemies have been defeated.");
+        }
+    }
+
     //weapons
     [HarmonyPatch(typeof(BuildingProperties), "IsMortar", MethodType.Getter)]
 	public static class TorpedoesCanBeLoaded
@@ -2845,7 +2855,7 @@ namespace SaveOurShip2
 
 	//EVA
 	[HarmonyPatch(typeof(Pawn_PathFollower), "SetupMoveIntoNextCell")]
-	public static class H_SpaceZoomies
+	public static class EVAMovesFastInSpace
 	{
 		public static void Postfix(Pawn_PathFollower __instance, Pawn ___pawn)
 		{
@@ -2857,6 +2867,7 @@ namespace SaveOurShip2
 			}
 		}
 	}
+
 	[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Notify_ApparelAdded))]
 	public static class ApparelTracker_Notify_Added
 	{
@@ -2865,6 +2876,7 @@ namespace SaveOurShip2
 			Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == __instance?.pawn?.thingIDNumber);
 		}
 	}
+
 	[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Notify_ApparelRemoved))]
 	public static class ApparelTracker_Notify_Removed
 	{

@@ -70,7 +70,7 @@
 					</li>
 					<li Class="StockGenerator_Category">
 						<categoryDef>ShipBlueprints</categoryDef>
-						<thingDefCountRange>1~1</thingDefCountRange>
+						<thingDefCountRange>1~2</thingDefCountRange>
 						<countRange>1~1</countRange>
 					</li>
 				</value>

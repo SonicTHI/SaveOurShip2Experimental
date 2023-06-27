@@ -10,7 +10,7 @@ namespace RimWorld
     /// </summary>
     public class UnfoldComponent : ThingComp
     {
-        private float extension = 0.0f;
+        public float extension = 0.0f;
         private int timeTillRetract;
         private float target = 0.0f;
         Rot4 rot;
@@ -36,11 +36,13 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
+            if (extension == 0.0f)
+                return;
             if (this.parent is Building_ShipAirlock airlock)
             {
-                if (airlock.First == null)
+                if (airlock.firstRot == -1)
                     return;
-                rot = airlock.First.Rotation;
+                rot = new Rot4(airlock.firstRot);
             }    
             Matrix4x4 matrix = new Matrix4x4();
             matrix.SetTRS(this.parent.DrawPos + (Props.extendDirection.RotatedBy(rot).ToVector3() * Props.startOffset) + (Props.extendDirection.RotatedBy(rot).ToVector3() * (Props.length / 2) * extension) + Altitudes.AltIncVect, rot.AsQuat, new Vector3(Props.width, 1f, Props.length * extension));
@@ -96,7 +98,8 @@ namespace RimWorld
             if (Target > extension)
             {
                 extension += Props.extendRate;
-                if (extension > Target) extension = Target;
+                if (extension > Target)
+                    extension = Target;
                 timeTillRetract = Props.retractTime;
             }
             else if (Target < extension)
@@ -105,7 +108,8 @@ namespace RimWorld
                 if (timeTillRetract <= 0)
                 {
                     extension -= Props.retractRate;
-                    if (extension < Target) extension = Target;
+                    if (extension < Target)
+                        extension = Target;
                     timeTillRetract = 0;
                 }
             }

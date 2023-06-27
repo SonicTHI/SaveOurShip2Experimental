@@ -684,6 +684,7 @@
 				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_SoShipDocking">
+				<extender>true</extender>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>

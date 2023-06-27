@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
@@ -16,11 +15,9 @@ using RimworldMod;
 using System.Net;
 using System.IO;
 using System.Collections;
-using System.Reflection.Emit;
 using UnityEngine.SceneManagement;
 using System.Linq.Expressions;
 using static SaveOurShip2.ModSettings_SoS;
-using Verse.Noise;
 
 namespace SaveOurShip2
 {
@@ -28,8 +25,16 @@ namespace SaveOurShip2
 	static class Setup
 	{
 		static Setup()
-		{
-			Harmony pat = new Harmony("ShipInteriorMod2");
+        {
+			//manual stupidity prevention, good idea to eventually add all mod issues into it
+            if (VersionControl.CurrentMinor < ShipInteriorMod2.SOS2ReqCurrentMinor || VersionControl.CurrentBuild < ShipInteriorMod2.SOS2ReqCurrentBuild)
+            {
+				string error = "SOS2EXP " + ShipInteriorMod2.SOS2EXPversion + " requires Rimworld 1."+ ShipInteriorMod2.SOS2ReqCurrentMinor + "."+ ShipInteriorMod2.SOS2ReqCurrentBuild + " or greater!";
+                Log.Error(error);
+                LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(error.Colorize(Color.red), null, null, null, null, null, false, null, null, WindowLayer.Super)), null, false, null);
+				return;
+            }
+            Harmony pat = new Harmony("ShipInteriorMod2");
 			
 			//Legacy methods. All 3 of these could technically be merged
 			ShipInteriorMod2.DefsLoaded();
@@ -84,9 +89,12 @@ namespace SaveOurShip2
 		public ShipInteriorMod2(ModContentPack content) : base(content)
 		{
 			base.GetSettings<ModSettings_SoS>();
-		}
+        }
+        public static readonly string SOS2EXPversion = "V90";
+        public static readonly int SOS2ReqCurrentMinor = 4;
+        public static readonly int SOS2ReqCurrentBuild = 3704;
 
-		public static readonly float crittersleepBodySize = 0.7f;
+        public static readonly float crittersleepBodySize = 0.7f;
 		public static bool loadedGraphics = false;
 		public static bool AirlockBugFlag = false; //shipmove
 		public static Building shipOriginRoot = null; //used for patched original launch code
@@ -98,7 +106,7 @@ namespace SaveOurShip2
 		public static List<ThingDef> randomPlants;
 		public static Dictionary<ThingDef, ThingDef> wreckDictionary;
 
-		public override void DoSettingsWindowContents(Rect inRect)
+        public override void DoSettingsWindowContents(Rect inRect)
 		{
 			Listing_Standard options = new Listing_Standard();
 			options.Begin(inRect);
@@ -150,8 +158,8 @@ namespace SaveOurShip2
 			base.WriteSettings();
 		}
 		public static void DefsLoaded()
-		{
-			Log.Message("SOS2EXP V89f8 active");
+        {
+			Log.Message("SOS2EXP " + SOS2EXPversion + " active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
 			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
@@ -1849,7 +1857,7 @@ namespace SaveOurShip2
 							continue;
 						if (b is Building_ShipAirlock a && a.docked)
 						{
-							a.UnDock();
+							a.DeSpawnDock();
 						}
 						else
 						{
@@ -2256,7 +2264,7 @@ namespace SaveOurShip2
 						}
 						else if (t is Building_ShipAirlock a && a.docked)
 						{
-							a.UnDock();
+							a.DeSpawnDock();
 						}
 						var engineComp = t.TryGetComp<CompEngineTrail>();
 						if (engineComp != null)

@@ -211,20 +211,27 @@ namespace RimWorld
             for (int i = 0; i < 2; i++) //find first extender, check opposite for other, same rot, not facing airlock
             {
                 IntVec3 v = Position + GenAdj.CardinalDirections[i];
-                Building first = v.GetFirstBuilding(Map);
-                if (first != null && first.def == ResourceBank.ThingDefOf.ShipAirlockBeam)
+                Thing first = v.GetFirstThingWithComp<CompSoShipDocking>(Map);
+                if (first == null)
+                    continue;
+                var firstComp = first.TryGetComp<CompSoShipDocking>();
+                if (firstComp.Props.extender)
                 {
                     if (i == first.Rotation.AsByte || i == first.Rotation.AsByte + 2) //cant face same or opp cardinal
                         break;
-                    Building second = (Position + GenAdj.CardinalDirections[i + 2]).GetFirstBuilding(Map);
-                    if (second != null && second.def == ResourceBank.ThingDefOf.ShipAirlockBeam && first.Rotation == second.Rotation)
+                    Thing second = (Position + GenAdj.CardinalDirections[i + 2]).GetFirstThingWithComp<CompSoShipDocking>(Map);
+                    if (second != null)
                     {
-                        First = first;
-                        firstRot = first.Rotation.AsInt;
-                        Second = second;
-                        first.GetComp<CompSoShipDocking>().dockParent = this;
-                        second.GetComp<CompSoShipDocking>().dockParent = this;
-                        return true;
+                        var secondComp = second.TryGetComp<CompSoShipDocking>();
+                        if (secondComp.Props.extender && first.Rotation == second.Rotation)
+                        {
+                            First = first as Building;
+                            firstRot = first.Rotation.AsInt;
+                            Second = second as Building;
+                            firstComp.dockParent = this;
+                            secondComp.dockParent = this;
+                            return true;
+                        }
                     }
                     break;
                 }
@@ -265,10 +272,11 @@ namespace RimWorld
         }
         public void SpawnDock()
         {
+            IntVec3 rot = GenAdj.CardinalDirections[First.Rotation.AsByte];
             //place fake walls, floor, extend
             for (int i = 1; i < dist; i++)
             {
-                IntVec3 offset = GenAdj.CardinalDirections[First.Rotation.AsByte] * -i;
+                IntVec3 offset = rot * -i;
                 Thing thing;
                 thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, First.Position + offset, Map);
@@ -283,6 +291,10 @@ namespace RimWorld
                 thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);
             }
+            //set temp
+            Room room = (Position - rot).GetRoom(Map);
+            if (room != null && !room.UsesOutdoorTemperature)
+                room.Temperature = (Position + rot).GetRoom(Map).Temperature;
             docked = true;
         }
         public void DeSpawnDock(bool force = false)

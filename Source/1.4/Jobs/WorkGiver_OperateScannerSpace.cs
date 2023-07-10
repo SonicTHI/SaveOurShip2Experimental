@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,9 @@ namespace RimWorld
         {
             get
             {
-                return ThingRequest.ForDef(ThingDef.Named("ShipConsoleScience"));
+                return ThingRequest.ForDef(ResourceBank.ThingDefOf.ShipConsoleScience);
             }
         }
-
         public override PathEndMode PathEndMode
         {
             get
@@ -24,50 +24,27 @@ namespace RimWorld
                 return PathEndMode.InteractionCell;
             }
         }
-
         public override Danger MaxPathDanger(Pawn pawn)
         {
             return Danger.Deadly;
         }
-
         public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
         {
-            return pawn.Map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipConsoleScience")).Cast<Thing>();
+            return pawn.Map.listerBuildings.AllBuildingsColonistOfDef(ResourceBank.ThingDefOf.ShipConsoleScience).Cast<Thing>();
         }
-
         public override bool ShouldSkip(Pawn pawn, bool forced = false)
         {
             return false;
         }
-
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            if (t.Faction != pawn.Faction)
-            {
-                return false;
-            }
-            if (pawn.WorkTypeIsDisabled(WorkTypeDefOf.Research))
+            if (t.Faction != pawn.Faction || pawn.WorkTypeIsDisabled(WorkTypeDefOf.Research))
             {
                 return false;
             }
             Building building = t as Building;
-            if (building == null)
-            {
-                return false;
-            }
-            if (building.IsForbidden(pawn))
-            {
-                return false;
-            }
-            LocalTargetInfo target = building;
-            if (!pawn.CanReserve(target, 1, -1, null, forced))
-            {
-                return false;
-            }
-            CompLongRangeMineralScannerSpace compLongRangeMineralScanner = building.TryGetComp<CompLongRangeMineralScannerSpace>();
-            return compLongRangeMineralScanner.CanUseNow && !building.IsBurning();
+            return building != null && !building.IsForbidden(pawn) && pawn.CanReserve(building, 1, -1, null, forced) && building.TryGetComp<CompLongRangeMineralScannerSpace>().CanUseNow && !building.IsBurning();
         }
-
         public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
             return new Job(DefDatabase<JobDef>.GetNamed("OperateScannerSpace"), t, 1500, true);

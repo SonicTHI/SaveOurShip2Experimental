@@ -289,6 +289,7 @@ namespace RimWorld
                 Building_CryptosleepCasket c = b as Building_CryptosleepCasket;
                 if (c.ContainedThing is Pawn p)
                 {
+                    p.royalty = new Pawn_RoyaltyTracker(p); //reset royal everything
                     p.health.AddHediff(HediffDefOf.CryptosleepSickness, null, null, null);
                 }
                 c.Open();

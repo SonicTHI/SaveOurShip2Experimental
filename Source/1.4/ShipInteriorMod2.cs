@@ -90,7 +90,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V90f2";
+        public static readonly string SOS2EXPversion = "V90f3";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -2274,6 +2274,8 @@ namespace SaveOurShip2
                     {
 						if (p.jobs != null)
 						{
+							if (p.royalty.HasAnyTitleIn(Faction.OfEmpire))
+								p.royalty.SetTitle(Faction.OfEmpire, null, false);
 							p.jobs.ClearQueuedJobs();
 							p.jobs.EndCurrentJob(JobCondition.Incompletable);
 						}

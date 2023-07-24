@@ -2935,8 +2935,26 @@ namespace SaveOurShip2
 		}
 	}
 
-	//pawns
-	[HarmonyPatch(typeof(PreceptComp_Apparel), "GiveApparelToPawn")]
+    [HarmonyPatch(typeof(ThingDef), "SpecialDisplayStats")] //would be better as an actual stat display but this ll do
+    public static class AddEVADescription
+    {
+        internal static void Postfix(ref IEnumerable<StatDrawEntry> __result, ThingDef __instance)
+        {
+			if (__instance.IsApparel)
+            {
+                //bool eva = false;
+                if (__instance.apparel.tags != null && __instance.apparel.tags.Contains("EVA"))
+                {
+                    //eva = true;
+                    __instance.description += "\n\nEVA capable.";
+                }
+                //__result.AddItem(new StatDrawEntry(StatCategoryDefOf.Apparel, "EVA", eva.ToString(), "EVAdesc", 2756, null, null, false));
+            }
+        }
+    }
+
+    //pawns
+    [HarmonyPatch(typeof(PreceptComp_Apparel), "GiveApparelToPawn")]
 	public static class PreventIdeoApparel
 	{
 		public static bool Prefix(Pawn pawn)
@@ -3124,8 +3142,21 @@ namespace SaveOurShip2
 		}
 	}
 
-	// Formgels - simpler than holograms!
-	[HarmonyPatch(typeof(Pawn), "Kill")]
+    [HarmonyPatch(typeof(ComplexThreatWorker_SleepingInsects), "GetPawnKindsForPoints")]
+    public static class NoArchoSpiderSpawnInComplexes
+    {
+        public static bool Prefix()
+        {
+            return false;
+        }
+        public static void Postfix(ref IEnumerable<PawnKindDef>__result, float points)
+        {
+			__result = PawnUtility.GetCombatPawnKindsForPoints((PawnKindDef k) => k.RaceProps.Insect && !k.defName.Equals("Archospider"), points, null);
+        }
+	}
+
+    // Formgels - simpler than holograms!
+    [HarmonyPatch(typeof(Pawn), "Kill")]
 	public static class CorpseRemoval
 	{
 		public static void Postfix(Pawn __instance)

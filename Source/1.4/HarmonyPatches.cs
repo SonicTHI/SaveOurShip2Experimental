@@ -3142,6 +3142,17 @@ namespace SaveOurShip2
 		}
 	}
 
+    [HarmonyPatch(typeof(PawnGraphicSet), "SetAllGraphicsDirty")]
+    public static class PreserveCosmetics
+    {
+        public static void Postfix(PawnGraphicSet __instance)
+        {
+            CompArcholifeCosmetics cosmetics = __instance.pawn.TryGetComp<CompArcholifeCosmetics>();
+            if (cosmetics != null)
+                CompArcholifeCosmetics.ChangeAnimalGraphics(__instance.pawn, cosmetics.Props, cosmetics);
+        }
+    }
+
     [HarmonyPatch(typeof(ComplexThreatWorker_SleepingInsects), "GetPawnKindsForPoints")]
     public static class NoArchoSpiderSpawnInComplexes
     {
@@ -3757,78 +3768,17 @@ namespace SaveOurShip2
 	}
 
 	//ship loading, start
-	[HarmonyPatch(typeof(Page_ChooseIdeoPreset), "PostOpen")]
-	public static class DoNotRemoveMyIdeo
-	{
-		public static bool Prefix()
-		{
-			return !WorldSwitchUtility.LoadShipFlag;
-		}
-
-		public static void Postfix(Page_ChooseIdeoPreset __instance)
-		{
-			if (WorldSwitchUtility.LoadShipFlag)
-			{
-				foreach (Faction allFaction in Find.FactionManager.AllFactions)
-				{
-					if (allFaction != Faction.OfPlayer && allFaction.ideos != null && allFaction.ideos.PrimaryIdeo.memes.NullOrEmpty())
-					{
-						allFaction.ideos.ChooseOrGenerateIdeo(new IdeoGenerationParms(allFaction.def));
-					}
-                }
-                ScenPart_LoadShip scen = (ScenPart_LoadShip)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_LoadShip);
-                Faction.OfPlayer.ideos.SetPrimary(scen.playerFactionIdeo);
-				IdeoUIUtility.selected = scen.playerFactionIdeo;
-				ScenPart_LoadShip.AddIdeo(Faction.OfPlayer.ideos.PrimaryIdeo);
-				Page_ConfigureIdeo page_ConfigureIdeo = new Page_ConfigureIdeo();
-				page_ConfigureIdeo.prev = __instance.prev;
-				page_ConfigureIdeo.next = __instance.next;
-				if (__instance.next != null)
-					__instance.next.prev = page_ConfigureIdeo;
-				Find.WindowStack.Add(page_ConfigureIdeo);
-				__instance.Close();
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(Page_ConfigureStartingPawns), "PreOpen")]
-	public static class NoNeedForMorePawns
-	{
-		public static bool Prefix()
-		{
-			return !WorldSwitchUtility.LoadShipFlag;
-		}
-
-		public static void Postfix(Page_ConfigureStartingPawns __instance)
-		{
-			if (WorldSwitchUtility.LoadShipFlag)
-			{
-				if (__instance.next != null)
-				{
-					__instance.prev.next = __instance.next;
-					__instance.next.prev = __instance.prev;
-					Find.WindowStack.Add(__instance.next);
-				}
-				if (__instance.nextAct != null)
-				{
-					__instance.nextAct();
-				}
-				__instance.Close();
-			}
-		}
-	}
-
 	[HarmonyPatch(typeof(Scenario), "GetFullInformationText")]
 	public static class RemoveUnwantedScenPartText
 	{
 		public static bool Prefix(Scenario __instance)
 		{
-			return __instance.AllParts.Where(part => part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename()).Count() == 0;
+			return __instance.AllParts.Where(part => part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename()).Any();
 		}
 
 		public static void Postfix(Scenario __instance, ref string __result)
 		{
-			if (__instance.AllParts.Where(part => part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename()).Count() > 0)
+			if (__instance.AllParts.Where(part => part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename()).Any())
 			{
 				try
 				{
@@ -3863,42 +3813,6 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(GameInitData), "PrepForMapGen")]
-	public static class FixPawnGen
-	{
-		public static bool Prefix()
-		{
-			return !WorldSwitchUtility.LoadShipFlag;
-		}
-	}
-
-	[HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
-	public static class DoNotActuallyInitMap
-	{
-		public static bool Prefix()
-		{
-			if (WorldSwitchUtility.LoadShipFlag || WorldSwitchUtility.StartShipFlag)
-				return false;
-			return true;
-		}
-
-		public static void Postfix(MapParent parent, ref Map __result)
-		{
-			if (WorldSwitchUtility.LoadShipFlag)
-			{
-				parent.Destroy();
-				WorldSwitchUtility.LoadShipFlag = false;
-				__result = ScenPart_LoadShip.GenerateShipSpaceMap();
-			}
-			else if (WorldSwitchUtility.StartShipFlag)
-			{
-				parent.Destroy();
-				WorldSwitchUtility.StartShipFlag = false;
-				__result = ScenPart_StartInSpace.GenerateShipSpaceMap();
-			}
-		}
-	}
-
 	[HarmonyPatch(typeof(Scenario), "GetFirstConfigPage")]
 	public static class LoadTheUniqueIDs
 	{
@@ -3916,9 +3830,9 @@ namespace SaveOurShip2
 				}
 			}
 		}
-	}
-
-	[HarmonyPatch(typeof(Scenario), "Category", MethodType.Getter)]
+    }
+    
+    [HarmonyPatch(typeof(Scenario), "Category", MethodType.Getter)]
 	public static class FixThatBugInParticular
 	{
 		public static bool Prefix(Scenario __instance, ref ScenarioCategory ___categoryInt)
@@ -3929,8 +3843,106 @@ namespace SaveOurShip2
 		}
 	}
 
-	//quests, events
-	[HarmonyPatch(typeof(NaturalRandomQuestChooser), "ChooseNaturalRandomQuest")]
+
+    [HarmonyPatch(typeof(Page_ChooseIdeoPreset), "PostOpen")]
+    public static class DoNotRemoveMyIdeo
+    {
+        public static bool Prefix()
+        {
+            return !WorldSwitchUtility.LoadShipFlag;
+        }
+
+        public static void Postfix(Page_ChooseIdeoPreset __instance)
+        {
+            if (WorldSwitchUtility.LoadShipFlag)
+            {
+                foreach (Faction allFaction in Find.FactionManager.AllFactions)
+                {
+                    if (allFaction != Faction.OfPlayer && allFaction.ideos != null && allFaction.ideos.PrimaryIdeo.memes.NullOrEmpty())
+                    {
+                        allFaction.ideos.ChooseOrGenerateIdeo(new IdeoGenerationParms(allFaction.def));
+                    }
+                }
+                ScenPart_LoadShip scen = (ScenPart_LoadShip)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_LoadShip);
+                Faction.OfPlayer.ideos.SetPrimary(scen.playerFactionIdeo);
+                IdeoUIUtility.selected = scen.playerFactionIdeo;
+                ScenPart_LoadShip.AddIdeo(Faction.OfPlayer.ideos.PrimaryIdeo);
+                Page_ConfigureIdeo page_ConfigureIdeo = new Page_ConfigureIdeo();
+                page_ConfigureIdeo.prev = __instance.prev;
+                page_ConfigureIdeo.next = __instance.next;
+                if (__instance.next != null)
+                    __instance.next.prev = page_ConfigureIdeo;
+                Find.WindowStack.Add(page_ConfigureIdeo);
+                __instance.Close();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Page_ConfigureStartingPawns), "PreOpen")]
+    public static class NoNeedForMorePawns
+    {
+        public static bool Prefix()
+        {
+            return !WorldSwitchUtility.LoadShipFlag;
+        }
+
+        public static void Postfix(Page_ConfigureStartingPawns __instance)
+        {
+            if (WorldSwitchUtility.LoadShipFlag)
+            {
+                if (__instance.next != null)
+                {
+                    __instance.prev.next = __instance.next;
+                    __instance.next.prev = __instance.prev;
+                    Find.WindowStack.Add(__instance.next);
+                }
+                if (__instance.nextAct != null)
+                {
+                    __instance.nextAct();
+                }
+                __instance.Close();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(GameInitData), "PrepForMapGen")]
+    public static class FixPawnGen
+    {
+        public static bool Prefix()
+        {
+            return !WorldSwitchUtility.LoadShipFlag;
+        }
+    }
+
+    [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
+    public static class GenerateSpaceMapInstead
+    {
+        public static bool Prefix()
+        {
+            if (WorldSwitchUtility.LoadShipFlag || WorldSwitchUtility.StartShipFlag)
+                return false;
+            return true;
+        }
+
+        public static void Postfix(MapParent parent, ref Map __result)
+        {
+            if (WorldSwitchUtility.LoadShipFlag)
+            {
+                parent.Destroy();
+                WorldSwitchUtility.LoadShipFlag = false;
+                __result = ScenPart_LoadShip.GenerateShipSpaceMap();
+            }
+            else if (WorldSwitchUtility.StartShipFlag)
+            {
+                parent.Destroy();
+                WorldSwitchUtility.StartShipFlag = false;
+                __result = ScenPart_StartInSpace.GenerateShipSpaceMap();
+            }
+        }
+    }
+
+    //quests, events
+    [HarmonyPatch(typeof(NaturalRandomQuestChooser), "ChooseNaturalRandomQuest")]
 	public static class QuestsInSpace //if player has space home map and no ground home map pick from whitelisted questdefs only
 	{
 		public static bool Prefix(out bool __state)
@@ -4552,16 +4564,6 @@ namespace SaveOurShip2
 		}
 	}*/
 
-    [HarmonyPatch(typeof(PawnGraphicSet), "SetAllGraphicsDirty")]
-	public static class PreserveCosmetics
-    {
-		public static void Postfix(PawnGraphicSet __instance)
-        {
-			CompArcholifeCosmetics cosmetics = __instance.pawn.TryGetComp<CompArcholifeCosmetics>();
-			if (cosmetics != null)
-				CompArcholifeCosmetics.ChangeAnimalGraphics(__instance.pawn, cosmetics.Props, cosmetics);
-        }
-    }
 
 
 	/*vacuum pathfinding - disabled, not working

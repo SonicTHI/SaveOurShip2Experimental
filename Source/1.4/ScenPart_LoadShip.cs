@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -41,6 +40,7 @@ namespace RimWorld
         OutfitDatabase outfitDatabase;
         DrugPolicyDatabase drugPolicyDatabase;
         FoodRestrictionDatabase foodRestrictionDatabase;
+
         public override bool CanCoexistWith(ScenPart other)
         {
             return !(other is ScenPart_StartInSpace || other is ScenPart_AfterlifeVault);
@@ -56,6 +56,8 @@ namespace RimWorld
             Rect rect1 = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 3f);
             Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
             Rect rect3 = new Rect(scenPartRect.x, scenPartRect.y + 2 * scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
+            if (!HasValidFilename())
+                PreConfigure();
             if (Widgets.ButtonText(rect1, filename))
             {
                 FloatMenuUtility.MakeMenu(Directory.GetFiles(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2")), (string path) => Path.GetFileNameWithoutExtension(path), (string path) => () => { filename = Path.GetFileNameWithoutExtension(path); });
@@ -94,11 +96,27 @@ namespace RimWorld
             return "";
         }
 
-        public void DoEarlyInit()
+        public bool HasValidFilename()
+        {
+            return filename != FILENAME_NONE;
+        }
+
+        public override void PreConfigure()
+        {
+            base.PreConfigure();
+            if (!HasValidFilename()) //load latest save as default
+            {
+                var directory = new DirectoryInfo(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2"));
+                var mostRecentFile = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
+                if (mostRecentFile != null)
+                    filename = Path.GetFileNameWithoutExtension(mostRecentFile.FullName);
+            }
+        }
+        public void DoEarlyInit() //Scenario.GetFirstConfigPage call via patch
         {
             WorldSwitchUtility.LoadShipFlag = true;
             LoadShip();
-
+            //remove incompatible scenario parts - not sure if this works at all
             List<ScenPart> toRemove = new List<ScenPart>();
             foreach (ScenPart part in Find.Scenario.AllParts)
             {
@@ -108,10 +126,46 @@ namespace RimWorld
             foreach (ScenPart part in toRemove)
                 Find.Scenario.RemovePart(part);
         }
+        void LoadShip()
+        {
+            Scribe.mode = LoadSaveMode.Inactive;
 
+            Scribe.loader.InitLoading(Path.Combine(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2"), filename + ".sos2"));
+
+            Scribe_Defs.Look<FactionDef>(ref playerFactionDef, "playerFactionDef");
+            Scribe_Values.Look(ref playerFactionName, "playerFactionName");
+            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
+            Scribe_Deep.Look(ref playerFactionIdeo, "playerFactionIdeo");
+            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
+
+            Scribe_Deep.Look<TickManager>(ref tickManager, false, "tickManager");
+            Scribe_Deep.Look<PlaySettings>(ref playSettings, false, "playSettings");
+            Scribe_Deep.Look<StoryWatcher>(ref storyWatcher, false, "storyWatcher");
+            Scribe_Deep.Look<ResearchManager>(ref researchManager, false, "researchManager");
+            Scribe_Deep.Look<TaleManager>(ref taleManager, false, "taleManager");
+            Scribe_Deep.Look<OutfitDatabase>(ref outfitDatabase, false, "outfitDatabase");
+            Scribe_Deep.Look<DrugPolicyDatabase>(ref drugPolicyDatabase, false, "drugPolicyDatabase");
+            Scribe_Deep.Look<FoodRestrictionDatabase>(ref foodRestrictionDatabase, false, "foodRestrictionDatabase");
+            Scribe_Deep.Look<UniqueIDsManager>(ref Current.Game.uniqueIDsManager, true, "uniqueIDsManager");
+
+            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
+            Scribe_Collections.Look<Ideo>(ref ideosAboardShip, "ideos", LookMode.Deep);
+            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
+            Scribe_Collections.Look<CustomXenotype>(ref xenosAboardShip, "xenotypes", LookMode.Deep);
+            Scribe_Deep.Look<CustomXenogermDatabase>(ref customXenogermDatabase, false, "customXenogermDatabase");
+
+            Scribe_Collections.Look<Thing>(ref toLoad, "shipThings", LookMode.Deep);
+            Scribe_Collections.Look<Zone>(ref zonesToLoad, "shipZones", LookMode.Deep);
+            Scribe_Collections.Look<IntVec3>(ref terrainPos, "terrainPos");
+            Scribe_Collections.Look<TerrainDef>(ref terrainDefs, "terrainDefs");
+            Scribe_Collections.Look<IntVec3>(ref roofPos, "roofPos");
+            Scribe_Collections.Look<RoofDef>(ref roofDefs, "roofDefs");
+
+            Scribe.mode = LoadSaveMode.Inactive;
+        }
         public override void PostWorldGenerate()
         {
-            if (filename != FILENAME_NONE)
+            if (HasValidFilename())
             {
                 Faction.OfPlayer.def = playerFactionDef;
                 Faction.OfPlayer.Name = playerFactionName;
@@ -143,9 +197,7 @@ namespace RimWorld
                 foreach (CustomXenogerm xeno in customXenogermDatabase.CustomXenogermsForReading)
                     Current.Game.customXenogermDatabase.Add(xeno);
 
-                Log.Message("1");
                 Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep); //init issue
-                Log.Message("2");
                 if (components.NullOrEmpty())
                 {
                     Log.Message("comps are null");
@@ -182,6 +234,44 @@ namespace RimWorld
                         Current.Game.components.Remove(compToClobber);
                     Current.Game.components.Add(component);
                 }*/
+            }
+        }
+        public static void AddIdeo(Ideo ideo)
+        {
+            int oldID = ideo.id;
+            Find.IdeoManager.Add(ideo);
+            if (ideo.id != oldID)
+            {
+                Ideo wrongIdeo = Find.IdeoManager.IdeosListForReading.Where(otherIdeo => otherIdeo.id == oldID).FirstOrDefault();
+                if (wrongIdeo != null)
+                    wrongIdeo.id = ideo.id;
+                ideo.id = oldID;
+            }
+        }
+        static void ReCacheIdeo(Ideo ideo)
+        {
+            foreach (Precept precept in ideo.PreceptsListForReading)
+            {
+                if (precept is Precept_Ritual ritual)
+                {
+                    foreach (RitualObligationTrigger trigger in ritual.obligationTriggers)
+                    {
+                        trigger.ritual = ritual;
+                    }
+                    if (ritual.attachableOutcomeEffect == null && !ritual.generatedAttachedReward && ritual.SupportsAttachableOutcomeEffect)
+                    {
+                        ritual.attachableOutcomeEffect = DefDatabase<RitualAttachableOutcomeEffectDef>.AllDefs.Where((RitualAttachableOutcomeEffectDef d) => d.CanAttachToRitual(ritual)).RandomElementWithFallback();
+                        ritual.generatedAttachedReward = true;
+                    }
+                    if (ritual.obligationTargetFilter != null)
+                    {
+                        ritual.obligationTargetFilter.parent = ritual;
+                    }
+                }
+                if (precept is Precept_Building building)
+                {
+                    building.presenceDemand.parent = building;
+                }
             }
         }
 
@@ -281,7 +371,6 @@ namespace RimWorld
             }
             return null;
         }
-
         public override void PostGameStart() //open player crypto, sickness
         {
             foreach (Building b in Find.CurrentMap.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompCryptoLaunchable>() != null))
@@ -295,88 +384,52 @@ namespace RimWorld
                 c.Open();
             }
         }
-
-        void LoadShip()
-        {
-            Scribe.mode = LoadSaveMode.Inactive;
-
-            Scribe.loader.InitLoading(Path.Combine(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2"), filename + ".sos2"));
-
-            Scribe_Defs.Look<FactionDef>(ref playerFactionDef, "playerFactionDef");
-            Scribe_Values.Look(ref playerFactionName, "playerFactionName");
-            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
-            Scribe_Deep.Look(ref playerFactionIdeo, "playerFactionIdeo");
-            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
-
-            Scribe_Deep.Look<TickManager>(ref tickManager, false, "tickManager");
-            Scribe_Deep.Look<PlaySettings>(ref playSettings, false, "playSettings");
-            Scribe_Deep.Look<StoryWatcher>(ref storyWatcher, false, "storyWatcher");
-            Scribe_Deep.Look<ResearchManager>(ref researchManager, false, "researchManager");
-            Scribe_Deep.Look<TaleManager>(ref taleManager, false, "taleManager");
-            Scribe_Deep.Look<OutfitDatabase>(ref outfitDatabase, false, "outfitDatabase");
-            Scribe_Deep.Look<DrugPolicyDatabase>(ref drugPolicyDatabase, false, "drugPolicyDatabase");
-            Scribe_Deep.Look<FoodRestrictionDatabase>(ref foodRestrictionDatabase, false, "foodRestrictionDatabase");
-            Scribe_Deep.Look<UniqueIDsManager>(ref Current.Game.uniqueIDsManager, true, "uniqueIDsManager");
-
-            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
-            Scribe_Collections.Look<Ideo>(ref ideosAboardShip, "ideos", LookMode.Deep);
-            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
-            Scribe_Collections.Look<CustomXenotype>(ref xenosAboardShip, "xenotypes", LookMode.Deep);
-            Scribe_Deep.Look<CustomXenogermDatabase>(ref customXenogermDatabase, false, "customXenogermDatabase");
-
-            Scribe_Collections.Look<Thing>(ref toLoad, "shipThings", LookMode.Deep);
-            Scribe_Collections.Look<Zone>(ref zonesToLoad, "shipZones", LookMode.Deep);
-            Scribe_Collections.Look<IntVec3>(ref terrainPos, "terrainPos");
-            Scribe_Collections.Look<TerrainDef>(ref terrainDefs, "terrainDefs");
-            Scribe_Collections.Look<IntVec3>(ref roofPos, "roofPos");
-            Scribe_Collections.Look<RoofDef>(ref roofDefs, "roofDefs");
-
-            Scribe.mode = LoadSaveMode.Inactive;
-        }
-
-        public static void AddIdeo(Ideo ideo)
-        {
-            int oldID = ideo.id;
-            Find.IdeoManager.Add(ideo);
-            if (ideo.id != oldID)
-            {
-                Ideo wrongIdeo = Find.IdeoManager.IdeosListForReading.Where(otherIdeo => otherIdeo.id == oldID).FirstOrDefault();
-                if (wrongIdeo != null)
-                    wrongIdeo.id = ideo.id;
-                ideo.id = oldID;
-            }
-        }
-
-        public bool HasValidFilename()
-        {
-            return filename != FILENAME_NONE;
-        }
-
-        static void ReCacheIdeo(Ideo ideo)
-        {
-            foreach (Precept precept in ideo.PreceptsListForReading)
-            {
-                if (precept is Precept_Ritual ritual)
-                {
-                    foreach (RitualObligationTrigger trigger in ritual.obligationTriggers)
-                    {
-                        trigger.ritual = ritual;
-                    }
-                    if (ritual.attachableOutcomeEffect == null && !ritual.generatedAttachedReward && ritual.SupportsAttachableOutcomeEffect)
-                    {
-                        ritual.attachableOutcomeEffect = DefDatabase<RitualAttachableOutcomeEffectDef>.AllDefs.Where((RitualAttachableOutcomeEffectDef d) => d.CanAttachToRitual(ritual)).RandomElementWithFallback();
-                        ritual.generatedAttachedReward = true;
-                    }
-                    if (ritual.obligationTargetFilter != null)
-                    {
-                        ritual.obligationTargetFilter.parent = ritual;
-                    }
-                }
-                if(precept is Precept_Building building)
-                {
-                    building.presenceDemand.parent = building;
-                }
-            }
-        }
     }
 }
+/* unfinished map for this mess of a system of scenPart, hpatches
+Player view vanilla: start -> scen edit(opt) -> storyteller -> world gen -> pick spot -> pick ideo -> pick pawns -> map gen -> game
+
+
+public static void SetupForQuickTestPlay()
+{
+	Current.ProgramState = ProgramState.Entry;
+	Current.Game = new Game();
+	Current.Game.InitData = new GameInitData();
+	Current.Game.Scenario = ScenarioDefOf.Crashlanded.scenario;
+	Find.Scenario.PreConfigure();
+	Current.Game.storyteller = new Storyteller(StorytellerDefOf.Cassandra, DifficultyDefOf.Rough);
+	Current.Game.World = WorldGenerator.GenerateWorld(0.05f, GenText.RandomSeedString(), OverallRainfall.Normal, OverallTemperature.Normal, OverallPopulation.Normal, null, 0f);
+	Find.GameInitData.ChooseRandomStartingTile();
+	Find.GameInitData.mapSize = 150;
+	Find.Scenario.PostIdeoChosen();
+	Find.GameInitData.PrepForMapGen();
+	Find.Scenario.PreMapGenerate();
+}
+
+todo exact call:
+hpatch RemoveUnwantedScenPartText
+hpatch FixThatBugInParticular
+hpatch DoNotRemoveMyIdeo
+hpatch NoNeedForMorePawns
+
+
+Scenario.GetFirstConfigPage
+	Page_SelectScenario.BeginScenarioConfiguration
+		Current.Game.Scenario.PreConfigure();
+			scenPart.PreConfigure();
+		Current.Game.Scenario.GetFirstConfigPage(); - hpatch LoadTheUniqueIDs (scenPart.DoEarlyInit();)
+		if above null PageUtility.InitGameStart();
+	
+WorldGenerator.GenerateWorld
+	Current.CreatingWorld.FinalizeInit();
+	Find.Scenario.PostWorldGenerate();
+	scenPart.PostWorldGenerate();
+	Find.Scenario.PostIdeoChosen();
+	PageUtility.InitGameStart()
+		Find.GameInitData.PrepForMapGen(); - hpatch FixPawnGen(return !WorldSwitchUtility.LoadShipFlag;)
+		Find.Scenario.PreMapGenerate(); -> scenPart.PreMapGenerate (unused)
+
+Game.InitNewGame()
+	MapGenerator.GenerateMap - hpatch GenerateSpaceMapInstead(ScenPart_LoadShip.GenerateShipSpaceMap())
+	scenPart.PostGameStart
+*/

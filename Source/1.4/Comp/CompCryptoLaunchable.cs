@@ -6,6 +6,7 @@ using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using SaveOurShip2;
+using RimworldMod;
 
 namespace RimWorld
 {
@@ -43,6 +44,8 @@ namespace RimWorld
             };
             if (this.NotReadyToLaunch)
                 launch.Disable(TranslatorFormattedStringExtensions.Translate("CommandLaunchCryptoNotLoaded"));
+            if (!this.parent.Map.IsSpace())
+                launch.Disable();
             yield return launch;
         }
 
@@ -50,10 +53,10 @@ namespace RimWorld
 		{
 			get
 			{
-                		if(this.parent is Building_CryptosleepCasket casket)
+                if (this.parent is Building_CryptosleepCasket casket)
 				    return casket.GetDirectlyHeldThings().NullOrEmpty();
-                		return !((Building_Bed)this.parent).AnyOccupants;
-            		}
+                return !((Building_Bed)this.parent).AnyOccupants;
+            }
 		}
 
 		private void StartChoosingDestination()

@@ -34,6 +34,13 @@ namespace SaveOurShip2
                 LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(error.Colorize(Color.red), null, null, null, null, null, false, null, null, WindowLayer.Super)), null, false, null);
 				return;
             }
+			if (!ModLister.HasActiveModWithName("Harmony"))
+            {
+                string error = "SOS2EXP requires Harmony! Download and enable it!";
+                Log.Error(error);
+                LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(error.Colorize(Color.red), null, null, null, null, null, false, null, null, WindowLayer.Super)), null, false, null);
+                return;
+            }
             Harmony pat = new Harmony("ShipInteriorMod2");
 			
 			//Legacy methods. All 3 of these could technically be merged
@@ -90,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V90f4";
+        public static readonly string SOS2EXPversion = "V90f5";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1698,7 +1705,7 @@ namespace SaveOurShip2
 			int bCount = 0;
 			foreach (Building building in cachedParts)
 			{
-				if (salvage && building is Building_ShipBridge && !building.Destroyed)
+				if (salvage && !building.Destroyed)
 				{
 					Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
 					cachedParts.Clear();

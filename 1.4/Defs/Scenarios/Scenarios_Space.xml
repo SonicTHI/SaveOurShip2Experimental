@@ -195,9 +195,9 @@
 	<ScenarioDef>
 		<defName>SoSLoadShip</defName>
 		<label>Load Ship</label>
-		<description>This will disable many other types of scenario part, such as starting pawns.</description>
+		<description>This will disable many other types of scenario part, such as starting pawns. Select your saved ship bellow. You can also choose to discard logs and tales, lowering your save size (might cause issues).</description>
 		<scenario>
-			<summary>Load a ship that has left for another planet. Edit the scenario to select your saved ship! You can also choose to discard logs and tales, lowering your save size but might cause issues.</summary>
+			<summary>Start with the last ship that has left for another planet. Edit the scenario for more options!</summary>
 			<playerFaction>
 				<def>PlayerFaction</def>
 				<factionDef>PlayerColony</factionDef>

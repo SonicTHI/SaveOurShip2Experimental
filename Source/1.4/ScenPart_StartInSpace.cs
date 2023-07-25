@@ -5,7 +5,6 @@ using SaveOurShip2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
@@ -93,6 +92,7 @@ namespace RimWorld
 		{
 			return "ScenPart_PlayerFaction".Translate(enemyShipDef.label);
 		}
+
 		public override void Randomize()
 		{
 			enemyShipDef = DefDatabase<EnemyShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
@@ -111,10 +111,11 @@ namespace RimWorld
 		}
 		//ship selection end
 
-		public void DoEarlyInit()
-		{
+		public void DoEarlyInit() //Scenario.GetFirstConfigPage call via patch 
+        {
 			WorldSwitchUtility.StartShipFlag = true;
 		}
+
 		public static Map GenerateShipSpaceMap() //MapGenerator.GenerateMap override via patch
 		{
 			int newTile = ShipInteriorMod2.FindWorldTile();

@@ -57,7 +57,7 @@ namespace RimWorld
             Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
             Rect rect3 = new Rect(scenPartRect.x, scenPartRect.y + 2 * scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
             if (!HasValidFilename())
-                PreConfigure();
+                LoadLatest();
             if (Widgets.ButtonText(rect1, filename))
             {
                 FloatMenuUtility.MakeMenu(Directory.GetFiles(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2")), (string path) => Path.GetFileNameWithoutExtension(path), (string path) => () => { filename = Path.GetFileNameWithoutExtension(path); });
@@ -104,14 +104,16 @@ namespace RimWorld
         public override void PreConfigure()
         {
             base.PreConfigure();
-            if (!HasValidFilename()) //load latest save as default
-            {
-                var directory = new DirectoryInfo(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2"));
-                var mostRecentFile = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
-                if (mostRecentFile != null)
-                    filename = Path.GetFileNameWithoutExtension(mostRecentFile.FullName);
-            }
+            LoadLatest();
         }
+        private void LoadLatest() //load latest save as default
+        {
+            var directory = new DirectoryInfo(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2"));
+            var mostRecentFile = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
+            if (mostRecentFile != null)
+                filename = Path.GetFileNameWithoutExtension(mostRecentFile.FullName);
+        }
+
         public void DoEarlyInit() //Scenario.GetFirstConfigPage call via patch
         {
             WorldSwitchUtility.LoadShipFlag = true;

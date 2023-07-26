@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V90f5";
+        public static readonly string SOS2EXPversion = "V90f6";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1705,7 +1705,7 @@ namespace SaveOurShip2
 			int bCount = 0;
 			foreach (Building building in cachedParts)
 			{
-				if (salvage && !building.Destroyed)
+				if (salvage && building is Building_ShipBridge br && !br.TacCon && !building.Destroyed)
 				{
 					Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
 					cachedParts.Clear();

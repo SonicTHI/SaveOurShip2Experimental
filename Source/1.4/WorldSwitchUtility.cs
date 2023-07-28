@@ -253,9 +253,13 @@ namespace SaveOurShip2
         public override void FinalizeInit()
         {
             base.FinalizeInit();
+            /*foreach (Faction f in Find.FactionManager.AllFactions)
+            {
+                Log.Message("fac: " + f + " defName: " + f.def.defName);
+            }*/
             if (!Find.FactionManager.AllFactions.Any(f => f.def == FactionDefOf.Mechanoid))
                 Log.Error("SOS2: Mechanoid faction not found! Parts of SOS2 will likely fail to function properly!");
-            if (!Find.FactionManager.AllFactions.Any(f => f.def == FactionDefOf.Pirate))
+            if (!Find.FactionManager.AllFactions.Any(f => f.def == FactionDefOf.Pirate || f.def == FactionDefOf.PirateWaster || f.def.defName.Equals("PirateYttakin")))
                 Log.Warning("SOS2: Pirate faction not found! SOS2 gameplay experience will be affected.");
             if (!Find.FactionManager.AllFactions.Any(f => f.def == FactionDefOf.Insect))
                 Log.Warning("SOS2: Insect faction not found! SOS2 gameplay experience will be affected.");

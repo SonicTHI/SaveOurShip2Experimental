@@ -3773,7 +3773,7 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(Scenario __instance)
 		{
-			return __instance.AllParts.Where(part => part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename()).Any();
+			return __instance.AllParts.Where(part => part is ScenPart_LoadShip && ((ScenPart_LoadShip)part).HasValidFilename()).Count() == 0;
 		}
 
 		public static void Postfix(Scenario __instance, ref string __result)

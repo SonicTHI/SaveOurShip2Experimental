@@ -373,13 +373,14 @@ namespace RimWorld
             }
             return null;
         }
-        public override void PostGameStart() //open player crypto, sickness
+        public override void PostGameStart() //post load cleaup, open player crypto, sickness
         {
             foreach (Building b in Find.CurrentMap.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompCryptoLaunchable>() != null))
             {
                 Building_CryptosleepCasket c = b as Building_CryptosleepCasket;
                 if (c.ContainedThing is Pawn p)
                 {
+                    p.needs.mood.thoughts.memories.Memories.Clear(); //clear memories as they might relate to old things
                     p.royalty = new Pawn_RoyaltyTracker(p); //reset royal everything
                     p.health.AddHediff(HediffDefOf.CryptosleepSickness, null, null, null);
                 }

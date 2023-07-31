@@ -526,6 +526,7 @@
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
 				<archotech>true</archotech>
+				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>

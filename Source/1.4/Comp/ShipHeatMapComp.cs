@@ -1091,11 +1091,12 @@ namespace RimWorld
                             threatPerSegment[1] / OriginMapComp.threatPerSegment[1],
                             threatPerSegment[2] / OriginMapComp.threatPerSegment[2],
                             threatPerSegment[3] / OriginMapComp.threatPerSegment[3] };
-                        //Log.Message("Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                         float max = 0;
                         int best = 0;
                         for (int i = 0; i < 4; i++)
                         {
+                            if (threatRatio[i] == 1) //threat is 0 for both
+                                threatRatio[i] = 0;
                             if (threatRatio[i] > max)
                             {
                                 max = threatRatio[i];
@@ -1103,11 +1104,23 @@ namespace RimWorld
                             }
                         }
                         if (Range > maxRange[best]) //forward
+                        {
+                            if (Heading != 1)
+                                //Log.Message("enemy ship now moving forward Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                             Heading = 1;
+                        }
                         else if (Range <= minRange[best]) //back
+                        {
+                            if (Heading != -1)
+                                //Log.Message("enemy ship now moving backward Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                             Heading = -1;
-                        else
-                            Heading = 0; //chill
+                        }
+                        else //chill
+                        {
+                            if (Heading != 0)
+                                //Log.Message("enemy ship now stopped Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
+                            Heading = 0;
+                        }
                     }
                 }
                 else //engines dead or disabled

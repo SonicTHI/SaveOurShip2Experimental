@@ -108,7 +108,13 @@ namespace RimWorld
         }
         private void LoadLatest() //load latest save as default
         {
-            var directory = new DirectoryInfo(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2"));
+            string folder = Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2");
+            if (!Directory.Exists(folder))
+            {
+                Log.Error("Created SOS2 ship save directory, you are using a load ship scenario part but have no ships to load!");
+                Directory.CreateDirectory(folder);
+            }
+            var directory = new DirectoryInfo(folder);
             var mostRecentFile = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault();
             if (mostRecentFile != null)
                 filename = Path.GetFileNameWithoutExtension(mostRecentFile.FullName);
@@ -375,13 +381,16 @@ namespace RimWorld
         }
         public override void PostGameStart() //post load cleaup, open player crypto, sickness
         {
+            foreach (Pawn p in Find.CurrentMap.mapPawns.AllPawns)
+            {
+                p.needs.mood.thoughts.memories.Memories.Clear(); //clear memories as they might relate to old things
+                p.royalty = new Pawn_RoyaltyTracker(p); //reset royal everything
+            }
             foreach (Building b in Find.CurrentMap.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompCryptoLaunchable>() != null))
             {
                 Building_CryptosleepCasket c = b as Building_CryptosleepCasket;
                 if (c.ContainedThing is Pawn p)
                 {
-                    p.needs.mood.thoughts.memories.Memories.Clear(); //clear memories as they might relate to old things
-                    p.royalty = new Pawn_RoyaltyTracker(p); //reset royal everything
                     p.health.AddHediff(HediffDefOf.CryptosleepSickness, null, null, null);
                 }
                 c.Open();

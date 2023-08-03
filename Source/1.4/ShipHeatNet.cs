@@ -89,29 +89,33 @@ namespace RimWorld
         {
             if (comp is CompShipHeatSink sink)
             {
-                //add to net
-                //Log.Message("grid: " + GridID + " add:" + sink.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
-                StorageCapacityRaw += sink.Props.heatCapacity;
-                StorageUsed += sink.heatStored;
-                Depletion += sink.depletion;
-                sink.heatStored = 0;
-                sink.depletion = 0;
-                //Log.Message("grid: "+ GridID +" add:"+ sink.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
-                Sinks.Add(sink);
-                ratioDirty = true;
-                depletionDirty = true;
-                if (comp is CompShipHeatPurge purge)
+                if (Sinks.Add(sink))
                 {
-                    HeatPurges.Add(purge);
+                    //add to net
+                    //Log.Message("grid: " + GridID + " add:" + sink.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
+                    StorageCapacityRaw += sink.Props.heatCapacity;
+                    StorageUsed += sink.heatStored;
+                    Depletion += sink.depletion;
+                    sink.heatStored = 0;
+                    sink.depletion = 0;
+                    //Log.Message("grid: "+ GridID +" add:"+ sink.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
+                    ratioDirty = true;
+                    depletionDirty = true;
+                    if (comp is CompShipHeatPurge purge)
+                    {
+                        HeatPurges.Add(purge);
+                    }
                 }
             }
             else if (comp.parent is Building_ShipTurret)
                 Turrets.Add(comp);
             else if (comp is CompShipHeatSource source)
             {
-                Sources.Add(source);
-                if (source.parent is Building_ShipCloakingDevice)
-                    Cloaks.Add(source);
+                if (Sources.Add(source))
+                {
+                    if (source.parent is Building_ShipCloakingDevice)
+                        Cloaks.Add(source);
+                }
             }
             else if (comp is CompShipCombatShield shield)
                 Shields.Add(shield);
@@ -125,6 +129,7 @@ namespace RimWorld
                     PilCons.Add(br);
             }
             Connectors.Add(comp);
+            //Log.Message(Sinks.Count + " " + HeatPurges.Count +" " + Turrets.Count + " " + Sources.Count + " " + Cloaks.Count + " " + Shields.Count + " " + AICores.Count + " " + TacCons.Count + " " + PilCons.Count);
         }
         public void DeRegister(CompShipHeat comp)
         {

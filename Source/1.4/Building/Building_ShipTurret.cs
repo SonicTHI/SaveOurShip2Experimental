@@ -46,7 +46,7 @@ namespace RimWorld
         {
             get
             {
-                if (!heatComp.venting && (powerComp == null || powerComp.PowerOn))
+                if (heatComp.myNet != null && !heatComp.myNet.venting && (powerComp == null || powerComp.PowerOn))
                 {
                     return true;
                 }
@@ -224,7 +224,7 @@ namespace RimWorld
                         }
                         else
                         {
-                            if (burstCooldownTicksLeft > 0 && !heatComp.venting)
+                            if (burstCooldownTicksLeft > 0 && !heatComp.Venting)
                             {
                                 burstCooldownTicksLeft--;
                             }
@@ -255,7 +255,7 @@ namespace RimWorld
                     {
                         return;
                     }
-                    else if (burstCooldownTicksLeft > 0 && !heatComp.venting)
+                    else if (burstCooldownTicksLeft > 0 && !heatComp.Venting)
                     {
                         burstCooldownTicksLeft--;
                     }

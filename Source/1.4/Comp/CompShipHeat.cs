@@ -17,7 +17,6 @@ namespace RimWorld
         public static Graphic ShipHeatGraphic = new Graphic_LinkedShipConduit(GraphicDatabase.Get<Graphic_Single>("Things/Building/Ship/Atlas_CoolantConduit", ShaderDatabase.Cutout));
 
         public ShipHeatNet myNet=null;
-        public bool venting = false;
 
         public CompProperties_ShipHeat Props
         {
@@ -30,8 +29,16 @@ namespace RimWorld
             {
                 return Props.threat;
             }
-        } 
-
+        }
+        public bool Venting
+        {
+            get
+            {
+                if (myNet != null)
+                    return myNet.venting;
+                return false;
+            }
+        }
         public void PrintForGrid(SectionLayer layer)
         {
             ShipHeatOverlay.Print(layer, (Thing)(object)base.parent, 0);
@@ -115,7 +122,6 @@ namespace RimWorld
         public override void PostExposeData()
         {
             base.PostExposeData();
-            Scribe_Values.Look<bool>(ref venting, "venting");
         }
     }
 }

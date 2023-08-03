@@ -66,7 +66,7 @@ namespace RimWorld
                 };
                 yield return toggleShields;
             }
-            if (myNet.Turrets.NullOrEmpty())
+            if (!myNet.Turrets.Any())
                 yield break;
             if (myNet.Turrets.Any(t => ((Building_ShipTurret)t.parent).holdFire == false))
                 HoldFire = false;

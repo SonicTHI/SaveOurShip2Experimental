@@ -186,6 +186,13 @@ namespace RimWorld
         public void RegisterProjectile(Building_ShipTurret turret, LocalTargetInfo target, ThingDef spawnProjectile, IntVec3 burstLoc)
         {
             var mapComp = caster.Map.GetComponent<ShipHeatMapComp>();
+
+            //inc acc if any manning pawn shooting or aicore
+            int accBoost = 0;
+            if (turret.heatComp.myNet.TacCons.Any(b => b.mannableComp.MannedNow))
+                accBoost = turret.heatComp.myNet.TacCons.Where(b => b.mannableComp.MannedNow).Max(b => b.mannableComp.ManningPawn.skills.GetSkill(SkillDefOf.Shooting).Level);
+            if (accBoost < 10 && turret.heatComp.myNet.AICores.Any())
+                accBoost = 10;
             ShipCombatProjectile proj = new ShipCombatProjectile
             {
                 turret = turret,
@@ -194,6 +201,7 @@ namespace RimWorld
                 //rangeAtStart = mapComp.Range,
                 spawnProjectile = spawnProjectile,
                 missRadius = this.verbProps.ForcedMissRadius,
+                accBoost = accBoost,
                 burstLoc = burstLoc,
                 speed = turret.heatComp.Props.projectileSpeed,
                 Map = turret.Map

@@ -1271,8 +1271,7 @@ namespace SaveOurShip2
 				}
 				else if (!hasPilot && part is Building_ShipBridge bridge && bridge.TryGetComp<CompPowerTrader>().PowerOn)
 				{
-					var mannable = bridge.TryGetComp<CompMannable>();
-					if (mannable == null || (mannable != null && mannable.MannedNow))
+					if (bridge.mannableComp == null || (bridge.mannableComp != null && bridge.mannableComp.MannedNow))
 						hasPilot = true;
 				}
 				else if (part is Building_ShipAdvSensor)

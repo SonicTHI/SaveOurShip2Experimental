@@ -40,6 +40,7 @@ namespace RimWorld
         public ShipHeatMapComp mapComp;
         public CompShipHeat heatComp;
         public CompPowerTrader powerComp;
+        public CompMannable mannableComp;
         private bool CanLaunchNow
 		{
 			get
@@ -866,6 +867,7 @@ namespace RimWorld
             base.SpawnSetup(map, respawningAfterLoad);
             this.heatComp = this.GetComp<CompShipHeat>();
             this.powerComp = this.GetComp<CompPowerTrader>();
+            this.mannableComp = this.GetComp<CompMannable>();
             this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
             if (!mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Add(this);
@@ -967,8 +969,7 @@ namespace RimWorld
                     }
                     else if (!hasPilot && b is Building_ShipBridge bridge && bridge.TryGetComp<CompPowerTrader>().PowerOn)
                     {
-                        var mannable = bridge.TryGetComp<CompMannable>();
-                        if (mannable == null || (mannable != null && mannable.MannedNow))
+                        if (mannableComp == null || (mannableComp != null && mannableComp.MannedNow))
                             hasPilot = true;
                     }
                     fuelNeeded += (b.def.size.x * b.def.size.z) * 3f;

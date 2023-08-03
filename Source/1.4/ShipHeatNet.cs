@@ -9,13 +9,16 @@ namespace RimWorld
 {
     public class ShipHeatNet
     {
-        public List<CompShipHeat> Connectors = new List<CompShipHeat>();
-        public List<CompShipHeatSource> Sources = new List<CompShipHeatSource>();
-        public List<CompShipHeatSink> Sinks = new List<CompShipHeatSink>();
-        public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
-        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
-        public List<CompShipHeat> Turrets = new List<CompShipHeat>();
-        public List<CompShipHeat> Cloaks = new List<CompShipHeat>();
+        public HashSet<CompShipHeat> Connectors = new HashSet<CompShipHeat>();
+        public HashSet<CompShipHeatSource> Sources = new HashSet<CompShipHeatSource>();
+        public HashSet<CompShipHeatSink> Sinks = new HashSet<CompShipHeatSink>();
+        public HashSet<CompShipHeatPurge> HeatPurges = new HashSet<CompShipHeatPurge>();
+        public HashSet<CompShipCombatShield> Shields = new HashSet<CompShipCombatShield>();
+        public HashSet<CompShipHeat> Turrets = new HashSet<CompShipHeat>();
+        public HashSet<CompShipHeat> Cloaks = new HashSet<CompShipHeat>();
+        public HashSet<Building_ShipBridge> AICores = new HashSet<Building_ShipBridge>();
+        public HashSet<Building_ShipBridge> TacCons = new HashSet<Building_ShipBridge>();
+        public HashSet<Building_ShipBridge> PilCons = new HashSet<Building_ShipBridge>();
         public int GridID;
         public float StorageCapacity 
         { 
@@ -86,42 +89,42 @@ namespace RimWorld
         {
             if (comp is CompShipHeatSink sink)
             {
-                if (!Sinks.Contains(sink))
+                //add to net
+                //Log.Message("grid: " + GridID + " add:" + sink.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
+                StorageCapacityRaw += sink.Props.heatCapacity;
+                StorageUsed += sink.heatStored;
+                Depletion += sink.depletion;
+                sink.heatStored = 0;
+                sink.depletion = 0;
+                //Log.Message("grid: "+ GridID +" add:"+ sink.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
+                Sinks.Add(sink);
+                ratioDirty = true;
+                depletionDirty = true;
+                if (comp is CompShipHeatPurge purge)
                 {
-                    //add to net
-                    //Log.Message("grid: " + GridID + " add:" + sink.heatStored + " Total:" + StorageUsed + "/" + StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
-                    StorageCapacityRaw += sink.Props.heatCapacity;
-                    StorageUsed += sink.heatStored;
-                    Depletion += sink.depletion;
-                    sink.heatStored = 0;
-                    sink.depletion = 0;
-                    //Log.Message("grid: "+ GridID +" add:"+ sink.heatStored + " Total:" + StorageUsed +"/"+ StorageCapacity + " depletion:" + sink.depletion + " Total:" + Depletion);
-                    Sinks.Add(sink);
-                    ratioDirty = true;
-                    depletionDirty = true;
-                    if (comp is CompShipHeatPurge purge)
-                    {
-                        HeatPurges.Add(purge);
-                    }
+                    HeatPurges.Add(purge);
                 }
             }
             else if (comp.parent is Building_ShipTurret)
                 Turrets.Add(comp);
             else if (comp is CompShipHeatSource source)
             {
-                if (!Sources.Contains(source))
-                {
-                    Sources.Add(source);
-                    if (source.parent is Building_ShipCloakingDevice)
-                        Cloaks.Add(source);
-                }
+                Sources.Add(source);
+                if (source.parent is Building_ShipCloakingDevice)
+                    Cloaks.Add(source);
             }
             else if (comp is CompShipCombatShield shield)
                 Shields.Add(shield);
-            else if (!Connectors.Contains(comp))
-                Connectors.Add(comp);
-            if (comp.venting)
-                venting = true;
+            else if (comp.parent is Building_ShipBridge br)
+            {
+                if (br.mannableComp == null)
+                    AICores.Add(br);
+                else if (br.TacCon)
+                    TacCons.Add(br);
+                else
+                    PilCons.Add(br);
+            }
+            Connectors.Add(comp);
         }
         public void DeRegister(CompShipHeat comp)
         {
@@ -162,8 +165,16 @@ namespace RimWorld
             }
             else if (comp is CompShipCombatShield shield)
                 Shields.Remove(shield);
-            else
-                Connectors.Remove(comp);
+            else if (comp.parent is Building_ShipBridge br)
+            {
+                if (br.mannableComp == null)
+                    AICores.Remove(br);
+                else if (br.TacCon)
+                    TacCons.Remove(br);
+                else
+                    PilCons.Remove(br);
+            }
+            Connectors.Remove(comp);
         }
         public void AddHeat(float amount)
         {
@@ -232,27 +243,6 @@ namespace RimWorld
         public void StartVent()
         {
             venting = true;
-            foreach (CompShipHeatSink sink in Sinks)
-                sink.venting = true;
-            foreach (CompShipCombatShield shield in Shields)
-                shield.venting = true;
-            foreach (CompShipHeat turret in Turrets)
-                turret.venting = true;
-            foreach (CompShipHeat cloak in Cloaks)
-                cloak.venting = true;
-        }
-
-        public void EndVent()
-        {
-            venting = false;
-            foreach (CompShipHeatSink sink in Sinks)
-                sink.venting = false;
-            foreach (CompShipCombatShield shield in Shields)
-                shield.venting = false;
-            foreach (CompShipHeat turret in Turrets)
-                turret.venting = false;
-            foreach (CompShipHeat cloak in Cloaks)
-                cloak.venting = false;
         }
     }
 }

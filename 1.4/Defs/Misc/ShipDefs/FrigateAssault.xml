@@ -115,7 +115,7 @@
 				<key>O</key>
 				<value>
 					<shapeOrDef>ShipCombatShieldGenerator</shapeOrDef>
-					<radius>40</radius>
+					<radius>45</radius>
 				</value>
 			</li>
 			<li>

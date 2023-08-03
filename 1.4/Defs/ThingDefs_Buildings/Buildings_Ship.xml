@@ -1380,7 +1380,7 @@
 		<defaultPlacingRot>South</defaultPlacingRot>
 		<tickerType>Normal</tickerType>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
-		<description>Provides weapon selection and targeting options. Increases weapon accuracy.</description>
+		<description>Provides weapon selection and targeting options. Increases weapon accuracy based on operator shooting skill.</description>
 		<designationCategory>Ship</designationCategory>
 		<costList>
 			<Steel>20</Steel>
@@ -1502,7 +1502,7 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>A computer core capable of housing a superhumanlike AI who can pilot your ship or guide it on interstellar journeys. Includes a mechanite breeding tank which allows the AI to manifest a formgel avatar.</description>
+		<description>A computer core capable of housing a superhumanlike AI who can pilot your ship, accurately fire its weapons or guide it on interstellar journeys. Includes a mechanite breeding tank which allows the AI to manifest a formgel avatar.</description>
 		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>

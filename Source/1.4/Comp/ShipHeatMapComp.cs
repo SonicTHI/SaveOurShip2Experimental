@@ -830,6 +830,8 @@ namespace RimWorld
                             missAngle *= (float)Math.Sqrt(rng); //-20 - 20
                             //Log.Message("angle: " + angle + ", missangle: " + missAngle);
                         }
+                        //shooter adj 0-50%
+                        missAngle *= (100 - proj.accBoost * 2.5f) / 100;
                         angle += missAngle;
                         //new vec from origin + angle
                         IntVec3 c = spawnCell + new Vector3(1000 * Mathf.Sin(Mathf.Deg2Rad * angle), 0, 1000 * Mathf.Cos(Mathf.Deg2Rad * angle)).ToIntVec3();

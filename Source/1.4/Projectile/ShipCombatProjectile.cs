@@ -10,6 +10,7 @@ namespace RimWorld
         //public float rangeAtStart;
         public ThingDef spawnProjectile;
         public float missRadius;
+        public int accBoost;
         public IntVec3 burstLoc;
         public float speed;
         public Map Map;
@@ -22,6 +23,7 @@ namespace RimWorld
             //Scribe_Values.Look<float>(ref rangeAtStart, "rangeAtStart");
             Scribe_Defs.Look<ThingDef>(ref spawnProjectile, "projectile");
             Scribe_Values.Look<float>(ref missRadius, "missRadius");
+            Scribe_Values.Look<int>(ref accBoost, "accBoost");
             Scribe_Values.Look<IntVec3>(ref burstLoc, "burstLoc");
             Scribe_Values.Look<float>(ref speed, "speed");
             Scribe_References.Look<Map>(ref Map, "map");

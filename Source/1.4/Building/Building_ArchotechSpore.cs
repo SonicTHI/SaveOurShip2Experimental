@@ -258,7 +258,7 @@ namespace RimWorld
                 {
                     foreach (Pawn p in pawns2)
                     {
-                        if (pawn == p || LovePartnerRelationUtility.ExistingLovePartner(pawn)==p || ((pawn.gender == p.gender) && (!p.story.traits.HasTrait(TraitDefOf.Gay) || pawn.story.traits.HasTrait(TraitDefOf.Gay))))
+                        if (pawn == p || pawn.relations.FamilyByBlood.Contains(p) || LovePartnerRelationUtility.ExistingLovePartner(pawn)==p || ((pawn.gender == p.gender) && (!p.story.traits.HasTrait(TraitDefOf.Gay) || pawn.story.traits.HasTrait(TraitDefOf.Gay))))
                             continue;
                         float score = pawn.relations.SecondaryRomanceChanceFactor(p) * Mathf.InverseLerp(5f, 100f, pawn.relations.OpinionOf(p));
                         if (score < worstScore)

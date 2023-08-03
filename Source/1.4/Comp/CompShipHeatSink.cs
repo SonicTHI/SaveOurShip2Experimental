@@ -87,7 +87,7 @@ namespace RimWorld
                         RemHeatFromNetwork(heat);
                     }
 
-                    if (venting)
+                    if (myNet.venting)
                         AddDepletionToNetwork(Props.heatVent);
                     else if (!mapComp.InCombat && !mapComp.Cloaks.Any(c => c.active))
                         RemoveDepletionFromNetwork(Props.heatVent / 5);
@@ -117,7 +117,7 @@ namespace RimWorld
                     PushHeat(ratio);
                 }
             }
-            if (venting && Props.heatVent > 0 && this.parent.IsHashIntervalTick(25))
+            if (myNet.venting && Props.heatVent > 0 && this.parent.IsHashIntervalTick(25))
             {
                 Mote obj = (Mote)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Mote_HeatsinkPurge);
                 obj.exactPosition = parent.TrueCenter();
@@ -128,7 +128,7 @@ namespace RimWorld
                 GenSpawn.Spawn(obj, parent.Position, map);
                 RemHeatFromNetwork(Props.heatVent);
                 if (myNet.RatioInNetwork <= 0.01f)
-                    myNet.EndVent();
+                    myNet.venting = false;
             }
         }
         public void PushHeat(float ratio, float heat = 0) //bleed into or adjacent room

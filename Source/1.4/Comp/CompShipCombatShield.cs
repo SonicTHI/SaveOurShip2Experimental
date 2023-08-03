@@ -46,7 +46,7 @@ namespace RimWorld
         public override void CompTick()
         {
             base.CompTick();
-            this.shutDown = breakComp.BrokenDown || !powerComp.PowerOn || venting;
+            this.shutDown = breakComp.BrokenDown || !powerComp.PowerOn || Venting;
             if (!this.shutDown && Find.TickManager.TicksGame % 60 == 0)
             {			
                 float absDiff = Math.Abs(radius - radiusSet);

@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f1";
+        public static readonly string SOS2EXPversion = "V91f2";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -461,20 +461,19 @@ namespace SaveOurShip2
 		{
 			int rarity = Rand.RangeInclusive(1, 2);
 			Log.Message("Spawning ship from CR: " + CR + " tradeShip: " + tradeShip + " allowNavyExc: " + allowNavyExc + " randomFleet: " + randomFleet + " rarityLevel: " + rarity + " minZ: " + minZ + " maxZ: " + maxZ);
-			float adjCR = CR * Mathf.Clamp((float)difficultySoS, 0.1f, 5f);
 			List<EnemyShipDef> check = new List<EnemyShipDef>();
 			if (randomFleet)
 			{
-				check = ships.Where(def => ValidShipDef(def, 0.7f * adjCR, 1.1f * adjCR, tradeShip, allowNavyExc, randomFleet, rarity, minZ, maxZ)).ToList();
+				check = ships.Where(def => ValidShipDef(def, 0.7f * CR, 1.1f * CR, tradeShip, allowNavyExc, randomFleet, rarity, minZ, maxZ)).ToList();
 				if (check.Any())
 					return check.RandomElement();
 			}
 			Log.Message("fallback 0");
-			check = ships.Where(def => ValidShipDef(def, 0.5f * adjCR, 1.3f * adjCR, tradeShip, allowNavyExc, randomFleet, rarity, minZ, maxZ)).ToList();
+			check = ships.Where(def => ValidShipDef(def, 0.5f * CR, 1.3f * CR, tradeShip, allowNavyExc, randomFleet, rarity, minZ, maxZ)).ToList();
 			if (check.Any())
 				return check.RandomElement();
 			Log.Message("fallback 1");
-			check = ships.Where(def => ValidShipDef(def, 0.25f * adjCR, 2f * adjCR, tradeShip, allowNavyExc, randomFleet, 0, minZ, maxZ)).ToList();
+			check = ships.Where(def => ValidShipDef(def, 0.25f * CR, 2f * CR, tradeShip, allowNavyExc, randomFleet, 0, minZ, maxZ)).ToList();
 			if (check.Any())
 				return check.RandomElement();
 			//too high or too low adjCR - ignore difficulty

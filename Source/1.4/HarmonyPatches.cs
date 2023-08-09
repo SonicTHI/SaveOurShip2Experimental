@@ -87,20 +87,23 @@ namespace SaveOurShip2
                         Widgets.Label(rect2.ContractedBy(7), str);
 
                     PowerNet net = bridge.powerComp.PowerNet;
-                    float capacity = 0;
-                    foreach (CompPowerBattery bat in net.batteryComps)
-                        capacity += bat.Props.storedEnergyMax;
-                    Rect rect3 = new Rect(screenHalf - 430, baseY - 40, 200, 35);
-                    Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
-                        ResourceBank.PowerTex);
-                    Text.Font = GameFont.Small;
-                    rect3.y += 7;
-                    rect3.x = screenHalf - 415;
-                    rect3.height = Text.LineHeight;
-                    if (capacity > 0)
-                        Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
-                    else
-                        Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
+                    if (net != null)
+                    {
+                        float capacity = 0;
+                        foreach (CompPowerBattery bat in net.batteryComps)
+                            capacity += bat.Props.storedEnergyMax;
+                        Rect rect3 = new Rect(screenHalf - 430, baseY - 40, 200, 35);
+                        Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
+                            ResourceBank.PowerTex);
+                        Text.Font = GameFont.Small;
+                        rect3.y += 7;
+                        rect3.x = screenHalf - 415;
+                        rect3.height = Text.LineHeight;
+                        if (capacity > 0)
+                            Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
+                        else
+                            Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
+                    }
 
                     ShipHeatNet net2 = bridge.heatComp.myNet;
                     if (net2 != null)
@@ -154,20 +157,23 @@ namespace SaveOurShip2
                     }
 
                     PowerNet net = bridge.powerComp.PowerNet;
-                    float capacity = 0;
-                    foreach (CompPowerBattery bat in net.batteryComps)
-                        capacity += bat.Props.storedEnergyMax;
-                    Rect rect3 = new Rect(screenHalf + 630, baseY - 40, 200, 35);
-                    Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
-                        ResourceBank.PowerTex);
-                    Text.Font = GameFont.Small;
-                    rect3.y += 7;
-                    rect3.x = screenHalf + 645;
-                    rect3.height = Text.LineHeight;
-                    if (capacity > 0)
-                        Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
-                    else
-                        Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
+                    if (net != null)
+                    {
+                        float capacity = 0;
+                        foreach (CompPowerBattery bat in net.batteryComps)
+                            capacity += bat.Props.storedEnergyMax;
+                        Rect rect3 = new Rect(screenHalf + 630, baseY - 40, 200, 35);
+                        Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
+                            ResourceBank.PowerTex);
+                        Text.Font = GameFont.Small;
+                        rect3.y += 7;
+                        rect3.x = screenHalf + 645;
+                        rect3.height = Text.LineHeight;
+                        if (capacity > 0)
+                            Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
+                        else
+                            Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -2945,7 +2951,8 @@ namespace SaveOurShip2
                 if (__instance.apparel.tags != null && __instance.apparel.tags.Contains("EVA"))
                 {
                     //eva = true;
-                    __instance.description += "\n\nEVA capable.";
+					if (!__instance.description.EndsWith("EVA capable."))
+						__instance.description += "\n\nEVA capable.";
                 }
                 //__result.AddItem(new StatDrawEntry(StatCategoryDefOf.Apparel, "EVA", eva.ToString(), "EVAdesc", 2756, null, null, false));
             }

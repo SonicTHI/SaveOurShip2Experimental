@@ -509,6 +509,7 @@ namespace RimWorld
                     else if (daysPassed < 60)
                         CR *= 0.75f;
                 }
+                CR *= Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.1f, 5f);
                 if (CR < 30) //minimum rating
                     CR = 30;
                 if (CR > 100 && !fleet)

@@ -4192,20 +4192,18 @@ namespace SaveOurShip2
 		{
 			if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechSpore"))
 			{
-				Map spaceMap = null;
 				foreach (Map map in Find.Maps)
 				{
-					if (map.IsSpace() && map.spawnedThings.Where(t => t.def == ThingDefOf.Ship_ComputerCore).Any())
-						spaceMap = map;
-				}
-				if (spaceMap != null)
-				{
-					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
-					AttackableShip ship = new AttackableShip();
-					ship.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
-					ship.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
-					ship.shipFaction = Faction.OfMechanoids;
-					spaceMap.passingShipManager.AddShip(ship);
+					if (map.IsSpace() && map.spawnedThings.Where(t => t.def == ThingDefOf.Ship_ComputerCore && t.Faction == Faction.OfPlayer).Any())
+                    {
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
+                        AttackableShip ship = new AttackableShip();
+                        ship.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
+                        ship.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
+                        ship.shipFaction = Faction.OfMechanoids;
+                        map.passingShipManager.AddShip(ship);
+						break;
+                    }
 				}
 			}
 		}

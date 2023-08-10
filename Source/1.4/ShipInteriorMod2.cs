@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f2";
+        public static readonly string SOS2EXPversion = "V91f3";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1220,7 +1220,7 @@ namespace SaveOurShip2
 				}
 				//invaders - pick faction, spawn lord + pawns
 				Faction invaderFac = null;
-				if ((wreckLevel == 2 && Rand.Chance(0.7f)) || (wreckLevel ==3 && Rand.Chance(0.4f)))
+				if ((wreckLevel == 2 && Rand.Chance(0.8f)) || (wreckLevel ==3 && Rand.Chance(0.6f)))
 				{
 					SpaceNavyDef navy = ValidRandomNavy(Faction.OfPlayer);
 					if (navy != null)

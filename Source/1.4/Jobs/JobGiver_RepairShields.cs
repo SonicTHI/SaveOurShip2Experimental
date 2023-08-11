@@ -27,7 +27,8 @@ namespace RimWorld
             {
 				foreach (CompShipCombatShield shield in mapComp.Shields.Where(s => s.breakComp.BrokenDown && pawn.CanReserveAndReach(s.parent, PathEndMode.ClosestTouch, Danger.Deadly)))
                 {
-                    return new ThinkResult(fixGiver.JobOnThing(pawn, shield.parent), this);
+                    if (fixGiver.FindClosestComponent(pawn) != null)
+                        return new ThinkResult(fixGiver.JobOnThing(pawn, shield.parent), this);
                 }
             }
 			return ThinkResult.NoJob;

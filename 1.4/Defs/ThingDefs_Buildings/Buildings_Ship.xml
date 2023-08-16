@@ -2273,7 +2273,7 @@
 			<MaxHitPoints>1000</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Generates a field which masks heat emissions, hiding your ship from passive scans. This prevents random ship battles from starting, but is not helpful once combat has already begun. It also cannot protect you from the powerful scanners used to find ships with high Notoriety.\n\nWhile the device is active, your ship's radiators will be disabled and heat will accumulate.</description>
+		<description>Generates a field which masks heat emissions, hiding your ship from passive scans. This prevents random ship battles from starting, but is not helpful once combat has already begun. It also cannot protect you from the powerful scanners used to find ships with high Notoriety.\n\nWhile the device is active, your ship's radiators will be disabled and heat capacity will decrease.</description>
 		<designationCategory>Ship</designationCategory>
 		<comps>
 			<li Class="CompProperties_Power">

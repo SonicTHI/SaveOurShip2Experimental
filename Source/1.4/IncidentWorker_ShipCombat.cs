@@ -18,7 +18,7 @@ namespace RimWorld
                 if (cloak.active)
                     return false;
             }
-            return !((Map)parms.target).GetComponent<ShipHeatMapComp>().InCombat && SaveOurShip2.ModSettings_SoS.frequencySoS > 0 && Find.TickManager.TicksGame > LastAttackTick + 180000/ SaveOurShip2.ModSettings_SoS.frequencySoS;
+            return !((Map)parms.target).GetComponent<ShipHeatMapComp>().InCombat && SaveOurShip2.ModSettings_SoS.frequencySoS > 0 && Find.TickManager.TicksGame > LastAttackTick + 300000 / SaveOurShip2.ModSettings_SoS.frequencySoS;
         }
 
         protected override bool TryExecuteWorker(IncidentParms parms)

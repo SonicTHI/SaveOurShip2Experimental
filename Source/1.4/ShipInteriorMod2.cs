@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f4";
+        public static readonly string SOS2EXPversion = "V91f5";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -121,8 +121,8 @@ namespace SaveOurShip2
 			options.Label("SoS.Settings.DifficultySoS".Translate("0.5", "10", "1", Math.Round(difficultySoS, 1).ToString()), -1f, "SoS.Settings.DifficultySoS.Desc".Translate());
 			difficultySoS = options.Slider((float)difficultySoS, 0.5f, 10f);
 
-			options.Label("SoS.Settings.FrequencySoS".Translate("0.5", "10", "1", Math.Round(frequencySoS, 1).ToString()), -1f, "SoS.Settings.FrequencySoS.Desc".Translate());
-			frequencySoS = options.Slider((float)frequencySoS, 0.5f, 10f);
+			options.Label("SoS.Settings.FrequencySoS".Translate("0", "10", "1", Math.Round(frequencySoS, 1).ToString()), -1f, "SoS.Settings.FrequencySoS.Desc".Translate());
+			frequencySoS = options.Slider((float)frequencySoS, 0f, 10f);
 
 			options.Label("SoS.Settings.NavyShipChance".Translate("0", "1", "0.2", Math.Round(navyShipChance, 1).ToString()), -1f, "SoS.Settings.NavyShipChance.Desc".Translate());
 			navyShipChance = options.Slider((float)navyShipChance, 0f, 1f);

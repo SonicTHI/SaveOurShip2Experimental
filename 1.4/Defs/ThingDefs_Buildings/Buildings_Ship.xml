@@ -634,7 +634,7 @@
 		<defName>ShipAirlockBeam</defName>
 		<label>docking clamp</label>
 		<designatorDropdown>Ship_Airlocks</designatorDropdown>
-		<description>One half of a system for attaching spacecraft. Place two of these directly adjacent to a vacuum-facing airlock, and that airlock will gain the ability to extend a 3x3 docking tube. No special equipment is necessary on the other end; simply line the tube up with the other ship's airlock.\n\nSpacecraft connected by the docking tube are treated as one unit for purposes of interplanetary travel, but the tube is not rated for atmospheric re-entry and ships will automatically decouple before landing.</description>
+		<description>One half of a system for attaching spacecraft. Place two of these directly adjacent to a vacuum-facing airlock facing the same way. The airlock will gain the ability to extend a docking tube up to 3 tiles long. No special equipment is necessary on the other end; simply line the tube up with the other ship's airlock. You can also connect it to other airlocks.\n\nThe tube is not rated for combat maneuvers, interplanetary travel and atmospheric re-entry so ships will automatically decouple.</description>
 		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>

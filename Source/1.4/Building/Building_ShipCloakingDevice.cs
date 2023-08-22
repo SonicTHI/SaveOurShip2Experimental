@@ -46,7 +46,16 @@ namespace RimWorld
                     {
                         if (net != null && net.StorageCapacityRaw > 0)
                         {
-                            net.AddDepletion(0.1f);
+                            float f = 1f + net.StorageCapacityRaw / 10000f;
+                            if (f > net.StorageCapacity) //all cloaks off
+                            {
+                                foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)
+                                {
+                                    cloak.flickComp.SwitchIsOn = false;
+                                }
+                            }
+                            else
+                                net.AddDepletion(f);
                         }
                     }
                 }

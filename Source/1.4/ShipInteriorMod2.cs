@@ -88,8 +88,8 @@ namespace SaveOurShip2
 		public static int
 			minTravelTime = 5,
 			maxTravelTime = 100,
-            offsetUIx,
-			offsetUIy;
+            offsetUIx = 0,
+            offsetUIy = 0;
 	}
 	public class ShipInteriorMod2 : Mod
 	{
@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f5";
+        public static readonly string SOS2EXPversion = "V91f6";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -146,11 +146,11 @@ namespace SaveOurShip2
 			options.Gap();
             options.CheckboxLabeled("SoS.Settings.PersistShipUI".Translate(), ref persistShipUI, "SoS.Settings.PersistShipUI.Desc".Translate());
             options.Label("SoS.Settings.OffsetUIx".Translate(), -1f, "SoS.Settings.OffsetUIx.Desc".Translate());
-			string bufferX = "0";
+			string bufferX = offsetUIx.ToString();
 			options.TextFieldNumeric<int>(ref offsetUIx, ref bufferX, int.MinValue, int.MaxValue);
 
 			options.Label("SoS.Settings.OffsetUIy".Translate(), -1f, "SoS.Settings.OffsetUIy.Desc".Translate());
-			string bufferY = "0";
+			string bufferY = offsetUIy.ToString();
 			options.TextFieldNumeric<int>(ref offsetUIy, ref bufferY, int.MinValue, int.MaxValue);
 
 			options.End();

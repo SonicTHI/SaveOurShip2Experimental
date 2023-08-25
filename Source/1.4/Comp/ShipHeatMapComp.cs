@@ -43,7 +43,7 @@ namespace RimWorld
             {
                 foreach (CompShipHeatSink sink in net.Sinks)
                 {
-                    sink.heatStored = sink.Props.heatCapacity * sink.myNet.RatioInNetwork;
+                    sink.heatStored = sink.Props.heatCapacity * sink.myNet.RatioInNetworkRaw;
                     sink.depletion = sink.Props.heatCapacity * sink.myNet.DepletionRatio;
                 }
             }
@@ -1082,7 +1082,7 @@ namespace RimWorld
                 if (anyMapEngineCanActivate) //set AI heading
                 {
                     //retreat
-                    if (enemyRetreating || totalThreat / (OriginMapComp.totalThreat * ModSettings_SoS.difficultySoS) < 0.3f || powerRemaining / powerCapacity < 0.1f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.6f || Find.TickManager.TicksGame > BattleStartTick + 90000)
+                    if (enemyRetreating || totalThreat / (OriginMapComp.totalThreat * ModSettings_SoS.difficultySoS) < 0.4f || powerRemaining / powerCapacity < 0.2f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
                     {
                         Heading = -1;
                         enemyRetreating = true;

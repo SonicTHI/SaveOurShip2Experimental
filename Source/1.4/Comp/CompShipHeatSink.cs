@@ -47,7 +47,7 @@ namespace RimWorld
         public override void PostDestroy(DestroyMode mode, Map previousMap)
         {
             if (myNet != null)
-                PushHeat(0, Props.heatCapacity * myNet.RatioInNetwork * HeatPushMult);
+                PushHeat(0, Props.heatCapacity * myNet.RatioInNetworkRaw * HeatPushMult);
             base.PostDestroy(mode, previousMap);
         }
         public override void PostDeSpawn(Map map)
@@ -60,7 +60,7 @@ namespace RimWorld
             //save heat to sinks on save, value clamps
             if (myNet != null && Scribe.mode == LoadSaveMode.Saving)
             {
-                heatStored = Props.heatCapacity * myNet.RatioInNetwork;
+                heatStored = Props.heatCapacity * myNet.RatioInNetworkRaw;
                 depletion = Props.heatCapacity * myNet.DepletionRatio;
             }
             Scribe_Values.Look<float>(ref depletion, "depletion");
@@ -90,11 +90,11 @@ namespace RimWorld
                     if (myNet.venting)
                         AddDepletionToNetwork(Props.heatVent);
                     else if (!mapComp.InCombat && !mapComp.Cloaks.Any(c => c.active))
-                        RemoveDepletionFromNetwork(Props.heatVent / 5);
+                        RemoveDepletionFromNetwork(Props.heatVent / 10);
                 }
                 if (myNet.StorageUsed > 0)
                 {
-                    float ratio = myNet.RatioInNetwork;
+                    float ratio = myNet.RatioInNetworkRaw;
                     if (ratio > 0.7f)
                     {
                         FleckMaker.ThrowHeatGlow(parent.Position, parent.Map, parent.DrawSize.x * 0.5f * Mathf.Pow(ratio, 3));
@@ -127,7 +127,7 @@ namespace RimWorld
                     ResourceBank.SoundDefOf.ShipPurgeHiss.PlayOneShot(parent);
                 GenSpawn.Spawn(obj, parent.Position, map);
                 RemHeatFromNetwork(Props.heatVent);
-                if (myNet.RatioInNetwork <= 0.01f)
+                if (myNet.RatioInNetworkRaw <= 0.01f)
                     myNet.venting = false;
             }
         }

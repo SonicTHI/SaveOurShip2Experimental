@@ -20,14 +20,14 @@ namespace RimWorld
         public HashSet<Building_ShipBridge> TacCons = new HashSet<Building_ShipBridge>();
         public HashSet<Building_ShipBridge> PilCons = new HashSet<Building_ShipBridge>();
         public int GridID;
-        public float StorageCapacity 
+        public float StorageCapacity //usable capacity
         { 
             get
             {
                 return StorageCapacityRaw * (1 - depletionRatio);
             }
         }
-        public float StorageCapacityRaw
+        public float StorageCapacityRaw //total capacity
         {
             get;
             private set;
@@ -40,7 +40,7 @@ namespace RimWorld
         private bool depletionDirty = true; //Depletion has been added/removed
         private float ratioInNetwork = 0;
         private float depletionRatio = 0;
-        public float RatioInNetwork
+        public float RatioInNetworkRaw
         {
             get
             {
@@ -57,6 +57,28 @@ namespace RimWorld
                         return StorageCapacityRaw = 0;
                     }
                     ratioInNetwork = Mathf.Clamp(StorageUsed / StorageCapacityRaw, 0, 1);
+                    ratioDirty = false;
+                }
+                return ratioInNetwork;
+            }
+        }
+        public float RatioInNetwork
+        {
+            get
+            {
+                if (ratioDirty)
+                {
+                    if (float.IsNaN(StorageUsed))
+                    {
+                        Log.Warning("NaN prevented in RatioInNetwork!");
+                        StorageUsed = 0;
+                    }
+                    if (StorageCapacityRaw <= 0)
+                    {
+                        ratioDirty = false;
+                        return StorageCapacityRaw = 0;
+                    }
+                    ratioInNetwork = Mathf.Clamp(StorageUsed / StorageCapacity, 0, 1);
                     ratioDirty = false;
                 }
                 return ratioInNetwork;

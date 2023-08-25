@@ -434,7 +434,7 @@ namespace RimWorld
                             icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/ActiveVent"),
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipHeatPurge"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeDesc"),
-                            disabled = heatNet.venting || heatNet.RatioInNetwork < 0.1f,
+                            disabled = heatNet.venting || heatNet.RatioInNetworkRaw < 0.1f,
                             disabledReason = heatNet.venting ? TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeVenting") : TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeNotEnough")
                         };
                         yield return vent;

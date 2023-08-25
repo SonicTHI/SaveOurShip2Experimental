@@ -109,7 +109,7 @@ namespace SaveOurShip2
                     if (net2 != null)
                     {
                         Rect rect4 = new Rect(screenHalf - 235, baseY - 40, 200, 35);
-                        ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetwork, net2.DepletionRatio,
+                        ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetworkRaw, net2.DepletionRatio,
                             ResourceBank.HeatTex, ResourceBank.DepletionTex);
                         rect4.y += 7;
                         rect4.x = screenHalf - 220;
@@ -145,7 +145,7 @@ namespace SaveOurShip2
                     if (net2 != null)
                     {
                         Rect rect4 = new Rect(screenHalf + 435, baseY - 40, 200, 35);
-                        ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetwork, net2.DepletionRatio,
+                        ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetworkRaw, net2.DepletionRatio,
                             ResourceBank.HeatTex, ResourceBank.DepletionTex);
                         rect4.y += 7;
                         rect4.x = screenHalf + 455;

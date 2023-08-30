@@ -10,7 +10,7 @@
 	<SoS.Settings.NavyShipChance.Desc>How likely navies will appear in random encounters.</SoS.Settings.NavyShipChance.Desc>
 	
 	<SoS.Settings.FleetChance>Random fleet chance (Min: {0} Max: {1} Default: {2} Current: {3})</SoS.Settings.FleetChance>
-	<SoS.Settings.FleetChance.Desc>Chance for random unknown enemy ships and traders to be fleets.</SoS.Settings.FleetChance.Desc>
+	<SoS.Settings.FleetChance.Desc>Chance for random unknown enemy ships and traders to be fleets. Will be ignored at very low or high combat rating.</SoS.Settings.FleetChance.Desc>
 	
 	<SoS.Settings.EasyMode>Easy boarding mode</SoS.Settings.EasyMode>
 	<SoS.Settings.EasyMode.Desc>If checked, will prevent player pawns from dying to point defense and enable player pods and shuttles landing outside of enemy ships in combat.</SoS.Settings.EasyMode.Desc>

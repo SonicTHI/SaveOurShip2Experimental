@@ -13,17 +13,18 @@ namespace RimWorld
     [StaticConstructorOnStartup]
     public class Building_ArchotechSpore : Building_ShipBridge
     {
-        private static Graphic eyeGraphic = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Archotech_DeusXMachine_Eye", ShaderDatabase.MetaOverlay, new Vector2(5, 8), Color.white, Color.white);
-        public float mood => Consciousness==null ? 1 : Consciousness.needs.mood.CurLevel * 2; //1 is neutral, 2 is super happy, 0 is MURDER
+        private readonly static Graphic eyeGraphic = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Archotech_DeusXMachine_Eye", ShaderDatabase.MetaOverlay, new Vector2(5, 8), Color.white, Color.white);
+        static readonly float fieldCostSoothe = 10f;
+        static readonly float fieldCostShock = 2f;
+        static readonly float fieldCostInsanity = 5f;
+        static readonly float fieldCostPsylink = 25f;
+        readonly StatDef pillars = StatDef.Named("ArchotechPillarsConnected");
+        public float mood => Consciousness == null ? 1 : Consciousness.needs.mood.CurLevel * 2; //1 is neutral, 2 is super happy, 0 is MURDER
         public float fieldStrength = 0f;
         static int lastGiftTick = 0;
         int lastPrankTick = 0;
         bool unlockedPsy = false;
         bool ideoCrisis = false;
-        ResearchProjectDef PsyProj = ResearchProjectDef.Named("ArchotechPsychicField");
-        ResearchProjectDef ManipProj = ResearchProjectDef.Named("ArchotechPsychicManipulation");
-        ResearchProjectDef PsylinkProj = ResearchProjectDef.Named("ArchotechPsylink");
-        StatDef pillars = StatDef.Named("ArchotechPillarsConnected");
         public bool newSpore = false;
         int MeditationTicks = 0;
 
@@ -91,7 +92,7 @@ namespace RimWorld
                 lastPrankTick = tick+Rand.Range(40000,80000);
             }
 
-            if(unlockedPsy || PsyProj.IsFinished)
+            if(unlockedPsy || ResourceBank.ResearchProjectDefOf.ArchotechPsychicField.IsFinished)
             {
                 unlockedPsy = true;
                 fieldStrength += 0.001f * (1+ NumConnectedPillars);
@@ -406,7 +407,7 @@ namespace RimWorld
                 };
                 giz.Add(Prank);
             }
-            if(ManipProj.IsFinished)
+            if (ResourceBank.ResearchProjectDefOf.ArchotechPsychicManipulation.IsFinished)
             {
                 Command_Action GenerateSoothe = new Command_Action
                 {
@@ -428,7 +429,7 @@ namespace RimWorld
                                     map.gameConditionManager.RegisterCondition(soothe);
                                     SoundDefOf.PsychicSootheGlobal.PlayOneShotOnCamera(Find.CurrentMap); 
                                     FleckMaker.Static(Position, Map, FleckDefOf.PsycastAreaEffect, 10f); 
-                                    fieldStrength -= 2; 
+                                    fieldStrength -= fieldCostSoothe; 
                                 });
                                 options.Add(op);
                             }
@@ -440,10 +441,10 @@ namespace RimWorld
                         }
                     },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechCommandSoothe"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandSootheDesc"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandSootheDesc", fieldCostSoothe),
                     icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandSoothe")
                 };
-                if (fieldStrength < 2)
+                if (fieldStrength < fieldCostSoothe)
                 {
                     GenerateSoothe.disabled = true;
                     GenerateSoothe.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNotEnoughFieldStrength");
@@ -469,10 +470,10 @@ namespace RimWorld
                         }
                     },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechCommandShock"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandShockDesc"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandShockDesc", fieldCostShock),
                     icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandShock")
                 };
-                if (fieldStrength < 0.5f)
+                if (fieldStrength < fieldCostShock)
                 {
                     shockABrain.disabled = true;
                     shockABrain.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNotEnoughFieldStrength");
@@ -498,17 +499,17 @@ namespace RimWorld
                         }
                     },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechCommandInsanity"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandInsanityDesc"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandInsanityDesc", fieldCostInsanity),
                     icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandInsanity")
                 };
-                if (fieldStrength < 1f)
+                if (fieldStrength < fieldCostInsanity)
                 {
                     insaneInTheBrain.disabled = true;
                     insaneInTheBrain.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNotEnoughFieldStrength");
                 }
                 giz.Add(insaneInTheBrain);
             }
-            if (ModsConfig.RoyaltyActive && Find.ResearchManager.GetProgress(PsylinkProj) >= PsylinkProj.CostApparent)
+            if (ModsConfig.RoyaltyActive && Find.ResearchManager.GetProgress(ResourceBank.ResearchProjectDefOf.ArchotechPsylink) >= ResourceBank.ResearchProjectDefOf.ArchotechPsylink.CostApparent)
             {
                 Command_Action formPsylink = new Command_Action
                 {
@@ -526,7 +527,7 @@ namespace RimWorld
                                         if (pawn.GetPsylinkLevel() < 6)
                                         {
                                             pawn.ChangePsylinkLevel(1);
-                                            fieldStrength -= 10f;
+                                            fieldStrength -= fieldCostPsylink;
                                             SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
                                             FleckMaker.Static(Position, Map, FleckDefOf.PsycastAreaEffect, 10f);
                                         }
@@ -542,10 +543,10 @@ namespace RimWorld
                         }
                     },
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechCommandPsylink"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandPsylinkDesc"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandPsylinkDesc", fieldCostPsylink),
                     icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandPsylink")
                 };
-                if (fieldStrength < 10f)
+                if (fieldStrength < fieldCostPsylink)
                 {
                     formPsylink.disabled = true;
                     formPsylink.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNotEnoughFieldStrength");
@@ -681,16 +682,15 @@ namespace RimWorld
         void TargetForBrainShock()
         {
             Find.Targeter.BeginTargeting(TargetingParameters.ForAttackAny(), delegate (LocalTargetInfo target) {
-                if (target.HasThing && target.Thing is Pawn)
+                if (target.HasThing && target.Thing is Pawn pawn)
                 {
-                    Pawn pawn = (Pawn)target.Thing;
                     Hediff hediff = HediffMaker.MakeHediff(HediffDefOf.PsychicShock, pawn);
                     BodyPartRecord result = null;
                     pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.ConsciousnessSource).TryRandomElement(out result);
                     pawn.health.AddHediff(hediff, result);
-                    fieldStrength -= 0.5f;
+                    fieldStrength -= fieldCostShock;
                     SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
-                    if (KeyBindingDefOf.QueueOrder.IsDownEvent && fieldStrength>=0.5f)
+                    if (KeyBindingDefOf.QueueOrder.IsDownEvent && fieldStrength >= fieldCostShock)
                         TargetForBrainShock();
                 }
             });
@@ -699,13 +699,12 @@ namespace RimWorld
         void TargetForInsanity()
         {
             Find.Targeter.BeginTargeting(TargetingParameters.ForAttackAny(), delegate (LocalTargetInfo target) {
-                if (target.HasThing && target.Thing is Pawn)
+                if (target.HasThing && target.Thing is Pawn pawn)
                 {
-                    Pawn pawn = (Pawn)target.Thing;
                     pawn.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.Berserk, null, forceWake: true);
-                    fieldStrength -= 1f;
+                    fieldStrength -= fieldCostInsanity;
                     SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
-                    if (KeyBindingDefOf.QueueOrder.IsDownEvent && fieldStrength >= 1f)
+                    if (KeyBindingDefOf.QueueOrder.IsDownEvent && fieldStrength >= fieldCostInsanity)
                         TargetForInsanity();
                 }
             });

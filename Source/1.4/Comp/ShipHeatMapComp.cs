@@ -514,8 +514,10 @@ namespace RimWorld
                     CR = 30;
                 if (CR > 100 && !fleet)
                 {
-                    if (CR > 2500 && (float)ModSettings_SoS.fleetChance < 80) //past this more fleets due to high CR
-                        fleet = Rand.Chance(80);
+                    if (CR > 2500 && (float)ModSettings_SoS.fleetChance < 0.8f) //past this more fleets due to high CR
+                        fleet = Rand.Chance(0.8f);
+                    else if (CR > 2000 && (float)ModSettings_SoS.fleetChance < 0.6f)
+                        fleet = Rand.Chance(0.6f);
                     else
                         fleet = Rand.Chance((float)ModSettings_SoS.fleetChance);
                 }

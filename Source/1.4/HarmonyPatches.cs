@@ -3481,7 +3481,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Pawn negotiator, Faction faction, ref DiaNode __result)
 		{
-			if (faction.def.CanEverBeNonHostile && Find.ResearchManager.GetProgress(ResearchProjectDef.Named("ArchotechBroadManipulation")) >= ResearchProjectDef.Named("ArchotechBroadManipulation").CostApparent)
+			if (faction.def.CanEverBeNonHostile && Find.ResearchManager.GetProgress(ResourceBank.ResearchProjectDefOf.ArchotechBroadManipulation) >= ResourceBank.ResearchProjectDefOf.ArchotechBroadManipulation.CostApparent)
 			{
 				Building_ArchotechSpore spore = null;
 				foreach (Map map in Find.Maps)
@@ -3498,15 +3498,15 @@ namespace SaveOurShip2
 						}
 					}
 				}
-				DiaOption increase = new DiaOption(TranslatorFormattedStringExtensions.Translate("ArchotechGoodwillPlus"));
-				DiaOption decrease = new DiaOption(TranslatorFormattedStringExtensions.Translate("ArchotechGoodwillMinus"));
+				DiaOption increase = new DiaOption(TranslatorFormattedStringExtensions.Translate("ArchotechGoodwillPlus", 10));
+				DiaOption decrease = new DiaOption(TranslatorFormattedStringExtensions.Translate("ArchotechGoodwillMinus", 10));
 				increase.action = delegate
 				{
 					faction.TryAffectGoodwillWith(Faction.OfPlayer, 10, canSendMessage: false);
-					spore.fieldStrength -= 3;
+					spore.fieldStrength -= 10;
 				};
 				increase.linkLateBind = (() => FactionDialogMaker.FactionDialogFor(negotiator, faction));
-				if (spore == null || spore.fieldStrength < 3)
+				if (spore == null || spore.fieldStrength < 10)
 				{
 					increase.disabled = true;
 					increase.disabledReason = "Insufficient psychic field strength";
@@ -3514,10 +3514,10 @@ namespace SaveOurShip2
 				decrease.action = delegate
 				{
 					faction.TryAffectGoodwillWith(Faction.OfPlayer, -10, canSendMessage: false);
-					spore.fieldStrength -= 3;
+					spore.fieldStrength -= 10;
 				};
 				decrease.linkLateBind = (() => FactionDialogMaker.FactionDialogFor(negotiator, faction));
-				if (spore == null || spore.fieldStrength < 3)
+				if (spore == null || spore.fieldStrength < 10)
 				{
 					decrease.disabled = true;
 					decrease.disabledReason = "Insufficient psychic field strength";

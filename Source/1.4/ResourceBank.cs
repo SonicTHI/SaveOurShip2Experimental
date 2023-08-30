@@ -159,6 +159,7 @@ namespace SaveOurShip2
             public static ResearchProjectDef ArchotechPsychicField;
             public static ResearchProjectDef ArchotechPsychicManipulation;
             public static ResearchProjectDef ArchotechPsylink;
+            public static ResearchProjectDef ArchotechBroadManipulation;
         }
 
 		[DefOf]

@@ -30,6 +30,7 @@
             <li>CorvetteMartian</li>
             <li>BomberHeavy</li>
             <li>FighterMedium</li>
+            <li>CruiserCrab</li>
         </enemyShipDefs>
     </SpaceNavyDef>
     <SpaceNavyDef ParentName="SpaceNavy">

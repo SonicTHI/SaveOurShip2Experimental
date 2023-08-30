@@ -92,8 +92,8 @@
 	<SoSShuttles>Shuttles</SoSShuttles>
 	<SporeNeedsName>Your archotech spore requests that you grant it a name.</SporeNeedsName>
 	<ArchoGift>Unlocks archotech gifts</ArchoGift>
-	<ArchotechGoodwillPlus>Psychically increase goodwill (+10, costs 3 field strength)</ArchotechGoodwillPlus>
-	<ArchotechGoodwillMinus>Psychically decrease goodwill (-10, costs 3 field strength)</ArchotechGoodwillMinus>
+	<ArchotechGoodwillPlus>Psychically increase goodwill (+10, costs {0} field strength)</ArchotechGoodwillPlus>
+	<ArchotechGoodwillMinus>Psychically decrease goodwill (-10, costs {0} field strength)</ArchotechGoodwillMinus>
 	
 	<MechanitesInHomeArea>Mechanites!</MechanitesInHomeArea>
     <MechanitesInHomeAreaDesc>Disassembler mechanites have infested the home area.</MechanitesInHomeAreaDesc>

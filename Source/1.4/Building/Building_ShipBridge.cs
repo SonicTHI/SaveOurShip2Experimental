@@ -625,10 +625,12 @@ namespace RimWorld
                             {
                                 action = delegate
                                 {
+                                    float CR = Mathf.Max(mapComp.MapThreat() * 0.9f, 1500);
+                                    SpaceNavyDef mechNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
                                     AttackableShip attacker = new AttackableShip
                                     {
-                                        attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechSphereLarge"),
-                                        spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
+                                        spaceNavyDef = mechNavyDef,
+                                        attackableShip = ShipInteriorMod2.RandomValidShipFrom(mechNavyDef.enemyShipDefs, CR, false, true),
                                         shipFaction = Faction.OfMechanoids
                                     };
                                     mapComp.StartShipEncounter(this, attacker);

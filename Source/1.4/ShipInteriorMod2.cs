@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f9";
+        public static readonly string SOS2EXPversion = "V91f10";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -847,7 +847,7 @@ namespace SaveOurShip2
 							{
 								if (def.defName.Equals("Turret_MiniTurret"))
                                     def = DefDatabase<ThingDef>.GetNamed("Turret_AutoMiniTurret");
-                                else if (def.defName.Equals("Building_TurretGun"))
+                                else if (def.defName.Equals("Turret_Autocannon"))
                                     def = DefDatabase<ThingDef>.GetNamed("Turret_AutoChargeBlaster");
                                 else if (def.defName.Equals("Turret_Sniper"))
                                     def = DefDatabase<ThingDef>.GetNamed("Turret_AutoInferno");

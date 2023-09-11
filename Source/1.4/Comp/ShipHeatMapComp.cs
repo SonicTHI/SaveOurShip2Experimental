@@ -1089,7 +1089,7 @@ namespace RimWorld
                 if (anyMapEngineCanActivate) //set AI heading
                 {
                     //retreat
-                    if (enemyRetreating || totalThreat / (OriginMapComp.totalThreat * ModSettings_SoS.difficultySoS) < 0.4f || powerRemaining / powerCapacity < 0.2f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
+                    if (enemyRetreating || totalThreat / OriginMapComp.totalThreat < 0.4f || powerRemaining / powerCapacity < 0.2f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
                     {
                         Heading = -1;
                         enemyRetreating = true;

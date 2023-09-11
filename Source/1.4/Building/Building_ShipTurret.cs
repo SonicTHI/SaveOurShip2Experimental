@@ -290,12 +290,10 @@ namespace RimWorld
                                 {
                                     if ((Rotation == new Rot4(mapComp.EngineRot) && mapComp.Heading == -1) || (Rotation == new Rot4(mapComp.EngineRot + 2) && mapComp.Heading == 1))
                                     {
-                                        if (PlayerControlled)
+                                        if (PlayerControlled || (mapComp.enemyRetreating && mapComp.ShipCombatMasterMap == Map))
                                             return;
                                         else
-                                        {
                                             mapComp.Heading = 1;
-                                        }
                                     }
                                 }
                                 if (burstWarmupTicksLeft > 0)

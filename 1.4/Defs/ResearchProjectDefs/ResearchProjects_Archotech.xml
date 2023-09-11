@@ -288,7 +288,7 @@
     <researchViewX>5</researchViewX>
     <researchViewY>2</researchViewY>
 	<discoveredLetterTitle>Archotech pillar detected</discoveredLetterTitle>
-    <discoveredLetterText>You have managed to discern the location of an archotech pillar! This specimen is apparently being studied by a mechanoid hive on one of the planet's moons.\n\nScans indicate the hive is defended by a very large mechanoid warship.\n\nYou will need to load a shuttle with your raiding party, then select the "Moon Hive" option - at which point you will have to fight two simultaneous battles, one on the surface and one against the warship. Be sure your shuttle is fully fueled.</discoveredLetterText>
+    <discoveredLetterText>You have managed to discern the location of an archotech pillar! This specimen is apparently being studied by a mechanoid hive on one of the planet's moons.\n\nScans indicate the hive is defended by a very large mechanoid warship.\n\nTo approach the site select the "Moon Hive" option on your bridge.</discoveredLetterText>
   </ResearchProjectDef>
   
   <ResearchProjectDef ParentName="ArchotechResearchProjectBase">

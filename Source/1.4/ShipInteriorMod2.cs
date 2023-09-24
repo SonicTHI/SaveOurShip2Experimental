@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f10";
+        public static readonly string SOS2EXPversion = "V91f11";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -2009,10 +2009,10 @@ namespace SaveOurShip2
 				}
 				if (sourceMapIsSpace)
                 {
-                    if (targetMap.IsSpace()) //to ground 10%
-                        fuelNeeded *= 0.1f;
-                    else //same map 1%
+                    if (targetMap.IsSpace()) //space map 1%
                         fuelNeeded *= 0.01f;
+                    else //to ground 10%
+                        fuelNeeded *= 0.1f;
                 }
 				foreach (CompRefuelable engine in refuelComps)
 				{

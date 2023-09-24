@@ -5,7 +5,7 @@
 	<ShipStatsShipMass>Weight: {0}</ShipStatsShipMass>
 	<ShipStatsShipMaxTakeoff>Maximum takeoff weight: {0}</ShipStatsShipMaxTakeoff>
 	<ShipStatsShipEnergy>Stored power: {0} / {1} Wd</ShipStatsShipEnergy>
-	<ShipStatsShipHeat>Stored heat: {0} / {1}{2}</ShipStatsShipHeat>
+	<ShipStatsShipHeat>Stored heat: {0} / {1} HU{2}</ShipStatsShipHeat>
 	<ShipStatsShipCombatRating>Combat rating: {0}</ShipStatsShipCombatRating>
 	<ShipStatsShipCombatThrust>Thrust/Weight ratio: {0}</ShipStatsShipCombatThrust>
 	<ShipStatsChemfuel>Fuel needed for takeoff: {0}</ShipStatsChemfuel>
@@ -44,7 +44,7 @@
 	<UnfoldExtending>Extending</UnfoldExtending>
 	<UnfoldRetracting>Retracting</UnfoldRetracting>
 	
-    <ShipHeatStored>Grid heat stored/capacity: {0} HU / {1} HU</ShipHeatStored>
+    <ShipHeatStored>Grid heat stored/capacity: {0} HU / {1} HU ({2})</ShipHeatStored>
 	<CannotFireDueToHeat>{0} cannot fire: not enough heatsink capacity</CannotFireDueToHeat>
 	<CannotFireDueToPower>{0} cannot fire: not enough power</CannotFireDueToPower>
 	<CannotFireDueToAmmo>{0} cannot fire: not enough ammo</CannotFireDueToAmmo>

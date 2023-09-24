@@ -48,7 +48,7 @@ namespace RimWorld
             string output = "";
             if (myNet != null)
             {
-                output += TranslatorFormattedStringExtensions.Translate("ShipHeatStored", Mathf.Round(myNet.StorageUsed), myNet.StorageCapacity);
+                output += TranslatorFormattedStringExtensions.Translate("ShipHeatStored", Mathf.Round(myNet.StorageUsed), myNet.StorageCapacity, myNet.StorageCapacityRaw);
                 if (myNet.RatioInNetworkRaw > 0.9f)
                     output += "\n<color=red>DANGER! Heat level critical!</color>";
                 if (Prefs.DevMode)

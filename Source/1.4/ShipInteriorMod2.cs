@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f11";
+        public static readonly string SOS2EXPversion = "V91f12";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -372,7 +372,7 @@ namespace SaveOurShip2
 		}
 		public static int FindWorldTile()
 		{
-			for (int i = 0; i < 420; i++)//Find.World.grid.TilesCount
+			for (int i = 0; i < Find.World.grid.TilesCount; i++)
 			{
 				if (!Find.World.worldObjects.AnyWorldObjectAt(i) && TileFinder.IsValidTileForNewSettlement(i))
 				{
@@ -382,13 +382,34 @@ namespace SaveOurShip2
 			}
 			return -1;
 		}
-		public static Map GeneratePlayerShipMap(IntVec3 size)
+        public static int FindWorldTilePlayer() //slower, will find tile nearest to ship object pos
+        {
+            float bestAbsLatitude = float.MaxValue;
+            int bestTile = -1;
+            for (int i = 0; i < Find.World.grid.TilesCount; i+=10)
+            {
+                if (Find.World.worldObjects.AnyWorldObjectAt(i) || !TileFinder.IsValidTileForNewSettlement(i))
+                    continue;
+                float absLatitude = Math.Abs(Find.WorldGrid.LongLatOf(i).y);
+                if (absLatitude < bestAbsLatitude)
+                {
+                    bestAbsLatitude = absLatitude;
+                    bestTile = i;
+                }
+            }
+			if (bestTile == -1) //fallback
+			{
+				bestTile = FindWorldTile();
+            }
+            return bestTile;
+        }
+        public static Map GeneratePlayerShipMap(IntVec3 size)
 		{
 			WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("ShipOrbiting"));
 			orbiter.radius = 150;
 			orbiter.theta = -3;
 			orbiter.SetFaction(Faction.OfPlayer);
-			orbiter.Tile = FindWorldTile();
+			orbiter.Tile = FindWorldTilePlayer();
 			Find.WorldObjects.Add(orbiter);
 			Map map = MapGenerator.GenerateMap(size, orbiter, orbiter.MapGeneratorDef);
 			map.fogGrid.ClearAllFog();
@@ -1855,6 +1876,7 @@ namespace SaveOurShip2
 				if (!targetMapIsSpace)
 					targetMap.snowGrid.SetDepth(adjustedPos, 0f);
 				//add all things from area
+				List<Pawn> pawnsCarrying = new List<Pawn>();
 				foreach (Thing t in pos.GetThingList(sourceMap))
 				{
 					if (t is Building b)
@@ -1878,10 +1900,9 @@ namespace SaveOurShip2
                     }
 					else if (t is Pawn p)
                     {
-						if (p.IsCarrying()) //drop and add carried things
+						if (p.IsCarrying())
 						{
-							p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out Thing carriedt);
-                            toSave.Add(carriedt);
+                            pawnsCarrying.Add(p);
                         }
 						if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
                         {
@@ -1897,6 +1918,11 @@ namespace SaveOurShip2
                         }*/
                     }
                     toSave.Add(t);
+                }
+                foreach (Pawn p in pawnsCarrying) //drop and add carried things
+                {
+                    p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out Thing carriedt);
+                    toSave.Add(carriedt);
                 }
 
 				if (sourceMap.zoneManager.ZoneAt(pos) != null && !zonesToCopy.Contains(sourceMap.zoneManager.ZoneAt(pos)))

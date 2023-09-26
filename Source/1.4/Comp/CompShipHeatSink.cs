@@ -88,13 +88,16 @@ namespace RimWorld
                     }
 
                     if (myNet.venting)
-                        AddDepletionToNetwork(Props.heatVent);
+                    {
+                        if (!AddDepletionToNetwork(Props.heatVent))
+                            myNet.venting = false;
+                    }
                     else if (!mapComp.InCombat && !mapComp.Cloaks.Any(c => c.active))
                         RemoveDepletionFromNetwork(Props.heatVent / 10f);
                 }
                 if (myNet.StorageUsed > 0)
                 {
-                    float ratio = myNet.RatioInNetworkRaw;
+                    float ratio = myNet.RatioInNetwork;
                     if (ratio > 0.7f)
                     {
                         FleckMaker.ThrowHeatGlow(parent.Position, parent.Map, parent.DrawSize.x * 0.5f * Mathf.Pow(ratio, 3));
@@ -127,8 +130,6 @@ namespace RimWorld
                     ResourceBank.SoundDefOf.ShipPurgeHiss.PlayOneShot(parent);
                 GenSpawn.Spawn(obj, parent.Position, map);
                 RemHeatFromNetwork(Props.heatVent);
-                if (myNet.RatioInNetworkRaw <= 0.01f)
-                    myNet.venting = false;
             }
         }
         public void PushHeat(float ratio, float heat = 0) //bleed into or adjacent room

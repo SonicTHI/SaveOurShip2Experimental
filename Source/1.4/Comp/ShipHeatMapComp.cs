@@ -205,18 +205,18 @@ namespace RimWorld
         public int BurnTimer = 0;
         public int Heading; //+closer, -apart
         public int BuildingsCount;
-        public int totalThreat;
+        public float totalThreat;
         public float[] threatPerSegment = { 1, 1, 1, 1 };
         //SC cache
-        public bool BridgeDestroyed = false;//calls CheckForDetach
+        public bool BridgeDestroyed = false; //calls CheckForDetach
         public List<ShipCombatProjectile> Projectiles;
         public List<ShipCombatProjectile> TorpsInRange;
-        public List<Building> MapRootListAll = new List<Building>();//all bridges on map
-        public List<Building> MapRootList;//primary bridges //SC rem
+        public List<Building> MapRootListAll = new List<Building>(); //all bridges on map
+        public List<Building> MapRootList; //primary bridges //SC rem
         List<Building> cores = new List<Building>();
 
         public List<ShipCache> shipsOnMap; //SC rem
-        public List<ShipCache> ShipsOnMap//rebuild shipsOnMap cache if it is null //SC rem
+        public List<ShipCache> ShipsOnMap //rebuild shipsOnMap cache if it is null //SC rem
         {
             get
             {

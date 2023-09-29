@@ -898,13 +898,17 @@ namespace RimWorld
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
+            if (!mapComp.InCombat && mapComp.MapRootList.Contains(this))
+                mapComp.MapRootList.Remove(this);
             base.DeSpawn(mode);
         }
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
-			/*SC if (Ship.Bridges.Any(b => b != this && !b.Destroyed)) //if last bridge remove ship or end combat
+            if (!mapComp.InCombat && mapComp.MapRootList.Contains(this))
+                mapComp.MapRootList.Remove(this);
+            /*SC if (Ship.Bridges.Any(b => b != this && !b.Destroyed)) //if last bridge remove ship or end combat
             {
                 if (!mapComp.InCombat)
                 {

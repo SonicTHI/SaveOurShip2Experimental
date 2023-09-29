@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f12";
+        public static readonly string SOS2EXPversion = "V91f13";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1876,7 +1876,7 @@ namespace SaveOurShip2
 				if (!targetMapIsSpace)
 					targetMap.snowGrid.SetDepth(adjustedPos, 0f);
 				//add all things from area
-				List<Pawn> pawnsCarrying = new List<Pawn>();
+				List<Pawn> pawns = new List<Pawn>();
 				foreach (Thing t in pos.GetThingList(sourceMap))
 				{
 					if (t is Building b)
@@ -1900,11 +1900,8 @@ namespace SaveOurShip2
                     }
 					else if (t is Pawn p)
                     {
-						if (p.IsCarrying())
-						{
-                            pawnsCarrying.Add(p);
-                        }
-						if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
+                        pawns.Add(p);
+                        if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
                         {
                             //do not allow kidnapping other fac pawns/animals
                             Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipLaunchFailPawns"), null, MessageTypeDefOf.NegativeEvent);
@@ -1919,10 +1916,11 @@ namespace SaveOurShip2
                     }
                     toSave.Add(t);
                 }
-                foreach (Pawn p in pawnsCarrying) //drop and add carried things
+                foreach (Pawn p in pawns) //stop, drop carried things, add to move list
                 {
                     p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out Thing carriedt);
                     toSave.Add(carriedt);
+					p.CurJob.Clear();
                 }
 
 				if (sourceMap.zoneManager.ZoneAt(pos) != null && !zonesToCopy.Contains(sourceMap.zoneManager.ZoneAt(pos)))

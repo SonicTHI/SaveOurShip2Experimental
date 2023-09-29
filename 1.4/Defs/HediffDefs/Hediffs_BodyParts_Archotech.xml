@@ -128,7 +128,7 @@
     <addsHediff>SoSArchotechNose</addsHediff>
   </RecipeDef>
 
-  <!-- Archotech jaw -->
+  <!-- Archotech jaw - removed due to constant disfig issues>
   <HediffDef ParentName="AddedBodyPartBase">
     <defName>SoSArchotechJaw</defName>
     <label>archotech jaw</label>
@@ -211,6 +211,7 @@
     </appliedOnFixedBodyParts>
     <addsHediff>SoSArchotechJaw</addsHediff>
   </RecipeDef>
+  -->
   
   <!-- Archotech heart -->
   <HediffDef ParentName="AddedBodyPartBase">

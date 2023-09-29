@@ -19,7 +19,7 @@ namespace RimWorld
             for (int i = 0; i < 5; i++)
             {
                 IntVec3 randomCell = cellRect.RandomCell;
-                DoFireExplosion(randomCell, map, 8.9f);
+                DoFireExplosion(randomCell, map, 7.9f);
             }
         }
 

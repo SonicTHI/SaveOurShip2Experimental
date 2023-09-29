@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V91f13";
+        public static readonly string SOS2EXPversion = "V91f14";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1916,12 +1916,12 @@ namespace SaveOurShip2
                     }
                     toSave.Add(t);
                 }
-                foreach (Pawn p in pawns) //stop, drop carried things, add to move list
+                /*foreach (Pawn p in pawns) //stop, drop carried things, add to move list
                 {
                     p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out Thing carriedt);
                     toSave.Add(carriedt);
-					p.CurJob.Clear();
-                }
+					//p.CurJob.Clear();
+                }*/
 
 				if (sourceMap.zoneManager.ZoneAt(pos) != null && !zonesToCopy.Contains(sourceMap.zoneManager.ZoneAt(pos)))
 				{

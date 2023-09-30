@@ -212,7 +212,7 @@ namespace RimWorld
         public List<ShipCombatProjectile> Projectiles;
         public List<ShipCombatProjectile> TorpsInRange;
         public List<Building> MapRootListAll = new List<Building>(); //all bridges on map
-        public List<Building> MapRootList = new List<Building>(); //primary bridges //SC rem
+        public List<Building> MapRootList; //primary bridges //SC rem
         List<Building> cores = new List<Building>();
 
         public List<ShipCache> shipsOnMap; //SC rem

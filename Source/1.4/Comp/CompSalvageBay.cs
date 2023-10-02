@@ -22,7 +22,7 @@ namespace RimWorld
             {
                 yield return item;
             }
-            if (parent.Faction == Faction.OfPlayer && this.parent.Map.Parent.def.defName.Equals("ShipOrbiting") || (Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit")))
+            if (parent.Faction == Faction.OfPlayer && this.parent.Map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting || (Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit")))
 			{
 				List<Map> salvagableMaps = new List<Map>();
                 foreach (Map map in Find.Maps)

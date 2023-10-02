@@ -45,6 +45,7 @@
 	<UnfoldRetracting>Retracting</UnfoldRetracting>
 	
     <ShipHeatStored>Grid heat stored/capacity: {0} HU / {1} HU ({2})</ShipHeatStored>
+	<ShipCloakBroken>Cloak disengaged due to heat depleetion</ShipCloakBroken>
 	<CannotFireDueToHeat>{0} cannot fire: not enough heatsink capacity</CannotFireDueToHeat>
 	<CannotFireDueToPower>{0} cannot fire: not enough power</CannotFireDueToPower>
 	<CannotFireDueToAmmo>{0} cannot fire: not enough ammo</CannotFireDueToAmmo>

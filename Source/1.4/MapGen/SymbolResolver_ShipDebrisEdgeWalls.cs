@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,7 +38,7 @@ namespace RimWorld.BaseGen
             }
             if (Rand.Chance(0.05f))
             {
-                Thing thing2 = ThingMaker.MakeThing(ThingDef.Named("ShipHullTileWrecked"));
+                Thing thing2 = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullTileWrecked);
                 return GenSpawn.Spawn(thing2, c, map, WipeMode.Vanish);
             }
             /*if(Rand.Chance(0.05f))

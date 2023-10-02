@@ -42,6 +42,7 @@ namespace RimWorld
                     active = false;
                 if (active)
                 {
+                    bool turnedOff = false;
                     foreach (ShipHeatNet net in mapComp.cachedNets)
                     {
                         if (net != null && net.StorageCapacityRaw > 0)
@@ -52,11 +53,16 @@ namespace RimWorld
                                 foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)
                                 {
                                     cloak.flickComp.SwitchIsOn = false;
+                                    turnedOff = true;
                                 }
                             }
                             else
                                 net.AddDepletion(f);
                         }
+                    }
+                    if (turnedOff)
+                    {
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCloakBroken"), this, MessageTypeDefOf.NegativeEvent);
                     }
                 }
             }

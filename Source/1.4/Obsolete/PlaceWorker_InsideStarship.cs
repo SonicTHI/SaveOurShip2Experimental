@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using Verse;
 
 namespace RimWorld
@@ -12,12 +13,12 @@ namespace RimWorld
 			{
 				foreach (IntVec3 vec in room.Cells)
 				{
-					if (!vec.Roofed(map) || !vec.GetRoof(map).defName.Equals("RoofShip"))
+					if (!vec.Roofed(map))
 					{
 						return new AcceptanceReport(TranslatorFormattedStringExtensions.Translate("MustPlaceInsideShip"));
 					}
 				}
-				if (def.defName.Equals("ShipSalvageBay") || def.defName.Equals("ShipShuttleBay"))
+				if (def == ResourceBank.ThingDefOf.ShipSalvageBay || def == ResourceBank.ThingDefOf.ShipShuttleBay)
 				{
 					CellRect occupiedRect = new CellRect(center.x, center.z, 1, 1).ExpandedBy(2);
 					foreach (IntVec3 vec in occupiedRect)
@@ -26,7 +27,7 @@ namespace RimWorld
 							return false;
 						foreach (Thing b in vec.GetThingList(map))
 						{
-							if (b.def.defName == "ShipShuttleBay" || b.def.defName == "ShipSalvageBay" || b.def.passability == Traversability.PassThroughOnly || b.def.IsBlueprint)
+							if (b.def == ResourceBank.ThingDefOf.ShipShuttleBay || b.def == ResourceBank.ThingDefOf.ShipSalvageBay || b.def.passability == Traversability.PassThroughOnly || b.def.IsBlueprint)
 								return false;
 						}
 					}

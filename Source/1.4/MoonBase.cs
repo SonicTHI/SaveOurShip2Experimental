@@ -1,4 +1,5 @@
 ﻿using RimWorld.Planet;
+using SaveOurShip2;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,7 +31,7 @@ namespace RimWorld
                 if (radius == 0)
                 {
                     radius = 200f;
-                    Map map = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault()).Map;
+                    Map map = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault()).Map;
                     theta = ((WorldObjectOrbitingShip)map.Parent).theta;
                 }
                 return Vector3.SlerpUnclamped(orbitVec * radius, orbitVec * radius * -1, theta * -1); //TODO phi

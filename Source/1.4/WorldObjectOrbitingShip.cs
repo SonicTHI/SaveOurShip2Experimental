@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using HarmonyLib;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -26,8 +27,9 @@ namespace RimWorld
         public static Vector3 orbitVec = new Vector3(0, 0, 1);
         public static Vector3 orbitVecPolar = new Vector3(0, 1, 0);
 
-        static WorldObjectDef enemyShip = DefDatabase<WorldObjectDef>.GetNamed("ShipEnemy");
         static FieldInfo mapField = typeof(TravelingTransportPods).GetField("initialTile", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public bool IsShip => this.def == ResourceBank.WorldObjectDefOf.ShipEnemy || this.def == ResourceBank.WorldObjectDefOf.WreckSpace;
 
         public override Vector3 DrawPos
         {
@@ -141,7 +143,7 @@ namespace RimWorld
                                 }
                             }
                             StringBuilder stringBuilder = new StringBuilder();
-                            IEnumerable<Pawn> source = map.mapPawns.PawnsInFaction(Faction.OfPlayer).Where(pawn => !pawn.InContainerEnclosed || (pawn.ParentHolder is Thing && !((Thing)pawn.ParentHolder).def.defName.Equals("Ship_CryptosleepCasket")) );
+                            IEnumerable<Pawn> source = map.mapPawns.PawnsInFaction(Faction.OfPlayer).Where(pawn => !pawn.InContainerEnclosed || (pawn.ParentHolder is Thing && ((Thing)pawn.ParentHolder).def != ResourceBank.ThingDefOf.Ship_CryptosleepCasket));
                             if (source.Any())
                             {
                                 StringBuilder stringBuilder2 = new StringBuilder();
@@ -250,7 +252,7 @@ namespace RimWorld
                         icon = ContentFinder<Texture2D>.Get("UI/ShipAbandon_Icon", true)
                     };
                 }
-                if (Prefs.DevMode && !mapComp.InCombat && this.def==enemyShip && !mapComp.BurnUpSet)
+                if (Prefs.DevMode && !mapComp.InCombat && IsShip && !mapComp.BurnUpSet)
                 {
                     yield return new Command_Action
                     {
@@ -301,7 +303,7 @@ namespace RimWorld
         public override bool ShouldRemoveMapNow(out bool alsoRemoveWorldObject)
         {
             var mapcomp = Map.GetComponent<ShipHeatMapComp>();
-            if (this.def==enemyShip && !mapcomp.InCombat && mapcomp.BurnUpSet)
+            if (!mapcomp.InCombat && mapcomp.BurnUpSet)
             {
                 foreach(TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
                 {

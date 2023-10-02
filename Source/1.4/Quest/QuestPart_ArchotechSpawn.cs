@@ -1,4 +1,5 @@
 ﻿using RimWorld.Planet;
+using SaveOurShip2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace RimWorld
 			if (mapParent != null && mapParent.HasMap && Things.Any())
 			{
 				Map map = mapParent.Map;
-				IntVec3 intVec = map.spawnedThings.Where(t=>t.def.defName.Equals("ShipArchotechSpore")).FirstOrDefault().Position;
+				IntVec3 intVec = map.spawnedThings.Where(t=>t.def == ResourceBank.ThingDefOf.ShipArchotechSpore).FirstOrDefault().Position;
 
 				foreach(Thing t in Things)
                 {

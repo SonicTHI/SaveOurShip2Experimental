@@ -34,7 +34,7 @@ namespace RimWorld.QuestGen
         {
             Slate slate = QuestGen.slate;
             IEnumerable<SitePartDefWithParams> enumerable = this.sitePartsParams.GetValue(slate);
-            SpaceSite site = (SpaceSite)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("SiteSpace"));
+            SpaceSite site = (SpaceSite)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.SiteSpace);
             site.SetFaction(null);
             site.Tile = tile.GetValue(slate);
             SitePartDef core = DefDatabase<SitePartDef>.AllDefs.Where(def => def.tags != null && def.tags.Contains("SpaceCore") && ((!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("BlackBoxShipDefeated") && Find.QuestManager.QuestsListForReading.Where(q=>(q.State!=QuestState.EndedFailed&&q.State!=QuestState.EndedOfferExpired&&q.State!=QuestState.EndedUnknownOutcome)&&(q.name.Equals(TranslatorFormattedStringExtensions.Translate("LetterLabelFoundOrbitalSite"))||q.name.Equals("Orbital Site Found")||q.name.Equals("Starship Bow"))).EnumerableNullOrEmpty()) || !def.tags.Contains("SpaceBlackBox"))).RandomElement();

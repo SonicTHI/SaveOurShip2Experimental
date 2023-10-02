@@ -68,10 +68,15 @@ namespace SaveOurShip2
 
 		[DefOf]
 		public static class ThingDefOf
-		{
-			public static ThingDef MechaniteFire;
+        {
+            public static ThingDef Apparel_SpaceSurvivalBelt;
+            public static ThingDef Apparel_SpaceSurvivalBeltDummy;
+            public static ThingDef MechaniteFire;
 			public static ThingDef ShipArchotechSpore;
-			public static ThingDef Ship_Beam;
+            public static ThingDef ShipArchotechPillarB;
+            public static ThingDef ShipArchotechPillarC;
+            public static ThingDef ShipArchotechPillarD;
+            public static ThingDef Ship_Beam;
 			public static ThingDef Ship_Beam_Wrecked;
 			public static ThingDef ShipAirlockWrecked;
 			public static ThingDef ShipHullTileWrecked;
@@ -79,19 +84,28 @@ namespace SaveOurShip2
 			public static ThingDef ShipHullTileMech;
 			public static ThingDef ShipHullTileArchotech;
 			public static ThingDef ShipHullfoamTile;
-			public static ThingDef ShipTorpedo_HighExplosive;
+            public static ThingDef ShipAirlock;
+            public static ThingDef ShipAirlockBeamWall;
+            public static ThingDef ShipAirlockBeamTile;
+            public static ThingDef ShipInside_SolarGenerator;
+            public static ThingDef Ship_SensorClusterAdv;
+            public static ThingDef ShipSpinalAmplifier;
+            public static ThingDef ShipSpinalBarrelPsychic;
+            public static ThingDef ShipTorpedo_HighExplosive;
 			public static ThingDef ShipTorpedo_EMP;
 			public static ThingDef ShipTorpedo_Antimatter;
-			public static ThingDef ShipAirlockBeamWall;
-			public static ThingDef ShipAirlockBeamTile;
-            public static ThingDef Cryptonest;
-            public static ThingDef CrittersleepCasket;
-            public static ThingDef CrittersleepCasketLarge;
-            public static ThingDef PersonalShuttle;
+            public static ThingDef Ship_Engine_Interplanetary;
+            public static ThingDef Ship_Engine_Interplanetary_Large;
+            public static ThingDef ShuttleFuelPods;
             public static ThingDef ShipShuttleBay;
 			public static ThingDef ShipShuttleBayLarge;
 			public static ThingDef ShipSalvageBay;
             public static ThingDef ShipConsoleScience;
+            public static ThingDef Cryptonest;
+            public static ThingDef CrittersleepCasket;
+            public static ThingDef CrittersleepCasketLarge;
+            public static ThingDef Ship_CryptosleepCasket;
+            public static ThingDef PersonalShuttle;
             public static ThingDef SoS2DummyObject;
 			public static ThingDef Mote_HeatsinkPurge;
             public static ThingDef Proj_ShipDebrisA;
@@ -101,6 +115,11 @@ namespace SaveOurShip2
             public static ThingDef Proj_ShipRockA;
             public static ThingDef Proj_ShipRockB;
             public static ThingDef Proj_ShipRockC;
+            public static ThingDef Bullet_Fake_Laser;
+            public static ThingDef Bullet_Ground_Laser;
+            public static ThingDef Bullet_Fake_Psychic;
+            public static ThingDef ShipCombatLaserMote;
+            public static ThingDef DetachedShipPart;
         }
 
 		[DefOf]
@@ -184,6 +203,16 @@ namespace SaveOurShip2
 		public static class SoundDefOf
         {
 			public static SoundDef ShipPurgeHiss;
+        }
+
+        [DefOf]
+        public static class WorldObjectDefOf
+        {
+            public static WorldObjectDef ShipOrbiting;
+            public static WorldObjectDef ShipEnemy;
+            public static WorldObjectDef WreckSpace;
+            public static WorldObjectDef SiteSpace;
+            public static WorldObjectDef MoonPillarSite;
         }
     }
 }

@@ -36,6 +36,22 @@
 		</comps>
 	</WorldObjectDef>
 	<WorldObjectDef>
+		<defName>WreckSpace</defName>
+		<label>Space Wreck</label>
+		<description>A nearby space wreck.</description>
+		<worldObjectClass>WorldObjectOrbitingShip</worldObjectClass>
+		<texture>UI/IncomingShip_Icon_Wreck</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>UI/IncomingShip_Icon_Wreck</expandingIconTexture>
+		<expandingIconPriority>60</expandingIconPriority>
+		<mapGenerator>EmptySpaceMap</mapGenerator>
+		<canBePlayerHome>false</canBePlayerHome>
+		<comps>
+			<li Class="WorldObjectCompProperties_TimedForcedExitShip"/>
+		</comps>
+	</WorldObjectDef>
+	<WorldObjectDef>
 		<defName>SiteSpace</defName>
 		<worldObjectClass>SpaceSite</worldObjectClass>
 		<expandingIcon>true</expandingIcon>

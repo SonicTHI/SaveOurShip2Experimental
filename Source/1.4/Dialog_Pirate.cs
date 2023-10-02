@@ -1,4 +1,5 @@
 ﻿using RimWorld.Planet;
+using SaveOurShip2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -270,7 +271,7 @@ namespace RimWorld
         public override void PostClose()
         {
             base.PostClose();
-            Thing[] bays = map.spawnedThings.Where(t => t.def.defName.Equals("ShipSalvageBay")).ToArray();
+            Thing[] bays = map.spawnedThings.Where(t => t.def == ResourceBank.ThingDefOf.ShipSalvageBay).ToArray();
             for (int i = 0; i < numSalvageBays; i++)
             {
                 ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();

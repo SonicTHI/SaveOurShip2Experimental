@@ -64,7 +64,7 @@ namespace RimWorld
                     continue;
                 }
                 thePawn.TakeDamage(new DamageInfo(DefDatabase<DamageDef>.GetNamed("VacuumDamage"), 1));
-                HealthUtility.AdjustSeverity(thePawn, HediffDef.Named("SpaceHypoxia"), 0.025f);
+                HealthUtility.AdjustSeverity(thePawn, ResourceBank.HediffDefOf.SpaceHypoxia, 0.025f);
             }
             foreach (Pawn thePawn in pawnsToSuffocate)
             {
@@ -73,18 +73,18 @@ namespace RimWorld
                     crib.UpdateState(true);
                     continue;
                 }
-                HealthUtility.AdjustSeverity(thePawn, HediffDef.Named("SpaceHypoxia"), 0.0125f);
+                HealthUtility.AdjustSeverity(thePawn, ResourceBank.HediffDefOf.SpaceHypoxia, 0.0125f);
             }
         }
         public byte ActivateBubble(Pawn pawn)
         {
             foreach (Apparel app in pawn.apparel.WornApparel)
             {
-                if (app.def.defName.Equals("Apparel_SpaceSurvivalBelt"))
+                if (app.def == ResourceBank.ThingDefOf.Apparel_SpaceSurvivalBelt)
                 {
                     pawn.health.AddHediff(ResourceBank.HediffDefOf.SpaceBeltBubbleHediff);
                     pawn.apparel.Remove(app);
-                    pawn.apparel.Wear((Apparel)ThingMaker.MakeThing(ThingDef.Named("Apparel_SpaceSurvivalBeltDummy")),
+                    pawn.apparel.Wear((Apparel)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Apparel_SpaceSurvivalBeltDummy),
                         false, true);
                     GenExplosion.DoExplosion(pawn.Position, pawn.Map, 1, DamageDefOf.Smoke, null, -1, -1f, null, null,
                         null, null, null, 1f);
@@ -104,7 +104,7 @@ namespace RimWorld
                 {
                     return t is Building_ShipAirlock && !((Building_ShipAirlock)t).Outerdoor();
                 };
-                Thing b = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(ThingDef.Named("ShipAirlock")), PathEndMode.Touch, TraverseParms.For(pawn), 99f, otherValidator);
+                Thing b = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(ResourceBank.ThingDefOf.ShipAirlock), PathEndMode.Touch, TraverseParms.For(pawn), 99f, otherValidator);
                 Job Flee = new Job(DefDatabase<JobDef>.GetNamed("FleeVacuum"), b);
                 pawn.jobs.StartJob(Flee, JobCondition.InterruptForced);
             }

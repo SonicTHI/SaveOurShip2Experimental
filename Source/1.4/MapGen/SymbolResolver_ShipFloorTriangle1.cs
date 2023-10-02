@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace RimWorld.BaseGen
                 {
                     if (zee < ecks)
                     {
-                        Thing thing = ThingMaker.MakeThing(ThingDef.Named("ShipHullTileWrecked"), null);
+                        Thing thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullTileWrecked, null);
                         if(topHalf)
                             GenSpawn.Spawn(thing, new IntVec3(rp.rect.minX + rp.rect.Width - ecks, 0, rp.rect.minZ + rp.rect.Height - zee), map, WipeMode.Vanish);
                         else

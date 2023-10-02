@@ -40,7 +40,7 @@ namespace RimWorld
                 else
                     SalvageGeneric.Add(ThingDefOf.ChunkSlagSteel, 1);
             }
-            //Find.WindowStack.Add(new Dialog_SalvageShip(PlayerShip.spawnedThings.Where(t=>t.def.defName.Equals("ShipSalvageBay")).Count(), PlayerShip));
+            //Find.WindowStack.Add(new Dialog_SalvageShip(PlayerShip.spawnedThings.Where(t=>t.def == ResourceBank.ThingDefOf.ShipSalvageBay).Count(), PlayerShip));
         }
         public static void SalvageThing(Thing thing)
         {

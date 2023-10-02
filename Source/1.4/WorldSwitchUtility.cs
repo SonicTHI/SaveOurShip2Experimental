@@ -334,7 +334,7 @@ namespace SaveOurShip2
         {
             if (Find.TickManager.TicksGame % 600 == 0)
             {
-                var check = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault());
+                var check = (MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault();
                 if (check == null)
                     return;
                 Map map = check.Map;

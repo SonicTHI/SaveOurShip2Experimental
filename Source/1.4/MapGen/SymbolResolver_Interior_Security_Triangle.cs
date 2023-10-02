@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace RimWorld.BaseGen
             {
                 foreach (IntVec3 current in rp.rect)
                 {
-                    if (!current.GetThingList(map).Any(t => t.def.defName.Equals("ShipHullTileWrecked")))
+                    if (!current.GetThingList(map).Any(t => t.def == ResourceBank.ThingDefOf.ShipHullTileWrecked))
                         continue;
                     if (Rand.Chance(0.025f))
                     {

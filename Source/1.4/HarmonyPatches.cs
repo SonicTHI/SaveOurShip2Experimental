@@ -949,7 +949,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(MapPawns __instance, ref bool __result)
 		{
-			Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault())?.Map;
+			Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
 			if (mapPlayer != null)
 			{
 				foreach (Building_ShipAdvSensor sensor in Find.World.GetComponent<PastWorldUWO2>().Sensors)
@@ -966,7 +966,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Map map, ref bool __result)
 		{
-			Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault())?.Map;
+			Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
 			if (mapPlayer != null)
 			{
 				foreach (Building_ShipAdvSensor sensor in Find.World.GetComponent<PastWorldUWO2>().Sensors)
@@ -1077,7 +1077,7 @@ namespace SaveOurShip2
 					if (Rand.Chance(0.025f * negotiator.skills.GetSkill(SkillDefOf.Social).levelInt + negotiator.Map.GetComponent<ShipHeatMapComp>().MapThreat() / 400 - bounty / 40))
 					{
 						//social + shipstr vs bounty for piracy dialog
-						Find.WindowStack.Add(new Dialog_Pirate(__instance.Map.listerBuildings.allBuildingsColonist.Where(t => t.def.defName.Equals("ShipSalvageBay")).Count(), __instance));
+						Find.WindowStack.Add(new Dialog_Pirate(__instance.Map.listerBuildings.allBuildingsColonist.Where(t => t.def == ResourceBank.ThingDefOf.ShipSalvageBay).Count(), __instance));
 						bounty += 4;
 						Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty = bounty;
 					}
@@ -1272,7 +1272,7 @@ namespace SaveOurShip2
 				{
 					hasEngine = true;
 					fuelHad += engine.refuelComp.Fuel;
-					if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+					if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
 						fuelHad += engine.refuelComp.Fuel;
 				}
 				else if (!hasPilot && part is Building_ShipBridge bridge && bridge.TryGetComp<CompPowerTrader>().PowerOn)
@@ -2107,7 +2107,7 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(Building_Casket __instance, List<ThingComp> ___comps)
 		{
-			if (__instance.def.defName.Equals("Cryptonest"))
+			if (__instance.def == ResourceBank.ThingDefOf.Cryptonest)
 			{
 				if (___comps != null)
 				{
@@ -2130,7 +2130,7 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(Building_CryptosleepCasket __instance)
 		{
-			if (__instance.def.defName.Equals("Cryptonest"))
+			if (__instance.def == ResourceBank.ThingDefOf.Cryptonest)
 			{
 				return false;
 			}
@@ -2138,7 +2138,7 @@ namespace SaveOurShip2
 		}
 		public static void Postfix(IEnumerable<FloatMenuOption> __result, Building_CryptosleepCasket __instance)
 		{
-			if (__instance.def.defName.Equals("Cryptonest"))
+			if (__instance.def == ResourceBank.ThingDefOf.Cryptonest)
 			{
 				__result = new List<FloatMenuOption>();
 			}
@@ -2685,7 +2685,7 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(List<ActiveDropPodInfo> dropPods, IntVec3 near, Map map)
 		{
-			if (map.Parent != null && map.Parent.def.defName.Equals("ShipOrbiting"))
+			if (map.Parent != null && map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
 			{
 				TransportPodsArrivalActionUtility.RemovePawnsFromWorldPawns(dropPods);
 				for (int i = 0; i < dropPods.Count; i++)
@@ -2776,19 +2776,19 @@ namespace SaveOurShip2
 		}
 	}
 
-	/*causes lag
+    /*causes lag
 	[HarmonyPatch(typeof(ShipLandingBeaconUtility), "GetLandingZones")]
     public static class RoyaltyShuttlesLandOnBays
     {
         public static void Postfix(Map map, ref List<ShipLandingArea> __result)
         {
-            foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBay")))
+            foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ResourceBank.ThingDefOf.ShipShuttleBay))
             {
                 ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
                 area.RecalculateBlockingThing();
                 __result.Add(area);
             }
-            foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ThingDef.Named("ShipShuttleBayLarge")))
+            foreach (Building landingSpot in map.listerBuildings.AllBuildingsColonistOfDef(ResourceBank.ThingDefOf.ShipShuttleBayLarge))
             {
                 ShipLandingArea area = new ShipLandingArea(landingSpot.OccupiedRect(), map);
                 area.RecalculateBlockingThing();
@@ -2797,7 +2797,7 @@ namespace SaveOurShip2
         }
     }*/
 
-	/*[HarmonyPatch(typeof(ActiveDropPod),"PodOpen")]
+    /*[HarmonyPatch(typeof(ActiveDropPod),"PodOpen")]
 	public static class ActivePodFix{
 		public static bool Prefix (ref ActiveDropPod __instance)
 		{
@@ -2841,7 +2841,7 @@ namespace SaveOurShip2
 		}
 	}*/
 
-	/*[HarmonyPatch(typeof(Pawn))]
+    /*[HarmonyPatch(typeof(Pawn))]
 	[HarmonyPatch("IsColonist",MethodType.Getter)]
 	public static class GizmoFix{
 		public static void Postfix(Pawn __instance, ref bool __result)
@@ -2858,8 +2858,8 @@ namespace SaveOurShip2
 		}
 	}*/
 
-	//EVA
-	[HarmonyPatch(typeof(Pawn_PathFollower), "SetupMoveIntoNextCell")]
+    //EVA
+    [HarmonyPatch(typeof(Pawn_PathFollower), "SetupMoveIntoNextCell")]
 	public static class EVAMovesFastInSpace
 	{
 		public static void Postfix(Pawn_PathFollower __instance, Pawn ___pawn)
@@ -2896,7 +2896,7 @@ namespace SaveOurShip2
 	{
 		internal static void Postfix(Pawn pawn, BodyPartRecord part, Recipe_InstallArtificialBodyPart __instance)
 		{
-			if (__instance.recipe.addsHediff.defName.Equals("SoSArchotechLung"))
+			if (__instance.recipe.addsHediff == ResourceBank.HediffDefOf.SoSArchotechLung)
 				Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
 		}
 	}
@@ -2916,7 +2916,7 @@ namespace SaveOurShip2
 	{
 		internal static void Postfix(Pawn pawn, BodyPartRecord part, Recipe_InstallImplant __instance)
 		{
-			if (__instance.recipe.addsHediff.defName.Equals("SoSArchotechSkin"))
+			if (__instance.recipe.addsHediff == ResourceBank.HediffDefOf.SoSArchotechSkin)
 				Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
 		}
 	}

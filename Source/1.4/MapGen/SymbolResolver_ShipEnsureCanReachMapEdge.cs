@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -117,7 +118,7 @@ namespace RimWorld.BaseGen
 
         private bool IsWallOrRock(Building b)
         {
-            return b != null && (b.def == ThingDefOf.Wall || b.def.building.isNaturalRock || b.def == ThingDefOf.Ship_Beam || b.def.defName.Equals("Ship_Beam_Wrecked"));
+            return b != null && (b.def == ThingDefOf.Wall || b.def.building.isNaturalRock || b.def == ThingDefOf.Ship_Beam || b.def == ResourceBank.ThingDefOf.Ship_Beam_Wrecked);
         }
     }
 }

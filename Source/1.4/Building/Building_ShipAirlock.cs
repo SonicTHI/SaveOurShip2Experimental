@@ -36,7 +36,7 @@ namespace RimWorld
             List<FloatMenuOption> options = new List<FloatMenuOption>();
             foreach (FloatMenuOption op in base.GetFloatMenuOptions(pawn))
                 options.Add(op);
-            if (this.Map != null && this.Map.Parent != null && this.Map.Parent.def.defName.Equals("SiteSpace")) //To prevent cheesing the starship bow quest
+            if (this.Map != null && this.Map.Parent != null && this.Map.Parent.def == ResourceBank.WorldObjectDefOf.SiteSpace) //To prevent cheesing the starship bow quest
                 return options;
             if (this.Faction != Faction.OfPlayer)
             {

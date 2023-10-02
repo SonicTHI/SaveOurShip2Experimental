@@ -36,26 +36,26 @@ namespace RimWorld
             }
             foreach (IntVec3 vec in border)
             {
-                Thing wall = ThingMaker.MakeThing(ThingDef.Named("Ship_Beam"));
+                Thing wall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.Ship_Beam);
                 wall.SetFaction(Faction.OfMechanoids);
                 GenSpawn.Spawn(wall, vec, map);
             }
             Thing core = ThingMaker.MakeThing(ThingDef.Named("Space_Satellite_Core"));
             core.SetFaction(Faction.OfMechanoids);
             GenSpawn.Spawn(core, c, map);
-            Thing solar = ThingMaker.MakeThing(ThingDef.Named("ShipInside_SolarGenerator"));
+            Thing solar = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipInside_SolarGenerator);
             solar.SetFaction(Faction.OfMechanoids);
             GenSpawn.Spawn(solar, new IntVec3(c.x + radius, 0, c.z), map);
             solar.Rotation = Rot4.West;
-            solar = ThingMaker.MakeThing(ThingDef.Named("ShipInside_SolarGenerator"));
+            solar = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipInside_SolarGenerator);
             solar.SetFaction(Faction.OfMechanoids);
             GenSpawn.Spawn(solar, new IntVec3(c.x - radius, 0, c.z), map);
             solar.Rotation = Rot4.East;
-            solar = ThingMaker.MakeThing(ThingDef.Named("ShipInside_SolarGenerator"));
+            solar = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipInside_SolarGenerator);
             solar.SetFaction(Faction.OfMechanoids);
             GenSpawn.Spawn(solar, new IntVec3(c.x, 0, c.z+radius), map);
             solar.Rotation = Rot4.South;
-            GenSpawn.Spawn(ThingDef.Named("ShipAirlock"), new IntVec3(c.x, 0, c.z - radius), map);
+            GenSpawn.Spawn(ResourceBank.ThingDefOf.ShipAirlock, new IntVec3(c.x, 0, c.z - radius), map);
         }
     }
 }

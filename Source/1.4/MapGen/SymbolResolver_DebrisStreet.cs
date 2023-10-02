@@ -16,7 +16,7 @@ namespace RimWorld.BaseGen
             bool? streetHorizontal = rp.streetHorizontal;
             bool flag = (!streetHorizontal.HasValue) ? (rp.rect.Width >= rp.rect.Height) : streetHorizontal.Value;
             int width = (!flag) ? rp.rect.Width : rp.rect.Height;
-            ThingDef floorDef = ThingDef.Named("ShipHullTileWrecked");
+            ThingDef floorDef = ResourceBank.ThingDefOf.ShipHullTileWrecked;
             this.CalculateStreet(rp.rect, flag, floorDef);
             this.FillStreetGaps(flag, width);
             //this.RemoveShortStreetParts(flag, width);

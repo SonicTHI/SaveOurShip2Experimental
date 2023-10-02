@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace RimWorld.BaseGen
 
         public override void Resolve(ResolveParams rp)
         {
-            ThingDef floorDef = ThingDef.Named("ShipHullTileWrecked");
+            ThingDef floorDef = ResourceBank.ThingDefOf.ShipHullTileWrecked;
             this.SpawnFloor(rp.rect, floorDef);
         }
 

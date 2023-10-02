@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SaveOurShip2;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -53,7 +54,7 @@ namespace RimWorld
                 if (i<4 && loc2.Impassable(map))
                     return TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
                 Building b = loc2.GetFirstBuilding(Find.CurrentMap);
-                if (b !=null && (b.def.defName.Equals("ShipInside_PassiveCooler") || b.def.defName.Equals("ShipInside_PassiveCoolerAdvanced") || b.def.defName.Equals("ShipInside_SolarGenerator")) && b.Rotation == rot.Opposite)
+                if (b !=null && (b.def == ResourceBank.ThingDefOf.ShipInside_SolarGenerator) && b.Rotation == rot.Opposite)
                     return TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
             }
             return true;

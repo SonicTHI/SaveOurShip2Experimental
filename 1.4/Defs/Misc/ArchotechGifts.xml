@@ -67,11 +67,11 @@
 	<thing>SoSArchotechNose</thing>
   </ArchotechGiftDef>
   
-  <ArchotechGiftDef>
+  <!--ArchotechGiftDef>
     <defName>ArchotechJaw</defName>
 	<research>SoSArchotechOrgans</research>
 	<thing>SoSArchotechJaw</thing>
-  </ArchotechGiftDef>
+  </ArchotechGiftDef-->
   
   <ArchotechGiftDef>
     <defName>ArchotechHeart</defName>

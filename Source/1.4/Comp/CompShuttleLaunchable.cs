@@ -238,7 +238,7 @@ namespace RimWorld
             {
                 Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
-                    if (target.WorldObject == null || (!(target.WorldObject is SpaceSite) && !(target.WorldObject.def.defName.Equals("ShipOrbiting"))))
+                    if (target.WorldObject == null || (!(target.WorldObject is SpaceSite) && target.WorldObject.def != ResourceBank.WorldObjectDefOf.ShipOrbiting))
                     {
                         return TranslatorFormattedStringExtensions.Translate("MessageOnlyOtherSpaceSites");
                     }
@@ -251,7 +251,7 @@ namespace RimWorld
             {
                 Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
-                    if (target.WorldObject == null || (!(target.WorldObject is SpaceSite) && !(target.WorldObject.def.defName.Equals("ShipOrbiting"))))
+                    if (target.WorldObject == null || (!(target.WorldObject is SpaceSite) && target.WorldObject.def != ResourceBank.WorldObjectDefOf.ShipOrbiting))
                     {
                         return TranslatorFormattedStringExtensions.Translate("MessageOnlyOtherSpaceSites");
                     }
@@ -272,11 +272,11 @@ namespace RimWorld
                     {
                         return null;
                     }
-                    if (target.Map != null && target.Map.Parent != null && target.Map.Parent.def.defName.Equals("ShipOrbiting"))
+                    if (target.Map != null && target.Map.Parent != null && target.Map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
                     {
                         return null;
                     }
-                    if (target.WorldObject != null && target.WorldObject.def.defName.Equals("ShipOrbiting"))
+                    if (target.WorldObject != null && target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
                         return null;
                     if (target.WorldObject != null && (target.WorldObject is SpaceSite || target.WorldObject is MoonBase))
                         return TranslatorFormattedStringExtensions.Translate("MustLaunchFromOrbit");
@@ -345,7 +345,7 @@ namespace RimWorld
                         }
                     }
                     //if player ship and has shuttle bay land on it
-                    if (targetMapParent.def.defName.Equals("ShipOrbiting") && shuttleBayPos != IntVec3.Zero)
+                    if (targetMapParent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting && shuttleBayPos != IntVec3.Zero)
                     {
                         this.TryLaunch(targetMapParent, new TransportPodsArrivalAction_LandInSpecificCell(targetMapParent, shuttleBayPos));
                         return true;
@@ -398,7 +398,7 @@ namespace RimWorld
             {
                 bool flag = false;
                 //moon with no map
-                if (target.WorldObject.def.defName.Equals("MoonPillarSite"))
+                if (target.WorldObject.def == ResourceBank.WorldObjectDefOf.MoonPillarSite)
                 {
                     if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.25f)
                     {
@@ -711,7 +711,7 @@ namespace RimWorld
             {
                 if (fuelComp != null)
 				{
-					if (target.WorldObject.def.defName.Equals("ShipOrbiting"))
+					if (target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
 					{
 						fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)this.parent.Map.Parent).fuelCost / 100f);
 					}
@@ -721,7 +721,7 @@ namespace RimWorld
 					}
 				}
             }
-            else if (map.Parent is MoonBase && target.WorldObject != null && target.WorldObject.def.defName.Equals("ShipOrbiting"))
+            else if (map.Parent is MoonBase && target.WorldObject != null && target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
             {
                 if (fuelComp != null)
                 {
@@ -836,7 +836,7 @@ namespace RimWorld
             }
             else if (map.Parent is SpaceSite && target.WorldObject != null)
             {
-                if (target.WorldObject.def.defName.Equals("ShipOrbiting"))
+                if (target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
                 {
                     if (fuelComp != null)
                     {
@@ -851,11 +851,11 @@ namespace RimWorld
                     }
                 }
             }
-            else if (map.Parent is MoonBase && target.WorldObject != null && target.WorldObject.def.defName.Equals("ShipOrbiting"))
+            else if (map.Parent is MoonBase && target.WorldObject != null && target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
             { 
                     if (fuelComp != null)
                     {
-                    fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((MoonBase)this.parent.Map.Parent).fuelCost / 100f);
+                        fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((MoonBase)this.parent.Map.Parent).fuelCost / 100f);
                     }
             }
             else if (map.Parent is WorldObjectOrbitingShip || (target.WorldObject != null && target.WorldObject is WorldObjectOrbitingShip))

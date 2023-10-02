@@ -22,6 +22,12 @@
 				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]/costList</xpath>
 				<value><ArchotechExoticParticles>4</ArchotechExoticParticles></value></li>
 			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]/statBases</xpath>
+				<value><WorkToBuild>5000</WorkToBuild></value></li>
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
+				<value><constructionSkillPrerequisite>8</constructionSkillPrerequisite></value></li>
+			<li Class="PatchOperationAdd">
 				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
 				<value><researchPrerequisites><li>ArchotechVanometrics</li></researchPrerequisites></value></li>
 			<li Class="PatchOperationAdd">

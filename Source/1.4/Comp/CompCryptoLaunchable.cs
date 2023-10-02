@@ -72,11 +72,11 @@ namespace RimWorld
                 {
                     return null;
                 }
-                if (target.Map != null && target.Map.Parent != null && target.Map.Parent.def.defName.Equals("ShipOrbiting"))
+                if (target.Map != null && target.Map.Parent != null && target.Map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
                 {
                     return null;
                 }
-                if (target.WorldObject != null && target.WorldObject.def.defName.Equals("ShipOrbiting"))
+                if (target.WorldObject != null && target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
                     return null;
                 if (target.WorldObject != null && (target.WorldObject is SpaceSite || target.WorldObject is MoonBase))
                     return TranslatorFormattedStringExtensions.Translate("MustLaunchFromOrbit");

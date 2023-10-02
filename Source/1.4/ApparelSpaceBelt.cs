@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ namespace RimWorld
         public override void TickRare()
         {
             base.TickRare();
-            if (this.Wearer==null || this.Wearer.health?.hediffSet?.GetFirstHediffOfDef(HediffDef.Named("SpaceBeltBubbleHediff")) == null)
+            if (this.Wearer==null || this.Wearer.health?.hediffSet?.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SpaceBeltBubbleHediff) == null)
             {
                 if (Wearer != null && Wearer.apparel != null)
                 {

@@ -12,7 +12,7 @@ namespace RimWorld
 {
     public class SoShipCache
     {
-		/*
+        /*
         //td no function on ship parts if no bridge (tur,eng,sen)
         //functionality:
         //post load: after all spawned, RebuildCache //td currently only on clicking bridge
@@ -359,7 +359,7 @@ namespace RimWorld
                             if (refuelable != null)
                             {
                                 MaxTakeoff += refuelable.Props.fuelCapacity;
-                                if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+                                if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
                                     MaxTakeoff += refuelable.Props.fuelCapacity;
                             }
                             Engines.Add(b.TryGetComp<CompEngineTrail>());
@@ -459,7 +459,7 @@ namespace RimWorld
                             if (refuelable != null)
                             {
                                 MaxTakeoff -= refuelable.Props.fuelCapacity;
-                                if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
+                                if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
                                     MaxTakeoff -= refuelable.Props.fuelCapacity;
                             }
                             Engines.Remove(b.TryGetComp<CompEngineTrail>());

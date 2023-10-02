@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,7 +40,7 @@ namespace RimWorld.BaseGen
             }
             if (intVec.IsValid)
             {
-                Thing thing = ThingMaker.MakeThing(ThingDef.Named("ShipAirlockWrecked"));
+                Thing thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockWrecked);
                 thing.SetFaction(rp.faction, null);
                 GenSpawn.Spawn(thing, intVec, BaseGen.globalSettings.map, WipeMode.Vanish);
             }

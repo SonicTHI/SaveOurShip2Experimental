@@ -19,7 +19,7 @@ namespace RimWorld.BaseGen
                 if (rp.disableSinglePawn==true)
                     thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullTile, null);
                 else
-                    thing = ThingMaker.MakeThing(ThingDef.Named("ShipHullTileWrecked"), null);
+                    thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullTileWrecked, null);
                 GenSpawn.Spawn(thing, item, map, WipeMode.Vanish);
             }
         }

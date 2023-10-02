@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace RimWorld
                 }
             }
 
-            if (!def.defName.Equals("ShipSpinalAmplifier") && !def.defName.Equals("ShipSpinalBarrelPsychic"))
+            if (def != ResourceBank.ThingDefOf.ShipSpinalAmplifier && def != ResourceBank.ThingDefOf.ShipSpinalBarrelPsychic)
             {
                 CellRect rect;
                 if (rot.AsByte == 0)

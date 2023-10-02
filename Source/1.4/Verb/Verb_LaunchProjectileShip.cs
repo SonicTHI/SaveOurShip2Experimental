@@ -101,9 +101,9 @@ namespace RimWorld
             else
                 projectile2.Launch(launcher, currentTarget.Cell, currentTarget.Cell, ProjectileHitFlags.None, false, equipment);
 
-            if (projectile.defName.Equals("Bullet_Fake_Laser") || projectile.defName.Equals("Bullet_Ground_Laser") || projectile.defName.Equals("Bullet_Fake_Psychic"))
+            if (projectile == ResourceBank.ThingDefOf.Bullet_Fake_Laser || projectile == ResourceBank.ThingDefOf.Bullet_Ground_Laser || projectile == ResourceBank.ThingDefOf.Bullet_Fake_Psychic)
             {
-                ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
+                ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipCombatLaserMote);
                 obj.origin = drawPos;
                 obj.destination = currentTarget.Cell.ToVector3Shifted();
                 obj.large = this.caster.GetStatValue(StatDefOf.RangedWeapon_DamageMultiplier) > 1.0f;

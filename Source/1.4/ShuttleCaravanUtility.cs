@@ -87,7 +87,7 @@ namespace SaveOurShip2
                         return TranslatorFormattedStringExtensions.Translate("MustLaunchFromOrbit");
                     }
 					int num = Find.WorldGrid.TraversalDistanceBetween(tile, target.Tile);
-					if (num <= MaxLaunchDistance || (target.WorldObject != null &&target.WorldObject.def.defName.Equals("ShipOrbiting")))
+					if (num <= MaxLaunchDistance || (target.WorldObject != null && target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting))
 					{
                         if(allFullyFueled)
                             myMaxLaunchDistance = 42069;
@@ -117,7 +117,7 @@ namespace SaveOurShip2
             MapParent mapParent = target.WorldObject as MapParent;
 			if (mapParent != null && mapParent.HasMap)
 			{
-                if (mapParent.def.defName.Equals("ShipOrbiting"))
+                if (mapParent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
                 {
                     if (myMaxLaunchDistance < 42069)
                     {

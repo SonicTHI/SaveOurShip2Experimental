@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,7 @@ namespace RimWorld.BaseGen
             this.cells.Clear();
             foreach (IntVec3 current in rect)
             {
-                if (current.Standable(map) && current.GetFirstItem(map) == null && current.GetThingList(map).Any(thing => thing.def.defName.Equals("ShipHullTileWrecked")))
+                if (current.Standable(map) && current.GetFirstItem(map) == null && current.GetThingList(map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipHullTileWrecked))
                 {
                     this.cells.Add(current);
                 }

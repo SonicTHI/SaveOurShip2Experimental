@@ -38,7 +38,7 @@ namespace RimWorld.Planet
                     }
                 }
                 bool flag3 = false;
-                Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def.defName.Equals("ShipOrbiting")).FirstOrDefault())?.Map; 
+                Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map; 
                 if (mapPlayer != null)
                 {
                     foreach (Building_ShipAdvSensor sensor in Find.World.GetComponent<PastWorldUWO2>().Sensors)
@@ -81,7 +81,7 @@ namespace RimWorld.Planet
                 bool foundDrive = false;
                 foreach(Thing t in mapParent.Map.spawnedThings)
                 {
-                    if(t.def.defName.Equals("ShipArchotechPillarB"))
+                    if(t.def == ResourceBank.ThingDefOf.ShipArchotechPillarB)
                     {
                         foundDrive = true;
                         break;

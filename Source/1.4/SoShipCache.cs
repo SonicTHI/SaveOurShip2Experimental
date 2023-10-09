@@ -12,7 +12,6 @@ namespace RimWorld
 {
     public class SoShipCache
     {
-        /*
         //td no function on ship parts if no bridge (tur,eng,sen)
         //functionality:
         //post load: after all spawned, RebuildCache //td currently only on clicking bridge
@@ -76,6 +75,33 @@ namespace RimWorld
                 return lowestCorner;
             }
         }
+        public bool HasMannedBridge()
+        {
+            bool hasPilot = false;
+            foreach (Building_ShipBridge bridge in Bridges) //first bridge with pilot/AI
+            {
+                if (!hasPilot && bridge.powerComp.PowerOn)
+                {
+                    if (bridge.mannableComp == null || (bridge.mannableComp != null && bridge.mannableComp.MannedNow))
+                    {
+                        hasPilot = true;
+                        return true;
+                    }
+}
+            }
+            return false;
+        }
+        public float TakeoffCurrent()
+        {
+            float fuelHad = 0f;
+            foreach (CompEngineTrail engine in Engines.Where(e => e.Props.takeOff))
+            {
+                fuelHad += engine.refuelComp.Fuel;
+                if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
+                    fuelHad += engine.refuelComp.Fuel;
+            }
+            return fuelHad;
+        }
         public List<Thing> ThingsOnShip() //dep
         {
             List<Thing> things = new List<Thing>();
@@ -112,6 +138,7 @@ namespace RimWorld
         public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
         public HashSet<Building> BuildingsNonRot = new HashSet<Building>();
         public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
+        public List<CompRCSThruster> RCSs = new List<CompRCSThruster>();
         public List<CompPowerBattery> Batteries = new List<CompPowerBattery>();
         public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
@@ -130,7 +157,6 @@ namespace RimWorld
                 return false;
             }
             Core = Bridges.FirstOrDefault(b => !b.Destroyed);
-            mapComp.MapRootList.Add(Core);
             return true;
         }
         public void Capture(Faction fac)
@@ -282,7 +308,6 @@ namespace RimWorld
             if (origin is Building_ShipBridge core)
             {
                 Core = core;
-                mapComp.MapRootList.Add(core);
                 Name = core.ShipName;
                 IsWreck = false;
                 Core.Index = Index;
@@ -364,6 +389,8 @@ namespace RimWorld
                             }
                             Engines.Add(b.TryGetComp<CompEngineTrail>());
                         }
+                        else if (b.TryGetComp<CompRCSThruster>() != null)
+                            RCSs.Add(b.GetComp<CompRCSThruster>());
                     }
                     else
                     {
@@ -378,7 +405,6 @@ namespace RimWorld
                             bridge.Ship = mapComp.ShipsOnMapNew[Index];
                             if (Core.DestroyedOrNull())
                             {
-                                mapComp.MapRootList.Add(Core);
                                 Core = bridge;
                             }
                         }
@@ -464,6 +490,8 @@ namespace RimWorld
                             }
                             Engines.Remove(b.TryGetComp<CompEngineTrail>());
                         }
+                        else if (b.TryGetComp<CompRCSThruster>() != null)
+                            RCSs.Remove(b.GetComp<CompRCSThruster>());
                     }
                     else
                     {
@@ -474,7 +502,6 @@ namespace RimWorld
                             Bridges.Remove(bridge);
                             if (bridge == Core)
                             {
-                                mapComp.MapRootList.Remove(bridge);
                                 TryReplaceCore();
                             }
                             bridge.Index = -1;
@@ -704,6 +731,6 @@ namespace RimWorld
             ShipInteriorMod2.AirlockBugFlag = false;
             if (map == mapComp.ShipCombatOriginMap)
                 mapComp.hasAnyPlayerPartDetached = true;
-        }*/
+        }
     }
 }

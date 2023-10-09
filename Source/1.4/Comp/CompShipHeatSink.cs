@@ -92,7 +92,7 @@ namespace RimWorld
                         if (!AddDepletionToNetwork(Props.heatVent))
                             myNet.venting = false;
                     }
-                    else if (!mapComp.InCombat && !mapComp.Cloaks.Any(c => c.active))
+                    else if (myNet.Depletion > 0 && !mapComp.InCombat && !mapComp.Cloaks.Any(c => c.active))
                         RemoveDepletionFromNetwork(Props.heatVent / 10f);
                 }
                 if (myNet.StorageUsed > 0)

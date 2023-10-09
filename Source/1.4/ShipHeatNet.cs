@@ -32,6 +32,7 @@ namespace RimWorld
             get;
             private set;
         }
+        public float AvailableDepletion => StorageCapacity - StorageUsed;
         public float StorageUsed { get; private set; }
         public float Depletion { get; private set; }
         public bool venting;
@@ -222,6 +223,8 @@ namespace RimWorld
         }
         public void AddDepletion(float amount)
         {
+            if (amount > AvailableDepletion) //remove heat to add depletion
+                RemoveHeat(amount - AvailableDepletion);
             Depletion += amount;
             depletionDirty = true;
         }

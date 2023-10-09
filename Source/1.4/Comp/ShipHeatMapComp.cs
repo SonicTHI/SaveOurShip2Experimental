@@ -149,13 +149,11 @@ namespace RimWorld
                 Scribe_Collections.Look<ShipCombatProjectile>(ref Projectiles, "ShipProjectiles");
                 Scribe_Collections.Look<ShipCombatProjectile>(ref TorpsInRange, "ShipTorpsInRange");
                 //SC cache
-                Scribe_Collections.Look<Building>(ref MapRootList, "MapRootList", LookMode.Reference); //SC rem
                 Scribe_Collections.Look<Building>(ref MapRootListAll, "MapRootListAll", LookMode.Reference);
                 Scribe_Values.Look<bool>(ref BridgeDestroyed, "BridgeDestroyed");
-                shipsOnMap = null; //reset cache on load IC //SC rem
                 originMapComp = null;
                 masterMapComp = null;
-                //SC master only
+                //SCM only
                 Scribe_Values.Look<bool>(ref callSlowTick, "callSlowTick");
                 Scribe_Values.Look<float>(ref Range, "BattleRange");
                 Scribe_Values.Look<float>(ref RangeToKeep, "RangeToKeep");
@@ -171,20 +169,10 @@ namespace RimWorld
                 Scribe_Values.Look<int>(ref BattleStartTick, "BattleStartTick");
                 Scribe_Values.Look<bool>(ref Scanned, "Scanned");
             }
-            else if (Scribe.mode != LoadSaveMode.Saving) //SC rem
-            {
-                MapRootList = null;
-            }
-            /*else if (Scribe.mode != LoadSaveMode.PostLoadInit) //SC rem
-            {
-                FindPrimaryBridges();
-            }*/
         }
         //td get these into shipcache?
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
-        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>(); //SC rem
-        public List<CompHullFoamDistributor> HullFoamDistributors = new List<CompHullFoamDistributor>(); //SC rem
         public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>();
         public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>();
         //SC vars
@@ -212,38 +200,20 @@ namespace RimWorld
         public List<ShipCombatProjectile> Projectiles;
         public List<ShipCombatProjectile> TorpsInRange;
         public List<Building> MapRootListAll = new List<Building>(); //all bridges on map
-        public List<Building> MapRootList; //primary bridges //SC rem
         List<Building> cores = new List<Building>();
 
-        public List<ShipCache> shipsOnMap; //SC rem
-        public List<ShipCache> ShipsOnMap //rebuild shipsOnMap cache if it is null //SC rem
-        {
-            get
-            {
-                if (shipsOnMap == null)
-                {
-                    shipsOnMap = new List<ShipCache>();
-                    for (int i = 0; i < MapRootList.Count; i++)
-                    {
-                        shipsOnMap.Add(new ShipCache());
-                        shipsOnMap[i].BuildCache(MapRootList[i], i);
-                    }
-                }
-                return shipsOnMap;
-            }
-        }
         //SC cache new
         //after spawn init all, after moveship: assign same as from map to new map
-        /*public override void FinalizeInit()
+        public override void FinalizeInit()
         {
             base.FinalizeInit();
             RecacheMap();
-            Log.Message("SOS2 initalized cache on map: " + map);
+            Log.Message("SOS2 initalized cache on map: " + map + " Found ships: " + ShipsOnMapNew.Count);
         }
         public bool CacheOff = true;
         //cells occupied by shipParts, if cacheoff = null, item1 = index, item2 = path, if path is -1 = wreck
         private Dictionary<IntVec3, Tuple<int, int>> shipCells;
-        public Dictionary<IntVec3, Tuple<int, int>> ShipCells
+        public Dictionary<IntVec3, Tuple<int, int>> ShipCells //td add bool if floor
         {
             get
             {
@@ -418,13 +388,14 @@ namespace RimWorld
             }
             return -1;
         }
-        public bool VecHasEVA(IntVec3 vec)
+        public bool VecHasLS(IntVec3 vec)
         {
             if (ShipsOnMapNew[ShipCells[vec].Item1].LifeSupports.Any(s => s.active))
                 return true;
             return false;
-        }*/
+        }
         //SC cache new end
+
         public ShipHeatMapComp originMapComp;
         public ShipHeatMapComp OriginMapComp
         {
@@ -453,7 +424,7 @@ namespace RimWorld
                 return this.masterMapComp;
             }
         }
-        //SC master only
+        //SCM only
         public bool callSlowTick = false;
         public float Range; //400 is furthest away, 0 is up close and personal
         public float RangeToKeep;
@@ -617,35 +588,15 @@ namespace RimWorld
             //if (cores != null)
             //    Log.Message("Spawned enemy cores: " + cores.Count);
         }
-        public int MapThreat() //SC rem
-        {
-            int ShipThreat = 0;
-            int ShipMass = 0;
-            foreach (Building b in map.spawnedThings.Where(b => b is Building))
-            {
-                if (b.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
-                    ShipMass += 1;
-                else
-                {
-                    ShipMass += (b.def.size.x * b.def.size.z) * 3;
-                    if (b.TryGetComp<CompShipHeat>() != null)
-                        ShipThreat += b.TryGetComp<CompShipHeat>().Props.threat;
-                    else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
-                        ShipThreat += 5;
-                }
-            }
-            ShipThreat += ShipMass / 100;
-            return ShipThreat;
-        }
-        /*SC public int MapThreat()
+        public int MapThreat()
         {
             int threat = 0;
-            foreach (int ship in ShipsOnMapNew.Keys)
+            foreach (int index in ShipsOnMapNew.Keys)
             {
-                threat += ShipsOnMapNew[ship].Threat;
+                threat += ShipsOnMapNew[index].Threat;
             }
             return threat;
-        }*/
+        }
 
         public void StartShipEncounter(Building playerShipRoot, PassingShip passingShip = null, Map enemyMap = null, Faction fac = null, int range = 0, bool fleet = false, bool bounty = false)
         {
@@ -732,13 +683,7 @@ namespace RimWorld
                 startedBoarderLoad = false;
                 launchedBoarders = false;
                 BattleStartTick = Find.TickManager.TicksGame;
-                if (!cores.NullOrEmpty()) //SC rem
-                {
-                    MapRootList = cores;
-                    return;
-                }
             }
-            /*SC
             foreach (int index in shipsOnMapNew.Keys)
             {
                 var ship = shipsOnMapNew[index];
@@ -747,39 +692,6 @@ namespace RimWorld
                     ship.BuildingCountAtCombatStart = ship.BuildingCount;
                 }
             }
-			*/
-            //SC rem
-            //find one bridge per ship
-            FindPrimaryBridges();
-            shipsOnMap = null;//start cache
-            for (int i = 0; i < ShipsOnMap.Count; i++)
-            {
-                BuildingCountAtStart += ShipsOnMap[i].BuildingCountAtStart;
-            }
-            //Log.Message("Shipmap buildcount total " + BuildingCountAtStart);
-        }
-
-        public void FindPrimaryBridges()
-        {
-            MapRootList = new List<Building>();
-            foreach (Building root in MapRootListAll)
-            {
-                MapRootList.Add(root);
-            }
-            //Log.Message("Total Bridges: " + MapRootList.Count + " on map: " + this.map);
-            List<Building> duplicateRoots = new List<Building>();
-            for (int i = 0; i < MapRootList.Count; i++)
-            {
-                //Log.Message("Bridge: " + MapRootList[i] + " on map: " + this.map);
-                for (int j = i + 1; j < MapRootList.Count; j++)
-                {
-                    if (ShipUtility.ShipBuildingsAttachedTo(MapRootList[i]).Contains(MapRootList[j]))
-                        duplicateRoots.Add(MapRootList[j]);
-                }
-            }
-            foreach (Building b in duplicateRoots)
-                MapRootList.Remove(b);
-            Log.Message("Ships: " + MapRootList.Count + " on map: " + this.map);
         }
 
         public override void MapComponentTick()
@@ -866,24 +778,12 @@ namespace RimWorld
                 //ship destruction code
                 if (BridgeDestroyed || Find.TickManager.TicksGame % 20 == 0)
                 {
-					//SC rem
-                    BridgeDestroyed = false;
-                    for (int i = 0; i < ShipsOnMap.Count; i++)
-                    {
-                        if (ShipsOnMap[i].ShipDirty)
-                        {
-                            CheckForDetach(i);
-                            callSlowTick = true;
-                        }
-                    }
-					/*SC
                     foreach (int i in ShipsOnMapNew.Keys)
                     {
                         if (ShipsOnMapNew[i].CheckForDetach())
                             callSlowTick = true;
                     }
-					*/
-                    if (MapRootList.NullOrEmpty() || MapRootListAll.NullOrEmpty()) //if all ships gone, end combat
+                    if (MapRootListAll.NullOrEmpty()) //if all ships gone, end combat
                     {
                         //Log.Message("Map defeated: " + this.map);
                         EndBattle(this.map, false);
@@ -901,22 +801,21 @@ namespace RimWorld
             else if ((Find.TickManager.TicksGame % 60 == 0) && map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
             {
                 //reduce durration per engine vs mass
-                HashSet<Building> engines = new HashSet<Building>();
-                foreach (Building bridge in MapRootListAll)
+                HashSet<CompEngineTrail> engines = new HashSet<CompEngineTrail>();
+                foreach (int index in ShipsOnMapNew.Keys)
                 {
-                    if (!((Building_ShipBridge)bridge).cachedEngines.NullOrEmpty())
+                    var ship = shipsOnMapNew[index];
+                    if (ship.Core != null && ship.Engines.Any())
                     {
-                        foreach (Building engine in ((Building_ShipBridge)bridge).cachedEngines)
-                            engines.Add(engine);
+                        engines.Concat(ship.Engines);
                     }
                 }
                 if (!engines.Any())
                     return;
                 MapEnginePower = 0;
-                EngineRot = engines.FirstOrDefault().Rotation.AsByte;
-                foreach (Building engine in engines)
+                EngineRot = engines.FirstOrDefault().parent.Rotation.AsByte;
+                foreach (CompEngineTrail engineComp in engines)
                 {
-                    var engineComp = engine.TryGetComp<CompEngineTrail>();
                     if (engineComp != null && engineComp.CanFire(EngineRot) && engineComp.active)
                     {
                         MapEnginePower += engineComp.Props.thrust;
@@ -931,10 +830,9 @@ namespace RimWorld
                     {
                         cond.End();
                         BurnTimer = 0;
-                        foreach (Building engine in engines)
+                        foreach (CompEngineTrail engine in engines)
                         {
-                            var engineComp = engine.TryGetComp<CompEngineTrail>();
-                            engineComp.Off();
+                            engine.Off();
                         }
                     }
                     else
@@ -947,6 +845,9 @@ namespace RimWorld
         }
         public void SlowTick()
         {
+            //td ship AI
+            //map AI evals ships
+            //
             totalThreat = 1;
             threatPerSegment = new[] { 1f, 1f, 1f, 1f };
             int TurretNum = 0;
@@ -956,11 +857,19 @@ namespace RimWorld
             //SCM vars
             float powerCapacity = 0;
             float powerRemaining = 0;
-            //threat and engine power calcs
-            /*SC
-            foreach (Building_ShipBridge bridge in MapRootList)
+            foreach (int index in ShipsOnMapNew.Keys) //first engine rot on proper ship
             {
-                var ship = ShipsOnMapNew[bridge.Index];
+                var ship = shipsOnMapNew[index];
+                if (ship.Core != null && ship.Engines.Any())
+                {
+                    EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
+                    break;
+                }
+            }
+            //threat and engine power calcs
+            foreach (int index in ShipsOnMapNew.Keys)
+            {
+                var ship = shipsOnMapNew[index];
                 if (ShipCombatMaster)
                 {
                     foreach (var battery in ship.Batteries)
@@ -971,7 +880,7 @@ namespace RimWorld
                     ship.PurgeCheck();
                 }
                 threatPerSegment.Zip(ship.ActualThreatPerSegment(), (x, y) => x + y);
-                turretNum += ship.Turrets.Count;
+                TurretNum += ship.Turrets.Count;
 
                 if (ship.Engines.FirstOrDefault() != null)
                     EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
@@ -980,99 +889,6 @@ namespace RimWorld
                 {
                     MapEnginePower += enginePower;
                     anyMapEngineCanActivate = true;
-                }
-                BuildingsCount += ship.Buildings.Count;
-            }
-			*/
-            foreach (ShipCache ship in ShipsOnMap) //first engine rot
-            {
-                if (ship.Engines.Any())
-                {
-                    EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
-                    break;
-                }
-            }
-            foreach (ShipCache ship in ShipsOnMap) //SC rem
-            {
-                if (ShipCombatMaster)
-                {
-					var bridge = ship.Bridges.FirstOrDefault().heatComp;			  
-                    foreach (var battery in ship.Batteries)
-                    {
-                        powerCapacity += battery.Props.storedEnergyMax;
-                        powerRemaining += battery.StoredEnergy;
-                    }
-                    if (!ship.HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
-                    {
-                        if (ship.HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && bridge != null && bridge.myNet != null && bridge.myNet.RatioInNetwork > 0.7f) //start purge
-                        {
-                            foreach (CompShipHeatPurge purge in ship.HeatPurges)
-                            {
-                                purge.StartPurge();
-                            }
-                        }
-                        else
-                        {
-                            if (ship.CombatShields.Any(shield => shield.shutDown)) //repower shields
-                            {
-                                foreach (var shield in ship.CombatShields)
-                                {
-                                    if (shield.flickComp == null)
-                                        continue;
-                                    shield.flickComp.SwitchIsOn = true;
-                                }
-                            }
-                            if (bridge.myNet.RatioInNetwork > 0.85f && !bridge.myNet.venting)
-                                bridge.myNet.StartVent();
-                        }
-                    }
-                }
-                foreach (var turret in ship.Turrets)
-                {
-                    var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
-                    if (torp != null && !torp.Loaded)
-                        continue;
-                    var fuel = turret.TryGetComp<CompRefuelable>();
-                    if (fuel != null && fuel.Fuel == 0f)
-                        continue;
-                    TurretNum++;
-                    int threat = turret.heatComp.Props.threat;
-                    totalThreat += threat;
-                    if (turret.heatComp.Props.maxRange > 150) //long
-                    {
-                        threatPerSegment[0] += threat / 6f;
-                        threatPerSegment[1] += threat / 4f;
-                        threatPerSegment[2] += threat / 2f;
-                        threatPerSegment[3] += threat;
-                    }
-                    else if (turret.heatComp.Props.maxRange > 100) //med
-                    {
-                        threatPerSegment[0] += threat / 4f;
-                        threatPerSegment[1] += threat / 2f;
-                        threatPerSegment[2] += threat;
-                    }
-                    else if (turret.heatComp.Props.maxRange > 50) //short
-                    {
-                        threatPerSegment[0] += threat / 2f;
-                        threatPerSegment[1] += threat;
-                    }
-                    else //cqc
-                        threatPerSegment[0] += threat;
-                }
-                foreach (var engine in ship.Engines)
-                {
-                    if (engine.CanFire(EngineRot))
-                    {
-                        anyMapEngineCanActivate = true;
-                        if (Heading != 0 && engine.On())
-                        {
-                            MapEnginePower += engine.Props.thrust;
-                        }
-                        else
-                            engine.Off();
-                    }
-                    else
-                        engine.Off();
                 }
                 BuildingsCount += ship.Buildings.Count;
             }
@@ -1258,106 +1074,7 @@ namespace RimWorld
                 }
             }
         }
-        //cache functions //SC rem
-        public void DirtyShip(Building building)//called ondestroy of ship part
-        {
-            //Log.Message("Attempting to dirty ship");
-            for (int j = 0; j < ShipsOnMap.Count; j++)
-            {
-                for (int i = ShipsOnMap[j].BuildingsByGeneration.Count - 1; i >= 0; i--)
-                {
-                    if (ShipsOnMap[j].BuildingsByGeneration[i].Contains(building))
-                    {
-                        ShipsOnMap[j].ShipDirty = true;
-                        if (i < ShipsOnMap[j].ShipDirtyGen)
-                            ShipsOnMap[j].ShipDirtyGen = i;
-                        //Log.Message("ship " + j + " is dirty at generation " + i);
-                        break;
-                    }
-                }
-            }
-        }
-        public void CheckForDetach(int shipIndex)
-        {
-            List<IntVec3> detached = new List<IntVec3>();
-            //Log.Message("Checking for detach on ship " + shipIndex);
-            if (MapRootList[shipIndex].Destroyed || !MapRootList[shipIndex].Spawned)//if primary destroyed
-            {
-                //Log.Message("Main bridge "+ MapRootList[shipIndex]+" on ship " + shipIndex + " destroyed");
-                foreach (var bridge in ShipsOnMap[shipIndex].BridgesAtStart)//cheack each bridge on ship
-                {
-                    if (bridge.Destroyed || !bridge.Spawned) continue;//if destroyed, keep trying
-
-                    MapRootList[shipIndex] = bridge;//if not destroyed replace main bridge
-                    //Log.Message("Replacing main bridge on ship " + shipIndex + " to "+ bridge);
-                    break;
-                }
-                if (MapRootList[shipIndex].Destroyed || !MapRootList[shipIndex].Spawned)//no intact bridges found = ship destroyed
-                {
-                    //Log.Message("Destroyed ship " + shipIndex);
-                    RemoveShipFromBattle(shipIndex);
-                    return;
-                }
-                //bridge destroyed, save area, rebuild cache, remove from area, detach area
-                HashSet<IntVec3> ShipAreaAtStart = ShipsOnMap[shipIndex].ShipAreaAtStart;
-                ShipsOnMap[shipIndex].BuildCache(MapRootList[shipIndex], shipIndex);//rebuild cache for affected ship
-                HashSet<IntVec3> StillAttached = new HashSet<IntVec3>();
-                //Log.Message("Checking dirty ship " + shipIndex + " at generation " + ShipDirtyGen[shipIndex]);
-                foreach (var b in ShipsOnMap[shipIndex].Buildings)
-                {
-                    StillAttached.Add(b.Position);
-                }
-                detached = ShipAreaAtStart.Except(StillAttached).ToList();
-
-            }
-            else //normal detach
-            {
-                ShipsOnMap[shipIndex].RebuildCacheFromGeneration(this.map);
-                HashSet<IntVec3> StillAttached = new HashSet<IntVec3>();
-                //Log.Message("Checking dirty ship " + shipIndex + " at generation " + ShipDirtyGen[shipIndex]);
-                foreach (var b in ShipsOnMap[shipIndex].Buildings)
-                {
-                    StillAttached.Add(b.Position);
-                }
-                detached = ShipsOnMap[shipIndex].ShipAreaAtStart.Except(StillAttached).ToList();
-            }
-            ShipsOnMap[shipIndex].Detach(shipIndex, this.map, detached);
-        }
         public void RemoveShipFromBattle(int shipIndex, Building b = null, Faction fac = null)
-        {
-            if (MapRootList.Count > 1) //move to graveyard if not last ship
-            {
-                if (b == null)
-                {
-                    foreach (IntVec3 at in ShipsOnMap[shipIndex].ShipAreaAtStart)
-                    {
-                        if (at.GetFirstBuilding(this.map) != null)
-                        {
-                            b = at.GetFirstBuilding(this.map);
-                            break;
-                        }
-                    }
-                }
-                if (b != null)
-                {
-                    if (ShipGraveyard == null)
-                        SpawnGraveyard();
-                    ShipInteriorMod2.MoveShip(b, ShipGraveyard, new IntVec3(0, 0, 0), fac);
-                }						   
-            }
-            else if (fac != null) //last ship hacked
-            {
-                foreach (Building building in ShipsOnMap[shipIndex].Buildings)
-                {
-                    if (building.def.CanHaveFaction)
-                        building.SetFaction(Faction.OfPlayer);
-                }					  
-            }
-            MapRootList.RemoveAt(shipIndex);
-            ShipsOnMap.Remove(ShipsOnMap[shipIndex]);
-            //Log.Message("Ships remaining: " + MapRootList.Count);
-        }
-        /*SC public void RemoveShipFromBattle(int shipIndex, Building b = null, Faction fac = null)
         {
             if (ShipsOnMapNew.Count > 1) //move to graveyard if not last ship
             {
@@ -1377,8 +1094,8 @@ namespace RimWorld
                 ShipsOnMapNew[shipIndex].Capture(fac);
             }
             Log.Message("Ships remaining: " + ShipsOnMapNew.Count);
-        }*/
-        public void SpawnGraveyard()//if not present, create a graveyard
+        }
+        public void SpawnGraveyard() //if not present, create a graveyard
         {
             float adj;
             if (ShipCombatMaster)
@@ -1487,11 +1204,11 @@ namespace RimWorld
         {
             Rot4 dir;
             var mapComp = map.GetComponent<ShipHeatMapComp>();
-            if (mapComp.Heading == 1)//target advancing - shots from front
+            if (mapComp.Heading == 1) //target advancing - shots from front
             {
                 dir = new Rot4(mapComp.EngineRot);
             }
-            else if (mapComp.Heading == -1)//target retreating - shots from back
+            else if (mapComp.Heading == -1) //target retreating - shots from back
             {
                 dir = new Rot4(mapComp.EngineRot + 2);
             }
@@ -1507,250 +1224,6 @@ namespace RimWorld
                     dir = Rot4.South;
             }
             return CellFinder.RandomEdgeCell(dir, map);
-        }
-    }
-
-    public class ShipCache //SC rem
-    {
-        public HashSet<IntVec3> ShipAreaAtStart = new HashSet<IntVec3>();
-        public List<Building_ShipBridge> BridgesAtStart = new List<Building_ShipBridge>();
-        public bool ShipDirty;
-        public int ShipDirtyGen;
-        public int BuildingCountAtStart;
-
-        public List<HashSet<Building>> BuildingsByGeneration = new List<HashSet<Building>>();
-        public HashSet<Building> Buildings = new HashSet<Building>();
-        public List<Building_ShipTurret> Turrets = new List<Building_ShipTurret>();
-        public List<CompPowerBattery> Batteries = new List<CompPowerBattery>();
-        public List<CompShipHeatSink> HeatSinks = new List<CompShipHeatSink>();
-        public List<CompShipCombatShield> CombatShields = new List<CompShipCombatShield>();
-        public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
-        public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
-        public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
-        //public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
-        //public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
-        //public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
-        //public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
-
-        void GetBuildingsByGeneration(ref List<HashSet<Building>> generations, ref HashSet<Building> buildings, Map map)
-        {
-            if (generations.NullOrEmpty()) //Error state - bridge not found
-            {
-                return;
-            }
-            HashSet<Building> nextGen = new HashSet<Building>();
-            HashSet<Building> currentGen = generations[generations.Count - 1];
-            HashSet<IntVec3> cellsTodo = new HashSet<IntVec3>();
-            foreach (Building building in currentGen)
-            {
-                cellsTodo.AddRange(GenAdj.CellsOccupiedBy(building));
-                cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(building));
-            }
-            foreach (IntVec3 cell in cellsTodo)
-            {
-                if (cell.InBounds(map))
-                {
-                    foreach (Thing t in cell.GetThingList(map))
-                    {
-                        if (t is Building b && b.def.mineable == false && b.def != ResourceBank.ThingDefOf.ShipAirlockBeamWall && b.def != ResourceBank.ThingDefOf.ShipAirlockBeamTile && buildings.Add(b))
-                        {
-                            nextGen.Add(b);
-                        }
-                    }
-                }
-            }
-            if (nextGen.Count > 0) //continue if buildings found
-            {
-                generations.Add(nextGen);
-                GetBuildingsByGeneration(ref generations, ref buildings, map);
-            }
-        }
-        public void BuildCache(Building shipRoot, int index)//at combat start
-        {
-            BuildingsByGeneration = new List<HashSet<Building>>();
-            HashSet<Building> firstGen = new HashSet<Building>();
-            firstGen.Add(shipRoot);
-            BuildingsByGeneration.Add(firstGen);
-            GetBuildingsByGeneration(ref BuildingsByGeneration, ref Buildings, shipRoot.Map);
-            ShipDirty = false;
-            ShipDirtyGen = int.MaxValue;
-            BuildingCountAtStart = 0;
-            CacheComps(true, index);
-        }
-        public void RebuildCacheFromGeneration(Map map)//revert if any ship part is destroyed
-        {
-            List<HashSet<Building>> newGenerations = new List<HashSet<Building>>();
-            HashSet<Building> newBuildings = new HashSet<Building>();
-            for (int i = 0; i < ShipDirtyGen; i++)
-            {
-                newGenerations.Add(BuildingsByGeneration[i]);
-                foreach (Building b in BuildingsByGeneration[i])
-                    newBuildings.Add(b);
-            }
-            BuildingsByGeneration = newGenerations;
-            Buildings = newBuildings;
-            GetBuildingsByGeneration(ref BuildingsByGeneration, ref Buildings, map);
-            CacheComps(false);
-        }
-        void CacheComps(bool resetCache, int index = -1)
-        {
-            if (resetCache)
-            {
-                ShipAreaAtStart = new HashSet<IntVec3>();
-                BridgesAtStart = new List<Building_ShipBridge>();
-                BuildingCountAtStart = 0;
-            }
-            Turrets = new List<Building_ShipTurret>();
-            Batteries = new List<CompPowerBattery>();
-            HeatSinks = new List<CompShipHeatSink>();
-            CombatShields = new List<CompShipCombatShield>();
-            Engines = new List<CompEngineTrail>();
-            Bridges = new List<Building_ShipBridge>();
-            HeatPurges = new List<CompShipHeatPurge>();
-
-            foreach (var building in Buildings)
-            {
-                if (building is Building_ShipTurret turret)
-                    Turrets.Add(turret);
-                else if (building.TryGetComp<CompPowerBattery>() != null)
-                    Batteries.Add(building.GetComp<CompPowerBattery>());
-                else if (building.TryGetComp<CompShipHeatSink>() != null)
-                {
-                    HeatSinks.Add(building.GetComp<CompShipHeatSink>());
-                    if (building.TryGetComp<CompShipHeatPurge>() != null)
-                        HeatPurges.Add(building.GetComp<CompShipHeatPurge>());
-                }
-                else if (building.TryGetComp<CompEngineTrail>() != null)
-                {
-                    Engines.Add(building.TryGetComp<CompEngineTrail>());
-                }
-                else if (building.TryGetComp<CompShipCombatShield>() != null)
-                    CombatShields.Add(building.GetComp<CompShipCombatShield>());
-                else if (building is Building_ShipBridge bridge)
-                {
-                    if (!bridge.Destroyed)
-                    {
-                        Bridges.Add(bridge);
-                        if (resetCache)
-                        {
-                            BridgesAtStart.Add(bridge);
-                            bridge.shipIndex = index;
-                            Log.Message("Added bridge: " + bridge + " on ship: " + index);
-                        }
-                    }
-                }
-
-                if (resetCache)
-                {
-                    BuildingCountAtStart++;
-                    foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(building))
-                    {
-                        if (!ShipAreaAtStart.Contains(pos))
-                            ShipAreaAtStart.Add(building.Position);
-                    }
-                }
-            }
-            if (resetCache)
-            {
-                //Log.Message("Ship area is " + ShipAreaAtStart.Count);
-                //Log.Message("Ship mass is " + BuildingCountAtStart);
-            }
-        }
-        public void Detach(int shipIndex, Map map, List<IntVec3> detached)
-        {
-            var mapComp = map.GetComponent<ShipHeatMapComp>();
-            if (detached.Count > 0)
-            {
-                //Log.Message("Detaching " + detached.Count + " tiles");
-                ShipInteriorMod2.AirlockBugFlag = true;
-                HashSet<Thing> toDestroy = new HashSet<Thing>();
-                HashSet<Thing> toReplace = new HashSet<Thing>();
-                HashSet<Pawn> toKill = new HashSet<Pawn>();
-                int minX = int.MaxValue;
-                int maxX = int.MinValue;
-                int minZ = int.MaxValue;
-                int maxZ = int.MinValue;
-                foreach (IntVec3 at in detached)
-                {
-                    //Log.Message("Detaching location " + at);
-                    foreach (Thing t in at.GetThingList(map))
-                    {
-                        if (t is Building_ShipBridge) //stopgap for invalid state bug
-                        {
-                            if (mapComp.MapRootList.Contains(t))
-                            {
-                                Log.Message("Tried removing primary bridge from ship, aborting detach.");
-                                ShipInteriorMod2.AirlockBugFlag = false;
-                                mapComp.RemoveShipFromBattle(shipIndex);
-                                return;
-                            }
-                        }
-                        if (t is Pawn p)
-                        {
-                            if (p.Faction != Faction.OfPlayer && Rand.Chance(0.75f))
-                            {
-                                toKill.Add(p);
-                                toDestroy.Add(t);
-                            }
-                        }
-                        else if (!(t is Blueprint))
-                            toDestroy.Add(t);
-                        if (t is Building b && b.TryGetComp<CompSoShipPart>() != null)
-                        {
-                            toReplace.Add(b);
-                            if (t.Position.x < minX)
-                                minX = t.Position.x;
-                            if (t.Position.x > maxX)
-                                maxX = t.Position.x;
-                            if (t.Position.z < minZ)
-                                minZ = t.Position.z;
-                            if (t.Position.z > maxZ)
-                                maxZ = t.Position.z;
-                        }
-                    }
-                }
-                if (toReplace.Any()) //any shipPart, make a floating wreck
-                {
-                    DetachedShipPart part = (DetachedShipPart)ThingMaker.MakeThing(ResourceBank.ThingDefOf.DetachedShipPart);
-                    part.Position = new IntVec3(minX, 0, minZ);
-                    part.xSize = maxX - minX + 1;
-                    part.zSize = maxZ - minZ + 1;
-                    part.wreckage = new byte[part.xSize, part.zSize];
-                    foreach (Thing t in toReplace)
-                    {
-                        var comp = t.TryGetComp<CompSoShipPart>();
-                        if (comp.Props.isHull)
-                            part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 1;
-                        else if (comp.Props.isPlating)
-                            part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
-                    }
-                    part.SpawnSetup(map, false);
-                }
-                foreach (Pawn p in toKill)
-                {
-                    p.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
-                }
-                foreach (Thing t in toDestroy)
-                {
-                    if (t is Building && map.IsPlayerHome && t.def.blueprintDef != null)
-                    {
-                        GenConstruct.PlaceBlueprintForBuild(t.def, t.Position, map, t.Rotation, Faction.OfPlayer, t.Stuff);
-                    }
-                    if (t.def.destroyable && !t.Destroyed)
-                        t.Destroy(DestroyMode.Vanish);
-                }
-                ShipInteriorMod2.AirlockBugFlag = false;
-                foreach (IntVec3 c in detached)
-                {
-                    map.terrainGrid.RemoveTopLayer(c, false);
-                    map.roofGrid.SetRoof(c, null);
-                    ShipAreaAtStart.Remove(c);
-                }
-                if (map == mapComp.ShipCombatOriginMap)
-                    mapComp.hasAnyPlayerPartDetached = true;
-            }
-            ShipDirty = false;
-            ShipDirtyGen = int.MaxValue;
         }
     }
 }

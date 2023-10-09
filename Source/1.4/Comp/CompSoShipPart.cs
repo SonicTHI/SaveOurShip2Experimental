@@ -63,7 +63,7 @@ namespace RimWorld
         public Building myLight = null;
         public bool discoMode = false;
 
-        List<IntVec3> cellsUnder;
+        HashSet<IntVec3> cellsUnder;
         Map map;
         public ShipHeatMapComp mapComp;
         public CompProperties_SoShipPart Props
@@ -73,7 +73,7 @@ namespace RimWorld
                 return (CompProperties_SoShipPart)props;
             }
         }
-        /*SC public override string CompInspectStringExtra()
+        public override string CompInspectStringExtra()
         {
             StringBuilder stringBuilder = new StringBuilder();
             if (Prefs.DevMode)
@@ -96,7 +96,7 @@ namespace RimWorld
                     stringBuilder.Append("shipIndex: " + index);
             }
             return stringBuilder.ToString();
-        }*/
+        }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
@@ -106,7 +106,7 @@ namespace RimWorld
             isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
             isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
             isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
-            cellsUnder = new List<IntVec3>();
+            cellsUnder = new HashSet<IntVec3>();
             foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent))
             {
                 cellsUnder.Add(vec);
@@ -131,13 +131,13 @@ namespace RimWorld
                     SpawnLight(lightRot, lightColor, sunLight);
                 return;
             }
-            /*SC foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
+            foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
             {
                 if (!mapComp.ShipCells.ContainsKey(vec))
                 {
                     mapComp.ShipCells.Add(vec, new Tuple<int, int>(-1, -1));
                 }
-            }*/
+            }
             if (Props.roof)
             {
                 foreach (IntVec3 pos in cellsUnder)
@@ -147,12 +147,13 @@ namespace RimWorld
                         map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
                 }
             }
-            /*SC if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
+            if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
             {
                 return;
             }
             //plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this
             //plating or shipPart with different or no shipIndex: merge connected to this ship
+            HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
             foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(parent))
             {
                 if (!mapComp.ShipCells.ContainsKey(vec))
@@ -168,10 +169,10 @@ namespace RimWorld
             {
                 mapComp.ShipsOnMapNew.Add(this.parent.thingIDNumber, new SoShipCache());
                 mapComp.ShipsOnMapNew[this.parent.thingIDNumber].RebuildCache(this.parent as Building);
-            }*/
+            }
         }
 
-        /*SC public void PreDeSpawn() //called in building.destroy, before comps get removed
+        public void PreDeSpawn() //called in building.destroy, before comps get removed
         {
             if (!parent.def.building.shipPart)
                 return;
@@ -224,7 +225,7 @@ namespace RimWorld
             ship.RemoveFromCache(parent as Building);
             if (!mapComp.InCombat) //perform check immediately
                 ship.CheckForDetach();
-        }*/
+        }
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);

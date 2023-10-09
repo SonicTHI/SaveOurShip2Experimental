@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V92";
+        public static readonly string SOS2EXPversion = "V93";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -176,25 +176,25 @@ namespace SaveOurShip2
 
 			wreckDictionary = new Dictionary<ThingDef, ThingDef>
 			{
-				{ThingDef.Named("ShipHullTile"), ResourceBank.ThingDefOf.ShipHullTileWrecked},
-				{ThingDef.Named("ShipHullTileMech"), ResourceBank.ThingDefOf.ShipHullTileWrecked},
-				{ThingDef.Named("ShipHullTileArchotech"), ResourceBank.ThingDefOf.ShipHullTileWrecked},
-				{ThingDef.Named("Ship_Beam"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamMech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_Beam_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamArchotech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGenerator"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGeneratorMech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGeneratorArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVentArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockArchotech"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockBeam"), ThingDef.Named("Ship_Beam_Wrecked")}
+				{ResourceBank.ThingDefOf.ShipHullTile, ResourceBank.ThingDefOf.ShipHullTileWrecked},
+				{ResourceBank.ThingDefOf.ShipHullTileMech, ResourceBank.ThingDefOf.ShipHullTileWrecked},
+				{ResourceBank.ThingDefOf.ShipHullTileArchotech, ResourceBank.ThingDefOf.ShipHullTileWrecked},
+				{ResourceBank.ThingDefOf.Ship_Beam, ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_BeamMech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_BeamArchotech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_Beam_Unpowered"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_BeamMech_Unpowered"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_BeamArchotech_Unpowered"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_SolarGenerator"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_SolarGeneratorMech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_SolarGeneratorArchotech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_PassiveVent"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_PassiveVentMechanoid"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_PassiveVentArchotech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ResourceBank.ThingDefOf.ShipAirlock, ResourceBank.ThingDefOf.ShipAirlockWrecked},
+				{ThingDef.Named("ShipAirlockMech"), ResourceBank.ThingDefOf.ShipAirlockWrecked},
+				{ThingDef.Named("ShipAirlockArchotech"), ResourceBank.ThingDefOf.ShipAirlockWrecked},
+				{ThingDef.Named("ShipAirlockBeam"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked}
 			};
 
 			var compatibleRoofs = new List<RoofDef>();
@@ -415,7 +415,7 @@ namespace SaveOurShip2
 			map.fogGrid.ClearAllFog();
 			return map;
 		}
-		public static void GenerateImpactSite()
+		public static void GenerateImpactSite() //td gensite string
 		{
 			WorldObject impactSite =
 				WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("ShipEngineImpactSite"));
@@ -1647,11 +1647,11 @@ namespace SaveOurShip2
 			}
 			return cellsFound;
 		}
-		/*SC public static HashSet<IntVec3> FindAreaAttachedNew(Building root, bool includeRock = false)
+		public static HashSet<IntVec3> FindAreaAttachedNew(Building root, bool includeRock = false)
 		{
 			var cells = root.Map.GetComponent<ShipHeatMapComp>().ShipCells;
 			return cells.Keys.Where(v => cells[v].Item1 == cells[root.Position].Item1).ToHashSet();
-		}*/
+		}
 		public class TimeHelper
 		{
 			private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
@@ -1716,7 +1716,7 @@ namespace SaveOurShip2
 				return;
 			List<Building> cachedParts;
 			if (b is Building_ShipBridge bridge)
-				cachedParts = bridge.cachedShipParts; //SC cachedParts = bridge.Ship.Buildings.ToList();
+				cachedParts = bridge.Ship.Buildings.ToList();
 			else
 				cachedParts = FindBuildingsAttached(b, includeRock);
 
@@ -1811,7 +1811,7 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("prepare");
 
-			/*SC shipOriginMap = null;
+			shipOriginMap = null;
 			bool playerMove = core.Faction == Faction.OfPlayer;
 			Map sourceMap = core.Map;
 			bool sourceMapIsSpace = sourceMap.IsSpace();
@@ -1837,26 +1837,14 @@ namespace SaveOurShip2
                 ship.map = targetMap;
                 ship.mapComp = targetMapComp;
                 sourceMapComp.ShipsOnMapNew.Remove(shipIndex);
-            }*/
-			//SC rem
-			shipOriginMap = null;
-			bool playerMove = core.Faction == Faction.OfPlayer;
-			Map sourceMap = core.Map;
-			bool sourceMapIsSpace = sourceMap.IsSpace();
-			HashSet<IntVec3> sourceArea = FindAreaAttached(core, includeRock);
-			
-            if (targetMap == null)
-                targetMap = core.Map;
-			bool targetMapIsSpace = targetMap.IsSpace();
-			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
-			//SC rem end
+            }
 
 			foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
-                /*SC //ship cache: move ShipCells
+                //ship cache: move ShipCells
                 targetMapComp.ShipCells.Add(adjustedPos, new Tuple<int, int>(sourceMapComp.ShipCells[pos].Item1, sourceMapComp.ShipCells[pos].Item2));
-                sourceMapComp.ShipCells.Remove(pos);*/
+                sourceMapComp.ShipCells.Remove(pos);
 				//store room temps
 				Room room = pos.GetRoom(sourceMap);
 				if (room != null && !roomsToTemp.Contains(room) && !ExposedToOutside(room))
@@ -1918,9 +1906,8 @@ namespace SaveOurShip2
                 }
                 foreach (Pawn p in pawns) //drop carried things, add to move list
                 {
-					if (p.IsCarrying())
+					if (p.IsCarrying() && p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out Thing carriedt))
                     {
-                        p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out Thing carriedt);
                         toSave.Add(carriedt);
                     }
 					//p.CurJob.Clear();
@@ -1962,7 +1949,7 @@ namespace SaveOurShip2
                     targetMap.terrainGrid.RemoveTopLayer(pos, false);
                 }
             }
-            /*SC if (adjustment != IntVec3.Zero) //ship cache: offset area, find adjacent ships
+            if (adjustment != IntVec3.Zero) //ship cache: offset area, find adjacent ships
             {
                 ship.Area = targetArea;
                 foreach (IntVec3 pos in targetArea)
@@ -1973,7 +1960,7 @@ namespace SaveOurShip2
                     }
                 }
                 Log.Message("Area: " + shipIndexes.Count);
-            }*/
+            }
             if (devMode)
 				watch.Record("processSourceArea");
 
@@ -2137,13 +2124,13 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("moveThings");
 			AirlockBugFlag = false;
-			/*SC sourceMapComp.CacheOff = false;
+			sourceMapComp.CacheOff = false;
             targetMapComp.CacheOff = false;
 			if (shipIndexes.Count > 1) //ship cache: adjacent ships found, merge in order: largest ship, ship, wreck
             {
                 Log.Message("ŞOS2: ship move found adjacent ships, merging");
                 targetMapComp.CheckAndMerge(shipIndexes);
-            }*/
+            }
             //move zones
             if (zonesToCopy.Any())
 			{
@@ -2436,17 +2423,17 @@ namespace SaveOurShip2
 		}
 		public static void RemoveShip(List<IntVec3> area, Map map, bool planetTravel)
         {
-            /*SC var mapComp = map.GetComponent<ShipHeatMapComp>();
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
 			mapComp.CacheOff = true;
             if (mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[area.First()].Item1))
-                mapComp.ShipsOnMapNew.Remove(mapComp.ShipCells[area.First()].Item1);*/
+                mapComp.ShipsOnMapNew.Remove(mapComp.ShipCells[area.First()].Item1);
             AirlockBugFlag = true;
 			List<Thing> things = new List<Thing>();
 			List<Zone> zones = new List<Zone>();
 			foreach (IntVec3 pos in area)
 			{
 				//remove from cache
-                //SC mapComp.ShipCells.Remove(pos);
+                mapComp.ShipCells.Remove(pos);
 				map.roofGrid.SetRoof(pos, null);
 				things.AddRange(pos.GetThingList(map));
 				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))

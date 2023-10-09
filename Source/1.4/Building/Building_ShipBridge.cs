@@ -17,24 +17,11 @@ namespace RimWorld
 	public class Building_ShipBridge : Building
     {
         public string ShipName = "Unnamed Ship";
-		//SC rem
-        public int ShipThreat = 0;
-        public int ShipMass = 0;
-        public float ShipMaxTakeoff = 0;
-        public float ShipThrust = 0;
-        public float ShipHeatCap = 0;
-        public float ShipHeat = 0;
-		//SC rem end
         public int shipIndex = -1;
-        //SC public int Index = -1;
-        //SC public SoShipCache Ship;
+        public int Index = -1;
+        public SoShipCache Ship;
         public bool TacCon = false;
-        public HashSet<ThingDef> nonRotatableObjects = new HashSet<ThingDef>(); //SC rem
-
         bool selected = false;
-        public List<Building> cachedShipParts; //SC rem
-        public List<Building> cachedPods; //SC rem
-        public List<Building> cachedEngines; //SC rem
         List<string> fail;
 
         public ShipHeatMapComp mapComp;
@@ -52,28 +39,17 @@ namespace RimWorld
         private List<string> InterstellarFailReasons()
         {
             List<string> result = new List<string>();
-			//SC Ship.Sensors
-            if (!cachedShipParts.Any((Building pa) => pa.def == ThingDefOf.Ship_ComputerCore || pa.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
+            if (!Ship.Sensors.Any((Building pa) => pa.def == ThingDefOf.Ship_ComputerCore || pa.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_ComputerCore.label);
-            if (!cachedShipParts.Any((Building pa) => pa.def == ThingDefOf.Ship_SensorCluster || pa.def ==ThingDef.Named("Ship_SensorClusterAdv")))
+            if (!Ship.Sensors.Any((Building pa) => pa.def == ThingDefOf.Ship_SensorCluster || pa.def ==ThingDef.Named("Ship_SensorClusterAdv")))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
             int playerJTPower = 0;
-            /*SC if (Ship.Engines.Any(e => e.Props.energy))
+            if (Ship.Engines.Any(e => e.Props.energy))
             {
                 foreach (CompEngineTrail e in Ship.Engines.Where(e => e.Props.energy))
                 {
                     int mult = 10000;
                     if (e.parent.def.size.x > 3)
-                        mult = 30000;
-                    playerJTPower += mult;
-                }
-            }*/
-            if (cachedShipParts.Any((Building pa) => pa.TryGetComp<CompEngineTrail>() != null))
-            {
-                foreach (Building b in cachedShipParts.Where(b => b.TryGetComp<CompEngineTrail>() != null && b.GetComp<CompEngineTrail>().Props.energy))
-                {
-                    int mult = 10000;
-                    if (b.def.size.x > 3)
                         mult = 30000;
                     playerJTPower += mult;
                 }
@@ -96,8 +72,8 @@ namespace RimWorld
 		public override IEnumerable<Gizmo> GetGizmos()
 		{
             var heatNet = this.TryGetComp<CompShipHeat>().myNet;
-            //SC if (Ship == null)
-            //    Ship = mapComp.ShipsOnMapNew[Index];
+            if (Ship == null)
+                Ship = mapComp.ShipsOnMapNew[Index];
             bool ckActive = Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
             if (!TacCon)
             {
@@ -121,25 +97,6 @@ namespace RimWorld
                 }
                 if (!selected)
                 {
-					//SC rem
-                    Log.Message("recached: " + this);
-                    cachedShipParts = ShipUtility.ShipBuildingsAttachedTo(this);
-                    cachedEngines = new List<Building>();
-                    cachedPods = new List<Building>();
-                    nonRotatableObjects.Clear();
-                    foreach (Building b in cachedShipParts)
-                    {
-                        if (b.TryGetComp<CompCryptoLaunchable>() != null)
-                            cachedPods.Add(b);
-                        else if (b.TryGetComp<CompEngineTrail>() != null)
-                            cachedEngines.Add(b);
-
-                        if (b.def.rotatable == false && b.def.size.x != b.def.size.z)
-                        {
-                            nonRotatableObjects.Add(b.def);
-                        }
-                    }
-					//SC rem end
                     fail = InterstellarFailReasons();
                     selected = true;
                 }
@@ -172,7 +129,6 @@ namespace RimWorld
                 {
                     action = delegate
                     {
-                        RecalcStats(); //SC rem, Ship.x
                         float capacity = 0;
                         foreach (CompPowerBattery bat in this.GetComp<CompPower>().PowerNet.batteryComps)
                             capacity += bat.Props.storedEnergyMax;
@@ -180,13 +136,13 @@ namespace RimWorld
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipName", ShipName));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsNotoriety", Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty));
                         stringBuilder.AppendLine();
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", ShipMass));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", ShipMaxTakeoff));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", Ship.Mass));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", Ship.MaxTakeoff));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipEnergy", this.PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity, (heatComp.myNet.Depletion > 0) ? (" ("+ heatComp.myNet.StorageCapacityRaw + " maximum)") : ""));
                         stringBuilder.AppendLine();
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatRating", ShipThreat));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatThrust", ShipThrust.ToString("F3")));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatRating", Ship.Threat));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatThrust", Ship.ThrustRatio.ToString("F3")));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine();
                         if (this.Map.IsSpace())
@@ -217,7 +173,7 @@ namespace RimWorld
             }
             if (this.Map.IsSpace())
             {
-                if (cachedPods.Any()) //SC Ship.Pods
+                if (Ship.Pods.Any()) //SC Ship.Pods
                 {
                     Command_Action abandon = new Command_Action
                     {
@@ -248,8 +204,7 @@ namespace RimWorld
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandScuttleShipDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/Scuttle_Icon")
                     };
-                    //SC if (Ship.Pods.Where(pod => pod.parent is Building_CryptosleepCasket c && c.GetDirectlyHeldThings().Any()).Count() == 0)
-                    if (cachedPods.Where(pod => pod is Building_CryptosleepCasket c && c.GetDirectlyHeldThings().Any()).Count() == 0)
+                    if (Ship.Pods.Where(pod => pod.parent is Building_CryptosleepCasket c && c.GetDirectlyHeldThings().Any()).Count() == 0)
                     {
                         abandon.disabled = true;
                         abandon.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideNoLoadedPods");
@@ -443,16 +398,15 @@ namespace RimWorld
                 //engine burn
                 else if (Map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
                 {
-                    if (cachedEngines.Any())
+                    if (Ship.Engines.Any())
                     {
-                        bool anyEngineOn = cachedEngines.Any(e => e.GetComp<CompEngineTrail>().active);
+                        bool anyEngineOn = Ship.Engines.Any(e => e.active);
                         Command_Toggle toggleEngines = new Command_Toggle
                         {
                             toggleAction = delegate
                             {
-                                foreach (Building b in cachedEngines)
+                                foreach (CompEngineTrail engineComp in Ship.Engines) //td cahnge to all on map
                                 {
-                                    var engineComp = b.GetComp<CompEngineTrail>();
                                     if (anyEngineOn)
                                         engineComp.Off();
                                     else
@@ -544,7 +498,7 @@ namespace RimWorld
                             moveShipFlip.Disable();
                             moveShipRot.Disable();
                         }
-                        else if (nonRotatableObjects.Any()) //SC Ship.BuildingsNonRot
+                        else if (Ship.BuildingsNonRot.Any())
                         {
                             moveShipRot.Disable();
                             StringBuilder sb = new StringBuilder();
@@ -553,18 +507,18 @@ namespace RimWorld
                             int maxCount = 5;
                             int addedLines = 0;
                             bool devMode = Prefs.DevMode;
-                            foreach (var bd in nonRotatableObjects)
+                            foreach (Building bd in Ship.BuildingsNonRot)
                             {
                                 // Printing more detailed info for modders.
                                 if (devMode)
-                                    sb.AppendFormat("{0} ({1})\n", bd.label, bd.defName);
+                                    sb.AppendFormat("{0} ({1})\n", bd.def.label, bd.def.defName);
                                 else
-                                    sb.AppendLine(bd.label);
+                                    sb.AppendLine(bd.def.label);
                                 addedLines++;
                                 if (addedLines > maxCount)
                                     break;
                             }
-                            if (addedLines < nonRotatableObjects.Count)
+                            if (addedLines < Ship.BuildingsNonRot.Count)
                                 sb.AppendLine("...");
                             moveShipRot.disabledReason = sb.ToString();
                         }
@@ -842,14 +796,9 @@ namespace RimWorld
 		}
         private bool ChoseWorldTarget(GlobalTargetInfo target)
         {
-            /*SC foreach (CompCryptoLaunchable pod in Ship.Pods)
+            foreach (CompCryptoLaunchable pod in Ship.Pods)
             {
                 pod.ChoseWorldTarget(target);
-            }*/
-			//SC rem
-            foreach (Building pod in cachedPods)
-            {
-                pod.TryGetComp<CompCryptoLaunchable>().ChoseWorldTarget(target);
             }
             return true;
         }
@@ -884,7 +833,7 @@ namespace RimWorld
                 countdownComp.ResetForceExitAndRemoveMapCountdown();
                 Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
             }
-            /*SC if (!mapComp.CacheOff)
+            if (!mapComp.CacheOff)
             {
                 //bridge placed on wreck, make ship
                 if (mapComp.ShipCells.ContainsKey(Position) && !mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[Position].Item1))
@@ -892,23 +841,19 @@ namespace RimWorld
                     mapComp.ShipsOnMapNew.Add(thingIDNumber, new SoShipCache());
                     mapComp.ShipsOnMapNew[thingIDNumber].RebuildCache(this);
                 }
-            }*/
+            }
         }
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
-            if (!mapComp.InCombat && !mapComp.MapRootList.NullOrEmpty() && mapComp.MapRootList.Contains(this))
-                mapComp.MapRootList.Remove(this);
             base.DeSpawn(mode);
         }
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
-            if (!mapComp.InCombat && !mapComp.MapRootList.NullOrEmpty() && mapComp.MapRootList.Contains(this))
-                mapComp.MapRootList.Remove(this);
-            /*SC if (Ship.Bridges.Any(b => b != this && !b.Destroyed)) //if last bridge remove ship or end combat
+            if (Ship.Bridges.Any(b => b != this && !b.Destroyed)) //if last bridge remove ship or end combat
             {
                 if (!mapComp.InCombat)
                 {
@@ -922,7 +867,7 @@ namespace RimWorld
                         mapComp.EndBattle(Map, false);
                 }
                 return;
-            }*/
+            }
             //Log.Message("Destroyed: " + this + " from " + this.Map);
             if (mapComp.InCombat) //force check on next tick //SC rem
             {
@@ -951,89 +896,25 @@ namespace RimWorld
         }
 		public bool HasPilotRCSAndFuel(float fuelPercentNeeded, bool RCS = false)
         {
-            float fuelNeeded = 0f;
-            float fuelHad = 0f;
-            int rcsCount = 1;
-            bool hasPilot = false;
-            foreach (Building b in cachedShipParts)
-            {
-                if (b.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
-                    fuelNeeded += 1;
-                else
-                {
-                    var engine = b.TryGetComp<CompEngineTrail>();
-                    var rcs = b.TryGetComp<CompRCSThruster>();
-                    if (engine != null && engine.Props.takeOff)
-                    {
-                        fuelHad += engine.refuelComp.Fuel;
-                        if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
-                            fuelHad += engine.refuelComp.Fuel;
-                    }
-                    else if (rcs != null)
-                    {
-                        rcsCount++;
-                    }
-                    else if (!hasPilot && b is Building_ShipBridge bridge && bridge.TryGetComp<CompPowerTrader>().PowerOn)
-                    {
-                        if (mannableComp == null || (mannableComp != null && mannableComp.MannedNow))
-                            hasPilot = true;
-                    }
-                    fuelNeeded += (b.def.size.x * b.def.size.z) * 3f;
-                }
-            }
-            Log.Message("Mass: " + fuelNeeded + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + rcsCount);
-            if (RCS && rcsCount * 2000 < fuelNeeded) //2k weight/RCS to move
+            float fuelNeeded = Ship.Mass;
+            Log.Message("Mass: " + fuelNeeded + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + Ship.RCSs.Count);
+            if (RCS && Ship.RCSs.Count * 2000 < fuelNeeded) //2k weight/RCS to move
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), this, MessageTypeDefOf.NeutralEvent);
                 return false;
             }
             fuelNeeded *= fuelPercentNeeded;
-            if (fuelHad < fuelNeeded)
+            if (Ship.TakeoffCurrent() < fuelNeeded)
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailFuel", fuelNeeded), this, MessageTypeDefOf.NeutralEvent);
                 return false;
             }
-            if (!hasPilot)
+            if (!Ship.HasMannedBridge())
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailPilot"), this, MessageTypeDefOf.NeutralEvent);
                 return false;
             }
             return true;
-        }
-        public void RecalcStats() //SC rem
-        {
-            ShipThreat = 0;
-            ShipMass = 0;
-            ShipMaxTakeoff = 0;
-            ShipThrust = 0;
-            foreach (Building b in cachedShipParts)
-            {
-                if (b.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
-                    ShipMass += 1;
-                else
-                {
-                    ShipMass += (b.def.size.x * b.def.size.z) * 3;
-                    if (b.TryGetComp<CompShipHeat>() != null)
-                        ShipThreat += b.TryGetComp<CompShipHeat>().Threat;
-                    else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)
-                        ShipThreat += 5;
-                    var engine = b.TryGetComp<CompEngineTrail>();
-                    if (engine != null)
-                    {
-                        ShipThrust += engine.Thrust;
-                        if (engine.Props.takeOff)
-                        {
-                            ShipMaxTakeoff += b.TryGetComp<CompRefuelable>().Props.fuelCapacity;
-                            if (b.TryGetComp<CompRefuelable>().Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
-                            {
-                                ShipMaxTakeoff += b.TryGetComp<CompRefuelable>().Props.fuelCapacity;
-                            }
-                        }
-                    }
-                }
-            }
-            ShipThrust *= 500f / Mathf.Pow(cachedShipParts.Count, 1.1f);
-            ShipThreat += ShipMass / 100;
         }
 
         public void HackMe(Pawn pawn)
@@ -1066,14 +947,7 @@ namespace RimWorld
             }
             else
             {
-				//SC Ship.Capture(Faction.OfPlayer);
-				//SC rem
-                cachedShipParts = ShipUtility.ShipBuildingsAttachedTo(this);
-                foreach (Building b in cachedShipParts)
-                {
-                    if (b.def.CanHaveFaction)
-                        b.SetFaction(Faction.OfPlayer);
-                }
+				Ship.Capture(Faction.OfPlayer);
             }
         }
         private void Failure(Pawn pawn)

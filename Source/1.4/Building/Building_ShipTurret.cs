@@ -361,8 +361,8 @@ namespace RimWorld
                     }
                     else //try bridges, else random
                     {
-                        if (mapComp.OriginMapComp.MapRootList.Any(b => !b.Destroyed))
-                            shipTarget = mapComp.OriginMapComp.MapRootList.RandomElement();
+                        if (mapComp.OriginMapComp.MapRootListAll.Any(b => !b.Destroyed))
+                            shipTarget = mapComp.OriginMapComp.MapRootListAll.RandomElement();
                         else
                             shipTarget = mapComp.ShipCombatOriginMap.listerBuildings.allBuildingsColonist.RandomElement();
                     }

@@ -76,7 +76,7 @@ namespace RimWorld
         }
         public bool AddHeatToNetwork(float amount)
         {
-            if (myNet == null || amount > AvailableCapacityInNetwork())
+            if (myNet == null || amount > myNet.StorageCapacity - myNet.StorageUsed)
                 return false;
             myNet.AddHeat(amount);
             return true;
@@ -90,7 +90,7 @@ namespace RimWorld
         }
         public bool AddDepletionToNetwork(float amount)
         {
-            if (myNet == null || amount > AvailableCapacityInNetwork())
+            if (myNet == null || amount > myNet.StorageCapacity)
                 return false;
             myNet.AddDepletion(amount);
             return true;
@@ -98,10 +98,6 @@ namespace RimWorld
         public void RemoveDepletionFromNetwork(float amount)
         {
             myNet?.RemoveDepletion(amount);
-        }
-        public float AvailableCapacityInNetwork()
-        {
-            return myNet.StorageCapacity - myNet.StorageUsed;
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {

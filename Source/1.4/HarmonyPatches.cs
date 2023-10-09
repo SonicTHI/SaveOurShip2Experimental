@@ -100,7 +100,7 @@ namespace SaveOurShip2
                         rect3.x = screenHalf - 415;
                         rect3.height = Text.LineHeight;
                         if (capacity > 0)
-                            Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
+                            Widgets.Label(rect3, "Energy: " + Mathf.Floor(net.CurrentStoredEnergy()) + " / " + capacity);
                         else
                             Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
                     }
@@ -115,7 +115,7 @@ namespace SaveOurShip2
                         rect4.x = screenHalf - 220;
                         rect4.height = Text.LineHeight;
                         if (net2.StorageCapacity > 0)
-                            Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
+                            Widgets.Label(rect4, "Heat: " + Mathf.Floor(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
                         else
                             Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
                     }
@@ -151,7 +151,7 @@ namespace SaveOurShip2
                         rect4.x = screenHalf + 455;
                         rect4.height = Text.LineHeight;
                         if (net2.StorageCapacity > 0)
-                            Widgets.Label(rect4, "Heat: " + Mathf.Round(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
+                            Widgets.Label(rect4, "Heat: " + Mathf.Floor(net2.StorageUsed) + " / " + Mathf.Round(net2.StorageCapacity));
                         else
                             Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
                     }
@@ -170,7 +170,7 @@ namespace SaveOurShip2
                         rect3.x = screenHalf + 645;
                         rect3.height = Text.LineHeight;
                         if (capacity > 0)
-                            Widgets.Label(rect3, "Energy: " + Mathf.Round(net.CurrentStoredEnergy()) + " / " + capacity);
+                            Widgets.Label(rect3, "Energy: " + Mathf.Floor(net.CurrentStoredEnergy()) + " / " + capacity);
                         else
                             Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
                     }

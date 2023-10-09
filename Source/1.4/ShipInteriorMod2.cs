@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V92";
+        public static readonly string SOS2EXPversion = "V92f1";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -176,25 +176,25 @@ namespace SaveOurShip2
 
 			wreckDictionary = new Dictionary<ThingDef, ThingDef>
 			{
-				{ThingDef.Named("ShipHullTile"), ResourceBank.ThingDefOf.ShipHullTileWrecked},
-				{ThingDef.Named("ShipHullTileMech"), ResourceBank.ThingDefOf.ShipHullTileWrecked},
-				{ThingDef.Named("ShipHullTileArchotech"), ResourceBank.ThingDefOf.ShipHullTileWrecked},
-				{ThingDef.Named("Ship_Beam"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamMech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_Beam_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("Ship_BeamArchotech_Unpowered"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGenerator"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGeneratorMech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_SolarGeneratorArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipInside_PassiveVentArchotech"), ThingDef.Named("Ship_Beam_Wrecked")},
-				{ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockArchotech"), ThingDef.Named("ShipAirlockWrecked")},
-				{ThingDef.Named("ShipAirlockBeam"), ThingDef.Named("Ship_Beam_Wrecked")}
+				{ResourceBank.ThingDefOf.ShipHullTile, ResourceBank.ThingDefOf.ShipHullTileWrecked},
+				{ResourceBank.ThingDefOf.ShipHullTileMech, ResourceBank.ThingDefOf.ShipHullTileWrecked},
+				{ResourceBank.ThingDefOf.ShipHullTileArchotech, ResourceBank.ThingDefOf.ShipHullTileWrecked},
+				{ResourceBank.ThingDefOf.Ship_Beam, ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_BeamMech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_BeamArchotech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_Beam_Unpowered"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_BeamMech_Unpowered"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("Ship_BeamArchotech_Unpowered"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_SolarGenerator"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_SolarGeneratorMech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_SolarGeneratorArchotech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_PassiveVent"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_PassiveVentMechanoid"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ThingDef.Named("ShipInside_PassiveVentArchotech"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked},
+				{ResourceBank.ThingDefOf.ShipAirlock, ResourceBank.ThingDefOf.ShipAirlockWrecked},
+				{ThingDef.Named("ShipAirlockMech"), ResourceBank.ThingDefOf.ShipAirlockWrecked},
+				{ThingDef.Named("ShipAirlockArchotech"), ResourceBank.ThingDefOf.ShipAirlockWrecked},
+				{ThingDef.Named("ShipAirlockBeam"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked}
 			};
 
 			var compatibleRoofs = new List<RoofDef>();

@@ -45,10 +45,9 @@ namespace RimWorld
                     bool turnedOff = false;
                     foreach (ShipHeatNet net in mapComp.cachedNets.Where(n => n != null && n.StorageCapacityRaw > 0))
                     {
-                        float f = 1f + net.StorageCapacityRaw / 10000f;
-                        if (!heatComp.AddDepletionToNetwork(f)) //all cloaks off
-                            {
-                            foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)
+                        if (!heatComp.AddDepletionToNetwork(1f + net.StorageCapacityRaw / 10000f))
+                        {
+                            foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks) //all cloaks off
                             {
                                 cloak.flickComp.SwitchIsOn = false;
                                 turnedOff = true;

@@ -1321,14 +1321,16 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 				return;
-			//SC if (___map.GetComponent<ShipHeatMapComp>()?.ShipCells?.ContainsKey(c) ?? false)
-            foreach (Thing t in ___map.thingGrid.ThingsAt(c))
+			if (___map.GetComponent<ShipHeatMapComp>()?.ShipCells?.ContainsKey(c) ?? false)
             {
-                var shipPart = t.TryGetComp<CompSoShipPart>();
-                if (shipPart != null && (shipPart.Props.isPlating || shipPart.Props.isHardpoint || shipPart.Props.isHull))
+                foreach (Thing t in ___map.thingGrid.ThingsAt(c))
                 {
-                    shipPart.SetShipTerrain(c);
-                    break;
+                    var shipPart = t.TryGetComp<CompSoShipPart>();
+                    if (shipPart != null && (shipPart.Props.isPlating || shipPart.Props.isHardpoint || shipPart.Props.isHull))
+                    {
+                        shipPart.SetShipTerrain(c);
+                        break;
+                    }
                 }
             }
 		}

@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93";
+        public static readonly string SOS2EXPversion = "V93n1";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -551,7 +551,7 @@ namespace SaveOurShip2
 		}
 		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
-			//SC map.GetComponent<ShipHeatMapComp>().CacheOff = true;
+			map.GetComponent<ShipHeatMapComp>().CacheOff = true;
 			List<IntVec3> area = new List<IntVec3>();
 			List<Thing> planters = new List<Thing>();
 			List<IntVec3> areaOut;
@@ -589,7 +589,7 @@ namespace SaveOurShip2
 			//use player points to spawn ships of the same navy, fit z, random x
 			//main + twin, twin, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
 			//60-20-20,50-50,40-40-10-10
-			//SC map.GetComponent<ShipHeatMapComp>().CacheOff = true;
+			map.GetComponent<ShipHeatMapComp>().CacheOff = true;
 			List<EnemyShipDef> ships;
 			bool allowNavyExc = true;
 			if (navyDef != null)
@@ -1383,8 +1383,8 @@ namespace SaveOurShip2
 			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
 			if (Current.ProgramState == ProgramState.Playing)
 				map.mapDrawer.RegenerateEverythingNow();
-            //SC map.GetComponent<ShipHeatMapComp>().RecacheMap();
-		}
+            map.GetComponent<ShipHeatMapComp>().RecacheMap();
+        }
 		public static bool AnyBridgeIn(Room room)
 		{
 			List<Region> regions = room.Regions;

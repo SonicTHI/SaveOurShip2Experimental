@@ -173,7 +173,7 @@ namespace RimWorld
             }
             if (this.Map.IsSpace())
             {
-                if (Ship.Pods.Any()) //SC Ship.Pods
+                if (Ship.Pods.Any())
                 {
                     Command_Action abandon = new Command_Action
                     {
@@ -869,7 +869,7 @@ namespace RimWorld
                 return;
             }
             //Log.Message("Destroyed: " + this + " from " + this.Map);
-            if (mapComp.InCombat) //force check on next tick //SC rem
+            if (mapComp.InCombat) //force check on next tick
             {
                 mapComp.BridgeDestroyed = true;
             }

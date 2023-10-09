@@ -208,7 +208,6 @@ namespace RimWorld
         {
             base.FinalizeInit();
             RecacheMap();
-            Log.Message("SOS2 initalized cache on map: " + map + " Found ships: " + ShipsOnMapNew.Count);
         }
         public bool CacheOff = true;
         //cells occupied by shipParts, if cacheoff = null, item1 = index, item2 = path, if path is -1 = wreck
@@ -245,7 +244,7 @@ namespace RimWorld
                 ShipCells[vec] = new Tuple<int, int>(-1, -1);
             }
         }
-        public void RecacheMap() //rebuild all ships, wrecks //td call this after all things loaded
+        public void RecacheMap() //rebuild all ships, wrecks on map init or after ship gen
         {
             foreach (Building b in MapRootListAll)
             {
@@ -272,6 +271,7 @@ namespace RimWorld
                 }
             }
             CacheOff = false;
+            Log.Message("SOS2 recached on map: " + map + " Found ships: " + ShipsOnMapNew.Count);
         }
         public void CheckAndMerge(HashSet<int> indexes) //slower, finds best ship to merge to, removes all other ships
         {
@@ -778,6 +778,7 @@ namespace RimWorld
                 //ship destruction code
                 if (BridgeDestroyed || Find.TickManager.TicksGame % 20 == 0)
                 {
+                    BridgeDestroyed = false;
                     foreach (int i in ShipsOnMapNew.Keys)
                     {
                         if (ShipsOnMapNew[i].CheckForDetach())

@@ -170,11 +170,11 @@ namespace RimWorld
                 Scribe_Values.Look<bool>(ref Scanned, "Scanned");
             }
         }
-        //td get these into shipcache?
-        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
-        public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>();
-        public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>();
-        public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>();
+        //non SC caches
+        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>(); //workjob, hit detect
+        public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>(); //td get this into shipcache?
+        public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
+        public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
         //SC vars
         public Map ShipCombatOriginMap; //"player" map - initializes combat vars
         public Map ShipCombatMasterMap; //"AI" map - runs all non duplicate code
@@ -684,13 +684,12 @@ namespace RimWorld
                 launchedBoarders = false;
                 BattleStartTick = Find.TickManager.TicksGame;
             }
-            foreach (int index in shipsOnMapNew.Keys)
+            foreach (int index in shipsOnMapNew.Keys) //combat start calcs per ship
             {
                 var ship = shipsOnMapNew[index];
-                if (!ship.IsWreck)
-                {
-                    ship.BuildingCountAtCombatStart = ship.BuildingCount;
-                }
+                //if (!ship.IsWreck)
+                ship.BuildingCountAtCombatStart = ship.BuildingCount;
+                BuildingCountAtStart += ship.BuildingCountAtCombatStart;
             }
         }
 
@@ -871,18 +870,50 @@ namespace RimWorld
             foreach (int index in ShipsOnMapNew.Keys)
             {
                 var ship = shipsOnMapNew[index];
-                if (ShipCombatMaster)
+                if (ShipCombatMaster && !ship.IsWreck)
                 {
-                    foreach (var battery in ship.Batteries)
+                    foreach (var battery in ship.Core.PowerComp.PowerNet.batteryComps)
                     {
                         powerCapacity += battery.Props.storedEnergyMax;
                         powerRemaining += battery.StoredEnergy;
                     }
                     ship.PurgeCheck();
                 }
-                threatPerSegment.Zip(ship.ActualThreatPerSegment(), (x, y) => x + y);
-                TurretNum += ship.Turrets.Count;
-
+                threatPerSegment.Zip(ship.ThreatPerSegment, (x, y) => x + y);
+                foreach (Building_ShipTurret turret in ship.Turrets)
+                {
+                    int threat = turret.heatComp.Props.threat;
+                    var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
+                    var fuel = turret.TryGetComp<CompRefuelable>();
+                    if ((torp != null && !torp.Loaded) || (fuel != null && fuel.Fuel == 0f))
+                    {
+                        if (turret.heatComp.Props.maxRange > 150) //long
+                        {
+                            threatPerSegment[0] -= threat / 6f;
+                            threatPerSegment[1] -= threat / 4f;
+                            threatPerSegment[2] -= threat / 2f;
+                            threatPerSegment[3] -= threat;
+                        }
+                        else if (turret.heatComp.Props.maxRange > 100) //med
+                        {
+                            threatPerSegment[0] -= threat / 4f;
+                            threatPerSegment[1] -= threat / 2f;
+                            threatPerSegment[2] -= threat;
+                        }
+                        else if (turret.heatComp.Props.maxRange > 50) //short
+                        {
+                            threatPerSegment[0] -= threat / 2f;
+                            threatPerSegment[1] -= threat;
+                        }
+                        else //cqc
+                            threatPerSegment[0] -= threat;
+                    }
+                    else
+                    {
+                        totalThreat += threat;
+                        TurretNum++;
+                    }
+                }
                 if (ship.Engines.FirstOrDefault() != null)
                     EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
                 float enginePower = ship.EnginePower(EngineRot, Heading);
@@ -905,13 +936,15 @@ namespace RimWorld
             {
                 if (anyMapEngineCanActivate) //set AI heading
                 {
+                    //True, totalThreat:1, OriginMapComp.totalThreat:1, TurretNum:0
                     //retreat
-                    if (enemyRetreating || totalThreat / OriginMapComp.totalThreat < 0.4f || powerRemaining / powerCapacity < 0.2f || TurretNum == 0 || BuildingsCount * 1f / BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
+                    if (enemyRetreating || totalThreat / OriginMapComp.totalThreat < 0.4f || powerRemaining / powerCapacity < 0.2f || TurretNum == 0 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
                     {
                         Heading = -1;
                         enemyRetreating = true;
                         if (!warnedAboutRetreat)
                         {
+                            Log.Message(enemyRetreating + ", totalThreat:" + totalThreat + ", OriginMapComp.totalThreat:" + OriginMapComp.totalThreat + ", powerRemaining:" + powerRemaining + ", powerCapacity:" + powerCapacity + ", TurretNum:" + TurretNum + ", BuildingsCount:" + BuildingsCount + ", BuildingCountAtStart:" + BuildingCountAtStart);
                             Messages.Message("EnemyShipRetreating".Translate(), MessageTypeDefOf.ThreatBig);
                             warnedAboutRetreat = true;
                         }

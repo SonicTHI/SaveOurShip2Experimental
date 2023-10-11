@@ -14,24 +14,37 @@ namespace RimWorld
     {
         //td no function on ship parts if no bridge (tur,eng,sen)
         //functionality:
-        //post load: after all spawned, RebuildCache //td currently only on clicking bridge
-        //battle start: player - RebuildCorePath if corePathDirty, enemy - RebuildCache //td currently RebuildCache both
+        //post load or after ship spawn: rebuild cache
         //shipmove: if moved vec - offset/rot area, if diff map rem from curr, add to target
-        //possible merge: //td either prevent placenear other ship or merge code
 
         //on shipPart added
-        //possible merge: ooc - add all parts to this ship / ic - should not happen //td prevent construction PlaceWorker_ShipPart
+        //possible merge: ooc - add all parts to this ship / ic - same but shrink destroyedarea
 
         //on shipPart removed
         //possible split: ooc - check for bridge, ic - detach, ooc - RebuildCache for each dcon bridge, -1 to rest
 
         //other buildings: +-for count, mass if on shipPart
 
+        public HashSet<IntVec3> Area = new HashSet<IntVec3>(); //shipParts add to area
+        public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //add to when destroyed in combat
+        public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
+        public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
+        public HashSet<Building> BuildingsNonRot = new HashSet<Building>();
+        public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
+        public List<CompRCSThruster> RCSs = new List<CompRCSThruster>();
+        public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
+        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
+        public List<CompCryptoLaunchable> Pods = new List<CompCryptoLaunchable>();
+        public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
+        public HashSet<Building_ShipTurret> Turrets = new HashSet<Building_ShipTurret>();
+        public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
+        public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
+        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
         public string Name = "Unnamed Ship";
         public int Index = -1;
         public bool IsWreck = true;
         public bool CanMove = false;
-        public Building_ShipBridge Core; //if null, this is a wreck
+        public Building_ShipBridge Core;
         public int Mass = 0;
         public float MaxTakeoff = 0;
         public int BuildingCount = 0;
@@ -47,7 +60,7 @@ namespace RimWorld
                 return ThreatRaw + Mass / 100;
             }
         }
-        private float[] ThreatPerSegment = new[] { 1f, 1f, 1f, 1f };
+        public float[] ThreatPerSegment = new[] { 1f, 1f, 1f, 1f };
         public bool Rotatable
         {
             get { return !BuildingsNonRot.Any(); }
@@ -132,23 +145,6 @@ namespace RimWorld
             return buildings;
         }
 
-        public HashSet<IntVec3> Area = new HashSet<IntVec3>(); //shipParts add to area
-        public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //add to when destroyed in combat
-        public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only - limited use atm
-        public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
-        public HashSet<Building> BuildingsNonRot = new HashSet<Building>();
-        public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
-        public List<CompRCSThruster> RCSs = new List<CompRCSThruster>();
-        public List<CompPowerBattery> Batteries = new List<CompPowerBattery>();
-        public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
-        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
-        public List<CompCryptoLaunchable> Pods = new List<CompCryptoLaunchable>();
-        public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
-        public HashSet<Building_ShipTurret> Turrets = new HashSet<Building_ShipTurret>();
-        public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
-        public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
-        public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
-
         public bool TryReplaceCore()
         {
             if (Bridges.NullOrEmpty())
@@ -181,8 +177,6 @@ namespace RimWorld
                 engine.Off();
             }
         }
-
-
         public float[] ActualThreatPerSegment() //turrets that cant actually fire due to ammo
         {
             float[] actualThreatPerSegment = ThreatPerSegment;
@@ -220,6 +214,8 @@ namespace RimWorld
         public float EnginePower(int engineRot, int heading)
         {
             CanMove = false;
+            if (Core == null) //wrecks cant move
+                return 0;
             float enginePower = 0;
             foreach (var engine in Engines)
             {
@@ -242,21 +238,27 @@ namespace RimWorld
         {
             if (!HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
             {
-                if (HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && Core != null && Core.heatComp.myNet != null && Core.heatComp.myNet.RatioInNetwork > 0.7f) //start purge
+                var myNet = Core.heatComp.myNet;
+                if (HeatPurges.Any(purge => purge.fuelComp.FuelPercentOfMax > 0.2f) && Core != null && myNet != null && myNet.RatioInNetwork > 0.7f) //start purge
                 {
                     foreach (CompShipHeatPurge purge in HeatPurges)
                     {
                         purge.StartPurge();
                     }
                 }
-                else if (Shields.Any(shield => shield.shutDown)) //repower shields
+                else
                 {
-                    foreach (var shield in Shields)
+                    if (Shields.Any(shield => shield.shutDown)) //repower shields
                     {
-                        if (shield.flickComp == null)
-                            continue;
-                        shield.flickComp.SwitchIsOn = true;
+                        foreach (var shield in Shields)
+                        {
+                            if (shield.flickComp == null)
+                                continue;
+                            shield.flickComp.SwitchIsOn = true;
+                        }
                     }
+                    if (myNet.RatioInNetwork > 0.85f && !myNet.venting)
+                        myNet.StartVent();
                 }
             }
         }
@@ -408,31 +410,6 @@ namespace RimWorld
                                 Core = bridge;
                             }
                         }
-                        else if (b is Building_ShipTurret turret)
-                        {
-                            Turrets.Add(turret);
-                            int threat = turret.heatComp.Props.threat;
-                            if (turret.heatComp.Props.maxRange > 150) //long
-                            {
-                                ThreatPerSegment[0] += threat / 6f;
-                                ThreatPerSegment[1] += threat / 4f;
-                                ThreatPerSegment[2] += threat / 2f;
-                                ThreatPerSegment[3] += threat;
-                            }
-                            else if (turret.heatComp.Props.maxRange > 100) //med
-                            {
-                                ThreatPerSegment[0] += threat / 4f;
-                                ThreatPerSegment[1] += threat / 2f;
-                                ThreatPerSegment[2] += threat;
-                            }
-                            else if (turret.heatComp.Props.maxRange > 50) //short
-                            {
-                                ThreatPerSegment[0] += threat / 2f;
-                                ThreatPerSegment[1] += threat;
-                            }
-                            else //cqc
-                                ThreatPerSegment[0] += threat;
-                        }
                         else if (b is Building_ShipAdvSensor sensor)
                             Sensors.Add(sensor);
                         else if (b.TryGetComp<CompHullFoamDistributor>() != null)
@@ -445,7 +422,32 @@ namespace RimWorld
                 if (comp != null)
                 {
                     ThreatRaw += comp.Props.threat;
-                    if (comp is CompShipHeatPurge purge)
+                    if (b is Building_ShipTurret turret)
+                    {
+                        Turrets.Add(turret);
+                        int threat = turret.heatComp.Props.threat;
+                        if (turret.heatComp.Props.maxRange > 150) //long
+                        {
+                            ThreatPerSegment[0] += threat / 6f;
+                            ThreatPerSegment[1] += threat / 4f;
+                            ThreatPerSegment[2] += threat / 2f;
+                            ThreatPerSegment[3] += threat;
+                        }
+                        else if (turret.heatComp.Props.maxRange > 100) //med
+                        {
+                            ThreatPerSegment[0] += threat / 4f;
+                            ThreatPerSegment[1] += threat / 2f;
+                            ThreatPerSegment[2] += threat;
+                        }
+                        else if (turret.heatComp.Props.maxRange > 50) //short
+                        {
+                            ThreatPerSegment[0] += threat / 2f;
+                            ThreatPerSegment[1] += threat;
+                        }
+                        else //cqc
+                            ThreatPerSegment[0] += threat;
+                    }
+                    else if (comp is CompShipHeatPurge purge)
                     {
                         HeatPurges.Add(purge);
                     }
@@ -508,31 +510,6 @@ namespace RimWorld
                             bridge.Ship = null;
                             bridge.ShipName = "Unnamed Ship";
                         }
-                        else if (b is Building_ShipTurret turret)
-                        {
-                            Turrets.Remove(turret);
-                            int threat = turret.heatComp.Props.threat;
-                            if (turret.heatComp.Props.maxRange > 150) //long
-                            {
-                                ThreatPerSegment[0] -= threat / 6f;
-                                ThreatPerSegment[1] -= threat / 4f;
-                                ThreatPerSegment[2] -= threat / 2f;
-                                ThreatPerSegment[3] -= threat;
-                            }
-                            else if (turret.heatComp.Props.maxRange > 100) //med
-                            {
-                                ThreatPerSegment[0] -= threat / 4f;
-                                ThreatPerSegment[1] -= threat / 2f;
-                                ThreatPerSegment[2] -= threat;
-                            }
-                            else if (turret.heatComp.Props.maxRange > 50) //short
-                            {
-                                ThreatPerSegment[0] -= threat / 2f;
-                                ThreatPerSegment[1] -= threat;
-                            }
-                            else //cqc
-                                ThreatPerSegment[0] -= threat;
-                        }
                         else if (b is Building_ShipAdvSensor sensor)
                             Sensors.Remove(sensor);
                         else if (b.TryGetComp<CompHullFoamDistributor>() != null)
@@ -545,7 +522,32 @@ namespace RimWorld
                 if (comp != null)
                 {
                     ThreatRaw -= comp.Props.threat;
-                    if (comp is CompShipHeatPurge purge)
+                    if (b is Building_ShipTurret turret)
+                    {
+                        Turrets.Remove(turret);
+                        int threat = turret.heatComp.Props.threat;
+                        if (turret.heatComp.Props.maxRange > 150) //long
+                        {
+                            ThreatPerSegment[0] -= threat / 6f;
+                            ThreatPerSegment[1] -= threat / 4f;
+                            ThreatPerSegment[2] -= threat / 2f;
+                            ThreatPerSegment[3] -= threat;
+                        }
+                        else if (turret.heatComp.Props.maxRange > 100) //med
+                        {
+                            ThreatPerSegment[0] -= threat / 4f;
+                            ThreatPerSegment[1] -= threat / 2f;
+                            ThreatPerSegment[2] -= threat;
+                        }
+                        else if (turret.heatComp.Props.maxRange > 50) //short
+                        {
+                            ThreatPerSegment[0] -= threat / 2f;
+                            ThreatPerSegment[1] -= threat;
+                        }
+                        else //cqc
+                            ThreatPerSegment[0] -= threat;
+                    }
+                    else if (comp is CompShipHeatPurge purge)
                     {
                         HeatPurges.Remove(purge);
                     }

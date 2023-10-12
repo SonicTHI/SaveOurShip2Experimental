@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n2";
+        public static readonly string SOS2EXPversion = "V93n3";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1649,7 +1649,7 @@ namespace SaveOurShip2
 		}
 		public static HashSet<IntVec3> FindAreaAttachedNew(Building root, bool includeRock = false)
 		{
-			var cells = root.Map.GetComponent<ShipHeatMapComp>().ShipCells;
+			var cells = root.Map.GetComponent<ShipHeatMapComp>().MapShipCells;
 			return cells.Keys.Where(v => cells[v].Item1 == cells[root.Position].Item1).ToHashSet();
 		}
 		public class TimeHelper
@@ -1779,7 +1779,7 @@ namespace SaveOurShip2
 				Find.TickManager.TogglePaused();
 			InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
 		}
-		public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
+        public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
 			bool devMode = false;
 			var watch = new TimeHelper();
@@ -1817,7 +1817,7 @@ namespace SaveOurShip2
 			bool sourceMapIsSpace = sourceMap.IsSpace();
             var sourceMapComp = sourceMap.GetComponent<ShipHeatMapComp>();
             sourceMapComp.CacheOff = true;
-            int shipIndex = sourceMapComp.ShipCells[core.Position].Item1;
+            int shipIndex = sourceMapComp.MapShipCells[core.Position].Item1;
             HashSet<int> shipIndexes = new HashSet<int> { shipIndex };
             var ship = sourceMapComp.ShipsOnMapNew[shipIndex];
 			HashSet<IntVec3> sourceArea = ship.Area;
@@ -1843,8 +1843,8 @@ namespace SaveOurShip2
 			{
 				IntVec3 adjustedPos = Transform(pos);
                 //ship cache: move ShipCells
-                targetMapComp.ShipCells.Add(adjustedPos, new Tuple<int, int>(sourceMapComp.ShipCells[pos].Item1, sourceMapComp.ShipCells[pos].Item2));
-                sourceMapComp.ShipCells.Remove(pos);
+                targetMapComp.MapShipCells.Add(adjustedPos, new Tuple<int, int>(sourceMapComp.MapShipCells[pos].Item1, sourceMapComp.MapShipCells[pos].Item2));
+                sourceMapComp.MapShipCells.Remove(pos);
 				//store room temps
 				Room room = pos.GetRoom(sourceMap);
 				if (room != null && !roomsToTemp.Contains(room) && !ExposedToOutside(room))
@@ -1954,9 +1954,9 @@ namespace SaveOurShip2
                 ship.Area = targetArea;
                 foreach (IntVec3 pos in targetArea)
                 {
-                    foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, new IntVec2(1, 1)).Where(v => !targetArea.Contains(v) && targetMapComp.ShipCells.ContainsKey(v)))
+                    foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, new IntVec2(1, 1)).Where(v => !targetArea.Contains(v) && targetMapComp.MapShipCells.ContainsKey(v)))
                     {
-                        shipIndexes.Add(targetMapComp.ShipCells[vec].Item1);
+                        shipIndexes.Add(targetMapComp.MapShipCells[vec].Item1);
                     }
                 }
                 Log.Message("Area: " + shipIndexes.Count);
@@ -2425,15 +2425,15 @@ namespace SaveOurShip2
         {
             var mapComp = map.GetComponent<ShipHeatMapComp>();
 			mapComp.CacheOff = true;
-            if (mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[area.First()].Item1))
-                mapComp.ShipsOnMapNew.Remove(mapComp.ShipCells[area.First()].Item1);
+            if (mapComp.ShipsOnMapNew.ContainsKey(mapComp.MapShipCells[area.First()].Item1))
+                mapComp.ShipsOnMapNew.Remove(mapComp.MapShipCells[area.First()].Item1);
             AirlockBugFlag = true;
 			List<Thing> things = new List<Thing>();
 			List<Zone> zones = new List<Zone>();
 			foreach (IntVec3 pos in area)
 			{
 				//remove from cache
-                mapComp.ShipCells.Remove(pos);
+                mapComp.MapShipCells.Remove(pos);
 				map.roofGrid.SetRoof(pos, null);
 				things.AddRange(pos.GetThingList(map));
 				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))

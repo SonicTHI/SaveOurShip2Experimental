@@ -1321,7 +1321,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 				return;
-			if (___map.GetComponent<ShipHeatMapComp>()?.ShipCells?.ContainsKey(c) ?? false)
+			if (___map.GetComponent<ShipHeatMapComp>()?.MapShipCells?.ContainsKey(c) ?? false)
             {
                 foreach (Thing t in ___map.thingGrid.ThingsAt(c))
                 {
@@ -1411,10 +1411,9 @@ namespace SaveOurShip2
     }
 
     //buildings
-    [HarmonyPatch(typeof(Building), "SpawnSetup")]
+    [HarmonyPatch(typeof(Building), "SpawnSetup")] //adds normal building weight/count to ship
     public static class DoSpawn
     {
-        //adds normal building weight/count to ship
         [HarmonyPostfix]
         public static void OnSpawn(Building __instance, Map map, bool respawningAfterLoad)
         {
@@ -1425,9 +1424,9 @@ namespace SaveOurShip2
                 return;
             foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance)) //if any part spawned on ship
             {
-                if (mapComp.ShipCells.ContainsKey(vec))
+                if (mapComp.MapShipCells.ContainsKey(vec))
                 {
-                    var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
+                    var ship = mapComp.ShipsOnMapNew[mapComp.MapShipCells[vec].Item1];
                     if (!ship.Buildings.Contains(__instance)) //need to check every cell as some smartass could place it on 2 ships
                     {
                         ship.AddToCache(__instance);
@@ -1437,11 +1436,10 @@ namespace SaveOurShip2
         }
     }
 
-    [HarmonyPatch(typeof(Building), "DeSpawn")]
+    [HarmonyPatch(typeof(Building), "DeSpawn")] //predespawn for comp calls and weight
     public static class DoPreDeSpawn
     {
         //can we have predespawn at home? no, we have despawn at home, despawn at home: postdespawn
-        //lets me actually get the building being removed
         [HarmonyPrefix]
         public static bool PreDeSpawn(Building __instance)
         {
@@ -1455,9 +1453,9 @@ namespace SaveOurShip2
             {
                 foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
                 {
-                    if (mapComp.ShipCells.ContainsKey(vec))
+                    if (mapComp.MapShipCells.ContainsKey(vec))
                     {
-                        var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[vec].Item1];
+                        var ship = mapComp.ShipsOnMapNew[mapComp.MapShipCells[vec].Item1];
                         if (ship.Buildings.Contains(__instance))
                         {
                             ship.RemoveFromCache(__instance);
@@ -1469,7 +1467,7 @@ namespace SaveOurShip2
         }
     }
 
-    [HarmonyPatch(typeof(Building), "Destroy")] //td change this to be sc aware
+    /*[HarmonyPatch(typeof(Building), "Destroy")] //td change this to be sc aware
     public static class NotifyCombatManager
     {
         public static bool Prefix(Building __instance, DestroyMode mode, out Tuple<IntVec3, Faction, Map> __state)
@@ -1513,7 +1511,7 @@ namespace SaveOurShip2
                 GenPlace.TryPlaceThing(newWall, __state.Item1, __state.Item3, ThingPlaceMode.Direct);
             }
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(SectionLayer_BuildingsDamage), "PrintDamageVisualsFrom")]
 	public class FixBuildingDraw

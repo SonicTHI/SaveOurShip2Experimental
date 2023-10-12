@@ -836,7 +836,7 @@ namespace RimWorld
             if (!mapComp.CacheOff)
             {
                 //bridge placed on wreck, make ship
-                if (mapComp.ShipCells.ContainsKey(Position) && !mapComp.ShipsOnMapNew.ContainsKey(mapComp.ShipCells[Position].Item1))
+                if (mapComp.MapShipCells.ContainsKey(Position) && !mapComp.ShipsOnMapNew.ContainsKey(mapComp.MapShipCells[Position].Item1))
                 {
                     mapComp.ShipsOnMapNew.Add(thingIDNumber, new SoShipCache());
                     mapComp.ShipsOnMapNew[thingIDNumber].RebuildCache(this);
@@ -853,29 +853,24 @@ namespace RimWorld
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
-            if (Ship.Bridges.Any(b => b != this && !b.Destroyed)) //if last bridge remove ship or end combat
+            if (Ship.Core == this) //if last bridge on ship
             {
-                if (!mapComp.InCombat)
-                {
-                    mapComp.ShipsOnMapNew.Remove(Index);
-                }
-                else //if last ship end combat else move to grave
+                if (mapComp.InCombat) //if last ship end combat else move to grave
                 {
                     if (mapComp.ShipsOnMapNew.Count > 1)
                         mapComp.RemoveShipFromBattle(Index);
                     else
                         mapComp.EndBattle(Map, false);
                 }
+                else
+                {
+                    mapComp.ShipsOnMapNew.Remove(Index);
+                }
                 return;
             }
-            //Log.Message("Destroyed: " + this + " from " + this.Map);
-            if (mapComp.InCombat) //force check on next tick
+            if (Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty()) //last bridge on player map - deorbit
             {
-                mapComp.BridgeDestroyed = true;
-            }
-            else if (this.Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty())
-            {
-                var countdownComp = this.Map.Parent.GetComponent<TimedForcedExitShip>();
+                var countdownComp = Map.Parent.GetComponent<TimedForcedExitShip>();
                 if (countdownComp != null && !countdownComp.ForceExitAndRemoveMapCountdownActive)
                 {
                     countdownComp.StartForceExitAndRemoveMapCountdown();

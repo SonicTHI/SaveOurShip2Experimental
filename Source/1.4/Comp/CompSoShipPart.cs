@@ -78,11 +78,11 @@ namespace RimWorld
             StringBuilder stringBuilder = new StringBuilder();
             if (Prefs.DevMode)
             {
-                if (!mapComp.ShipCells.ContainsKey(parent.Position))
+                if (!mapComp.MapShipCells.ContainsKey(parent.Position))
                 {
                     stringBuilder.Append("cache is null for this pos!");
                 }
-                var shipCells = mapComp.ShipCells[parent.Position];
+                var shipCells = mapComp.MapShipCells[parent.Position];
                 int index = -1;
                 int path = -1;
                 if (shipCells != null)
@@ -133,9 +133,9 @@ namespace RimWorld
             }
             foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
             {
-                if (!mapComp.ShipCells.ContainsKey(vec))
+                if (!mapComp.MapShipCells.ContainsKey(vec))
                 {
-                    mapComp.ShipCells.Add(vec, new Tuple<int, int>(-1, -1));
+                    mapComp.MapShipCells.Add(vec, new Tuple<int, int>(-1, -1));
                 }
             }
             if (Props.roof)
@@ -156,7 +156,7 @@ namespace RimWorld
             HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
             foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(parent))
             {
-                if (!mapComp.ShipCells.ContainsKey(vec))
+                if (!mapComp.MapShipCells.ContainsKey(vec))
                     continue;
                 cellsToMerge.Add(vec);
             }
@@ -174,13 +174,19 @@ namespace RimWorld
 
         public void PreDeSpawn() //called in building.destroy, before comps get removed
         {
-            if (!parent.def.building.shipPart)
+            if (ShipInteriorMod2.AirlockBugFlag) //moveship cleans entire area, caches
                 return;
-            if (ShipInteriorMod2.AirlockBugFlag) //moveship cleans entire area, caches //td
+
+            int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
+            if (shipIndex == -1)
+                return;
+
+            var ship = mapComp.ShipsOnMapNew[shipIndex];
+            if (!parent.def.building.shipPart)
             {
+                ship.RemoveFromCache(parent as Building);
                 return;
             }
-            var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[parent.Position].Item1];
             HashSet<Building> buildings = new HashSet<Building>();
             foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
             {
@@ -206,7 +212,7 @@ namespace RimWorld
                         bool allOffShip = true;
                         foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
                         {
-                            if (mapComp.ShipCells.ContainsKey(vec))
+                            if (mapComp.MapShipCells.ContainsKey(vec))
                             {
                                 allOffShip = false;
                                 break;
@@ -219,11 +225,13 @@ namespace RimWorld
                     }
                     ship.Area.Remove(vec);
                     ship.AreaDestroyed.Add(vec);
-                    mapComp.ShipCells.Remove(vec);
+                    mapComp.MapShipCells.Remove(vec);
                 }
             }
             ship.RemoveFromCache(parent as Building);
-            if (!mapComp.InCombat) //perform check immediately
+            if (mapComp.MapShipCells.ContainsKey(parent.Position))
+                Log.Warning("checking vec " + parent.Position + " ship: " + mapComp.MapShipCells[parent.Position].Item1);
+            //if (!mapComp.InCombat) //perform check immediately //td rev
                 ship.CheckForDetach();
         }
         public override void PostDeSpawn(Map map)

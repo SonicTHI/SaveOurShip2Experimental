@@ -150,7 +150,6 @@ namespace RimWorld
                 Scribe_Collections.Look<ShipCombatProjectile>(ref TorpsInRange, "ShipTorpsInRange");
                 //SC cache
                 Scribe_Collections.Look<Building>(ref MapRootListAll, "MapRootListAll", LookMode.Reference);
-                Scribe_Values.Look<bool>(ref BridgeDestroyed, "BridgeDestroyed");
                 originMapComp = null;
                 masterMapComp = null;
                 //SCM only
@@ -196,7 +195,6 @@ namespace RimWorld
         public float totalThreat;
         public float[] threatPerSegment = { 1, 1, 1, 1 };
         //SC cache
-        public bool BridgeDestroyed = false; //calls CheckForDetach
         public List<ShipCombatProjectile> Projectiles;
         public List<ShipCombatProjectile> TorpsInRange;
         public List<Building> MapRootListAll = new List<Building>(); //all bridges on map
@@ -212,7 +210,7 @@ namespace RimWorld
         public bool CacheOff = true;
         //cells occupied by shipParts, if cacheoff = null, item1 = index, item2 = path, if path is -1 = wreck
         private Dictionary<IntVec3, Tuple<int, int>> shipCells;
-        public Dictionary<IntVec3, Tuple<int, int>> ShipCells //td add bool if floor
+        public Dictionary<IntVec3, Tuple<int, int>> MapShipCells //td add bool if floor
         {
             get
             {
@@ -239,9 +237,9 @@ namespace RimWorld
         public void ResetCache()
         {
             ShipsOnMapNew.Clear();
-            foreach (IntVec3 vec in ShipCells.Keys.ToList())
+            foreach (IntVec3 vec in MapShipCells.Keys.ToList())
             {
-                ShipCells[vec] = new Tuple<int, int>(-1, -1);
+                MapShipCells[vec] = new Tuple<int, int>(-1, -1);
             }
         }
         public void RecacheMap() //rebuild all ships, wrecks on map init or after ship gen
@@ -259,9 +257,9 @@ namespace RimWorld
                     ShipsOnMapNew[MapRootListAll[i].thingIDNumber].RebuildCache(MapRootListAll[i]);
                 }
             }
-            foreach (IntVec3 vec in ShipCells.Keys.ToList()) //ship wrecks from leftovers
+            foreach (IntVec3 vec in MapShipCells.Keys.ToList()) //ship wrecks from leftovers
             {
-                if (ShipCells[vec].Item1 == -1)
+                if (MapShipCells[vec].Item1 == -1)
                 {
                     Thing t = vec.GetThingList(map).FirstOrDefault(b => b.TryGetComp<CompSoShipPart>() != null);
                     int mergeToIndex = t.thingIDNumber;
@@ -337,7 +335,7 @@ namespace RimWorld
                     }
                 }
             }
-            mergeToIndex = ShipCells[mergeTo].Item1;
+            mergeToIndex = MapShipCells[mergeTo].Item1;
             ships.Remove(mergeToIndex);
             foreach (int i in ships) //delete all ships except mergeto
             {
@@ -348,10 +346,10 @@ namespace RimWorld
         public void AttachAll(IntVec3 mergeTo, int mergeToIndex) //merge and build corePath if ship
         {
             SoShipCache ship = ShipsOnMapNew[mergeToIndex];
-            int path = ShipCells[mergeTo].Item2;
+            int path = MapShipCells[mergeTo].Item2 + 1;
             HashSet<IntVec3> cellsTodo = new HashSet<IntVec3>();
             HashSet<IntVec3> cellsDone = new HashSet<IntVec3>();
-            cellsTodo.Add(mergeTo);
+            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(mergeTo, Rot4.North, new IntVec2(1, 1)).Where(v => MapShipCells.ContainsKey(v) && MapShipCells[v]?.Item1 != mergeToIndex));
 
             //find cells cardinal that are in shiparea index and dont have same index, assign mergeTo corePath/index
             while (cellsTodo.Count > 0)
@@ -359,7 +357,7 @@ namespace RimWorld
                 List<IntVec3> current = cellsTodo.ToList();
                 foreach (IntVec3 vec in current) //do all of the current corePath
                 {
-                    ShipCells[vec] = new Tuple<int, int>(mergeToIndex, path); //assign new index, corepath
+                    MapShipCells[vec] = new Tuple<int, int>(mergeToIndex, path); //assign new index, corepath
                     foreach (Thing t in vec.GetThingList(map))
                     {
                         if (t is Building b)
@@ -372,25 +370,28 @@ namespace RimWorld
                 }
                 foreach (IntVec3 vec in current) //find parts cardinal to all prev.pos, exclude prev.pos, mergeto ship
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => ShipCells.ContainsKey(v) && !cellsDone.Contains(v) && ShipCells[v]?.Item1 != mergeToIndex));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => MapShipCells.ContainsKey(v) && !cellsDone.Contains(v) && MapShipCells[v]?.Item1 != mergeToIndex));
                 }
                 if (!ship.IsWreck)
                     path++;
                 //Log.Message("parts at i: "+ current.Count + "/" + i);
             }
-            Log.Message("Attached: " + cellsDone.Count + " to ship/wreck: " + mergeToIndex);
+            Log.Message("Attached: " + cellsDone.Count + " to ship: " + mergeToIndex);
+            //foreach (IntVec3 vec in cellsDone)
+            //    Log.Warning(""+vec);
         }
         public int ShipIndexOnVec(IntVec3 vec) //return index if ship on cell, else return -1
         {
-            if (ShipCells.ContainsKey(vec))
+            if (MapShipCells.ContainsKey(vec))
             {
-                return ShipCells[vec].Item1;
+                return MapShipCells[vec].Item1;
             }
             return -1;
         }
         public bool VecHasLS(IntVec3 vec)
         {
-            if (ShipsOnMapNew[ShipCells[vec].Item1].LifeSupports.Any(s => s.active))
+            int shipIndex = ShipIndexOnVec(vec);
+            if (shipIndex != -1 && ShipsOnMapNew[shipIndex].LifeSupports.Any(s => s.active))
                 return true;
             return false;
         }
@@ -775,9 +776,8 @@ namespace RimWorld
                 }
 
                 //ship destruction code
-                if (BridgeDestroyed || Find.TickManager.TicksGame % 20 == 0)
+                if (Find.TickManager.TicksGame % 20 == 0)
                 {
-                    BridgeDestroyed = false;
                     foreach (int i in ShipsOnMapNew.Keys)
                     {
                         if (ShipsOnMapNew[i].CheckForDetach())

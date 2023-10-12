@@ -114,6 +114,8 @@ namespace RimWorld
                                 batteries.RandomElement().AddEnergy(2);
                             }
                             RemHeatFromNetwork(Props.heatVent);
+                            if (myNet.Depletion > 0)
+                                RemoveDepletionFromNetwork(Props.heatVent / 1000f);
                         }
                         return;
                     }

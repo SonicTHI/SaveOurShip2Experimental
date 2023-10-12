@@ -53,26 +53,11 @@ namespace RimWorld
         public Map map;
         public ShipHeatMapComp mapComp;
         public bool PathDirty = true;
-        public int Threat
-        {
-            get
-            {
-                return ThreatRaw + Mass / 100;
-            }
-        }
         public float[] ThreatPerSegment = new[] { 1f, 1f, 1f, 1f };
-        public bool Rotatable
-        {
-            get { return !BuildingsNonRot.Any(); }
-        }
+        public int Threat => ThreatRaw + Mass / 100;
+        public bool Rotatable => !BuildingsNonRot.Any();
         public float ThrustRaw = 0;
-        public float ThrustRatio
-        {
-            get
-            {
-                return ThrustRaw * 500f / Mathf.Pow(BuildingCount, 1.1f);
-            }
-        }
+        public float ThrustRatio => ThrustRaw * 500f / Mathf.Pow(BuildingCount, 1.1f);
         public IntVec3 LowestCorner
         {
             get
@@ -145,14 +130,17 @@ namespace RimWorld
             return buildings;
         }
 
-        public bool TryReplaceCore()
+        public bool TryReplaceCore() //called before destroy
         {
             if (Bridges.NullOrEmpty())
             {
                 IsWreck = true;
+                Log.Message("SOS2c: ship wrecked: " + Index);
                 return false;
             }
+            Log.Message("SOS2c: replaced primary bridge on ship: " + Index);
             Core = Bridges.FirstOrDefault(b => !b.Destroyed);
+            RebuildCorePath(Core);
             return true;
         }
         public void Capture(Faction fac)
@@ -177,7 +165,7 @@ namespace RimWorld
                 engine.Off();
             }
         }
-        public float[] ActualThreatPerSegment() //turrets that cant actually fire due to ammo
+        public float[] ActualThreatPerSegment() //dep turrets that cant actually fire due to ammo
         {
             float[] actualThreatPerSegment = ThreatPerSegment;
             foreach (var turret in Turrets)
@@ -273,7 +261,7 @@ namespace RimWorld
             var cellsTodo = new HashSet<IntVec3>();
             var cellsDone = new HashSet<IntVec3>();
             cellsTodo.Add(core.Position);
-            int mergeToIndex = mapComp.ShipCells[core.Position].Item1;
+            int mergeToIndex = mapComp.MapShipCells[core.Position].Item1;
 
             //find parts cardinal to all prev.pos, exclude prev.pos
             int path = 0;
@@ -282,13 +270,13 @@ namespace RimWorld
                 List<IntVec3> current = cellsTodo.ToList();
                 foreach (IntVec3 vec in current) //do all of the current corePath
                 {
-                    mapComp.ShipCells[vec] = new Tuple<int, int>(mergeToIndex, path);
+                    mapComp.MapShipCells[vec] = new Tuple<int, int>(mergeToIndex, path);
                     cellsTodo.Remove(vec);
                     cellsDone.Add(vec);
                 }
                 foreach (IntVec3 vec in current) //find parts cardinal to all prev.pos, exclude prev.pos
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.ShipCells.ContainsKey(v)));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
                 }
                 path++;
             }
@@ -329,7 +317,7 @@ namespace RimWorld
                 List<IntVec3> current = cellsTodo.ToList();
                 foreach (IntVec3 vec in current) //do all of the current corePath
                 {
-                    mapComp.ShipCells[vec] = new Tuple<int, int>(Index, path); //add new vec, index, corepath
+                    mapComp.MapShipCells[vec] = new Tuple<int, int>(Index, path); //add new vec, index, corepath
                     foreach (Thing t in vec.GetThingList(map))
                     {
                         if (t is Building b)
@@ -342,7 +330,7 @@ namespace RimWorld
                 }
                 foreach (IntVec3 vec in current) //find next set cardinal to all cellsDone, exclude cellsDone
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => mapComp.ShipCells.ContainsKey(v) && !cellsDone.Contains(v)));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => mapComp.MapShipCells.ContainsKey(v) && !cellsDone.Contains(v)));
                 }
                 if (path > -1)
                     path++;
@@ -418,10 +406,10 @@ namespace RimWorld
                             LifeSupports.Add(b.GetComp<CompShipLifeSupport>());
                     }
                 }
-                var comp = b.TryGetComp<CompShipHeat>();
-                if (comp != null)
+                var heatComp = b.TryGetComp<CompShipHeat>();
+                if (heatComp != null)
                 {
-                    ThreatRaw += comp.Props.threat;
+                    ThreatRaw += heatComp.Props.threat;
                     if (b is Building_ShipTurret turret)
                     {
                         Turrets.Add(turret);
@@ -447,11 +435,11 @@ namespace RimWorld
                         else //cqc
                             ThreatPerSegment[0] += threat;
                     }
-                    else if (comp is CompShipHeatPurge purge)
+                    else if (heatComp is CompShipHeatPurge purge)
                     {
                         HeatPurges.Add(purge);
                     }
-                    else if (comp is CompShipCombatShield shield)
+                    else if (heatComp is CompShipCombatShield shield)
                         Shields.Add(shield);
                 }
                 else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
@@ -518,10 +506,10 @@ namespace RimWorld
                             LifeSupports.Remove(b.GetComp<CompShipLifeSupport>());
                     }
                 }
-                var comp = b.TryGetComp<CompShipHeat>();
-                if (comp != null)
+                var heatComp = b.TryGetComp<CompShipHeat>();
+                if (heatComp != null)
                 {
-                    ThreatRaw -= comp.Props.threat;
+                    ThreatRaw -= heatComp.Props.threat;
                     if (b is Building_ShipTurret turret)
                     {
                         Turrets.Remove(turret);
@@ -547,11 +535,11 @@ namespace RimWorld
                         else //cqc
                             ThreatPerSegment[0] -= threat;
                     }
-                    else if (comp is CompShipHeatPurge purge)
+                    else if (heatComp is CompShipHeatPurge purge)
                     {
                         HeatPurges.Remove(purge);
                     }
-                    else if (comp is CompShipCombatShield shield)
+                    else if (heatComp is CompShipCombatShield shield)
                         Shields.Remove(shield);
                 }
                 else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
@@ -559,12 +547,13 @@ namespace RimWorld
                 Mass -= b.def.Size.x * b.def.Size.z * 3;
             }
         }
+
+        //finds all shipcells around detached and for each tries to path back to first with lower index
+        //if not possible, detaches all in set
         public bool CheckForDetach()
         {
-            if (AreaDestroyed.Any()) //path all back to bridge, if not possible, detach
+            if (AreaDestroyed.Any())
             {
-                Log.Message("Destroyed cells: " + AreaDestroyed.Count);
-                //find adj to all detached that are not in detach and are in ship area
                 HashSet<IntVec3> initialCells = new HashSet<IntVec3>(); //cells to start checks from
                 HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //all cells that were checked
                 foreach (IntVec3 vec in AreaDestroyed)
@@ -574,8 +563,7 @@ namespace RimWorld
                         initialCells.Add(v);
                     }
                 }
-                Log.Message("Cells to check for detach: " + initialCells.Count);
-                //for each cell try and path back to cell with lower core path, if true found area is safe else detach
+                Log.Message("SOS2c: CheckForDetach for " + AreaDestroyed.Count + " destroyed cells. Cells to check for detach: " + initialCells.Count);
                 foreach (IntVec3 setStartCell in initialCells)
                 {
                     if (cellsDone.Contains(setStartCell)) //skip already checked cells
@@ -590,7 +578,7 @@ namespace RimWorld
                         IntVec3 current = cellsTodo.First();
                         cellsTodo.Remove(current);
                         cellsDone.Add(current);
-                        if (mapComp.ShipCells[current].Item2 < mapComp.ShipCells[setStartCell].Item2)
+                        if (mapComp.MapShipCells[current].Item2 < mapComp.MapShipCells[setStartCell].Item2)
                         {
                             detach = false;
                             break; //if part with lower corePath found this set is attached
@@ -602,7 +590,6 @@ namespace RimWorld
                     }
                     if (detach)
                     {
-                        Log.Message("Detaching cells: " + cellsToDetach.Count);
                         Detach(cellsToDetach);
                     }
                 }
@@ -611,11 +598,12 @@ namespace RimWorld
             }
             return false;
         }
+        //if bridge found detach as new ship else as wreck
         public void Detach(HashSet<IntVec3> detachArea)
         {
-            //detach as new ship if bridge found or wreck
+            Log.Message("SOS2c: Detach " + detachArea.Count + " cells from ship: " + Index);
             Building newCore = null;
-            foreach (IntVec3 vec in detachArea) //clean area indexes and find bridge
+            foreach (IntVec3 vec in detachArea) //clean area indexes and try to find bridge
             {
                 if (newCore == null)
                 {
@@ -628,111 +616,100 @@ namespace RimWorld
                         }
                     }
                 }
-                mapComp.ShipCells[vec] = new Tuple<int, int>(-1, -1);
+                mapComp.MapShipCells[vec] = new Tuple<int, int>(-1, -1);
             }
-            if (!mapComp.InCombat)
+            if (newCore == null) //wreck
             {
-                if (newCore == null) //make wreck
+                if (mapComp.InCombat) //float wreck in battle
                 {
-                    newCore = (Building)detachArea.First().GetThingList(map).First(t => t is Building);
-                    Log.Message("making new wreck with: " + newCore);
-                    mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
-                    mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore, AreaDestroyed);
-                    return;
-                }
-                else
-                {
-                    Log.Message("making new ship with: " + newCore);
-                    mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
-                    mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore, AreaDestroyed);
-                    if (!mapComp.InCombat)
-                        return;
-                }
-            }
-            return;
-            //td clean this up
-            //combat: make floating wreck, if bridge found send to grave
-
-            //Log.Message("Detaching " + detached.Count + " tiles");
-            ShipInteriorMod2.AirlockBugFlag = true;
-            HashSet<Thing> toDestroy = new HashSet<Thing>();
-            HashSet<Thing> toReplace = new HashSet<Thing>();
-            HashSet<Pawn> toKill = new HashSet<Pawn>();
-            int minX = int.MaxValue;
-            int maxX = int.MinValue;
-            int minZ = int.MaxValue;
-            int maxZ = int.MinValue;
-            foreach (IntVec3 vec in detachArea)
-            {
-                //Log.Message("Detaching location " + at);
-                foreach (Thing t in vec.GetThingList(map).Where(t => t.def.destroyable && !t.Destroyed))
-                {
-                    if (t is Pawn p)
+                    //float wreck and destroy
+                    ShipInteriorMod2.AirlockBugFlag = true;
+                    HashSet<Thing> toDestroy = new HashSet<Thing>();
+                    HashSet<Thing> toReplace = new HashSet<Thing>();
+                    HashSet<Pawn> toKill = new HashSet<Pawn>();
+                    int minX = int.MaxValue;
+                    int maxX = int.MinValue;
+                    int minZ = int.MaxValue;
+                    int maxZ = int.MinValue;
+                    foreach (IntVec3 vec in detachArea)
                     {
-                        if (p.Faction != Faction.OfPlayer && Rand.Chance(0.75f))
+                        //Log.Message("Detaching location " + at);
+                        foreach (Thing t in vec.GetThingList(map).Where(t => t.def.destroyable && !t.Destroyed))
                         {
-                            toKill.Add(p);
-                            toDestroy.Add(t);
+                            if (t is Pawn p)
+                            {
+                                if (p.Faction != Faction.OfPlayer && Rand.Chance(0.75f))
+                                {
+                                    toKill.Add(p);
+                                    toDestroy.Add(t);
+                                }
+                            }
+                            else if (!(t is Blueprint))
+                                toDestroy.Add(t);
+                            if (t is Building b && b.def.building.shipPart)
+                            {
+                                toReplace.Add(b);
+                                if (t.Position.x < minX)
+                                    minX = t.Position.x;
+                                if (t.Position.x > maxX)
+                                    maxX = t.Position.x;
+                                if (t.Position.z < minZ)
+                                    minZ = t.Position.z;
+                                if (t.Position.z > maxZ)
+                                    maxZ = t.Position.z;
+                            }
                         }
                     }
-                    else if (!(t is Blueprint))
-                        toDestroy.Add(t);
-                    if (t is Building b && b.def.building.shipPart)
+                    if (toReplace.Any()) //any shipPart, make a floating wreck
                     {
-                        toReplace.Add(b);
-                        if (t.Position.x < minX)
-                            minX = t.Position.x;
-                        if (t.Position.x > maxX)
-                            maxX = t.Position.x;
-                        if (t.Position.z < minZ)
-                            minZ = t.Position.z;
-                        if (t.Position.z > maxZ)
-                            maxZ = t.Position.z;
+                        DetachedShipPart part = (DetachedShipPart)ThingMaker.MakeThing(ThingDef.Named("DetachedShipPart"));
+                        part.Position = new IntVec3(minX, 0, minZ);
+                        part.xSize = maxX - minX + 1;
+                        part.zSize = maxZ - minZ + 1;
+                        part.wreckage = new byte[part.xSize, part.zSize];
+                        foreach (Thing t in toReplace)
+                        {
+                            var comp = t.TryGetComp<CompSoShipPart>();
+                            if (comp.Props.isHull)
+                                part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 1;
+                            else if (comp.Props.isPlating)
+                                part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
+                        }
+                        part.SpawnSetup(map, false);
                     }
-                }
-            }
-            if (toReplace.Any()) //any shipPart, make a floating wreck
-            {
-                DetachedShipPart part = (DetachedShipPart)ThingMaker.MakeThing(ThingDef.Named("DetachedShipPart"));
-                part.Position = new IntVec3(minX, 0, minZ);
-                part.xSize = maxX - minX + 1;
-                part.zSize = maxZ - minZ + 1;
-                part.wreckage = new byte[part.xSize, part.zSize];
-                foreach (Thing t in toReplace)
-                {
-                    var comp = t.TryGetComp<CompSoShipPart>();
-                    if (comp.Props.isHull)
-                        part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 1;
-                    else if (comp.Props.isPlating)
-                        part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
-                }
-                part.SpawnSetup(map, false);
-            }
-            if (newCore != null)
-            {
-                foreach (Pawn p in toKill)
-                {
-                    p.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
-                }
-                foreach (Thing t in toDestroy)
-                {
-                    if (t is Building && map.IsPlayerHome && t.def.blueprintDef != null)
+                    foreach (Pawn p in toKill)
                     {
-                        GenConstruct.PlaceBlueprintForBuild(t.def, t.Position, map, t.Rotation, Faction.OfPlayer, t.Stuff);
+                        p.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
                     }
-                    if (t.def.destroyable && !t.Destroyed)
-                        t.Destroy(DestroyMode.Vanish);
+                    foreach (Thing t in toDestroy)
+                    {
+                        if (t is Building && map.IsPlayerHome && t.def.blueprintDef != null)
+                        {
+                            GenConstruct.PlaceBlueprintForBuild(t.def, t.Position, map, t.Rotation, Faction.OfPlayer, t.Stuff);
+                        }
+                        if (t.def.destroyable && !t.Destroyed)
+                            t.Destroy(DestroyMode.Vanish);
+                    }
+                    foreach (IntVec3 c in detachArea)
+                    {
+                        map.terrainGrid.RemoveTopLayer(c, false);
+                        map.roofGrid.SetRoof(c, null);
+                    }
+                    ShipInteriorMod2.AirlockBugFlag = false;
+                    return;
                 }
-                foreach (IntVec3 c in detachArea)
-                {
-                    map.terrainGrid.RemoveTopLayer(c, false);
-                    map.roofGrid.SetRoof(c, null);
-                }
+                newCore = (Building)detachArea.First().GetThingList(map).First(t => t is Building);
+            }
+            Log.Message("SOS2c: Detach new ship/wreck with: " + newCore);
+            mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
+            mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore, AreaDestroyed);
+            if (mapComp.InCombat)
+            {
                 mapComp.RemoveShipFromBattle(newCore.thingIDNumber, newCore);
             }
-            ShipInteriorMod2.AirlockBugFlag = false;
             if (map == mapComp.ShipCombatOriginMap)
                 mapComp.hasAnyPlayerPartDetached = true;
+            return;
         }
     }
 }

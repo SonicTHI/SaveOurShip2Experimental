@@ -78,17 +78,11 @@ namespace RimWorld
             StringBuilder stringBuilder = new StringBuilder();
             if (Prefs.DevMode)
             {
-                if (!mapComp.MapShipCells.ContainsKey(parent.Position))
-                {
-                    stringBuilder.Append("cache is null for this pos!");
-                }
-                var shipCells = mapComp.MapShipCells[parent.Position];
-                int index = -1;
+                int index = mapComp.ShipIndexOnVec(parent.Position);
                 int path = -1;
-                if (shipCells != null)
+                if (index != -1)
                 {
-                    index = shipCells.Item1;
-                    path = shipCells.Item2;
+                    path = mapComp.MapShipCells[parent.Position].Item2;
                 }
                 if (parent.def.building.shipPart)
                     stringBuilder.Append("shipIndex: " + index + " / corePath: " + path);
@@ -102,25 +96,36 @@ namespace RimWorld
             base.PostSpawnSetup(respawningAfterLoad);
             map = parent.Map;
             mapComp = map.GetComponent<ShipHeatMapComp>();
+            cellsUnder = this.parent.OccupiedRect().ToHashSet();
+            if (!parent.def.building.shipPart)
+            {
+                if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
+                    return;
+                foreach (IntVec3 vec in cellsUnder) //if any part spawned on ship
+                {
+                    int shipIndex = mapComp.ShipIndexOnVec(vec);
+                    if (shipIndex != -1)
+                    {
+                        mapComp.ShipsOnMapNew[shipIndex].AddToCache(parent as Building);
+                        return;
+                    }
+                }
+                return;
+            }
             isTile = parent.def == ResourceBank.ThingDefOf.ShipHullTile;
             isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
             isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
             isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
-            cellsUnder = new HashSet<IntVec3>();
-            foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent))
+            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint || Props.isHull))
             {
-                cellsUnder.Add(vec);
-            }
-            if (!respawningAfterLoad && !ShipInteriorMod2.AirlockBugFlag && (Props.isPlating || Props.isHardpoint || Props.isHull)) 
-            {
-                foreach (IntVec3 v in cellsUnder) //clear floor on construction
+                if (!ShipInteriorMod2.AirlockBugFlag)
                 {
-                    RemoveOtherTerrain(v);
+                    foreach (IntVec3 v in cellsUnder) //clear floor on construction
+                    {
+                        RemoveOtherTerrain(v);
+                    }
                 }
-            }
-            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint || Props.isHull)) //set terrain
-            {
-                foreach (IntVec3 v in cellsUnder)
+                foreach (IntVec3 v in cellsUnder) //set terrain
                 {
                     SetShipTerrain(v);
                 }
@@ -167,14 +172,14 @@ namespace RimWorld
             }
             else //else make new ship/wreck
             {
-                mapComp.ShipsOnMapNew.Add(this.parent.thingIDNumber, new SoShipCache());
-                mapComp.ShipsOnMapNew[this.parent.thingIDNumber].RebuildCache(this.parent as Building);
+                mapComp.ShipsOnMapNew.Add(parent.thingIDNumber, new SoShipCache());
+                mapComp.ShipsOnMapNew[parent.thingIDNumber].RebuildCache(parent as Building);
             }
         }
 
         public void PreDeSpawn() //called in building.destroy, before comps get removed
         {
-            if (ShipInteriorMod2.AirlockBugFlag) //moveship cleans entire area, caches
+            if (ShipInteriorMod2.AirlockBugFlag) //disable on moveship
                 return;
 
             int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
@@ -188,7 +193,7 @@ namespace RimWorld
                 return;
             }
             HashSet<Building> buildings = new HashSet<Building>();
-            foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
+            foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
             {
                 bool partExists = false;
                 foreach (Thing t in vec.GetThingList(parent.Map))
@@ -205,32 +210,30 @@ namespace RimWorld
                         }
                     }
                 }
-                if (!partExists) //no shippart remains, remove from area, remove non ship buildings if fully off ship
+                if (!partExists) //no shippart remains, remove from area
                 {
-                    foreach (Building b in buildings) //remove other buildings that are no longer supported by ship parts
-                    {
-                        bool allOffShip = true;
-                        foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
-                        {
-                            if (mapComp.MapShipCells.ContainsKey(vec))
-                            {
-                                allOffShip = false;
-                                break;
-                            }
-                        }
-                        if (allOffShip)
-                        {
-                            ship.RemoveFromCache(b);
-                        }
-                    }
                     ship.Area.Remove(vec);
                     ship.AreaDestroyed.Add(vec);
                     mapComp.MapShipCells.Remove(vec);
                 }
             }
+            foreach (Building b in buildings) //remove other buildings that are no longer supported by this ship
+            {
+                bool onShip = false;
+                foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
+                {
+                    if (mapComp.ShipIndexOnVec(v) == shipIndex)
+                    {
+                        onShip = true;
+                        break;
+                    }
+                }
+                if (!onShip)
+                {
+                    ship.RemoveFromCache(b);
+                }
+            }
             ship.RemoveFromCache(parent as Building);
-            if (mapComp.MapShipCells.ContainsKey(parent.Position))
-                Log.Warning("checking vec " + parent.Position + " ship: " + mapComp.MapShipCells[parent.Position].Item1);
             //if (!mapComp.InCombat) //perform check immediately //td rev
                 ship.CheckForDetach();
         }

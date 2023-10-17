@@ -54,7 +54,7 @@ namespace SaveOurShip2
                     return;
                 }
             }
-            if (playerShipComp.ShipsOnMapNew.NullOrEmpty() || !playerShipComp.ShipsOnMapNew.Where(sc => sc.Value.Core != null).Any())
+            if (playerShipComp.ShipsOnMapNew.NullOrEmpty() || !playerShipComp.ShipsOnMapNew.Any(sc => sc.Value?.Core != null))
                 return;
             if (!playerShipComp.InCombat && playerShipComp.IsGraveyard)
             {
@@ -1424,19 +1424,17 @@ namespace SaveOurShip2
                 return;
             foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance)) //if any part spawned on ship
             {
-                if (mapComp.MapShipCells.ContainsKey(vec))
+                int shipIndex = mapComp.ShipIndexOnVec(vec);
+                if (shipIndex != -1)
                 {
-                    var ship = mapComp.ShipsOnMapNew[mapComp.MapShipCells[vec].Item1];
-                    if (!ship.Buildings.Contains(__instance)) //need to check every cell as some smartass could place it on 2 ships
-                    {
-                        ship.AddToCache(__instance);
-                    }
+                    mapComp.ShipsOnMapNew[shipIndex].AddToCache(__instance);
+                    return;
                 }
             }
         }
     }
 
-    [HarmonyPatch(typeof(Building), "DeSpawn")] //predespawn for comp calls and weight
+    [HarmonyPatch(typeof(Building), "DeSpawn")] //for comp calls and weight, after despawn, before base.despawn
     public static class DoPreDeSpawn
     {
         //can we have predespawn at home? no, we have despawn at home, despawn at home: postdespawn

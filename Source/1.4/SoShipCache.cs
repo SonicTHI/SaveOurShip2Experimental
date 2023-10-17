@@ -6,7 +6,6 @@ using Verse;
 using SaveOurShip2;
 using RimWorld.Planet;
 using UnityEngine;
-using Verse.AI.Group;
 
 namespace RimWorld
 {
@@ -42,9 +41,9 @@ namespace RimWorld
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
         public string Name = "Unnamed Ship";
         public int Index = -1;
-        public bool IsWreck = true;
         public bool CanMove = false;
-        public Building_ShipBridge Core;
+        public Building_ShipBridge Core; //main bridge
+        public bool IsWreck => Core == null;
         public int Mass = 0;
         public float MaxTakeoff = 0;
         public int BuildingCount = 0;
@@ -130,19 +129,6 @@ namespace RimWorld
             return buildings;
         }
 
-        public bool TryReplaceCore() //called before destroy
-        {
-            if (Bridges.NullOrEmpty())
-            {
-                IsWreck = true;
-                Log.Message("SOS2c: ship wrecked: " + Index);
-                return false;
-            }
-            Log.Message("SOS2c: replaced primary bridge on ship: " + Index);
-            Core = Bridges.FirstOrDefault(b => !b.Destroyed);
-            RebuildCorePath(Core);
-            return true;
-        }
         public void Capture(Faction fac)
         {
             foreach (Building building in Buildings)
@@ -251,39 +237,6 @@ namespace RimWorld
             }
         }
 
-        public void RebuildCorePath(Building core) //run before combat if PathDirty and in combat after bridge replaced
-        {
-            if (core == null || !(core is Building_ShipBridge) || core.Destroyed)
-                return;
-
-            Core = core as Building_ShipBridge;
-            var mapComp = map.GetComponent<ShipHeatMapComp>();
-            var cellsTodo = new HashSet<IntVec3>();
-            var cellsDone = new HashSet<IntVec3>();
-            cellsTodo.Add(core.Position);
-            int mergeToIndex = mapComp.MapShipCells[core.Position].Item1;
-
-            //find parts cardinal to all prev.pos, exclude prev.pos
-            int path = 0;
-            while (cellsTodo.Count > 0)
-            {
-                List<IntVec3> current = cellsTodo.ToList();
-                foreach (IntVec3 vec in current) //do all of the current corePath
-                {
-                    mapComp.MapShipCells[vec] = new Tuple<int, int>(mergeToIndex, path);
-                    cellsTodo.Remove(vec);
-                    cellsDone.Add(vec);
-                }
-                foreach (IntVec3 vec in current) //find parts cardinal to all prev.pos, exclude prev.pos
-                {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
-                }
-                path++;
-            }
-            PathDirty = false;
-            Log.Message("New bridge: " + Core);
-            Log.Message("Rebuilt corePath for ship: " + core.Position);
-        }
         public void RebuildCache(Building origin, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
         {
             if (origin == null || origin.Destroyed)
@@ -299,9 +252,7 @@ namespace RimWorld
             {
                 Core = core;
                 Name = core.ShipName;
-                IsWreck = false;
-                Core.Index = Index;
-                Core.Ship = mapComp.ShipsOnMapNew[Index];
+                Core.ShipIndex = Index;
                 path = 0;
             }
 
@@ -342,6 +293,7 @@ namespace RimWorld
             Log.Message("Buildings: " + Buildings.Count);
             Log.Message("Bridges: " + Bridges.Count);
             Log.Message("Area: " + Area.Count);
+            Log.Message("Core: " + Core);
         }
         public void AddToCache(Building b)
         {
@@ -388,15 +340,15 @@ namespace RimWorld
                             Pods.Add(b.GetComp<CompCryptoLaunchable>());
                         else if (b is Building_ShipBridge bridge)
                         {
-                            IsWreck = false;
                             Bridges.Add(bridge);
-                            bridge.ShipName = Name;
-                            bridge.Index = Index;
-                            bridge.Ship = mapComp.ShipsOnMapNew[Index];
-                            if (Core.DestroyedOrNull())
+                            if (IsWreck) //bridge placed on wreck, repath
                             {
                                 Core = bridge;
+                                RebuildCorePath();
                             }
+                            Log.Warning("SOS2: ship index: " + Index);
+                            bridge.ShipIndex = Index;
+                            bridge.ShipName = Name;
                         }
                         else if (b is Building_ShipAdvSensor sensor)
                             Sensors.Add(sensor);
@@ -490,13 +442,10 @@ namespace RimWorld
                         else if (b is Building_ShipBridge bridge)
                         {
                             Bridges.Remove(bridge);
+                            bridge.ShipIndex = -1;
+                            bridge.ShipName = "destroyed ship";
                             if (bridge == Core)
-                            {
                                 TryReplaceCore();
-                            }
-                            bridge.Index = -1;
-                            bridge.Ship = null;
-                            bridge.ShipName = "Unnamed Ship";
                         }
                         else if (b is Building_ShipAdvSensor sensor)
                             Sensors.Remove(sensor);
@@ -547,6 +496,65 @@ namespace RimWorld
                 Mass -= b.def.Size.x * b.def.Size.z * 3;
             }
         }
+        public bool TryReplaceCore() //before despawn try find replace for core
+        {
+            if (Bridges.NullOrEmpty())
+            {
+                Log.Message("SOS2c: ship wrecked: " + Index);
+                Core = null;
+                ResetCorePath();
+                if (mapComp.InCombat) //if last ship end combat else move to grave
+                {
+                    if (mapComp.ShipsOnMapNew.Count > 1)
+                        mapComp.RemoveShipFromBattle(Index);
+                    else
+                        mapComp.EndBattle(map, false);
+                }
+                return false;
+            }
+            Log.Message("SOS2c: replaced primary bridge on ship: " + Index);
+            Core = Bridges.FirstOrDefault(b => !b.Destroyed);
+            RebuildCorePath();
+            return true;
+        }
+        public void ResetCorePath()
+        {
+            foreach (IntVec3 vec in Area)
+            {
+                mapComp.MapShipCells[vec] = new Tuple<int, int>(Index, -1);
+            }
+        }
+        public void RebuildCorePath() //run before combat if PathDirty and in combat after bridge replaced
+        {
+            if (Core == null || Core.Destroyed)
+                return;
+
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+            var cellsTodo = new HashSet<IntVec3>();
+            var cellsDone = new HashSet<IntVec3>();
+            cellsTodo.Add(Core.Position);
+            int mergeToIndex = mapComp.MapShipCells[Core.Position].Item1;
+
+            //find parts cardinal to all prev.pos, exclude prev.pos
+            int path = 0;
+            while (cellsTodo.Count > 0)
+            {
+                List<IntVec3> current = cellsTodo.ToList();
+                foreach (IntVec3 vec in current) //do all of the current corePath
+                {
+                    mapComp.MapShipCells[vec] = new Tuple<int, int>(mergeToIndex, path);
+                    cellsTodo.Remove(vec);
+                    cellsDone.Add(vec);
+                }
+                foreach (IntVec3 vec in current) //find parts cardinal to all prev.pos, exclude prev.pos
+                {
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
+                }
+                path++;
+            }
+            PathDirty = false;
+            Log.Message("SOS2c: RebuildCorePath Rebuilt corePath for ship: " + Index +" at " + Core.Position);
+        }
 
         //finds all shipcells around detached and for each tries to path back to first with lower index
         //if not possible, detaches all in set
@@ -555,7 +563,8 @@ namespace RimWorld
             if (AreaDestroyed.Any())
             {
                 HashSet<IntVec3> initialCells = new HashSet<IntVec3>(); //cells to start checks from
-                HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //all cells that were checked
+                HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
+                HashSet<IntVec3> cellsAttached = new HashSet<IntVec3>(); //cells that were checked and are attached
                 foreach (IntVec3 vec in AreaDestroyed)
                 {
                     foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !AreaDestroyed.Contains(v) && Area.Contains(v)))
@@ -563,7 +572,10 @@ namespace RimWorld
                         initialCells.Add(v);
                     }
                 }
-                Log.Message("SOS2c: CheckForDetach for " + AreaDestroyed.Count + " destroyed cells. Cells to check for detach: " + initialCells.Count);
+                if (AreaDestroyed.Count > 1)
+                    Log.Warning("SOS2c: CheckForDetach for " + AreaDestroyed.Count + " destroyed cells. Cells to check for detach: " + initialCells.Count);
+                else
+                    Log.Message("SOS2c: CheckForDetach for " + AreaDestroyed.FirstOrDefault() + " Cells to check for detach: " + initialCells.Count);
                 foreach (IntVec3 setStartCell in initialCells)
                 {
                     if (cellsDone.Contains(setStartCell)) //skip already checked cells
@@ -572,24 +584,49 @@ namespace RimWorld
                     }
                     bool detach = true;
                     HashSet<IntVec3> cellsToDetach = new HashSet<IntVec3>();
-                    HashSet<IntVec3> cellsTodo = new HashSet<IntVec3>{setStartCell};
-                    while (cellsTodo.Count > 0)
+                    List<IntVec3> cellsTodo = new List<IntVec3>{setStartCell};
+                    while (cellsTodo.Any())
                     {
                         IntVec3 current = cellsTodo.First();
                         cellsTodo.Remove(current);
                         cellsDone.Add(current);
                         if (mapComp.MapShipCells[current].Item2 < mapComp.MapShipCells[setStartCell].Item2)
                         {
+                            cellsAttached.AddRange(cellsDone);
                             detach = false;
+                            //foreach (IntVec3 vec in cellsToDetach)
+                            //    Log.Warning("" + vec);
+                            //Log.Message("SOS2c: CheckForDetach still attached at " + current);
                             break; //if part with lower corePath found this set is attached
                         }
                         if (cellsToDetach.Add(current)) //add current tile && extend search range, skip non ship, destroyed tiles
                         {
-                            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v)));
+                            HashSet<IntVec3> temp = GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).ToHashSet();
+                            foreach (IntVec3 v in temp)
+                            {
+                                if (cellsAttached.Contains(v)) //if next to a already attached and checked
+                                {
+                                    detach = false;
+                                    //foreach (IntVec3 vec in cellsToDetach)
+                                    //    Log.Warning("" + vec);
+                                    //Log.Message("SOS2c: CheckForDetach still attached to already checked " + current);
+                                    break; //if part with lower corePath found this set is attached
+                                }
+                                if (!cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v))
+                                {
+                                    cellsTodo.Add(v);
+                                }
+
+                            }
+                            if (!detach)
+                                break;
+                            //cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v)));
                         }
                     }
                     if (detach)
                     {
+                        foreach (IntVec3 vec in cellsToDetach)
+                            Log.Warning("" + vec);
                         Detach(cellsToDetach);
                     }
                 }

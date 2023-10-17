@@ -149,7 +149,7 @@ namespace RimWorld
                 Scribe_Collections.Look<ShipCombatProjectile>(ref Projectiles, "ShipProjectiles");
                 Scribe_Collections.Look<ShipCombatProjectile>(ref TorpsInRange, "ShipTorpsInRange");
                 //SC cache
-                Scribe_Collections.Look<Building>(ref MapRootListAll, "MapRootListAll", LookMode.Reference);
+                Scribe_Collections.Look<Building_ShipBridge>(ref MapRootListAll, "MapRootListAll", LookMode.Reference);
                 originMapComp = null;
                 masterMapComp = null;
                 //SCM only
@@ -197,7 +197,7 @@ namespace RimWorld
         //SC cache
         public List<ShipCombatProjectile> Projectiles;
         public List<ShipCombatProjectile> TorpsInRange;
-        public List<Building> MapRootListAll = new List<Building>(); //all bridges on map
+        public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
         List<Building> cores = new List<Building>();
 
         //SC cache new
@@ -244,14 +244,13 @@ namespace RimWorld
         }
         public void RecacheMap() //rebuild all ships, wrecks on map init or after ship gen
         {
-            foreach (Building b in MapRootListAll)
+            foreach (Building_ShipBridge b in MapRootListAll)
             {
-                ((Building_ShipBridge)b).Index = -1;
-                ((Building_ShipBridge)b).Ship = null;
+                b.ShipIndex = -1;
             }
             for (int i = 0; i < MapRootListAll.Count; i++) //for each bridge make a ship, assign index
             {
-                if (((Building_ShipBridge)MapRootListAll[i]).Index == -1) //skip any with valid index
+                if (MapRootListAll[i].ShipIndex == -1) //skip any with valid index
                 {
                     ShipsOnMapNew.Add(MapRootListAll[i].thingIDNumber, new SoShipCache());
                     ShipsOnMapNew[MapRootListAll[i].thingIDNumber].RebuildCache(MapRootListAll[i]);
@@ -352,7 +351,7 @@ namespace RimWorld
             cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(mergeTo, Rot4.North, new IntVec2(1, 1)).Where(v => MapShipCells.ContainsKey(v) && MapShipCells[v]?.Item1 != mergeToIndex));
 
             //find cells cardinal that are in shiparea index and dont have same index, assign mergeTo corePath/index
-            while (cellsTodo.Count > 0)
+            while (cellsTodo.Any())
             {
                 List<IntVec3> current = cellsTodo.ToList();
                 foreach (IntVec3 vec in current) //do all of the current corePath
@@ -377,8 +376,6 @@ namespace RimWorld
                 //Log.Message("parts at i: "+ current.Count + "/" + i);
             }
             Log.Message("Attached: " + cellsDone.Count + " to ship: " + mergeToIndex);
-            //foreach (IntVec3 vec in cellsDone)
-            //    Log.Warning(""+vec);
         }
         public int ShipIndexOnVec(IntVec3 vec) //return index if ship on cell, else return -1
         {
@@ -778,11 +775,11 @@ namespace RimWorld
                 //ship destruction code
                 if (Find.TickManager.TicksGame % 20 == 0)
                 {
-                    foreach (int i in ShipsOnMapNew.Keys)
+                    /*foreach (int i in ShipsOnMapNew.Keys)
                     {
                         if (ShipsOnMapNew[i].CheckForDetach())
                             callSlowTick = true;
-                    }
+                    }*/
                     if (MapRootListAll.NullOrEmpty()) //if all ships gone, end combat
                     {
                         //Log.Message("Map defeated: " + this.map);
@@ -805,7 +802,7 @@ namespace RimWorld
                 foreach (int index in ShipsOnMapNew.Keys)
                 {
                     var ship = shipsOnMapNew[index];
-                    if (ship.Core != null && ship.Engines.Any())
+                    if (!ship.IsWreck && ship.Engines.Any())
                     {
                         engines.Concat(ship.Engines);
                     }
@@ -860,7 +857,7 @@ namespace RimWorld
             foreach (int index in ShipsOnMapNew.Keys) //first engine rot on proper ship
             {
                 var ship = shipsOnMapNew[index];
-                if (ship.Core != null && ship.Engines.Any())
+                if (!ship.IsWreck && ship.Engines.Any())
                 {
                     EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
                     break;

@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n3";
+        public static readonly string SOS2EXPversion = "V93n4";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1161,7 +1161,7 @@ namespace SaveOurShip2
 					while (loot.Count > 0 && actualTotalValue > 0)
 					{
 						Thing random = loot.RandomElement();
-						actualTotalValue -= random.MarketValue;
+						actualTotalValue -= random.MarketValue * random.stackCount;
 						actualLoot.Add(random);
 						loot.Remove(random);
 					}

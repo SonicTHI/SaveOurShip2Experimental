@@ -17,9 +17,29 @@ namespace RimWorld
 	public class Building_ShipBridge : Building
     {
         public string ShipName = "Unnamed Ship";
-        public int shipIndex = -1;
-        public int Index = -1;
-        public SoShipCache Ship;
+        private int shipIndex = -1; //shipindex in mapcomp cache
+        public SoShipCache Ship
+        {
+            private set; get;
+        }
+        public int ShipIndex
+        {
+            get { return shipIndex; }
+            set
+            {
+                shipIndex = value;
+                if (shipIndex == -1)
+                {
+                    Ship = null;
+                    return;
+                }
+                if (mapComp.ShipsOnMapNew.ContainsKey(shipIndex))
+                    Ship = mapComp.ShipsOnMapNew[shipIndex];
+                else
+                    Log.Error("SOS2: ship index not found: " + shipIndex);
+            }
+        }
+
         public bool TacCon = false;
         bool selected = false;
         List<string> fail;
@@ -71,42 +91,37 @@ namespace RimWorld
 		[DebuggerHidden]
 		public override IEnumerable<Gizmo> GetGizmos()
 		{
-            var heatNet = this.TryGetComp<CompShipHeat>().myNet;
-            if (Ship == null)
-                Ship = mapComp.ShipsOnMapNew[Index];
+            var heatNet = heatComp.myNet;
             bool ckActive = Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
-            if (!TacCon)
+            if (!TacCon && Faction != Faction.OfPlayer)
             {
-                if (this.Faction != Faction.OfPlayer)
+                if (Prefs.DevMode)
                 {
-                    if (Prefs.DevMode)
+                    Command_Action hackMe = new Command_Action
                     {
-                        Command_Action hackMe = new Command_Action
+                        action = delegate
                         {
-                            action = delegate
-                            {
-                                Success(null);
-                            },
-                            defaultLabel = "Dev: Hack bridge",
-                            defaultDesc = "Instantly take control of this ship"
-                        };
-                        yield return hackMe;
-                    }
-                    if (!ckActive)
-                        yield break;
+                            Success(null);
+                        },
+                        defaultLabel = "Dev: Hack bridge",
+                        defaultDesc = "Instantly take control of this ship"
+                    };
+                    yield return hackMe;
                 }
-                if (!selected)
-                {
-                    fail = InterstellarFailReasons();
-                    selected = true;
-                }
+                if (!ckActive) //allows other gizmos in CK mode
+                    yield break;
             }
 			foreach (Gizmo c in base.GetGizmos())
 			{
 				yield return c;
             }
-            if (TacCon || heatNet == null || this.Faction != Faction.OfPlayer || !powerComp.PowerOn)
+            if (TacCon || heatNet == null || Faction != Faction.OfPlayer || !powerComp.PowerOn || Ship == null)
                 yield break;
+            if (!selected)
+            {
+                fail = InterstellarFailReasons();
+                selected = true;
+            }
             if (!mapComp.InCombat)
             {
                 Command_Action renameShip = new Command_Action
@@ -282,7 +297,7 @@ namespace RimWorld
                         {
                             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmWithdrawShipCombat", delegate
                             {
-                                MapComp.RemoveShipFromBattle(shipIndex, this);
+                                MapComp.RemoveShipFromBattle(Index, this);
                             }));
                         },
                         icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Withdraw"),
@@ -816,10 +831,10 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            this.heatComp = this.GetComp<CompShipHeat>();
-            this.powerComp = this.GetComp<CompPowerTrader>();
-            this.mannableComp = this.GetComp<CompMannable>();
-            this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
+            heatComp = this.GetComp<CompShipHeat>();
+            powerComp = this.GetComp<CompPowerTrader>();
+            mannableComp = this.GetComp<CompMannable>();
+            mapComp = this.Map.GetComponent<ShipHeatMapComp>();
             if (!mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Add(this);
             //Log.Message("Spawned: " + this + " to " + this.Map);
@@ -827,47 +842,23 @@ namespace RimWorld
             {
                 TacCon = true;
             }
-            var countdownComp = this.Map.Parent.GetComponent<TimedForcedExitShip>();
+            if (!Map.IsSpace())
+                return;
+            var countdownComp = Map.Parent.GetComponent<TimedForcedExitShip>();
             if (countdownComp != null && !mapComp.IsGraveyard && countdownComp.ForceExitAndRemoveMapCountdownActive)
             {
                 countdownComp.ResetForceExitAndRemoveMapCountdown();
                 Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
             }
-            if (!mapComp.CacheOff)
-            {
-                //bridge placed on wreck, make ship
-                if (mapComp.MapShipCells.ContainsKey(Position) && !mapComp.ShipsOnMapNew.ContainsKey(mapComp.MapShipCells[Position].Item1))
-                {
-                    mapComp.ShipsOnMapNew.Add(thingIDNumber, new SoShipCache());
-                    mapComp.ShipsOnMapNew[thingIDNumber].RebuildCache(this);
-                }
-            }
+        }
+        public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
+        {
+            base.Destroy(mode);
         }
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
-            base.DeSpawn(mode);
-        }
-        public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
-        {
-            if (mapComp.MapRootListAll.Contains(this))
-                mapComp.MapRootListAll.Remove(this);
-            if (Ship.Core == this) //if last bridge on ship
-            {
-                if (mapComp.InCombat) //if last ship end combat else move to grave
-                {
-                    if (mapComp.ShipsOnMapNew.Count > 1)
-                        mapComp.RemoveShipFromBattle(Index);
-                    else
-                        mapComp.EndBattle(Map, false);
-                }
-                else
-                {
-                    mapComp.ShipsOnMapNew.Remove(Index);
-                }
-                return;
-            }
             if (Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty()) //last bridge on player map - deorbit
             {
                 var countdownComp = Map.Parent.GetComponent<TimedForcedExitShip>();
@@ -877,7 +868,7 @@ namespace RimWorld
                     Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipBurnupPlayer"), TranslatorFormattedStringExtensions.Translate("ShipBurnupPlayerDesc", countdownComp.ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.ThreatBig);
                 }
             }
-            base.Destroy(mode);
+            base.DeSpawn(mode);
         }
         public override void Tick()
         {
@@ -938,7 +929,7 @@ namespace RimWorld
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
             if (mapComp.InCombat)
             {
-                mapComp.RemoveShipFromBattle(shipIndex, this, Faction.OfPlayer);
+                mapComp.RemoveShipFromBattle(ShipIndex, this, Faction.OfPlayer);
             }
             else
             {

@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n4";
+        public static readonly string SOS2EXPversion = "V93n5";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1714,43 +1714,51 @@ namespace SaveOurShip2
 		{
 			if (b == null)
 				return;
-			List<Building> cachedParts;
-			if (b is Building_ShipBridge bridge)
-				cachedParts = bridge.Ship.Buildings.ToList();
-			else
-				cachedParts = FindBuildingsAttached(b, includeRock);
+			int shipIndex = b.Map.GetComponent<ShipHeatMapComp>().ShipIndexOnVec(b.Position);
+			if (shipIndex != -1)
+            {
+                var ship = b.Map.GetComponent<ShipHeatMapComp>().ShipsOnMapNew[shipIndex];
+				ship.MoveShipSketch(targetMap, rotb, salvage, bMax);
+                return;
+            }
+			//legacy for rock
+            List<Building> cachedParts;
+            if (b is Building_ShipBridge bridge)
+                cachedParts = bridge.Ship.Buildings.ToList();
+            else
+                cachedParts = FindBuildingsAttached(b, includeRock);
 
-			IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
-			HashSet<IntVec3> positions = new HashSet<IntVec3>();
-			int bCount = 0;
-			foreach (Building building in cachedParts)
-			{
-				if (salvage && building is Building_ShipBridge br && !br.TacCon && !building.Destroyed)
-				{
-					Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
-					cachedParts.Clear();
-					positions.Clear();
-					return;
-				}
-				bCount++;
-				if (b.Position.x < lowestCorner.x)
-					lowestCorner.x = b.Position.x;
-				if (b.Position.z < lowestCorner.z)
-					lowestCorner.z = b.Position.z;
-				foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(building))
-					positions.Add(pos);
-			}
-			if (rotb == 1)
-			{
-				lowestCorner.x = b.Map.Size.z - lowestCorner.z;
-				lowestCorner.z = lowestCorner.x;
-			}
-			else if (rotb == 2)
-			{
-				lowestCorner.x = b.Map.Size.x - lowestCorner.x;
-				lowestCorner.z = b.Map.Size.z - lowestCorner.z;
-			}
-			float bCountF = bCount * 2.5f;
+            IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
+            HashSet<IntVec3> positions = new HashSet<IntVec3>();
+            int bCount = 0;
+            foreach (Building building in cachedParts)
+            {
+                if (salvage && building is Building_ShipBridge br && !br.TacCon && !building.Destroyed)
+                {
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
+                    cachedParts.Clear();
+                    positions.Clear();
+                    return;
+                }
+                bCount++;
+                if (b.Position.x < lowestCorner.x)
+                    lowestCorner.x = b.Position.x;
+                if (b.Position.z < lowestCorner.z)
+                    lowestCorner.z = b.Position.z;
+                foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(building))
+                    positions.Add(pos);
+            }
+            if (rotb == 1)
+            {
+                lowestCorner.x = b.Map.Size.z - lowestCorner.z;
+                lowestCorner.z = lowestCorner.x;
+            }
+            else if (rotb == 2)
+            {
+                lowestCorner.x = b.Map.Size.x - lowestCorner.x;
+                lowestCorner.z = b.Map.Size.z - lowestCorner.z;
+            }
+            float bCountF = bCount * 2.5f;
 			if (salvage && bCountF > bMax)
 			{
 				Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
@@ -1758,27 +1766,27 @@ namespace SaveOurShip2
 				positions.Clear();
 				return;
 			}
-			Sketch shipSketch = GenerateShipSketch(positions, targetMap, lowestCorner, rotb);
-			MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
-			fakeMover.shipRoot = b;
-			fakeMover.includeRock = includeRock;
-			fakeMover.shipRotNum = rotb;
-			fakeMover.bottomLeftPos = lowestCorner;
-			shipOriginMap = b.Map;
-			fakeMover.targetMap = targetMap;
-			fakeMover.Position = b.Position;
-			fakeMover.SpawnSetup(targetMap, false);
-			List<object> selected = new List<object>();
-			foreach (object ob in Find.Selector.SelectedObjects)
-				selected.Add(ob);
-			foreach (object ob in selected)
-				Find.Selector.Deselect(ob);
-			Current.Game.CurrentMap = targetMap;
-			Find.Selector.Select(fakeMover);
-			if (Find.TickManager.Paused)
-				Find.TickManager.TogglePaused();
-			InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
-		}
+            Sketch shipSketch = GenerateShipSketch(positions, targetMap, lowestCorner, rotb);
+            MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
+            fakeMover.shipRoot = b;
+            fakeMover.includeRock = includeRock;
+            fakeMover.shipRotNum = rotb;
+            fakeMover.bottomLeftPos = lowestCorner;
+            shipOriginMap = b.Map;
+            fakeMover.targetMap = targetMap;
+            fakeMover.Position = b.Position;
+            fakeMover.SpawnSetup(targetMap, false);
+            List<object> selected = new List<object>();
+            foreach (object ob in Find.Selector.SelectedObjects)
+                selected.Add(ob);
+            foreach (object ob in selected)
+                Find.Selector.Deselect(ob);
+            Current.Game.CurrentMap = targetMap;
+            Find.Selector.Select(fakeMover);
+            if (Find.TickManager.Paused)
+                Find.TickManager.TogglePaused();
+            InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
+        }
         public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
 			bool devMode = false;

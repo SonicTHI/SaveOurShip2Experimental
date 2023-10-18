@@ -54,7 +54,7 @@ namespace SaveOurShip2
                     return;
                 }
             }
-            if (playerShipComp.ShipsOnMapNew.NullOrEmpty() || !playerShipComp.ShipsOnMapNew.Any(sc => sc.Value?.Core != null))
+            if (playerShipComp.ShipsOnMapNew.NullOrEmpty() || playerShipComp.ShipsOnMapNew.All(sc => sc.Value?.IsWreck ?? true))
                 return;
             if (!playerShipComp.InCombat && playerShipComp.IsGraveyard)
             {
@@ -1200,7 +1200,12 @@ namespace SaveOurShip2
 		public static void Postfix(Building rootBuilding, ref IEnumerable<string> __result)
 		{
 			List<string> newResult = new List<string>();
-			SoShipCache ship = ((Building_ShipBridge)rootBuilding).Ship;
+			var ship = ((Building_ShipBridge)rootBuilding).Ship;
+			if (ship == null)
+            {
+                Log.Error("SOS2: ship is null in FindLaunchFailReasons");
+				return;
+            }
 
 			if (ship.Engines.NullOrEmpty())
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_Engine.label);

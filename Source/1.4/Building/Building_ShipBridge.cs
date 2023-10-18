@@ -33,8 +33,12 @@ namespace RimWorld
                     Ship = null;
                     return;
                 }
+                if (mapComp == null)
+                    return;
                 if (mapComp.ShipsOnMapNew.ContainsKey(shipIndex))
+                {
                     Ship = mapComp.ShipsOnMapNew[shipIndex];
+                }
                 else
                     Log.Error("SOS2: ship index not found: " + shipIndex);
             }
@@ -842,6 +846,7 @@ namespace RimWorld
             {
                 TacCon = true;
             }
+            ShipIndex = shipIndex;
             if (!Map.IsSpace())
                 return;
             var countdownComp = Map.Parent.GetComponent<TimedForcedExitShip>();

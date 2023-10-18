@@ -44,6 +44,7 @@ namespace RimWorld
         public bool CanMove = false;
         public Building_ShipBridge Core; //main bridge
         public bool IsWreck => Core == null;
+        public bool IsStuck => Core == null || Bridges.All(b => b.TacCon); //ship cant move with taccon
         public int Mass = 0;
         public float MaxTakeoff = 0;
         public int BuildingCount = 0;
@@ -57,20 +58,86 @@ namespace RimWorld
         public bool Rotatable => !BuildingsNonRot.Any();
         public float ThrustRaw = 0;
         public float ThrustRatio => ThrustRaw * 500f / Mathf.Pow(BuildingCount, 1.1f);
-        public IntVec3 LowestCorner
+        public IntVec3 LowestCorner(byte rotb, Map map)
         {
-            get
+            IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
+            foreach (IntVec3 v in Area)
             {
-                IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
-                foreach (IntVec3 v in Area)
-                {
-                    if (v.x < lowestCorner.x)
-                        lowestCorner.x = v.x;
-                    if (v.z < lowestCorner.z)
-                        lowestCorner.z = v.z;
-                }
-                return lowestCorner;
+                if (v.x < lowestCorner.x)
+                    lowestCorner.x = v.x;
+                if (v.z < lowestCorner.z)
+                    lowestCorner.z = v.z;
             }
+            if (rotb == 1)
+            {
+                lowestCorner.x = map.Size.z - lowestCorner.z;
+                lowestCorner.z = lowestCorner.x;
+            }
+            else if (rotb == 2)
+            {
+                lowestCorner.x = map.Size.x - lowestCorner.x;
+                lowestCorner.z = map.Size.z - lowestCorner.z;
+            }
+            return lowestCorner;
+        }
+        public Sketch GenerateShipSketch(Map targetMap, IntVec3 lowestCorner, byte rotb = 0)
+        {
+            Sketch sketch = new Sketch();
+            IntVec3 rot = new IntVec3(0, 0, 0);
+            foreach (IntVec3 pos in Area)
+            {
+                if (rotb == 1)
+                {
+                    rot.x = targetMap.Size.x - pos.z;
+                    rot.z = pos.x;
+                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+                }
+                else if (rotb == 2)
+                {
+                    rot.x = targetMap.Size.x - pos.x;
+                    rot.z = targetMap.Size.z - pos.z;
+                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+                }
+                else
+                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), pos - lowestCorner, Rot4.North);
+            }
+            return sketch;
+        }
+        public void MoveShipSketch(Map targetMap, byte rotb = 0, bool salvage = false, int bMax = 0, bool includeRock = false)
+        {
+            if (salvage && !IsStuck)
+            {
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
+                return;
+            }
+
+            float bCountF = BuildingCount * 2.5f;
+            if (salvage && bCountF > bMax)
+            {
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
+            }
+            //td add rock terrain and walls
+            IntVec3 lowestCorner = LowestCorner(rotb, map);
+            Sketch shipSketch = GenerateShipSketch(targetMap, lowestCorner, rotb);
+            MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
+            fakeMover.shipRoot = Core;
+            fakeMover.includeRock = includeRock;
+            fakeMover.shipRotNum = rotb;
+            fakeMover.bottomLeftPos = lowestCorner;
+            ShipInteriorMod2.shipOriginMap = map;
+            fakeMover.targetMap = targetMap;
+            fakeMover.Position = Core.Position;
+            fakeMover.SpawnSetup(targetMap, false);
+            List<object> selected = new List<object>();
+            foreach (object ob in Find.Selector.SelectedObjects)
+                selected.Add(ob);
+            foreach (object ob in selected)
+                Find.Selector.Deselect(ob);
+            Current.Game.CurrentMap = targetMap;
+            Find.Selector.Select(fakeMover);
+            if (Find.TickManager.Paused)
+                Find.TickManager.TogglePaused();
+            InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
         }
         public bool HasMannedBridge()
         {
@@ -346,7 +413,6 @@ namespace RimWorld
                                 Core = bridge;
                                 RebuildCorePath();
                             }
-                            Log.Warning("SOS2: ship index: " + Index);
                             bridge.ShipIndex = Index;
                             bridge.ShipName = Name;
                         }
@@ -442,10 +508,10 @@ namespace RimWorld
                         else if (b is Building_ShipBridge bridge)
                         {
                             Bridges.Remove(bridge);
-                            bridge.ShipIndex = -1;
-                            bridge.ShipName = "destroyed ship";
                             if (bridge == Core)
                                 TryReplaceCore();
+                            //bridge.ShipIndex = -1;
+                            //bridge.ShipName = "destroyed ship";
                         }
                         else if (b is Building_ShipAdvSensor sensor)
                             Sensors.Remove(sensor);

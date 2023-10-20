@@ -1444,19 +1444,20 @@ namespace SaveOurShip2
     {
         //can we have predespawn at home? no, we have despawn at home, despawn at home: postdespawn
         [HarmonyPrefix]
-        public static bool PreDeSpawn(Building __instance)
+        public static bool PreDeSpawn(Building __instance, DestroyMode mode)
         {
             var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
             if (mapComp.CacheOff)
                 return true;
             var shipComp = __instance.TryGetComp<CompSoShipPart>();
             if (shipComp != null) //predespawn for ship parts
-                shipComp.PreDeSpawn();
+                shipComp.PreDeSpawn(mode);
             else if (!mapComp.ShipsOnMapNew.NullOrEmpty()) //rems normal building weight/count to ship
             {
                 foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
                 {
-                    if (mapComp.MapShipCells.ContainsKey(vec))
+                    int shipIndex = mapComp.ShipIndexOnVec(vec);
+                    if (shipIndex != -1)
                     {
                         var ship = mapComp.ShipsOnMapNew[mapComp.MapShipCells[vec].Item1];
                         if (ship.Buildings.Contains(__instance))

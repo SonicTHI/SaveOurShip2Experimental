@@ -64,6 +64,7 @@ namespace RimWorld
         public bool discoMode = false;
 
         HashSet<IntVec3> cellsUnder;
+        public bool FoamFill = false;
         Map map;
         public ShipHeatMapComp mapComp;
         public CompProperties_SoShipPart Props
@@ -177,7 +178,7 @@ namespace RimWorld
             }
         }
 
-        public void PreDeSpawn() //called in building.destroy, before comps get removed
+        public void PreDeSpawn(DestroyMode mode) //called in building.destroy, before comps get removed
         {
             if (ShipInteriorMod2.AirlockBugFlag) //disable on moveship
                 return;
@@ -191,6 +192,17 @@ namespace RimWorld
             {
                 ship.RemoveFromCache(parent as Building);
                 return;
+            }
+            else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && (Props.isHull && !Props.isPlating || !Props.isHull && Props.isPlating) && ship.FoamDistributors.Any())
+            {
+                //replace part with foam, no detach checks
+                foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))
+                {
+                    ship.RemoveFromCache(parent as Building);
+                    dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
+                    FoamFill = true;
+                    return;
+                }
             }
             HashSet<Building> buildings = new HashSet<Building>();
             foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
@@ -276,6 +288,17 @@ namespace RimWorld
                     if (Props.roof)
                         map.roofGrid.SetRoof(pos, null);
                 }
+            }
+            if (FoamFill)
+            {
+                Thing newWall;
+                if (Props.isHull)
+                    newWall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.HullFoamWall);
+                else
+                    newWall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullfoamTile);
+
+                newWall.SetFaction(parent.Faction);
+                GenPlace.TryPlaceThing(newWall, cellsUnder.First(), map, ThingPlaceMode.Direct);
             }
         }
         public override void PostDraw()

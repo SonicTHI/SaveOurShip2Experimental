@@ -480,7 +480,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                if (HasPilotRCSAndFuel(0.01f, true))
+                                if (Ship.HasPilotRCSAndFuel(0.01f, true))
                                     ShipInteriorMod2.MoveShipSketch(this, this.Map);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMove"),
@@ -492,7 +492,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                if (HasPilotRCSAndFuel(0.01f, true))
+                                if (Ship.HasPilotRCSAndFuel(0.01f, true))
                                     ShipInteriorMod2.MoveShipSketch(this, this.Map, 2);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFlip"),
@@ -504,7 +504,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                if (HasPilotRCSAndFuel(0.01f, true))
+                                if (Ship.HasPilotRCSAndFuel(0.01f, true))
                                     ShipInteriorMod2.MoveShipSketch(this, this.Map, 1);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRot"),
@@ -558,7 +558,7 @@ namespace RimWorld
                             {
                                 action = delegate
                                 {
-                                    if (HasPilotRCSAndFuel(0.1f))
+                                    if (Ship.HasPilotRCSAndFuel(0.1f))
                                         ShipInteriorMod2.MoveShipSketch(this, m, 0);
                                 },
                                 defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand") + " (" + m.Parent.Label + ")",
@@ -570,6 +570,24 @@ namespace RimWorld
                                 landShip.Disable();
                             }
                             yield return landShip;
+                        }
+                        if (Ship.BuildingsDestroyed.Any())
+                        {
+                            Command_Action rebuildShip = new Command_Action
+                            {
+                                action = delegate
+                                {
+                                    foreach (var bp in Ship.BuildingsDestroyed)
+                                    {
+                                        GenConstruct.PlaceBlueprintForBuild(bp.Item1, bp.Item2, Map, bp.Item3, Faction, null);
+                                    }
+                                    Ship.BuildingsDestroyed.Clear();
+                                },
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipRebuild"),
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRebuildDesc"),
+                                icon = ContentFinder<Texture2D>.Get("UI/Glitterworld_end_icon", true)
+                            };
+                            yield return rebuildShip;
                         }
                         //endgame missions
                         if (ResourceBank.ResearchProjectDefOf.ArchotechPillarA.IsFinished && !WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarA"))
@@ -885,29 +903,6 @@ namespace RimWorld
             if (ticks % 250 == 0)
                 TickRare();
         }
-		public bool HasPilotRCSAndFuel(float fuelPercentNeeded, bool RCS = false)
-        {
-            float fuelNeeded = Ship.Mass;
-            Log.Message("Mass: " + fuelNeeded + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + Ship.RCSs.Count);
-            if (RCS && Ship.RCSs.Count * 2000 < fuelNeeded) //2k weight/RCS to move
-            {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), this, MessageTypeDefOf.NeutralEvent);
-                return false;
-            }
-            fuelNeeded *= fuelPercentNeeded;
-            if (Ship.TakeoffCurrent() < fuelNeeded)
-            {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailFuel", fuelNeeded), this, MessageTypeDefOf.NeutralEvent);
-                return false;
-            }
-            if (!Ship.HasMannedBridge())
-            {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailPilot"), this, MessageTypeDefOf.NeutralEvent);
-                return false;
-            }
-            return true;
-        }
-
         public void HackMe(Pawn pawn)
         {
             if (Rand.Chance(0.05f * pawn.skills.GetSkill(SkillDefOf.Intellectual).levelInt))

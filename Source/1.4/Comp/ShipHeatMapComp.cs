@@ -688,6 +688,7 @@ namespace RimWorld
                 //if (!ship.IsWreck)
                 ship.BuildingCountAtCombatStart = ship.BuildingCount;
                 BuildingCountAtStart += ship.BuildingCountAtCombatStart;
+                ship.BuildingsDestroyed.Clear();
             }
         }
 
@@ -798,13 +799,13 @@ namespace RimWorld
             else if ((Find.TickManager.TicksGame % 60 == 0) && map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
             {
                 //reduce durration per engine vs mass
-                HashSet<CompEngineTrail> engines = new HashSet<CompEngineTrail>();
+                List<CompEngineTrail> engines = new List<CompEngineTrail>();
                 foreach (int index in ShipsOnMapNew.Keys)
                 {
                     var ship = shipsOnMapNew[index];
                     if (!ship.IsWreck && ship.Engines.Any())
                     {
-                        engines.Concat(ship.Engines);
+                        engines.AddRange(ship.Engines);
                     }
                 }
                 if (!engines.Any())
@@ -854,12 +855,13 @@ namespace RimWorld
             //SCM vars
             float powerCapacity = 0;
             float powerRemaining = 0;
-            foreach (int index in ShipsOnMapNew.Keys) //first engine rot on proper ship
+            foreach (int index in ShipsOnMapNew.Keys) //first engine rot and can fire on proper ship
             {
                 var ship = shipsOnMapNew[index];
-                if (!ship.IsWreck && ship.Engines.Any())
+                if (ship.CanMove)
                 {
-                    EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
+                    anyMapEngineCanActivate = true;
+                    EngineRot = ship.Rot.AsInt;
                     break;
                 }
             }
@@ -911,21 +913,18 @@ namespace RimWorld
                         TurretNum++;
                     }
                 }
-                if (ship.Engines.FirstOrDefault() != null)
-                    EngineRot = ship.Engines.FirstOrDefault().parent.Rotation.AsByte;
-                float enginePower = ship.EnginePower(EngineRot, Heading);
-                if (ship.CanMove)
+                if (anyMapEngineCanActivate && Heading != 0)
                 {
-                    MapEnginePower += enginePower;
-                    anyMapEngineCanActivate = true;
+                    MapEnginePower += ship.EnginesOn();
+                }
+                else
+                {
+                    ship.EnginesOff();
                 }
                 BuildingsCount += ship.Buildings.Count;
             }
             //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);
-            if (anyMapEngineCanActivate)
-                MapEnginePower *= 40f / Mathf.Pow(BuildingsCount, 1.1f);
-            else
-                MapEnginePower = 0;
+            MapEnginePower *= 40f / Mathf.Pow(BuildingsCount, 1.1f);
             //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);
 
             //SCM only: ship AI and player distance maintain

@@ -46,7 +46,7 @@ namespace RimWorld
                 {
                     return true;
                 }
-                else if (refuelComp.Fuel > 0)
+                else if (refuelComp.Fuel > Props.fuelUse)
                 {
                     return true;
                 }
@@ -61,7 +61,7 @@ namespace RimWorld
                 active = true;
                 return true;
             }
-            else if (refuelComp.Fuel > 0)
+            else if (refuelComp.Fuel > Props.fuelUse)
             {
                 active = true;
                 return true;
@@ -101,7 +101,7 @@ namespace RimWorld
         }
         public override void PostDeSpawn(Map map)
         {
-            mapComp = null;
+            active = false;
             base.PostDeSpawn(map);
         }
         public override void PostDraw()

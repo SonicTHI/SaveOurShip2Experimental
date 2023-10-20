@@ -28,6 +28,8 @@ namespace RimWorld
         public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //add to when destroyed in combat
         public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
         public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
+        //for rebuild after battle, reset before combat, rebuild gizmo
+        public HashSet<Tuple<BuildableDef,IntVec3,Rot4>> BuildingsDestroyed = new HashSet<Tuple<BuildableDef, IntVec3, Rot4>>();
         public HashSet<Building> BuildingsNonRot = new HashSet<Building>();
         public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
         public List<CompRCSThruster> RCSs = new List<CompRCSThruster>();
@@ -39,12 +41,6 @@ namespace RimWorld
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
-        public string Name = "Unnamed Ship";
-        public int Index = -1;
-        public bool CanMove = false;
-        public Building_ShipBridge Core; //main bridge
-        public bool IsWreck => Core == null;
-        public bool IsStuck => Core == null || Bridges.All(b => b.TacCon); //ship cant move with taccon
         public int Mass = 0;
         public float MaxTakeoff = 0;
         public int BuildingCount = 0;
@@ -58,6 +54,120 @@ namespace RimWorld
         public bool Rotatable => !BuildingsNonRot.Any();
         public float ThrustRaw = 0;
         public float ThrustRatio => ThrustRaw * 500f / Mathf.Pow(BuildingCount, 1.1f);
+        public string Name = "Unnamed Ship";
+        public int Index = -1;
+        public Building_ShipBridge Core; //main bridge
+        public Faction Faction => Buildings.First().Faction;
+        public bool IsWreck => Core == null;
+        public bool IsStuck => Core == null || Bridges.All(b => b.TacCon); //ship cant move with taccon
+        public Rot4 Rot => Engines.FirstOrDefault().parent.Rotation;
+        public bool EnginesCanActivate()
+        {
+            if (Engines.Any(e => e.CanFire(Rot.AsInt)))
+                return true;
+            return false;
+        }
+        public bool CanMove => !IsStuck && EnginesCanActivate();
+        public float EnginesOn()
+        {
+            if (IsStuck)
+                return 0;
+            float enginePower = 0;
+            foreach (var engine in Engines)
+            {
+                if (engine.CanFire(Rot.AsInt))
+                {
+                    if (engine.On())
+                    {
+                        enginePower += engine.Props.thrust;
+                    }
+                    else
+                        engine.Off();
+                }
+                else
+                    engine.Off();
+            }
+            return enginePower;
+        }
+        public void EnginesOff()
+        {
+            foreach (var engine in Engines)
+            {
+                engine.Off();
+            }
+        }
+        public void Capture(Faction fac)
+        {
+            foreach (Building building in Buildings)
+            {
+                if (building.def.CanHaveFaction)
+                    building.SetFaction(fac);
+            }
+        }
+        //shipmove
+        public bool CanShipMove(float needFuel)
+        {
+            if (!IsStuck && RCSs.Any())
+            {
+                float fuel = 0;
+                foreach (var engine in Engines.Where(e => !e.Props.reactionless))
+                {
+                    fuel += engine.refuelComp.Fuel;
+                }
+                if (fuel > needFuel)
+                    return true;
+            }
+            return false;
+        }
+        public bool HasPilotRCSAndFuel(float fuelPercentNeeded, bool RCS = false)
+        {
+            float fuelNeeded = Mass;
+            Log.Message("Mass: " + Mass + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
+            if (RCS && RCSs.Count * 2000 < fuelNeeded) //2k weight/RCS to move
+            {
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
+                return false;
+            }
+            fuelNeeded *= fuelPercentNeeded;
+            if (TakeoffCurrent() < fuelNeeded)
+            {
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailFuel", fuelNeeded), Core, MessageTypeDefOf.NeutralEvent);
+                return false;
+            }
+            if (!HasMannedBridge())
+            {
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailPilot"), Core, MessageTypeDefOf.NeutralEvent);
+                return false;
+            }
+            return true;
+        }
+        public float TakeoffCurrent()
+        {
+            float fuelHad = 0f;
+            foreach (CompEngineTrail engine in Engines.Where(e => e.Props.takeOff))
+            {
+                fuelHad += engine.refuelComp.Fuel;
+                if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
+                    fuelHad += engine.refuelComp.Fuel;
+            }
+            return fuelHad;
+        }
+        public bool HasMannedBridge()
+        {
+            bool hasPilot = false;
+            foreach (Building_ShipBridge bridge in Bridges) //first bridge with pilot/AI
+            {
+                if (!hasPilot && bridge.powerComp.PowerOn)
+                {
+                    if (bridge.mannableComp == null || (bridge.mannableComp != null && bridge.mannableComp.MannedNow))
+                    {
+                        hasPilot = true;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         public IntVec3 LowestCorner(byte rotb, Map map)
         {
             IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
@@ -139,33 +249,7 @@ namespace RimWorld
                 Find.TickManager.TogglePaused();
             InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
         }
-        public bool HasMannedBridge()
-        {
-            bool hasPilot = false;
-            foreach (Building_ShipBridge bridge in Bridges) //first bridge with pilot/AI
-            {
-                if (!hasPilot && bridge.powerComp.PowerOn)
-                {
-                    if (bridge.mannableComp == null || (bridge.mannableComp != null && bridge.mannableComp.MannedNow))
-                    {
-                        hasPilot = true;
-                        return true;
-                    }
-}
-            }
-            return false;
-        }
-        public float TakeoffCurrent()
-        {
-            float fuelHad = 0f;
-            foreach (CompEngineTrail engine in Engines.Where(e => e.Props.takeOff))
-            {
-                fuelHad += engine.refuelComp.Fuel;
-                if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
-                    fuelHad += engine.refuelComp.Fuel;
-            }
-            return fuelHad;
-        }
+
         public List<Thing> ThingsOnShip() //dep
         {
             List<Thing> things = new List<Thing>();
@@ -195,28 +279,12 @@ namespace RimWorld
             }
             return buildings;
         }
-
-        public void Capture(Faction fac)
-        {
-            foreach (Building building in Buildings)
-            {
-                if (building.def.CanHaveFaction)
-                    building.SetFaction(fac);
-            }
-        }
         public void AllOff()
         {
             EnginesOff();
             var heatnNet = Core.TryGetComp<CompShipHeat>().myNet;
             heatnNet.ShieldsOff();
             heatnNet.TurretsOff();
-        }
-        public void EnginesOff()
-        {
-            foreach (var engine in Engines)
-            {
-                engine.Off();
-            }
         }
         public float[] ActualThreatPerSegment() //dep turrets that cant actually fire due to ammo
         {
@@ -252,29 +320,7 @@ namespace RimWorld
             }
             return actualThreatPerSegment;
         }
-        public float EnginePower(int engineRot, int heading)
-        {
-            CanMove = false;
-            if (Core == null) //wrecks cant move
-                return 0;
-            float enginePower = 0;
-            foreach (var engine in Engines)
-            {
-                if (engine.CanFire(engineRot))
-                {
-                    CanMove = true;
-                    if (heading != 0 && engine.On())
-                    {
-                        enginePower += engine.Props.thrust;
-                    }
-                    else
-                        engine.Off();
-                }
-                else
-                    engine.Off();
-            }
-            return enginePower;
-        }
+        
         public void PurgeCheck()
         {
             if (!HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
@@ -303,7 +349,8 @@ namespace RimWorld
                 }
             }
         }
-
+        
+        //cache
         public void RebuildCache(Building origin, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
         {
             if (origin == null || origin.Destroyed)
@@ -471,6 +518,10 @@ namespace RimWorld
             {
                 BuildingCount--;
                 Buildings.Remove(b);
+                if (mapComp.InCombat && !IsWreck && Faction == Faction.OfPlayer)
+                {
+                    BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(b.def, b.Position, b.Rotation));
+                }
                 if (BuildingsNonRot.Contains(b))
                 {
                     BuildingsNonRot.Remove(b);
@@ -638,10 +689,10 @@ namespace RimWorld
                         initialCells.Add(v);
                     }
                 }
-                if (AreaDestroyed.Count > 1)
+                /*if (AreaDestroyed.Count > 1)
                     Log.Warning("SOS2c: CheckForDetach for " + AreaDestroyed.Count + " destroyed cells. Cells to check for detach: " + initialCells.Count);
                 else
-                    Log.Message("SOS2c: CheckForDetach for " + AreaDestroyed.FirstOrDefault() + " Cells to check for detach: " + initialCells.Count);
+                    Log.Message("SOS2c: CheckForDetach for " + AreaDestroyed.FirstOrDefault() + " Cells to check for detach: " + initialCells.Count);¸*/
                 foreach (IntVec3 setStartCell in initialCells)
                 {
                     if (cellsDone.Contains(setStartCell)) //skip already checked cells
@@ -777,6 +828,7 @@ namespace RimWorld
                                 part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 1;
                             else if (comp.Props.isPlating)
                                 part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
+                            BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(t.def, t.Position, t.Rotation));
                         }
                         part.SpawnSetup(map, false);
                     }
@@ -786,10 +838,10 @@ namespace RimWorld
                     }
                     foreach (Thing t in toDestroy)
                     {
-                        if (t is Building && map.IsPlayerHome && t.def.blueprintDef != null)
+                        /*if (t is Building && map.IsPlayerHome && t.def.blueprintDef != null)
                         {
                             GenConstruct.PlaceBlueprintForBuild(t.def, t.Position, map, t.Rotation, Faction.OfPlayer, t.Stuff);
-                        }
+                        }*/
                         if (t.def.destroyable && !t.Destroyed)
                             t.Destroy(DestroyMode.Vanish);
                     }
@@ -804,6 +856,11 @@ namespace RimWorld
                 newCore = (Building)detachArea.First().GetThingList(map).First(t => t is Building);
             }
             Log.Message("SOS2c: Detach new ship/wreck with: " + newCore);
+            if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
+            {
+                Log.Warning("SOS2c: Detach error");
+                return;
+            }
             mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
             mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore, AreaDestroyed);
             if (mapComp.InCombat)

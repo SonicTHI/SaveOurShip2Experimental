@@ -514,10 +514,9 @@ namespace RimWorld
         }
         public void RemoveFromCache(Building b)
         {
-            if (Buildings.Contains(b))
+            if (Buildings.Remove(b))
             {
                 BuildingCount--;
-                Buildings.Remove(b);
                 if (mapComp.InCombat && !IsWreck && Faction == Faction.OfPlayer)
                 {
                     BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(b.def, b.Position, b.Rotation));
@@ -630,7 +629,7 @@ namespace RimWorld
                 return false;
             }
             Log.Message("SOS2c: replaced primary bridge on ship: " + Index);
-            Core = Bridges.FirstOrDefault(b => !b.Destroyed);
+            Core = Bridges.FirstOrDefault(b => b != Core && !b.Destroyed);
             RebuildCorePath();
             return true;
         }
@@ -742,8 +741,11 @@ namespace RimWorld
                     }
                     if (detach)
                     {
+                        string str = "SOS2c: CheckForDetach on ship " + Index + ", Detach " + cellsToDetach.Count + " cells: ";
                         foreach (IntVec3 vec in cellsToDetach)
-                            Log.Warning("" + vec);
+                            str += vec;
+                        Log.Warning(str);
+                        
                         Detach(cellsToDetach);
                     }
                 }
@@ -755,26 +757,20 @@ namespace RimWorld
         //if bridge found detach as new ship else as wreck
         public void Detach(HashSet<IntVec3> detachArea)
         {
-            Log.Message("SOS2c: Detach " + detachArea.Count + " cells from ship: " + Index);
             Building newCore = null;
-            foreach (IntVec3 vec in detachArea) //clean area indexes and try to find bridge
+            foreach (IntVec3 vec in detachArea) //clean buildings and area indexes, try to find bridge on detached
             {
-                if (newCore == null)
+                foreach (Building b in vec.GetThingList(map).Where(t => t is Building))
                 {
-                    foreach (Building bridge in mapComp.MapRootListAll)
-                    {
-                        if (bridge.Position == vec)
-                        {
-                            newCore = bridge;
-                            break;
-                        }
-                    }
+                    if (b is Building_ShipBridge bridge)
+                        newCore = bridge;
+                    RemoveFromCache(b);
                 }
                 mapComp.MapShipCells[vec] = new Tuple<int, int>(-1, -1);
             }
             if (newCore == null) //wreck
             {
-                if (mapComp.InCombat) //float wreck in battle
+                if (mapComp.InCombat) //float wreck in battle and destroy it
                 {
                     //float wreck and destroy
                     ShipInteriorMod2.AirlockBugFlag = true;
@@ -855,10 +851,11 @@ namespace RimWorld
                 }
                 newCore = (Building)detachArea.First().GetThingList(map).First(t => t is Building);
             }
+
             Log.Message("SOS2c: Detach new ship/wreck with: " + newCore);
             if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
             {
-                Log.Warning("SOS2c: Detach error");
+                Log.Error("SOS2c: Detach error");
                 return;
             }
             mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());

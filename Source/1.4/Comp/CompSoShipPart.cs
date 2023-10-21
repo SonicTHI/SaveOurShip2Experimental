@@ -88,7 +88,11 @@ namespace RimWorld
                 if (parent.def.building.shipPart)
                     stringBuilder.Append("shipIndex: " + index + " / corePath: " + path);
                 else
+                {
                     stringBuilder.Append("shipIndex: " + index);
+                    if (parent is Building_ShipBridge && parent == mapComp.ShipsOnMapNew[index].Core)
+                        stringBuilder.Append(" PRIMARY CORE");
+                }
             }
             return stringBuilder.ToString();
         }
@@ -204,6 +208,8 @@ namespace RimWorld
                     return;
                 }
             }
+            if (cellsUnder.Contains(ship.Core.Position)) //since cores are not ship parts and the starting tile dies
+                ship.TryReplaceCore();
             HashSet<Building> buildings = new HashSet<Building>();
             foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
             {
@@ -245,8 +251,9 @@ namespace RimWorld
                     ship.RemoveFromCache(b);
                 }
             }
+            //Log.Message("rem " + parent);
             ship.RemoveFromCache(parent as Building);
-            //if (!mapComp.InCombat) //perform check immediately //td rev
+            //if (!mapComp.InCombat) //perform check immediately //td rev?
                 ship.CheckForDetach();
         }
         public override void PostDeSpawn(Map map)

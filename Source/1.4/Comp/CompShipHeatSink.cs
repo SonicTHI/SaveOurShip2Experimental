@@ -91,6 +91,8 @@ namespace RimWorld
                     {
                         if (!AddDepletionToNetwork(Props.heatVent))
                             myNet.venting = false;
+                        if (!RemHeatFromNetwork(Props.heatVent * 5))
+                            myNet.venting = false;
                     }
                     else if (myNet.Depletion > 0 && !mapComp.InCombat && !mapComp.Cloaks.Any(c => c.active))
                         RemoveDepletionFromNetwork(Props.heatVent / 10f);
@@ -114,13 +116,15 @@ namespace RimWorld
                                 batteries.RandomElement().AddEnergy(2);
                             }
                             RemHeatFromNetwork(Props.heatVent);
+                            if (myNet.Depletion > 0)
+                                RemoveDepletionFromNetwork(Props.heatVent / 1000f);
                         }
                         return;
                     }
                     PushHeat(ratio);
                 }
             }
-            if (myNet.venting && Props.heatVent > 0 && this.parent.IsHashIntervalTick(25))
+            if (myNet.venting && Props.heatVent > 0 && this.parent.IsHashIntervalTick(25)) //fx
             {
                 Mote obj = (Mote)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Mote_HeatsinkPurge);
                 obj.exactPosition = parent.TrueCenter();
@@ -129,7 +133,6 @@ namespace RimWorld
                 if(Rand.Chance(0.2f))
                     ResourceBank.SoundDefOf.ShipPurgeHiss.PlayOneShot(parent);
                 GenSpawn.Spawn(obj, parent.Position, map);
-                RemHeatFromNetwork(Props.heatVent);
             }
         }
         public void PushHeat(float ratio, float heat = 0) //bleed into or adjacent room

@@ -89,7 +89,7 @@ namespace RimWorld
 
                     if (myNet.venting)
                     {
-                        if (!AddDepletionToNetwork(Props.heatVent))
+                        if (!AddDepletionToNetwork(Props.heatVent) || RemHeatFromNetwork(Props.heatVent * 5))
                             myNet.venting = false;
                     }
                     else if (myNet.Depletion > 0 && !mapComp.InCombat && !mapComp.Cloaks.Any(c => c.active))
@@ -122,7 +122,7 @@ namespace RimWorld
                     PushHeat(ratio);
                 }
             }
-            if (myNet.venting && Props.heatVent > 0 && this.parent.IsHashIntervalTick(25))
+            if (myNet.venting && Props.heatVent > 0 && this.parent.IsHashIntervalTick(25)) //fx
             {
                 Mote obj = (Mote)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Mote_HeatsinkPurge);
                 obj.exactPosition = parent.TrueCenter();
@@ -131,7 +131,6 @@ namespace RimWorld
                 if(Rand.Chance(0.2f))
                     ResourceBank.SoundDefOf.ShipPurgeHiss.PlayOneShot(parent);
                 GenSpawn.Spawn(obj, parent.Position, map);
-                RemHeatFromNetwork(Props.heatVent);
             }
         }
         public void PushHeat(float ratio, float heat = 0) //bleed into or adjacent room

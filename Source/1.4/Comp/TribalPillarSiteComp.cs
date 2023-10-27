@@ -53,7 +53,7 @@ namespace RimWorld.Planet
                     if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarC"))
                     {
                         Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("StarTotemLostLabel"), TranslatorFormattedStringExtensions.Translate("StarTotemLost"), LetterDefOf.NegativeEvent, null);
-                        ShipInteriorMod2.GenerateArchotechPillarCSite();
+                        ShipInteriorMod2.GenerateSite("TribalPillarSite");
                     }
                 }
             }

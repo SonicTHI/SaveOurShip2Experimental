@@ -55,7 +55,7 @@ namespace RimWorld.Planet
                     if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarD"))
                     {
                         Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("InsectPillarLostLabel"), TranslatorFormattedStringExtensions.Translate("InsectPillarLost"), LetterDefOf.NegativeEvent, null);
-                        ShipInteriorMod2.GenerateArchotechPillarDSite();
+                        ShipInteriorMod2.GenerateSite("InsectPillarSite");
                     }
                 }
             }

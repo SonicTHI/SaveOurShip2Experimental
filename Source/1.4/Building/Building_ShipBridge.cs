@@ -52,6 +52,13 @@ namespace RimWorld
         public CompShipHeat heatComp;
         public CompPowerTrader powerComp;
         public CompMannable mannableComp;
+        public int heat = 0;
+        public int heatCap = 0;
+        public float heatRat = 0;
+        public float heatRatDep = 0;
+        public int power = 0;
+        public int powerCap = 0;
+        public float powerRat = 0;
         private bool CanLaunchNow
 		{
 			get
@@ -295,25 +302,25 @@ namespace RimWorld
                         escape.disabledReason = TranslatorFormattedStringExtensions.Translate("NotAtMaxShipRange");
                     }
                     yield return escape;
-                    /*Command_Action withdraw = new Command_Action
+                    Command_Action withdraw = new Command_Action
                     {
                         action = delegate
                         {
                             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmWithdrawShipCombat", delegate
                             {
-                                MapComp.RemoveShipFromBattle(Index, this);
+                                mapComp.RemoveShipFromBattle(shipIndex);
                             }));
                         },
                         icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Withdraw"),
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShip"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShipDesc"),
                     };
-                    if (MapComp.ShipsOnMap.Count <= 1)
+                    if (mapComp.IsGraveyard || mapComp.ShipsOnMapNew.Count(s => !s.Value.IsWreck) <= 1)
                     {
                         withdraw.disabled = true;
                         withdraw.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShipLast");
                     }
-                    yield return withdraw;*/
+                    yield return withdraw;
                     if (masterMapComp.PlayerMaintain == true || originMapComp.Heading != -1)
                     {
                         Command_Action retreat = new Command_Action
@@ -625,7 +632,7 @@ namespace RimWorld
                                         shipFaction = Faction.OfMechanoids
                                     };
                                     mapComp.StartShipEncounter(this, attacker);
-                                    MapParent site = (MapParent)ShipInteriorMod2.GenerateArchotechPillarBSite();
+                                    MapParent site = (MapParent)ShipInteriorMod2.GenerateSite("MoonPillarSite");
                                 },
                                 icon = ContentFinder<Texture2D>.Get("UI/Moon_Icon_Quest"),
                                 defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarB"),
@@ -853,10 +860,10 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            heatComp = this.GetComp<CompShipHeat>();
-            powerComp = this.GetComp<CompPowerTrader>();
-            mannableComp = this.GetComp<CompMannable>();
-            mapComp = this.Map.GetComponent<ShipHeatMapComp>();
+            heatComp = GetComp<CompShipHeat>();
+            powerComp = GetComp<CompPowerTrader>();
+            mannableComp = GetComp<CompMannable>();
+            mapComp = Map.GetComponent<ShipHeatMapComp>();
             if (!mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Add(this);
             //Log.Message("Spawned: " + this + " to " + this.Map);
@@ -900,9 +907,50 @@ namespace RimWorld
                 selected = false;
             //td rem this?
             int ticks = Find.TickManager.TicksGame;
+            if (ticks % 8 == 0)
+                UpdateUI();
+
             if (ticks % 250 == 0)
                 TickRare();
         }
+        private void UpdateUI() //update UI on primary
+        {
+            if (Ship.Core != this)
+                return;
+            PowerNet powerNet = powerComp.PowerNet;
+            powerCap = 0;
+            powerRat = 0;
+            if (powerNet != null)
+            {
+                power = Mathf.FloorToInt(powerNet.CurrentStoredEnergy());
+                float cap = 0;
+                foreach (CompPowerBattery bat in powerNet.batteryComps)
+                    cap += bat.Props.storedEnergyMax;
+                powerCap = Mathf.CeilToInt(cap);
+                if (cap > 0)
+                    powerRat = power / cap;
+            }
+            else
+            {
+                power = 0;
+            }
+            ShipHeatNet heatNet = heatComp.myNet;
+            if (heatNet != null)
+            {
+                heat = Mathf.FloorToInt(heatComp.myNet.StorageUsed);
+                heatCap = Mathf.CeilToInt(heatComp.myNet.StorageCapacity);
+                heatRat = heatComp.myNet.RatioInNetworkRaw;
+                heatRatDep = heatComp.myNet.DepletionRatio;
+            }
+            else
+            {
+                heat = 0;
+                heatCap = 0;
+                heatRat = 0;
+                heatRatDep = 0;
+            }
+        }
+
         public void HackMe(Pawn pawn)
         {
             if (Rand.Chance(0.05f * pawn.skills.GetSkill(SkillDefOf.Intellectual).levelInt))

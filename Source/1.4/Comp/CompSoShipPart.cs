@@ -101,7 +101,7 @@ namespace RimWorld
             base.PostSpawnSetup(respawningAfterLoad);
             map = parent.Map;
             mapComp = map.GetComponent<ShipHeatMapComp>();
-            cellsUnder = this.parent.OccupiedRect().ToHashSet();
+            cellsUnder = parent.OccupiedRect().ToHashSet();
             if (!parent.def.building.shipPart)
             {
                 if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
@@ -208,9 +208,16 @@ namespace RimWorld
                     return;
                 }
             }
-            if (cellsUnder.Contains(ship.Core.Position)) //since cores are not ship parts and the starting tile dies
-                ship.TryReplaceCore();
-            HashSet<Building> buildings = new HashSet<Building>();
+            bool skipDetach = false; //since cores are not ship parts and the starting tile dies, skip detach check
+            if (Props.isPlating && mapComp.MapShipCells[parent.Position].Item2 == 0)
+            {
+                if (!ship.ReplaceCoreOrWreck())
+                {
+                    skipDetach = true;
+                }
+            }
+
+            HashSet<Building> buildings = new HashSet<Building>(); //td slow, track above, bellow? (0 none, 1 floor, 2 hull, 3 both, 4 airlock, 5 bridge)
             foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
             {
                 bool partExists = false;
@@ -254,6 +261,7 @@ namespace RimWorld
             //Log.Message("rem " + parent);
             ship.RemoveFromCache(parent as Building);
             //if (!mapComp.InCombat) //perform check immediately //td rev?
+            if (!skipDetach)
                 ship.CheckForDetach();
         }
         public override void PostDeSpawn(Map map)

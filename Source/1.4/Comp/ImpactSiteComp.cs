@@ -53,7 +53,7 @@ namespace RimWorld.Planet
                 {
                     Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ImpactSiteLostLabel"), TranslatorFormattedStringExtensions.Translate("ImpactSiteLost"), LetterDefOf.NegativeEvent, null);
                     Find.WorldObjects.Remove(this.parent);
-                    ShipInteriorMod2.GenerateImpactSite();
+                    ShipInteriorMod2.GenerateSite("ShipEngineImpactSite");
                 }
             }
         }

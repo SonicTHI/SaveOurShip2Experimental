@@ -24,7 +24,7 @@ namespace RimWorld
 
         //other buildings: +-for count, mass if on shipPart
 
-        public HashSet<IntVec3> Area = new HashSet<IntVec3>(); //shipParts add to area
+        public HashSet<IntVec3> Area = new HashSet<IntVec3>(); //shipParts add to area, removed in despawn, detach
         public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //add to when destroyed in combat
         public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
         public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
@@ -249,7 +249,7 @@ namespace RimWorld
                 Find.TickManager.TogglePaused();
             InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
         }
-
+        //dep
         public List<Thing> ThingsOnShip() //dep
         {
             List<Thing> things = new List<Thing>();
@@ -320,7 +320,7 @@ namespace RimWorld
             }
             return actualThreatPerSegment;
         }
-        
+        //AI
         public void PurgeCheck()
         {
             if (!HeatPurges.Any(purge => purge.purging)) //heatpurge - only toggle when not purging
@@ -349,7 +349,6 @@ namespace RimWorld
                 }
             }
         }
-        
         //cache
         public void RebuildCache(Building origin, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
         {
@@ -374,7 +373,7 @@ namespace RimWorld
             HashSet<IntVec3> cellsDone = new HashSet<IntVec3>();
             if (exclude != null)
                 cellsDone.AddRange(exclude);
-            cellsTodo.Add(origin.Position);
+            cellsTodo.AddRange(origin.OccupiedRect());
 
             //find cells cardinal to all prev.pos, exclude prev.pos, if found part, set corePath to i, shipIndex to core.shipIndex, set corePath
             while (cellsTodo.Count > 0)
@@ -559,7 +558,7 @@ namespace RimWorld
                         {
                             Bridges.Remove(bridge);
                             if (bridge == Core)
-                                TryReplaceCore();
+                                ReplaceCoreOrWreck();
                             //bridge.ShipIndex = -1;
                             //bridge.ShipName = "destroyed ship";
                         }
@@ -612,9 +611,9 @@ namespace RimWorld
                 Mass -= b.def.Size.x * b.def.Size.z * 3;
             }
         }
-        public bool TryReplaceCore() //before despawn try find replace for core
+        public bool ReplaceCoreOrWreck() //before despawn try find replacer for core
         {
-            if (Bridges.NullOrEmpty())
+            if (Bridges.NullOrEmpty()) //core died, no replacements
             {
                 Log.Message("SOS2c: ship wrecked: " + Index);
                 Core = null;
@@ -626,10 +625,16 @@ namespace RimWorld
                     else
                         mapComp.EndBattle(map, false);
                 }
+                return true;
+            }
+            var replacer = Bridges.FirstOrDefault(b => b != Core && !b.Destroyed);
+            if (replacer == null) //hull under core died, no replacer exists
+            {
                 return false;
             }
+            //core died but replacer exists
             Log.Message("SOS2c: replaced primary bridge on ship: " + Index);
-            Core = Bridges.FirstOrDefault(b => b != Core && !b.Destroyed);
+            Core = replacer;
             RebuildCorePath();
             return true;
         }
@@ -648,7 +653,7 @@ namespace RimWorld
             var mapComp = map.GetComponent<ShipHeatMapComp>();
             var cellsTodo = new HashSet<IntVec3>();
             var cellsDone = new HashSet<IntVec3>();
-            cellsTodo.Add(Core.Position);
+            cellsTodo.AddRange(Core.OccupiedRect());
             int mergeToIndex = mapComp.MapShipCells[Core.Position].Item1;
 
             //find parts cardinal to all prev.pos, exclude prev.pos
@@ -671,7 +676,6 @@ namespace RimWorld
             PathDirty = false;
             Log.Message("SOS2c: RebuildCorePath Rebuilt corePath for ship: " + Index +" at " + Core.Position);
         }
-
         //finds all shipcells around detached and for each tries to path back to first with lower index
         //if not possible, detaches all in set
         public bool CheckForDetach()
@@ -750,6 +754,11 @@ namespace RimWorld
                     }
                 }
                 AreaDestroyed.Clear();
+
+                /*foreach (int i in mapComp.ShipsOnMapNew.Keys)
+                {
+                    Log.Message("SOS2c: area on ship: " + i + " is " + mapComp.ShipsOnMapNew[i].AreaDestroyed.Count + "/" + mapComp.ShipsOnMapNew[i].Area.Count);
+                }*/
                 return true;
             }
             return false;
@@ -766,6 +775,7 @@ namespace RimWorld
                         newCore = bridge;
                     RemoveFromCache(b);
                 }
+                Area.Remove(vec);
                 mapComp.MapShipCells[vec] = new Tuple<int, int>(-1, -1);
             }
             if (newCore == null) //wreck
@@ -851,7 +861,6 @@ namespace RimWorld
                 }
                 newCore = (Building)detachArea.First().GetThingList(map).First(t => t is Building);
             }
-
             Log.Message("SOS2c: Detach new ship/wreck with: " + newCore);
             if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
             {

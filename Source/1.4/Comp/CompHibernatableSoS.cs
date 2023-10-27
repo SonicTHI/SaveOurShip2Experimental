@@ -159,7 +159,7 @@ namespace RimWorld
             {
                 GenExplosion.DoExplosion(this.explosionPos, previousMap, 15, DamageDefOf.Bomb, null);
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ImpactSiteLostLabel"), TranslatorFormattedStringExtensions.Translate("ImpactSiteLost"), LetterDefOf.NegativeEvent);
-                ShipInteriorMod2.GenerateImpactSite();
+                ShipInteriorMod2.GenerateSite("ShipEngineImpactSite");
             }
         }
     }

@@ -62,7 +62,6 @@ namespace SaveOurShip2
                 playerShipComp = m.GetComponent<ShipHeatMapComp>();
             }
             float screenHalf = (float)UI.screenWidth / 2 + ModSettings_SoS.offsetUIx - 200;
-			//bool updateTick = Find.TickManager.TicksGame % 60 == 0; //td make numbers update per sec
             //player heat & energy bars
             float baseY = __instance.Size.y + 40 + ModSettings_SoS.offsetUIy;
             foreach (int i in playerShipComp.ShipsOnMapNew.Keys)
@@ -70,58 +69,21 @@ namespace SaveOurShip2
                 var bridge = playerShipComp.ShipsOnMapNew[i].Core;
                 if (bridge == null)
                     continue;
-                try //td rem this once this is 100% safe
-                {
-                    baseY += 45;
-                    string str = bridge.ShipName;
-                    int strSize = 0;
-                    if (playerShipComp.ShipsOnMapNew.Count > 1)
-                    {
-                        strSize = 5 + str.Length * 8;
-                    }
-                    Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 395 + strSize, 35);
-                    Verse.Widgets.DrawMenuSection(rect2);
-                    if (playerShipComp.ShipsOnMapNew.Count > 1)
-                        Widgets.Label(rect2.ContractedBy(7), str);
 
-                    PowerNet net = bridge.powerComp.PowerNet;
-                    if (net != null)
-                    {
-                        float capacity = 0;
-                        foreach (CompPowerBattery bat in net.batteryComps)
-                            capacity += bat.Props.storedEnergyMax;
-                        Rect rect3 = new Rect(screenHalf - 430, baseY - 40, 200, 35);
-                        Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
-                            ResourceBank.PowerTex);
-                        Text.Font = GameFont.Small;
-                        rect3.y += 7;
-                        rect3.x = screenHalf - 415;
-                        rect3.height = Text.LineHeight;
-                        if (capacity > 0)
-                            Widgets.Label(rect3, "Energy: " + Mathf.Floor(net.CurrentStoredEnergy()) + " / " + capacity);
-                        else
-                            Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
-                    }
-
-                    ShipHeatNet net2 = bridge.heatComp.myNet;
-                    if (net2 != null)
-                    {
-                        Rect rect4 = new Rect(screenHalf - 235, baseY - 40, 200, 35);
-                        ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetworkRaw, net2.DepletionRatio,
-                            ResourceBank.HeatTex, ResourceBank.DepletionTex);
-                        rect4.y += 7;
-                        rect4.x = screenHalf - 220;
-                        rect4.height = Text.LineHeight;
-                        if (net2.StorageCapacity > 0)
-                            Widgets.Label(rect4, "Heat: " + Mathf.Floor(net2.StorageUsed) + " / " + Mathf.Floor(net2.StorageCapacity));
-                        else
-                            Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
-                    }
-                }
-                catch (Exception e)
+                baseY += 45;
+                string str = bridge.ShipName;
+                int strSize = 0;
+                if (playerShipComp.ShipsOnMapNew.Count > 1)
                 {
-                    Log.Warning("Ship UI failed on ship: " + i + "\n" + e);
+                    strSize = 5 + str.Length * 8;
                 }
+                Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 395 + strSize, 35);
+                Widgets.DrawMenuSection(rect2);
+                if (playerShipComp.ShipsOnMapNew.Count > 1)
+                    Widgets.Label(rect2.ContractedBy(7), str);
+
+                DrawPower(screenHalf - 220, baseY, bridge);
+                DrawHeat(screenHalf - 415, baseY, bridge);
             }
             //no UI OOC bellow
             var enemyShipComp = mapPlayer.GetComponent<ShipHeatMapComp>().MasterMapComp;
@@ -134,58 +96,20 @@ namespace SaveOurShip2
                 var bridge = enemyShipComp.ShipsOnMapNew[i].Core;
                 if (bridge == null)
                     continue;
-                try //td rem this once this is 100% safe
-                {
-                    baseY += 45;
-                    string str = bridge.ShipName;
-                    Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 395, 35);
-                    Verse.Widgets.DrawMenuSection(rect2);
 
-                    ShipHeatNet net2 = bridge.heatComp.myNet;
-                    if (net2 != null)
-                    {
-                        Rect rect4 = new Rect(screenHalf + 435, baseY - 40, 200, 35);
-                        ShipInteriorMod2.FillableBarWithDepletion(rect4.ContractedBy(6), net2.RatioInNetworkRaw, net2.DepletionRatio,
-                            ResourceBank.HeatTex, ResourceBank.DepletionTex);
-                        rect4.y += 7;
-                        rect4.x = screenHalf + 455;
-                        rect4.height = Text.LineHeight;
-                        if (net2.StorageCapacity > 0)
-                            Widgets.Label(rect4, "Heat: " + Mathf.Floor(net2.StorageUsed) + " / " + Mathf.Floor(net2.StorageCapacity));
-                        else
-                            Widgets.Label(rect4, "<color=red>Heat: N/A</color>");
-                    }
+                baseY += 45;
+                Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 395, 35);
+                Widgets.DrawMenuSection(rect2);
 
-                    PowerNet net = bridge.powerComp.PowerNet;
-                    if (net != null)
-                    {
-                        float capacity = 0;
-                        foreach (CompPowerBattery bat in net.batteryComps)
-                            capacity += bat.Props.storedEnergyMax;
-                        Rect rect3 = new Rect(screenHalf + 630, baseY - 40, 200, 35);
-                        Widgets.FillableBar(rect3.ContractedBy(6), net.CurrentStoredEnergy() / capacity,
-                            ResourceBank.PowerTex);
-                        Text.Font = GameFont.Small;
-                        rect3.y += 7;
-                        rect3.x = screenHalf + 645;
-                        rect3.height = Text.LineHeight;
-                        if (capacity > 0)
-                            Widgets.Label(rect3, "Energy: " + Mathf.Floor(net.CurrentStoredEnergy()) + " / " + capacity);
-                        else
-                            Widgets.Label(rect3, "<color=red>Energy: N/A</color>");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Warning("Ship UI failed on ship: " + i + "\n" + e);
-                }
+                DrawHeat(screenHalf + 455, baseY, bridge);
+                DrawPower(screenHalf + 645, baseY, bridge);
             }
 
             //range bar
             baseY = __instance.Size.y + 85 + ModSettings_SoS.offsetUIy;
             Rect rect = new Rect(screenHalf - 25, baseY - 40, 450, 50);
-            Verse.Widgets.DrawMenuSection(rect);
-            Verse.Widgets.DrawTexturePart(new Rect(screenHalf, baseY - 38, 400, 46),
+            Widgets.DrawMenuSection(rect);
+            Widgets.DrawTexturePart(new Rect(screenHalf, baseY - 38, 400, 46),
                 new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.ruler.MatSingle.mainTexture);
             switch (playerShipComp.Heading)
             {
@@ -270,7 +194,49 @@ namespace SaveOurShip2
                 }
             }
         }
-	}
+        private static void DrawPower(float offset, float baseY, Building_ShipBridge bridge)
+        {
+            Rect rect = new Rect(offset - 15, baseY - 40, 200, 35);
+            Widgets.FillableBar(rect.ContractedBy(6), bridge.powerRat, ResourceBank.PowerTex);
+            Text.Font = GameFont.Small;
+            rect.y += 7;
+            rect.x = offset;
+            rect.height = Text.LineHeight;
+            if (bridge.powerCap > 0)
+                Widgets.Label(rect, "Energy: " + bridge.power + " / " + bridge.powerCap);
+            else
+                Widgets.Label(rect, "<color=red>Energy: N/A</color>");
+        }
+        private static void DrawHeat(float offset, float baseY, Building_ShipBridge bridge)
+        {
+            Rect rect = new Rect(offset - 15, baseY - 40, 200, 35);
+            FillableBarWithDepletion(rect.ContractedBy(6), bridge.heatRat, bridge.heatRatDep, ResourceBank.HeatTex, ResourceBank.DepletionTex);
+            rect.y += 7;
+            rect.x = offset;
+            rect.height = Text.LineHeight;
+            if (bridge.heatCap > 0)
+                Widgets.Label(rect, "Heat: " + Mathf.Floor(bridge.heat) + " / " + bridge.heatCap);
+            else
+                Widgets.Label(rect, "<color=red>Heat: N/A</color>");
+        }
+        public static Rect FillableBarWithDepletion(Rect rect, float fillPercent, float fillDepletion, Texture2D fillTex, Texture2D depletionTex)
+        {
+            bool doBorder = rect.height > 15f && rect.width > 20f;
+            if (doBorder)
+            {
+                GUI.DrawTexture(rect, BaseContent.BlackTex);
+                rect = rect.ContractedBy(3f);
+            }
+            Rect heatRect = new Rect(rect);
+            heatRect.width *= fillPercent;
+            GUI.DrawTexture(heatRect, fillTex);
+            Rect depletionRect = new Rect(rect);
+            depletionRect.width *= fillDepletion;
+            depletionRect.x = rect.x + rect.width * (1 - fillDepletion);
+            GUI.DrawTexture(depletionRect, depletionTex);
+            return rect;
+        }
+    }
 
 	[HarmonyPatch(typeof(ColonistBarColonistDrawer), "DrawGroupFrame")]
 	public static class ShipIconOnPawnBar
@@ -4201,12 +4167,12 @@ namespace SaveOurShip2
 			else if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarC)
 			{
 				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarCMission");
-				ShipInteriorMod2.GenerateArchotechPillarCSite();
+				ShipInteriorMod2.GenerateSite("TribalPillarSite");
 			}
 			else if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarD)
 			{
 				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarDMission");
-				ShipInteriorMod2.GenerateArchotechPillarDSite();
+				ShipInteriorMod2.GenerateSite("InsectPillarSite");
 			}
 		}
 	}

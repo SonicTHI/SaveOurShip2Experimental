@@ -46,7 +46,7 @@ namespace RimWorld
         {
             get
             {
-                if (heatComp.myNet != null && !heatComp.myNet.venting && (powerComp == null || powerComp.PowerOn))
+                if (Spawned && heatComp.myNet != null && !heatComp.myNet.venting && (powerComp == null || powerComp.PowerOn) && (heatComp.myNet.PilCons.Any() || heatComp.myNet.AICores.Any() || heatComp.myNet.TacCons.Any()))
                 {
                     return true;
                 }
@@ -57,7 +57,7 @@ namespace RimWorld
         {
             get
             {
-                if (base.Faction == Faction.OfPlayer)
+                if (Faction == Faction.OfPlayer)
                 {
                     return true;
                 }
@@ -209,7 +209,7 @@ namespace RimWorld
                 {
                     ResetForcedTarget();
                 }
-                if (Active && !stunner.Stunned && base.Spawned)
+                if (Active && !stunner.Stunned)
                 {
                     GunCompEq.verbTracker.VerbsTick();
                     if (AttackVerb.state != VerbState.Bursting)
@@ -248,7 +248,7 @@ namespace RimWorld
                 {
                     ResetForcedTarget();
                 }
-                if (Active && base.Spawned)
+                if (Active)
                 {
                     GunCompEq.verbTracker.VerbsTick();
                     if (stunner.Stunned || AttackVerb.state == VerbState.Bursting)

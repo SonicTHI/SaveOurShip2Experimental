@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n8";
+        public static readonly string SOS2EXPversion = "V93n9";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -414,40 +414,14 @@ namespace SaveOurShip2
 			Map map = MapGenerator.GenerateMap(size, orbiter, orbiter.MapGeneratorDef);
 			map.fogGrid.ClearAllFog();
 			return map;
-		}
-		public static void GenerateImpactSite() //td gensite string
-		{
-			WorldObject impactSite =
-				WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("ShipEngineImpactSite"));
-			int tile = TileFinder.RandomStartingTile();
-			impactSite.Tile = tile;
-			Find.WorldObjects.Add(impactSite);
-		}
-		public static WorldObject GenerateArchotechPillarBSite()
-		{
-			WorldObject impactSite =
-				WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("MoonPillarSite"));
-			int tile = TileFinder.RandomStartingTile();
-			impactSite.Tile = tile;
-			Find.WorldObjects.Add(impactSite);
-			return impactSite;
-		}
-		public static void GenerateArchotechPillarCSite()
-		{
-			WorldObject impactSite =
-				WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TribalPillarSite"));
-			int tile = TileFinder.RandomStartingTile();
-			impactSite.Tile = tile;
-			Find.WorldObjects.Add(impactSite);
-		}
-		public static void GenerateArchotechPillarDSite()
-		{
-			WorldObject impactSite =
-				WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("InsectPillarSite"));
-			int tile = TileFinder.RandomStartingTile();
-			impactSite.Tile = tile;
-			Find.WorldObjects.Add(impactSite);
-		}
+        }
+        public static WorldObject GenerateSite(string defName)
+        {
+            WorldObject site = WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed(defName));
+            site.Tile = TileFinder.RandomStartingTile();
+            Find.WorldObjects.Add(site);
+            return site;
+        }
 		public static SpaceNavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true, bool bountyHunts = false)
 		{
 			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
@@ -1839,7 +1813,12 @@ namespace SaveOurShip2
 
             if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
             {
-                Log.Message("Moving ship cache " + shipIndex + " to map: " + targetMap);
+                Log.Message("MoveShip " + shipIndex + " to map: " + targetMap);
+				if (targetMapComp.ShipsOnMapNew.ContainsKey(shipIndex))
+                {
+                    Log.Error("MoveShip abort, ship " + shipIndex + " already on map: " + targetMap);
+                    return;
+				}
                 targetMapComp.ShipsOnMapNew.Add(shipIndex, sourceMapComp.ShipsOnMapNew[shipIndex]);
                 ship = targetMapComp.ShipsOnMapNew[shipIndex];
                 ship.map = targetMap;
@@ -2593,24 +2572,6 @@ namespace SaveOurShip2
 			if (hasLung)
 				return 1;
 			return 0;
-		}
-
-		public static Rect FillableBarWithDepletion(Rect rect, float fillPercent, float fillDepletion, Texture2D fillTex, Texture2D depletionTex)
-		{
-			bool doBorder = rect.height > 15f && rect.width > 20f;
-			if (doBorder)
-			{
-				GUI.DrawTexture(rect, BaseContent.BlackTex);
-				rect = rect.ContractedBy(3f);
-			}
-			Rect heatRect = new Rect(rect);
-			heatRect.width *= fillPercent;
-			GUI.DrawTexture(heatRect, fillTex);
-			Rect depletionRect = new Rect(rect);
-			depletionRect.width *= fillDepletion;
-			depletionRect.x = rect.x + rect.width * (1 - fillDepletion);
-			GUI.DrawTexture(depletionRect, depletionTex);
-			return rect;
 		}
 	}
 }

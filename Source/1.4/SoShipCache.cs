@@ -37,6 +37,7 @@ namespace RimWorld
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
         public List<CompCryptoLaunchable> Pods = new List<CompCryptoLaunchable>();
         public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
+        public List<Building_ShipBridge> AICores = new List<Building_ShipBridge>();
         public HashSet<Building_ShipTurret> Turrets = new HashSet<Building_ShipTurret>();
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
@@ -454,6 +455,8 @@ namespace RimWorld
                         else if (b is Building_ShipBridge bridge)
                         {
                             Bridges.Add(bridge);
+                            if (b.TryGetComp<CompBuildingConsciousness>() != null)
+                                AICores.Add(bridge);
                             if (IsWreck) //bridge placed on wreck, repath
                             {
                                 Core = bridge;
@@ -511,12 +514,12 @@ namespace RimWorld
                 Mass += b.def.Size.x * b.def.Size.z * 3;
             }
         }
-        public void RemoveFromCache(Building b)
+        public void RemoveFromCache(Building b, DestroyMode mode)
         {
             if (Buildings.Remove(b))
             {
                 BuildingCount--;
-                if (mapComp.InCombat && !IsWreck && Faction == Faction.OfPlayer)
+                if (mapComp.InCombat && !IsWreck && b.def.blueprintDef != null && (mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly))
                 {
                     BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(b.def, b.Position, b.Rotation));
                 }
@@ -557,6 +560,8 @@ namespace RimWorld
                         else if (b is Building_ShipBridge bridge)
                         {
                             Bridges.Remove(bridge);
+                            if (b.TryGetComp<CompBuildingConsciousness>() != null)
+                                AICores.Remove(bridge);
                             if (bridge == Core)
                                 ReplaceCoreOrWreck();
                             //bridge.ShipIndex = -1;
@@ -767,14 +772,23 @@ namespace RimWorld
         public void Detach(HashSet<IntVec3> detachArea)
         {
             Building newCore = null;
-            foreach (IntVec3 vec in detachArea) //clean buildings and area indexes, try to find bridge on detached
+            DestroyMode mode = DestroyMode.Vanish;
+            if (mapComp.InCombat && newCore == null)
+                mode = DestroyMode.KillFinalize;
+            foreach (IntVec3 vec in detachArea) //clean buildings, try to find bridge on detached
             {
-                foreach (Building b in vec.GetThingList(map).Where(t => t is Building))
+                foreach (Thing t in vec.GetThingList(map))
                 {
-                    if (b is Building_ShipBridge bridge)
-                        newCore = bridge;
-                    RemoveFromCache(b);
+                    if (t is Building b)
+                    {
+                        if (b is Building_ShipBridge bridge)
+                            newCore = bridge;
+                        RemoveFromCache(b, mode);
+                    }
                 }
+            }
+            foreach (IntVec3 vec in detachArea) //clean area indexes
+            {
                 Area.Remove(vec);
                 mapComp.MapShipCells[vec] = new Tuple<int, int>(-1, -1);
             }
@@ -834,7 +848,6 @@ namespace RimWorld
                                 part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 1;
                             else if (comp.Props.isPlating)
                                 part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
-                            BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(t.def, t.Position, t.Rotation));
                         }
                         part.SpawnSetup(map, false);
                     }
@@ -844,10 +857,6 @@ namespace RimWorld
                     }
                     foreach (Thing t in toDestroy)
                     {
-                        /*if (t is Building && map.IsPlayerHome && t.def.blueprintDef != null)
-                        {
-                            GenConstruct.PlaceBlueprintForBuild(t.def, t.Position, map, t.Rotation, Faction.OfPlayer, t.Stuff);
-                        }*/
                         if (t.def.destroyable && !t.Destroyed)
                             t.Destroy(DestroyMode.Vanish);
                     }

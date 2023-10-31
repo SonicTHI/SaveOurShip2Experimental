@@ -94,7 +94,7 @@ namespace SaveOurShip2
             foreach (int i in enemyShipComp.ShipsOnMapNew.Keys)
             {
                 var bridge = enemyShipComp.ShipsOnMapNew[i].Core;
-                if (bridge == null)
+                if (bridge == null || bridge.powerComp.PowerNet == null || bridge.heatComp.myNet == null)
                     continue;
 
                 baseY += 45;
@@ -1428,7 +1428,7 @@ namespace SaveOurShip2
                         var ship = mapComp.ShipsOnMapNew[mapComp.MapShipCells[vec].Item1];
                         if (ship.Buildings.Contains(__instance))
                         {
-                            ship.RemoveFromCache(__instance);
+                            ship.RemoveFromCache(__instance, mode);
                         }
                     }
                 }

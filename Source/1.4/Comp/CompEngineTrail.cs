@@ -101,7 +101,7 @@ namespace RimWorld
         }
         public override void PostDeSpawn(Map map)
         {
-            active = false;
+            Off();
             base.PostDeSpawn(map);
         }
         public override void PostDraw()

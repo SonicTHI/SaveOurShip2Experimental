@@ -239,7 +239,7 @@
 	<ShipWallLightDiscoDesc>Set this light to cycle through the color spectrum</ShipWallLightDiscoDesc>
 	<ShipWallLightAdjacency>No adjacent rooms</ShipWallLightAdjacency>
 	<ShipHeatPurge>Vent coolant</ShipHeatPurge>
-	<ShipHeatPurgeDesc>Begin venting heat from heatsinks. All shields, weapons, and cloaks on this heat network will shut down, and heatsinks will vent heat five times as quickly.\n\nThis process depletes coolant and reduces the overall capacity of the heat network, and cannot be canceled once it has begun. Outside of combat, depleted capacity will slowly recover.</ShipHeatPurgeDesc>
+	<ShipHeatPurgeDesc>Begin venting coolant from heatsinks. All shields, weapons, and cloaks on this heat network will shut down, and heatsinks will vent heat five times as quickly.\n\nThis process depletes coolant and reduces the overall capacity of the heat network, and cannot be canceled once it has begun. Outside of combat, depleted capacity will slowly recover.</ShipHeatPurgeDesc>
 	<ShipHeatPurgeVenting>Already venting</ShipHeatPurgeVenting>
 	<ShipHeatPurgeNotEnough>Not enough heat in network for purge</ShipHeatPurgeNotEnough>
 </LanguageData>

@@ -578,7 +578,7 @@ namespace RimWorld
                             }
                             yield return landShip;
                         }
-                        if (Ship.BuildingsDestroyed.Any())
+                        if (Ship.AICores.Any() && Ship.BuildingsDestroyed.Any())
                         {
                             Command_Action rebuildShip = new Command_Action
                             {

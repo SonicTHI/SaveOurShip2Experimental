@@ -194,7 +194,7 @@ namespace RimWorld
             var ship = mapComp.ShipsOnMapNew[shipIndex];
             if (!parent.def.building.shipPart)
             {
-                ship.RemoveFromCache(parent as Building);
+                ship.RemoveFromCache(parent as Building, mode);
                 return;
             }
             else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && (Props.isHull && !Props.isPlating || !Props.isHull && Props.isPlating) && ship.FoamDistributors.Any())
@@ -202,7 +202,7 @@ namespace RimWorld
                 //replace part with foam, no detach checks
                 foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))
                 {
-                    ship.RemoveFromCache(parent as Building);
+                    ship.RemoveFromCache(parent as Building, mode);
                     dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
                     FoamFill = true;
                     return;
@@ -217,7 +217,7 @@ namespace RimWorld
                 }
             }
 
-            HashSet<Building> buildings = new HashSet<Building>(); //td slow, track above, bellow? (0 none, 1 floor, 2 hull, 3 both, 4 airlock, 5 bridge)
+            HashSet<Building> buildings = new HashSet<Building>(); //td slow, track above, bellow? (0 none, 1 floor only, 2 hull only, 3 both, 4 airlock only, 5 bridge only)
             foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
             {
                 bool partExists = false;
@@ -255,11 +255,11 @@ namespace RimWorld
                 }
                 if (!onShip)
                 {
-                    ship.RemoveFromCache(b);
+                    ship.RemoveFromCache(b, mode);
                 }
             }
             //Log.Message("rem " + parent);
-            ship.RemoveFromCache(parent as Building);
+            ship.RemoveFromCache(parent as Building, mode);
             //if (!mapComp.InCombat) //perform check immediately //td rev?
             if (!skipDetach)
                 ship.CheckForDetach();

@@ -424,28 +424,26 @@ namespace RimWorld
                 //engine burn
                 else if (Map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
                 {
-                    if (Ship.Engines.Any())
+                    List<SoShipCache> ships = mapComp.ShipsOnMap().Where(s => s.CanMove).ToList();
+                    bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
+                    Command_Toggle toggleEngines = new Command_Toggle
                     {
-                        bool anyEngineOn = Ship.Engines.Any(e => e.active);
-                        Command_Toggle toggleEngines = new Command_Toggle
+                        toggleAction = delegate
                         {
-                            toggleAction = delegate
+                            foreach (SoShipCache ship in ships)
                             {
-                                foreach (CompEngineTrail engineComp in Ship.Engines) //td cahnge to all on map
-                                {
-                                    if (anyEngineOn)
-                                        engineComp.Off();
-                                    else
-                                        engineComp.On();
-                                }
-                            },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEngines"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEnginesDesc"),
-                            icon = ContentFinder<Texture2D>.Get("UI/Commands/LaunchShip"),
-                            isActive = () => anyEngineOn
-                        };
-                        yield return toggleEngines;
-                    }
+                                if (anyEngineOn)
+                                    ship.EnginesOff();
+                                else
+                                    ship.EnginesOn();
+                            }
+                        },
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEngines"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEnginesDesc"),
+                        icon = ContentFinder<Texture2D>.Get("UI/Commands/LaunchShip"),
+                        isActive = () => anyEngineOn
+                    };
+                    yield return toggleEngines;
                 }
                 //not incombat or in event
                 else

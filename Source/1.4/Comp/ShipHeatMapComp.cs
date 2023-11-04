@@ -234,6 +234,18 @@ namespace RimWorld
                 return shipsOnMapNew;
             }
         }
+        public List<SoShipCache> ShipsOnMap(bool allowWrecks = false)
+        {
+            List<SoShipCache> ships = new List<SoShipCache>();
+            foreach (int index in ShipsOnMapNew.Keys)
+            {
+                var ship = shipsOnMapNew[index];
+                if (allowWrecks && ship.IsWreck)
+                    continue;
+                ships.Add(ship);
+            }
+            return ships;
+        }
         public void ResetCache()
         {
             ShipsOnMapNew.Clear();
@@ -799,25 +811,30 @@ namespace RimWorld
             else if ((Find.TickManager.TicksGame % 60 == 0) && map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
             {
                 //reduce durration per engine vs mass
-                List<CompEngineTrail> engines = new List<CompEngineTrail>();
-                foreach (int index in ShipsOnMapNew.Keys)
+                MapEnginePower = 0;
+                bool anyMapEngineCanActivate = false;
+                foreach (SoShipCache ship in ShipsOnMap()) //first engine rot and can fire on proper ship
                 {
-                    var ship = shipsOnMapNew[index];
-                    if (!ship.IsWreck && ship.Engines.Any())
+                    if (ship.CanMove)
                     {
-                        engines.AddRange(ship.Engines);
+                        anyMapEngineCanActivate = true;
+                        EngineRot = ship.Rot.AsInt;
+                        break;
                     }
                 }
-                if (!engines.Any())
+                if (!anyMapEngineCanActivate)
                     return;
-                MapEnginePower = 0;
-                EngineRot = engines.FirstOrDefault().parent.Rotation.AsByte;
-                foreach (CompEngineTrail engineComp in engines)
+                foreach (SoShipCache ship in ShipsOnMap())
                 {
-                    if (engineComp != null && engineComp.CanFire(EngineRot) && engineComp.active)
+                    if (anyMapEngineCanActivate)
                     {
-                        MapEnginePower += engineComp.Props.thrust;
+                        MapEnginePower += ship.EnginesOn();
                     }
+                    else
+                    {
+                        ship.EnginesOff();
+                    }
+                    BuildingsCount += ship.Buildings.Count;
                 }
                 if (MapEnginePower > 0)
                 {
@@ -828,9 +845,9 @@ namespace RimWorld
                     {
                         cond.End();
                         BurnTimer = 0;
-                        foreach (CompEngineTrail engine in engines)
+                        foreach (SoShipCache ship in ShipsOnMap())
                         {
-                            engine.Off();
+                            ship.EnginesOff();
                         }
                     }
                     else
@@ -855,9 +872,8 @@ namespace RimWorld
             //SCM vars
             float powerCapacity = 0;
             float powerRemaining = 0;
-            foreach (int index in ShipsOnMapNew.Keys) //first engine rot and can fire on proper ship
+            foreach (SoShipCache ship in ShipsOnMap()) //first engine rot and can fire on proper ship
             {
-                var ship = shipsOnMapNew[index];
                 if (ship.CanMove)
                 {
                     anyMapEngineCanActivate = true;
@@ -866,9 +882,8 @@ namespace RimWorld
                 }
             }
             //threat and engine power calcs
-            foreach (int index in ShipsOnMapNew.Keys)
+            foreach (SoShipCache ship in ShipsOnMap())
             {
-                var ship = shipsOnMapNew[index];
                 if (ShipCombatMaster && !ship.IsWreck)
                 {
                     foreach (var battery in ship.Core.PowerComp.PowerNet.batteryComps)

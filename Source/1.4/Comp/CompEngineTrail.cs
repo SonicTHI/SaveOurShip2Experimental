@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,7 @@ namespace RimWorld
                 return Props.thrust;
             }
         }
+        public bool PodFueled => refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods);
         public bool active = false;
         int size;
         public HashSet<IntVec3> ExhaustArea = new HashSet<IntVec3>();

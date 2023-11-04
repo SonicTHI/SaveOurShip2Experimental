@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n10";
+        public static readonly string SOS2EXPversion = "V93n11";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1823,10 +1823,29 @@ namespace SaveOurShip2
                 ship = targetMapComp.ShipsOnMapNew[shipIndex];
                 ship.map = targetMap;
                 ship.mapComp = targetMapComp;
+                ship.AreaDestroyed.Clear();
+                if (adjustment != IntVec3.Zero && ship.BuildingsDestroyed.Any())
+                {
+                    HashSet<Tuple<BuildableDef, IntVec3, Rot4>> buildingsDestroyed = new HashSet<Tuple<BuildableDef, IntVec3, Rot4>>(ship.BuildingsDestroyed);
+                    ship.BuildingsDestroyed.Clear();
+                    foreach (var sh in buildingsDestroyed)
+                    {
+                        ship.BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(sh.Item1, Transform(sh.Item2), sh.Item3));
+                    }
+                    buildingsDestroyed.Clear();
+                }
                 sourceMapComp.ShipsOnMapNew.Remove(shipIndex);
             }
+            if (adjustment != IntVec3.Zero)
+            {
+                ship.Area.Clear();
+                foreach (IntVec3 pos in sourceArea)
+                {
+                    ship.Area.Add(Transform(pos));
+                }
+            }
 
-			foreach (IntVec3 pos in sourceArea)
+            foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
                 //ship cache: move ShipCells
@@ -1840,7 +1859,7 @@ namespace SaveOurShip2
 					float temp = room.Temperature;
 					posTemp.Add(new Tuple<IntVec3, float>(adjustedPos, temp));
 				}
-				//add to target areas
+				//add to target area and ship
 				targetArea.Add(adjustedPos);
 				//clear LZ
 				foreach (Thing t in adjustedPos.GetThingList(targetMap))
@@ -1966,47 +1985,34 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("destroySource");
 
-			//takeoff - draw fuel
+			//move map - draw fuel
 			if (core is Building_ShipBridge && playerMove)
 			{
-				float fuelNeeded = 0f;
+				float fuelNeeded = ship.Mass;
 				float fuelStored = 0f;
-				List<CompRefuelable> refuelComps = new List<CompRefuelable>();
-
-				foreach (Thing saveThing in toSave)
-				{
-					if (saveThing is Building)
-					{
-						if (saveThing.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false)
-							fuelNeeded += 1f;
-						else
-						{
-							var engineComp = saveThing.TryGetComp<CompEngineTrail>();
-							if (engineComp != null && engineComp.Props.takeOff)
-							{
-								if (saveThing.Rotation.AsByte == 0)
-									fireExplosions.Add(saveThing.Position + new IntVec3(0, 0, -3));
-								else if (saveThing.Rotation.AsByte == 1)
-									fireExplosions.Add(saveThing.Position + new IntVec3(-3, 0, 0));
-								else if (saveThing.Rotation.AsByte == 2)
-									fireExplosions.Add(saveThing.Position + new IntVec3(0, 0, 3));
-								else
-									fireExplosions.Add(saveThing.Position + new IntVec3(3, 0, 0));
-								refuelComps.Add(engineComp.refuelComp);
-								fuelStored += engineComp.refuelComp.Fuel;
-								if (engineComp.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ThingDef.Named("ShuttleFuelPods")))
-								{
-									fuelStored += engineComp.refuelComp.Fuel;
-									if (ModsConfig.BiotechActive && !sourceMapIsSpace)
-									{
-										foreach (IntVec3 v in engineComp.ExhaustArea)
-											v.Pollute(sourceMap, true);
-									}
-								}
-							}
-							fuelNeeded += (saveThing.def.size.x * saveThing.def.size.z) * 3f;
-						}
-					}
+				foreach (CompEngineTrail engine in ship.Engines)
+                {
+                    if (engine != null && engine.Props.takeOff)
+                    {
+                        if (engine.parent.Rotation.AsByte == 0)
+                            fireExplosions.Add(engine.parent.Position + new IntVec3(0, 0, -3));
+                        else if (engine.parent.Rotation.AsByte == 1)
+                            fireExplosions.Add(engine.parent.Position + new IntVec3(-3, 0, 0));
+                        else if (engine.parent.Rotation.AsByte == 2)
+                            fireExplosions.Add(engine.parent.Position + new IntVec3(0, 0, 3));
+                        else
+                            fireExplosions.Add(engine.parent.Position + new IntVec3(3, 0, 0));
+                        fuelStored += engine.refuelComp.Fuel;
+                        if (engine.PodFueled)
+                        {
+                            fuelStored += engine.refuelComp.Fuel;
+                            if (ModsConfig.BiotechActive && !sourceMapIsSpace)
+                            {
+                                foreach (IntVec3 v in engine.ExhaustArea)
+                                    v.Pollute(sourceMap, true);
+                            }
+                        }
+                    }
 				}
 				if (sourceMapIsSpace)
                 {
@@ -2015,9 +2021,9 @@ namespace SaveOurShip2
                     else //to ground 10%
                         fuelNeeded *= 0.1f;
                 }
-				foreach (CompRefuelable engine in refuelComps)
+				foreach (CompEngineTrail engine in ship.Engines)
 				{
-					engine.ConsumeFuel(fuelNeeded * engine.Fuel / fuelStored);
+					engine.refuelComp.ConsumeFuel(fuelNeeded * engine.refuelComp.Fuel / fuelStored);
 				}
 				if (devMode)
 					watch.Record("takeoffEngineEffects");

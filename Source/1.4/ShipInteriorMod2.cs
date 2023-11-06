@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n11";
+        public static readonly string SOS2EXPversion = "V93n12";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -2287,12 +2287,12 @@ namespace SaveOurShip2
                     {
 						if (p.jobs != null)
 						{
-							if (p.royalty.HasAnyTitleIn(Faction.OfEmpire))
-								p.royalty.SetTitle(Faction.OfEmpire, null, false);
 							p.jobs.ClearQueuedJobs();
 							p.jobs.EndCurrentJob(JobCondition.Incompletable);
 						}
-					}
+						if (ModsConfig.RoyaltyActive && p.royalty != null && p.royalty.HasAnyTitleIn(Faction.OfEmpire))
+                            p.royalty.SetTitle(Faction.OfEmpire, null, false);
+                    }
 					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zones.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
 					{
 						zones.Add(t.Map.zoneManager.ZoneAt(t.Position));

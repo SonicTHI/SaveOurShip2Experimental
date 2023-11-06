@@ -222,6 +222,7 @@
     <Compile Include="DerelictShip.cs" />
     <Compile Include="Designator_Ship.cs" />
     <Compile Include="DetachedShipPart.cs" />
+    <Compile Include="Dialog_LoadShipDef.cs" />
     <Compile Include="Dialog_NameAI.cs" />
     <Compile Include="Dialog_NameShip.cs" />
     <Compile Include="Dialog_Pirate.cs" />

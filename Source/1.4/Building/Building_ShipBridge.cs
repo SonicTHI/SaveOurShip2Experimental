@@ -14,14 +14,10 @@ using Verse.Noise;
 
 namespace RimWorld
 {
-	public class Building_ShipBridge : Building
+    public class Building_ShipBridge : Building
     {
-        public string ShipName = "Unnamed Ship";
+        public string ShipName = "Unnamed Ship"; //for saving
         private int shipIndex = -1; //shipindex in mapcomp cache
-        public SoShipCache Ship
-        {
-            private set; get;
-        }
         public int ShipIndex
         {
             get { return shipIndex; }
@@ -42,6 +38,10 @@ namespace RimWorld
                 else
                     Log.Error("SOS2: ship index not found: " + shipIndex);
             }
+        }
+        public SoShipCache Ship
+        {
+            private set; get;
         }
 
         public bool TacCon = false;
@@ -133,13 +133,13 @@ namespace RimWorld
                 fail = InterstellarFailReasons();
                 selected = true;
             }
-            if (!mapComp.InCombat)
+            //if (!mapComp.InCombat)
             {
                 Command_Action renameShip = new Command_Action
                 {
                     action = delegate
                     {
-                        Find.WindowStack.Add(new Dialog_NameShip(this));
+                        Find.WindowStack.Add(new Dialog_NameShip(Ship));
                     },
                     hotKey = KeyBindingDefOf.Misc1,
                     icon = ContentFinder<Texture2D>.Get("UI/Commands/RenameZone"),
@@ -156,22 +156,22 @@ namespace RimWorld
                     action = delegate
                     {
                         float capacity = 0;
-                        foreach (CompPowerBattery bat in this.GetComp<CompPower>().PowerNet.batteryComps)
+                        foreach (CompPowerBattery bat in GetComp<CompPower>().PowerNet.batteryComps)
                             capacity += bat.Props.storedEnergyMax;
                         StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipName", ShipName));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipName", Ship.Name));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsNotoriety", Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", Ship.Mass));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", Ship.MaxTakeoff));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipEnergy", this.PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipEnergy", PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity, (heatComp.myNet.Depletion > 0) ? (" ("+ heatComp.myNet.StorageCapacityRaw + " maximum)") : ""));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatRating", Ship.Threat));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatThrust", Ship.ThrustRatio.ToString("F3")));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine();
-                        if (this.Map.IsSpace())
+                        if (Map.IsSpace())
                         {
                             if (!fail.Any<string>())
                             {
@@ -197,7 +197,7 @@ namespace RimWorld
                 };
                 yield return showReport;
             }
-            if (this.Map.IsSpace())
+            if (Map.IsSpace())
             {
                 if (Ship.Pods.Any())
                 {
@@ -768,13 +768,13 @@ namespace RimWorld
             {
                 Command_Action launch = new Command_Action()
                 {
-                    action = new Action(this.TryLaunch),
+                    action = new Action(TryLaunch),
                     hotKey = KeyBindingDefOf.Misc1,
                     defaultLabel = "CommandShipLaunch".Translate(),
                     defaultDesc = "CommandShipLaunchDesc".Translate(),
                     icon = ContentFinder<Texture2D>.Get("UI/Commands/LaunchShip", true)
                 };
-                if (!this.CanLaunchNow)
+                if (!CanLaunchNow)
                 {
                     launch.Disable(ShipUtility.LaunchFailReasons(this).First<string>());
                 }
@@ -816,7 +816,7 @@ namespace RimWorld
         }
 		private void TryLaunch()
 		{
-			if (this.CanLaunchNow)
+			if (CanLaunchNow)
 			{
                 if (Find.WorldObjects.AllWorldObjects.Any(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting))
                 {
@@ -852,7 +852,7 @@ namespace RimWorld
         public override string GetInspectString()
         {
             string text = base.GetInspectString();
-            text += "\nShip Name: " + ShipName;
+            text += "\nShip Name: " + Ship.Name;
             return text;
         }
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
@@ -966,7 +966,7 @@ namespace RimWorld
         }
         private void Success(Pawn pawn)
         {
-            if (this.ShipName == "Psychic Amplifier")
+            if (ShipName == "Psychic Amplifier")
             {
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCaptured"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCapturedDesc"), LetterDefOf.PositiveEvent);
                 WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechSpore");
@@ -1023,34 +1023,6 @@ namespace RimWorld
             dialog_NodeTree.silenceAmbientSound = false;
             dialog_NodeTree.closeOnCancel = true;
             Find.WindowStack.Add(dialog_NodeTree);
-        }
-    }
-	public class Dialog_LoadShipDef : Dialog_Rename
-    {
-        private string ship = "shipdeftoload";
-        private Map Map;
-        public Dialog_LoadShipDef(string ship, Map map)
-        {
-            curName = ship;
-            Map = map;
-        }
-        protected override void SetName(string name)
-        {
-            if (name == ship || string.IsNullOrEmpty(name))
-                return;
-            if (DefDatabase<EnemyShipDef>.GetNamedSilentFail(name) == null)
-            {
-                Log.Error("Ship not found in database: " + name);
-                return;
-            }
-            AttackableShip shipa = new AttackableShip();
-            shipa.attackableShip = DefDatabase<EnemyShipDef>.GetNamed(name);
-            if (shipa.attackableShip.navyExclusive)
-            {
-                shipa.spaceNavyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.enemyShipDefs.Contains(shipa.attackableShip)).RandomElement();
-                shipa.shipFaction = Find.FactionManager.AllFactions.Where(f => shipa.spaceNavyDef.factionDefs.Contains(f.def)).RandomElement();
-            }
-            Map.passingShipManager.AddShip(shipa);
         }
     }
 }

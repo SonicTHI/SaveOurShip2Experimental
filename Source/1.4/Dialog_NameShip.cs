@@ -9,26 +9,20 @@ namespace SaveOurShip2
 {
     public class Dialog_NameShip : Dialog_Rename
     {
-        private Building_ShipBridge bridge;
+        private SoShipCache ship;
 
-        public Dialog_NameShip(Building_ShipBridge b)
+        public Dialog_NameShip(SoShipCache s)
         {
-            this.bridge = b;
-            curName = b.ShipName;
+            ship = s;
+            curName = s.Name;
         }
 
         protected override void SetName(string name)
         {
-            if (name == bridge.ShipName || string.IsNullOrEmpty(name))
+            if (name == ship.Name || string.IsNullOrEmpty(name))
                 return;
 
-            bridge.ShipName = name;
-
-            foreach (Building b in ShipUtility.ShipBuildingsAttachedTo(bridge))
-            {
-                if (b is Building_ShipBridge bridge)
-                    bridge.ShipName = name;
-            }
+            ship.Name = name;
         }
     }
 }

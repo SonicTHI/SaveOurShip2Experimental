@@ -55,7 +55,20 @@ namespace RimWorld
         public bool Rotatable => !BuildingsNonRot.Any();
         public float ThrustRaw = 0;
         public float ThrustRatio => ThrustRaw * 500f / Mathf.Pow(BuildingCount, 1.1f);
-        public string Name = "Unnamed Ship";
+        private string name;
+        public string Name
+        {
+            set
+            {
+                foreach (Building_ShipBridge b in Bridges)
+                    b.ShipName = value;
+                name = value;
+            }
+            get
+            {
+                return name;
+            }
+        }
         public int Index = -1;
         public Building_ShipBridge Core; //main bridge
         public Faction Faction => Buildings.First().Faction;
@@ -365,7 +378,7 @@ namespace RimWorld
             if (origin is Building_ShipBridge core)
             {
                 Core = core;
-                Name = core.ShipName;
+                name = core.ShipName;
                 Core.ShipIndex = Index;
                 path = 0;
             }

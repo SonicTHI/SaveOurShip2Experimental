@@ -15,11 +15,11 @@ namespace RimWorld
         }
         public bool active = false;
         public ShipHeatMapComp mapComp;
-        public CompPowerTrader PowerTrader;
+        public CompPowerTrader powerComp;
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            PowerTrader = parent.TryGetComp<CompPowerTrader>();
+            powerComp = parent.TryGetComp<CompPowerTrader>();
             mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
         }
         public override void PostDeSpawn(Map map)

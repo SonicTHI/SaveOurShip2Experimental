@@ -12,7 +12,7 @@ namespace RimWorld
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
             CompEngineTrail engineprev = null;
-            List<SoShipCache> ships = map.GetComponent<ShipHeatMapComp>().ShipsOnMap();
+            List<SoShipCache> ships = map.GetComponent<ShipHeatMapComp>().ShipsOnMapNew.Values.ToList();
             if (ships.Any(s => s.Engines.Any()))
             {
                 //prefer player owned non wreck ships

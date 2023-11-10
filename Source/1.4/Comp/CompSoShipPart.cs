@@ -217,7 +217,7 @@ namespace RimWorld
                 }
             }
 
-            HashSet<Building> buildings = new HashSet<Building>(); //td slow, track above, bellow? (0 none, 1 floor only, 2 hull only, 3 both, 4 airlock only, 5 bridge only)
+            HashSet<Building> buildings = new HashSet<Building>();
             foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
             {
                 bool partExists = false;
@@ -260,7 +260,6 @@ namespace RimWorld
             }
             //Log.Message("rem " + parent);
             ship.RemoveFromCache(parent as Building, mode);
-            //if (!mapComp.InCombat) //perform check immediately //td rev?
             if (!skipDetach)
                 ship.CheckForDetach();
         }

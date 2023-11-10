@@ -25,7 +25,7 @@ namespace RimWorld
         {
             get { return props as CompProperties_EngineTrail; }
         }
-        public virtual float Thrust
+        public virtual int Thrust
         {
             get
             {
@@ -40,9 +40,9 @@ namespace RimWorld
         public CompFlickable flickComp;
         public CompRefuelable refuelComp;
         public CompPowerTrader powerComp;
-        public bool CanFire(int rot)
+        public bool CanFire(Rot4 rot)
         {
-            if (flickComp.SwitchIsOn && rot == this.parent.Rotation.AsInt)
+            if (flickComp.SwitchIsOn && rot == this.parent.Rotation)
             {
                 if (Props.energy && powerComp.PowerOn)
                 {

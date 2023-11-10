@@ -424,7 +424,7 @@ namespace RimWorld
                 //engine burn
                 else if (Map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
                 {
-                    List<SoShipCache> ships = mapComp.ShipsOnMap().Where(s => s.CanMove).ToList();
+                    List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove).ToList();
                     bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
                     Command_Toggle toggleEngines = new Command_Toggle
                     {

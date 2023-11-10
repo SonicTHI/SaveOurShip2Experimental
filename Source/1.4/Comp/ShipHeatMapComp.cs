@@ -199,6 +199,7 @@ namespace RimWorld
         public List<ShipCombatProjectile> TorpsInRange;
         public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
         List<Building> cores = new List<Building>();
+        public HashSet<int> DestroyedIncombat = new HashSet<int>();
 
         //SC cache new
         //after spawn init all, after moveship: assign same as from map to new map
@@ -234,7 +235,7 @@ namespace RimWorld
                 return shipsOnMapNew;
             }
         }
-        public List<SoShipCache> ShipsOnMap(bool allowWrecks = false)
+        /*public List<SoShipCache> ShipsOnMap(bool allowWrecks = false)
         {
             List<SoShipCache> ships = new List<SoShipCache>();
             foreach (int index in ShipsOnMapNew.Keys)
@@ -245,7 +246,7 @@ namespace RimWorld
                 ships.Add(ship);
             }
             return ships;
-        }
+        }*/
         public void ResetCache()
         {
             ShipsOnMapNew.Clear();
@@ -402,6 +403,40 @@ namespace RimWorld
             int shipIndex = ShipIndexOnVec(vec);
             if (shipIndex != -1 && ShipsOnMapNew[shipIndex].LifeSupports.Any(s => s.active))
                 return true;
+            return false;
+        }
+        public int SlowestThrustOnMap()
+        {
+            int enginePower = int.MaxValue;
+            foreach (SoShipCache ship in ShipsOnMapNew.Values)
+            {
+                int currPower = ship.EnginePower();
+                if (currPower == 0)
+                    return 0;
+                if (currPower < enginePower)
+                    enginePower = currPower;
+            }
+            return enginePower;
+        }
+        public void MoveAtThrust(int thrust, Rot4 rot)
+        {
+            foreach (SoShipCache ship in ShipsOnMapNew.Values)
+            {
+                if (ship.Rot == rot)
+                ship.MoveAtThrust(thrust);
+            }
+
+        }
+        private bool AnyMapEngineCanActivate()
+        {
+            foreach (SoShipCache ship in ShipsOnMapNew.Values) //first engine rot and can fire on proper ship
+            {
+                if (ship.CanMove)
+                {
+                    EngineRot = ship.Rot.AsInt;
+                    return true;
+                }
+            }
             return false;
         }
         //SC cache new end
@@ -707,6 +742,11 @@ namespace RimWorld
         public override void MapComponentTick()
         {
             base.MapComponentTick();
+            foreach (int index in DestroyedIncombat)
+            {
+                RemoveShipFromBattle(index);
+            }
+            DestroyedIncombat.Clear();
             if (InCombat && (this.map == ShipCombatOriginMap || this.map == ShipCombatMasterMap))
             {
                 if (ShipCombatMaster)
@@ -812,19 +852,10 @@ namespace RimWorld
             {
                 //reduce durration per engine vs mass
                 MapEnginePower = 0;
-                bool anyMapEngineCanActivate = false;
-                foreach (SoShipCache ship in ShipsOnMap()) //first engine rot and can fire on proper ship
-                {
-                    if (ship.CanMove)
-                    {
-                        anyMapEngineCanActivate = true;
-                        EngineRot = ship.Rot.AsInt;
-                        break;
-                    }
-                }
+                bool anyMapEngineCanActivate = AnyMapEngineCanActivate();
                 if (!anyMapEngineCanActivate)
                     return;
-                foreach (SoShipCache ship in ShipsOnMap())
+                foreach (SoShipCache ship in ShipsOnMapNew.Values)
                 {
                     if (anyMapEngineCanActivate)
                     {
@@ -845,7 +876,7 @@ namespace RimWorld
                     {
                         cond.End();
                         BurnTimer = 0;
-                        foreach (SoShipCache ship in ShipsOnMap())
+                        foreach (SoShipCache ship in ShipsOnMapNew.Values)
                         {
                             ship.EnginesOff();
                         }
@@ -867,22 +898,13 @@ namespace RimWorld
             threatPerSegment = new[] { 1f, 1f, 1f, 1f };
             int TurretNum = 0;
             MapEnginePower = 0;
-            bool anyMapEngineCanActivate = false;
             BuildingsCount = 0;
             //SCM vars
             float powerCapacity = 0;
             float powerRemaining = 0;
-            foreach (SoShipCache ship in ShipsOnMap()) //first engine rot and can fire on proper ship
-            {
-                if (ship.CanMove)
-                {
-                    anyMapEngineCanActivate = true;
-                    EngineRot = ship.Rot.AsInt;
-                    break;
-                }
-            }
             //threat and engine power calcs
-            foreach (SoShipCache ship in ShipsOnMap())
+            bool anyMapEngineCanActivate = AnyMapEngineCanActivate();
+            foreach (SoShipCache ship in ShipsOnMapNew.Values)
             {
                 if (ShipCombatMaster && !ship.IsWreck)
                 {
@@ -981,19 +1003,19 @@ namespace RimWorld
                         }
                         if (Range > maxRange[best]) //forward
                         {
-                            if (Heading != 1)
+                            //if (Heading != 1)
                                 //Log.Message("enemy ship now moving forward Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                             Heading = 1;
                         }
                         else if (Range <= minRange[best]) //back
                         {
-                            if (Heading != -1)
+                            //if (Heading != -1)
                                 //Log.Message("enemy ship now moving backward Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                             Heading = -1;
                         }
                         else //chill
                         {
-                            if (Heading != 0)
+                            //if (Heading != 0)
                                 //Log.Message("enemy ship now stopped Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                             Heading = 0;
                         }
@@ -1168,7 +1190,7 @@ namespace RimWorld
                 graveMapComp.ShipCombatMasterMap = graveMapComp.OriginMapComp.ShipCombatMasterMap;
             }
         }
-        public void ShipBuildingsOff()
+        public void ShipBuildingsOff() //td should no longer be needed for engines
         {
             foreach (Building b in ShipCombatOriginMap.listerBuildings.allBuildingsColonist)
             {
@@ -1196,7 +1218,7 @@ namespace RimWorld
         }
         public void EndBattle(Map loser, bool fled, int burnTimeElapsed = 0)
         {
-			//td destroy all proj
+			//td destroy all proj?
             OriginMapComp.InCombat = false;
             MasterMapComp.InCombat = false;
             OriginMapComp.ShipBuildingsOff();

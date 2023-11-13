@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n13";
+        public static readonly string SOS2EXPversion = "V93n14";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1359,18 +1359,6 @@ namespace SaveOurShip2
 				map.mapDrawer.RegenerateEverythingNow();
             map.GetComponent<ShipHeatMapComp>().RecacheMap();
         }
-		public static bool AnyBridgeIn(Room room)
-		{
-			List<Region> regions = room.Regions;
-			for (int i = 0; i < regions.Count; i++)
-			{
-				if (regions[i].ListerThings.AllThings.Any(t => t is Building_ShipBridge))
-				{
-					return true;
-				}
-			}
-			return false;
-		}
 		public static List<IntVec3> FindCellOnOuterHull(Map map, int max, CellRect shipArea)
 		{
 			//targets outer cells
@@ -1761,7 +1749,7 @@ namespace SaveOurShip2
                 Find.TickManager.TogglePaused();
             InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
         }
-        public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
+        public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false) //td change or make new for call on ship direct
 		{
 			bool devMode = false;
 			var watch = new TimeHelper();
@@ -1802,7 +1790,7 @@ namespace SaveOurShip2
             int shipIndex = sourceMapComp.MapShipCells[core.Position].Item1;
             HashSet<int> shipIndexes = new HashSet<int> { shipIndex };
             var ship = sourceMapComp.ShipsOnMapNew[shipIndex];
-			HashSet<IntVec3> sourceArea = ship.Area;
+			HashSet<IntVec3> sourceArea = new HashSet<IntVec3>(ship.Area);
 			
             if (targetMap == null)
                 targetMap = core.Map;
@@ -1821,8 +1809,7 @@ namespace SaveOurShip2
 				}
                 targetMapComp.ShipsOnMapNew.Add(shipIndex, sourceMapComp.ShipsOnMapNew[shipIndex]);
                 ship = targetMapComp.ShipsOnMapNew[shipIndex];
-                ship.map = targetMap;
-                ship.mapComp = targetMapComp;
+                ship.Map = targetMap;
                 ship.AreaDestroyed.Clear();
                 if (adjustment != IntVec3.Zero && ship.BuildingsDestroyed.Any())
                 {
@@ -1836,6 +1823,7 @@ namespace SaveOurShip2
                 }
                 sourceMapComp.ShipsOnMapNew.Remove(shipIndex);
             }
+            Log.Message("Area: " + ship.Area.Count);
             if (adjustment != IntVec3.Zero)
             {
                 ship.Area.Clear();
@@ -1843,6 +1831,7 @@ namespace SaveOurShip2
                 {
                     ship.Area.Add(Transform(pos));
                 }
+                Log.Message("Area: " + ship.Area.Count);
             }
 
             foreach (IntVec3 pos in sourceArea)
@@ -1965,7 +1954,7 @@ namespace SaveOurShip2
                         shipIndexes.Add(targetMapComp.MapShipCells[vec].Item1);
                     }
                 }
-                Log.Message("Area: " + shipIndexes.Count);
+                Log.Message("Adjacent ships found in area: " + shipIndexes.Count);
             }
             if (devMode)
 				watch.Record("processSourceArea");

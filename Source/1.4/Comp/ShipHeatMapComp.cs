@@ -358,7 +358,7 @@ namespace RimWorld
         public void AttachAll(IntVec3 mergeTo, int mergeToIndex) //merge and build corePath if ship
         {
             SoShipCache ship = ShipsOnMapNew[mergeToIndex];
-            int path = MapShipCells[mergeTo].Item2 + 1;
+            int path = ship.IsWreck ? -1 : (MapShipCells[mergeTo].Item2 + 1);
             HashSet<IntVec3> cellsTodo = new HashSet<IntVec3>();
             HashSet<IntVec3> cellsDone = new HashSet<IntVec3>();
             cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(mergeTo, Rot4.North, new IntVec2(1, 1)).Where(v => MapShipCells.ContainsKey(v) && MapShipCells[v]?.Item1 != mergeToIndex));
@@ -384,7 +384,7 @@ namespace RimWorld
                 {
                     cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => MapShipCells.ContainsKey(v) && !cellsDone.Contains(v) && MapShipCells[v]?.Item1 != mergeToIndex));
                 }
-                if (!ship.IsWreck)
+                if (path > -1)
                     path++;
                 //Log.Message("parts at i: "+ current.Count + "/" + i);
             }

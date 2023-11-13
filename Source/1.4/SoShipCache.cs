@@ -47,14 +47,26 @@ namespace RimWorld
         public int BuildingCount = 0;
         public int BuildingCountAtCombatStart = 0;
         public int ThreatRaw = 0;
-        public Map map;
+        private Map map;
+        public Map Map
+        {
+            get { return map; }
+            set
+            {
+                map = value;
+                if (map == null)
+                    mapComp = null;
+                else
+                    mapComp = map.GetComponent<ShipHeatMapComp>();
+            }
+        }
         public ShipHeatMapComp mapComp;
         public bool PathDirty = true;
         public float[] ThreatPerSegment = new[] { 1f, 1f, 1f, 1f };
         public int Threat => ThreatRaw + Mass / 100;
         public bool Rotatable => !BuildingsNonRot.Any();
         public float ThrustRaw = 0;
-        public float ThrustRatio => ThrustRaw * 500f / Mathf.Pow(BuildingCount, 1.1f);
+        public float ThrustRatio => ThrustRaw * 500f / Mass;
         private string name;
         public string Name
         {
@@ -231,6 +243,20 @@ namespace RimWorld
             }
             return lowestCorner;
         }
+        public HashSet<IntVec3> OuterCells()
+        {
+            HashSet<IntVec3> cells = new HashSet<IntVec3>();
+            foreach (IntVec3 vec in Area)
+            {
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)))
+                {
+                    Room room = v.GetRoom(Map);
+                    if (room != null && room.TouchesMapEdge)
+                        cells.Add(vec);
+                }
+            }
+            return cells;
+        }
         public Sketch GenerateShipSketch(Map targetMap, IntVec3 lowestCorner, byte rotb = 0)
         {
             Sketch sketch = new Sketch();
@@ -268,16 +294,19 @@ namespace RimWorld
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
             }
             //td add rock terrain and walls
-            IntVec3 lowestCorner = LowestCorner(rotb, map);
+            IntVec3 lowestCorner = LowestCorner(rotb, Map);
             Sketch shipSketch = GenerateShipSketch(targetMap, lowestCorner, rotb);
             MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
-            fakeMover.shipRoot = Core;
+            if (IsWreck)
+                fakeMover.shipRoot = Buildings.First();
+            else
+                fakeMover.shipRoot = Core;
             fakeMover.includeRock = includeRock;
             fakeMover.shipRotNum = rotb;
             fakeMover.bottomLeftPos = lowestCorner;
-            ShipInteriorMod2.shipOriginMap = map;
+            ShipInteriorMod2.shipOriginMap = Map;
             fakeMover.targetMap = targetMap;
-            fakeMover.Position = Core.Position;
+            fakeMover.Position = fakeMover.shipRoot.Position;
             fakeMover.SpawnSetup(targetMap, false);
             List<object> selected = new List<object>();
             foreach (object ob in Find.Selector.SelectedObjects)
@@ -398,8 +427,7 @@ namespace RimWorld
                 Log.Error("SOS2 ship recache: tried merging to null or destroyed origin");
                 return;
             }
-            map = origin.Map;
-            mapComp = map.GetComponent<ShipHeatMapComp>();
+            Map = origin.Map;
             Index = origin.thingIDNumber;
             int path = -1;
             if (origin is Building_ShipBridge core)
@@ -423,7 +451,7 @@ namespace RimWorld
                 foreach (IntVec3 vec in current) //do all of the current corePath
                 {
                     mapComp.MapShipCells[vec] = new Tuple<int, int>(Index, path); //add new vec, index, corepath
-                    foreach (Thing t in vec.GetThingList(map))
+                    foreach (Thing t in vec.GetThingList(Map))
                     {
                         if (t is Building b)
                         {
@@ -668,7 +696,7 @@ namespace RimWorld
                     if (mapComp.ShipsOnMapNew.Count > 1)
                         mapComp.RemoveShipFromBattle(Index);
                     else
-                        mapComp.EndBattle(map, false);
+                        mapComp.EndBattle(Map, false);
                 }
                 return true;
             }
@@ -692,10 +720,6 @@ namespace RimWorld
         }
         public void RebuildCorePath() //run before combat if PathDirty and in combat after bridge replaced
         {
-            if (Core == null || Core.Destroyed)
-                return;
-
-            var mapComp = map.GetComponent<ShipHeatMapComp>();
             var cellsTodo = new HashSet<IntVec3>();
             var cellsDone = new HashSet<IntVec3>();
             cellsTodo.AddRange(Core.OccupiedRect());
@@ -817,7 +841,7 @@ namespace RimWorld
                 mode = DestroyMode.KillFinalize;
             foreach (IntVec3 vec in detachArea) //clean buildings, try to find bridge on detached
             {
-                foreach (Thing t in vec.GetThingList(map))
+                foreach (Thing t in vec.GetThingList(Map))
                 {
                     if (t is Building b)
                     {
@@ -839,7 +863,7 @@ namespace RimWorld
                     FloatAndDestroy(detachArea);
                     return;
                 }
-                newCore = (Building)detachArea.First().GetThingList(map).First(t => t is Building);
+                newCore = (Building)detachArea.First().GetThingList(Map).First(t => t is Building);
             }
             Log.Message("SOS2c: Detach new ship/wreck with: " + newCore);
             if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
@@ -853,7 +877,7 @@ namespace RimWorld
             {
                 mapComp.DestroyedIncombat.Add(newCore.thingIDNumber);
             }
-            if (map == mapComp.ShipCombatOriginMap)
+            if (Map == mapComp.ShipCombatOriginMap)
                 mapComp.hasAnyPlayerPartDetached = true;
             return;
         }
@@ -871,7 +895,7 @@ namespace RimWorld
             foreach (IntVec3 vec in detachArea)
             {
                 //Log.Message("Detaching location " + at);
-                foreach (Thing t in vec.GetThingList(map).Where(t => t.def.destroyable && !t.Destroyed))
+                foreach (Thing t in vec.GetThingList(Map).Where(t => t.def.destroyable && !t.Destroyed))
                 {
                     if (t is Pawn p)
                     {
@@ -912,7 +936,7 @@ namespace RimWorld
                     else if (comp.Props.isPlating)
                         part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
                 }
-                part.SpawnSetup(map, false);
+                part.SpawnSetup(Map, false);
             }
             foreach (Pawn p in toKill)
             {
@@ -925,8 +949,8 @@ namespace RimWorld
             }
             foreach (IntVec3 c in detachArea)
             {
-                map.terrainGrid.RemoveTopLayer(c, false);
-                map.roofGrid.SetRoof(c, null);
+                Map.terrainGrid.RemoveTopLayer(c, false);
+                Map.roofGrid.SetRoof(c, null);
             }
             ShipInteriorMod2.AirlockBugFlag = false;
         }

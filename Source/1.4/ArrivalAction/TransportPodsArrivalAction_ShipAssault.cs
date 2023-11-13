@@ -57,11 +57,103 @@ namespace RimWorld.Planet
 		public static bool CanLandInSpecificCell(IEnumerable<IThingHolder> pods, MapParent mapParent)
 		{
 			return mapParent != null && mapParent.Spawned && mapParent.HasMap && (!mapParent.EnterCooldownBlocksEntering() || FloatMenuAcceptanceReport.WithFailMessage("MessageEnterCooldownBlocksEntering".Translate(mapParent.EnterCooldownTicksLeft().ToStringTicksToPeriod(true, false, true, true))));
-		}
-		public List<IntVec3> FindTargetsForPods(Map map, int num)
+        }
+        public List<IntVec3> FindTargetsForPods(Map map, int num)
+        {
+			//prioritize active non wreck ships
+            List<IntVec3> targetCells = new List<IntVec3>();
+            List<IntVec3> validCells = new List<IntVec3>();
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+            foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values.Where(s => !s.IsWreck))
+			{
+				validCells.AddRange(ship.OuterCells());
+            }
+            if (targetCells.NullOrEmpty())
+            {
+                foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values.Where(s => s.IsWreck))
+                {
+                    validCells.AddRange(ship.OuterCells());
+                }
+            }
+			if (validCells.Any())
+            {
+                validCells.Shuffle();
+                int i = 0;
+                while (i < num + 1)
+                {
+                    //find cell in cluster
+                    foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(validCells[i], Rot4.North, new IntVec2(7, 7)))
+                    {
+                        Room room = vec.GetRoom(map);
+                        if (vec.InBounds(map) && vec.Standable(map) && room != null && !room.TouchesMapEdge && !room.IsDoorway && !AnyBridgeIn(room))
+                        {
+                            if (!vec.GetThingList(map).Any(t => t.def.preventSkyfallersLandingOn))
+                            {
+                                targetCells.Add(vec);
+                                break;
+                            }
+                        }
+                    }
+                    i++;
+                    if (i > validCells.Count || i > 30)
+                        break;
+                }
+                if (!targetCells.NullOrEmpty())
+                {
+                    //Log.Message("Initial pod target cells: " + targetCells.Count);
+                    if (targetCells.Count == num)
+                        return targetCells;
+                    else
+                    {
+                        //fill or remove to match
+                        if (targetCells.Count < num)
+                        {
+                            int k = 0;
+                            while (targetCells.Count < num)
+                            {
+                                targetCells.Add(targetCells[k]);
+                                k++;
+                            }
+                        }
+                        else if (targetCells.Count > num)
+                        {
+                            while (targetCells.Count - 1 > num)
+                            {
+                                targetCells.RemoveLast();
+                            }
+                        }
+                        //Log.Message("Final pod target cells: " + targetCells.Count);
+                        return targetCells;
+                    }
+                }
+
+            }
+			if (targetCells.Any())
+				return targetCells;
+            //fallbacks
+            Log.Message("Found no pod target cells, fallback to random room loc");
+            targetCells = map.AllCells.Where(c => c.Roofed(map) && DropCellFinder.CanPhysicallyDropInto(c, map, true, true) && c.Standable(map)).ToList();
+            if (targetCells.NullOrEmpty())
+                targetCells = map.AllCells.Where(c => DropCellFinder.CanPhysicallyDropInto(c, map, true, true) && c.Standable(map)).ToList();
+            return targetCells;
+        }
+        public bool AnyBridgeIn(Room room)
+        {
+            List<Region> regions = room.Regions;
+            for (int i = 0; i < regions.Count; i++)
+            {
+                if (regions[i].ListerThings.AllThings.Any(t => t is Building_ShipBridge))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public List<IntVec3> FindTargetsForPodsOld(Map map, int num)
 		{
 			//targets outer cells, then finds rooms near, a room search that finds outer rooms would be better
 			Room outdoors = new IntVec3(0, 0, 0).GetRoom(map);
+			var mapComp = map.GetComponent<ShipHeatMapComp>();
 			List<IntVec3> targetCells = new List<IntVec3>();
 			List<IntVec3> validCells = new List<IntVec3>();
 			if (num == 0)
@@ -78,7 +170,7 @@ namespace RimWorld.Planet
 					foreach (IntVec3 intVec in GenAdj.CellsAdjacent8Way(validCells[i], Rot4.North, new IntVec2(7, 7)))
 					{
 						Room room = intVec.GetRoom(map);
-						if (intVec.InBounds(map) && intVec.Standable(map) && room != null && !room.TouchesMapEdge && !room.IsDoorway && !ShipInteriorMod2.AnyBridgeIn(room))
+						if (intVec.InBounds(map) && intVec.Standable(map) && room != null && !room.TouchesMapEdge && !room.IsDoorway && !AnyBridgeIn(room))
 						{
 							bool prevent = false;
 							List<Thing> thingList = intVec.GetThingList(map);

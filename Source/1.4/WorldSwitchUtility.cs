@@ -236,6 +236,7 @@ namespace SaveOurShip2
     {
         private int ShipsHaveInsidesVersion;
         public int PlayerFactionBounty;
+        public int LastAttackTick;
         public int LastBountyRaidTick;				   
 		public List<PreviousWorld> PastWorlds=new List<PreviousWorld>();
         public List<string> Unlocks = new List<string>();
@@ -273,9 +274,9 @@ namespace SaveOurShip2
             WorldSwitchUtility.LoadWorldFlag = false;
             Scribe_Collections.Look<string>(ref Unlocks, "Unlocks", LookMode.Value);
             Scribe_Values.Look<int>(ref PlayerFactionBounty, "PlayerFactionBounty", 0);
+            Scribe_Values.Look<int>(ref LastAttackTick, "LastShipBattleTick", 0);
             Scribe_Values.Look<int>(ref LastBountyRaidTick, "LastBountyRaidTicks", 0);
             Scribe_Values.Look<bool>(ref startedEndgame, "StartedEndgame");
-            Scribe_Values.Look<int>(ref IncidentWorker_ShipCombat.LastAttackTick, "LastShipBattleTick");
 
             if (Scribe.mode != LoadSaveMode.PostLoadInit)
             {

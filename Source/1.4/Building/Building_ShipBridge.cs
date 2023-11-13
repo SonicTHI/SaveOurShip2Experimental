@@ -70,9 +70,9 @@ namespace RimWorld
         private List<string> InterstellarFailReasons()
         {
             List<string> result = new List<string>();
-            if (!Ship.Sensors.Any((Building pa) => pa.def == ThingDefOf.Ship_ComputerCore || pa.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
+            if (!Ship.Bridges.Any(b => b.def == ThingDefOf.Ship_ComputerCore || b.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_ComputerCore.label);
-            if (!Ship.Sensors.Any((Building pa) => pa.def == ThingDefOf.Ship_SensorCluster || pa.def ==ThingDef.Named("Ship_SensorClusterAdv")))
+            if (!Ship.Sensors.Any(b => b.def == ThingDefOf.Ship_SensorCluster || b.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv))
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
             int playerJTPower = 0;
             if (Ship.Engines.Any(e => e.Props.energy))
@@ -85,13 +85,12 @@ namespace RimWorld
                     playerJTPower += mult;
                 }
             }
-            float playerJTReq = Map.listerBuildings.allBuildingsColonist.Count * 2.5f;
             if (playerJTPower == 0)
-                result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDef.Named("Ship_Engine_Interplanetary").label);
-            else if (playerJTPower < playerJTReq)
+                result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ResourceBank.ThingDefOf.Ship_Engine_Interplanetary.label);
+            else if (playerJTPower < Ship.Mass)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreJTEngines"));
-            if (PowerComp.PowerNet?.CurrentStoredEnergy() < playerJTReq)
-                result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", playerJTReq));
+            if (PowerComp.PowerNet?.CurrentStoredEnergy() < Ship.Mass)
+                result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", Ship.Mass));
             if (mapComp.ShipCombatMaster)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipOnEnemyMap"));
             if (ShipCountdown.CountingDown)

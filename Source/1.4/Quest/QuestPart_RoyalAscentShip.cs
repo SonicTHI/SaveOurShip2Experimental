@@ -25,10 +25,7 @@ namespace RimWorld
 				if (Find.WorldObjects.AllWorldObjects.Any(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting))
 				{
 					map = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTilePlayer(), new IntVec3(250, 1, 250), ResourceBank.WorldObjectDefOf.ShipEnemy);
-					var mapComp = map.GetComponent<ShipHeatMapComp>();
-					mapComp.IsGraveyard = true;
-					ShipInteriorMod2.GenerateShip(shipDef, map, null, Faction.OfPlayer, null, out cores, false, false, 0, (map.Size.x - shipDef.sizeX) / 2, (map.Size.z - shipDef.sizeZ) / 2);
-					map.fogGrid.ClearAllFog();
+					map.GetComponent<ShipHeatMapComp>().IsGraveyard = true;
 					((WorldObjectOrbitingShip)map.Parent).radius = 150f;
 					((WorldObjectOrbitingShip)map.Parent).theta = -3 - 0.1f + 0.002f * Rand.Range(0, 20);
 					((WorldObjectOrbitingShip)map.Parent).phi = 0 - 0.01f + 0.001f * Rand.Range(-20, 20);
@@ -36,11 +33,11 @@ namespace RimWorld
 				else
 				{
 					map = ShipInteriorMod2.GeneratePlayerShipMap(originMap.Size);
-					ShipInteriorMod2.GenerateShip(shipDef, map, null, Faction.OfPlayer, null, out cores, false, false, 0, (map.Size.x - shipDef.sizeX) / 2, (map.Size.z - shipDef.sizeZ) / 2);
-					map.fogGrid.ClearAllFog();
-				}
+                }
+                ShipInteriorMod2.GenerateShip(shipDef, map, null, Faction.OfPlayer, null, out cores, false, false, 0, (map.Size.x - shipDef.sizeX) / 2, (map.Size.z - shipDef.sizeZ) / 2);
+                map.fogGrid.ClearAllFog();
 
-				/*if (!Find.TickManager.Paused)
+                /*if (!Find.TickManager.Paused)
 				{
 					Find.TickManager.CurTimeSpeed = TimeSpeed.Normal;
 				}
@@ -69,7 +66,7 @@ namespace RimWorld
 						}
 					}
 				}*/
-			}
+            }
 		}
 
 		public override void ExposeData()

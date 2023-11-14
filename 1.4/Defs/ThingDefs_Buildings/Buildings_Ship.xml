@@ -2860,12 +2860,10 @@
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<comps>
 			<li Class="CompProperties_SoShipPart">
-				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
-				<foam>true</foam>
-				<roof>true</roof>
 			</li>
 			<li Class="CompProperties_SoShipDocking">
+				<isPlating>true</isPlating>
 			</li>
 		</comps>
 		<rotatable>false</rotatable>

@@ -122,6 +122,7 @@
     <Compile Include="IncidentWorker_SpaceDebris.cs" />
     <Compile Include="Jobs\JobDriver_LoadShipBuilding.cs" />
     <Compile Include="Jobs\JobGiver_LoadShipBuilding.cs" />
+    <Compile Include="Comp\PastWorldUWO2.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_ShipPlating.cs" />
     <Compile Include="Projectile\Projectile_ExplosiveShipDebris.cs" />
     <Compile Include="Quest\QuestNode_RoyalAscentShip.cs" />
@@ -418,7 +419,7 @@
     <Compile Include="MapGen\GenStep_EmptySpace.cs" />
     <Compile Include="BiomeWorker_OuterSpace.cs" />
     <Compile Include="WeatherEvent_VacuumDamage.cs" />
-    <Compile Include="WorldSwitchUtility.cs" />
+    <Compile Include="Obsolete\WorldSwitchUtility.cs" />
     <Compile Include="Jobs\JobDriver_CarryToCryptonest.cs" />
   </ItemGroup>
   <ItemGroup>

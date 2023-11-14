@@ -16,12 +16,12 @@ namespace RimWorld
                 if (cloak.active)
                     return false;
             }
-            return !((Map)parms.target).GetComponent<ShipHeatMapComp>().InCombat && ModSettings_SoS.frequencySoS > 0 && Find.TickManager.TicksGame > Find.World.GetComponent<PastWorldUWO2>().LastAttackTick + 300000 / ModSettings_SoS.frequencySoS;
+            return !((Map)parms.target).GetComponent<ShipHeatMapComp>().InCombat && ModSettings_SoS.frequencySoS > 0 && Find.TickManager.TicksGame > ShipInteriorMod2.WorldComp.LastAttackTick + 300000 / ModSettings_SoS.frequencySoS;
         }
 
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
-            Find.World.GetComponent<PastWorldUWO2>().LastAttackTick = Find.TickManager.TicksGame;
+            ShipInteriorMod2.WorldComp.LastAttackTick = Find.TickManager.TicksGame;
             ((Map)parms.target).GetComponent<ShipHeatMapComp>().StartShipEncounter((Building)((Map)parms.target).listerThings.AllThings.Where(t => t is Building_ShipBridge).FirstOrDefault(), fac: parms.faction);
             return true;
         }

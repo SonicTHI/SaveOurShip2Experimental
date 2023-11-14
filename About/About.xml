@@ -3,7 +3,7 @@
 	<packageId>kentington.saveourship2</packageId>
 	<author>Kentington, Thain, SonicTHI, Owlchemist</author>
 	<name>Save Our Ship 2</name>
-	<description>A comprehensive overhaul of spaceflight.\n\nFor more info, details on mod compatibility and known issues see:\n https://bit.ly/3swfRxC</description>
+	<description>A comprehensive overhaul of spaceflight.\n\nFor more info, details on mod compatibility and known issues see:\nhttps://bit.ly/3swfRxC</description>
 	<url/>
 	<supportedVersions>
 		<li>1.4</li>
@@ -43,7 +43,8 @@
 		<li>automatic.traderships</li>
 		<li>vanillaexpanded.vfesecurity</li>
 		<li>vanillaExpanded.helixienGas</li>
-		<li>OskarPotocki.VanillaVehiclesExpandedTier3</li>
+		<li>oskarpotocki.vfe.deserters</li>
+		<li>oskarpotocki.vanillavehiclesexpandedtier3</li>
 		<li>windowsxp.realisticplanets</li>
 		<li>powerlunatic.flawlesselectronics</li>
 		<li>limetreesnake.maintenance</li>

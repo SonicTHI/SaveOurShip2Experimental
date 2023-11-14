@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n14";
+        public static readonly string SOS2EXPversion = "V93n15";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -106,8 +106,25 @@ namespace SaveOurShip2
 		public static bool AirlockBugFlag = false; //shipmove
 		public static Building shipOriginRoot = null; //used for patched original launch code
 		public static Map shipOriginMap = null; //used to check for shipmove map size problem, reset after move
+        public static bool SaveShipFlag = false; //used in patch to trigger ending scene
+        public static bool LoadShipFlag = false; //set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
+        public static bool StartShipFlag = false; //as above but for ScenPart_StartInSpace
+        private static PastWorldUWO2 worldComp = null;
+        public static PastWorldUWO2 WorldComp
+        {
+            get
+            {
+                if (worldComp == null && Find.World != null)
+                    worldComp = (PastWorldUWO2)Find.World.components.First(x => x is PastWorldUWO2);
+                return worldComp;
+            }
+        }
+        public static void PurgeWorldComp()
+        {
+            worldComp = null;
+        }
 
-		public static RoofDef[] compatibleAirtightRoofs; // Additional array of compatible RoofDefs from other mods.
+        public static RoofDef[] compatibleAirtightRoofs; // Additional array of compatible RoofDefs from other mods.
 		public static TerrainDef[] rockTerrains; // Contains terrain types that are considered a "rock".
 		public static string[] allowedQuests;
 		public static List<ThingDef> randomPlants;
@@ -689,7 +706,7 @@ namespace SaveOurShip2
 			planters = new List<Thing>();
 			cores = new List<Building>();
 			bool unlockedJT = false;
-			if (WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("JTDriveToo"))
+			if (ShipInteriorMod2.WorldComp.Unlocks.Contains("JTDriveToo"))
 				unlockedJT = true;
 			bool ideoActive = false;
 			if (ModsConfig.IdeologyActive && (fac != Faction.OfAncientsHostile || fac != Faction.OfAncients || fac != Faction.OfMechanoids))
@@ -1887,7 +1904,7 @@ namespace SaveOurShip2
                         if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
                         {
                             //do not allow kidnapping other fac pawns/animals
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipLaunchFailPawns"), null, MessageTypeDefOf.NegativeEvent);
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipLaunchFailPawns", p.Name.ToStringShort), null, MessageTypeDefOf.NegativeEvent);
                             return;
                         }
                         /*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
@@ -2010,7 +2027,7 @@ namespace SaveOurShip2
                     else //to ground 10%
                         fuelNeeded *= 0.1f;
                 }
-				foreach (CompEngineTrail engine in ship.Engines)
+				foreach (CompEngineTrail engine in ship.Engines.Where(e => !e.Props.energy))
 				{
 					engine.refuelComp.ConsumeFuel(fuelNeeded * engine.refuelComp.Fuel / fuelStored);
 				}
@@ -2090,7 +2107,7 @@ namespace SaveOurShip2
 							spawnThing.SetFaction(fac);
 						if (spawnThing is Pawn pawn)
 						{
-							Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.Remove(pawn.thingIDNumber);
+                            WorldComp.PawnsInSpaceCache.Remove(pawn.thingIDNumber);
 						}
 					}
 					catch (Exception e)
@@ -2403,7 +2420,77 @@ namespace SaveOurShip2
 
 			RemoveShip(area.ToList(), map, true);
 		}
-		public static void RemoveShip(List<IntVec3> area, Map map, bool planetTravel)
+        public static void SaveShipToFile(Building_ShipBridge bridge)
+        {
+            KillAllColonistsNotInCrypto(bridge.Map, bridge);
+            string folder = Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            string filename = Path.Combine(folder, Faction.OfPlayer.Name + "_" + bridge.ShipName + ".sos2");
+            SaveShip(bridge, filename);
+        }
+        public static void SpaceTravelWarning(Action action)
+        {
+            DiaNode theNode;
+            theNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("ShipAbandonColoniesWarning"));
+
+            DiaOption accept = new DiaOption("Accept");
+            accept.resolveTree = true;
+            accept.action = action;
+            theNode.options.Add(accept);
+
+            DiaOption cancel = new DiaOption("Cancel");
+            cancel.resolveTree = true;
+            theNode.options.Add(cancel);
+
+            Dialog_NodeTree dialog_NodeTree = new Dialog_NodeTree(theNode, true, false, null);
+            dialog_NodeTree.silenceAmbientSound = false;
+            dialog_NodeTree.closeOnCancel = true;
+            Find.WindowStack.Add(dialog_NodeTree);
+        }
+        public static void KillAllColonistsNotInCrypto(Map shipMap, Building_ShipBridge bridge)
+        {
+            List<Pawn> toKill = new List<Pawn>();
+            foreach (Pawn p in shipMap.mapPawns.AllPawns)
+            {
+                if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map != shipMap))
+                    toKill.Add(p);
+            }
+            foreach (Pawn p in toKill)
+                p.Kill(null);
+            foreach (Thing t in shipMap.spawnedThings)
+            {
+                if (t is Corpse c)
+                {
+                    var compRot = c.GetComp<CompRottable>();
+                    if (t.GetRoom() != null && t.GetRoom().Temperature > 0 && compRot != null)
+                        compRot.RotProgress = compRot.PropsRot.TicksToDessicated;
+                }
+            }
+            WorldComp.renderedThatAlready = false;
+
+            float EnergyCost = 100000;
+            foreach (CompPowerBattery capacitor in bridge.PowerComp.PowerNet.batteryComps)
+            {
+                if (capacitor.StoredEnergy <= EnergyCost)
+                {
+                    capacitor.SetStoredEnergyPct(capacitor.StoredEnergyPct - (EnergyCost / capacitor.Props.storedEnergyMax));
+                    EnergyCost = 0;
+                    break;
+                }
+                else
+                {
+                    EnergyCost -= capacitor.StoredEnergy;
+                    capacitor.SetStoredEnergyPct(0.05f);
+                }
+            }
+
+            //Oddly enough, interstellar flight takes a lot of time
+            /*int years = Rand.RangeInclusive(ShipInteriorMod2.minTravelTime.Value, ShipInteriorMod2.maxTravelTime.Value);
+            Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * years);
+            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);*/
+        }
+        public static void RemoveShip(List<IntVec3> area, Map map, bool planetTravel)
         {
             var mapComp = map.GetComponent<ShipHeatMapComp>();
 			mapComp.CacheOff = true;
@@ -2503,7 +2590,16 @@ namespace SaveOurShip2
 		{
 			return room == null || room.OpenRoofCount > 0 || room.TouchesMapEdge;
 		}
-		public static byte EVAlevel(Pawn pawn)
+		public static bool AnyAdjRoomNotOutside(IntVec3 pos, Map map)
+		{
+			foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, new IntVec2(1, 1)))
+			{
+                if (!ExposedToOutside(v.GetRoom(map)))
+					return true;
+			}
+			return false;
+		}
+        public static byte EVAlevel(Pawn pawn)
 		{
 			/*
 			8 - natural, unremovable, boosted: no rechecks
@@ -2516,11 +2612,11 @@ namespace SaveOurShip2
 			1 - air only: reset on hediff change
 			0 - none: dead soon
 			*/
-			if (Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.TryGetValue(pawn.thingIDNumber, out byte eva))
+			if (WorldComp.PawnsInSpaceCache.TryGetValue(pawn.thingIDNumber, out byte eva))
 				return eva;
 			byte result = EVAlevelSlow(pawn);
-			//Log.Message("EVA slow lvl: " + result + " on pawn " + pawn.Name);
-			Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache[pawn.thingIDNumber] = result;
+            //Log.Message("EVA slow lvl: " + result + " on pawn " + pawn.Name);
+            WorldComp.PawnsInSpaceCache[pawn.thingIDNumber] = result;
 			return result;
 		}
 		public static byte EVAlevelSlow(Pawn pawn)

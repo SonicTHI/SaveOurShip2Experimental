@@ -174,6 +174,7 @@ namespace RimWorld
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>(); //td get this into shipcache?
         public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
         public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
+        public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
         //SC vars
         public Map ShipCombatOriginMap; //"player" map - initializes combat vars
         public Map ShipCombatMasterMap; //"AI" map - runs all non duplicate code
@@ -401,7 +402,7 @@ namespace RimWorld
         public bool VecHasLS(IntVec3 vec)
         {
             int shipIndex = ShipIndexOnVec(vec);
-            if (shipIndex != -1 && ShipsOnMapNew[shipIndex].LifeSupports.Any(s => s.active))
+            if ((shipIndex > 0 && ShipsOnMapNew[shipIndex].LifeSupports.Any(s => s.active)) || MapExtenderCells.Contains(vec))
                 return true;
             return false;
         }
@@ -552,13 +553,13 @@ namespace RimWorld
                         shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<EnemyShipDef>.AllDefs.ToList(), CR, true, false);
                     }
 
-                    Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty += 5;
+                    ShipInteriorMod2.WorldComp.PlayerFactionBounty += 5;
                     attackedTradeship = true;
                 }
                 else //find a random attacking ship to spawn
                 {
                     if (bounty)
-                        CR *= (float)Math.Pow(Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty, 0.2);
+                        CR *= (float)Math.Pow(ShipInteriorMod2.WorldComp.PlayerFactionBounty, 0.2);
                     //spawned with faction override - try to find a valid navy
                     if (faction != null && DefDatabase<SpaceNavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def)))
                     {
@@ -680,7 +681,7 @@ namespace RimWorld
             MasterMapComp.StartBattleCache();
             //set range DL:1-9
             byte detectionLevel = 7;
-            var worldComp = Find.World.GetComponent<PastWorldUWO2>();
+            var worldComp = ShipInteriorMod2.WorldComp;
             List<Building_ShipAdvSensor> Sensors = worldComp.Sensors.Where(s => s.Map == this.map).ToList();
             List<Building_ShipAdvSensor> SensorsEnemy = worldComp.Sensors.Where(s => s.Map == MasterMapComp.map).ToList();
             if (Sensors.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
@@ -1233,7 +1234,7 @@ namespace RimWorld
                 {
                     MasterMapComp.IsGraveyard = true;
                     if (OriginMapComp.attackedTradeship)
-                        Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty += 15;
+                        ShipInteriorMod2.WorldComp.PlayerFactionBounty += 15;
                     ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
                     Find.LetterStack.ReceiveLetter("WinShipBattle".Translate(), "WinShipBattleDesc".Translate(ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
                 }

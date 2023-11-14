@@ -37,7 +37,7 @@ namespace RimWorld.QuestGen
             SpaceSite site = (SpaceSite)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.SiteSpace);
             site.SetFaction(null);
             site.Tile = tile.GetValue(slate);
-            SitePartDef core = DefDatabase<SitePartDef>.AllDefs.Where(def => def.tags != null && def.tags.Contains("SpaceCore") && ((!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("BlackBoxShipDefeated") && Find.QuestManager.QuestsListForReading.Where(q=>(q.State!=QuestState.EndedFailed&&q.State!=QuestState.EndedOfferExpired&&q.State!=QuestState.EndedUnknownOutcome)&&(q.name.Equals(TranslatorFormattedStringExtensions.Translate("LetterLabelFoundOrbitalSite"))||q.name.Equals("Orbital Site Found")||q.name.Equals("Starship Bow"))).EnumerableNullOrEmpty()) || !def.tags.Contains("SpaceBlackBox"))).RandomElement();
+            SitePartDef core = DefDatabase<SitePartDef>.AllDefs.Where(def => def.tags != null && def.tags.Contains("SpaceCore") && ((!ShipInteriorMod2.WorldComp.Unlocks.Contains("BlackBoxShipDefeated") && Find.QuestManager.QuestsListForReading.Where(q=>(q.State!=QuestState.EndedFailed&&q.State!=QuestState.EndedOfferExpired&&q.State!=QuestState.EndedUnknownOutcome)&&(q.name.Equals(TranslatorFormattedStringExtensions.Translate("LetterLabelFoundOrbitalSite"))||q.name.Equals("Orbital Site Found")||q.name.Equals("Starship Bow"))).EnumerableNullOrEmpty()) || !def.tags.Contains("SpaceBlackBox"))).RandomElement();
             site.AddPart(new SitePart(site,core,new SitePartParams()));
             site.customLabel = core.label;
             site.desiredThreatPoints = site.ActualThreatPoints;
@@ -160,7 +160,7 @@ namespace RimWorld.QuestGen
                     else
                         listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("LetterFoundOrbitalSiteSpecial","its AI", slate.Get<int>("fuelCost"))));
                 }
-                WorldSwitchUtility.PastWorldTracker.Unlocks.Add("BlackBoxShipSpawned");
+                ShipInteriorMod2.WorldComp.Unlocks.Add("BlackBoxShipSpawned");
                 QuestGen.AddQuestDescriptionRules(listBlackBox);
                 QuestGen.AddQuestNameRules(listBlackBox);
             }

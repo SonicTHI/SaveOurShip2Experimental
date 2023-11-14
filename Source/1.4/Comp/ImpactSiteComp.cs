@@ -41,7 +41,7 @@ namespace RimWorld.Planet
                 Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
                 if (mapPlayer != null)
                 {
-                    foreach (Building_ShipAdvSensor sensor in Find.World.GetComponent<PastWorldUWO2>().Sensors)
+                    foreach (Building_ShipAdvSensor sensor in ShipInteriorMod2.WorldComp.Sensors)
                     {
                         if (sensor.observedMap == this.parent)
                         {

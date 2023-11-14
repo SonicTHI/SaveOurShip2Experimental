@@ -10,7 +10,7 @@ namespace RimWorld
     {
         public override void CompPostPostRemoved()
         {
-            Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == this.Pawn.thingIDNumber);
+            ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == this.Pawn.thingIDNumber);
         }
     }
 }

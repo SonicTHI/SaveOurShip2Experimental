@@ -159,7 +159,7 @@ namespace RimWorld
                             capacity += bat.Props.storedEnergyMax;
                         StringBuilder stringBuilder = new StringBuilder();
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipName", Ship.Name));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsNotoriety", Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsNotoriety", ShipInteriorMod2.WorldComp.PlayerFactionBounty));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", Ship.Mass));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", Ship.MaxTakeoff));
@@ -454,7 +454,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                WorldSwitchUtility.ColonyAbandonWarning(delegate { WorldSwitchUtility.SaveShipFlag = true; ShipCountdown.InitiateCountdown(this); });
+                                ShipInteriorMod2.SpaceTravelWarning(delegate { ShipInteriorMod2.SaveShipFlag = true; ShipCountdown.InitiateCountdown(this); });
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipPlanetLeave"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipPlanetLeaveDesc"),
@@ -464,13 +464,13 @@ namespace RimWorld
                         if (fail.Any())
                             gotoNewWorld.Disable(fail.First());
                         yield return gotoNewWorld;
-                        /*if (WorldSwitchUtility.PastWorldTracker != null && WorldSwitchUtility.PastWorldTracker.PastWorlds.Count > 0)
+                        /*if (ShipInteriorMod2.PastWorldTracker != null && ShipInteriorMod2.PastWorldTracker.PastWorlds.Count > 0)
                         {
                             Command_Action returnToPrevWorld = new Command_Action
                             {
                                 action = delegate
                                 {
-                                    WorldSwitchUtility.ColonyAbandonWarning(delegate { WorldSwitchUtility.ReturnToPreviousWorld(this.Map, this); });
+                                    ShipInteriorMod2.ColonyAbandonWarning(delegate { ShipInteriorMod2.ReturnToPreviousWorld(this.Map, this); });
                                 },
                                 defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipPlanetReturn"),
                                 defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipPlanetReturnDesc"),
@@ -594,7 +594,7 @@ namespace RimWorld
                             yield return rebuildShip;
                         }
                         //endgame missions
-                        if (ResourceBank.ResearchProjectDefOf.ArchotechPillarA.IsFinished && !WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarA"))
+                        if (ResourceBank.ResearchProjectDefOf.ArchotechPillarA.IsFinished && !ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechPillarA"))
                         {
                             Command_Action goGetThatPillarA = new Command_Action
                             {
@@ -614,7 +614,7 @@ namespace RimWorld
                             };
                             yield return goGetThatPillarA;
                         }
-                        if (ResourceBank.ResearchProjectDefOf.ArchotechPillarB.IsFinished && !WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechPillarB") && !Find.WorldObjects.AllWorldObjects.Any(ob => ob is MoonBase))
+                        if (ResourceBank.ResearchProjectDefOf.ArchotechPillarB.IsFinished && !ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechPillarB") && !Find.WorldObjects.AllWorldObjects.Any(ob => ob is MoonBase))
                         {
                             Command_Action goGetThatPillarB = new Command_Action
                             {
@@ -968,7 +968,7 @@ namespace RimWorld
             if (ShipName == "Psychic Amplifier")
             {
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCaptured"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCapturedDesc"), LetterDefOf.PositiveEvent);
-                WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechSpore");
+                ShipInteriorMod2.WorldComp.Unlocks.Add("ArchotechSpore");
             }
             if (pawn != null)
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);

@@ -334,7 +334,7 @@ namespace SaveOurShip2
 		public const float altitude = 1100f;
 		public static void Prefix()
 		{
-			var worldComp = Find.World.GetComponent<PastWorldUWO2>();
+			var worldComp = ShipInteriorMod2.WorldComp;
 
 			// if we aren't in space, abort!
 			if ((worldComp.renderedThatAlready && !ModSettings_SoS.renderPlanet) || !Find.CurrentMap.IsSpace())
@@ -918,7 +918,7 @@ namespace SaveOurShip2
 			Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
 			if (mapPlayer != null)
 			{
-				foreach (Building_ShipAdvSensor sensor in Find.World.GetComponent<PastWorldUWO2>().Sensors)
+				foreach (Building_ShipAdvSensor sensor in ShipInteriorMod2.WorldComp.Sensors)
 				{
 					if (sensor.observedMap != null && sensor.observedMap.Map != null && sensor.observedMap.Map.mapPawns == __instance)
 						__result = true;
@@ -935,7 +935,7 @@ namespace SaveOurShip2
 			Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
 			if (mapPlayer != null)
 			{
-				foreach (Building_ShipAdvSensor sensor in Find.World.GetComponent<PastWorldUWO2>().Sensors)
+				foreach (Building_ShipAdvSensor sensor in ShipInteriorMod2.WorldComp.Sensors)
 				{
 					if (sensor.observedMap != null && sensor.observedMap.Map == map)
 					{
@@ -1013,7 +1013,7 @@ namespace SaveOurShip2
 			{
 				return;
 			}
-			int bounty = Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty;
+			int bounty = ShipInteriorMod2.WorldComp.PlayerFactionBounty;
 
 			DiaNode diaNode = new DiaNode("TradeShipComms".Translate() + __instance.TraderName);
 
@@ -1045,13 +1045,13 @@ namespace SaveOurShip2
 						//social + shipstr vs bounty for piracy dialog
 						Find.WindowStack.Add(new Dialog_Pirate(__instance.Map.listerBuildings.allBuildingsColonist.Where(t => t.def == ResourceBank.ThingDefOf.ShipSalvageBay).Count(), __instance));
 						bounty += 4;
-						Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty = bounty;
+						ShipInteriorMod2.WorldComp.PlayerFactionBounty = bounty;
 					}
 					else
 					{
 						//check failed, ship is fleeing
 						bounty += 1;
-						Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty = bounty;
+						ShipInteriorMod2.WorldComp.PlayerFactionBounty = bounty;
 						if (__instance.Faction == Faction.OfEmpire)
 							Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -25, false, true, HistoryEventDefOf.AttackedCaravan, null);
 						DiaNode diaNode2 = new DiaNode(__instance.TraderName + "TradeShipTryingToFlee".Translate());
@@ -1087,7 +1087,7 @@ namespace SaveOurShip2
 				{
 					TradeUtility.LaunchThingsOfType(ThingDefOf.Silver, 2500 * bounty, __instance.Map, null);
 					bounty = 0;
-					Find.World.GetComponent<PastWorldUWO2>().PlayerFactionBounty = bounty;
+					ShipInteriorMod2.WorldComp.PlayerFactionBounty = bounty;
 				};
 				diaOption3.resolveTree = true;
 				diaNode.options.Add(diaOption3);
@@ -1201,13 +1201,13 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix()
 		{
-			if (WorldSwitchUtility.SaveShipFlag)
+			if (ShipInteriorMod2.SaveShipFlag)
 			{
-				WorldSwitchUtility.SaveShip((Building_ShipBridge)ShipInteriorMod2.shipOriginRoot);
+				ShipInteriorMod2.SaveShipToFile((Building_ShipBridge)ShipInteriorMod2.shipOriginRoot);
 			}
 			else if (ShipInteriorMod2.shipOriginRoot != null)
 			{
-				ScreenFader.StartFade(UnityEngine.Color.clear, 1f);
+				ScreenFader.StartFade(Color.clear, 1f);
 				IntVec3 size = ShipInteriorMod2.shipOriginRoot.Map.Size;
                 if (size.x < Find.World.info.initialMapSize.x && size.y < Find.World.info.initialMapSize.y)
 				{
@@ -2824,7 +2824,7 @@ namespace SaveOurShip2
 	{
 		internal static void Postfix(Pawn_ApparelTracker __instance)
 		{
-			Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == __instance?.pawn?.thingIDNumber);
+			ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == __instance?.pawn?.thingIDNumber);
 		}
 	}
 
@@ -2833,7 +2833,7 @@ namespace SaveOurShip2
 	{
 		internal static void Postfix(Pawn_ApparelTracker __instance)
 		{
-			Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == __instance?.pawn?.thingIDNumber);
+			ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == __instance?.pawn?.thingIDNumber);
 		}
 	}
 
@@ -2843,7 +2843,7 @@ namespace SaveOurShip2
 		internal static void Postfix(Pawn pawn, BodyPartRecord part, Recipe_InstallArtificialBodyPart __instance)
 		{
 			if (__instance.recipe.addsHediff == ResourceBank.HediffDefOf.SoSArchotechLung)
-				Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
+				ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
 		}
 	}
 
@@ -2853,7 +2853,7 @@ namespace SaveOurShip2
 		internal static void Postfix(Pawn pawn, BodyPartRecord part)
 		{
 			if (part.def.defName.Equals("SoSArchotechLung"))
-				Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
+				ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
 		}
 	}
 
@@ -2863,7 +2863,7 @@ namespace SaveOurShip2
 		internal static void Postfix(Pawn pawn, BodyPartRecord part, Recipe_InstallImplant __instance)
 		{
 			if (__instance.recipe.addsHediff == ResourceBank.HediffDefOf.SoSArchotechSkin)
-				Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
+				ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
 		}
 	}
 
@@ -2873,7 +2873,7 @@ namespace SaveOurShip2
 		internal static void Postfix(Pawn pawn, BodyPartRecord part)
 		{
 			if (part.def.defName.Equals("SoSArchotechSkin"))
-				Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
+				ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
 		}
 	}
 
@@ -2882,7 +2882,7 @@ namespace SaveOurShip2
 	{
 		internal static void Postfix(Pawn __instance)
 		{
-			Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache.RemoveAll(p => p.Key == __instance.thingIDNumber);
+			ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == __instance.thingIDNumber);
 		}
 	}
 
@@ -3286,7 +3286,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(MainTabWindow_Research __instance, IEnumerable ___tabs)
 		{
-			if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechUplink"))
+			if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechUplink"))
 			{
 				TabRecord archoTab = null;
 				foreach (TabRecord tab in ___tabs)
@@ -3304,7 +3304,7 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(string labelText)
 		{
-			if (labelText.Equals("Sacrifice to archotech spore") && !WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechUplink"))
+			if (labelText.Equals("Sacrifice to archotech spore") && !ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechUplink"))
 			{
 				return false;
 			}
@@ -3801,12 +3801,12 @@ namespace SaveOurShip2
     {
         public static bool Prefix()
         {
-            return !WorldSwitchUtility.LoadShipFlag;
+            return !ShipInteriorMod2.LoadShipFlag;
         }
 
         public static void Postfix(Page_ChooseIdeoPreset __instance)
         {
-            if (WorldSwitchUtility.LoadShipFlag)
+            if (ShipInteriorMod2.LoadShipFlag)
             {
                 foreach (Faction allFaction in Find.FactionManager.AllFactions)
                 {
@@ -3835,12 +3835,12 @@ namespace SaveOurShip2
     {
         public static bool Prefix()
         {
-            return !WorldSwitchUtility.LoadShipFlag;
+            return !ShipInteriorMod2.LoadShipFlag;
         }
 
         public static void Postfix(Page_ConfigureStartingPawns __instance)
         {
-            if (WorldSwitchUtility.LoadShipFlag)
+            if (ShipInteriorMod2.LoadShipFlag)
             {
                 if (__instance.next != null)
                 {
@@ -3862,7 +3862,7 @@ namespace SaveOurShip2
     {
         public static bool Prefix()
         {
-            return !WorldSwitchUtility.LoadShipFlag;
+            return !ShipInteriorMod2.LoadShipFlag;
         }
     }
 
@@ -3871,23 +3871,23 @@ namespace SaveOurShip2
     {
         public static bool Prefix()
         {
-            if (WorldSwitchUtility.LoadShipFlag || WorldSwitchUtility.StartShipFlag)
+            if (ShipInteriorMod2.LoadShipFlag || ShipInteriorMod2.StartShipFlag)
                 return false;
             return true;
         }
 
         public static void Postfix(MapParent parent, ref Map __result)
         {
-            if (WorldSwitchUtility.LoadShipFlag)
+            if (ShipInteriorMod2.LoadShipFlag)
             {
                 parent.Destroy();
-                WorldSwitchUtility.LoadShipFlag = false;
+                ShipInteriorMod2.LoadShipFlag = false;
                 __result = ScenPart_LoadShip.GenerateShipSpaceMap();
             }
-            else if (WorldSwitchUtility.StartShipFlag)
+            else if (ShipInteriorMod2.StartShipFlag)
             {
                 parent.Destroy();
-                WorldSwitchUtility.StartShipFlag = false;
+                ShipInteriorMod2.StartShipFlag = false;
                 __result = ScenPart_StartInSpace.GenerateShipSpaceMap();
             }
         }
@@ -4089,7 +4089,7 @@ namespace SaveOurShip2
 		{
 			if (__instance.PlacingDef is ThingDef && ((ThingDef)__instance.PlacingDef).HasComp(typeof(CompSoSUnlock)))
 			{
-				if (WorldSwitchUtility.PastWorldTracker.Unlocks.Contains(((ThingDef)__instance.PlacingDef).GetCompProperties<CompProperties_SoSUnlock>().unlock) || DebugSettings.godMode)
+				if (ShipInteriorMod2.WorldComp.Unlocks.Contains(((ThingDef)__instance.PlacingDef).GetCompProperties<CompProperties_SoSUnlock>().unlock) || DebugSettings.godMode)
 					__result = true;
 				else
 					__result = false;
@@ -4136,7 +4136,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(IncidentParms parms)
 		{
-			if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains("ArchotechSpore"))
+			if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore"))
 			{
 				foreach (Map map in Find.Maps)
 				{
@@ -4161,17 +4161,17 @@ namespace SaveOurShip2
 		public static void Postfix(ResearchProjectDef proj)
 		{
 			if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarA)
-				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarAMission"); //Handled in Building_ShipBridge
+				ShipInteriorMod2.WorldComp.Unlocks.Add("ArchotechPillarAMission"); //Handled in Building_ShipBridge
 			else if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarB)
-				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarBMission"); //Handled in Building_ShipBridge
+				ShipInteriorMod2.WorldComp.Unlocks.Add("ArchotechPillarBMission"); //Handled in Building_ShipBridge
 			else if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarC)
 			{
-				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarCMission");
+				ShipInteriorMod2.WorldComp.Unlocks.Add("ArchotechPillarCMission");
 				ShipInteriorMod2.GenerateSite("TribalPillarSite");
 			}
 			else if (proj == ResourceBank.ResearchProjectDefOf.ArchotechPillarD)
 			{
-				WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechPillarDMission");
+				ShipInteriorMod2.WorldComp.Unlocks.Add("ArchotechPillarDMission");
 				ShipInteriorMod2.GenerateSite("InsectPillarSite");
 			}
 		}
@@ -4182,9 +4182,9 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Window __instance)
 		{
-			if (__instance is Screen_Credits && Find.World.GetComponent<PastWorldUWO2>().SoSWin)
+			if (__instance is Screen_Credits && ShipInteriorMod2.WorldComp.SoSWin)
 			{
-				Find.World.GetComponent<PastWorldUWO2>().SoSWin = false;
+				ShipInteriorMod2.WorldComp.SoSWin = false;
 				GenScene.GoToMainMenu();
 			}
 		}

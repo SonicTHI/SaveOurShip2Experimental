@@ -528,6 +528,8 @@ namespace RimWorld
                             if (IsWreck) //bridge placed on wreck, repath
                             {
                                 Core = bridge;
+                                if (name == null)
+                                    name = bridge.ShipName;
                                 RebuildCorePath();
                             }
                             bridge.ShipIndex = Index;

@@ -32,8 +32,8 @@ namespace RimWorld
         public void UnlockThis()
         {
             string unlock = ((CompProperties_SoSUnlock)this.TryGetComp<CompSoSUnlock>().props).unlock;
-            if (!WorldSwitchUtility.PastWorldTracker.Unlocks.Contains(unlock))
-                WorldSwitchUtility.PastWorldTracker.Unlocks.Add(unlock);
+            if (!ShipInteriorMod2.WorldComp.Unlocks.Contains(unlock))
+                ShipInteriorMod2.WorldComp.Unlocks.Add(unlock);
         }
     }
 }

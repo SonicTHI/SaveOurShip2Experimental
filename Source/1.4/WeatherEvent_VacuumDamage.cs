@@ -87,7 +87,7 @@ namespace RimWorld
                         false, true);
                     GenExplosion.DoExplosion(pawn.Position, pawn.Map, 1, DamageDefOf.Smoke, null, -1, -1f, null, null,
                         null, null, null, 1f);
-                    Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache[pawn.thingIDNumber] = 4;
+                    ShipInteriorMod2.WorldComp.PawnsInSpaceCache[pawn.thingIDNumber] = 4;
                     break;
                 }
             }

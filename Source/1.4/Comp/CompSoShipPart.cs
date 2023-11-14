@@ -141,20 +141,20 @@ namespace RimWorld
                     SpawnLight(lightRot, lightColor, sunLight);
                 return;
             }
+            if (Props.roof)
+            {
+                foreach (IntVec3 pos in cellsUnder) //set roof
+                {
+                    var oldRoof = map.roofGrid.RoofAt(pos);
+                    if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
+                        map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
+                }
+            }
             foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
             {
                 if (!mapComp.MapShipCells.ContainsKey(vec))
                 {
                     mapComp.MapShipCells.Add(vec, new Tuple<int, int>(-1, -1));
-                }
-            }
-            if (Props.roof)
-            {
-                foreach (IntVec3 pos in cellsUnder)
-                {
-                    var oldRoof = map.roofGrid.RoofAt(pos);
-                    if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
-                        map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
                 }
             }
             if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
@@ -197,7 +197,7 @@ namespace RimWorld
                 ship.RemoveFromCache(parent as Building, mode);
                 return;
             }
-            else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && (Props.isHull && !Props.isPlating || !Props.isHull && Props.isPlating) && ship.FoamDistributors.Any())
+            else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && ((Props.isHull && !Props.isPlating && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map)) || (!Props.isHull && Props.isPlating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
             {
                 //replace part with foam, no detach checks
                 foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))

@@ -31,14 +31,25 @@ namespace RimWorld
 				return null;
 			}
 			List<Thing> spores = pawn.Map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.ShipArchotechSpore);
-			if (spores.Count == 0)
+			if (spores.NullOrEmpty())
 				return null;
-			if (pawn.WorkTagIsDisabled(WorkTags.Violent))
+            Thing spore = null;
+            foreach (Thing thing in spores)
+			{
+				if (pawn.CanReserve(thing))
+				{
+					spore = thing;
+					break;
+				}
+            }
+            if (spore == null)
+                return null;
+            if (pawn.WorkTagIsDisabled(WorkTags.Violent))
 			{
 				JobFailReason.Is(IncapableOfViolenceLowerTrans);
 				return null;
 			}
-			return JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("SacrificeToArchotech"), t, spores.RandomElement());
+			return JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("SacrificeToArchotech"), t, spore);
 		}
 	}
 }

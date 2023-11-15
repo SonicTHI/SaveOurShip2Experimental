@@ -45,8 +45,7 @@ namespace RimWorld
                     else
                         pawnsToDamage.Add(pawn);
                 }
-                //SC else if (eva != 1 && !map.GetComponent<ShipHeatMapComp>().VecHasEVA(pawn.Position)) //in ship, no air
-                else if (eva != 1 && !map.GetComponent<ShipHeatMapComp>().LifeSupports.Any(s => s.active)) //in ship, no air
+                else if (eva != 1 && !map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) //in ship, no air
                 {
 					if (eva == 3)
 					{
@@ -88,7 +87,7 @@ namespace RimWorld
                         false, true);
                     GenExplosion.DoExplosion(pawn.Position, pawn.Map, 1, DamageDefOf.Smoke, null, -1, -1f, null, null,
                         null, null, null, 1f);
-                    Find.World.GetComponent<PastWorldUWO2>().PawnsInSpaceCache[pawn.thingIDNumber] = 4;
+                    ShipInteriorMod2.WorldComp.PawnsInSpaceCache[pawn.thingIDNumber] = 4;
                     break;
                 }
             }

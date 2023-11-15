@@ -83,10 +83,10 @@ namespace RimWorld
             if (Consciousness == null)
                 return;
             int tick = Find.TickManager.TicksGame;
-            if (!WorldSwitchUtility.PastWorldTracker.startedEndgame)
+            if (!ShipInteriorMod2.WorldComp.startedEndgame)
             {
-                WorldSwitchUtility.PastWorldTracker.startedEndgame = true;
-                WorldSwitchUtility.PastWorldTracker.Unlocks.Add("ArchotechUplink");
+                ShipInteriorMod2.WorldComp.startedEndgame = true;
+                ShipInteriorMod2.WorldComp.Unlocks.Add("ArchotechUplink");
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSFindPillars"), TranslatorFormattedStringExtensions.Translate("SoSFindPillarsDesc"), LetterDefOf.PositiveEvent);
                 //lastGiftTick = tick;
                 lastPrankTick = tick+Rand.Range(40000,80000);
@@ -1028,7 +1028,7 @@ namespace RimWorld
 
             //Log.Message(builder.ToString());
 
-            Find.World.GetComponent<PastWorldUWO2>().SoSWin = true;
+            ShipInteriorMod2.WorldComp.SoSWin = true;
             GameVictoryUtility.ShowCredits(builder.ToString());
         }
     }

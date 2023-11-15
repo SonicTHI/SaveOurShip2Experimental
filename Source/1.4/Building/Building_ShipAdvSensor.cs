@@ -18,12 +18,12 @@ namespace RimWorld
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            Find.World.GetComponent<PastWorldUWO2>().Sensors.Add(this);
+            ShipInteriorMod2.WorldComp.Sensors.Add(this);
         }
 
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
-            Find.World.GetComponent<PastWorldUWO2>().Sensors.Remove(this);
+            ShipInteriorMod2.WorldComp.Sensors.Remove(this);
             base.DeSpawn(mode);
         }
 

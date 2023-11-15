@@ -113,7 +113,7 @@ namespace RimWorld
 
 		public void DoEarlyInit() //Scenario.GetFirstConfigPage call via patch 
         {
-			WorldSwitchUtility.StartShipFlag = true;
+			ShipInteriorMod2.StartShipFlag = true;
 		}
 
 		public static Map GenerateShipSpaceMap() //MapGenerator.GenerateMap override via patch

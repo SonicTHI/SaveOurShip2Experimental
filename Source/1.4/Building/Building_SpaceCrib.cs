@@ -31,7 +31,7 @@ namespace RimWorld
 
             if (ShipInteriorMod2.ExposedToOutside(Position.GetRoom(Map)))
                 closed = true;
-            else if (!mapComp.LifeSupports.Where(s => s.active).Any())
+            else if (mapComp.VecHasLS(Position))
                 closed = true;
 
             UpdateState(closed);

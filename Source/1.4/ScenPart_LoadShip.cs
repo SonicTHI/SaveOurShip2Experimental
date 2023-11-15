@@ -122,7 +122,7 @@ namespace RimWorld
 
         public void DoEarlyInit() //Scenario.GetFirstConfigPage call via patch
         {
-            WorldSwitchUtility.LoadShipFlag = true;
+            ShipInteriorMod2.LoadShipFlag = true;
             LoadShip();
             //remove incompatible scenario parts - not sure if this works at all
             List<ScenPart> toRemove = new List<ScenPart>();
@@ -438,7 +438,7 @@ WorldGenerator.GenerateWorld
 	scenPart.PostWorldGenerate();
 	Find.Scenario.PostIdeoChosen();
 	PageUtility.InitGameStart()
-		Find.GameInitData.PrepForMapGen(); - hpatch FixPawnGen(return !WorldSwitchUtility.LoadShipFlag;)
+		Find.GameInitData.PrepForMapGen(); - hpatch FixPawnGen(return !ShipInteriorMod2.LoadShipFlag;)
 		Find.Scenario.PreMapGenerate(); -> scenPart.PreMapGenerate (unused)
 
 Game.InitNewGame()

@@ -110,8 +110,8 @@ namespace RimWorld
 
         private void SpawnCrashSite()
         {
-            WorldSwitchUtility.PastWorldTracker.Unlocks.Add("BlackBoxShipDefeated");
-            ShipInteriorMod2.GenerateImpactSite();
+            ShipInteriorMod2.WorldComp.Unlocks.Add("BlackBoxShipDefeated");
+            ShipInteriorMod2.GenerateSite("ShipEngineImpactSite");
         }
     }
 }

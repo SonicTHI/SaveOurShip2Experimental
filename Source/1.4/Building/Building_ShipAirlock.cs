@@ -282,10 +282,12 @@ namespace RimWorld
                 GenSpawn.Spawn(thing, First.Position + offset, Map);
                 thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);
+
                 thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamTile);
                 GenSpawn.Spawn(thing, Position + offset, Map);
                 thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);
+
                 thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, Second.Position + offset, Map);
                 thing.TryGetComp<CompSoShipDocking>().dockParent = this;

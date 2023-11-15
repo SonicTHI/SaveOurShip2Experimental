@@ -19,12 +19,10 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            parent.Map.GetComponent<ShipHeatMapComp>().HullFoamDistributors.Add(this); //SC rem
         }
 
         public override void PostDeSpawn(Map map)
         {
-            map.GetComponent<ShipHeatMapComp>().HullFoamDistributors.Remove(this); //SC rem
             base.PostDeSpawn(map);
         }
     }

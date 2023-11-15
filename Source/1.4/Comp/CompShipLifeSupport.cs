@@ -16,7 +16,6 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            parent.Map.GetComponent<ShipHeatMapComp>().LifeSupports.Add(this); //SC rem
             powerComp = parent.TryGetComp<CompPowerTrader>();
             flickComp = parent.TryGetComp<CompFlickable>();
             if (powerComp.PowerOn && flickComp.SwitchIsOn)
@@ -33,12 +32,6 @@ namespace RimWorld
                 else
                     active = false;
             }
-        }
-        public override void PostDeSpawn(Map map) //SC rem
-        {
-            //Log.Message("Despawned LS: " + this.parent + " on map: " + map);
-            map.GetComponent<ShipHeatMapComp>().LifeSupports.Remove(this);
-            base.PostDeSpawn(map);
         }
         public override void PostExposeData()
         {

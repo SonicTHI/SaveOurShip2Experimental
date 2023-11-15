@@ -149,9 +149,9 @@ namespace RimWorld
                 {
                     doneSafely = true;
                     //Find.LetterStack.ReceiveLetter("Feature incomplete", "In future versions of Save Our Ship, this drive will drop salvage to be reverse-engineered using a salvage bay. For now, you just get the tech for free. Hooray!", LetterDefOf.PositiveEvent);
-                    //WorldSwitchUtility.PastWorldTracker.Unlocks.Add("JTDrive");
+                    //ShipInteriorMod2.PastWorldTracker.Unlocks.Add("JTDrive");
                     Thing notTechprint = ThingMaker.MakeThing(ThingDef.Named("SoSEntanglementManifold"));
-                    WorldSwitchUtility.PastWorldTracker.Unlocks.Add("JTDriveToo");
+                    ShipInteriorMod2.WorldComp.Unlocks.Add("JTDriveToo");
                     GenPlace.TryPlaceThing(notTechprint, this.parent.Position, previousMap, ThingPlaceMode.Near);
                 }
             }
@@ -159,7 +159,7 @@ namespace RimWorld
             {
                 GenExplosion.DoExplosion(this.explosionPos, previousMap, 15, DamageDefOf.Bomb, null);
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ImpactSiteLostLabel"), TranslatorFormattedStringExtensions.Translate("ImpactSiteLost"), LetterDefOf.NegativeEvent);
-                ShipInteriorMod2.GenerateImpactSite();
+                ShipInteriorMod2.GenerateSite("ShipEngineImpactSite");
             }
         }
     }

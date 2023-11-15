@@ -8,9 +8,9 @@ namespace RimWorld
 		public bool isPlating = false;
 		public bool isHardpoint = false;
 		public bool isHull = false;
-		public bool hermetic = false;
+		public bool hermetic = false; //used in SpaceRoomCheck only
 
-		public bool canLight = false;
+        public bool canLight = false;
 		public ThingDef light;
 		public int lightPower = 15;
 		public int sunLightPower = 2500;

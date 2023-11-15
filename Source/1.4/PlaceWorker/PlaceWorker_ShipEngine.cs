@@ -11,9 +11,18 @@ namespace RimWorld
     {
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
-            Building engineprev = map.listerBuildings.allBuildingsColonist.Where(x => x.TryGetComp<CompEngineTrail>() != null 
-                && !x.TryGetComp<CompEngineTrail>().Props.reactionless).FirstOrDefault();
-            if (engineprev == null || (engineprev != null && engineprev.Rotation == rot))
+            CompEngineTrail engineprev = null;
+            List<SoShipCache> ships = map.GetComponent<ShipHeatMapComp>().ShipsOnMapNew.Values.ToList();
+            if (ships.Any(s => s.Engines.Any()))
+            {
+                //prefer player owned non wreck ships
+                List<SoShipCache> shipsE = ships.Where(s => !s.IsWreck && s.Faction == Faction.OfPlayer).ToList();
+                if (!shipsE.NullOrEmpty())
+                    engineprev = shipsE.First().Engines.First();
+                else
+                    engineprev = ships.First().Engines.First();
+            }
+            if (engineprev == null || (engineprev != null && engineprev.parent.Rotation == rot))
                 return AcceptanceReport.WasAccepted;
             else
                 return AcceptanceReport.WasRejected;

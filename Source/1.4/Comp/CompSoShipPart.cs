@@ -63,7 +63,8 @@ namespace RimWorld
         public Building myLight = null;
         public bool discoMode = false;
 
-        List<IntVec3> cellsUnder;
+        HashSet<IntVec3> cellsUnder;
+        public bool FoamFill = false;
         Map map;
         public ShipHeatMapComp mapComp;
         public CompProperties_SoShipPart Props
@@ -73,54 +74,63 @@ namespace RimWorld
                 return (CompProperties_SoShipPart)props;
             }
         }
-        /*SC public override string CompInspectStringExtra()
+        public override string CompInspectStringExtra()
         {
             StringBuilder stringBuilder = new StringBuilder();
             if (Prefs.DevMode)
             {
-                if (!mapComp.ShipCells.ContainsKey(parent.Position))
-                {
-                    stringBuilder.Append("cache is null for this pos!");
-                }
-                var shipCells = mapComp.ShipCells[parent.Position];
-                int index = -1;
+                int index = mapComp.ShipIndexOnVec(parent.Position);
                 int path = -1;
-                if (shipCells != null)
+                if (index != -1)
                 {
-                    index = shipCells.Item1;
-                    path = shipCells.Item2;
+                    path = mapComp.MapShipCells[parent.Position].Item2;
                 }
                 if (parent.def.building.shipPart)
                     stringBuilder.Append("shipIndex: " + index + " / corePath: " + path);
                 else
+                {
                     stringBuilder.Append("shipIndex: " + index);
+                    if (parent is Building_ShipBridge && parent == mapComp.ShipsOnMapNew[index].Core)
+                        stringBuilder.Append(" PRIMARY CORE");
+                }
             }
             return stringBuilder.ToString();
-        }*/
+        }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
             map = parent.Map;
             mapComp = map.GetComponent<ShipHeatMapComp>();
+            cellsUnder = parent.OccupiedRect().ToHashSet();
+            if (!parent.def.building.shipPart)
+            {
+                if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
+                    return;
+                foreach (IntVec3 vec in cellsUnder) //if any part spawned on ship
+                {
+                    int shipIndex = mapComp.ShipIndexOnVec(vec);
+                    if (shipIndex != -1)
+                    {
+                        mapComp.ShipsOnMapNew[shipIndex].AddToCache(parent as Building);
+                        return;
+                    }
+                }
+                return;
+            }
             isTile = parent.def == ResourceBank.ThingDefOf.ShipHullTile;
             isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
             isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
             isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
-            cellsUnder = new List<IntVec3>();
-            foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(parent))
+            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint || Props.isHull))
             {
-                cellsUnder.Add(vec);
-            }
-            if (!respawningAfterLoad && !ShipInteriorMod2.AirlockBugFlag && (Props.isPlating || Props.isHardpoint || Props.isHull)) 
-            {
-                foreach (IntVec3 v in cellsUnder) //clear floor on construction
+                if (!ShipInteriorMod2.AirlockBugFlag)
                 {
-                    RemoveOtherTerrain(v);
+                    foreach (IntVec3 v in cellsUnder) //clear floor on construction
+                    {
+                        RemoveOtherTerrain(v);
+                    }
                 }
-            }
-            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint || Props.isHull)) //set terrain
-            {
-                foreach (IntVec3 v in cellsUnder)
+                foreach (IntVec3 v in cellsUnder) //set terrain
                 {
                     SetShipTerrain(v);
                 }
@@ -131,31 +141,32 @@ namespace RimWorld
                     SpawnLight(lightRot, lightColor, sunLight);
                 return;
             }
-            /*SC foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
-            {
-                if (!mapComp.ShipCells.ContainsKey(vec))
-                {
-                    mapComp.ShipCells.Add(vec, new Tuple<int, int>(-1, -1));
-                }
-            }*/
             if (Props.roof)
             {
-                foreach (IntVec3 pos in cellsUnder)
+                foreach (IntVec3 pos in cellsUnder) //set roof
                 {
                     var oldRoof = map.roofGrid.RoofAt(pos);
                     if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
                         map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
                 }
             }
-            /*SC if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
+            foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
+            {
+                if (!mapComp.MapShipCells.ContainsKey(vec))
+                {
+                    mapComp.MapShipCells.Add(vec, new Tuple<int, int>(-1, -1));
+                }
+            }
+            if (mapComp.CacheOff) //on load, enemy ship spawn - cache is off
             {
                 return;
             }
             //plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this
             //plating or shipPart with different or no shipIndex: merge connected to this ship
+            HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
             foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(parent))
             {
-                if (!mapComp.ShipCells.ContainsKey(vec))
+                if (!mapComp.MapShipCells.ContainsKey(vec))
                     continue;
                 cellsToMerge.Add(vec);
             }
@@ -166,22 +177,47 @@ namespace RimWorld
             }
             else //else make new ship/wreck
             {
-                mapComp.ShipsOnMapNew.Add(this.parent.thingIDNumber, new SoShipCache());
-                mapComp.ShipsOnMapNew[this.parent.thingIDNumber].RebuildCache(this.parent as Building);
-            }*/
+                mapComp.ShipsOnMapNew.Add(parent.thingIDNumber, new SoShipCache());
+                mapComp.ShipsOnMapNew[parent.thingIDNumber].RebuildCache(parent as Building);
+            }
         }
 
-        /*SC public void PreDeSpawn() //called in building.destroy, before comps get removed
+        public void PreDeSpawn(DestroyMode mode) //called in building.destroy, before comps get removed
         {
-            if (!parent.def.building.shipPart)
+            if (ShipInteriorMod2.AirlockBugFlag) //disable on moveship
                 return;
-            if (ShipInteriorMod2.AirlockBugFlag) //moveship cleans entire area, caches //td
+
+            int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
+            if (shipIndex == -1)
+                return;
+
+            var ship = mapComp.ShipsOnMapNew[shipIndex];
+            if (!parent.def.building.shipPart)
             {
+                ship.RemoveFromCache(parent as Building, mode);
                 return;
             }
-            var ship = mapComp.ShipsOnMapNew[mapComp.ShipCells[parent.Position].Item1];
+            else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && ((Props.isHull && !Props.isPlating && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map)) || (!Props.isHull && Props.isPlating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
+            {
+                //replace part with foam, no detach checks
+                foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))
+                {
+                    ship.RemoveFromCache(parent as Building, mode);
+                    dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
+                    FoamFill = true;
+                    return;
+                }
+            }
+            bool skipDetach = false; //since cores are not ship parts and the starting tile dies, skip detach check
+            if (Props.isPlating && mapComp.MapShipCells[parent.Position].Item2 == 0)
+            {
+                if (!ship.ReplaceCoreOrWreck())
+                {
+                    skipDetach = true;
+                }
+            }
             HashSet<Building> buildings = new HashSet<Building>();
-            foreach (IntVec3 vec in cellsUnder) //check if any other ship parts exist, if not remove ship area
+            foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
             {
                 bool partExists = false;
                 foreach (Thing t in vec.GetThingList(parent.Map))
@@ -198,33 +234,34 @@ namespace RimWorld
                         }
                     }
                 }
-                if (!partExists) //no shippart remains, remove from area, remove non ship buildings if fully off ship
+                if (!partExists) //no shippart remains, remove from area
                 {
-                    foreach (Building b in buildings) //remove other buildings that are no longer supported by ship parts
-                    {
-                        bool allOffShip = true;
-                        foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
-                        {
-                            if (mapComp.ShipCells.ContainsKey(vec))
-                            {
-                                allOffShip = false;
-                                break;
-                            }
-                        }
-                        if (allOffShip)
-                        {
-                            ship.RemoveFromCache(b);
-                        }
-                    }
                     ship.Area.Remove(vec);
                     ship.AreaDestroyed.Add(vec);
-                    mapComp.ShipCells.Remove(vec);
+                    mapComp.MapShipCells.Remove(vec);
                 }
             }
-            ship.RemoveFromCache(parent as Building);
-            if (!mapComp.InCombat) //perform check immediately
-                ship.CheckForDetach();
-        }*/
+            foreach (Building b in buildings) //remove other buildings that are no longer supported by this ship
+            {
+                bool onShip = false;
+                foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
+                {
+                    if (mapComp.ShipIndexOnVec(v) == shipIndex)
+                    {
+                        onShip = true;
+                        break;
+                    }
+                }
+                if (!onShip)
+                {
+                    ship.RemoveFromCache(b, mode);
+                }
+            }
+            //Log.Message("rem " + parent);
+            ship.RemoveFromCache(parent as Building, mode);
+            if (!skipDetach)
+                ship.DetachCheck = true;
+        }
         public override void PostDeSpawn(Map map)
         {
             base.PostDeSpawn(map);
@@ -264,6 +301,17 @@ namespace RimWorld
                     if (Props.roof)
                         map.roofGrid.SetRoof(pos, null);
                 }
+            }
+            if (FoamFill)
+            {
+                Thing newWall;
+                if (Props.isHull)
+                    newWall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.HullFoamWall);
+                else
+                    newWall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullfoamTile);
+
+                newWall.SetFaction(parent.Faction);
+                GenPlace.TryPlaceThing(newWall, cellsUnder.First(), map, ThingPlaceMode.Direct);
             }
         }
         public override void PostDraw()

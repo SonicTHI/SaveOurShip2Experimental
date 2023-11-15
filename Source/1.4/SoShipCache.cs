@@ -47,6 +47,7 @@ namespace RimWorld
         public int BuildingCount = 0;
         public int BuildingCountAtCombatStart = 0;
         public int ThreatRaw = 0;
+        public bool DetachCheck = false;
         private Map map;
         public Map Map
         {
@@ -233,8 +234,9 @@ namespace RimWorld
             }
             if (rotb == 1)
             {
+                int temp = lowestCorner.x;
                 lowestCorner.x = map.Size.z - lowestCorner.z;
-                lowestCorner.z = lowestCorner.x;
+                lowestCorner.z = temp;
             }
             else if (rotb == 2)
             {
@@ -747,9 +749,16 @@ namespace RimWorld
             PathDirty = false;
             Log.Message("SOS2c: RebuildCorePath Rebuilt corePath for ship: " + Index +" at " + Core.Position);
         }
-        //finds all shipcells around detached and for each tries to path back to first with lower index
-        //if not possible, detaches all in set
-        public bool CheckForDetach()
+        //detach
+        public void Tick()
+        {
+            if (DetachCheck)
+            {
+                CheckForDetach();
+                DetachCheck = false;
+            }
+        }
+        public bool CheckForDetach() //finds all shipcells around detached and for each tries to path back to first with lower index, if not possible, detaches all in set
         {
             if (AreaDestroyed.Any())
             {
@@ -834,8 +843,7 @@ namespace RimWorld
             }
             return false;
         }
-        //if bridge found detach as new ship else as wreck
-        public void Detach(HashSet<IntVec3> detachArea)
+        public void Detach(HashSet<IntVec3> detachArea) //if bridge found detach as new ship else as wreck
         {
             Building newCore = null;
             DestroyMode mode = DestroyMode.Vanish;

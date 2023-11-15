@@ -404,7 +404,7 @@ namespace RimWorld
                     toggleAction = delegate
                     {
                         if (RezPlz == null)
-                            RezPlz = parent.Map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("MechSerumResurrector")).FirstOrDefault();
+                            RezPlz = parent.Map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.MechSerumResurrector).FirstOrDefault();
                         else
                             RezPlz = null;
                     },
@@ -416,7 +416,7 @@ namespace RimWorld
                         return RezPlz != null;
                     }
                 };
-                resurrect.disabled = parent.Map.listerThings.ThingsOfDef(DefDatabase<ThingDef>.GetNamed("MechSerumResurrector")).FirstOrDefault() == null;
+                resurrect.disabled = parent.Map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.MechSerumResurrector).FirstOrDefault() == null;
                 if (resurrect.disabled)
                     resurrect.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideNoResurrector");
                 gizmos.Add(resurrect);

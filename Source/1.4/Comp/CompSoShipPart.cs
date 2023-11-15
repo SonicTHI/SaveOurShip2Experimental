@@ -216,7 +216,6 @@ namespace RimWorld
                     skipDetach = true;
                 }
             }
-
             HashSet<Building> buildings = new HashSet<Building>();
             foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
             {
@@ -261,7 +260,7 @@ namespace RimWorld
             //Log.Message("rem " + parent);
             ship.RemoveFromCache(parent as Building, mode);
             if (!skipDetach)
-                ship.CheckForDetach();
+                ship.DetachCheck = true;
         }
         public override void PostDeSpawn(Map map)
         {

@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V93n15";
+        public static readonly string SOS2EXPversion = "V94";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -841,9 +841,7 @@ namespace SaveOurShip2
 						//def replacers
 						if (def.IsBuildingArtificial)
 						{
-							if (!royActive && def.Equals(ThingDefOf.Throne))
-								def = DefDatabase<ThingDef>.GetNamed("Armchair");
-							else if (wreckLevel > 2 && wreckDictionary.ContainsKey(def)) //replace ship walls/floor
+							if (wreckLevel > 2 && wreckDictionary.ContainsKey(def)) //replace ship walls/floor
 							{
 								def = wreckDictionary[def];
 								isWrecked = true;
@@ -851,19 +849,23 @@ namespace SaveOurShip2
 							else if (!unlockedJT && def.HasComp(typeof(CompEngineTrail))) //replace JT drives if not unlocked via story
 							{
 								if (def == ResourceBank.ThingDefOf.Ship_Engine_Interplanetary)
-									def = DefDatabase<ThingDef>.GetNamed("Ship_Engine");
+									def = ResourceBank.ThingDefOf.Ship_Engine;
 								else if (def == ResourceBank.ThingDefOf.Ship_Engine_Interplanetary_Large)
-									def = DefDatabase<ThingDef>.GetNamed("Ship_Engine_Large");
-							}
-							else if (isMechs && def.building.IsTurret) //replace turets with mech version if ROY active
-							{
-								if (def.defName.Equals("Turret_MiniTurret"))
-                                    def = DefDatabase<ThingDef>.GetNamed("Turret_AutoMiniTurret");
-                                else if (def.defName.Equals("Turret_Autocannon"))
+									def = ResourceBank.ThingDefOf.Ship_Engine_Large;
+                            }
+                            else if (isMechs && def.building.IsTurret) //replace turets with mech version if ROY active
+                            {
+                                if (def == ThingDefOf.Turret_MiniTurret)
+                                    def = ThingDefOf.Turret_AutoMiniTurret;
+                                else if (def == ResourceBank.ThingDefOf.Turret_Autocannon)
                                     def = DefDatabase<ThingDef>.GetNamed("Turret_AutoChargeBlaster");
-                                else if (def.defName.Equals("Turret_Sniper"))
+                                else if (def == ResourceBank.ThingDefOf.Turret_Sniper)
                                     def = DefDatabase<ThingDef>.GetNamed("Turret_AutoInferno");
                             }
+                            else if (!royActive && def.Equals(ThingDefOf.Throne))
+                            {
+								def = DefDatabase<ThingDef>.GetNamed("Armchair");
+							}
 						}
 						//make thing
 						if (def.MadeFromStuff)
@@ -1729,8 +1731,9 @@ namespace SaveOurShip2
             }
             if (rotb == 1)
             {
+                int temp = lowestCorner.x;
                 lowestCorner.x = b.Map.Size.z - lowestCorner.z;
-                lowestCorner.z = lowestCorner.x;
+                lowestCorner.z = temp;
             }
             else if (rotb == 2)
             {

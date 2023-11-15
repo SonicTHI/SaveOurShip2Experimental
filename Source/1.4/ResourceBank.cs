@@ -95,6 +95,8 @@ namespace SaveOurShip2
             public static ThingDef ShipTorpedo_HighExplosive;
 			public static ThingDef ShipTorpedo_EMP;
 			public static ThingDef ShipTorpedo_Antimatter;
+            public static ThingDef Ship_Engine;
+            public static ThingDef Ship_Engine_Large;
             public static ThingDef Ship_Engine_Interplanetary;
             public static ThingDef Ship_Engine_Interplanetary_Large;
             public static ThingDef ShuttleFuelPods;
@@ -121,6 +123,10 @@ namespace SaveOurShip2
             public static ThingDef Bullet_Fake_Psychic;
             public static ThingDef ShipCombatLaserMote;
             public static ThingDef DetachedShipPart;
+            //vanilla defs
+            public static ThingDef Turret_Autocannon;
+            public static ThingDef Turret_Sniper;
+            public static ThingDef MechSerumResurrector;
         }
 
 		[DefOf]

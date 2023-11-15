@@ -10,7 +10,7 @@ namespace SaveOurShip2
     //SOS2 world comp, any global vars go here, legacy name is kept for backward compatibility
     public class PastWorldUWO2 : WorldComponent
     {
-        private int ShipsHaveInsidesVersion;
+        //private int ShipsHaveInsidesVersion;
         public int PlayerFactionBounty;
         public int LastAttackTick;
         public int LastBountyRaidTick;

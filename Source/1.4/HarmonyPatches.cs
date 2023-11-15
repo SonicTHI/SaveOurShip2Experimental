@@ -3988,14 +3988,16 @@ namespace SaveOurShip2
 		{
 			if (map != null && map.IsSpace())
 			{
-				IncidentParms incidentParms = new IncidentParms();
-				incidentParms.target = map;
-				incidentParms.faction = faction;
-				incidentParms.raidArrivalModeForQuickMilitaryAid = true;
-				incidentParms.biocodeApparelChance = biocodeChance;
-				incidentParms.biocodeWeaponsChance = biocodeChance;
-				incidentParms.spawnCenter = spawnPos;
-				if (__instance.def.royalAid.pawnKindDef != null)
+                IncidentParms incidentParms = new IncidentParms
+                {
+                    target = map,
+                    faction = faction,
+                    raidArrivalModeForQuickMilitaryAid = true,
+                    biocodeApparelChance = biocodeChance,
+                    biocodeWeaponsChance = biocodeChance,
+                    spawnCenter = spawnPos
+                };
+                if (__instance.def.royalAid.pawnKindDef != null)
 				{
 					incidentParms.pawnKind = __instance.def.royalAid.pawnKindDef;
 					//if (incidentParms.pawnKind == PawnKindDefOf.Empire_Fighter_Trooper)

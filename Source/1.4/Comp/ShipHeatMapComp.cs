@@ -236,18 +236,17 @@ namespace RimWorld
                 return shipsOnMapNew;
             }
         }
-        /*public List<SoShipCache> ShipsOnMap(bool allowWrecks = false)
+        public List<SoShipCache> ShipsOnMap(bool allowWrecks = true)
         {
             List<SoShipCache> ships = new List<SoShipCache>();
-            foreach (int index in ShipsOnMapNew.Keys)
+            foreach (SoShipCache ship in ShipsOnMapNew.Values)
             {
-                var ship = shipsOnMapNew[index];
-                if (allowWrecks && ship.IsWreck)
+                if (!allowWrecks && ship.IsWreck)
                     continue;
                 ships.Add(ship);
             }
             return ships;
-        }*/
+        }
         public void ResetCache()
         {
             ShipsOnMapNew.Clear();
@@ -743,6 +742,10 @@ namespace RimWorld
         public override void MapComponentTick()
         {
             base.MapComponentTick();
+            foreach (SoShipCache ship in ShipsOnMap())
+            {
+                ship.Tick();
+            }
             foreach (int index in DestroyedIncombat)
             {
                 RemoveShipFromBattle(index);

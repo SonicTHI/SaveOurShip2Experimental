@@ -34,7 +34,9 @@ namespace RimWorld
 		{
 			base.ExposeData();
 			Scribe_Defs.Look<EnemyShipDef>(ref enemyShipDef, "enemyShipDef");
-		}
+            Scribe_Values.Look<bool>(ref damageStart, "damageStart");
+            Scribe_Values.Look<ShipStartFlags>(ref startType, "startType");
+        }
 		public override void DoEditInterface(Listing_ScenEdit listing)
 		{
             Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 3f);

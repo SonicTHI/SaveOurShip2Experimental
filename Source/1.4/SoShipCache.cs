@@ -552,21 +552,21 @@ namespace RimWorld
                     if (b is Building_ShipTurret turret)
                     {
                         Turrets.Add(turret);
-                        int threat = turret.heatComp.Props.threat;
-                        if (turret.heatComp.Props.maxRange > 150) //long
+                        int threat = heatComp.Props.threat;
+                        if (heatComp.Props.maxRange > 150) //long
                         {
                             ThreatPerSegment[0] += threat / 6f;
                             ThreatPerSegment[1] += threat / 4f;
                             ThreatPerSegment[2] += threat / 2f;
                             ThreatPerSegment[3] += threat;
                         }
-                        else if (turret.heatComp.Props.maxRange > 100) //med
+                        else if (heatComp.Props.maxRange > 100) //med
                         {
                             ThreatPerSegment[0] += threat / 4f;
                             ThreatPerSegment[1] += threat / 2f;
                             ThreatPerSegment[2] += threat;
                         }
-                        else if (turret.heatComp.Props.maxRange > 50) //short
+                        else if (heatComp.Props.maxRange > 50) //short
                         {
                             ThreatPerSegment[0] += threat / 2f;
                             ThreatPerSegment[1] += threat;
@@ -654,21 +654,21 @@ namespace RimWorld
                     if (b is Building_ShipTurret turret)
                     {
                         Turrets.Remove(turret);
-                        int threat = turret.heatComp.Props.threat;
-                        if (turret.heatComp.Props.maxRange > 150) //long
+                        int threat = heatComp.Props.threat;
+                        if (heatComp.Props.maxRange > 150) //long
                         {
                             ThreatPerSegment[0] -= threat / 6f;
                             ThreatPerSegment[1] -= threat / 4f;
                             ThreatPerSegment[2] -= threat / 2f;
                             ThreatPerSegment[3] -= threat;
                         }
-                        else if (turret.heatComp.Props.maxRange > 100) //med
+                        else if (heatComp.Props.maxRange > 100) //med
                         {
                             ThreatPerSegment[0] -= threat / 4f;
                             ThreatPerSegment[1] -= threat / 2f;
                             ThreatPerSegment[2] -= threat;
                         }
-                        else if (turret.heatComp.Props.maxRange > 50) //short
+                        else if (heatComp.Props.maxRange > 50) //short
                         {
                             ThreatPerSegment[0] -= threat / 2f;
                             ThreatPerSegment[1] -= threat;

@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V94f1";
+        public static readonly string SOS2EXPversion = "V94f2";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -541,9 +541,9 @@ namespace SaveOurShip2
 			return true;
 		}
 		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
-		{
-			map.GetComponent<ShipHeatMapComp>().CacheOff = true;
-			List<IntVec3> area = new List<IntVec3>();
+        {
+            map.GetComponent<ShipHeatMapComp>().CacheOff = true;
+            List<IntVec3> area = new List<IntVec3>();
 			List<Thing> planters = new List<Thing>();
 			List<IntVec3> areaOut;
 			List<Thing> plantersOut;
@@ -556,7 +556,7 @@ namespace SaveOurShip2
 				area.AddRange(areaOut);
 				planters.AddRange(plantersOut);
 			}
-            else
+            else //non procgen fleet
 			{
 				for (int i = 0; i < shipDef.ships.Count; i++)
 				{
@@ -577,11 +577,11 @@ namespace SaveOurShip2
 		}
 		public static void GenerateFleet(float CR, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, SpaceNavyDef navyDef = null)
 		{
-			//use player points to spawn ships of the same navy, fit z, random x
-			//main + twin, twin, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
-			//60-20-20,50-50,40-40-10-10
-			map.GetComponent<ShipHeatMapComp>().CacheOff = true;
-			List<EnemyShipDef> ships;
+            //use player points to spawn ships of the same navy, fit z, random x
+            //main + twin, twin, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
+            //60-20-20,50-50,40-40-10-10
+            map.GetComponent<ShipHeatMapComp>().CacheOff = true;
+            List<EnemyShipDef> ships;
 			bool allowNavyExc = true;
 			if (navyDef != null)
 				ships = navyDef.enemyShipDefs;
@@ -701,12 +701,12 @@ namespace SaveOurShip2
 			PostGenerateShipDef(map, clearArea, area, planters);
 		}
 		public static void GenerateShipDef(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, out List<Thing> planters, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
-		{
-			cellsToFog = new List<IntVec3>();
+        {
+            cellsToFog = new List<IntVec3>();
 			planters = new List<Thing>();
 			cores = new List<Building>();
 			bool unlockedJT = false;
-			if (ShipInteriorMod2.WorldComp.Unlocks.Contains("JTDriveToo"))
+			if (WorldComp.Unlocks.Contains("JTDriveToo"))
 				unlockedJT = true;
 			bool ideoActive = false;
 			if (ModsConfig.IdeologyActive && (fac != Faction.OfAncientsHostile || fac != Faction.OfAncients || fac != Faction.OfMechanoids))
@@ -1459,6 +1459,7 @@ namespace SaveOurShip2
 			foreach (IntVec3 v in area)
             {
                 map.roofGrid.SetRoof(v, null);
+				map.GetComponent<ShipHeatMapComp>().MapShipCells.Remove(v);
             }
 			foreach (Building b in toReplace)
 			{
@@ -2489,7 +2490,7 @@ namespace SaveOurShip2
             }
 
             //Oddly enough, interstellar flight takes a lot of time
-            /*int years = Rand.RangeInclusive(ShipInteriorMod2.minTravelTime.Value, ShipInteriorMod2.maxTravelTime.Value);
+            /*int years = Rand.RangeInclusive(minTravelTime.Value, maxTravelTime.Value);
             Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * years);
             Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);*/
         }

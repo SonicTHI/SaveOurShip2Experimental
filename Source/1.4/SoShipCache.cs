@@ -245,12 +245,36 @@ namespace RimWorld
             }
             return lowestCorner;
         }
+        public IEnumerable<Building> OuterNonShipWalls()
+        {
+            foreach (Building b in Buildings.Where(b => !Parts.Contains(b) && b.def.passability == Traversability.Impassable && (b.def.Size.x == 1 || b.def.Size.z == 1)))
+            {
+                bool air = false;
+                bool vac = false;
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(b.Position, Rot4.North, new IntVec2(1, 1)))
+                {
+                    Room room = v.GetRoom(Map);
+                    if (room == null)
+                        continue;
+                    if (room.TouchesMapEdge)
+                        vac = true;
+                    else if (room.ProperRoom && room.OpenRoofCount == 0)
+                        air = true;
+
+                    if (air && vac)
+                    {
+                        yield return b;
+                        break;
+                    }
+                }
+            }
+        }
         public HashSet<IntVec3> OuterCells()
         {
             HashSet<IntVec3> cells = new HashSet<IntVec3>();
             foreach (IntVec3 vec in Area)
             {
-                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)))
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !Area.Contains(v)))
                 {
                     Room room = v.GetRoom(Map);
                     if (room != null && room.TouchesMapEdge)
@@ -465,7 +489,7 @@ namespace RimWorld
                 }
                 foreach (IntVec3 vec in current) //find next set cardinal to all cellsDone, exclude cellsDone
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => mapComp.MapShipCells.ContainsKey(v) && !cellsDone.Contains(v)));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
                 }
                 if (path > -1)
                     path++;
@@ -740,7 +764,7 @@ namespace RimWorld
                     cellsTodo.Remove(vec);
                     cellsDone.Add(vec);
                 }
-                foreach (IntVec3 vec in current) //find parts cardinal to all prev.pos, exclude prev.pos
+                foreach (IntVec3 vec in current) //find next set cardinal to all cellsDone, exclude cellsDone
                 {
                     cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
                 }

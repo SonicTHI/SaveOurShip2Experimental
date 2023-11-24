@@ -129,12 +129,11 @@ namespace RimWorld
                         podsinrange.Add(obj);
                     }
                 }
-                var targetMapComp = mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>();
-                if (targetMapComp.TorpsInRange.Any() && Rand.Chance(0.1f))
+                if (mapComp.TargetMapComp.TorpsInRange.Any() && Rand.Chance(0.1f))
                 {
-                    ShipCombatProjectile projtr = targetMapComp.TorpsInRange.RandomElement();
-                    targetMapComp.Projectiles.Remove(projtr);
-                    targetMapComp.TorpsInRange.Remove(projtr);
+                    ShipCombatProjectile projtr = mapComp.TargetMapComp.TorpsInRange.RandomElement();
+                    mapComp.TargetMapComp.Projectiles.Remove(projtr);
+                    mapComp.TargetMapComp.TorpsInRange.Remove(projtr);
                 }
                 else if (!podsinrange.NullOrEmpty() && Rand.Chance(0.1f))
                 {

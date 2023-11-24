@@ -937,7 +937,7 @@ namespace RimWorld
         }
         public bool IncomingPtDefTargetsInRange() //PD targets are in range if they are on target map and in PD range
         {
-            if (mapComp.ShipCombatTargetMap.GetComponent<ShipHeatMapComp>().TorpsInRange.Any())
+            if (mapComp.TargetMapComp.TorpsInRange.Any())
                 return true;
             foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
             {

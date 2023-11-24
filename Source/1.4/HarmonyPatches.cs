@@ -86,7 +86,7 @@ namespace SaveOurShip2
                 DrawHeat(screenHalf - 415, baseY, bridge);
             }
             //no UI OOC bellow
-            var enemyShipComp = mapPlayer.GetComponent<ShipHeatMapComp>().MasterMapComp;
+            var enemyShipComp = playerShipComp.MasterMapComp;
             if (enemyShipComp == null || !enemyShipComp.InCombat)
                 return;
             //enemy heat & energy bars
@@ -3795,7 +3795,6 @@ namespace SaveOurShip2
 		}
 	}
 
-
     [HarmonyPatch(typeof(Page_ChooseIdeoPreset), "PostOpen")]
     public static class DoNotRemoveMyIdeo
     {
@@ -4304,82 +4303,47 @@ namespace SaveOurShip2
 		}
 	}
 
-	/* disabled till fixed
-	[HarmonyPatch(typeof(DamageWorker))]
-	[HarmonyPatch("ExplosionCellsToHit", new Type[] { typeof(IntVec3), typeof(Map), typeof(float), typeof(IntVec3), typeof(IntVec3) })]
-	public static class FasterExplosions
-	{
-		public static bool Prefix(Map map, float radius)
-		{
-			return !map.GetComponent<ShipHeatMapComp>().InCombat || radius > 25; //Ludicrously large explosions cause a stack overflow
-		}
+    [HarmonyPatch(typeof(InfestationCellFinder), "DebugDraw")] //override infestation draw in space to show ships
+    public static class DrawShipsInSpace
+    {
+        public static bool Prefix()
+        {
+            if (DebugViewSettings.drawInfestationChance)
+            {
+                Map currentMap = Find.CurrentMap;
+				if (!currentMap.IsSpace())
+					return true;
+                if (InfestationCellFinder.tmpCachedInfestationChanceCellColors == null)
+                {
+                    InfestationCellFinder.tmpCachedInfestationChanceCellColors = new List<Pair<IntVec3, float>>();
+                }
+                if (Time.frameCount % 60 == 0)
+                {
+                    InfestationCellFinder.tmpCachedInfestationChanceCellColors.Clear();
+					var cells = currentMap.GetComponent<ShipHeatMapComp>().MapShipCells;
+                    foreach (IntVec3 v in cells.Keys)
+                    {
+                        InfestationCellFinder.tmpCachedInfestationChanceCellColors.Add(new Pair<IntVec3, float>(v, cells[v].Item1));
+                    }
+                }
+                for (int m = 0; m < InfestationCellFinder.tmpCachedInfestationChanceCellColors.Count; m++)
+                {
+                    IntVec3 first = InfestationCellFinder.tmpCachedInfestationChanceCellColors[m].First;
+                    int second = (int)InfestationCellFinder.tmpCachedInfestationChanceCellColors[m].Second % 1000;
+                    float r = second / 1000f;
+					second %= 100;
+                    float g = second / 100f;
+                    second %= 10;
+                    float b = second / 10f;
+                    CellRenderer.RenderCell(first, SolidColorMaterials.SimpleSolidColorMaterial(new Color(r, g, b, 0.5f), false));
+                }
+                return false;
+            }
+            return true;
+        }
+    }
 
-		public static void Postfix(ref IEnumerable<IntVec3> __result, DamageWorker __instance, IntVec3 center, Map map, float radius)
-		{
-			if (map.GetComponent<ShipHeatMapComp>().InCombat && radius <= 25)
-			{
-				HashSet<IntVec3> cells = new HashSet<IntVec3>();
-				List<ExplosionCell> cellsToRun = new List<ExplosionCell>();
-				cellsToRun.Add(new ExplosionCell(center, new bool[4], 0));
-				ExplosionCell curCell;
-				while (cellsToRun.Count > 0)
-				{
-					curCell = cellsToRun.Pop();
-					cells.Add(curCell.pos);
-					if (curCell.dist <= radius)
-					{
-						Building edifice = null;
-						if (curCell.pos.InBounds(map))
-							edifice = curCell.pos.GetEdifice(map);
-						if (edifice != null && edifice.HitPoints >= __instance.def.defaultDamage / 2)
-							continue;
-						if (!curCell.checkedDir[0]) //up
-						{
-							bool[] newDir = (bool[])curCell.checkedDir.Clone();
-							newDir[1] = true;
-							cellsToRun.Add(new ExplosionCell(curCell.pos + new IntVec3(0, 0, 1), newDir, curCell.dist + 1));
-						}
-						if (!curCell.checkedDir[1]) //down
-						{
-							bool[] newDir = (bool[])curCell.checkedDir.Clone();
-							newDir[0] = true;
-							cellsToRun.Add(new ExplosionCell(curCell.pos + new IntVec3(0, 0, -1), newDir, curCell.dist + 1));
-						}
-						if (!curCell.checkedDir[2]) //right
-						{
-							bool[] newDir = (bool[])curCell.checkedDir.Clone();
-							newDir[3] = true;
-							cellsToRun.Add(new ExplosionCell(curCell.pos + new IntVec3(1, 0, 0), newDir, curCell.dist + 1));
-						}
-						if (!curCell.checkedDir[3]) //left
-						{
-							bool[] newDir = (bool[])curCell.checkedDir.Clone();
-							newDir[2] = true;
-							cellsToRun.Add(new ExplosionCell(curCell.pos + new IntVec3(-1, 0, 0), newDir, curCell.dist + 1));
-						}
-					}
-				}
-				__result = cells;
-			}
-		}
-
-		public struct ExplosionCell
-		{
-			public IntVec3 pos;
-			public bool[] checkedDir;
-			public int dist;
-
-			public ExplosionCell(IntVec3 myPos, bool[] myCheckedDir, int myDist)
-			{
-				checkedDir = myCheckedDir;
-				pos = myPos;
-				dist = myDist;
-			}
-		}
-	}
-	*/
-
-	[HarmonyPatch(typeof(MapPawns), "DeRegisterPawn")]
+    [HarmonyPatch(typeof(MapPawns), "DeRegisterPawn")]
 	public class MapPawnRegisterPatch //PsiTech "patch"
 	{
 		public static bool Prefix(Pawn p)
@@ -4516,9 +4480,82 @@ namespace SaveOurShip2
 		}
 	}*/
 
+    // explosion patch disabled till fixed
+	/*[HarmonyPatch(typeof(DamageWorker))]
+	[HarmonyPatch("ExplosionCellsToHit", new Type[] { typeof(IntVec3), typeof(Map), typeof(float), typeof(IntVec3), typeof(IntVec3) })]
+	public static class FasterExplosions
+	{
+		public static bool Prefix(Map map, float radius)
+		{
+			return !map.GetComponent<ShipHeatMapComp>().InCombat || radius > 25; //Ludicrously large explosions cause a stack overflow
+		}
 
+		public static void Postfix(ref IEnumerable<IntVec3> __result, DamageWorker __instance, IntVec3 center, Map map, float radius)
+		{
+			if (map.GetComponent<ShipHeatMapComp>().InCombat && radius <= 25)
+			{
+				HashSet<IntVec3> cells = new HashSet<IntVec3>();
+				List<ExplosionCell> cellsToRun = new List<ExplosionCell>();
+				cellsToRun.Add(new ExplosionCell(center, new bool[4], 0));
+				ExplosionCell curCell;
+				while (cellsToRun.Count > 0)
+				{
+					curCell = cellsToRun.Pop();
+					cells.Add(curCell.pos);
+					if (curCell.dist <= radius)
+					{
+						Building edifice = null;
+						if (curCell.pos.InBounds(map))
+							edifice = curCell.pos.GetEdifice(map);
+						if (edifice != null && edifice.HitPoints >= __instance.def.defaultDamage / 2)
+							continue;
+						if (!curCell.checkedDir[0]) //up
+						{
+							bool[] newDir = (bool[])curCell.checkedDir.Clone();
+							newDir[1] = true;
+							cellsToRun.Add(new ExplosionCell(curCell.pos + new IntVec3(0, 0, 1), newDir, curCell.dist + 1));
+						}
+						if (!curCell.checkedDir[1]) //down
+						{
+							bool[] newDir = (bool[])curCell.checkedDir.Clone();
+							newDir[0] = true;
+							cellsToRun.Add(new ExplosionCell(curCell.pos + new IntVec3(0, 0, -1), newDir, curCell.dist + 1));
+						}
+						if (!curCell.checkedDir[2]) //right
+						{
+							bool[] newDir = (bool[])curCell.checkedDir.Clone();
+							newDir[3] = true;
+							cellsToRun.Add(new ExplosionCell(curCell.pos + new IntVec3(1, 0, 0), newDir, curCell.dist + 1));
+						}
+						if (!curCell.checkedDir[3]) //left
+						{
+							bool[] newDir = (bool[])curCell.checkedDir.Clone();
+							newDir[2] = true;
+							cellsToRun.Add(new ExplosionCell(curCell.pos + new IntVec3(-1, 0, 0), newDir, curCell.dist + 1));
+						}
+					}
+				}
+				__result = cells;
+			}
+		}
 
-	/*vacuum pathfinding - disabled, not working
+		public struct ExplosionCell
+		{
+			public IntVec3 pos;
+			public bool[] checkedDir;
+			public int dist;
+
+			public ExplosionCell(IntVec3 myPos, bool[] myCheckedDir, int myDist)
+			{
+				checkedDir = myCheckedDir;
+				pos = myPos;
+				dist = myDist;
+			}
+		}
+	}
+	*/
+
+    /*vacuum pathfinding - disabled, not working
     [HarmonyPatch(typeof(PathFinder), "FindPath", typeof(IntVec3), typeof(LocalTargetInfo), typeof(TraverseParms),
         typeof(PathEndMode), typeof(PathFinderCostTuning))]
     public static class H_Vacuum_PathFinder

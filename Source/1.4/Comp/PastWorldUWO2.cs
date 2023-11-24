@@ -104,24 +104,6 @@ namespace SaveOurShip2
                 }
             }*/
         }
-		public override void WorldComponentTick()
-        {
-            if (Find.TickManager.TicksGame % 600 == 0)
-            {
-                var check = (MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault();
-                if (check == null)
-                    return;
-                Map map = check.Map;
-                if (map != null && PlayerFactionBounty > 20 && Find.TickManager.TicksGame-LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(PlayerFactionBounty),60000f) && !map.GetComponent<ShipHeatMapComp>().InCombat)
-                {
-                    LastBountyRaidTick = Find.TickManager.TicksGame;
-                    Building_ShipBridge bridge = map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();
-                    if (bridge == null)
-                        return;
-                    map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, bounty : true);
-                }
-            }
-        }
 
         /*private void GiveMeEntanglementManifold()
         {

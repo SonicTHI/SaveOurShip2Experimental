@@ -28,13 +28,8 @@ Check the [SOS2 1.4 sheet](https://docs.google.com/spreadsheets/d/e/2PACX-1vT1tW
 
 Check the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/e/2PACX-1vTdo5hy_GJEqWkTXUnXKenO9rKQ9gkt7Ov36ns_jUpIpBH-ay1i7CpzJwYyNYtvt9O9wVfCkUHsB4ut/pubhtml) for **known issues**.
 
-* **Before reporting make sure you are on the latest SOS2EXP version.** Version info is shown on startup in the debug log (*Enable development mode!*).
-* Make sure your log is clear of any other red errors from other mods and you are not using mods listed as incompatible with SOS2EXP!
-* If possible try replicating the bug with only the required mods installed (*Harmony, Wall light*).
-* When making a report provide a **FULL LOG**! (*Open debug log - tilde or top left icon -> Files -> Open Save Folder -> Player.log*) A good description and screenshots of the bug are appreciated.
-* You can report issues or give feedback here or in **#save-our-ship** on [Radian Helix Media discord](https://discord.gg/GK7nqgu) - **read the server rules!**
+**Need help? Found an issue or incompatible mod?** [Read this first!](https://github.com/SonicTHI/SaveOurShip2Experimental/issues/65)
 
-**FAILURE TO FOLLOW THE ABOVE WILL RESULT IN YOUR REPORT BEING CLOSED/IGNORED!**
 ___
 ### **MAJOR FEATURE LIST:**
 
@@ -66,7 +61,7 @@ ___
 
 * **New event:** watch out for debris field events that can damage your ship. These can be evaded on the bridge.
 
-* **Performance optimizations:** from faster EVA checks to a completely rebuilt ship combat system - a lot has been done to improve the performance of this mod.
+* **Performance optimizations:** from faster EVA checks to a completely rebuilt ship caching and combat system - a lot has been done to improve the performance of this mod.
 
 * **New UI and settings menu:** the ship battle UI has been moved bellow the pawn bar. It now shows all ships and can be moved or made persistent in the SOS2 settings menu. SOS2 settings have been reset to their defaults as we now use the native RW mod tools. Hugslib has been removed as a required mod.
 
@@ -79,6 +74,6 @@ ___
 **For more details read the [SOS2EXP dev sheet](https://docs.google.com/spreadsheets/d/1XSeMCsOtBsbAOLYFbgYUpxyV4ot8L2pSeWMTwzAUCiM/edit#gid=0)** It also includes other info that you might find useful.
 
 ___
-### **CONTRIBUTION / CODE SUBMISSIONS / PULL REQUESTS:**
+### **CONTRIBUTION / CODE SUBMISSIONS / PULL REQUESTS / MOD CONFLICT RESOLUTIONS:**
 
-**First time submitters: do not make unsolicited pull requests. Contact me first.**
+**First time submitters: do not make unsolicited pull requests. Submit an issue or contact me in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) first - read the server rules!.**

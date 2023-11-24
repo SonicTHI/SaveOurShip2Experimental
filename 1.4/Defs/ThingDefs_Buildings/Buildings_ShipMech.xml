@@ -583,7 +583,7 @@
 		<passability>Standable</passability>
 		<placingDraggableDimensions>2</placingDraggableDimensions>
 		<statBases>
-			<MaxHitPoints>400</MaxHitPoints>
+			<MaxHitPoints>300</MaxHitPoints>
 			<WorkToBuild>900</WorkToBuild>
 			<Flammability>0.0</Flammability>
 			<Beauty>1</Beauty>

@@ -88,7 +88,7 @@ namespace RimWorld
         }
         public void ScannedRoom()
         {
-            if (mapComp.MasterMapComp.Scanned)
+            if (mapComp.TargetMapComp.Scanned)
                 return;
             List<Room> rooms = mapComp.ShipCombatTargetMap.regionGrid.allRooms.Where(r => !r.TouchesMapEdge && r.ProperRoom && r.Fogged).ToList();
             if (!rooms.NullOrEmpty())
@@ -99,7 +99,7 @@ namespace RimWorld
             else
             {
                 mapComp.ShipCombatTargetMap.fogGrid.ClearAllFog();
-                mapComp.MasterMapComp.Scanned = true;
+                mapComp.TargetMapComp.Scanned = true;
             }
         }
 

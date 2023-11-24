@@ -7,6 +7,7 @@ using SaveOurShip2;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse.AI.Group;
+using RimworldMod;
 
 namespace RimWorld
 {
@@ -23,11 +24,11 @@ namespace RimWorld
         {
             grid = new int[map.cellIndices.NumGridCells];
             heatGridDirty = true;
-            RimworldMod.AccessExtensions.Utility.shipHeatMapCompCache.Add(this);
+            AccessExtensions.Utility.shipHeatMapCompCache.Add(this);
         }
         public override void MapRemoved()
         {
-            RimworldMod.AccessExtensions.Utility.shipHeatMapCompCache.Remove(this);
+            AccessExtensions.Utility.shipHeatMapCompCache.Remove(this);
             base.MapRemoved();
         }
         public override void MapComponentUpdate()
@@ -152,6 +153,7 @@ namespace RimWorld
                 Scribe_Collections.Look<Building_ShipBridge>(ref MapRootListAll, "MapRootListAll", LookMode.Reference);
                 originMapComp = null;
                 masterMapComp = null;
+                targetMapComp = null;
                 //SCM only
                 Scribe_Values.Look<bool>(ref callSlowTick, "callSlowTick");
                 Scribe_Values.Look<float>(ref Range, "BattleRange");
@@ -177,14 +179,59 @@ namespace RimWorld
         public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
         //SC vars
         public Map ShipCombatOriginMap; //"player" map - initializes combat vars
+        public ShipHeatMapComp originMapComp;
+        public ShipHeatMapComp OriginMapComp
+        {
+            get
+            {
+                if (ShipCombatOriginMap == null)
+                    return null;
+                if (originMapComp == null)
+                {
+                    originMapComp = ShipCombatOriginMap.GetComponent<ShipHeatMapComp>();
+                }
+                return originMapComp;
+            }
+        }
+        
         public Map ShipCombatMasterMap; //"AI" map - runs all non duplicate code
+        public ShipHeatMapComp masterMapComp;
+        public ShipHeatMapComp MasterMapComp
+        {
+            get
+            {
+                if (ShipCombatMasterMap == null)
+                    return null;
+                if (masterMapComp == null)
+                {
+                    masterMapComp = ShipCombatMasterMap.GetComponent<ShipHeatMapComp>();
+                }
+                return masterMapComp;
+            }
+        }
+
         public Map ShipCombatTargetMap; //target map - for proj, etc.
+        public ShipHeatMapComp targetMapComp;
+        public ShipHeatMapComp TargetMapComp
+        {
+            get
+            {
+                if (ShipCombatTargetMap == null)
+                    return null;
+                if (targetMapComp == null)
+                {
+                    targetMapComp = ShipCombatTargetMap.GetComponent<ShipHeatMapComp>();
+                }
+                return targetMapComp;
+            }
+        }
+
         public Map ShipGraveyard; //map to put destroyed ships to
         public Faction ShipFaction;
         public Lord ShipLord;
         public Lord InvaderLord;
         public bool ShipCombatMaster = false; //true only on ShipCombatMasterMap
-        public bool InCombat = false;
+        public bool InCombat = false; //in combat with another map
         public bool IsGraveyard = false; //temp map, will be removed in a few days
         public bool BurnUpSet = false; //force terminate map+WO if no player pawns or pods present or in flight to
         public int EngineRot;
@@ -199,7 +246,7 @@ namespace RimWorld
         public List<ShipCombatProjectile> Projectiles;
         public List<ShipCombatProjectile> TorpsInRange;
         public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
-        List<Building> cores = new List<Building>();
+        List<Building> cores = new List<Building>(); //td rem?
         public HashSet<int> DestroyedIncombat = new HashSet<int>();
 
         //SC cache new
@@ -441,34 +488,6 @@ namespace RimWorld
         }
         //SC cache new end
 
-        public ShipHeatMapComp originMapComp;
-        public ShipHeatMapComp OriginMapComp
-        {
-            get
-            {
-                if (ShipCombatOriginMap == null)
-                    return null;
-                if (this.originMapComp == null)
-                {
-                    this.originMapComp = ShipCombatOriginMap.GetComponent<ShipHeatMapComp>();
-                }
-                return this.originMapComp;
-            }
-        }
-        public ShipHeatMapComp masterMapComp;
-        public ShipHeatMapComp MasterMapComp
-        {
-            get
-            {
-                if (ShipCombatMasterMap == null)
-                    return null;
-                if (this.masterMapComp == null)
-                {
-                    this.masterMapComp = ShipCombatMasterMap.GetComponent<ShipHeatMapComp>();
-                }
-                return this.masterMapComp;
-            }
-        }
         //SCM only
         public bool callSlowTick = false;
         public float Range; //400 is furthest away, 0 is up close and personal
@@ -652,20 +671,21 @@ namespace RimWorld
                 return;
             }
             //origin vars
-            originMapComp = null;
-            masterMapComp = null;
-            ShipCombatOriginMap = this.map;
-            ShipFaction = this.map.Parent.Faction;
+            ShipFaction = map.Parent.Faction;
             attackedTradeship = false;
             //target or create master + spawn ship
+            originMapComp = null;
+            masterMapComp = null;
+            targetMapComp = null;
+            ShipCombatOriginMap = map;
             if (enemyMap == null)
                 SpawnEnemyShip(passingShip, fac, fleet, bounty, out cores);
             else
                 ShipCombatMasterMap = enemyMap;
-            //master vars
+
             ShipCombatTargetMap = ShipCombatMasterMap;
             MasterMapComp.ShipCombatTargetMap = ShipCombatOriginMap;
-            MasterMapComp.ShipCombatOriginMap = this.map;
+            MasterMapComp.ShipCombatOriginMap = map;
             MasterMapComp.ShipCombatMasterMap = ShipCombatMasterMap;
 
             //if ship is derelict switch to "encounter"
@@ -681,11 +701,10 @@ namespace RimWorld
             //set range DL:1-9
             byte detectionLevel = 7;
             var worldComp = ShipInteriorMod2.WorldComp;
-            List<Building_ShipAdvSensor> Sensors = worldComp.Sensors.Where(s => s.Map == this.map).ToList();
-            List<Building_ShipAdvSensor> SensorsEnemy = worldComp.Sensors.Where(s => s.Map == MasterMapComp.map).ToList();
+            List<Building_ShipAdvSensor> Sensors = worldComp.Sensors.Where(s => s.Map == map).ToList();
+            List<Building_ShipAdvSensor> SensorsEnemy = worldComp.Sensors.Where(s => s.Map == ShipCombatMasterMap).ToList();
             if (Sensors.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
             {
-                //ShipCombatMasterMap.fogGrid.ClearAllFog();
                 detectionLevel += 2;
             }
             else if (Sensors.Where(sensor => sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
@@ -746,12 +765,14 @@ namespace RimWorld
             {
                 ship.Tick();
             }
+            if (!map.IsSpace())
+                return;
             foreach (int index in DestroyedIncombat)
             {
                 RemoveShipFromBattle(index);
             }
             DestroyedIncombat.Clear();
-            if (InCombat && (this.map == ShipCombatOriginMap || this.map == ShipCombatMasterMap))
+            if (InCombat)
             {
                 if (ShipCombatMaster)
                 {
@@ -770,7 +791,7 @@ namespace RimWorld
                     //no end if player has pawns on enemy ship
                     if (Range >= 395 && enemyRetreating && !ShipCombatMasterMap.mapPawns.AnyColonistSpawned)
                     {
-                        EndBattle(this.map, true);
+                        EndBattle(map, true);
                         return;
                     }
                 }
@@ -832,15 +853,10 @@ namespace RimWorld
                 //ship destruction code
                 if (Find.TickManager.TicksGame % 20 == 0)
                 {
-                    /*foreach (int i in ShipsOnMapNew.Keys)
-                    {
-                        if (ShipsOnMapNew[i].CheckForDetach())
-                            callSlowTick = true;
-                    }*/
                     if (MapRootListAll.NullOrEmpty()) //if all ships gone, end combat
                     {
                         //Log.Message("Map defeated: " + this.map);
-                        EndBattle(this.map, false);
+                        EndBattle(map, false);
                         return;
                     }
                 }
@@ -852,43 +868,73 @@ namespace RimWorld
                     callSlowTick = false;
                 }
             }
-            else if ((Find.TickManager.TicksGame % 60 == 0) && map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
+            else if (Find.TickManager.TicksGame % 60 == 0) //slow checks - events
             {
-                //reduce durration per engine vs mass
-                MapEnginePower = 0;
-                bool anyMapEngineCanActivate = AnyMapEngineCanActivate();
-                if (!anyMapEngineCanActivate)
-                    return;
-                foreach (SoShipCache ship in ShipsOnMapNew.Values)
+                if (Find.TickManager.TicksGame % 6000 == 0) //very slow checks - decomp, bounty
                 {
-                    if (anyMapEngineCanActivate)
+                    foreach (SoShipCache ship in ShipsOnMapNew.Values)
                     {
-                        MapEnginePower += ship.EnginesOn();
+                        List<Building> buildings = new List<Building>();
+                        foreach (Building b in ship.OuterNonShipWalls())
+                        {
+                            if (Rand.Chance(0.5f))
+                                buildings.Add(b);
+                        }
+                        foreach (Building b in buildings)
+                        {
+                            b.Destroy(DestroyMode.KillFinalize);
+                        }
                     }
-                    else
+                    if (map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
                     {
-                        ship.EnginesOff();
+                        if (ShipInteriorMod2.WorldComp.PlayerFactionBounty > 20 && Find.TickManager.TicksGame - ShipInteriorMod2.WorldComp.LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(ShipInteriorMod2.WorldComp.PlayerFactionBounty), 60000f))
+                        {
+                            ShipInteriorMod2.WorldComp.LastBountyRaidTick = Find.TickManager.TicksGame;
+                            Building_ShipBridge bridge = MapRootListAll.FirstOrDefault();
+                            if (bridge == null)
+                                return;
+                            StartShipEncounter(bridge, bounty: true);
+                        }
                     }
-                    BuildingsCount += ship.Buildings.Count;
                 }
-                if (MapEnginePower > 0)
+                if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
                 {
-                    MapEnginePower *= 40000f / Mathf.Pow(map.listerBuildings.allBuildingsColonist.Count * 2.5f, 1.1f);
-                    Log.Message("thrust " + MapEnginePower);
-                    var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
-                    if (BurnTimer > cond.TicksLeft)
+                    //reduce durration per engine vs mass
+                    MapEnginePower = 0;
+                    bool anyMapEngineCanActivate = AnyMapEngineCanActivate();
+                    if (!anyMapEngineCanActivate)
+                        return;
+                    foreach (SoShipCache ship in ShipsOnMapNew.Values)
                     {
-                        cond.End();
-                        BurnTimer = 0;
-                        foreach (SoShipCache ship in ShipsOnMapNew.Values)
+                        if (anyMapEngineCanActivate)
+                        {
+                            MapEnginePower += ship.EnginesOn();
+                        }
+                        else
                         {
                             ship.EnginesOff();
                         }
+                        BuildingsCount += ship.Buildings.Count;
                     }
-                    else
+                    if (MapEnginePower > 0)
                     {
-                        BurnTimer += (int)MapEnginePower;
-                        //Log.Message("ticks remain " + map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris).TicksLeft);
+                        MapEnginePower *= 40000f / Mathf.Pow(map.listerBuildings.allBuildingsColonist.Count * 2.5f, 1.1f);
+                        Log.Message("thrust " + MapEnginePower);
+                        var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
+                        if (BurnTimer > cond.TicksLeft)
+                        {
+                            cond.End();
+                            BurnTimer = 0;
+                            foreach (SoShipCache ship in ShipsOnMapNew.Values)
+                            {
+                                ship.EnginesOff();
+                            }
+                        }
+                        else
+                        {
+                            BurnTimer += (int)MapEnginePower;
+                            //Log.Message("ticks remain " + map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris).TicksLeft);
+                        }
                     }
                 }
             }

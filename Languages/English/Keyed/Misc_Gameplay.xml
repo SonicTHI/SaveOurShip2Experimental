@@ -43,6 +43,7 @@
 	<UnfoldExtended>Extended</UnfoldExtended>
 	<UnfoldExtending>Extending</UnfoldExtending>
 	<UnfoldRetracting>Retracting</UnfoldRetracting>
+	<ShipUnfoldBlocked>Must place free of obstructions or other extendables.</ShipUnfoldBlocked>
 	
     <ShipHeatStored>Grid heat stored/capacity: {0} HU / {1} HU ({2})</ShipHeatStored>
 	<ShipCloakBroken>Cloak disengaged due to heat depleetion</ShipCloakBroken>

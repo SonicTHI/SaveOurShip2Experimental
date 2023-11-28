@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V94f3";
+        public static readonly string SOS2EXPversion = "V94f4";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1874,7 +1874,7 @@ namespace SaveOurShip2
 				//clear LZ
 				foreach (Thing t in adjustedPos.GetThingList(targetMap))
 				{
-					if (!toDestroy.Contains(t))
+					if (!toDestroy.Contains(t) && !(t is Building_SteamGeyser))
 						toDestroy.Add(t);
 				}
 				if (!targetMapIsSpace)
@@ -2223,8 +2223,8 @@ namespace SaveOurShip2
 				room.Temperature = t.Item2;
 			}
 
-			//landing - remove space map
-			if (!targetMapIsSpace && !sourceMap.spawnedThings.Any((Thing x) => x is Pawn && !x.Destroyed))
+			//landing - remove space map if no pawns or cores
+			if (!targetMapIsSpace && !sourceMap.spawnedThings.Any((Thing t) => (t is Pawn || (t is Building_ShipBridge b && b.mannableComp == null)) && !t.Destroyed))
 			{
 				WorldObject oldParent = sourceMap.Parent;
 				Current.Game.DeinitAndRemoveMap_NewTemp(sourceMap, false);

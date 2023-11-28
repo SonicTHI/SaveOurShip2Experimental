@@ -76,6 +76,53 @@
 		<initialResistanceRange>10~17</initialResistanceRange>
 	</PawnKindDef>
 	<PawnKindDef ParentName="OutlanderBase">
+		<defName>SpaceCrewEVA</defName>
+		<label>space crew</label>
+		<race>Human</race>
+		<combatPower>40</combatPower>
+		<isFighter>false</isFighter>
+		<defaultFactionType>AncientsHostile</defaultFactionType>
+		<maxGenerationAge>55</maxGenerationAge>
+		<backstoryCryptosleepCommonality>1</backstoryCryptosleepCommonality>
+		<apparelMoney>2000~2600</apparelMoney>
+		<apparelTags>
+			<li>IndustrialMilitaryBasic</li>
+			<li>IndustrialMilitaryAdvanced</li>
+		</apparelTags>
+		<apparelRequired>
+			<li>Apparel_SpaceSuitHelmet</li>
+			<li>Apparel_SpaceSuitBody</li>
+		</apparelRequired>
+		<specificApparelRequirements>
+			<li>
+				<bodyPartGroup>Torso</bodyPartGroup>
+				<apparelLayer>OnSkin</apparelLayer>
+			</li>
+			<li>
+				<bodyPartGroup>Legs</bodyPartGroup>
+				<apparelLayer>OnSkin</apparelLayer>
+			</li>
+		</specificApparelRequirements>
+		<forceNormalGearQuality>true</forceNormalGearQuality>
+		<apparelIgnoreSeasons>true</apparelIgnoreSeasons>
+		<weaponMoney>200~400</weaponMoney>
+		<weaponTags>
+			<li>SimpleGun</li>
+			<li>IndustrialGunAdvanced</li>
+			<li>SpacerGun</li>
+		</weaponTags>
+		<techHediffsChance>0.15</techHediffsChance>
+		<techHediffsMoney>600~1500</techHediffsMoney>
+		<techHediffsTags>
+			<li>Poor</li>
+			<li>Simple</li>
+			<li>Advanced</li>
+			<li>ImplantEmpireCommon</li>
+		</techHediffsTags>
+		<initialWillRange>1~3</initialWillRange>
+		<initialResistanceRange>10~17</initialResistanceRange>
+	</PawnKindDef>
+	<PawnKindDef ParentName="OutlanderBase">
 		<defName>SpaceCrewMarine</defName>
 		<label>light marine</label>
 		<race>Human</race>
@@ -110,13 +157,13 @@
 			<li>IndustrialGunAdvanced</li>
 			<li>SpacerGun</li>
 		</weaponTags>
+		<techHediffsChance>0.40</techHediffsChance>
 		<techHediffsMoney>2000~3000</techHediffsMoney>
 		<techHediffsTags>
 			<li>Advanced</li>
 			<li>AdvancedWeapon</li>
 			<li>ImplantEmpireCommon</li>
 		</techHediffsTags>
-		<techHediffsChance>0.40</techHediffsChance>
 		<combatEnhancingDrugsChance>0.5</combatEnhancingDrugsChance>
 		<combatEnhancingDrugsCount>
 			<min>1</min>

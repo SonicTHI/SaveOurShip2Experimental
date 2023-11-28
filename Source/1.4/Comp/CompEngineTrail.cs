@@ -42,22 +42,35 @@ namespace RimWorld
         public CompPowerTrader powerComp;
         public bool CanFire(Rot4 rot)
         {
-            if (flickComp.SwitchIsOn && rot == this.parent.Rotation)
+            if (flickComp.SwitchIsOn)
             {
-                if (Props.energy && powerComp.PowerOn)
+                if (Props.reactionless)
                 {
-                    return true;
+                    if (powerComp.PowerOn)
+                        return true;
                 }
-                else if (refuelComp.Fuel > Props.fuelUse)
+                else if (rot == parent.Rotation)
                 {
-                    return true;
+                    if (Props.energy && powerComp.PowerOn)
+                    {
+                        return true;
+                    }
+                    else if (refuelComp.Fuel > Props.fuelUse)
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
         }
         public bool On()
         {
-            if (Props.energy)
+            if (Props.reactionless)
+            {
+                active = true;
+                return true;
+            }
+            else if (Props.energy)
             {
                 powerComp.PowerOutput = -2000 * Props.thrust;
                 active = true;
@@ -86,6 +99,8 @@ namespace RimWorld
             powerComp = parent.TryGetComp<CompPowerTrader>();
             mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
             size = parent.def.size.x;
+            if (Props.reactionless)
+                return;
             ExhaustArea.Clear();
             CellRect rectToKill;
             if (size > 3)
@@ -109,7 +124,7 @@ namespace RimWorld
         public override void PostDraw()
         {
             base.PostDraw();
-            if (!Props.reactionless && active)
+            if (active && !Props.reactionless)
             {
                 if (Props.energy)
                 {
@@ -151,27 +166,24 @@ namespace RimWorld
         public override void CompTick()
         {
             base.CompTick();
-            if (active)
+            if (active && !Props.reactionless) //destroy stuff in plume
             {
                 if (refuelComp != null && Find.TickManager.TicksGame % 60 == 0)
                 {
                     refuelComp.ConsumeFuel(Props.fuelUse);
                 }
-                if (!Props.reactionless) { 
-                    //destroy stuff in plume
-                    HashSet<Thing> toBurn = new HashSet<Thing>();
-                    foreach (IntVec3 cell in ExhaustArea)
+                HashSet<Thing> toBurn = new HashSet<Thing>();
+                foreach (IntVec3 cell in ExhaustArea)
+                {
+                    foreach (Thing t in cell.GetThingList(parent.Map))
                     {
-                        foreach (Thing t in cell.GetThingList(parent.Map))
-                        {
-                            if ((t.def.useHitPoints || t is Pawn) && t.def.altitudeLayer != AltitudeLayer.Terrain)
-                                toBurn.Add(t);
-                        }
+                        if ((t.def.useHitPoints || t is Pawn) && t.def.altitudeLayer != AltitudeLayer.Terrain)
+                            toBurn.Add(t);
                     }
-                    foreach (Thing t in toBurn)
-                    {
-                        t.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 100));
-                    }
+                }
+                foreach (Thing t in toBurn)
+                {
+                    t.TakeDamage(new DamageInfo(DamageDefOf.Bomb, 100));
                 }
             }
         }

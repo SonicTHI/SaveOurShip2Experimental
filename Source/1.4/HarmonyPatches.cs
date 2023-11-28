@@ -4060,8 +4060,21 @@ namespace SaveOurShip2
 		}
 	}
 
-	//progression
-	[HarmonyPatch(typeof(MapParent), "RecalculateHibernatableIncidentTargets")]
+    [HarmonyPatch(typeof(IncidentWorker_Raid), "ResolveRaidArriveMode")] //on ground immediat attack if ship turrets, space pod in
+    public static class RaidsInspace
+    {
+        public static void Postfix(IncidentParms parms)
+        {
+            Map map = (Map)parms.target;
+            if (map.IsSpace())
+                parms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
+            else if (map.GetComponent<ShipHeatMapComp>().ShipsOnMapNew.Values.Any(s => s.Turrets.Any(t => t.heatComp.Props.groundDefense)))
+                parms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
+        }
+    }
+
+    //progression
+    [HarmonyPatch(typeof(MapParent), "RecalculateHibernatableIncidentTargets")]
 	public static class GiveMeRaidsPlease
 	{
 		public static void Postfix(MapParent __instance, ref HashSet<IncidentTargetTagDef> ___hibernatableIncidentTargets)

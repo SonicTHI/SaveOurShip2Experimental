@@ -27,6 +27,8 @@ namespace RimWorld
                     {
                         if (Rand.Chance(0.3f))
                             req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed("Mech_Lancer"), Faction.OfMechanoids);
+                        else if (Rand.Chance(0.1f))
+                            req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed("SpaceCrewEVA"), Faction.OfAncients);
                         else
                             req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed("Mech_Scyther"), Faction.OfMechanoids);
                         thing = PawnGenerator.GeneratePawn(req);

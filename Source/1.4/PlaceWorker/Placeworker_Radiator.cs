@@ -6,7 +6,7 @@ using Verse;
 
 namespace RimWorld
 {
-    public class PlaceWorker_Radiator : PlaceWorker
+    public class PlaceWorker_Radiator : PlaceWorker //only used for solar pannels now
     {
         public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, Color ghostCol, Thing thing)
         {
@@ -43,19 +43,16 @@ namespace RimWorld
 
         public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
-            IntVec3 loc1 = center + IntVec3.North.RotatedBy(rot);
-            if (loc1.Impassable(map) || !loc1.InBounds(map))
-                return TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
             for (int i = 1; i < 7; i++)
             {
                 IntVec3 loc2 = center + (IntVec3.South.RotatedBy(rot) * i);
                 if (!loc2.InBounds(map))
                     return false;
                 if (i<4 && loc2.Impassable(map))
-                    return TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
+                    return TranslatorFormattedStringExtensions.Translate("ShipUnfoldBlocked");
                 Building b = loc2.GetFirstBuilding(Find.CurrentMap);
                 if (b !=null && (b.def == ResourceBank.ThingDefOf.ShipInside_SolarGenerator) && b.Rotation == rot.Opposite)
-                    return TranslatorFormattedStringExtensions.Translate("MustPlaceCoolerWithFreeSpaces");
+                    return TranslatorFormattedStringExtensions.Translate("ShipUnfoldBlocked");
             }
             return true;
         }

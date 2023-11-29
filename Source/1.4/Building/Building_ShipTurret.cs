@@ -53,17 +53,7 @@ namespace RimWorld
                 return false;
             }
         }
-        public bool PlayerControlled
-        {
-            get
-            {
-                if (Faction == Faction.OfPlayer)
-                {
-                    return true;
-                }
-                return false;
-            }
-        }
+        public bool PlayerControlled => Faction == Faction.OfPlayer;
         private bool CanExtractTorpedo
         {
             get
@@ -282,7 +272,7 @@ namespace RimWorld
                         //check if we are in range
                         else
                         {
-                            float range = mapComp.ShipCombatMasterMap.GetComponent<ShipHeatMapComp>().Range;
+                            float range = mapComp.OriginMapComp.Range;
                             if ((!useOptimalRange && heatComp.Props.maxRange > range) || (useOptimalRange && heatComp.Props.optRange > range))
                             {
                                 //cant fire spinals opposite of heading
@@ -290,7 +280,7 @@ namespace RimWorld
                                 {
                                     if ((Rotation == new Rot4(mapComp.EngineRot) && mapComp.Heading == -1) || (Rotation == new Rot4(mapComp.EngineRot + 2) && mapComp.Heading == 1))
                                     {
-                                        if (PlayerControlled || (mapComp.enemyRetreating && mapComp.ShipCombatMasterMap == Map))
+                                        if (mapComp.Retreating)
                                             return;
                                         else
                                             mapComp.Heading = 1;
@@ -352,7 +342,7 @@ namespace RimWorld
                     ResetCurrentTarget();
                     return;
                 }
-                if (!PlayerControlled && mapComp.ShipCombatMaster) //AI targeting
+                if (!PlayerControlled && mapComp.HasShipMapAI) //AI targeting
                 {
                     //Target pawns with the Psychic Flayer
                     if (spinalComp != null && !spinalComp.Props.destroysHull && mapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.Any())
@@ -733,7 +723,7 @@ namespace RimWorld
             {
                 yield return gizmo;
             }
-            if (!PlayerControlled || (spinalComp != null && AmplifierCount == -1) || mapComp.ShipCombatMaster)
+            if (!PlayerControlled || (spinalComp != null && AmplifierCount == -1))
                 yield break;
 
             if (CanSetForcedTarget)

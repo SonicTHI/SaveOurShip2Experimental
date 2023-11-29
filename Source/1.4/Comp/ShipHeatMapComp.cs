@@ -8,6 +8,7 @@ using RimWorld.Planet;
 using UnityEngine;
 using Verse.AI.Group;
 using RimworldMod;
+using System.Reflection;
 
 namespace RimWorld
 {
@@ -128,58 +129,73 @@ namespace RimWorld
             }
         }*/
         //SC
+        readonly float[] minRange = new[] { 0f, 60f, 110f, 160f };
+        readonly float[] maxRange = new[] { 40f, 90f, 140f, 190f };
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_References.Look<Map>(ref ShipCombatOriginMap, "ShipCombatOriginMap");
-            Scribe_References.Look<Map>(ref ShipCombatMasterMap, "ShipCombatMasterMap");
-            Scribe_References.Look<Map>(ref ShipCombatTargetMap, "ShipCombatTargetMap");
-            Scribe_References.Look<Map>(ref ShipGraveyard, "ShipCombatGraveyard");
             Scribe_References.Look<Faction>(ref ShipFaction, "ShipFaction");
             Scribe_References.Look<Lord>(ref ShipLord, "ShipLord");
             Scribe_References.Look<Lord>(ref InvaderLord, "InvaderLord");
-            Scribe_Values.Look<bool>(ref ShipCombatMaster, "ShipCombatMaster", false);
-            Scribe_Values.Look<bool>(ref InCombat, "InCombat", false);
+            Scribe_References.Look<Map>(ref ShipGraveyard, "ShipCombatGraveyard");
+            Scribe_References.Look<Map>(ref GraveOrigin, "GraveOrigin");
             Scribe_Values.Look<bool>(ref IsGraveyard, "IsGraveyard", false);
+            Scribe_Values.Look<bool>(ref InCombat, "InCombat", false);
             Scribe_Values.Look<bool>(ref BurnUpSet, "BurnUpSet", false);
+            Scribe_Values.Look<int>(ref BurnTimer, "BurnTimer");
             Scribe_Values.Look<int>(ref EngineRot, "EngineRot");
             if (InCombat)
             {
-                Scribe_Values.Look<int>(ref BurnTimer, "BurnTimer");
+                //SC only - both maps
+                targetMapComp = null;
                 Scribe_Values.Look<int>(ref Heading, "Heading");
+                Scribe_Values.Look<bool>(ref Scanned, "Scanned");
+                Scribe_Values.Look<int>(ref BuildingCountAtStart, "BuildingCountAtStart");
+                Scribe_Values.Look<bool>(ref Maintain, "Maintain");
+                Scribe_Values.Look<float>(ref RangeToKeep, "RangeToKeep");
                 Scribe_Collections.Look<ShipCombatProjectile>(ref Projectiles, "ShipProjectiles");
                 Scribe_Collections.Look<ShipCombatProjectile>(ref TorpsInRange, "ShipTorpsInRange");
-                //SC cache
-                Scribe_Collections.Look<Building_ShipBridge>(ref MapRootListAll, "MapRootListAll", LookMode.Reference);
+                Scribe_References.Look<Map>(ref ShipCombatOriginMap, "ShipCombatOriginMap");
+                Scribe_References.Look<Map>(ref ShipCombatTargetMap, "ShipCombatTargetMap");
+
+                //SC only - origin only
                 originMapComp = null;
-                masterMapComp = null;
-                targetMapComp = null;
-                //SCM only
-                Scribe_Values.Look<bool>(ref callSlowTick, "callSlowTick");
-                Scribe_Values.Look<float>(ref Range, "BattleRange");
-                Scribe_Values.Look<float>(ref RangeToKeep, "RangeToKeep");
-                Scribe_Values.Look<bool>(ref PlayerMaintain, "PlayerMaintain");
+                Scribe_Values.Look<float>(ref Range, "Range");
                 Scribe_Values.Look<bool>(ref attackedTradeship, "attackedTradeship");
-                Scribe_Values.Look<int>(ref BuildingCountAtStart, "BuildingCountAtStart");
-                Scribe_Values.Look<bool>(ref enemyRetreating, "enemyRetreating");
+                Scribe_Values.Look<bool>(ref callSlowTick, "callSlowTick");
+
+                //SC only - target only
+                Scribe_Values.Look<bool>(ref HasShipMapAI, "HasShipMapAI");
+                Scribe_Values.Look<int>(ref BattleStartTick, "BattleStartTick");
+                Scribe_Values.Look<bool>(ref Retreating, "Retreating");
                 Scribe_Values.Look<bool>(ref warnedAboutRetreat, "warnedAboutRetreat");
                 Scribe_Values.Look<int>(ref warnedAboutAdrift, "warnedAboutAdrift");
                 Scribe_Values.Look<bool>(ref hasAnyPlayerPartDetached, "PlayerPartDetached");
                 Scribe_Values.Look<bool>(ref startedBoarderLoad, "StartedBoarding");
                 Scribe_Values.Look<bool>(ref launchedBoarders, "LaunchedBoarders");
-                Scribe_Values.Look<int>(ref BattleStartTick, "BattleStartTick");
-                Scribe_Values.Look<bool>(ref Scanned, "Scanned");
+
+                Scribe_Collections.Look<Building_ShipBridge>(ref MapRootListAll, "MapRootListAll", LookMode.Reference); //td rem?
             }
         }
-        //non SC caches
-        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>(); //workjob, hit detect
-        public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>(); //td get this into shipcache?
-        public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
-        public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
-        public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
-        //SC vars
-        public Map ShipCombatOriginMap; //"player" map - initializes combat vars
-        public ShipHeatMapComp originMapComp;
+        //SC only - both maps
+        public Faction ShipFaction;
+        public bool Scanned = false; //target map has been fully scanned - prevent further scanner checks
+        public int lastPDTick = 0; //mapwide PD tick delay
+        public int BuildingCountAtStart = 0; //AI retreat param
+        public int BuildingsCount;
+        public int Heading; //+closer, -apart
+        public int EngineRot;
+        public float MapEnginePower;
+        public bool Maintain = false; //map will try to maintain RangeToKeep
+        public float RangeToKeep;
+        public bool InCombat = false; //in combat with another map
+        public float totalThreat;
+        public float[] threatPerSegment = { 1, 1, 1, 1 };
+        public HashSet<int> DestroyedIncombat = new HashSet<int>(); //ships destroyed
+        public List<ShipCombatProjectile> Projectiles;
+        public List<ShipCombatProjectile> TorpsInRange;
+        public Map ShipCombatOriginMap; //"player" map - initializes combat vars, runs all non duplicate code, AI
+        private ShipHeatMapComp originMapComp;
         public ShipHeatMapComp OriginMapComp
         {
             get
@@ -193,25 +209,8 @@ namespace RimWorld
                 return originMapComp;
             }
         }
-        
-        public Map ShipCombatMasterMap; //"AI" map - runs all non duplicate code
-        public ShipHeatMapComp masterMapComp;
-        public ShipHeatMapComp MasterMapComp
-        {
-            get
-            {
-                if (ShipCombatMasterMap == null)
-                    return null;
-                if (masterMapComp == null)
-                {
-                    masterMapComp = ShipCombatMasterMap.GetComponent<ShipHeatMapComp>();
-                }
-                return masterMapComp;
-            }
-        }
-
         public Map ShipCombatTargetMap; //target map - for proj, etc.
-        public ShipHeatMapComp targetMapComp;
+        private ShipHeatMapComp targetMapComp;
         public ShipHeatMapComp TargetMapComp
         {
             get
@@ -226,30 +225,64 @@ namespace RimWorld
             }
         }
 
+        //SC only - origin only
+        //public bool ShipCombatOrigin = false; //true only on ShipCombatOriginMap
+        public float Range; //400 is furthest away, 0 is up close and personal
+        public bool attackedTradeship; //target was AI tradeship - notoriety gain
+        public bool callSlowTick = false; //call both slow ticks
+
+        //SC only - target only
+        public bool HasShipMapAI = false; //target has ship map AI
+        public int BattleStartTick = 0; //AI retreat param, stalemate eject
+        public bool Retreating = false; //AI is retreating
+        public bool warnedAboutRetreat = false; //AI warned player
+        public int warnedAboutAdrift = 0; //tick player was warned AI is adrift
+        public bool hasAnyPlayerPartDetached = false; //AI will load shuttles
+        public bool startedBoarderLoad = false; //AI started loading
+        public bool launchedBoarders = false; //AI launched
+        void ResetShipAI()
+        {
+            HasShipMapAI = true;
+            BattleStartTick = Find.TickManager.TicksGame;
+            Retreating = false;
+            warnedAboutRetreat = false;
+            warnedAboutAdrift = 0;
+            hasAnyPlayerPartDetached = false;
+            startedBoarderLoad = false;
+            launchedBoarders = false;
+        }
+
+        public Lord ShipLord; //AI ship lord - defends or attacks
+        public Lord InvaderLord; //second AI ship lord for wreck second facton 
+
+        //all maps
         public Map ShipGraveyard; //map to put destroyed ships to
-        public Faction ShipFaction;
-        public Lord ShipLord;
-        public Lord InvaderLord;
-        public bool ShipCombatMaster = false; //true only on ShipCombatMasterMap
-        public bool InCombat = false; //in combat with another map
+        public Map GraveOrigin; //check if origin is in combat
         public bool IsGraveyard = false; //temp map, will be removed in a few days
         public bool BurnUpSet = false; //force terminate map+WO if no player pawns or pods present or in flight to
-        public int EngineRot;
-
-        public float MapEnginePower;
-        public int BurnTimer = 0;
-        public int Heading; //+closer, -apart
-        public int BuildingsCount;
-        public float totalThreat;
-        public float[] threatPerSegment = { 1, 1, 1, 1 };
-        //SC cache
-        public List<ShipCombatProjectile> Projectiles;
-        public List<ShipCombatProjectile> TorpsInRange;
+        public int BurnTimer = 0; //event: debris avoid
         public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
-        List<Building> cores = new List<Building>(); //td rem?
-        public HashSet<int> DestroyedIncombat = new HashSet<int>();
+        List<Building> cores = new List<Building>(); //td rem, might still have some use?
 
-        //SC cache new
+        //non SC caches
+        public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>(); //workjob, hit detect
+        public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>(); //td get this into shipcache?
+        public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
+        public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
+        public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
+
+        private bool shipCombatOrigin = false;
+        public bool ShipCombatOrigin //reset after battle
+        {
+            get
+            {
+                shipCombatOrigin = map == ShipCombatOriginMap;
+                return shipCombatOrigin;
+            }
+            set { shipCombatOrigin = value; }
+        }
+
+        //ship cache functions
         //after spawn init all, after moveship: assign same as from map to new map
         public override void FinalizeInit()
         {
@@ -486,26 +519,7 @@ namespace RimWorld
             }
             return false;
         }
-        //SC cache new end
-
-        //SCM only
-        public bool callSlowTick = false;
-        public float Range; //400 is furthest away, 0 is up close and personal
-        public float RangeToKeep;
-        public bool PlayerMaintain;
-        public bool attackedTradeship;
-        public int BuildingCountAtStart = 0;
-        public bool enemyRetreating = false;
-        public bool warnedAboutRetreat = false;
-        public int warnedAboutAdrift = 0;
-        public bool hasAnyPlayerPartDetached = false;
-        public bool startedBoarderLoad = false;
-        public bool launchedBoarders = false;
-        public bool Scanned = false;
-        public int BattleStartTick = 0;
-        public int lastPDTick = 0;
-        readonly float[] minRange = new[] { 0f, 60f, 110f, 160f };
-        readonly float[] maxRange = new[] { 40f, 90f, 140f, 190f };
+        //ship cache functions end
 
         public void SpawnEnemyShip(PassingShip passingShip, Faction faction, bool fleet, bool bounty, out List<Building> cores)
         {
@@ -622,31 +636,31 @@ namespace RimWorld
                 faction.TryAffectGoodwillWith(Faction.OfPlayer, -150);
 
             //spawn map
-            ShipCombatMasterMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), new IntVec3(250, 1, 250), ResourceBank.WorldObjectDefOf.ShipEnemy);
-            ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).radius = radius;
-            ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).theta = theta;
-            ((WorldObjectOrbitingShip)ShipCombatMasterMap.Parent).phi = phi;
+            ShipCombatTargetMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), new IntVec3(250, 1, 250), ResourceBank.WorldObjectDefOf.ShipEnemy);
+            ((WorldObjectOrbitingShip)ShipCombatTargetMap.Parent).radius = radius;
+            ((WorldObjectOrbitingShip)ShipCombatTargetMap.Parent).theta = theta;
+            ((WorldObjectOrbitingShip)ShipCombatTargetMap.Parent).phi = phi;
             if (passingShip is DerelictShip d)
             {
                 shieldsActive = false;
-                MasterMapComp.IsGraveyard = true;
+                TargetMapComp.IsGraveyard = true;
                 //int time = Rand.RangeInclusive(600000, 120000);
-                ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
-                Find.LetterStack.ReceiveLetter("ShipEncounterStart".Translate(), "ShipEncounterStartDesc".Translate(ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
+                ShipCombatTargetMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
+                Find.LetterStack.ReceiveLetter("ShipEncounterStart".Translate(), "ShipEncounterStartDesc".Translate(ShipCombatTargetMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
             }
-            MasterMapComp.ShipFaction = faction;
+            TargetMapComp.ShipFaction = faction;
             if (wreckLevel != 3)
-                MasterMapComp.ShipLord = LordMaker.MakeNewLord(faction, new LordJob_DefendShip(faction, map.Center), map);
+                TargetMapComp.ShipLord = LordMaker.MakeNewLord(faction, new LordJob_DefendShip(faction, map.Center), map);
             if (fleet) //spawn fleet - not for passingShips other than trade yet
             {
-                ShipInteriorMod2.GenerateFleet(CR, ShipCombatMasterMap, passingShip, faction, MasterMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
+                ShipInteriorMod2.GenerateFleet(CR, ShipCombatTargetMap, passingShip, faction, TargetMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
                 return;
             }
             else //spawn ship
             {
                 //keep this for troubleshooting
                 Log.Message("SOS2: spawning shipdef: " + shipDef + ", of faction: " + faction + ", of navy: " + navyDef + ", wrecklvl: " + wreckLevel);
-                ShipInteriorMod2.GenerateShip(shipDef, ShipCombatMasterMap, passingShip, faction, MasterMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
+                ShipInteriorMod2.GenerateShip(shipDef, ShipCombatTargetMap, passingShip, faction, TargetMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
             }
             //post ship spawn
             //if (cores != null)
@@ -655,9 +669,9 @@ namespace RimWorld
         public int MapThreat()
         {
             int threat = 0;
-            foreach (int index in ShipsOnMapNew.Keys)
+            foreach (SoShipCache ship in ShipsOnMapNew.Values)
             {
-                threat += ShipsOnMapNew[index].Threat;
+                threat += ship.Threat;
             }
             return threat;
         }
@@ -675,78 +689,50 @@ namespace RimWorld
             attackedTradeship = false;
             //target or create master + spawn ship
             originMapComp = null;
-            masterMapComp = null;
             targetMapComp = null;
             ShipCombatOriginMap = map;
             if (enemyMap == null)
                 SpawnEnemyShip(passingShip, fac, fleet, bounty, out cores);
             else
-                ShipCombatMasterMap = enemyMap;
-
-            ShipCombatTargetMap = ShipCombatMasterMap;
-            MasterMapComp.ShipCombatTargetMap = ShipCombatOriginMap;
-            MasterMapComp.ShipCombatOriginMap = map;
-            MasterMapComp.ShipCombatMasterMap = ShipCombatMasterMap;
+                ShipCombatTargetMap = enemyMap;
 
             //if ship is derelict switch to "encounter"
-            if (MasterMapComp.IsGraveyard)
+            if (TargetMapComp.IsGraveyard)
             {
                 return;
             }
-            //Log.Message("Ships: " + MasterMapComp.MapRootListAll.Count + " on map: " + MasterMapComp.map);
-            MasterMapComp.ShipCombatMaster = true;
+            TargetMapComp.ShipCombatTargetMap = ShipCombatOriginMap;
+            TargetMapComp.ShipCombatOriginMap = ShipCombatOriginMap;
+            TargetMapComp.HasShipMapAI = true; //td for now set manually here
             //start caches
-            StartBattleCache();
-            MasterMapComp.StartBattleCache();
-            //set range DL:1-9
-            byte detectionLevel = 7;
-            var worldComp = ShipInteriorMod2.WorldComp;
-            List<Building_ShipAdvSensor> Sensors = worldComp.Sensors.Where(s => s.Map == map).ToList();
-            List<Building_ShipAdvSensor> SensorsEnemy = worldComp.Sensors.Where(s => s.Map == ShipCombatMasterMap).ToList();
-            if (Sensors.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-            {
-                detectionLevel += 2;
-            }
-            else if (Sensors.Where(sensor => sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-                detectionLevel += 1;
-            if (range == 0)
-            {
-                if (Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
-                    detectionLevel -= 2;
-                if (SensorsEnemy.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-                    detectionLevel -= 2;
-                else if (SensorsEnemy.Any())
-                    detectionLevel -= 1;
-                if (MasterMapComp.Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
-                    detectionLevel -= 2;
-                MasterMapComp.Range = 180 + detectionLevel * 20 + Rand.Range(0, 40);
-                Log.Message("Enemy range at start: " + MasterMapComp.Range);
-            }
+            ResetCombatVars();
+            TargetMapComp.ResetCombatVars();
 
-            MasterMapComp.callSlowTick = true;
+            if (range == 0) //set range DL:1-9
+                DetermineInitialRange();
+            Log.Message("Enemy range at start: " + Range);
+
+            callSlowTick = true;
         }
-        public void StartBattleCache()
+        private void ResetCombatVars()
         {
             //reset vars
             ShipGraveyard = null;
             InCombat = true;
             BurnUpSet = false;
             Heading = 0;
+            Maintain = false;
             MapEnginePower = 0;
             Projectiles = new List<ShipCombatProjectile>();
             TorpsInRange = new List<ShipCombatProjectile>();
-            //SCM only
-            if (ShipCombatMaster)
+            //ship AI
+            if (HasShipMapAI)
+            {
+                ResetShipAI();
+            }
+            else
             {
                 RangeToKeep = Range;
-                PlayerMaintain = false;
-                enemyRetreating = false;
-                warnedAboutRetreat = false;
-                warnedAboutAdrift = 0;
-                hasAnyPlayerPartDetached = false;
-                startedBoarderLoad = false;
-                launchedBoarders = false;
-                BattleStartTick = Find.TickManager.TicksGame;
             }
             foreach (int index in shipsOnMapNew.Keys) //combat start calcs per ship
             {
@@ -756,6 +742,28 @@ namespace RimWorld
                 BuildingCountAtStart += ship.BuildingCountAtCombatStart;
                 ship.BuildingsDestroyed.Clear();
             }
+        }
+        private void DetermineInitialRange()
+        {
+            byte detectionLevel = 7;
+            List<Building_ShipAdvSensor> Sensors = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == map).ToList();
+            List<Building_ShipAdvSensor> SensorsEnemy = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == ShipCombatTargetMap).ToList();
+            if (Sensors.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
+            {
+                detectionLevel += 2;
+            }
+            else if (Sensors.Where(sensor => sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
+                detectionLevel += 1;
+
+            if (Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
+                detectionLevel -= 2;
+            if (SensorsEnemy.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
+                detectionLevel -= 2;
+            else if (SensorsEnemy.Any())
+                detectionLevel -= 1;
+            if (TargetMapComp.Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
+                detectionLevel -= 2;
+            Range = 180 + detectionLevel * 20 + Rand.Range(0, 40);
         }
 
         public override void MapComponentTick()
@@ -767,39 +775,27 @@ namespace RimWorld
             }
             if (!map.IsSpace())
                 return;
+
             foreach (int index in DestroyedIncombat)
             {
                 RemoveShipFromBattle(index);
             }
             DestroyedIncombat.Clear();
+
             if (InCombat)
             {
-                if (ShipCombatMaster)
-                {
-                    if (OriginMapComp.Heading == 1)
-                        Range -= OriginMapComp.MapEnginePower;
-                    else if (OriginMapComp.Heading == -1)
-                        Range += OriginMapComp.MapEnginePower;
-                    if (Heading == 1)
-                        Range -= MapEnginePower;
-                    else if (Heading == -1)
-                        Range += MapEnginePower;
-                    if (Range > 400)
-                        Range = 400;
-                    else if (Range < 0)
-                        Range = 0;
-                    //no end if player has pawns on enemy ship
-                    if (Range >= 395 && enemyRetreating && !ShipCombatMasterMap.mapPawns.AnyColonistSpawned)
-                    {
-                        EndBattle(map, true);
-                        return;
-                    }
-                }
+                if (Heading == 1)
+                    OriginMapComp.Range -= MapEnginePower; //reduce distance
+                else if (Heading == -1)
+                    OriginMapComp.Range += MapEnginePower; //inrease distance
+
+                Mathf.Clamp(OriginMapComp.Range, 0f, 400f);
+
                 //deregister projectiles in own cache, spawn them on targetMap
                 List<ShipCombatProjectile> toRemove = new List<ShipCombatProjectile>();
                 foreach (ShipCombatProjectile proj in Projectiles)
                 {
-                    if (proj.range >= MasterMapComp.Range)
+                    if (proj.range >= OriginMapComp.Range)
                     {
                         //td determine miss, remove proj
                         //factors for miss: range+,pilot console+,mass-,thrusters+
@@ -834,7 +830,7 @@ namespace RimWorld
                         projectile.Launch(proj.turret, spawnCell.ToVector3Shifted(), c, proj.target.Cell, ProjectileHitFlags.All, equipment: proj.turret);
                         toRemove.Add(proj);
                     }
-                    else if ((proj.spawnProjectile.thingClass == typeof(Projectile_TorpedoShipCombat) || proj.spawnProjectile.thingClass == typeof(Projectile_ExplosiveShipCombatAntigrain)) && !TorpsInRange.Contains(proj) && MasterMapComp.Range - proj.range < 65)
+                    else if ((proj.spawnProjectile.thingClass == typeof(Projectile_TorpedoShipCombat) || proj.spawnProjectile.thingClass == typeof(Projectile_ExplosiveShipCombatAntigrain)) && !TorpsInRange.Contains(proj) && OriginMapComp.Range - proj.range < 65)
                     {
                         TorpsInRange.Add(proj);
                     }
@@ -849,22 +845,26 @@ namespace RimWorld
                     if (TorpsInRange.Contains(proj))
                         TorpsInRange.Remove(proj);
                 }
-
-                //ship destruction code
-                if (Find.TickManager.TicksGame % 20 == 0)
+                //shipAI cant retreat if player has pawns on its map
+                if (HasShipMapAI)
                 {
-                    if (MapRootListAll.NullOrEmpty()) //if all ships gone, end combat
+                    if (OriginMapComp.Range >= 395 && Retreating && !map.mapPawns.AnyColonistSpawned)
                     {
-                        //Log.Message("Map defeated: " + this.map);
-                        EndBattle(map, false);
+                        EndBattle(map, true);
                         return;
                     }
                 }
-                //SCM only: call both slow ticks
-                if (ShipCombatMaster && (callSlowTick || Find.TickManager.TicksGame % 60 == 0))
+                if (MapRootListAll.NullOrEmpty()) //if all ships on map gone, lose combat
                 {
-                    OriginMapComp.SlowTick();
+                    //Log.Message("Map defeated: " + this.map);
+                    EndBattle(map, false);
+                    return;
+                }
+                //origin only: call both slow ticks
+                if (callSlowTick || (ShipCombatOrigin && Find.TickManager.TicksGame % 60 == 0))
+                {
                     SlowTick();
+                    TargetMapComp.SlowTick();
                     callSlowTick = false;
                 }
             }
@@ -941,22 +941,42 @@ namespace RimWorld
         }
         public void SlowTick()
         {
-            //td ship AI
+            //td better shipAI
             //map AI evals ships
-            //
+
+            if (Maintain) //distance maintain
+            {
+                if (TargetMapComp.Heading == 1) //target moving to origin
+                {
+                    if (RangeToKeep > OriginMapComp.Range)
+                        Heading = -1;
+                    else
+                        Heading = 0;
+                }
+                else if (TargetMapComp.Heading == -1) //target moving from origin
+                {
+                    if (RangeToKeep < OriginMapComp.Range)
+                        Heading = 1;
+                    else
+                        Heading = 0;
+                }
+                else if (Heading == 0)
+                {
+                    Heading = 0;
+                }
+            }
             totalThreat = 1;
             threatPerSegment = new[] { 1f, 1f, 1f, 1f };
             int TurretNum = 0;
             MapEnginePower = 0;
             BuildingsCount = 0;
-            //SCM vars
             float powerCapacity = 0;
             float powerRemaining = 0;
             //threat and engine power calcs
             bool anyMapEngineCanActivate = AnyMapEngineCanActivate();
             foreach (SoShipCache ship in ShipsOnMapNew.Values)
             {
-                if (ShipCombatMaster && !ship.IsWreck)
+                if (HasShipMapAI && !ship.IsWreck) //shipAI purge
                 {
                     foreach (var battery in ship.Core.PowerComp.PowerNet.batteryComps)
                     {
@@ -965,8 +985,13 @@ namespace RimWorld
                     }
                     ship.PurgeCheck();
                 }
-                threatPerSegment.Zip(ship.ThreatPerSegment, (x, y) => x + y);
-                foreach (Building_ShipTurret turret in ship.Turrets)
+                threatPerSegment[0] += ship.ThreatPerSegment[0];
+                threatPerSegment[1] += ship.ThreatPerSegment[1];
+                threatPerSegment[2] += ship.ThreatPerSegment[2];
+                threatPerSegment[3] += ship.ThreatPerSegment[3];
+                //threatPerSegment = threatPerSegment.Zip(ship.ThreatPerSegment, (x, y) => x + y).ToArray();
+                //Log.Message("map threat: " + threatPerSegment[0] + " " + threatPerSegment[1] + " " + threatPerSegment[2] + " " + threatPerSegment[3] + " ");
+                foreach (Building_ShipTurret turret in ship.Turrets) //remove threat from not loaded
                 {
                     int threat = turret.heatComp.Props.threat;
                     var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
@@ -1000,6 +1025,7 @@ namespace RimWorld
                         TurretNum++;
                     }
                 }
+                
                 if (anyMapEngineCanActivate && Heading != 0)
                 {
                     MapEnginePower += ship.EnginesOn();
@@ -1014,20 +1040,20 @@ namespace RimWorld
             MapEnginePower *= 40f / Mathf.Pow(BuildingsCount, 1.1f);
             //Log.Message("Engine power: " + MapEnginePower + ", ship size: " + BuildingsCount);
 
-            //SCM only: ship AI and player distance maintain
-            if (ShipCombatMaster)
+            //shipAI distance, boarding
+            if (HasShipMapAI)
             {
                 if (anyMapEngineCanActivate) //set AI heading
                 {
                     //True, totalThreat:1, OriginMapComp.totalThreat:1, TurretNum:0
                     //retreat
-                    if (enemyRetreating || totalThreat / OriginMapComp.totalThreat < 0.4f || powerRemaining / powerCapacity < 0.2f || TurretNum == 0 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
+                    if (Retreating || totalThreat / OriginMapComp.totalThreat < 0.4f || powerRemaining / powerCapacity < 0.2f || TurretNum == 0 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
                     {
                         Heading = -1;
-                        enemyRetreating = true;
+                        Retreating = true;
                         if (!warnedAboutRetreat)
                         {
-                            Log.Message(enemyRetreating + ", totalThreat:" + totalThreat + ", OriginMapComp.totalThreat:" + OriginMapComp.totalThreat + ", powerRemaining:" + powerRemaining + ", powerCapacity:" + powerCapacity + ", TurretNum:" + TurretNum + ", BuildingsCount:" + BuildingsCount + ", BuildingCountAtStart:" + BuildingCountAtStart);
+                            Log.Message("AI retreating:" + Retreating + ", totalThreat:" + totalThreat + ", OriginMapComp.totalThreat:" + OriginMapComp.totalThreat + ", powerRemaining:" + powerRemaining + ", powerCapacity:" + powerCapacity + ", TurretNum:" + TurretNum + ", BuildingsCount:" + BuildingsCount + ", BuildingCountAtStart:" + BuildingCountAtStart);
                             Messages.Message("EnemyShipRetreating".Translate(), MessageTypeDefOf.ThreatBig);
                             warnedAboutRetreat = true;
                         }
@@ -1041,32 +1067,35 @@ namespace RimWorld
                             threatPerSegment[3] / OriginMapComp.threatPerSegment[3] };
                         float max = 0;
                         int best = 0;
+                        //string str = "threat LMSC: ";
                         for (int i = 0; i < 4; i++)
                         {
                             if (threatRatio[i] == 1) //threat is 0 for both
                                 threatRatio[i] = 0;
+                            //str += threatRatio[i] + " ";
                             if (threatRatio[i] > max)
                             {
                                 max = threatRatio[i];
                                 best = i;
                             }
                         }
-                        if (Range > maxRange[best]) //forward
+                        //Log.Message(str);
+                        if (OriginMapComp.Range > maxRange[best]) //forward
                         {
-                            //if (Heading != 1)
-                                //Log.Message("enemy ship now moving forward Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
+                            if (Heading != 1)
+                                Log.Message("AI ship now moving forward Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                             Heading = 1;
                         }
-                        else if (Range <= minRange[best]) //back
+                        else if (OriginMapComp.Range <= minRange[best]) //back
                         {
-                            //if (Heading != -1)
-                                //Log.Message("enemy ship now moving backward Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
+                            if (Heading != -1)
+                                Log.Message("AI ship now moving backward Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                             Heading = -1;
                         }
                         else //chill
                         {
-                            //if (Heading != 0)
-                                //Log.Message("enemy ship now stopped Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
+                            if (Heading != 0)
+                                Log.Message("AI ship now stopped Threat ratios (LMSC): " + threatRatio[3].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[0].ToString("F2"));
                             Heading = 0;
                         }
                     }
@@ -1076,49 +1105,28 @@ namespace RimWorld
                     if ((threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1) || Find.TickManager.TicksGame > BattleStartTick + 120000)
                     {
                         //no turrets to fight with - exit
-                        EndBattle(this.map, false);
+                        EndBattle(map, false);
                         return;
                     }
                     if (warnedAboutAdrift == 0)
                     {
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipAdrift"), this.map.Parent, MessageTypeDefOf.NegativeEvent);
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipAdrift"), map.Parent, MessageTypeDefOf.NegativeEvent);
                         warnedAboutAdrift = Find.TickManager.TicksGame + Rand.RangeInclusive(60000, 100000);
                     }
                     else if (Find.TickManager.TicksGame > warnedAboutAdrift)
                     {
-                        EndBattle(this.map, false, warnedAboutAdrift - Find.TickManager.TicksGame);
+                        EndBattle(map, false, warnedAboutAdrift - Find.TickManager.TicksGame);
                         return;
                     }
                     Heading = 0;
-                    enemyRetreating = false;
-                }
-                if (PlayerMaintain)
-                {
-                    if (Heading == 1) //enemy moving to player
-                    {
-                        if (RangeToKeep > Range)
-                            OriginMapComp.Heading = -1;
-                        else
-                            OriginMapComp.Heading = 0;
-                    }
-                    else if (Heading == -1) //enemy moving from player
-                    {
-                        if (RangeToKeep < Range)
-                            OriginMapComp.Heading = 1;
-                        else
-                            OriginMapComp.Heading = 0;
-                    }
-                    else if (Heading == 0)
-                    {
-                        OriginMapComp.Heading = 0;
-                    }
+                    Retreating = false;
                 }
                 //AI boarding code
-                if ((hasAnyPlayerPartDetached || Find.TickManager.TicksGame > BattleStartTick + 5000) && !startedBoarderLoad && !enemyRetreating)
+                if ((hasAnyPlayerPartDetached || Find.TickManager.TicksGame > BattleStartTick + 5000) && !startedBoarderLoad && !Retreating)
                 {
                     List <CompTransporter> transporters = new List<CompTransporter>();
                     float transporterMass = 0;
-                    foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter))
+                    foreach (Thing t in map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter))
                     {
                         if (t.Faction == Faction.OfPlayer) continue;
 
@@ -1131,7 +1139,7 @@ namespace RimWorld
                             transporterMass += transporter.Props.massCapacity;
                         }
                     }
-                    foreach (Pawn p in this.map.mapPawns.AllPawnsSpawned)
+                    foreach (Pawn p in map.mapPawns.AllPawnsSpawned)
                     {
                         if (p.Faction != Faction.OfPlayer && transporterMass >= p.RaceProps.baseBodySize * 70 && p.Faction != Faction.OfPlayer && p.mindState.duty != null && p.kindDef.combatPower > 40)
                         {
@@ -1146,12 +1154,12 @@ namespace RimWorld
                     }
                     startedBoarderLoad = true;
                 }
-                if (startedBoarderLoad && !launchedBoarders && !enemyRetreating)
+                if (startedBoarderLoad && !launchedBoarders && !Retreating)
                 {
                     //abort and reset if player on ship
-                    if (this.map.mapPawns.AllPawnsSpawned.Any(o => o.Faction == Faction.OfPlayer))
+                    if (map.mapPawns.AllPawnsSpawned.Any(o => o.Faction == Faction.OfPlayer))
                     {
-                        foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
+                        foreach (Thing t in map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
                         {
                             var transporter = t.TryGetComp<CompTransporter>();
                             if (transporter.innerContainer.Any || transporter.AnythingLeftToLoad)
@@ -1162,7 +1170,7 @@ namespace RimWorld
                     else //board
                     {
                         bool allOnPods = true;
-                        foreach (Pawn p in this.map.mapPawns.AllPawnsSpawned.Where(o => o.Faction != Faction.OfPlayer))
+                        foreach (Pawn p in map.mapPawns.AllPawnsSpawned.Where(o => o.Faction != Faction.OfPlayer))
                         {
                             if (p.mindState?.duty?.transportersGroup == 0 && p.MannedThing() == null)
                                 allOnPods = false;
@@ -1170,7 +1178,7 @@ namespace RimWorld
                         if (allOnPods) //launch
                         {
                             List<CompShuttleLaunchable> transporters = new List<CompShuttleLaunchable>();
-                            foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
+                            foreach (Thing t in map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
                             {
                                 var transporter = t.TryGetComp<CompTransporter>();
                                 if (!(transporter?.innerContainer.Any ?? false)) continue;
@@ -1215,10 +1223,10 @@ namespace RimWorld
         public void SpawnGraveyard() //if not present, create a graveyard
         {
             float adj;
-            if (ShipCombatMaster)
-                adj = Rand.Range(-0.075f, -0.125f);
-            else
+            if (ShipCombatOrigin)
                 adj = Rand.Range(0.025f, 0.075f);
+            else
+                adj = Rand.Range(-0.075f, -0.125f);
             ShipGraveyard = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), this.map.Size, ResourceBank.WorldObjectDefOf.WreckSpace);
             ShipGraveyard.fogGrid.ClearAllFog();
             ((WorldObjectOrbitingShip)ShipGraveyard.Parent).radius = 150;
@@ -1226,40 +1234,25 @@ namespace RimWorld
             ((WorldObjectOrbitingShip)ShipGraveyard.Parent).phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).phi - 0.01f + 0.001f * Rand.Range(0, 20);
             var graveMapComp = ShipGraveyard.GetComponent<ShipHeatMapComp>();
             graveMapComp.IsGraveyard = true;
-            if (ShipCombatMaster)
-            {
-                graveMapComp.ShipFaction = MasterMapComp.ShipFaction;
-                graveMapComp.ShipCombatMasterMap = this.map;
-                graveMapComp.ShipCombatOriginMap = graveMapComp.MasterMapComp.ShipCombatOriginMap;
-                //graveMapComp.ShipLord = LordMaker.MakeNewLord(ShipFaction, new LordJob_DefendShip(ShipFaction, map.Center), map);
-            }
-            else
-            {
-                graveMapComp.ShipFaction = OriginMapComp.ShipFaction;
-                graveMapComp.ShipCombatOriginMap = this.map;
-                graveMapComp.ShipCombatMasterMap = graveMapComp.OriginMapComp.ShipCombatMasterMap;
-            }
+            graveMapComp.GraveOrigin = map;
+            graveMapComp.ShipFaction = ShipFaction;
         }
         public void ShipBuildingsOff() //td should no longer be needed for engines
         {
-            foreach (Building b in ShipCombatOriginMap.listerBuildings.allBuildingsColonist)
+            //td destroy all proj?
+            foreach (SoShipCache ship in OriginMapComp.ShipsOnMapNew.Values)
             {
-                if (b.TryGetComp<CompEngineTrail>() != null)
-                    b.TryGetComp<CompEngineTrail>().Off();
+                ship.EnginesOff();
             }
-            foreach (Building b in ShipCombatMasterMap.listerBuildings.allBuildingsColonist) //hacked last ship off
+            foreach (SoShipCache ship in OriginMapComp.TargetMapComp.ShipsOnMapNew.Values)
             {
-                if (b.TryGetComp<CompEngineTrail>() != null)
-                    b.TryGetComp<CompEngineTrail>().Off();
+                ship.EnginesOff();
+                foreach (CompShipCombatShield s in ship.Shields)
+                {
+                    s.flickComp.SwitchIsOn = false;
+                }
             }
-            foreach (Building b in ShipCombatMasterMap.listerBuildings.allBuildingsNonColonist)
-            {
-                if (b.TryGetComp<CompEngineTrail>() != null)
-                    b.TryGetComp<CompEngineTrail>().Off();
-                else if (b.TryGetComp<CompShipCombatShield>() != null)
-                    b.TryGetComp<CompFlickable>().SwitchIsOn = false;
-            }
-            foreach (Thing t in this.map.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
+            foreach (Thing t in ShipCombatTargetMap.listerThings.ThingsInGroup(ThingRequestGroup.Transporter).Where(tr => tr.Faction != Faction.OfPlayer))
             {
                 var transporter = t.TryGetComp<CompTransporter>();
                 if (transporter.innerContainer.Any || transporter.AnythingLeftToLoad)
@@ -1268,29 +1261,28 @@ namespace RimWorld
         }
         public void EndBattle(Map loser, bool fled, int burnTimeElapsed = 0)
         {
-			//td destroy all proj?
+            Map tgtMap = OriginMapComp.ShipCombatTargetMap;
+            var tgtMapComp = OriginMapComp.TargetMapComp;
             OriginMapComp.InCombat = false;
-            MasterMapComp.InCombat = false;
+            tgtMapComp.InCombat = false;
+            tgtMapComp.HasShipMapAI = false;
             OriginMapComp.ShipBuildingsOff();
-            MasterMapComp.ShipCombatMaster = false;
-            if (OriginMapComp.ShipGraveyard != null)
-                OriginMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
-            if (MasterMapComp.ShipGraveyard != null)
-                MasterMapComp.ShipGraveyard.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
-            if (loser == ShipCombatMasterMap)
+            OriginMapComp.ShipGraveyard?.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
+            tgtMapComp.ShipGraveyard?.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
+            if (loser != ShipCombatOriginMap)
             {
-                if (!fled) //master lost
+                if (fled) //target fled, remove target
                 {
-                    MasterMapComp.IsGraveyard = true;
+                    tgtMapComp.BurnUpSet = true;
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipRetreated"), MessageTypeDefOf.ThreatBig);
+                }
+                else //target lost
+                {
+                    tgtMapComp.IsGraveyard = true;
                     if (OriginMapComp.attackedTradeship)
                         ShipInteriorMod2.WorldComp.PlayerFactionBounty += 15;
-                    ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
-                    Find.LetterStack.ReceiveLetter("WinShipBattle".Translate(), "WinShipBattleDesc".Translate(ShipCombatMasterMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
-                }
-                else //master fled
-                {
-                    MasterMapComp.BurnUpSet = true;
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipRetreated"), MessageTypeDefOf.ThreatBig);
+                    tgtMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
+                    Find.LetterStack.ReceiveLetter("WinShipBattle".Translate(), "WinShipBattleDesc".Translate(tgtMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
                 }
             }
             else
@@ -1300,21 +1292,30 @@ namespace RimWorld
                     ShipCombatOriginMap.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 120000));
                     //Find.GameEnder.CheckOrUpdateGameOver();
                 }
-                //origin fled or lost: if origin has grave with a ship, start combat on it
+                //origin fled or lost: if origin has grave with a ship, start combat with target
                 if (OriginMapComp.ShipGraveyard != null && !OriginMapComp.attackedTradeship)
                 {
                     Building bridge = OriginMapComp.ShipGraveyard.listerBuildings.allBuildingsColonist.Where(x => x is Building_ShipBridge).FirstOrDefault();
                     if (bridge != null)
                     {
-                        //OriginMapComp.IsGraveyard = true;
-                        OriginMapComp.ShipGraveyard.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, null, ShipCombatMasterMap);
+                        OriginMapComp.ShipGraveyard.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, null, tgtMap);
+                        return;
                     }
                 }
-                else //origin fled or lost with no graveyard
+                else //origin fled or lost with no graveyard, remove target
                 {
-                    MasterMapComp.BurnUpSet = true;
+                    tgtMapComp.BurnUpSet = true;
                 }
             }
+            /*if (!fled)
+            {
+                tgtMapComp.ShipCombatTargetMap = null;
+                tgtMapComp.ShipCombatOriginMap = null;
+            }
+            OriginMapComp.ShipCombatTargetMap = null;
+            OriginMapComp.ShipCombatOriginMap = null;
+            OriginMapComp.originMapComp = null;
+            OriginMapComp.targetMapComp = null;*/
         }
         //proj
         public IntVec3 FindClosestEdgeCell(Map map, IntVec3 targetCell)

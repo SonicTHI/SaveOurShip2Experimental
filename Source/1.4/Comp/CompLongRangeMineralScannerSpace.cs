@@ -64,6 +64,9 @@ namespace RimWorld
             {
                 Log.Error("Used while CanUseNow is false.");
             }
+            if (parent.Faction != Faction.OfPlayer)
+                return;
+
             if (Find.TickManager.TicksGame % 60 == 0)
             {
                 float statValue = worker.GetStatValue(StatDefOf.ResearchSpeed, true);

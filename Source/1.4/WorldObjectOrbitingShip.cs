@@ -238,7 +238,7 @@ namespace RimWorld
                         };
                     }
                 }
-                if (mapComp.IsGraveyard && !mapComp.ShipCombatOriginMap.GetComponent<ShipHeatMapComp>().InCombat && !mapComp.BurnUpSet)
+                if (mapComp.IsGraveyard && !mapComp.GraveOrigin.GetComponent<ShipHeatMapComp>().InCombat && !mapComp.BurnUpSet)
                 {
                     yield return new Command_Action
                     {

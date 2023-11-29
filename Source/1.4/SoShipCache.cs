@@ -791,7 +791,7 @@ namespace RimWorld
                 HashSet<IntVec3> cellsAttached = new HashSet<IntVec3>(); //cells that were checked and are attached
                 foreach (IntVec3 vec in AreaDestroyed)
                 {
-                    foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !AreaDestroyed.Contains(v) && Area.Contains(v)))
+                    foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !AreaDestroyed.Contains(v) && Area.Contains(v) &&  mapComp.MapShipCells[v].Item2 != 0))
                     {
                         initialCells.Add(v);
                     }
@@ -979,7 +979,19 @@ namespace RimWorld
             foreach (Thing t in toDestroy)
             {
                 if (t.def.destroyable && !t.Destroyed)
-                    t.Destroy(DestroyMode.Vanish);
+                {
+                    try
+                    {
+                        t.Destroy(DestroyMode.Vanish);
+                    }
+                    catch (Exception e)
+                    {
+                        var sb = new StringBuilder();
+                        sb.AppendFormat("Wrecking Error on {0}: {1}\n", t.def.label, e.Message);
+                        sb.AppendLine(e.StackTrace);
+                        Log.Warning(sb.ToString());
+                    }
+                }
             }
             foreach (IntVec3 c in detachArea)
             {

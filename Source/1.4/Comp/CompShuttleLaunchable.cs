@@ -215,7 +215,7 @@ namespace RimWorld
             {
                 Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
-                    if (!target.IsValid || refuelComp == null || refuelComp.FuelPercentOfMax == 1.0f || ((this.parent.Map == mapComp.ShipCombatMasterMap || this.parent.Map == mapComp.ShipCombatOriginMap) && target.WorldObject is WorldObjectOrbitingShip && refuelComp.FuelPercentOfMax >= 0.25f))
+                    if (!target.IsValid || refuelComp == null || refuelComp.FuelPercentOfMax == 1.0f || ((parent.Map == mapComp.OriginMapComp.ShipCombatTargetMap || parent.Map == mapComp.ShipCombatOriginMap) && target.WorldObject is WorldObjectOrbitingShip && refuelComp.FuelPercentOfMax >= 0.25f))
                     {
                         return null;
                     }
@@ -328,7 +328,7 @@ namespace RimWorld
                         return true;
                     }
                     //from ground
-                    else if (!mapComp.InCombat && this.parent.Map != mapComp.ShipCombatMasterMap && !(this.parent.Map == mapComp.ShipCombatOriginMap && targetMapParent.Map == mapComp.ShipCombatMasterMap))
+                    else if (!mapComp.InCombat && parent.Map != mapComp.OriginMapComp.ShipCombatTargetMap && !(parent.Map == mapComp.ShipCombatOriginMap && targetMapParent.Map == mapComp.OriginMapComp.ShipCombatTargetMap))
                     {
                         if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.8f)
                         {
@@ -351,7 +351,7 @@ namespace RimWorld
                         return true;
                     }
                     //only pods incombat if enemy t/w above
-                    else if (!ModSettings_SoS.easyMode && mapComp.InCombat && mapComp.MasterMapComp.MapEnginePower > 0.02f)
+                    else if (!ModSettings_SoS.easyMode && mapComp.InCombat && mapComp.TargetMapComp.MapEnginePower > 0.02f)
                     {
                         foreach (CompTransporter t in this.TransportersInGroup)
                         {
@@ -700,12 +700,9 @@ namespace RimWorld
             var mapComp = map.GetComponent<ShipHeatMapComp>();
             var fuelComp = this.parent.TryGetComp<CompRefuelable>();
             float amount = 0;
-            if ((target.WorldObject is WorldObjectOrbitingShip || mapComp.InCombat) && (map == mapComp.ShipCombatOriginMap || map == mapComp.ShipCombatMasterMap))
+            if ((target.WorldObject is WorldObjectOrbitingShip || mapComp.InCombat) && (map == mapComp.ShipCombatOriginMap || map == mapComp.OriginMapComp.ShipCombatTargetMap))
             {
-                if (fuelComp != null)
-                {
-                    fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * 0.25f);
-                }
+                fuelComp?.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * 0.25f);
             }
             else if (map.Parent is SpaceSite && target.WorldObject != null)
             {
@@ -827,12 +824,9 @@ namespace RimWorld
             var mapComp = map.GetComponent<ShipHeatMapComp>();
             var fuelComp = this.parent.TryGetComp<CompRefuelable>();
             float amount = 0;
-            if((target.WorldObject is WorldObjectOrbitingShip || mapComp.InCombat) && (map== mapComp.ShipCombatOriginMap || map== mapComp.ShipCombatMasterMap))
+            if ((target.WorldObject is WorldObjectOrbitingShip || mapComp.InCombat) && (map == mapComp.ShipCombatOriginMap || map ==  mapComp.OriginMapComp.ShipCombatTargetMap))
             {
-                if (fuelComp != null)
-                {
-                    fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * 0.25f);
-                }
+                fuelComp?.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * 0.25f);
             }
             else if (map.Parent is SpaceSite && target.WorldObject != null)
             {

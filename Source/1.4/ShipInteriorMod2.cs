@@ -42,9 +42,10 @@ namespace SaveOurShip2
                 return;
             }
             Harmony pat = new Harmony("ShipInteriorMod2");
-			
-			//Legacy methods. All 3 of these could technically be merged
-			ShipInteriorMod2.DefsLoaded();
+            ShipInteriorMod2.HasSoS2CK = ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
+
+            //Legacy methods. All 3 of these could technically be merged
+            ShipInteriorMod2.DefsLoaded();
 			ShipInteriorMod2.SceneLoaded();
 			
 			pat.PatchAll();
@@ -97,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V94f4";
+        public static readonly string SOS2EXPversion = "V94f5";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -109,6 +110,7 @@ namespace SaveOurShip2
         public static bool SaveShipFlag = false; //used in patch to trigger ending scene
         public static bool LoadShipFlag = false; //set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
         public static bool StartShipFlag = false; //as above but for ScenPart_StartInSpace
+        public static bool HasSoS2CK = false;
         private static PastWorldUWO2 worldComp = null;
         public static PastWorldUWO2 WorldComp
         {

@@ -91,8 +91,8 @@ namespace RimWorld
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreJTEngines"));
             if (PowerComp.PowerNet?.CurrentStoredEnergy() < Ship.Mass)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", Ship.Mass));
-            if (mapComp.ShipCombatMaster)
-                result.Add(TranslatorFormattedStringExtensions.Translate("ShipOnEnemyMap"));
+            if (Map.Parent.def != ResourceBank.WorldObjectDefOf.ShipOrbiting)
+                result.Add(TranslatorFormattedStringExtensions.Translate("ShipOnEnemyMap")); //td desc from non stable map
             if (ShipCountdown.CountingDown)
                 result.Add("ShipAlreadyCountingDown".Translate());
             return result;
@@ -102,7 +102,7 @@ namespace RimWorld
 		public override IEnumerable<Gizmo> GetGizmos()
 		{
             var heatNet = heatComp.myNet;
-            bool ckActive = Prefs.DevMode && ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
+            bool ckActive = Prefs.DevMode && ShipInteriorMod2.HasSoS2CK;
             if (!TacCon && Faction != Faction.OfPlayer)
             {
                 if (Prefs.DevMode)
@@ -280,22 +280,20 @@ namespace RimWorld
                 //incombat
                 if (mapComp.InCombat)
                 {
-                    var originMapComp = mapComp.OriginMapComp;
-                    var masterMapComp = mapComp.MasterMapComp;
                     Command_Action escape = new Command_Action
                     {
                         action = delegate
                         {
-                            if (mapComp.ShipCombatMasterMap.mapPawns.AnyColonistSpawned)
+                            if (mapComp.ShipCombatTargetMap.mapPawns.AnyColonistSpawned)
                                 PawnsAbandonWarning();
                             else
-                                mapComp.EndBattle(this.Map, true);
+                                mapComp.EndBattle(Map, true);
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatEscape"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatEscapeDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/Escape_Icon")
                     };
-                    if (masterMapComp.Range < 395)
+                    if (mapComp.Range < 395)
                     {
                         escape.disabled = true;
                         escape.disabledReason = TranslatorFormattedStringExtensions.Translate("NotAtMaxShipRange");
@@ -320,15 +318,15 @@ namespace RimWorld
                         withdraw.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShipLast");
                     }
                     yield return withdraw;
-                    if (masterMapComp.PlayerMaintain == true || originMapComp.Heading != -1)
+                    if (mapComp.Maintain == true || mapComp.Heading != -1)
                     {
                         Command_Action retreat = new Command_Action
                         {
                             action = delegate
                             {
-                                originMapComp.Heading = -1;
-                                masterMapComp.PlayerMaintain = false;
-                                masterMapComp.callSlowTick = true;
+                                mapComp.Heading = -1;
+                                mapComp.Maintain = false;
+                                mapComp.callSlowTick = true;
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatRetreat"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatRetreatDesc"),
@@ -336,15 +334,15 @@ namespace RimWorld
                         };
                         yield return retreat;
                     }
-                    if (masterMapComp.PlayerMaintain == false)
+                    if (mapComp.Maintain == false)
                     {
                         Command_Action maintain = new Command_Action
                         {
                             action = delegate
                             {
-                                masterMapComp.PlayerMaintain = true;
-                                masterMapComp.RangeToKeep = masterMapComp.Range;
-                                masterMapComp.callSlowTick = true;
+                                mapComp.Maintain = true;
+                                mapComp.RangeToKeep = mapComp.OriginMapComp.Range;
+                                mapComp.callSlowTick = true;
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatMaintain"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatMaintainDesc"),
@@ -352,15 +350,15 @@ namespace RimWorld
                         };
                         yield return maintain;
                     }
-                    if (masterMapComp.PlayerMaintain == true || originMapComp.Heading != 0)
+                    if (mapComp.Maintain == true || mapComp.Heading != 0)
                     {
                         Command_Action stop = new Command_Action
                         {
                             action = delegate
                             {
-                                originMapComp.Heading = 0;
-                                masterMapComp.PlayerMaintain = false;
-                                masterMapComp.callSlowTick = true;
+                                mapComp.Heading = 0;
+                                mapComp.Maintain = false;
+                                mapComp.callSlowTick = true;
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatStop"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatStopDesc"),
@@ -368,15 +366,15 @@ namespace RimWorld
                         };
                         yield return stop;
                     }
-                    if (masterMapComp.PlayerMaintain == true || originMapComp.Heading != 1)
+                    if (mapComp.Maintain == true || mapComp.Heading != 1)
                     {
                         Command_Action advance = new Command_Action
                         {
                             action = delegate
                             {
-                                originMapComp.Heading = 1;
-                                masterMapComp.PlayerMaintain = false;
-                                masterMapComp.callSlowTick = true;
+                                mapComp.Heading = 1;
+                                mapComp.Maintain = false;
+                                mapComp.callSlowTick = true;
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatAdvance"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatAdvanceDesc"),

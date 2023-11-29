@@ -74,7 +74,7 @@ namespace RimWorld
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecauseNotInShipCombat"), null, MessageTypeDefOf.RejectInput, historical: false);
                 return;
             }
-            CameraJumper.TryJump(mapComp.ShipCombatMasterMap.Center, mapComp.ShipCombatMasterMap);
+            CameraJumper.TryJump(mapComp.ShipCombatTargetMap.Center, mapComp.ShipCombatTargetMap);
             Targeter targeter = Find.Targeter;
             TargetingParameters parms = new TargetingParameters();
             parms.canTargetPawns = true;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace RimWorld
     {
         public override AcceptanceReport AllowsPlacing(BuildableDef checkingDef, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
-            if (ModLister.HasActiveModWithName("Save Our Ship Creation Kit"))
+            if (ShipInteriorMod2.HasSoS2CK)
                 return AcceptanceReport.WasAccepted;
             CompEngineTrail engineprev = null;
             List<SoShipCache> ships = map.GetComponent<ShipHeatMapComp>().ShipsOnMapNew.Values.ToList();

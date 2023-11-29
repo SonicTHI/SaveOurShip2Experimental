@@ -84,29 +84,29 @@ namespace RimWorld.Planet
 			}
 			return ticksLeft.ToStringTicksToPeriod(true, false, true, true);
 		}
-		public static void ForceReform(MapParent mapParent)
+		public static void ForceReform(MapParent mapParent) //td rework
 		{
 			if (mapParent.Map.IsSpace())
 			{
-				List<Pawn> deadPawns = new List<Pawn>();
+				List<Pawn> toKill = new List<Pawn>();
 				foreach (Thing t in mapParent.Map.spawnedThings)
 				{
 					if (t is Pawn p)
-						deadPawns.Add(p);
+						toKill.Add(p);
 				}
-				foreach (Pawn p in deadPawns)
+				foreach (Pawn p in toKill)
 				{
 					p.Kill(new DamageInfo(DamageDefOf.Bomb, 99999));
 				}
-				if (deadPawns.Any(p => p.Faction == Faction.OfPlayer))
+				if (toKill.Any(p => p.Faction == Faction.OfPlayer))
 				{
 					string letterString = TranslatorFormattedStringExtensions.Translate("LetterPawnsLostReEntry") + "\n\n";
-					foreach (Pawn deadPawn in deadPawns)
+					foreach (Pawn deadPawn in toKill)
 						letterString += deadPawn.LabelShort + "\n";
 					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelPawnsLostReEntry"), letterString,
 						LetterDefOf.NegativeEvent);
 				}
-				if (mapParent.Map.GetComponent<ShipHeatMapComp>().ShipCombatMaster)
+				if (!mapParent.Map.GetComponent<ShipHeatMapComp>().ShipCombatOrigin)
 				{
 					mapParent.Map.GetComponent<ShipHeatMapComp>().BurnUpSet = true;
 				}

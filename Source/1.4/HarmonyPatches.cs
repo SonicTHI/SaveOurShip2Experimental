@@ -30,7 +30,7 @@ namespace SaveOurShip2
 			for (int i = list.Count; i-- > 0;) //find player map, comp
 			{
 				playerShipComp = list[i];
-				if (playerShipComp.InCombat && !playerShipComp.ShipCombatMaster)
+				if (playerShipComp.InCombat && playerShipComp.ShipCombatOrigin)
 				{
 					mapPlayer = playerShipComp.map;
 					break;
@@ -86,7 +86,7 @@ namespace SaveOurShip2
                 DrawHeat(screenHalf - 415, baseY, bridge);
             }
             //no UI OOC bellow
-            var enemyShipComp = playerShipComp.MasterMapComp;
+            var enemyShipComp = playerShipComp.TargetMapComp;
             if (enemyShipComp == null || !enemyShipComp.InCombat)
                 return;
             //enemy heat & energy bars
@@ -111,6 +111,7 @@ namespace SaveOurShip2
             Widgets.DrawMenuSection(rect);
             Widgets.DrawTexturePart(new Rect(screenHalf, baseY - 38, 400, 46),
                 new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.ruler.MatSingle.mainTexture);
+			float range = playerShipComp.Range;
             switch (playerShipComp.Heading)
             {
                 case -1:
@@ -130,17 +131,17 @@ namespace SaveOurShip2
             {
                 case -1:
                     Verse.Widgets.DrawTexturePart(
-                        new Rect(screenHalf - 16 + enemyShipComp.Range, baseY - 28, 36, 36),
+                        new Rect(screenHalf - 16 + range, baseY - 28, 36, 36),
                         new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shipOneEnemy.MatSingle.mainTexture);
                     break;
                 case 1:
                     Verse.Widgets.DrawTexturePart(
-                        new Rect(screenHalf + enemyShipComp.Range, baseY - 28, 36, 36),
+                        new Rect(screenHalf + range, baseY - 28, 36, 36),
                         new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipOneEnemy.MatSingle.mainTexture);
                     break;
                 default:
                     Verse.Widgets.DrawTexturePart(
-                        new Rect(screenHalf + enemyShipComp.Range, baseY - 28, 36, 36),
+                        new Rect(screenHalf + range, baseY - 28, 36, 36),
                         new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shipZeroEnemy.MatSingle.mainTexture);
                     break;
             }
@@ -158,7 +159,7 @@ namespace SaveOurShip2
                 if (proj.turret != null)
                 {
                     Verse.Widgets.DrawTexturePart(
-                        new Rect(screenHalf - 10 - proj.range + enemyShipComp.Range, baseY - 24, 12, 12),
+                        new Rect(screenHalf - 10 - proj.range + range, baseY - 24, 12, 12),
                         new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.projectileEnemy.MatSingle.mainTexture);
                 }
             }
@@ -166,22 +167,22 @@ namespace SaveOurShip2
             {
                 float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
                 int initialTile = (int)Traverse.Create(obj).Field("initialTile").GetValue();
-                if (obj.destinationTile == playerShipComp.ShipCombatMasterMap.Tile && initialTile == mapPlayer.Tile)
+                if (obj.destinationTile == playerShipComp.ShipCombatTargetMap.Tile && initialTile == mapPlayer.Tile)
                 {
                     Verse.Widgets.DrawTexturePart(
-                        new Rect(screenHalf + rng * enemyShipComp.Range, baseY - 16, 12, 12),
+                        new Rect(screenHalf + rng * range, baseY - 16, 12, 12),
                         new Rect(0, 0, 1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
                 }
-                else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction != Faction.OfPlayer)
+                else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatTargetMap.Tile && obj.Faction != Faction.OfPlayer)
                 {
                     Verse.Widgets.DrawTexturePart(
-                        new Rect(screenHalf + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
+                        new Rect(screenHalf + (1 - rng) * range, baseY - 20, 12, 12),
                         new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttleEnemy.MatSingle.mainTexture);
                 }
-                else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatMasterMap.Tile && obj.Faction == Faction.OfPlayer)
+                else if (obj.destinationTile == mapPlayer.Tile && initialTile == playerShipComp.ShipCombatTargetMap.Tile && obj.Faction == Faction.OfPlayer)
                 {
                     Verse.Widgets.DrawTexturePart(
-                        new Rect(screenHalf + (1 - rng) * enemyShipComp.Range, baseY - 20, 12, 12),
+                        new Rect(screenHalf + (1 - rng) * range, baseY - 20, 12, 12),
                         new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
                 }
             }
@@ -726,11 +727,11 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(Building), "ClaimableBy")]
-	public static class NoClaimingEnemyShip //prevent claiming when all enemy pawns are dead
+	public static class NoClaimingEnemyShip //prevent claiming when all enemy pawns are dead but bridges exist
 	{
 		public static void Postfix(Building __instance, ref bool __result)
 		{
-			if (__instance.Map.IsSpace() && __instance.Map.GetComponent<ShipHeatMapComp>().ShipCombatMaster)
+			if (__instance.Map.IsSpace() && __instance.Map.GetComponent<ShipHeatMapComp>().MapRootListAll.Any())
 				__result = false;
 		}
 	}
@@ -1541,7 +1542,9 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(CompPower __instance, ref PowerNet __result)
 		{
-			if (!(__instance.parent.ParentHolder is MinifiedThing) && __instance.Props.transmitsPower && __result == null && __instance.parent.Map.GetComponent<ShipHeatMapComp>().InCombat)
+			if (__instance.parent == null)
+				return;
+			if (!(__instance.parent.ParentHolder is MinifiedThing) && __instance.Props.transmitsPower && __result == null && (__instance.parent.Map.GetComponent<ShipHeatMapComp>().InCombat))// || __instance.parent.Map.GetComponent<ShipHeatMapComp>().IsGraveyard))
 			{
 				__instance.transNet = __instance.parent.Map.powerNetGrid.TransmittedPowerNetAt(__instance.parent.Position);
 				if (__instance.transNet != null)

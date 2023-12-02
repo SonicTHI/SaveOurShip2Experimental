@@ -26,19 +26,22 @@ namespace SaveOurShip2
 	{
 		static Setup()
         {
-			//manual stupidity prevention, good idea to eventually add all mod issues into it
+			//manual stupidity prevention, good idea to eventually add all mod issues into it, clearly not fool proof enough yet
             if (VersionControl.CurrentMinor < ShipInteriorMod2.SOS2ReqCurrentMinor || VersionControl.CurrentBuild < ShipInteriorMod2.SOS2ReqCurrentBuild)
             {
 				string error = "SOS2EXP " + ShipInteriorMod2.SOS2EXPversion + " requires Rimworld 1."+ ShipInteriorMod2.SOS2ReqCurrentMinor + "."+ ShipInteriorMod2.SOS2ReqCurrentBuild + " or greater!";
                 Log.Error(error);
-                LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(error.Colorize(Color.red), null, null, null, null, null, false, null, null, WindowLayer.Super)), null, false, null);
-				return;
+                string errorLong = error + "\n\nUpdate your game!";
+                LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(errorLong, "Quit", delegate(){ Root.Shutdown(); }, null, null, "ERROR: ".Colorize(Color.red), false, null, null, WindowLayer.Super)), null, false, null);
+
+                return;
             }
 			if (!ModLister.HasActiveModWithName("Harmony"))
             {
-                string error = "SOS2EXP requires Harmony! Download and enable it!";
+                string error = "ERROR: SOS2EXP requires Harmony! Download and enable it!";
                 Log.Error(error);
-                LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(error.Colorize(Color.red), null, null, null, null, null, false, null, null, WindowLayer.Super)), null, false, null);
+                string errorLong = error + "\n\nIt must be loaded at the top of the list, before Core!";
+                LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(errorLong, null, null, null, null, "ERROR: ".Colorize(Color.red), false, null, null, WindowLayer.Super)), null, false, null);
                 return;
             }
             Harmony pat = new Harmony("ShipInteriorMod2");
@@ -47,7 +50,6 @@ namespace SaveOurShip2
             //Legacy methods. All 3 of these could technically be merged
             ShipInteriorMod2.DefsLoaded();
 			ShipInteriorMod2.SceneLoaded();
-			
 			pat.PatchAll();
 			//Needs an init delay
 			if (useSplashScreen) LongEventHandler.QueueLongEvent(() => ShipInteriorMod2.UseCustomSplashScreen(), "ShipInteriorMod2", false, null);
@@ -98,7 +100,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V94f5";
+        public static readonly string SOS2EXPversion = "V94f6";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 

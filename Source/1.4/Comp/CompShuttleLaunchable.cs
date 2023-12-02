@@ -6,6 +6,7 @@ using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using SaveOurShip2;
+using RimworldMod;
 
 namespace RimWorld
 {
@@ -215,7 +216,7 @@ namespace RimWorld
             {
                 Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
-                    if (!target.IsValid || refuelComp == null || refuelComp.FuelPercentOfMax == 1.0f || ((parent.Map == mapComp.OriginMapComp.ShipCombatTargetMap || parent.Map == mapComp.ShipCombatOriginMap) && target.WorldObject is WorldObjectOrbitingShip && refuelComp.FuelPercentOfMax >= 0.25f))
+                    if (!target.IsValid || refuelComp == null || refuelComp.FuelPercentOfMax == 1.0f || (target.WorldObject is WorldObjectOrbitingShip && mapComp.InCombat && parent.Map == mapComp.OriginMapComp.ShipCombatTargetMap && refuelComp.FuelPercentOfMax >= 0.25f))
                     {
                         return null;
                     }
@@ -236,7 +237,7 @@ namespace RimWorld
             }
             else if (this.parent.Map.Parent is SpaceSite)
             {
-                Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
+                Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
                     if (target.WorldObject == null || (!(target.WorldObject is SpaceSite) && target.WorldObject.def != ResourceBank.WorldObjectDefOf.ShipOrbiting))
                     {
@@ -249,7 +250,7 @@ namespace RimWorld
             }
             else if (this.parent.Map.Parent is MoonBase)
             {
-                Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
+                Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
                     if (target.WorldObject == null || (!(target.WorldObject is SpaceSite) && target.WorldObject.def != ResourceBank.WorldObjectDefOf.ShipOrbiting))
                     {
@@ -263,7 +264,7 @@ namespace RimWorld
             else
             {
                 int tile = this.parent.Map.Tile;
-                Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, delegate
+                Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, delegate
                 {
                     GenDraw.DrawWorldRadiusRing(tile, this.MaxLaunchDistance);
                 }, delegate (GlobalTargetInfo target)
@@ -317,6 +318,7 @@ namespace RimWorld
                 {
                     var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
                     IntVec3 shuttleBayPos = FirstShuttleBayOpen(targetMapParent.Map, parent.def);
+                    //from site or moon
                     if (this.parent.Map.Parent is SpaceSite || this.parent.Map.Parent is MoonBase)
                     {
                         if (shuttleBayPos != IntVec3.Zero)
@@ -328,7 +330,7 @@ namespace RimWorld
                         return true;
                     }
                     //from ground
-                    else if (!mapComp.InCombat && parent.Map != mapComp.OriginMapComp.ShipCombatTargetMap && !(parent.Map == mapComp.ShipCombatOriginMap && targetMapParent.Map == mapComp.OriginMapComp.ShipCombatTargetMap))
+                    else if (!parent.Map.IsSpace())
                     {
                         if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.8f)
                         {
@@ -336,6 +338,7 @@ namespace RimWorld
                             return false;
                         }
                     }
+                    //from space
                     else
                     {
                         if (refuelComp != null && refuelComp.FuelPercentOfMax < 0.25f)
@@ -681,6 +684,14 @@ namespace RimWorld
 		}
         public void TryLaunchSingle(GlobalTargetInfo target, TransportPodsArrivalAction arrivalAction)
         {
+            Launch(target, arrivalAction, true);
+        }
+        public void TryLaunch(GlobalTargetInfo target, TransportPodsArrivalAction arrivalAction)
+        {
+            Launch(target, arrivalAction);
+        }
+        private void Launch(GlobalTargetInfo target, TransportPodsArrivalAction arrivalAction, bool single = false)
+        {
             if (!this.parent.Spawned)
             {
                 Log.Error("Tried to launch " + this.parent + ", but it's unspawned.");
@@ -700,30 +711,24 @@ namespace RimWorld
             var mapComp = map.GetComponent<ShipHeatMapComp>();
             var fuelComp = this.parent.TryGetComp<CompRefuelable>();
             float amount = 0;
-            if ((target.WorldObject is WorldObjectOrbitingShip || mapComp.InCombat) && (map == mapComp.ShipCombatOriginMap || map == mapComp.OriginMapComp.ShipCombatTargetMap))
+            if (target.WorldObject is WorldObjectOrbitingShip || (mapComp.InCombat && map == mapComp.OriginMapComp.ShipCombatTargetMap))
             {
-                fuelComp?.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * 0.25f);
+                fuelComp?.ConsumeFuel(fuelComp.Props.fuelCapacity * 0.25f);
             }
             else if (map.Parent is SpaceSite && target.WorldObject != null)
             {
-                if (fuelComp != null)
-				{
-					if (target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
-					{
-						fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)this.parent.Map.Parent).fuelCost / 100f);
-					}
-					else
-					{
-						fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)target.WorldObject).fuelCost / 100f);
-					}
-				}
+                if (target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
+                {
+                    fuelComp?.ConsumeFuel(fuelComp.Props.fuelCapacity * ((SpaceSite)this.parent.Map.Parent).fuelCost / 100f);
+                }
+                else
+                {
+                    fuelComp?.ConsumeFuel(fuelComp.Props.fuelCapacity * ((SpaceSite)target.WorldObject).fuelCost / 100f);
+                }
             }
             else if (map.Parent is MoonBase && target.WorldObject != null && target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
             {
-                if (fuelComp != null)
-                {
-                    fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((MoonBase)this.parent.Map.Parent).fuelCost / 100f);
-                }
+                fuelComp?.ConsumeFuel(fuelComp.Props.fuelCapacity * ((MoonBase)this.parent.Map.Parent).fuelCost / 100f);
             }
             else if (map.Parent is WorldObjectOrbitingShip || (target.WorldObject != null && target.WorldObject is WorldObjectOrbitingShip))
             {
@@ -791,136 +796,17 @@ namespace RimWorld
                 compTransporter.CleanUpLoadingVars(map);
                 compTransporter.parent.Destroy(DestroyMode.Vanish);
                 GenSpawn.Spawn(dropPodLeaving, compTransporter.parent.Position, map);
-                if(parent.TryGetComp<CompShuttleCosmetics>()!=null)
+                if (single && parent.TryGetComp<CompShuttleCosmetics>() != null)
                 {
                     Graphic_Single graphic = new Graphic_Single();
                     CompProperties_ShuttleCosmetics Props = parent.TryGetComp<CompShuttleCosmetics>().Props;
                     int whichVersion = parent.TryGetComp<CompShuttleCosmetics>().whichVersion;
-                    GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), Props.graphicsHover[whichVersion].texPath+"_south", ShaderDatabase.Cutout, Props.graphics[whichVersion].drawSize, Color.white, Color.white, Props.graphics[whichVersion], 0, null, "");
+                    GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), Props.graphicsHover[whichVersion].texPath + "_south", ShaderDatabase.Cutout, Props.graphics[whichVersion].drawSize, Color.white, Color.white, Props.graphics[whichVersion], 0, null, "");
                     graphic.Init(req);
                     typeof(Thing).GetField("graphicInt", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(dropPodLeaving, graphic);
-
                 }
             }
         }
-        public void TryLaunch(GlobalTargetInfo target, TransportPodsArrivalAction arrivalAction)
-		{
-			if (!this.parent.Spawned)
-			{
-				Log.Error("Tried to launch " + this.parent + ", but it's unspawned.");
-				return;
-			}
-			List<CompTransporter> transportersInGroup = this.TransportersInGroup;
-			if (transportersInGroup == null)
-			{
-				Log.Error("Tried to launch " + this.parent + ", but it's not in any group.");
-				return;
-			}
-			if (!this.LoadingInProgressOrReadyToLaunch  || !this.AllFuelingPortSourcesInGroupHaveAnyFuel)
-			{
-				return;
-			}
-			Map map = this.parent.Map;
-            var mapComp = map.GetComponent<ShipHeatMapComp>();
-            var fuelComp = this.parent.TryGetComp<CompRefuelable>();
-            float amount = 0;
-            if ((target.WorldObject is WorldObjectOrbitingShip || mapComp.InCombat) && (map == mapComp.ShipCombatOriginMap || map ==  mapComp.OriginMapComp.ShipCombatTargetMap))
-            {
-                fuelComp?.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * 0.25f);
-            }
-            else if (map.Parent is SpaceSite && target.WorldObject != null)
-            {
-                if (target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
-                {
-                    if (fuelComp != null)
-                    {
-                        fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)this.parent.Map.Parent).fuelCost / 100f);
-                    }
-                }
-                else
-                {
-                    if (fuelComp != null)
-                    {
-                        fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((SpaceSite)target.WorldObject).fuelCost / 100f);
-                    }
-                }
-            }
-            else if (map.Parent is MoonBase && target.WorldObject != null && target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
-            { 
-                    if (fuelComp != null)
-                    {
-                        fuelComp.ConsumeFuel(((CompProperties_Refuelable)fuelComp.props).fuelCapacity * ((MoonBase)this.parent.Map.Parent).fuelCost / 100f);
-                    }
-            }
-            else if (map.Parent is WorldObjectOrbitingShip || (target.WorldObject != null && target.WorldObject is WorldObjectOrbitingShip))
-            {
-                if (target.WorldObject != null && target.WorldObject is SpaceSite)
-                {
-                    amount = ((SpaceSite)target.WorldObject).fuelCost / 100 * fuelComp.Props.fuelCapacity;
-                }
-                else if (target.WorldObject != null && target.WorldObject is MoonBase)
-                {
-                    amount = ((MoonBase)target.WorldObject).fuelCost / 100 * fuelComp.Props.fuelCapacity;
-                }
-                else
-                {
-                    //if (this.parent.TryGetComp<CompRefuelable>() != null && this.parent.GetComp<CompRefuelable>().FuelPercentOfMax < 1)
-                        //return;
-                    if (map.Parent is WorldObjectOrbitingShip)
-                        amount = fuelComp.Props.fuelCapacity * 0.15f;
-                    else
-                        amount = fuelComp.Props.fuelCapacity * 0.8f;
-                }
-            }
-            else
-            {
-                int num = Find.WorldGrid.TraversalDistanceBetween(map.Tile, target.Tile);
-                if (num > MaxLaunchDistanceAtFuelLevel(this.parent.GetComp<CompRefuelable>().Fuel))
-                {
-                    return;
-                }
-                amount = Mathf.Max(FuelNeededToLaunchAtDist((float)num), 1f);
-            }
-			this.Transporter.TryRemoveLord(map);
-			int groupID = this.Transporter.groupID;
-			for (int i = 0; i < transportersInGroup.Count; i++)
-			{
-				CompTransporter compTransporter = transportersInGroup[i];
-				Building fuelingPortSource;
-				if (compTransporter.Launchable != null)
-					fuelingPortSource = compTransporter.Launchable.FuelingPortSource;
-				else
-					fuelingPortSource = compTransporter.parent as Building;
-				if (fuelingPortSource != null)
-				{
-					fuelingPortSource.TryGetComp<CompRefuelable>().ConsumeFuel(amount);
-				}
-                //shuttle to pawn
-				Pawn meAsAPawn = CompBecomePawn.myPawn (this.parent, new IntVec3 (), (int)fuelingPortSource.TryGetComp<CompRefuelable> ().Fuel);
-				Find.WorldPawns.PassToWorld (meAsAPawn, PawnDiscardDecideMode.KeepForever);
-				meAsAPawn.SetFaction (parent.Faction);
-
-                if (fuelingPortSource != null && fuelingPortSource.TryGetComp<CompRefuelable>()!=null)
-                    fuelingPortSource.TryGetComp<CompRefuelable> ().ConsumeFuel (fuelingPortSource.TryGetComp<CompRefuelable> ().Fuel);
-				ThingOwner directlyHeldThings = compTransporter.GetDirectlyHeldThings();
-
-				ActiveDropPod activeDropPod = (ActiveDropPod)ThingMaker.MakeThing(ThingDefOf.ActiveDropPod, null);
-                activeDropPod.Contents = new ActiveDropPodInfo();
-				activeDropPod.Contents.innerContainer.TryAddRangeOrTransfer(directlyHeldThings, true, true);
-				
-                activeDropPod.Contents.innerContainer.TryAddOrTransfer (meAsAPawn);
-
-                FlyShipLeaving dropPodLeaving = (FlyShipLeaving)SkyfallerMaker.MakeSkyfaller(this.Props.skyfaller, activeDropPod);
-				dropPodLeaving.groupID = groupID;
-				dropPodLeaving.destinationTile = target.Tile;
-                dropPodLeaving.arrivalAction = arrivalAction;
-
-				directlyHeldThings.Clear();
-				compTransporter.CleanUpLoadingVars(map);
-                compTransporter.parent.Destroy(DestroyMode.Vanish);
-				GenSpawn.Spawn(dropPodLeaving, compTransporter.parent.Position, map);
-			}
-		}
-	}
+    }
 }
 

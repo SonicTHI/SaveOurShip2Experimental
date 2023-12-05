@@ -664,7 +664,6 @@
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<rotatable>false</rotatable>
 		<building>
-			<shipPart>true</shipPart>
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>

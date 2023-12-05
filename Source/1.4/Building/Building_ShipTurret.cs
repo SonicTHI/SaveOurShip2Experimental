@@ -275,17 +275,6 @@ namespace RimWorld
                             float range = mapComp.OriginMapComp.Range;
                             if ((!useOptimalRange && heatComp.Props.maxRange > range) || (useOptimalRange && heatComp.Props.optRange > range))
                             {
-                                //cant fire spinals opposite of heading
-                                if (spinalComp != null)
-                                {
-                                    if ((Rotation == new Rot4(mapComp.EngineRot) && mapComp.Heading == -1) || (Rotation == new Rot4(mapComp.EngineRot + 2) && mapComp.Heading == 1))
-                                    {
-                                        if (mapComp.Retreating)
-                                            return;
-                                        else
-                                            mapComp.Heading = 1;
-                                    }
-                                }
                                 if (burstWarmupTicksLeft > 0)
                                 {
                                     burstWarmupTicksLeft--;
@@ -447,6 +436,24 @@ namespace RimWorld
 
         protected void BeginBurst()
         {
+            //cant fire spinals opposite of heading
+            if (spinalComp != null)
+            {
+                if ((Rotation == new Rot4(mapComp.EngineRot) && mapComp.Heading == -1) || (Rotation == new Rot4(mapComp.EngineRot + 2) && mapComp.Heading == 1))
+                {
+                    if (mapComp.HasShipMapAI)
+                    {
+                        if (mapComp.Retreating)
+                            return;
+                        else
+                            mapComp.Heading *= -1;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
             //check if we have power to fire
             if (powerComp != null && heatComp != null && powerComp.PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + AmplifierDamageBonus))
             {

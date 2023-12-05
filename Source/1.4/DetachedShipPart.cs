@@ -18,20 +18,41 @@ namespace RimWorld
         GraphicData graphicWall = ThingDef.Named("Ship_Beam_Wrecked_Fake").graphicData;
         GraphicData graphicFloor = ThingDef.Named("ShipHullTileWreckedFake").graphicData;
 
+        public ShipHeatMapComp mapComp;
         public List<int> wreckageList=new List<int>();
         public byte[,] wreckage;
         public int xSize;
         public int zSize;
+        public Vector3 velocity = new Vector3(0, 0, 0);
 
         public Vector3 drawOffset = new Vector3(0, 0, 0);
 
-        public override void Tick()
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            var mapComp = this.Map.GetComponent<ShipHeatMapComp>();
-            Vector3 adj = new Vector3(0, 0, mapComp.MapEnginePower).RotatedBy(mapComp.EngineRot * 90f);
-            drawOffset += (this.DrawPos - adj).normalized * 0.005f * (int)Find.TickManager.CurTimeSpeed;
-            if (drawOffset.x > this.Map.Size.x || drawOffset.x * -1 > this.Map.Size.x || drawOffset.z > this.Map.Size.z || drawOffset.z * -1 > this.Map.Size.z)
+            base.SpawnSetup(map, respawningAfterLoad);
+            mapComp = Map.GetComponent<ShipHeatMapComp>();
+        }
+
+        public override void Tick() //slow steady drift, gain accel when ship engines on
+        {
+            float driftx;
+            if (mapComp.MapEnginePower == 0)
+            {
+                driftx = Rand.Range(-0.1f, 0.1f);
+                velocity += new Vector3(driftx, 0, Rand.Range(0.001f, 0.01f)).RotatedBy(mapComp.EngineRot * 270f);
+                //Vector3 adj = new Vector3(0, 0, mapComp.MapEnginePower).RotatedBy(mapComp.EngineRot * 90f);
+                //drawOffset += (DrawPos - adj).normalized * 0.005f * (int)Find.TickManager.CurTimeSpeed;
+            }
+            else
+            {
+                driftx = Rand.Range(-0.1f, 0.1f);
+                velocity += new Vector3(driftx, 0, mapComp.MapEnginePower).RotatedBy(mapComp.EngineRot * 270f);
+            }
+            drawOffset += velocity * 0.01f * (int)Find.TickManager.CurTimeSpeed;
+
+            if (drawOffset.x > Map.Size.x || drawOffset.x * -1 > Map.Size.x || drawOffset.z > Map.Size.z || drawOffset.z * -1 > Map.Size.z)
                 Destroy();
+
             if (Find.TickManager.TicksGame % 60 == 0)
                 EmitSmokeAndFlame();
         }
@@ -44,8 +65,8 @@ namespace RimWorld
                 int z = Rand.RangeInclusive(0, wreckage.GetLength(1) - 1);
                 if (wreckage[x, z]!=0)
                 {
-                    FleckMaker.ThrowSmoke(new Vector3(this.Position.x+x,0,this.Position.z+z)+drawOffset, Map, 1);
-                    FleckMaker.ThrowMicroSparks(new Vector3(this.Position.x + x, 0, this.Position.z + z)+drawOffset, Map);
+                    FleckMaker.ThrowSmoke(new Vector3(Position.x+x,0,Position.z+z)+drawOffset, Map, 1);
+                    FleckMaker.ThrowMicroSparks(new Vector3(Position.x + x, 0, Position.z + z)+drawOffset, Map);
                 }
             }
         }

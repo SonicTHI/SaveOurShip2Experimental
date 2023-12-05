@@ -72,7 +72,7 @@ namespace RimWorld
             }
             else if (Props.energy)
             {
-                powerComp.PowerOutput = -2000 * Props.thrust;
+                powerComp.PowerOutput = -2000 * Thrust;
                 active = true;
                 return true;
             }
@@ -87,7 +87,7 @@ namespace RimWorld
         {
             if (Props.energy)
             {
-                powerComp.PowerOutput = -200 * Props.thrust;
+                powerComp.PowerOutput = -200 * Thrust;
             }
             active = false;
         }

@@ -106,7 +106,7 @@ namespace RimWorld
                 {
                     if (engine.On())
                     {
-                        enginePower += engine.Props.thrust;
+                        enginePower += engine.Thrust;
                     }
                     else
                         engine.Off();
@@ -125,7 +125,7 @@ namespace RimWorld
             {
                 if (engine.CanFire(Rot))
                 {
-                    enginePower += engine.Props.thrust;
+                    enginePower += engine.Thrust;
                 }
             }
             return enginePower;
@@ -530,7 +530,7 @@ namespace RimWorld
                         else if (b.TryGetComp<CompEngineTrail>() != null)
                         {
                             var refuelable = b.TryGetComp<CompRefuelable>();
-                            ThrustRaw += b.TryGetComp<CompEngineTrail>().Props.thrust;
+                            ThrustRaw += b.TryGetComp<CompEngineTrail>().Thrust;
                             if (refuelable != null)
                             {
                                 MaxTakeoff += refuelable.Props.fuelCapacity;
@@ -637,7 +637,7 @@ namespace RimWorld
                         else if (b.TryGetComp<CompEngineTrail>() != null)
                         {
                             var refuelable = b.TryGetComp<CompRefuelable>();
-                            ThrustRaw -= b.TryGetComp<CompEngineTrail>().Props.thrust;
+                            ThrustRaw -= b.TryGetComp<CompEngineTrail>().Thrust;
                             if (refuelable != null)
                             {
                                 MaxTakeoff -= refuelable.Props.fuelCapacity;

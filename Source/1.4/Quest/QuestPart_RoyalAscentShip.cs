@@ -22,7 +22,7 @@ namespace RimWorld
 				Map map;
 				EnemyShipDef shipDef = DefDatabase<EnemyShipDef>.GetNamed("RewardEmpireDestroyer");
 				List<Building> cores = new List<Building>();
-				if (Find.WorldObjects.AllWorldObjects.Any(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting))
+				if (ShipInteriorMod2.FindPlayerShipMap() != null)
 				{
 					map = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTilePlayer(), new IntVec3(250, 1, 250), ResourceBank.WorldObjectDefOf.ShipEnemy);
 					map.GetComponent<ShipHeatMapComp>().IsGraveyard = true;

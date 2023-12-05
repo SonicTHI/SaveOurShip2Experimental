@@ -722,7 +722,7 @@ namespace RimWorld
                 if (mapComp.InCombat) //if last ship end combat else move to grave
                 {
                     if (mapComp.ShipsOnMapNew.Count > 1)
-                        mapComp.RemoveShipFromBattle(Index);
+                        mapComp.DestroyedIncombat.Add(Index, null);
                     else
                         mapComp.EndBattle(Map, false);
                 }
@@ -897,19 +897,21 @@ namespace RimWorld
                     FloatAndDestroy(detachArea);
                     return;
                 }
-                newCore = (Building)detachArea.First().GetThingList(Map).First(t => t is Building);
+                newCore = (Building)detachArea.First().GetThingList(Map).First(t => t.TryGetComp<CompSoShipPart>() != null);
             }
             Log.Message("SOS2c: Detach new ship/wreck with: " + newCore);
             if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
             {
-                Log.Error("SOS2c: Detach error");
-                return;
+                Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+                int newKey = mapComp.ShipsOnMapNew.Keys.Max() + 1;
+                Log.Error("SOS2c: Detach error, shipID " + newCore.thingIDNumber + " already exits! Using fallback index: " + newKey + ", pausing game. Recheck ship area with infestation overlay. If not correct - save and reload!");
+                newCore.thingIDNumber = newKey;
             }
             mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
             mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore, AreaDestroyed);
             if (mapComp.InCombat)
             {
-                mapComp.DestroyedIncombat.Add(newCore.thingIDNumber);
+                mapComp.DestroyedIncombat.Add(newCore.thingIDNumber, null);
             }
             if (Map == mapComp.ShipCombatOriginMap)
                 mapComp.hasAnyPlayerPartDetached = true;

@@ -137,13 +137,15 @@ namespace RimWorld
             Scribe_References.Look<Faction>(ref ShipFaction, "ShipFaction");
             Scribe_References.Look<Lord>(ref ShipLord, "ShipLord");
             Scribe_References.Look<Lord>(ref InvaderLord, "InvaderLord");
+            Scribe_References.Look<Map>(ref NextTargetMap, "NextTargetMap");
             Scribe_References.Look<Map>(ref ShipGraveyard, "ShipCombatGraveyard");
             Scribe_References.Look<Map>(ref GraveOrigin, "GraveOrigin");
             Scribe_Values.Look<bool>(ref IsGraveyard, "IsGraveyard", false);
-            Scribe_Values.Look<bool>(ref InCombat, "InCombat", false);
             Scribe_Values.Look<bool>(ref BurnUpSet, "BurnUpSet", false);
             Scribe_Values.Look<int>(ref BurnTimer, "BurnTimer");
             Scribe_Values.Look<int>(ref EngineRot, "EngineRot");
+            Scribe_Values.Look<int>(ref LastAttackTick, "LastShipBattleTick", 0);
+            Scribe_Values.Look<int>(ref LastBountyRaidTick, "LastBountyRaidTicks", 0);
             if (InCombat)
             {
                 //SC only - both maps
@@ -188,10 +190,9 @@ namespace RimWorld
         public float MapEnginePower;
         public bool Maintain = false; //map will try to maintain RangeToKeep
         public float RangeToKeep;
-        public bool InCombat = false; //in combat with another map
         public float totalThreat;
         public float[] threatPerSegment = { 1, 1, 1, 1 };
-        public HashSet<int> DestroyedIncombat = new HashSet<int>(); //ships destroyed
+        public Dictionary<int, Faction> DestroyedIncombat = new Dictionary<int, Faction>(); //ships destroyed
         public List<ShipCombatProjectile> Projectiles;
         public List<ShipCombatProjectile> TorpsInRange;
         public Map ShipCombatOriginMap; //"player" map - initializes combat vars, runs all non duplicate code, AI
@@ -209,7 +210,7 @@ namespace RimWorld
                 return originMapComp;
             }
         }
-        public Map ShipCombatTargetMap; //target map - for proj, etc.
+        public Map ShipCombatTargetMap; //target map - if there is one, we are in combat, for proj, etc.
         private ShipHeatMapComp targetMapComp;
         public ShipHeatMapComp TargetMapComp
         {
@@ -230,6 +231,18 @@ namespace RimWorld
         public float Range; //400 is furthest away, 0 is up close and personal
         public bool attackedTradeship; //target was AI tradeship - notoriety gain
         public bool callSlowTick = false; //call both slow ticks
+        public int LastAttackTick;
+        public int LastBountyRaidTick;
+        private bool shipCombatOrigin = false;
+        public bool ShipCombatOrigin //reset after battle
+        {
+            get
+            {
+                shipCombatOrigin = map == ShipCombatOriginMap;
+                return shipCombatOrigin;
+            }
+            set { shipCombatOrigin = value; }
+        }
 
         //SC only - target only
         public bool HasShipMapAI = false; //target has ship map AI
@@ -256,6 +269,7 @@ namespace RimWorld
         public Lord InvaderLord; //second AI ship lord for wreck second facton 
 
         //all maps
+        public Map NextTargetMap; //if any, will trigger battle after 10s
         public Map ShipGraveyard; //map to put destroyed ships to
         public Map GraveOrigin; //check if origin is in combat
         public bool IsGraveyard = false; //temp map, will be removed in a few days
@@ -263,6 +277,8 @@ namespace RimWorld
         public int BurnTimer = 0; //event: debris avoid
         public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
         List<Building> cores = new List<Building>(); //td rem, might still have some use?
+        public bool InCombat => ShipCombatTargetMap != null;
+        public bool IsPlayerShipMap => map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting;
 
         //non SC caches
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>(); //workjob, hit detect
@@ -270,17 +286,6 @@ namespace RimWorld
         public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
         public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
         public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
-
-        private bool shipCombatOrigin = false;
-        public bool ShipCombatOrigin //reset after battle
-        {
-            get
-            {
-                shipCombatOrigin = map == ShipCombatOriginMap;
-                return shipCombatOrigin;
-            }
-            set { shipCombatOrigin = value; }
-        }
 
         //ship cache functions
         //after spawn init all, after moveship: assign same as from map to new map
@@ -521,8 +526,9 @@ namespace RimWorld
         }
         //ship cache functions end
 
-        public void SpawnEnemyShip(PassingShip passingShip, Faction faction, bool fleet, bool bounty, out List<Building> cores)
+        public Map SpawnEnemyShipMap(PassingShip passingShip, Faction faction, bool fleet, bool bounty, out List<Building> cores)
         {
+            Map newMap = new Map();
             cores = new List<Building>();
             EnemyShipDef shipDef = null;
             SpaceNavyDef navyDef = null;
@@ -624,7 +630,7 @@ namespace RimWorld
                 }
             }
             if (passingShip != null)
-                map.passingShipManager.RemoveShip(passingShip);
+                ShipCombatOriginMap.passingShipManager.RemoveShip(passingShip);
             if (faction == null)
             {
                 if (navyDef != null)
@@ -636,32 +642,33 @@ namespace RimWorld
                 faction.TryAffectGoodwillWith(Faction.OfPlayer, -150);
 
             //spawn map
-            ShipCombatTargetMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), new IntVec3(250, 1, 250), ResourceBank.WorldObjectDefOf.ShipEnemy);
-            ((WorldObjectOrbitingShip)ShipCombatTargetMap.Parent).radius = radius;
-            ((WorldObjectOrbitingShip)ShipCombatTargetMap.Parent).theta = theta;
-            ((WorldObjectOrbitingShip)ShipCombatTargetMap.Parent).phi = phi;
+            newMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), new IntVec3(250, 1, 250), ResourceBank.WorldObjectDefOf.ShipEnemy);
+            ((WorldObjectOrbitingShip)newMap.Parent).radius = radius;
+            ((WorldObjectOrbitingShip)newMap.Parent).theta = theta;
+            ((WorldObjectOrbitingShip)newMap.Parent).phi = phi;
+            var newMapComp = newMap.GetComponent<ShipHeatMapComp>();
             if (passingShip is DerelictShip d)
             {
                 shieldsActive = false;
-                TargetMapComp.IsGraveyard = true;
+                newMapComp.IsGraveyard = true;
                 //int time = Rand.RangeInclusive(600000, 120000);
-                ShipCombatTargetMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
-                Find.LetterStack.ReceiveLetter("ShipEncounterStart".Translate(), "ShipEncounterStartDesc".Translate(ShipCombatTargetMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
+                newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
+                Find.LetterStack.ReceiveLetter("ShipEncounterStart".Translate(), "ShipEncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
             }
-            TargetMapComp.ShipFaction = faction;
+            newMapComp.ShipFaction = faction;
             if (wreckLevel != 3)
-                TargetMapComp.ShipLord = LordMaker.MakeNewLord(faction, new LordJob_DefendShip(faction, map.Center), map);
+                newMapComp.ShipLord = LordMaker.MakeNewLord(faction, new LordJob_DefendShip(faction, newMap.Center), newMap);
             if (fleet) //spawn fleet - not for passingShips other than trade yet
             {
-                ShipInteriorMod2.GenerateFleet(CR, ShipCombatTargetMap, passingShip, faction, TargetMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
-                return;
+                ShipInteriorMod2.GenerateFleet(CR, newMap, passingShip, faction, newMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
             }
             else //spawn ship
             {
                 //keep this for troubleshooting
                 Log.Message("SOS2: spawning shipdef: " + shipDef + ", of faction: " + faction + ", of navy: " + navyDef + ", wrecklvl: " + wreckLevel);
-                ShipInteriorMod2.GenerateShip(shipDef, ShipCombatTargetMap, passingShip, faction, TargetMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
+                ShipInteriorMod2.GenerateShip(shipDef, newMap, passingShip, faction, newMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
             }
+            return newMap;
             //post ship spawn
             //if (cores != null)
             //    Log.Message("Spawned enemy cores: " + cores.Count);
@@ -688,19 +695,21 @@ namespace RimWorld
             ShipFaction = map.Parent.Faction;
             attackedTradeship = false;
             //target or create master + spawn ship
-            originMapComp = null;
-            targetMapComp = null;
+            //originMapComp = null;
+            //targetMapComp = null;
             ShipCombatOriginMap = map;
             if (enemyMap == null)
-                SpawnEnemyShip(passingShip, fac, fleet, bounty, out cores);
+                ShipCombatTargetMap = SpawnEnemyShipMap(passingShip, fac, fleet, bounty, out cores);
             else
                 ShipCombatTargetMap = enemyMap;
 
             //if ship is derelict switch to "encounter"
             if (TargetMapComp.IsGraveyard)
             {
+                ShipCombatTargetMap = null; //td no ship combat vs no ship maps, for now
                 return;
             }
+            Log.Message("SOS2 map: " + map + " ştarting combat vs map: " + enemyMap);
             TargetMapComp.ShipCombatTargetMap = ShipCombatOriginMap;
             TargetMapComp.ShipCombatOriginMap = ShipCombatOriginMap;
             TargetMapComp.HasShipMapAI = true; //td for now set manually here
@@ -716,13 +725,21 @@ namespace RimWorld
         }
         private void ResetCombatVars()
         {
-            //reset vars
+            BuildingCountAtStart = 0;
+            foreach (int index in shipsOnMapNew.Keys) //combat start calcs per ship
+            {
+                var ship = shipsOnMapNew[index];
+                //if (!ship.IsWreck)
+                ship.BuildingCountAtCombatStart = ship.BuildingCount;
+                BuildingCountAtStart += ship.BuildingCountAtCombatStart;
+                ship.BuildingsDestroyed.Clear();
+            }
+            Log.Message("BuildingsCount:" + BuildingsCount + ", BuildingCountAtStart:" + BuildingCountAtStart);
             ShipGraveyard = null;
-            InCombat = true;
             BurnUpSet = false;
             Heading = 0;
-            Maintain = false;
             MapEnginePower = 0;
+            Maintain = false;
             Projectiles = new List<ShipCombatProjectile>();
             TorpsInRange = new List<ShipCombatProjectile>();
             //ship AI
@@ -733,14 +750,6 @@ namespace RimWorld
             else
             {
                 RangeToKeep = Range;
-            }
-            foreach (int index in shipsOnMapNew.Keys) //combat start calcs per ship
-            {
-                var ship = shipsOnMapNew[index];
-                //if (!ship.IsWreck)
-                ship.BuildingCountAtCombatStart = ship.BuildingCount;
-                BuildingCountAtStart += ship.BuildingCountAtCombatStart;
-                ship.BuildingsDestroyed.Clear();
             }
         }
         private void DetermineInitialRange()
@@ -769,6 +778,11 @@ namespace RimWorld
         public override void MapComponentTick()
         {
             base.MapComponentTick();
+            foreach (int index in DestroyedIncombat.Keys)
+            {
+                RemoveShipFromBattle(index, DestroyedIncombat[index]);
+            }
+            DestroyedIncombat.Clear();
             foreach (SoShipCache ship in ShipsOnMap())
             {
                 ship.Tick();
@@ -776,11 +790,6 @@ namespace RimWorld
             if (!map.IsSpace())
                 return;
 
-            foreach (int index in DestroyedIncombat)
-            {
-                RemoveShipFromBattle(index);
-            }
-            DestroyedIncombat.Clear();
 
             if (InCombat)
             {
@@ -789,7 +798,7 @@ namespace RimWorld
                 else if (Heading == -1)
                     OriginMapComp.Range += MapEnginePower; //inrease distance
 
-                Mathf.Clamp(OriginMapComp.Range, 0f, 400f);
+                OriginMapComp.Range = Mathf.Clamp(OriginMapComp.Range, 0f, 400f);
 
                 //deregister projectiles in own cache, spawn them on targetMap
                 List<ShipCombatProjectile> toRemove = new List<ShipCombatProjectile>();
@@ -885,16 +894,27 @@ namespace RimWorld
                             b.Destroy(DestroyMode.KillFinalize);
                         }
                     }
-                    if (map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
+                    if (IsPlayerShipMap)
                     {
-                        if (ShipInteriorMod2.WorldComp.PlayerFactionBounty > 20 && Find.TickManager.TicksGame - ShipInteriorMod2.WorldComp.LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(ShipInteriorMod2.WorldComp.PlayerFactionBounty), 60000f))
+                        if (ShipInteriorMod2.WorldComp.PlayerFactionBounty > 20 && Find.TickManager.TicksGame - LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(ShipInteriorMod2.WorldComp.PlayerFactionBounty), 60000f))
                         {
-                            ShipInteriorMod2.WorldComp.LastBountyRaidTick = Find.TickManager.TicksGame;
+                            LastBountyRaidTick = Find.TickManager.TicksGame;
                             Building_ShipBridge bridge = MapRootListAll.FirstOrDefault();
                             if (bridge == null)
                                 return;
                             StartShipEncounter(bridge, bounty: true);
                         }
+                    }
+                }
+                //trigger combat with graveyard
+                if (IsGraveyard && NextTargetMap != null && Find.TickManager.TicksGame > LastAttackTick + 600)
+                {
+                    Building bridge = MapRootListAll.First();
+                    if (bridge != null)
+                    {
+                        StartShipEncounter(bridge, null, NextTargetMap);
+                        NextTargetMap = null;
+                        return;
                     }
                 }
                 if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
@@ -1199,19 +1219,21 @@ namespace RimWorld
                 }
             }
         }
-        public void RemoveShipFromBattle(int shipIndex, Building b = null, Faction fac = null)
+        public void RemoveShipFromBattle(int shipIndex, Faction fac)
         {
             if (ShipsOnMapNew.Count > 1) //move to graveyard if not last ship
             {
-                if (b == null)
+                Building core = ShipsOnMapNew[shipIndex].Core;
+                if (ShipsOnMapNew[shipIndex].Core == null)
                 {
-                    b = ShipsOnMapNew[shipIndex].Parts.FirstOrDefault();
+                    core = ShipsOnMapNew[shipIndex].Parts.FirstOrDefault();
                 }
-                if (b != null)
+                if (core != null)
                 {
+                    Log.Message("Removing ship from battle with: " + core);
                     if (ShipGraveyard == null)
                         SpawnGraveyard();
-                    ShipInteriorMod2.MoveShip(b, ShipGraveyard, new IntVec3(0, 0, 0), fac);
+                    ShipInteriorMod2.MoveShip(core, ShipGraveyard, new IntVec3(0, 0, 0), fac);
                 }
             }
             else if (fac != null) //last ship hacked
@@ -1222,12 +1244,13 @@ namespace RimWorld
         }
         public void SpawnGraveyard() //if not present, create a graveyard
         {
+            Log.Message("SpawnGraveyard");
             float adj;
             if (ShipCombatOrigin)
                 adj = Rand.Range(0.025f, 0.075f);
             else
                 adj = Rand.Range(-0.075f, -0.125f);
-            ShipGraveyard = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), this.map.Size, ResourceBank.WorldObjectDefOf.WreckSpace);
+            ShipGraveyard = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), map.Size, ResourceBank.WorldObjectDefOf.WreckSpace);
             ShipGraveyard.fogGrid.ClearAllFog();
             ((WorldObjectOrbitingShip)ShipGraveyard.Parent).radius = 150;
             ((WorldObjectOrbitingShip)ShipGraveyard.Parent).theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta + adj;
@@ -1263,8 +1286,6 @@ namespace RimWorld
         {
             Map tgtMap = OriginMapComp.ShipCombatTargetMap;
             var tgtMapComp = OriginMapComp.TargetMapComp;
-            OriginMapComp.InCombat = false;
-            tgtMapComp.InCombat = false;
             tgtMapComp.HasShipMapAI = false;
             OriginMapComp.ShipBuildingsOff();
             OriginMapComp.ShipGraveyard?.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(120000, 240000) - burnTimeElapsed);
@@ -1298,8 +1319,8 @@ namespace RimWorld
                     Building bridge = OriginMapComp.ShipGraveyard.listerBuildings.allBuildingsColonist.Where(x => x is Building_ShipBridge).FirstOrDefault();
                     if (bridge != null)
                     {
-                        OriginMapComp.ShipGraveyard.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, null, tgtMap);
-                        return;
+                        //set new target
+                        OriginMapComp.NextTargetMap = OriginMapComp.ShipCombatTargetMap;
                     }
                 }
                 else //origin fled or lost with no graveyard, remove target
@@ -1307,15 +1328,13 @@ namespace RimWorld
                     tgtMapComp.BurnUpSet = true;
                 }
             }
-            /*if (!fled)
-            {
-                tgtMapComp.ShipCombatTargetMap = null;
-                tgtMapComp.ShipCombatOriginMap = null;
-            }
+            tgtMapComp.ShipCombatTargetMap = null;
+            tgtMapComp.originMapComp = null;
+            tgtMapComp.targetMapComp = null;
+            OriginMapComp.ShipCombatOrigin = false;
             OriginMapComp.ShipCombatTargetMap = null;
-            OriginMapComp.ShipCombatOriginMap = null;
             OriginMapComp.originMapComp = null;
-            OriginMapComp.targetMapComp = null;*/
+            OriginMapComp.targetMapComp = null;
         }
         //proj
         public IntVec3 FindClosestEdgeCell(Map map, IntVec3 targetCell)

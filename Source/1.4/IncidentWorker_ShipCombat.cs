@@ -11,18 +11,23 @@ namespace RimWorld
     {
         protected override bool CanFireNowSub(IncidentParms parms)
         {
-            foreach (Building_ShipCloakingDevice cloak in ((Map)parms.target).GetComponent<ShipHeatMapComp>().Cloaks)
+            var mapComp = ((Map)parms.target).GetComponent<ShipHeatMapComp>();
+            if (!mapComp.IsPlayerShipMap || mapComp.InCombat || mapComp.NextTargetMap != null || ModSettings_SoS.frequencySoS == 0 || Find.TickManager.TicksGame < mapComp.LastAttackTick + 300000 / ModSettings_SoS.frequencySoS)
+                return false;
+
+            foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)
             {
                 if (cloak.active)
                     return false;
             }
-            return !((Map)parms.target).GetComponent<ShipHeatMapComp>().InCombat && ModSettings_SoS.frequencySoS > 0 && Find.TickManager.TicksGame > ShipInteriorMod2.WorldComp.LastAttackTick + 300000 / ModSettings_SoS.frequencySoS;
+            return true;
         }
 
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
-            ShipInteriorMod2.WorldComp.LastAttackTick = Find.TickManager.TicksGame;
-            ((Map)parms.target).GetComponent<ShipHeatMapComp>().StartShipEncounter((Building)((Map)parms.target).listerThings.AllThings.Where(t => t is Building_ShipBridge).FirstOrDefault(), fac: parms.faction);
+            var mapComp = ((Map)parms.target).GetComponent<ShipHeatMapComp>();
+            mapComp.LastAttackTick = Find.TickManager.TicksGame;
+            mapComp.StartShipEncounter(mapComp.MapRootListAll.FirstOrDefault(), fac: parms.faction);
             return true;
         }
     }

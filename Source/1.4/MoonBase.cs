@@ -31,7 +31,7 @@ namespace RimWorld
                 if (radius == 0)
                 {
                     radius = 200f;
-                    Map map = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault()).Map;
+                    Map map = ShipInteriorMod2.FindPlayerShipMap();
                     theta = ((WorldObjectOrbitingShip)map.Parent).theta;
                 }
                 return Vector3.SlerpUnclamped(orbitVec * radius, orbitVec * radius * -1, theta * -1); //TODO phi

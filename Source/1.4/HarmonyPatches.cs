@@ -94,7 +94,7 @@ namespace SaveOurShip2
             foreach (int i in enemyShipComp.ShipsOnMapNew.Keys)
             {
                 var bridge = enemyShipComp.ShipsOnMapNew[i].Core;
-                if (bridge == null || bridge.powerComp.PowerNet == null || bridge.heatComp.myNet == null)
+                if (bridge == null || bridge.powerComp?.PowerNet == null || bridge.heatComp.myNet == null)
                     continue;
 
                 baseY += 45;
@@ -916,7 +916,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(MapPawns __instance, ref bool __result)
 		{
-			Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
+			Map mapPlayer = ShipInteriorMod2.FindPlayerShipMap();
 			if (mapPlayer != null)
 			{
 				foreach (Building_ShipAdvSensor sensor in ShipInteriorMod2.WorldComp.Sensors)
@@ -933,7 +933,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Map map, ref bool __result)
 		{
-			Map mapPlayer = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
+			Map mapPlayer = ShipInteriorMod2.FindPlayerShipMap();
 			if (mapPlayer != null)
 			{
 				foreach (Building_ShipAdvSensor sensor in ShipInteriorMod2.WorldComp.Sensors)
@@ -1544,7 +1544,7 @@ namespace SaveOurShip2
 		{
 			if (__instance.parent == null)
 				return;
-			if (!(__instance.parent.ParentHolder is MinifiedThing) && __instance.Props.transmitsPower && __result == null && (__instance.parent.Map.GetComponent<ShipHeatMapComp>().InCombat))// || __instance.parent.Map.GetComponent<ShipHeatMapComp>().IsGraveyard))
+			if (!(__instance.parent.ParentHolder is MinifiedThing) && __instance.Props.transmitsPower && __result == null && (__instance?.parent?.Map?.GetComponent<ShipHeatMapComp>().InCombat ?? false))// || __instance.parent.Map.GetComponent<ShipHeatMapComp>().IsGraveyard))
 			{
 				__instance.transNet = __instance.parent.Map.powerNetGrid.TransmittedPowerNetAt(__instance.parent.Position);
 				if (__instance.transNet != null)

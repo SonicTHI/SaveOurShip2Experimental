@@ -215,7 +215,7 @@ namespace SaveOurShip2
         [DefOf]
         public static class WorldObjectDefOf
         {
-            public static WorldObjectDef ShipOrbiting;
+            public static WorldObjectDef ShipOrbiting; //player ship map
             public static WorldObjectDef ShipEnemy;
             public static WorldObjectDef WreckSpace;
             public static WorldObjectDef SiteSpace;

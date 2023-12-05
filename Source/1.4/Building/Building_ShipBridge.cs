@@ -91,7 +91,7 @@ namespace RimWorld
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreJTEngines"));
             if (PowerComp.PowerNet?.CurrentStoredEnergy() < Ship.Mass)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", Ship.Mass));
-            if (Map.Parent.def != ResourceBank.WorldObjectDefOf.ShipOrbiting)
+            if (!mapComp.IsPlayerShipMap)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipOnEnemyMap")); //td desc from non stable map
             if (ShipCountdown.CountingDown)
                 result.Add("ShipAlreadyCountingDown".Translate());
@@ -125,14 +125,14 @@ namespace RimWorld
 			{
 				yield return c;
             }
-            if (TacCon || heatNet == null || Faction != Faction.OfPlayer || !powerComp.PowerOn || Ship == null)
+            if (TacCon || heatNet == null || !powerComp.PowerOn || Ship == null)
                 yield break;
             if (!selected)
             {
                 fail = InterstellarFailReasons();
                 selected = true;
             }
-            //if (!mapComp.InCombat)
+            if (Faction == Faction.OfPlayer || Prefs.DevMode) //allow info on player ships or in dev mode on all
             {
                 Command_Action renameShip = new Command_Action
                 {
@@ -196,6 +196,9 @@ namespace RimWorld
                 };
                 yield return showReport;
             }
+            if (Faction != Faction.OfPlayer)
+                yield break;
+
             if (Map.IsSpace())
             {
                 if (Ship.Pods.Any())
@@ -305,7 +308,7 @@ namespace RimWorld
                         {
                             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmWithdrawShipCombat", delegate
                             {
-                                mapComp.RemoveShipFromBattle(shipIndex);
+                                mapComp.DestroyedIncombat.Add(shipIndex, null);
                             }));
                         },
                         icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Withdraw"),
@@ -636,7 +639,7 @@ namespace RimWorld
                             yield return goGetThatPillarB;
                         }
                         //dev stuff
-                        if (Prefs.DevMode)
+                        if (Prefs.DevMode && !mapComp.IsGraveyard)
                         {
                             Command_Action startBattle = new Command_Action
                             {
@@ -674,7 +677,7 @@ namespace RimWorld
                             yield return loadshipdef;
                         }
                         //attack passing ship
-                        if (this.Map.passingShipManager.passingShips.Any())
+                        if (Map.passingShipManager.passingShips.Any())
                         {
                             foreach (PassingShip passingShip in this.Map.passingShipManager.passingShips)
                             {
@@ -728,20 +731,20 @@ namespace RimWorld
                         }
                     }
                     //in graveyard, not player map - capture/retrieve
-                    else if (this.Map.Parent.def != ResourceBank.WorldObjectDefOf.ShipOrbiting)
+                    else if (!mapComp.IsPlayerShipMap)
                     {
-                        Command_Action captureShip = new Command_Action
+                        Command_Action returnShip = new Command_Action
                         {
                             action = delegate
                             {
-                                if (mapComp.ShipCombatOriginMap == null)
+                                if (mapComp.GraveOrigin == null)
                                 {
-                                    Map m = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault()).Map;
+                                    Map m = ShipInteriorMod2.FindPlayerShipMap();
                                     if (m == null)
-                                        m = ShipInteriorMod2.GeneratePlayerShipMap(this.Map.Size);
-                                    mapComp.ShipCombatOriginMap = m;
+                                        m = ShipInteriorMod2.GeneratePlayerShipMap(Map.Size);
+                                    mapComp.GraveOrigin = m;
                                 }
-                                ShipInteriorMod2.MoveShipSketch(this, mapComp.ShipCombatOriginMap, 0);
+                                ShipInteriorMod2.MoveShipSketch(this, mapComp.GraveOrigin, 0);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShip"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShipDesc"),
@@ -749,15 +752,15 @@ namespace RimWorld
                         };
                         if (mapComp.ShipFaction == Faction.OfPlayer)
                         {
-                            captureShip.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShip");
-                            captureShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShipDesc");
-                            captureShip.icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon");
+                            returnShip.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShip");
+                            returnShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShipDesc");
+                            returnShip.icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon");
                         }
-                        if (ShipCountdown.CountingDown || mapComp.OriginMapComp.InCombat)
+                        if (ShipCountdown.CountingDown || mapComp.GraveOrigin.GetComponent<ShipHeatMapComp>().InCombat)
                         {
-                            captureShip.Disable();
+                            returnShip.Disable();
                         }
-                        yield return captureShip;
+                        yield return returnShip;
                     }
                 }
             }
@@ -815,16 +818,9 @@ namespace RimWorld
 		{
 			if (CanLaunchNow)
 			{
-                if (Find.WorldObjects.AllWorldObjects.Any(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting))
+                Map m = ShipInteriorMod2.FindPlayerShipMap();
+                if (m != null)
                 {
-                    MapParent parent = ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault());
-                    Map m = parent.Map;
-                    if(m==null)
-                    {
-                        parent.Destroy();
-                        ShipCountdown.InitiateCountdown(this);
-                        return;
-                    }
                     ShipInteriorMod2.MoveShipSketch(this, m, 0);
                 }
                 else
@@ -884,7 +880,7 @@ namespace RimWorld
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
-            if (Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty()) //last bridge on player map - deorbit
+            if (Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty() && mapComp.IsPlayerShipMap) //last bridge on player map - deorbit
             {
                 var countdownComp = Map.Parent.GetComponent<TimedForcedExitShip>();
                 if (countdownComp != null && !countdownComp.ForceExitAndRemoveMapCountdownActive)
@@ -972,7 +968,7 @@ namespace RimWorld
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
             if (mapComp.InCombat)
             {
-                mapComp.RemoveShipFromBattle(ShipIndex, this, Faction.OfPlayer);
+                mapComp.DestroyedIncombat.Add(ShipIndex, Faction.OfPlayer);
             }
             else
             {

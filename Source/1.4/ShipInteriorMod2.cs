@@ -100,7 +100,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V94f6";
+        public static readonly string SOS2EXPversion = "V94f7";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -436,7 +436,11 @@ namespace SaveOurShip2
 			map.fogGrid.ClearAllFog();
 			return map;
         }
-        public static WorldObject GenerateSite(string defName)
+        public static Map FindPlayerShipMap()
+		{
+			return ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
+        }
+		public static WorldObject GenerateSite(string defName)
         {
             WorldObject site = WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed(defName));
             site.Tile = TileFinder.RandomStartingTile();
@@ -781,12 +785,12 @@ namespace SaveOurShip2
 			}
 			if (!shipDef.core.shapeOrDef.NullOrEmpty() && wreckLevel < 3)
 			{
-				Building bridge = (Building)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
+                Building_ShipBridge bridge = (Building_ShipBridge)ThingMaker.MakeThing(ThingDef.Named(shipDef.core.shapeOrDef));
 				bridge.SetFaction(fac);
 				GenSpawn.Spawn(bridge, new IntVec3(offset.x + shipDef.core.x, 0, offset.z + shipDef.core.z), map, shipDef.core.rot);
 				bridge.TryGetComp<CompPowerTrader>().PowerOn = true;
 				cores.Add(bridge);
-				((Building_ShipBridge)bridge).ShipName = shipDef.label;
+				bridge.ShipName = shipDef.label;
 			}
 			//color navy ships without custom paint
 			bool rePaint = false; 
@@ -1277,10 +1281,10 @@ namespace SaveOurShip2
 				if ((wreckLevel == 2 && Rand.Chance(0.6f)) || (wreckLevel == 3 && Rand.Chance(0.3f) && invaderFac != null))
 				{
 					IncidentParms parms = new IncidentParms();
-					var check = (MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault();
+					Map check = FindPlayerShipMap();
 					if (check != null)
 					{
-						parms.target = check.Map;
+						parms.target = check;
 						parms.forced = true;
 						if (invaderFac != null && Rand.Chance(0.8f)) //most likely invading ship
 							parms.faction = invaderFac;

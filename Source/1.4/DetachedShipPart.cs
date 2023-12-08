@@ -53,7 +53,7 @@ namespace RimWorld
             if (drawOffset.x > Map.Size.x || drawOffset.x * -1 > Map.Size.x || drawOffset.z > Map.Size.z || drawOffset.z * -1 > Map.Size.z)
                 Destroy();
 
-            if (Find.TickManager.TicksGame % 60 == 0)
+            if (Find.TickManager.TicksGame % 32 == 0)
                 EmitSmokeAndFlame();
         }
 

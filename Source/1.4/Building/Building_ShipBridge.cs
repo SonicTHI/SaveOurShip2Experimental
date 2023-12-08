@@ -430,13 +430,10 @@ namespace RimWorld
                     {
                         toggleAction = delegate
                         {
-                            foreach (SoShipCache ship in ships)
-                            {
-                                if (anyEngineOn)
-                                    ship.EnginesOff();
-                                else
-                                    ship.EnginesOn();
-                            }
+                            if (anyEngineOn)
+                                mapComp.NoCombatEvade = false;
+                            else
+                                mapComp.NoCombatEvade = true;
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEngines"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEnginesDesc"),
@@ -681,15 +678,27 @@ namespace RimWorld
                         {
                             foreach (PassingShip passingShip in this.Map.passingShipManager.passingShips)
                             {
-                                if (passingShip is TradeShip)
+                                if (passingShip is PirateShip)
+                                {
+                                    Command_Action attackPirateShip = new Command_Action
+                                    {
+                                        action = delegate
+                                        {
+                                            mapComp.StartShipEncounter(this, passingShip);
+                                        },
+                                        icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Pirate"),
+                                        defaultLabel = "Attack " + passingShip.FullTitle,
+                                        defaultDesc = "Attack the " + passingShip.FullTitle
+                                    };
+                                    yield return attackPirateShip;
+                                }
+                                else if (passingShip is TradeShip)
                                 {
                                     Command_Action attackTradeShip = new Command_Action
                                     {
                                         action = delegate
                                         {
                                             mapComp.StartShipEncounter(this, passingShip);
-                                            if (ModsConfig.IdeologyActive)
-                                                IdeoUtility.Notify_PlayerRaidedSomeone(this.Map.mapPawns.FreeColonists);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Trader"),
                                         defaultLabel = "Attack " + passingShip.FullTitle,
@@ -704,8 +713,6 @@ namespace RimWorld
                                         action = delegate
                                         {
                                             mapComp.StartShipEncounter(this, passingShip);
-                                            if (ModsConfig.IdeologyActive)
-                                                IdeoUtility.Notify_PlayerRaidedSomeone(this.Map.mapPawns.FreeColonists);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Pirate"),
                                         defaultLabel = "Attack " + passingShip.FullTitle,

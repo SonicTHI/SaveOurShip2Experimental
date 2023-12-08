@@ -142,6 +142,7 @@ namespace RimWorld
             Scribe_References.Look<Map>(ref GraveOrigin, "GraveOrigin");
             Scribe_Values.Look<bool>(ref IsGraveyard, "IsGraveyard", false);
             Scribe_Values.Look<bool>(ref BurnUpSet, "BurnUpSet", false);
+            Scribe_Values.Look<bool>(ref NoCombatEvade, "NoCombatEvade", false);
             Scribe_Values.Look<int>(ref BurnTimer, "BurnTimer");
             Scribe_Values.Look<int>(ref EngineRot, "EngineRot");
             Scribe_Values.Look<int>(ref LastAttackTick, "LastShipBattleTick", 0);
@@ -227,7 +228,6 @@ namespace RimWorld
         }
 
         //SC only - origin only
-        //public bool ShipCombatOrigin = false; //true only on ShipCombatOriginMap
         public float Range; //400 is furthest away, 0 is up close and personal
         public bool attackedTradeship; //target was AI tradeship - notoriety gain
         public bool callSlowTick = false; //call both slow ticks
@@ -274,6 +274,7 @@ namespace RimWorld
         public Map GraveOrigin; //check if origin is in combat
         public bool IsGraveyard = false; //temp map, will be removed in a few days
         public bool BurnUpSet = false; //force terminate map+WO if no player pawns or pods present or in flight to
+        public bool NoCombatEvade = false; //event: debris avoid
         public int BurnTimer = 0; //event: debris avoid
         public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
         List<Building> cores = new List<Building>(); //td rem, might still have some use?
@@ -576,7 +577,14 @@ namespace RimWorld
                     else
                         fleet = Rand.Chance((float)ModSettings_SoS.fleetChance);
                 }
-                if (passingShip is TradeShip)
+                if (passingShip is PirateShip pirateShip)
+                {
+                    faction = pirateShip.shipFaction;
+                    navyDef = pirateShip.spaceNavyDef;
+                    if (!fleet)
+                        shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.enemyShipDefs, CR, false, true);
+                }
+                else if (passingShip is TradeShip)
                 {
                     //find suitable navyDef
                     faction = passingShip.Faction;
@@ -590,7 +598,6 @@ namespace RimWorld
                     {
                         shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<EnemyShipDef>.AllDefs.ToList(), CR, true, false);
                     }
-
                     ShipInteriorMod2.WorldComp.PlayerFactionBounty += 5;
                     attackedTradeship = true;
                 }
@@ -630,7 +637,11 @@ namespace RimWorld
                 }
             }
             if (passingShip != null)
+            {
                 ShipCombatOriginMap.passingShipManager.RemoveShip(passingShip);
+                if (ModsConfig.IdeologyActive && !(passingShip is DerelictShip))
+                    IdeoUtility.Notify_PlayerRaidedSomeone(map.mapPawns.FreeColonists);
+            }
             if (faction == null)
             {
                 if (navyDef != null)
@@ -702,7 +713,6 @@ namespace RimWorld
                 ShipCombatTargetMap = SpawnEnemyShipMap(passingShip, fac, fleet, bounty, out cores);
             else
                 ShipCombatTargetMap = enemyMap;
-
             //if ship is derelict switch to "encounter"
             if (TargetMapComp.IsGraveyard)
             {
@@ -917,7 +927,7 @@ namespace RimWorld
                         return;
                     }
                 }
-                if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
+                if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris) && NoCombatEvade)
                 {
                     //reduce durration per engine vs mass
                     MapEnginePower = 0;
@@ -996,7 +1006,7 @@ namespace RimWorld
             bool anyMapEngineCanActivate = AnyMapEngineCanActivate();
             foreach (SoShipCache ship in ShipsOnMapNew.Values)
             {
-                if (HasShipMapAI && !ship.IsWreck) //shipAI purge
+                if (HasShipMapAI && !ship.IsWreck && ship.Core.PowerComp.PowerNet != null) //shipAI purge
                 {
                     foreach (var battery in ship.Core.PowerComp.PowerNet.batteryComps)
                     {

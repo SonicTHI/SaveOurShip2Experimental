@@ -74,6 +74,29 @@
   <SoSShipMayday>Ship mayday</SoSShipMayday>
   <SoSShipMaydayDesc>"Mayday, mayday... containment failure... by pirate... not responding... impact..." The garbled radio signal is accompanied by a blazing streak across the sky.\n\nA downed ship will attract every pirate, looter, and treasure hunter in a wide radius. Nothing will remain of the wreck after {0}. Even if you arrive in time, you'll have to fight both fires and raids in order to secure the ship's valuable salvage.</SoSShipMaydayDesc>
   
+  <ShipPirateHail>A pirate ship is attempting to hail you.\n</ShipPirateHail>
+  <ShipPirateHailPirate>Surely they know of your notoriety.</ShipPirateHailPirate>
+  <ShipPirateHailNormal>If you do not answer they will most likely attack.</ShipPirateHailNormal>
+  <ShipPirateTalk>Communicating with unknown pirate ship\n\n\n</ShipPirateTalk>
+  <ShipPirateTalkPirate>Your notoriety is known to them and they are asking if you want to trade.</ShipPirateTalkPirate>
+  <ShipPirateTalkParley>They are willing to trade with you now.</ShipPirateTalkParley>
+  <ShipPirateTalkPaid>There is no response.</ShipPirateTalkPaid>
+  <ShipPirateTalkNormal>They demand you hand over valuables in worth of {0} silver.\n\nIf you do not meet their demands quickly, they will eventually attack.\n\nYou can try to use the ancient pirate code of parley but that might anger them and they will attack immediately.</ShipPirateTalkNormal>
+  <ShipPirateTrade>Trade with them</ShipPirateTrade>
+  <ShipPirateDemand>Pay them off</ShipPirateDemand>
+  <ShipPirateDemandFail>Not enough silver: {0}</ShipPirateDemandFail>
+  <ShipPirateParley>Parley?</ShipPirateParley>
+  <ShipPirateParleyFail>Parley failed</ShipPirateParleyFail>
+  <ShipPirateParleyFailDesc>Your attempt to parley with the pirates failed. They are beginning their attack.</ShipPirateParleyFailDesc>
+  <ShipPirateParleyWin>Parley succeeded</ShipPirateParleyWin>
+  <ShipPirateParleyWinDesc>Somehow you managed to persuade the pirates not to attack your ship.</ShipPirateParleyWinDesc>
+  <ShipPirateAttacksBetray>Pirate code betrayal</ShipPirateAttacksBetray>
+  <ShipPirateAttacksBetrayDesc>Seems there is no honor among thieves.</ShipPirateAttacksBetrayDesc>
+  <ShipPirateAttacksPay>Pirates attack</ShipPirateAttacksPay>
+  <ShipPirateAttacksPayDesc>The pirates have decided that your payment was not good enough and are beginning their attack.</ShipPirateAttacksPayDesc>
+  <ShipPirateAttacksWait>Pirates attack</ShipPirateAttacksWait>
+  <ShipPirateAttacksWaitDesc>The pirates have decided they will wait no longer and are beginning their attack.</ShipPirateAttacksWaitDesc>
+  
   <SoSPsychicAmplifier>Psychic amplifier detected</SoSPsychicAmplifier>
   <SoSPsychicAmplifierDesc>Your ship's AI glows with excitement. It has traced the recent psychic emanation to an orbiting amplifier, which is relaying a psychic signal from a distant archotech.\n\nHypothetically, if your ship were to attack this amplifier and send a boarding party to hack its core, it would allow the AI to intercept the original psychic signal and gain a glimpse into an archotech's thought processes. Such insights could even allow it to begin evolving into an archotech itself...\n\nDo not underestimate the difficulty of this battle.</SoSPsychicAmplifierDesc>
   <SoSPsychicAmplifierCaptured>Psychic amplifier hacked</SoSPsychicAmplifierCaptured>

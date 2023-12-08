@@ -763,48 +763,49 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(TileFinder), "TryFindNewSiteTile")]
+	/*[HarmonyPatch(typeof(TileFinder), "TryFindNewSiteTile")] //changed destructive patch, unsure if this is even needed anymore
 	public static class NoQuestsNearTileZero
 	{
-		public static bool Prefix()
-		{
+		public static bool Prefix(out int tile, int minDist, int maxDist, bool allowCaravans,
+            TileFinderMode tileFinderMode, int nearThisTile, ref bool __result)
+        {
+			tile = -1;
+            if (ShipInteriorMod2.FindPlayerShipMap() == null)
+				return true;
+
+            Func<int, int> findTile = delegate (int root) {
+                int minDist2 = minDist;
+                int maxDist2 = maxDist;
+                Predicate<int> validator = (int x) =>
+                    !Find.WorldObjects.AnyWorldObjectAt(x) && TileFinder.IsValidTileForNewSettlement(x, null);
+                int result;
+                if (TileFinder.TryFindPassableTileWithTraversalDistance(root, minDist2, maxDist2, out result,
+                    validator: validator, ignoreFirstTilePassability: false, tileFinderMode, false))
+                {
+                    return result;
+                }
+
+                return -1;
+            };
+            int arg;
+            if (nearThisTile != -1)
+            {
+                arg = nearThisTile;
+            }
+            else if (!TileFinder.TryFindRandomPlayerTile(out arg, allowCaravans,
+                (int x) => findTile(x) != -1 && (Find.World.worldObjects.MapParentAt(x) == null ||
+                                                 !(Find.World.worldObjects.MapParentAt(x) is WorldObjectOrbitingShip))))
+            {
+                tile = -1;
+                __result = false;
+                return false;
+            }
+
+            tile = findTile(arg);
+            __result = (tile != -1);
 			return false;
-		}
-		public static void Postfix(out int tile, int minDist, int maxDist, bool allowCaravans,
-			TileFinderMode tileFinderMode, int nearThisTile, ref bool __result)
-		{
-			Func<int, int> findTile = delegate (int root) {
-				int minDist2 = minDist;
-				int maxDist2 = maxDist;
-				Predicate<int> validator = (int x) =>
-					!Find.WorldObjects.AnyWorldObjectAt(x) && TileFinder.IsValidTileForNewSettlement(x, null);
-				int result;
-				if (TileFinder.TryFindPassableTileWithTraversalDistance(root, minDist2, maxDist2, out result,
-					validator: validator, ignoreFirstTilePassability: false, tileFinderMode, false))
-				{
-					return result;
-				}
-
-				return -1;
-			};
-			int arg;
-			if (nearThisTile != -1)
-			{
-				arg = nearThisTile;
-			}
-			else if (!TileFinder.TryFindRandomPlayerTile(out arg, allowCaravans,
-				(int x) => findTile(x) != -1 && (Find.World.worldObjects.MapParentAt(x) == null ||
-												 !(Find.World.worldObjects.MapParentAt(x) is WorldObjectOrbitingShip))))
-			{
-				tile = -1;
-				__result = false;
-				return;
-			}
-
-			tile = findTile(arg);
-			__result = (tile != -1);
-		}
-	}
+        }
+	}*/
 
 	[HarmonyPatch(typeof(RCellFinder), "TryFindRandomExitSpot")]
 	public static class NoPrisonBreaksInSpace
@@ -1004,106 +1005,185 @@ namespace SaveOurShip2
 	[HarmonyPatch(typeof(TradeShip), "TryOpenComms")]
 	public static class ReplaceCommsIfPirate
 	{
-		public static bool Prefix()
+		public static bool Prefix(TradeShip __instance, Pawn negotiator, out bool __state) //normal trade on ground if no bounty
+        {
+            __state = false;
+            if (!__instance.Map.IsSpace() && ShipInteriorMod2.WorldComp.PlayerFactionBounty > negotiator.skills.GetSkill(SkillDefOf.Social).levelInt * 2)
+				return true;
+
+            __state = true;
+            return false;
+        }
+		public static void Postfix(TradeShip __instance, Pawn negotiator, bool __state) //altered original
 		{
-			return false;
-		}
-		public static void Postfix(TradeShip __instance, Pawn negotiator)
-		{
-			if (!__instance.CanTradeNow)
+			if (!__instance.CanTradeNow || !__state)
 			{
 				return;
+            }
+			DiaNode diaNode;
+            int bounty = ShipInteriorMod2.WorldComp.PlayerFactionBounty;
+			int skill = negotiator.skills.GetSkill(SkillDefOf.Social).levelInt;
+            var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
+            //pirate ship
+            if (__instance is PirateShip pirateShip)
+            {
+				bool pirate =  bounty > 50;
+                int demand = mapComp.MapShipCells.Count; //td better calc?
+                string text = TranslatorFormattedStringExtensions.Translate("ShipPirateTalk");
+                if (pirate)
+                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateTalkPirate");
+                else if (pirateShip.parleyed)
+                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateTalkParley");
+                else if (pirateShip.paidOff)
+                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateTalkPaid");
+                else
+                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateTalkNormal", demand);
+
+                diaNode = new DiaNode(text);
+                if (pirate || pirateShip.parleyed) //pirate/parleyed, normal trade
+                {
+                    DiaOption diaOption3 = new DiaOption(TranslatorFormattedStringExtensions.Translate("ShipPirateTrade"));
+                    diaOption3.action = delegate
+                    {
+                        Find.WindowStack.Add(new Dialog_Trade(negotiator, __instance, false));
+                        LessonAutoActivator.TeachOpportunity(ConceptDefOf.BuildOrbitalTradeBeacon, OpportunityType.Critical);
+                        PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter_Send(__instance.Goods.OfType<Pawn>(), "LetterRelatedPawnsTradeShip".Translate(Faction.OfPlayer.def.pawnsPlural), LetterDefOf.NeutralEvent, false, true);
+                        TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.TradeGoodsMustBeNearBeacon, Array.Empty<string>());
+                    };
+                    diaOption3.resolveTree = true;
+                    diaNode.options.Add(diaOption3);
+                }
+                else if (!pirateShip.paidOff) //not a pirate, not paidOff
+                {
+                    //parley: fail - immediate attack
+                    DiaOption diaOption = new DiaOption(TranslatorFormattedStringExtensions.Translate("ShipPirateParley"));
+                    diaOption.action = delegate
+                    {
+						int check = bounty + Rand.RangeInclusive(1, 10) + skill;
+						pirateShip.parleyed = check > 19;
+                        Log.Message("parley roll DC20: " + check);
+						if (!pirateShip.parleyed)
+                        {
+                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateParleyFail"), TranslatorFormattedStringExtensions.Translate("ShipPirateParleyFailDesc"), LetterDefOf.ThreatBig);
+                            mapComp.StartShipEncounter(mapComp.MapRootListAll.FirstOrDefault(), pirateShip);
+                        }
+						else
+                        {
+                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateParleyWin"), TranslatorFormattedStringExtensions.Translate("ShipPirateParleyWinDesc"), LetterDefOf.PositiveEvent);
+                        }
+                    };
+                    diaOption.resolveTree = true;
+                    diaNode.options.Add(diaOption);
+                    //accept demand - trade window
+                    DiaOption diaOption2 = new DiaOption(TranslatorFormattedStringExtensions.Translate("ShipPirateDemand"));
+                    diaOption2.action = delegate
+                    {
+                        TradeUtility.LaunchThingsOfType(ThingDefOf.Silver, demand, __instance.Map, pirateShip);
+						pirateShip.paidOff = true;
+                        //td custom trade window, onclose if paid, set paidOff
+                        /*Find.WindowStack.Add(new Dialog_Trade(negotiator, __instance, false));
+                        LessonAutoActivator.TeachOpportunity(ConceptDefOf.BuildOrbitalTradeBeacon, OpportunityType.Critical);
+                        PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter_Send(__instance.Goods.OfType<Pawn>(), "LetterRelatedPawnsTradeShip".Translate(Faction.OfPlayer.def.pawnsPlural), LetterDefOf.NeutralEvent, false, true);
+                        TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.TradeGoodsMustBeNearBeacon, Array.Empty<string>());*/
+                    };
+                    diaOption2.resolveTree = true;
+                    diaNode.options.Add(diaOption2);
+                    if (AmountSendableSilver(__instance.Map) < demand)
+                    {
+                        diaOption2.Disable(TranslatorFormattedStringExtensions.Translate("ShipPirateDemandFail", demand));
+                    }
+                }
 			}
-			int bounty = ShipInteriorMod2.WorldComp.PlayerFactionBounty;
+            //normal trader
+            else
+            {
+                diaNode = new DiaNode("TradeShipComms".Translate() + __instance.TraderName);
 
-			DiaNode diaNode = new DiaNode("TradeShipComms".Translate() + __instance.TraderName);
+                //trade normally if no bounty or low bounty with social check
+                DiaOption diaOption = new DiaOption("TradeShipTradeWith".Translate());
+                diaOption.action = delegate
+                {
+                    Find.WindowStack.Add(new Dialog_Trade(negotiator, __instance, false));
+                    LessonAutoActivator.TeachOpportunity(ConceptDefOf.BuildOrbitalTradeBeacon, OpportunityType.Critical);
+                    PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter_Send(__instance.Goods.OfType<Pawn>(), "LetterRelatedPawnsTradeShip".Translate(Faction.OfPlayer.def.pawnsPlural), LetterDefOf.NeutralEvent, false, true);
+                    TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.TradeGoodsMustBeNearBeacon, Array.Empty<string>());
+                };
+                diaOption.resolveTree = true;
+                diaNode.options.Add(diaOption);
 
-			//trade normally if no bounty or low bounty with social check
-			DiaOption diaOption = new DiaOption("TradeShipTradeWith".Translate());
-			diaOption.action = delegate
-			{
-				Find.WindowStack.Add(new Dialog_Trade(negotiator, __instance, false));
-				LessonAutoActivator.TeachOpportunity(ConceptDefOf.BuildOrbitalTradeBeacon, OpportunityType.Critical);
-				PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter_Send(__instance.Goods.OfType<Pawn>(), "LetterRelatedPawnsTradeShip".Translate(Faction.OfPlayer.def.pawnsPlural), LetterDefOf.NeutralEvent, false, true);
-				TutorUtility.DoModalDialogIfNotKnown(ConceptDefOf.TradeGoodsMustBeNearBeacon, Array.Empty<string>());
-			};
-			diaOption.resolveTree = true;
-			diaNode.options.Add(diaOption);
-			if (negotiator.skills.GetSkill(SkillDefOf.Social).levelInt * 2 < bounty)
-			{
-				diaOption.Disable("TradeShipTradeDecline".Translate(__instance.TraderName));
-			}
+                if (skill * 2 < bounty)
+                {
+                    diaOption.Disable("TradeShipTradeDecline".Translate(__instance.TraderName));
+                }
 
-			//if in space add pirate option
-			if (__instance.Map.IsSpace())
-			{
-				DiaOption diaOption2 = new DiaOption("TradeShipPirate".Translate());
-				diaOption2.action = delegate
-				{
-					Building bridge = __instance.Map.listerBuildings.AllBuildingsColonistOfClass<Building_ShipBridge>().FirstOrDefault();
-					if (Rand.Chance(0.025f * negotiator.skills.GetSkill(SkillDefOf.Social).levelInt + negotiator.Map.GetComponent<ShipHeatMapComp>().MapThreat() / 400 - bounty / 40))
-					{
-						//social + shipstr vs bounty for piracy dialog
-						Find.WindowStack.Add(new Dialog_Pirate(__instance.Map.listerBuildings.allBuildingsColonist.Where(t => t.def == ResourceBank.ThingDefOf.ShipSalvageBay).Count(), __instance));
-						bounty += 4;
-						ShipInteriorMod2.WorldComp.PlayerFactionBounty = bounty;
-					}
-					else
-					{
-						//check failed, ship is fleeing
-						bounty += 1;
-						ShipInteriorMod2.WorldComp.PlayerFactionBounty = bounty;
-						if (__instance.Faction == Faction.OfEmpire)
-							Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -25, false, true, HistoryEventDefOf.AttackedCaravan, null);
-						DiaNode diaNode2 = new DiaNode(__instance.TraderName + "TradeShipTryingToFlee".Translate());
-						DiaOption diaOption21 = new DiaOption("TradeShipAttack".Translate());
-						diaOption21.action = delegate
-						{
-							negotiator.Map.GetComponent<ShipHeatMapComp>().StartShipEncounter(bridge, (TradeShip)__instance);
-							if (ModsConfig.IdeologyActive)
-								IdeoUtility.Notify_PlayerRaidedSomeone(__instance.Map.mapPawns.FreeColonists);
-						};
-						diaOption21.resolveTree = true;
-						diaNode2.options.Add(diaOption21);
-						DiaOption diaOption22 = new DiaOption("TradeShipFlee".Translate());
-						diaOption22.action = delegate
-						{
-							__instance.Depart();
-						};
-						diaOption22.resolveTree = true;
-						diaNode2.options.Add(diaOption22);
-						Find.WindowStack.Add(new Dialog_NodeTree(diaNode2, true, false, null));
-
-					}
-				};
-				diaOption2.resolveTree = true;
-				diaNode.options.Add(diaOption2);
-
-			}
-			//pay bounty, gray if not enough money
-			if (bounty > 1)
-			{
-				DiaOption diaOption3 = new DiaOption("TradeShipPayBounty".Translate(2500 * bounty));
-				diaOption3.action = delegate
-				{
-					TradeUtility.LaunchThingsOfType(ThingDefOf.Silver, 2500 * bounty, __instance.Map, null);
-					bounty = 0;
-					ShipInteriorMod2.WorldComp.PlayerFactionBounty = bounty;
-				};
-				diaOption3.resolveTree = true;
-				diaNode.options.Add(diaOption3);
-
-				if (AmountSendableSilver(__instance.Map) < 2500 * bounty)
-				{
-					diaOption3.Disable("NotEnoughForBounty".Translate(2500 * bounty));
-				}
-			}
-			//quit
-			DiaOption diaOption4 = new DiaOption("(" + "Disconnect".Translate() + ")");
-			diaOption4.resolveTree = true;
-			diaNode.options.Add(diaOption4);
-			Find.WindowStack.Add(new Dialog_NodeTree(diaNode, true, false, null));
-		}
+                //if in space add pirate option
+                if (__instance.Map.IsSpace())
+                {
+                    Building bridge = mapComp.MapRootListAll.FirstOrDefault();
+                    if (bridge != null)
+                    {
+                        DiaOption diaOption2 = new DiaOption("TradeShipPirate".Translate());
+                        diaOption2.action = delegate
+                        {
+                            if (Rand.Chance(0.025f * skill + mapComp.MapThreat() / 400 - bounty / 40))
+                            {
+                                //social + shipstr vs bounty for piracy dialog
+                                Find.WindowStack.Add(new Dialog_Pirate(__instance.Map.listerBuildings.allBuildingsColonist.Where(t => t.def == ResourceBank.ThingDefOf.ShipSalvageBay).Count(), __instance));
+                                bounty += 4;
+                            }
+                            else
+                            {
+                                //check failed, ship is fleeing
+                                bounty += 1;
+                                if (__instance.Faction == Faction.OfEmpire)
+                                    Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -25, false, true, HistoryEventDefOf.AttackedCaravan, null);
+                                DiaNode diaNode2 = new DiaNode(__instance.TraderName + "TradeShipTryingToFlee".Translate());
+                                DiaOption diaOption21 = new DiaOption("TradeShipAttack".Translate());
+                                diaOption21.action = delegate
+                                {
+                                    mapComp.StartShipEncounter(bridge, (TradeShip)__instance);
+                                };
+                                diaOption21.resolveTree = true;
+                                diaNode2.options.Add(diaOption21);
+                                DiaOption diaOption22 = new DiaOption("TradeShipFlee".Translate());
+                                diaOption22.action = delegate
+                                {
+                                    __instance.Depart();
+                                };
+                                diaOption22.resolveTree = true;
+                                diaNode2.options.Add(diaOption22);
+                                Find.WindowStack.Add(new Dialog_NodeTree(diaNode2, true, false, null));
+                            }
+                            ShipInteriorMod2.WorldComp.PlayerFactionBounty = bounty;
+                        };
+                        diaOption2.resolveTree = true;
+                        diaNode.options.Add(diaOption2);
+                    }
+                }
+                //pay bounty, gray if not enough money
+                if (bounty > 1)
+                {
+                    DiaOption diaOption3 = new DiaOption("TradeShipPayBounty".Translate(2500 * bounty));
+                    diaOption3.action = delegate
+                    {
+                        TradeUtility.LaunchThingsOfType(ThingDefOf.Silver, 2500 * bounty, __instance.Map, null);
+                        bounty = 0;
+                        ShipInteriorMod2.WorldComp.PlayerFactionBounty = bounty;
+                    };
+                    diaOption3.resolveTree = true;
+                    diaNode.options.Add(diaOption3);
+                    if (AmountSendableSilver(__instance.Map) < 2500 * bounty)
+                    {
+                        diaOption3.Disable("NotEnoughForBounty".Translate(2500 * bounty));
+                    }
+                }
+            }
+            //quit
+            DiaOption diaOption4 = new DiaOption("(" + "Disconnect".Translate() + ")");
+            diaOption4.resolveTree = true;
+            diaNode.options.Add(diaOption4);
+            Find.WindowStack.Add(new Dialog_NodeTree(diaNode, true, false, null));
+        }
 		private static int AmountSendableSilver(Map map)
 		{
 			return (from t in TradeUtility.AllLaunchableThingsForTrade(map, null)
@@ -2683,7 +2763,7 @@ namespace SaveOurShip2
 		public static void Postfix(Map map, ref IntVec3 __result)
 		{
 			//find first salvagebay
-			Building b = map.listerBuildings.allBuildingsColonist.Where(x => x.def == ThingDef.Named("ShipSalvageBay")).FirstOrDefault();
+			Building b = map.listerBuildings.allBuildingsColonist.Where(x => x.def == ResourceBank.ThingDefOf.ShipSalvageBay).FirstOrDefault();
 			if (map.IsSpace() && b != null)
 				__result = b.Position;
 		}

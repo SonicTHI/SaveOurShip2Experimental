@@ -14,6 +14,7 @@ namespace RimWorld
         public Color colorSecondary;
         public bool canOperateAfterFactionDefeated = true;
         public bool bountyHunts;
+        public bool pirates;
 
         public PawnKindDef crewDef;
         public PawnKindDef marineDef;

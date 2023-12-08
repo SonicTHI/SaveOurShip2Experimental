@@ -20,6 +20,7 @@ namespace RimWorld
         public Rot4 rot;
         public bool alt; //alternate mode, for sun lights, etc.
         public float radius;
+        public Faction faction;
 
         public override int GetHashCode()
         {

@@ -6,7 +6,6 @@
     <label>space debris</label>
     <description>A space debris field.</description>
     <endMessage>Ship has cleared the debris field.</endMessage>
-    <letterText>Ship has entered a debris field. Engage engines to evade or brace for impact!</letterText>
     <letterDef>NegativeEvent</letterDef>
     <canBePermanent>true</canBePermanent>
   </GameConditionDef>

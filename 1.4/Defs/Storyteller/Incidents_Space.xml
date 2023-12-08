@@ -1,36 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
-  <!-- ============================== Big threats ==============================-->
-  
-  <IncidentDef>
-    <defName>ShipCombat</defName>
-    <label>ship combat</label>
-    <targetTags>
-      <li>Map_SpaceHome</li>
-    </targetTags>
-    <workerClass>IncidentWorker_ShipCombat</workerClass>
-    <baseChance>1</baseChance>
-    <category>ThreatBig</category>
-    <pointsScaleable>true</pointsScaleable>
-    <tale>ShipCombat</tale>
-  </IncidentDef>
-
-  <IncidentDef>
-    <defName>SpaceDebris</defName>
-    <label>space debris</label>
-    <category>Misc</category>
-    <targetTags>
-      <li>Map_SpaceHome</li>
-    </targetTags>
-    <workerClass>IncidentWorker_SpaceDebris</workerClass>
-    <letterLabel>Space debris</letterLabel>
-    <letterDef>ThreatSmall</letterDef>
-    <baseChance>0.4</baseChance>
-    <minRefireDays>30</minRefireDays>
-    <disabledWhen>
+	<!-- ============================== Big threats ==============================-->
+	<IncidentDef>
+		<defName>ShipCombat</defName>
+		<label>ship combat</label>
+		<targetTags>
+			<li>Map_SpaceHome</li>
+		</targetTags>
+		<workerClass>IncidentWorker_ShipCombat</workerClass>
+		<baseChance>1</baseChance>
+		<category>ThreatBig</category>
+		<pointsScaleable>true</pointsScaleable>
+		<tale>ShipCombat</tale>
+	</IncidentDef>
+	<IncidentDef>
+		<defName>SpacePirates</defName>
+		<label>Pirates!</label>
+		<category>ThreatBig</category>
+		<targetTags>
+			<li>Map_SpaceHome</li>
+		</targetTags>
+		<workerClass>IncidentWorker_SpacePirates</workerClass>
+		<baseChance>1</baseChance>
+		<minRefireDays>30</minRefireDays>
+		<letterLabel>Pirates!</letterLabel>
+		<letterDef>ThreatBig</letterDef>
+	</IncidentDef>
+	<!--========================== Bad ===============================-->
+	<IncidentDef>
+		<defName>SpaceDebris</defName>
+		<label>space debris</label>
+		<category>ThreatSmall</category>
+		<targetTags>
+			<li>Map_SpaceHome</li>
+		</targetTags>
+		<workerClass>IncidentWorker_SpaceDebris</workerClass>
+		<letterLabel>Space debris</letterLabel>
+		<letterText>Ship has entered a debris field. Engage engines to evade or brace for impact!</letterText>
+		<letterDef>ThreatSmall</letterDef>
+		<baseChance>0.4</baseChance>
+		<minRefireDays>30</minRefireDays>
+		<disabledWhen>
     </disabledWhen>
-    <durationDays>0.075~0.1</durationDays>
-    <tale>SpaceDebris</tale>
-  </IncidentDef>
+		<durationDays>0.075~0.1</durationDays>
+		<tale>SpaceDebris</tale>
+	</IncidentDef>
+	<!-- =========================== Neutral ============================-->
+	<IncidentDef>
+		<defName>SpacePodFound</defName>
+		<label>transport pod recovery</label>
+		<category>Misc</category>
+		<targetTags>
+			<li>Map_SpaceHome</li>
+		</targetTags>
+		<workerClass>IncidentWorker_SpacePod</workerClass>
+		<baseChance>0.4</baseChance>
+		<minRefireDays>30</minRefireDays>
+		<letterLabel>Transport pod found</letterLabel>
+		<letterText>A transport pod has been discovered nearby. Do you want to recover it with your salvage bay?</letterText>
+		<letterDef>AcceptSpacePod</letterDef>
+	</IncidentDef>
+	<LetterDef ParentName="CustomChoiceLetterBase">
+		<defName>AcceptSpacePod</defName>
+		<letterClass>ChoiceLetter_SpacePod</letterClass>
+	</LetterDef>
 </Defs>

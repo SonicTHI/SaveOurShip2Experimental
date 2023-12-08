@@ -100,7 +100,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V94f8";
+        public static readonly string SOS2EXPversion = "V95";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -808,7 +808,7 @@ namespace SaveOurShip2
                     IntVec3 adjPos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
                     if (shape.shapeOrDef.Equals("PawnSpawnerGeneric"))
 					{
-						PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.stuff), fac);
+						PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.stuff), shape.faction ?? fac);
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
 						lord?.AddPawn(pawn);
                         GenSpawn.Spawn(pawn, adjPos, map);
@@ -1687,16 +1687,16 @@ namespace SaveOurShip2
 				{
 					rot.x = map.Size.x - pos.z;
 					rot.z = pos.x;
-					sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+					sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
 				}
 				else if (rotb == 2)
 				{
 					rot.x = map.Size.x - pos.x;
 					rot.z = map.Size.z - pos.z;
-					sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+					sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
 				}
 				else
-					sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), pos - lowestCorner, Rot4.North);
+					sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos - lowestCorner, Rot4.North);
 			}
 			return sketch;
 		}

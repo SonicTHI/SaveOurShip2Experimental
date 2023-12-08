@@ -99,6 +99,7 @@ namespace SaveOurShip2
             public static ThingDef Ship_Engine_Large;
             public static ThingDef Ship_Engine_Interplanetary;
             public static ThingDef Ship_Engine_Interplanetary_Large;
+            public static ThingDef Ship_FakeBeam;
             public static ThingDef ShuttleFuelPods;
             public static ThingDef ShipShuttleBay;
 			public static ThingDef ShipShuttleBayLarge;

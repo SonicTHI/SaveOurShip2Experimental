@@ -10,8 +10,15 @@ namespace RimWorld
 {
     public class CompShipHeatTacCon : CompShipHeat
     {
-        public bool PointDefenseMode = true;
-        public bool HoldFire = true;
+        public bool PointDefenseMode = false;
+        public bool HoldFire = false;
+
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Values.Look<bool>(ref PointDefenseMode, "PointDefenseMode", false);
+            Scribe_Values.Look<bool>(ref HoldFire, "HoldFire", false);
+        }
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo gizmo in base.CompGetGizmosExtra())

@@ -293,16 +293,16 @@ namespace RimWorld
                 {
                     rot.x = targetMap.Size.x - pos.z;
                     rot.z = pos.x;
-                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
                 }
                 else if (rotb == 2)
                 {
                     rot.x = targetMap.Size.x - pos.x;
                     rot.z = targetMap.Size.z - pos.z;
-                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), rot - lowestCorner, Rot4.North);
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
                 }
                 else
-                    sketch.AddThing(ThingDef.Named("Ship_FakeBeam"), pos - lowestCorner, Rot4.North);
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos - lowestCorner, Rot4.North);
             }
             return sketch;
         }

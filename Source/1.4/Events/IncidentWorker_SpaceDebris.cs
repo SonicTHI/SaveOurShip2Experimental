@@ -49,7 +49,8 @@ namespace RimWorld
             if (gameCondition_SpaceDebris.asteroids)
                 base.SendStandardLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSpaceAsteroids"), TranslatorFormattedStringExtensions.Translate("LetterSpaceAsteroids"), def.letterDef, parms, new TargetInfo(spawnCell, map, false), Array.Empty<NamedArgument>());
             else
-                base.SendStandardLetter(def.letterLabel, ResourceBank.GameConditionDefOf.SpaceDebris.letterText, def.letterDef, parms, new TargetInfo(spawnCell, map, false), Array.Empty<NamedArgument>());
+                base.SendStandardLetter(def.letterLabel, def.letterText, def.letterDef, parms, new TargetInfo(spawnCell, map, false), Array.Empty<NamedArgument>());
+            //ResourceBank.GameConditionDefOf.SpaceDebris.letterText
             /*
             int num = map.listerBuildings.allBuildingsColonist.Count / 10;
             ChoiceLetter_SpaceDebris choiceLetter_SpaceDebris = (ChoiceLetter_SpaceDebris)LetterMaker.MakeLetter(this.def.letterLabel, "LetterSpaceDebris".Translate("1", "2", num), this.def.letterDef, null, null);

@@ -24,7 +24,7 @@ namespace RimWorld
         { 
             get
             {
-                return StorageCapacityRaw * (1 - depletionRatio);
+                return StorageCapacityRaw * (1 - DepletionRatio);
             }
         }
         public float StorageCapacityRaw //total capacity

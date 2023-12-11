@@ -158,17 +158,6 @@ namespace RimWorld
 				}
 			}
 
-			if (scen.startType == ShipStartFlags.Ship) //defog and homezone ships
-			{
-				spaceMap.fogGrid.ClearAllFog();
-				foreach (Building b in spaceMap.listerThings.AllThings.Where(t => t is Building))
-				{
-					foreach (IntVec3 v in b.OccupiedRect())
-					{
-						spaceMap.areaManager.Home[v] = true;
-					}
-				}
-			}
 			CameraJumper.TryJump(spaceMap.Center, spaceMap);
 			spaceMap.weatherManager.curWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
 			spaceMap.weatherManager.lastWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
@@ -177,7 +166,25 @@ namespace RimWorld
 			spaceMap.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
 			foreach (Room r in spaceMap.regionGrid.allRooms)
 				r.Temperature = 21;
-			AccessExtensions.Utility.RecacheSpaceMaps();
+            try //do post game start?
+            {
+                if (scen.startType == ShipStartFlags.Ship) //defog and homezone ships
+                {
+                    spaceMap.fogGrid.ClearAllFog();
+                    foreach (Building b in spaceMap.listerThings.AllThings.Where(t => t is Building))
+                    {
+                        foreach (IntVec3 v in b.OccupiedRect())
+                        {
+                            spaceMap.areaManager.Home[v] = true;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Warning(e.Message + "\n" + e.StackTrace);
+            }
+            AccessExtensions.Utility.RecacheSpaceMaps();
 			return spaceMap;
 		}
 		public override void PostGameStart() //spawn pawns, things

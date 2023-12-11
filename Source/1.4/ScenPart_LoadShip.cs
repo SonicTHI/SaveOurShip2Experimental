@@ -362,7 +362,6 @@ namespace RimWorld
                     }
                 }
 
-                spaceMap.fogGrid.ClearAllFog();
                 CameraJumper.TryJump(spaceMap.Center, spaceMap);
                 spaceMap.weatherManager.curWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
                 spaceMap.weatherManager.lastWeather = ResourceBank.WeatherDefOf.OuterSpaceWeather;
@@ -371,6 +370,15 @@ namespace RimWorld
                 spaceMap.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
                 foreach (Room r in spaceMap.regionGrid.allRooms)
                     r.Temperature = 21;
+                try //do post game start?
+                {
+                    spaceMap.fogGrid.ClearAllFog();
+                }
+                catch (Exception e)
+                {
+                    Log.Warning(e.Message + "\n" + e.StackTrace);
+                }
+
                 AccessExtensions.Utility.RecacheSpaceMaps();
                 foreach (Ideo ideo in Find.IdeoManager.IdeosInViewOrder)
                     ReCacheIdeo(ideo);

@@ -1,4 +1,4 @@
-﻿using RimWorld.Planet;
+using RimWorld.Planet;
 using SaveOurShip2;
 using System;
 using System.Collections.Generic;
@@ -26,14 +26,14 @@ namespace RimWorld
             {
                 SalvageThing(t);
             }
-            for(int i=0; i<SalvageChunkProgress/10; i++)
+            for (int i = 0; i < SalvageChunkProgress / 10; i++)
             {
                 Thing chunk = ThingMaker.MakeThing(ThingDefOf.MinifiedThing);
                 Thing inner = ThingMaker.MakeThing(ThingDef.Named("ShipChunkSalvage"));
                 ((MinifiedThing)chunk).InnerThing = inner;
                 Salvage.Add(chunk);
             }
-            for(int j=0;j<SlagChunkProgress/20;j++)
+            for (int j = 0; j < SlagChunkProgress / 20; j++)
             {
                 if (SalvageGeneric.ContainsKey(ThingDefOf.ChunkSlagSteel))
                     SalvageGeneric[ThingDefOf.ChunkSlagSteel] += 1;
@@ -44,7 +44,7 @@ namespace RimWorld
         }
         public static void SalvageThing(Thing thing)
         {
-            if(thing is Building)
+            if (thing is Building)
             {
                 if (thing.def.minifiedDef != null)
                 {
@@ -53,7 +53,7 @@ namespace RimWorld
                         MinifiedThing mini = thing.MakeMinified();
                         Salvage.Add(mini);
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
 
                     }
@@ -67,8 +67,8 @@ namespace RimWorld
                         {
                             if (t.thingDef == ThingDefOf.Plasteel)
                                 salvageEfficiency = 0.25f;
-                            //if (t.thingDef == ThingDefOf.Silver && (myDef == null || !myDef.tradeShip))
-                                //salvageEfficiency = 0.1f;
+                            // if (t.thingDef == ThingDefOf.Silver && (myDef == null || !myDef.tradeShip))
+                            // salvageEfficiency = 0.1f;
                             if (SalvageGeneric.ContainsKey(t.thingDef))
                             {
                                 SalvageGeneric[t.thingDef] += (int)(t.count * salvageEfficiency);
@@ -85,19 +85,26 @@ namespace RimWorld
                     }
                 }
             }
-            else if(thing is Pawn)
+            else if (thing is Pawn)
             {
-                if (ShipInteriorMod2.EVAlevel((Pawn)thing)<3)
-                    HealthUtility.DamageUntilDead((Pawn)thing);
-                else
+                if (ShipInteriorMod2.GetPawnSpaceModifiersModifiers((Pawn)thing).CanSurviveVacuum)
+                {
                     HealthUtility.DamageUntilDowned((Pawn)thing);
+                }
+                else
+                {
+                    HealthUtility.DamageUntilDead((Pawn)thing);
+                }
+
                 Salvage.Add(thing);
             }
-            else if((thing.def.category == ThingCategory.Item || thing is Corpse) && thing.TryGetComp<CompExplosive>()==null)
+            else if ((thing.def.category == ThingCategory.Item || thing is Corpse) && thing.TryGetComp<CompExplosive>() == null)
             {
-                thing.TakeDamage(new DamageInfo(DamageDefOf.Crush,Rand.Range(1,100)));
-                if(!thing.Destroyed)
+                thing.TakeDamage(new DamageInfo(DamageDefOf.Crush, Rand.Range(1, 100)));
+                if (!thing.Destroyed)
+                {
                     Salvage.Add(thing);
+                }
             }
         }
     }

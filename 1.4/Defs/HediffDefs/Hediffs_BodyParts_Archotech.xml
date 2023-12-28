@@ -284,13 +284,22 @@
     <label>archotech lung</label>
     <labelNoun>an archotech lung</labelNoun>
     <description>An installed archotech lung.</description>
-    <descriptionHyperlinks><ThingDef>SoSArchotechLung</ThingDef></descriptionHyperlinks>
+    <descriptionHyperlinks>
+      <ThingDef>SoSArchotechLung</ThingDef>
+    </descriptionHyperlinks>
     <spawnThingOnRemoved>SoSArchotechLung</spawnThingOnRemoved>
     <addedPartProps>
       <solid>true</solid>
       <partEfficiency>1.50</partEfficiency>
       <betterThanNatural>true</betterThanNatural>
     </addedPartProps>
+    <stages>
+      <li>
+        <statOffsets>
+          <HypoxiaResistance>1</HypoxiaResistance>
+        </statOffsets>
+      </li>
+    </stages>
   </HediffDef>
 
   <ThingDef ParentName="BodyPartArchotechBase">
@@ -610,19 +619,25 @@
     <defName>SoSArchotechSkin</defName>
     <label>archotech skin</label>
     <description>Installed archotech skin.</description>
-    <descriptionHyperlinks><ThingDef>SoSArchotechSkin</ThingDef></descriptionHyperlinks>
+    <descriptionHyperlinks>
+      <ThingDef>SoSArchotechSkin</ThingDef>
+    </descriptionHyperlinks>
     <spawnThingOnRemoved>SoSArchotechSkin</spawnThingOnRemoved>
     <stages>
       <li>
         <statOffsets>
+          <DecompressionResistance>1</DecompressionResistance>
           <ArmorRating_Sharp>0.4</ArmorRating_Sharp>
           <ArmorRating_Blunt>0.2</ArmorRating_Blunt>
           <ArmorRating_Heat>0.4</ArmorRating_Heat>
-		  <ComfyTemperatureMin>-20</ComfyTemperatureMin>
-		  <ComfyTemperatureMax>20</ComfyTemperatureMax>
+          <ComfyTemperatureMin>-20</ComfyTemperatureMin>
+          <ComfyTemperatureMax>20</ComfyTemperatureMax>
         </statOffsets>
       </li>
     </stages>
+    <tags>
+      <li>ArmorGland</li>
+    </tags>
   </HediffDef>
 
   <ThingDef ParentName="BodyPartArchotechBase">

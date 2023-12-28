@@ -2119,7 +2119,7 @@ namespace SaveOurShip2
 							spawnThing.SetFaction(fac);
 						if (spawnThing is Pawn pawn)
 						{
-                            WorldComp.PawnsInSpaceCache.Remove(pawn.thingIDNumber);
+							WorldComp.RemovePawnFromSpaceCache(pawn);
 						}
 					}
 					catch (Exception e)
@@ -2611,70 +2611,17 @@ namespace SaveOurShip2
 			}
 			return false;
 		}
-        public static byte EVAlevel(Pawn pawn)
-		{
-			/*
-			8 - natural, unremovable, boosted: no rechecks
-			7 - boosted EVA: reset on equip change
-			6 - natural, unremovable: no rechecks
-			5 - proper EVA: reset on equip/hediff change
-			4 - active belt: reset on end
-			3 - inactive belt: trigger in weather
-			2 - skin only: reset on hediff change
-			1 - air only: reset on hediff change
-			0 - none: dead soon
-			*/
-			if (WorldComp.PawnsInSpaceCache.TryGetValue(pawn.thingIDNumber, out byte eva))
-				return eva;
-			byte result = EVAlevelSlow(pawn);
-            //Log.Message("EVA slow lvl: " + result + " on pawn " + pawn.Name);
-            WorldComp.PawnsInSpaceCache[pawn.thingIDNumber] = result;
-			return result;
-		}
-		public static byte EVAlevelSlow(Pawn pawn)
-		{
-			if (pawn.RaceProps.IsMechanoid || IsHologram(pawn) || !pawn.RaceProps.IsFlesh)
-				return 8;
-			if (pawn.def.tradeTags?.Contains("AnimalInsectSpace") ?? false)
-				return 6;
-			if (pawn.apparel == null)
-				return 0;
-			bool hasHelmet = false;
-			bool hasSuit = false;
-			bool hasBelt = false;
-			foreach (Apparel app in pawn.apparel.WornApparel)
-			{
-				if (app.def.apparel.tags.Contains("EVA"))
-				{
-					if (app.def.apparel.layers.Contains(ApparelLayerDefOf.Overhead))
-						hasHelmet = true;
-					if (app.def.apparel.layers.Contains(ApparelLayerDefOf.Shell) || app.def.apparel.layers.Contains(ApparelLayerDefOf.Middle))
-						hasSuit = true;
-				}
-				else if (app.def.defName.Equals("Apparel_SpaceSurvivalBelt"))
-				{
-					hasBelt = true;
-				}
-			}
-			if (hasHelmet && hasSuit)
-				return 7;
-			bool hasLung = false;
-			bool hasSkin = false;
-			if (pawn.health.hediffSet.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SoSArchotechLung) != null)
-				hasLung = true;
-			if (pawn.health.hediffSet.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SoSArchotechSkin) != null)
-				hasSkin = true;
-			if (hasLung && hasSkin)
-				return 5;
-			if (pawn.health.hediffSet.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SpaceBeltBubbleHediff) != null)
-				return 4;
-			if (hasBelt)
-				return 3;
-			if (hasSkin)
-				return 2;
-			if (hasLung)
-				return 1;
-			return 0;
-		}
-	}
+
+        public static PawnSpaceModifiers GetPawnSpaceModifiersModifiers(Pawn pawn)
+        {
+            PawnSpaceModifiers cachedPawnSpaceModifiers = WorldComp.GetPawnSpaceModifiersCache(pawn);
+            if (cachedPawnSpaceModifiers != null)
+            {
+                return cachedPawnSpaceModifiers;
+            }
+            PawnSpaceModifiers pawnSpaceModifiers = WorldComp.AddPawnToSpaceCache(pawn);
+
+            return pawnSpaceModifiers;
+        }
+    }
 }

@@ -21,7 +21,7 @@ namespace RimWorld
 						if (b.def.passability == Traversability.Impassable || b.def.building.shipPart || b is Building_Door || b.Faction != Faction.OfPlayer || (b.TryGetComp<CompForbiddable>()?.Forbidden ?? false))
 							return false;
 					}
-					else if (t is Blueprint_Build) //no idea why this cant be checked for def.shipPart, etc.
+					else if (t is Blueprint_Build) //td no idea why this cant be checked for def.shipPart, etc.
 					{
 						return false;
 					}

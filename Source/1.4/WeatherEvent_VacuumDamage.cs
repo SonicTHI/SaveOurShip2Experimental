@@ -97,15 +97,22 @@ namespace RimWorld
         {
             //find first nonvac area and run to it - enemy only
             var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
-            if (pawn.Faction != Faction.OfPlayer && !pawn.Downed && pawn.CurJob.def != DefDatabase<JobDef>.GetNamed("FleeVacuum"))
+            if (pawn.Faction != Faction.OfPlayer && !pawn.Downed && pawn.CurJobDef != ResourceBank.JobDefOf.FleeVacuum)
             {
                 Predicate<Thing> otherValidator = delegate (Thing t)
                 {
-                    return t is Building_ShipAirlock && !((Building_ShipAirlock)t).Outerdoor();
+                    return t is Building_ShipAirlock a && a.Outerdoor() && a.VacuumSafeSpot() != IntVec3.Invalid;
                 };
                 Thing b = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(ResourceBank.ThingDefOf.ShipAirlock), PathEndMode.Touch, TraverseParms.For(pawn), 99f, otherValidator);
-                Job Flee = new Job(DefDatabase<JobDef>.GetNamed("FleeVacuum"), b);
-                pawn.jobs.StartJob(Flee, JobCondition.InterruptForced);
+                if (b != null)
+                {
+                    IntVec3 v = ((Building_ShipAirlock)b).VacuumSafeSpot();
+                    if (v.Standable(pawn.Map))
+                    {
+                        Job Flee = new Job(ResourceBank.JobDefOf.FleeVacuum, v);
+                        pawn.jobs.StartJob(Flee, JobCondition.InterruptForced);
+                    }
+                }
             }
         }
     }

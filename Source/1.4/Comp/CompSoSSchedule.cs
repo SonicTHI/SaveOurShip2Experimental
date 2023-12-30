@@ -4,14 +4,14 @@ namespace RimWorld
 {
     class CompSoSSchedule : CompSchedule
     {
-        CompSoShipPart partInt;
+        CompSoShipLight partInt;
 
-        CompSoShipPart Part
+        CompSoShipLight Part
         {
             get
             {
                 if (partInt == null)
-                    partInt = parent.GetComp<CompShipLight>().shipComp;
+                    partInt = parent.GetComp<CompShipLight>().lightComp;
                 return partInt;
             }
         }

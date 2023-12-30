@@ -14,7 +14,7 @@ namespace RimWorld
                 {
                     if (selected is ThingWithComps thing)
                     {
-                        CompSoShipPart part = thing.TryGetComp<CompSoShipPart>();
+                        CompSoShipLight part = thing.TryGetComp<CompSoShipLight>();
                         if (part.myLight != null)
                         {
                             CompShipLight light = part.myLight.TryGetComp<CompShipLight>();

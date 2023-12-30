@@ -94,6 +94,8 @@
     <Compile Include="ApparelHolographic.cs" />
     <Compile Include="ApparelSpaceBelt.cs" />
     <Compile Include="ArchotechGiftDef.cs" />
+    <Compile Include="Comp\CompProperties_SoShipLight.cs" />
+    <Compile Include="Comp\CompSoShipLight.cs" />
     <Compile Include="Ships\PirateShip.cs" />
     <Compile Include="Ships\AttackableShip.cs" />
     <Compile Include="Building\Building_ArchotechPillar.cs" />
@@ -129,8 +131,6 @@
     <Compile Include="Comp\PastWorldUWO2.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_ShipPlating.cs" />
     <Compile Include="Projectile\Projectile_ExplosiveShipDebris.cs" />
-    <Compile Include="Quest\QuestNode_RoyalAscentShip.cs" />
-    <Compile Include="Quest\QuestPart_RoyalAscentShip.cs" />
     <Compile Include="ResourceBank.cs" />
     <Compile Include="CompProps\CompProperties_HologramRemover.cs" />
     <Compile Include="Comp\CompHologramRemover.cs" />

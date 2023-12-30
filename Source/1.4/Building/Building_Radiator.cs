@@ -31,9 +31,9 @@ namespace RimWorld
             this.Destroy(DestroyMode.Vanish);
             ThingDef def;
             if (this.def.defName.Equals("ShipInside_PassiveCoolerMechanoid"))
-                def = ThingDef.Named("Ship_BeamMech");
+                def = ResourceBank.ThingDefOf.Ship_BeamMech;
             else if (this.def.defName.Equals("ShipInside_PassiveCoolerArchotech"))
-                def = ThingDef.Named("Ship_BeamArchotech");
+                def = ResourceBank.ThingDefOf.Ship_BeamArchotech;
             else
                 def = ResourceBank.ThingDefOf.Ship_Beam;
             Thing thing = ThingMaker.MakeThing(def);

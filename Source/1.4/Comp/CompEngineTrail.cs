@@ -40,9 +40,29 @@ namespace RimWorld
         public CompFlickable flickComp;
         public CompRefuelable refuelComp;
         public CompPowerTrader powerComp;
+        public bool CanFire()
+        {
+            if (flickComp.SwitchIsOn && powerComp.PowerOn)
+            {
+                if (Props.reactionless)
+                {
+                    if (powerComp.PowerOn)
+                        return true;
+                }
+                else if (Props.energy)
+                {
+                    return true;
+                }
+                else if (refuelComp.Fuel > Props.fuelUse)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public bool CanFire(Rot4 rot)
         {
-            if (flickComp.SwitchIsOn)
+            if (flickComp.SwitchIsOn && powerComp.PowerOn)
             {
                 if (Props.reactionless)
                 {
@@ -51,7 +71,7 @@ namespace RimWorld
                 }
                 else if (rot == parent.Rotation)
                 {
-                    if (Props.energy && powerComp.PowerOn)
+                    if (Props.energy)
                     {
                         return true;
                     }
@@ -118,6 +138,9 @@ namespace RimWorld
         }
         public override void PostDeSpawn(Map map)
         {
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+            if (mapComp.ShipsOnMapNew.Values.Any(s => !s.IsWreck && s.Engines.Any()))
+                mapComp.EngineRot = -1;
             Off();
             base.PostDeSpawn(map);
         }

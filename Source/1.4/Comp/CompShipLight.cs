@@ -13,7 +13,7 @@ namespace RimWorld
     public class CompShipLight : ThingComp
     {
         Building shipPart;
-        public CompSoShipPart shipComp;
+        public CompSoShipLight lightComp;
         int lightDirections = 0;
         List<CompGlower> glowers = new List<CompGlower>();
         public bool sunLight;
@@ -59,7 +59,7 @@ namespace RimWorld
             base.PostPrintOnto(layer);
 
             if (MapComp != null && MapComp.loaded) //If the region isn't dirty because it's being loaded, but because someone built something nearby
-                UpdateLight(shipComp.lightColor, false, false);
+                UpdateLight(lightComp.lightColor, false, false);
 
             DrawLight(new Rot4(Rot), layer);
             /*if (lightDirections != 0)
@@ -86,9 +86,9 @@ namespace RimWorld
         {
             Material mat;
             if (sunLight)
-                mat = Props.sunLightGraphic.Graphic.GetColoredVersion(ShaderDatabase.Cutout, shipComp.lightColor.ToColor, Color.white).MatAt(rot);
+                mat = Props.sunLightGraphic.Graphic.GetColoredVersion(ShaderDatabase.Cutout, lightComp.lightColor.ToColor, Color.white).MatAt(rot);
             else
-                mat = Props.lightGraphic.Graphic.GetColoredVersion(ShaderDatabase.Cutout, shipComp.lightColor.ToColor, Color.white).MatAt(rot);
+                mat = Props.lightGraphic.Graphic.GetColoredVersion(ShaderDatabase.Cutout, lightComp.lightColor.ToColor, Color.white).MatAt(rot);
             Printer_Plane.PrintPlane(layer, this.parent.DrawPos + Altitudes.AltIncVect, Vector2.one*1.125f, mat);
         }
         void UpdateLight(ColorInt color, bool onLoad=false, bool dirty=true)
@@ -172,9 +172,9 @@ namespace RimWorld
         }
         public void UpdateColors(ColorInt color)
         {
-            if (color != shipComp.lightColor)
+            if (color != lightComp.lightColor)
             {
-                shipComp.lightColor = color;
+                lightComp.lightColor = color;
                 UpdateLight(color);
             }
         }
@@ -214,7 +214,7 @@ namespace RimWorld
         }
         public override void ReceiveCompSignal(string signal)
         {
-            if (!ShipInteriorMod2.AirlockBugFlag && shipComp!=null && MapComp.loaded)
+            if (!ShipInteriorMod2.AirlockBugFlag && lightComp!=null && MapComp.loaded)
             {
                 switch (signal)
                 {
@@ -222,7 +222,7 @@ namespace RimWorld
                     case "PowerTurnedOff":
                     case "ScheduledOn":
                     case "ScheduledOff":
-                        UpdateLight(shipComp.lightColor);
+                        UpdateLight(lightComp.lightColor);
                         break;
                 }
             }
@@ -237,31 +237,31 @@ namespace RimWorld
                     yield return giz;
             }
         }
-        public void SetupLighting(CompSoShipPart comp, bool sun, int rot)
+        public void SetupLighting(CompSoShipLight comp, bool sun, int rot)
         {
-            shipComp = comp;
+            lightComp = comp;
             shipPart = (Building)comp.parent;
             sunLight = sun;
             Rot = rot;
-            UpdateLight(shipComp.lightColor);
+            UpdateLight(lightComp.lightColor);
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             if(respawningAfterLoad)
             {
-                shipComp = shipPart.TryGetComp<CompSoShipPart>();
-                UpdateLight(shipComp.lightColor, true);
+                lightComp = shipPart.TryGetComp<CompSoShipLight>();
+                UpdateLight(lightComp.lightColor, true);
             }
         }
         public override void CompTickRare()
         {
             base.CompTickRare();
-            if(shipComp!=null && shipComp.discoMode)
+            if(lightComp!=null && lightComp.discoMode)
             {
                 float hue = (parent.HashOffset() + Find.TickManager.TicksGame) / 4000f;
                 hue = hue - Mathf.Floor(hue);
-                shipComp.lightColor.SetHueSaturation(hue, 1);
-                UpdateLight(shipComp.lightColor);
+                lightComp.lightColor.SetHueSaturation(hue, 1);
+                UpdateLight(lightComp.lightColor);
             }
         }
     }

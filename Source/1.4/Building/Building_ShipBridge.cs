@@ -162,6 +162,8 @@ namespace RimWorld
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsNotoriety", ShipInteriorMod2.WorldComp.PlayerFactionBounty));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", Ship.Mass));
+                        stringBuilder.AppendLine("bcount" + Ship.BuildingCount);
+                        //stringBuilder.AppendLine("thrust actual" + Ship.ThrustToWeight() * 500);
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", Ship.MaxTakeoff));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipEnergy", PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity, (heatComp.myNet.Depletion > 0) ? (" ("+ heatComp.myNet.StorageCapacityRaw + " maximum)") : ""));
@@ -306,9 +308,9 @@ namespace RimWorld
                     {
                         action = delegate
                         {
-                            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmWithdrawShipCombat", delegate
+                            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmWithdrawShipCombat"), delegate
                             {
-                                mapComp.DestroyedIncombat.Add(shipIndex, null);
+                                mapComp.ShipsToMove.Add(shipIndex);
                             }));
                         },
                         icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Withdraw"),
@@ -321,6 +323,32 @@ namespace RimWorld
                         withdraw.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShipLast");
                     }
                     yield return withdraw;
+                    //wrecks
+                    List<SoShipCache> shipStuck = new List<SoShipCache>(mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()));
+
+                    bool wrecksOnMap = false;
+                    if (!mapComp.IsGraveyard && mapComp.ShipsOnMapNew.Count > 1 && shipStuck.Any())
+                    {
+                        wrecksOnMap = true;
+                        Command_Action withdrawWrecks = new Command_Action
+                        {
+                            action = delegate
+                            {
+                                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmWithdrawWrecksCombat"), delegate
+                                {
+                                    foreach (var ship in shipStuck)
+                                    {
+                                        mapComp.ShipsToMove.Add(ship.Index);
+                                    }
+                                }));
+                            },
+                            icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_WithdrawWrecks"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandWithdrawWrecks"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandWithdrawWrecksDesc"),
+                        };
+                        yield return withdrawWrecks;
+                    }
+                    //move
                     if (mapComp.Maintain == true || mapComp.Heading != -1)
                     {
                         Command_Action retreat = new Command_Action
@@ -336,6 +364,11 @@ namespace RimWorld
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Retreat")
                         };
                         yield return retreat;
+                        if (wrecksOnMap)
+                        {
+                            retreat.Disable();
+                            retreat.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawMoveWrecks");
+                        }
                     }
                     if (mapComp.Maintain == false)
                     {
@@ -352,6 +385,11 @@ namespace RimWorld
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Maintain")
                         };
                         yield return maintain;
+                        if (wrecksOnMap)
+                        {
+                            maintain.Disable();
+                            maintain.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawMoveWrecks");
+                        }
                     }
                     if (mapComp.Maintain == true || mapComp.Heading != 0)
                     {
@@ -368,6 +406,11 @@ namespace RimWorld
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Stop")
                         };
                         yield return stop;
+                        if (wrecksOnMap)
+                        {
+                            stop.Disable();
+                            stop.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawMoveWrecks");
+                        }
                     }
                     if (mapComp.Maintain == true || mapComp.Heading != 1)
                     {
@@ -384,6 +427,11 @@ namespace RimWorld
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Advance")
                         };
                         yield return advance;
+                        if (wrecksOnMap)
+                        {
+                            advance.Disable();
+                            advance.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawMoveWrecks");
+                        }
                     }
                     if (heatNet.Turrets.Any())
                     {
@@ -421,19 +469,34 @@ namespace RimWorld
                         yield return vent;
                     }
                 }
+                //intarget
+                /*else if (mapComp.HasTarget) //end target
+                {
+                    Command_Action endTarget = new Command_Action
+                    {
+                        action = delegate
+                        {
+                            mapComp.EndTarget();
+                        },
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipTargetEnd"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipTargettEndDesc"),
+                        icon = ContentFinder<Texture2D>.Get("UI/EndBattle_Icon")
+                    };
+                    yield return endTarget;
+                }*/
                 //engine burn
                 else if (Map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
                 {
-                    List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove).ToList();
+                    List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove()).ToList();
                     bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
                     Command_Toggle toggleEngines = new Command_Toggle
                     {
                         toggleAction = delegate
                         {
                             if (anyEngineOn)
-                                mapComp.NoCombatEvade = false;
+                                mapComp.ToggleEngines = false;
                             else
-                                mapComp.NoCombatEvade = true;
+                                mapComp.ToggleEngines = true;
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEngines"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEnginesDesc"),
@@ -482,8 +545,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                if (Ship.HasPilotRCSAndFuel(0.01f, true))
-                                    ShipInteriorMod2.MoveShipSketch(this, this.Map);
+                                Ship.CreateShipSketchIfFuelPct(0.01f, Map);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMove"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveDesc"),
@@ -494,8 +556,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                if (Ship.HasPilotRCSAndFuel(0.01f, true))
-                                    ShipInteriorMod2.MoveShipSketch(this, this.Map, 2);
+                                Ship.CreateShipSketchIfFuelPct(0.01f, Map, 2);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFlip"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFlipDesc"),
@@ -506,8 +567,7 @@ namespace RimWorld
                         {
                             action = delegate
                             {
-                                if (Ship.HasPilotRCSAndFuel(0.01f, true))
-                                    ShipInteriorMod2.MoveShipSketch(this, this.Map, 1);
+                                Ship.CreateShipSketchIfFuelPct(0.01f, Map, 1);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRot"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotDesc"),
@@ -551,7 +611,7 @@ namespace RimWorld
                         List<Map> landableMaps = new List<Map>();
                         foreach (Map m in Find.Maps)
                         {
-                            if ((!m.IsSpace() && !m.IsTempIncidentMap) || (ckActive && m != this.Map))
+                            if ((!m.IsSpace() && !m.IsTempIncidentMap) || (ckActive && m != Map))
                                 landableMaps.Add(m);
                         }
                         foreach (Map m in landableMaps)
@@ -560,8 +620,7 @@ namespace RimWorld
                             {
                                 action = delegate
                                 {
-                                    if (Ship.HasPilotRCSAndFuel(0.1f))
-                                        ShipInteriorMod2.MoveShipSketch(this, m, 0);
+                                    Ship.CreateShipSketchIfFuelPct(0.1f, m, 0, true);
                                 },
                                 defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand") + " (" + m.Parent.Label + ")",
                                 defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideLandDesc") + m.Parent.Label,
@@ -587,7 +646,7 @@ namespace RimWorld
                                 },
                                 defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipRebuild"),
                                 defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRebuildDesc"),
-                                icon = ContentFinder<Texture2D>.Get("UI/Glitterworld_end_icon", true)
+                                icon = ContentFinder<Texture2D>.Get("UI/RebuildShip", true)
                             };
                             yield return rebuildShip;
                         }
@@ -604,7 +663,7 @@ namespace RimWorld
                                         spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
                                         shipFaction = Faction.OfMechanoids
                                     };
-                                    mapComp.StartShipEncounter(this, station);
+                                    mapComp.StartShipEncounter(station);
                                 },
                                 icon = ContentFinder<Texture2D>.Get("UI/ArchotechStation_Icon_Quest"),
                                 defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarA"),
@@ -626,7 +685,7 @@ namespace RimWorld
                                         attackableShip = ShipInteriorMod2.RandomValidShipFrom(mechNavyDef.enemyShipDefs, CR, false, true),
                                         shipFaction = Faction.OfMechanoids
                                     };
-                                    mapComp.StartShipEncounter(this, attacker);
+                                    mapComp.StartShipEncounter(attacker);
                                     MapParent site = (MapParent)ShipInteriorMod2.GenerateSite("MoonPillarSite");
                                 },
                                 icon = ContentFinder<Texture2D>.Get("UI/Moon_Icon_Quest"),
@@ -644,7 +703,7 @@ namespace RimWorld
                                 {
                                     if (Find.TickManager.Paused)
                                         Find.TickManager.TogglePaused();
-                                    mapComp.StartShipEncounter(this);
+                                    mapComp.StartShipEncounter();
                                 },
                                 defaultLabel = "Dev: Start ship battle",
                             };
@@ -656,7 +715,7 @@ namespace RimWorld
                                 {
                                     if (Find.TickManager.Paused)
                                         Find.TickManager.TogglePaused();
-                                    mapComp.StartShipEncounter(this, fleet: true);
+                                    mapComp.StartShipEncounter(fleet: true);
                                 },
                                 defaultLabel = "Dev: Start random fleet battle",
                             };
@@ -684,7 +743,7 @@ namespace RimWorld
                                     {
                                         action = delegate
                                         {
-                                            mapComp.StartShipEncounter(this, passingShip);
+                                            mapComp.StartShipEncounter(passingShip);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Pirate"),
                                         defaultLabel = "Attack " + passingShip.FullTitle,
@@ -698,7 +757,7 @@ namespace RimWorld
                                     {
                                         action = delegate
                                         {
-                                            mapComp.StartShipEncounter(this, passingShip);
+                                            mapComp.StartShipEncounter(passingShip);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Trader"),
                                         defaultLabel = "Attack " + passingShip.FullTitle,
@@ -712,7 +771,7 @@ namespace RimWorld
                                     {
                                         action = delegate
                                         {
-                                            mapComp.StartShipEncounter(this, passingShip);
+                                            mapComp.StartShipEncounter(passingShip);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Pirate"),
                                         defaultLabel = "Attack " + passingShip.FullTitle,
@@ -726,7 +785,7 @@ namespace RimWorld
                                     {
                                         action = delegate
                                         {
-                                            mapComp.StartShipEncounter(this, passingShip);
+                                            mapComp.StartShipEncounter(passingShip);
                                         },
                                         icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Quest"),
                                         defaultLabel = "Approach " + passingShip.FullTitle,
@@ -737,7 +796,7 @@ namespace RimWorld
                             }
                         }
                     }
-                    //in graveyard, not player map - capture/retrieve
+                    //in graveyard, not player map - return to player map
                     else if (!mapComp.IsPlayerShipMap)
                     {
                         Command_Action returnShip = new Command_Action
@@ -751,7 +810,7 @@ namespace RimWorld
                                         m = ShipInteriorMod2.GeneratePlayerShipMap(Map.Size);
                                     mapComp.GraveOrigin = m;
                                 }
-                                ShipInteriorMod2.MoveShipSketch(this, mapComp.GraveOrigin, 0);
+                                Ship.CreateShipSketchIfFuelPct(0.01f, mapComp.GraveOrigin);
                             },
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShip"),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShipDesc"),
@@ -763,7 +822,7 @@ namespace RimWorld
                             returnShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShipDesc");
                             returnShip.icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon");
                         }
-                        if (ShipCountdown.CountingDown || mapComp.GraveOrigin.GetComponent<ShipHeatMapComp>().InCombat)
+                        if (ShipCountdown.CountingDown || mapComp.IsGraveOriginInCombat)
                         {
                             returnShip.Disable();
                         }
@@ -828,7 +887,7 @@ namespace RimWorld
                 Map m = ShipInteriorMod2.FindPlayerShipMap();
                 if (m != null)
                 {
-                    ShipInteriorMod2.MoveShipSketch(this, m, 0);
+                    Ship.CreateShipSketchIfFuelPct(1, m, 0, true);
                 }
                 else
                 {
@@ -973,9 +1032,11 @@ namespace RimWorld
             }
             if (pawn != null)
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
+
+            mapComp.ShipsOnMapNew[shipIndex].Capture(Faction.OfPlayer);
             if (mapComp.InCombat)
             {
-                mapComp.DestroyedIncombat.Add(ShipIndex, Faction.OfPlayer);
+                mapComp.ShipsToMove.Add(ShipIndex);
             }
             else
             {

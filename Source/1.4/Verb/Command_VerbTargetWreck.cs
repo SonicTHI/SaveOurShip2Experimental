@@ -47,7 +47,7 @@ namespace RimWorld
             List<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true).ToList();
             if (positions.Contains(position) || positions.NullOrEmpty())
                 return;
-            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ShipSalvageAbandonConfirm", delegate
+            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ShipSalvageAbandonConfirm"), delegate
             {
                 ShipInteriorMod2.RemoveShip(positions, targetMap, false);
             }));

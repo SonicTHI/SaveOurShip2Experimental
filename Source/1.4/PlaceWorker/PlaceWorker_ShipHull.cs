@@ -14,7 +14,15 @@ namespace RimWorld
 			{
 				if (vec.Fogged(map) || map.roofGrid.RoofAt(loc) == RoofDefOf.RoofRockThick)
 					return false;
-			}
+                foreach (Thing t in vec.GetThingList(map))
+                {
+                    if (t is Building b)
+                    {
+                        if (b is Building_SteamGeyser)
+                            return false;
+                    }
+                }
+            }
 			return true;
 			/*
 			Room room = loc.GetRoom(map);

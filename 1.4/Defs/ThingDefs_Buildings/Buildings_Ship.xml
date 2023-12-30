@@ -124,11 +124,12 @@
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
-				<canLight>true</canLight>
+			</li>
+			<!--li Class="CompProperties_SoShipLight">
 				<light>Ship_Beam_Light</light>
 				<lightPower>15</lightPower>
 				<sunLightPower>2500</sunLightPower>
-			</li>
+			</li-->
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -353,7 +354,7 @@
 		<defName>ShipInside_SolarGenerator</defName>
 		<label>solar generator</label>
 		<designatorDropdown>Ship_SolarGenerators</designatorDropdown>
-		<description>Produces electricity from sunlight. Does not work in the dark or under artificial light.</description>
+		<description>Produces electricity from sunlight. Up to 600W in space and 300W on planet surface. Does not work in the dark or under artificial light.</description>
 		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
@@ -492,10 +493,6 @@
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
-				<canLight>true</canLight>
-				<light>Ship_Beam_Light</light>
-				<lightPower>15</lightPower>
-				<sunLightPower>2500</sunLightPower>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -909,6 +906,7 @@
 			<graphicClass>Graphic_Multi</graphicClass>
 			<drawSize>(8,5.5)</drawSize>
 		</graphicData>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<researchPrerequisites>
 			<li>ShipEngine</li>
 		</researchPrerequisites>
@@ -980,6 +978,7 @@
 			<graphicClass>Graphic_Multi</graphicClass>
 			<drawSize>(6,5.5)</drawSize>
 		</graphicData>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<researchPrerequisites>
 			<li>ShipEngine</li>
 		</researchPrerequisites>
@@ -1052,6 +1051,7 @@
 			<graphicClass>Graphic_Multi</graphicClass>
 			<drawSize>(5,7)</drawSize>
 		</graphicData>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<researchPrerequisites>
 			<li>ShipEngine</li>
 			<li>ShipReactor</li>
@@ -1125,10 +1125,10 @@
 			<graphicClass>Graphic_Multi</graphicClass>
 			<drawSize>(2.3,2.3)</drawSize>
 		</graphicData>
+		<altitudeLayer>BuildingOnTop</altitudeLayer>
 		<researchPrerequisites>
 			<li>ShipEngine</li>
 		</researchPrerequisites>
-		<altitudeLayer>WorldClipper</altitudeLayer>
 		<statBases>
 			<WorkToBuild>2000</WorkToBuild>
 			<MaxHitPoints>300</MaxHitPoints>
@@ -2185,68 +2185,6 @@
 	</ThingDef>
 	<!-- misc -->
 	<ThingDef ParentName="BuildingBase">
-		<defName>HullFoamDistributor</defName>
-		<label>hullfoam distributor</label>
-		<thingClass>Building</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullFoamDistributor</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(3,3)</drawSize>
-		</graphicData>
-		<researchPrerequisites>
-			<li>HullFoam</li>
-		</researchPrerequisites>
-		<altitudeLayer>Building</altitudeLayer>
-		<passability>PassThroughOnly</passability>
-		<blockWind>true</blockWind>
-		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>0.8</fillPercent>
-		<blockLight>false</blockLight>
-		<canOverlapZones>false</canOverlapZones>
-		<statBases>
-			<WorkToBuild>4000</WorkToBuild>
-			<MaxHitPoints>1500</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<tickerType>Normal</tickerType>
-		<description>A pumping station for distributing hullfoam throughout a ship. When a portion of the ship's hull is destroyed in combat, this system will automatically patch the hole with hullfoam.</description>
-		<size>(3,3)</size>
-		<designationCategory>Ship</designationCategory>
-		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>200</basePowerConsumption>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_Refuelable">
-				<fuelCapacity>50.0</fuelCapacity>
-				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<fuelFilter>
-					<thingDefs>
-						<li>HullFoam</li>
-					</thingDefs>
-				</fuelFilter>
-				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
-				<autoRefuelPercent>1</autoRefuelPercent>
-				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
-			</li>
-			<li Class="CompProperties_HullFoamDistributor"/>
-		</comps>
-		<rotatable>false</rotatable>
-		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
-		</placeWorkers>
-		<costList>
-			<Steel>80</Steel>
-			<Plasteel>40</Plasteel>
-			<ComponentSpacer>4</ComponentSpacer>
-		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-		<designationHotKey>Misc5</designationHotKey>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
 		<defName>ShipCloakingDevice</defName>
 		<label>cloaking device</label>
 		<thingClass>Building_ShipCloakingDevice</thingClass>
@@ -2655,6 +2593,68 @@
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 	</ThingDef>
 	<!-- foam -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>HullFoamDistributor</defName>
+		<label>hullfoam distributor</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullFoamDistributor</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<researchPrerequisites>
+			<li>HullFoam</li>
+		</researchPrerequisites>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>0.8</fillPercent>
+		<blockLight>false</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<WorkToBuild>4000</WorkToBuild>
+			<MaxHitPoints>1500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>A pumping station for distributing hullfoam throughout a ship. When a portion of the ship's hull is destroyed in combat, this system will automatically patch the hole with hullfoam.</description>
+		<size>(3,3)</size>
+		<designationCategory>Ship</designationCategory>
+		<comps>
+			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>200</basePowerConsumption>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_Refuelable">
+				<fuelCapacity>50.0</fuelCapacity>
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+				<fuelFilter>
+					<thingDefs>
+						<li>HullFoam</li>
+					</thingDefs>
+				</fuelFilter>
+				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
+				<autoRefuelPercent>1</autoRefuelPercent>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+			</li>
+			<li Class="CompProperties_HullFoamDistributor"/>
+		</comps>
+		<rotatable>false</rotatable>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<costList>
+			<Steel>80</Steel>
+			<Plasteel>40</Plasteel>
+			<ComponentSpacer>4</ComponentSpacer>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<designationHotKey>Misc5</designationHotKey>
+	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>HullFoamWall</defName>
 		<label>hullfoam</label>

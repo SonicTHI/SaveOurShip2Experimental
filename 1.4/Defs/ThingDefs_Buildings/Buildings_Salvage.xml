@@ -37,10 +37,6 @@
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
 				<wreckage>true</wreckage>
-				<canLight>true</canLight>
-				<light>Ship_Beam_Light</light>
-				<lightPower>15</lightPower>
-				<sunLightPower>2500</sunLightPower>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
@@ -87,6 +83,7 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<isHull>true</isHull>
+				<isPlating>true</isPlating>
 				<wreckage>true</wreckage>
 			</li>
 			<li Class="CompProperties_Power">
@@ -598,7 +595,7 @@
 			</li>
 		</comps>
 	</ThingDef>
-	<!-- floating -->
+	<!-- floating, last 2 are only used for graphics? -->
 	<ThingDef ParentName="EtherealThingBase">
 		<defName>DetachedShipPart</defName>
 		<label>Detached Ship Part</label>
@@ -631,37 +628,16 @@
 		<graphicData>
 			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Wrecked_Atlas</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<linkType>Basic</linkType>
-			<linkFlags>
-				<li>Wall</li>
-				<li>Rock</li>
-			</linkFlags>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-				<edgeTop>Damage/Edge</edgeTop>
-				<edgeBot>Damage/Edge</edgeBot>
-				<edgeLeft>Damage/Edge</edgeLeft>
-				<edgeRight>Damage/Edge</edgeRight>
-			</damageData>
 		</graphicData>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>Impassable</passability>
-		<blockWind>true</blockWind>
 		<castEdgeShadows>true</castEdgeShadows>
-		<fillPercent>1</fillPercent>
-		<blockLight>true</blockLight>
-		<canOverlapZones>false</canOverlapZones>
 		<statBases>
 			<WorkToBuild>1600</WorkToBuild>
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<tickerType>Normal</tickerType>
 		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
-		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<rotatable>false</rotatable>
 		<building>
 			<blueprintGraphicData>
@@ -669,11 +645,7 @@
 			</blueprintGraphicData>
 		</building>
 		<costList>
-			<Steel>8</Steel>
-			<Plasteel>2</Plasteel>
 		</costList>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase">
@@ -693,24 +665,17 @@
 		<coversFloor>true</coversFloor>
 		<altitudeLayer>Floor</altitudeLayer>
 		<passability>Standable</passability>
-		<placingDraggableDimensions>2</placingDraggableDimensions>
 		<statBases>
 			<MaxHitPoints>200</MaxHitPoints>
 			<WorkToBuild>100</WorkToBuild>
 			<Flammability>0.0</Flammability>
-			<Beauty>-1</Beauty>
 		</statBases>
 		<description>Wreckage of a ship's hull. No longer spaceworthy.</description>
 		<costList>
-			<Steel>1</Steel>
-			<Plasteel>1</Plasteel>
 		</costList>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>
 		<neverMultiSelect>true</neverMultiSelect>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<constructEffect>ConstructMetal</constructEffect>
 		<fillPercent>0.0</fillPercent>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>

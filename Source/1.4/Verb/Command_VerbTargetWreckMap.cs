@@ -47,8 +47,108 @@ namespace RimWorld
 
         public void AfterTarget(Building b)
         {
-            int bMax = sourceMap.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null).Count() * CompShipSalvageBay.salvageCapacity;
-            ShipInteriorMod2.MoveShipSketch(b, sourceMap, rotb, true, bMax, false);
+            if (b == null)
+                return;
+            int bMax = sourceMap.GetComponent<ShipHeatMapComp>().SalvBayCount * CompShipSalvageBay.salvageCapacity;
+            var mapComp = b.Map.GetComponent<ShipHeatMapComp>();
+            int shipIndex = mapComp.ShipIndexOnVec(b.Position);
+            if (shipIndex != -1)
+            {
+                var ship = mapComp.ShipsOnMapNew[shipIndex];
+                float bCountF = ship.BuildingCount * 2.5f;
+                if (bCountF > bMax) //moving this ship with another ship //td compare size, check bays and fuel
+                {
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
+                    return;
+                }
+                ship.CreateShipSketch(sourceMap, rotb);
+            }
+            else //legacy move for rocks, etc //td rework
+                MoveShipSketch(b, sourceMap, rotb, true, bMax, false);
+        }
+        public Sketch GenerateShipSketch(HashSet<IntVec3> positions, Map map, IntVec3 lowestCorner, byte rotb = 0)
+        {
+            Sketch sketch = new Sketch();
+            IntVec3 rot = new IntVec3(0, 0, 0);
+            foreach (IntVec3 pos in positions)
+            {
+                if (rotb == 1)
+                {
+                    rot.x = map.Size.x - pos.z;
+                    rot.z = pos.x;
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
+                }
+                else if (rotb == 2)
+                {
+                    rot.x = map.Size.x - pos.x;
+                    rot.z = map.Size.z - pos.z;
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
+                }
+                else
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos - lowestCorner, Rot4.North);
+            }
+            return sketch;
+        }
+        public void MoveShipSketch(Building b, Map targetMap, byte rotb = 0, bool salvage = false, int bMax = 0, bool includeRock = false)
+        {
+            List<Building> cachedParts;
+            if (b is Building_ShipBridge bridge)
+                cachedParts = bridge.Ship.Buildings.ToList();
+            else
+                cachedParts = ShipInteriorMod2.FindBuildingsAttached(b, includeRock);
+
+            IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
+            HashSet<IntVec3> positions = new HashSet<IntVec3>();
+            int bCount = 0;
+            foreach (Building building in cachedParts)
+            {
+                bCount++;
+                if (b.Position.x < lowestCorner.x)
+                    lowestCorner.x = b.Position.x;
+                if (b.Position.z < lowestCorner.z)
+                    lowestCorner.z = b.Position.z;
+                foreach (IntVec3 pos in GenAdj.CellsOccupiedBy(building))
+                    positions.Add(pos);
+            }
+            if (rotb == 1)
+            {
+                int temp = lowestCorner.x;
+                lowestCorner.x = b.Map.Size.z - lowestCorner.z;
+                lowestCorner.z = temp;
+            }
+            else if (rotb == 2)
+            {
+                lowestCorner.x = b.Map.Size.x - lowestCorner.x;
+                lowestCorner.z = b.Map.Size.z - lowestCorner.z;
+            }
+            float bCountF = bCount * 2.5f;
+            if (salvage && bCountF > bMax)
+            {
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
+                cachedParts.Clear();
+                positions.Clear();
+                return;
+            }
+            Sketch shipSketch = GenerateShipSketch(positions, targetMap, lowestCorner, rotb);
+            MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
+            fakeMover.shipRoot = b;
+            fakeMover.includeRock = includeRock;
+            fakeMover.shipRotNum = rotb;
+            fakeMover.bottomLeftPos = lowestCorner;
+            ShipInteriorMod2.shipOriginMap = b.Map;
+            fakeMover.targetMap = targetMap;
+            fakeMover.Position = b.Position;
+            fakeMover.SpawnSetup(targetMap, false);
+            List<object> selected = new List<object>();
+            foreach (object ob in Find.Selector.SelectedObjects)
+                selected.Add(ob);
+            foreach (object ob in selected)
+                Find.Selector.Deselect(ob);
+            Current.Game.CurrentMap = targetMap;
+            Find.Selector.Select(fakeMover);
+            if (Find.TickManager.Paused)
+                Find.TickManager.TogglePaused();
+            InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
         }
     }
 }

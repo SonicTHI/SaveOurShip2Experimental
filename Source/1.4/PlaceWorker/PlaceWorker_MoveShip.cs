@@ -10,15 +10,15 @@ namespace RimWorld
 {
     public class PlaceWorker_MoveShip : PlaceWorker
     {
-        public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, Color ghostCol, Thing thing = null)
+        public override void DrawGhost(ThingDef def, IntVec3 loc, Rot4 rot, Color ghostCol, Thing thing = null)
         {
             if (thing is ShipMoveBlueprint ship)
             {
-                ship.DrawGhost(center);
+                ship.DrawGhost(loc);
             }
         }
 
-        public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
+        public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
         {
             if (thing is ShipMoveBlueprint ship)
             {
@@ -30,11 +30,28 @@ namespace RimWorld
                 AcceptanceReport result = true;
                 foreach (SketchEntity current in ship.shipSketch.Entities)
                 {
-                    IntVec3 c = current.pos + center;
-                    if (GenGrid.InNoBuildEdgeArea(c, map) || current.IsSpawningBlocked(c, map) || map.fogGrid.IsFogged(c) || map.roofGrid.Roofed(c) || (targetMapLarger && (c.x > ShipInteriorMod2.shipOriginMap.Size.x || c.z > ShipInteriorMod2.shipOriginMap.Size.z)))
+                    IntVec3 vec = loc + current.pos;
+
+                    if (GenGrid.InNoBuildEdgeArea(vec, map) || current.IsSpawningBlocked(vec, map) || map.roofGrid.Roofed(vec) || (targetMapLarger && (vec.x > ShipInteriorMod2.shipOriginMap.Size.x || vec.z > ShipInteriorMod2.shipOriginMap.Size.z)))
                     {
-                        current.DrawGhost(c, new Color(0.8f, 0.2f, 0.2f, 0.35f));
+                        current.DrawGhost(vec, new Color(0.8f, 0.2f, 0.2f, 0.3f));
                         result = false;
+                        continue;
+                    }
+                    if (vec.InBounds(map))
+                    {
+                        foreach (Thing t in vec.GetThingList(map))
+                        {
+                            if (t is Building b)
+                            {
+                                if (b.def.passability == Traversability.Impassable || b is Building_SteamGeyser)
+                                {
+                                    current.DrawGhost(vec, new Color(0.8f, 0.2f, 0.2f, 0.3f));
+                                    result = false;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 return result;

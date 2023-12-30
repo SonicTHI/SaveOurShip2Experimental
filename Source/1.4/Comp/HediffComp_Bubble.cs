@@ -10,7 +10,7 @@ namespace RimWorld
     {
         public override void CompPostPostRemoved()
         {
-            ShipInteriorMod2.WorldComp.AddPawnToSpaceCache(this.Pawn);
+            ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == this.Pawn.thingIDNumber);
         }
     }
 }

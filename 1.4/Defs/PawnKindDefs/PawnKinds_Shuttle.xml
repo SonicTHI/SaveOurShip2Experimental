@@ -12,9 +12,6 @@
       <MeatAmount>0</MeatAmount>
       <ArmorRating_Heat>2.00</ArmorRating_Heat>
       <ToxicEnvironmentResistance MayRequire="Ludeon.RimWorld.Biotech">1</ToxicEnvironmentResistance>
-      <DecompressionResistance>1</DecompressionResistance>
-      <HypoxiaResistance>1</HypoxiaResistance>
-      <VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
     </statBases>
     <race>
       <fleshType>Mechanoid</fleshType>

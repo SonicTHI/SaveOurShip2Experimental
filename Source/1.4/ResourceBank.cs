@@ -222,13 +222,5 @@ namespace SaveOurShip2
             public static WorldObjectDef SiteSpace;
             public static WorldObjectDef MoonPillarSite;
         }
-
-    [DefOf]
-    public static class StatDefOf
-    {
-      public static StatDef HypoxiaResistance;
-      public static StatDef DecompressionResistance;
-      public static StatDef VacuumSpeedMultiplier;
     }
-  }
 }

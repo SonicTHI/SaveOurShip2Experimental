@@ -10,7 +10,7 @@
 				<li Class="PatchOperationAdd">
 					<xpath>Defs/ThingDef[defName="Ship_Engine" or defName="Ship_Engine_Small" or defName="ShipAirlockBeamWall"]/comps</xpath>
 					<value>
-						<li Class="Rimefeller.CompProperties_Pipe" />
+						<li Class="Rimefeller.CompProperties_Pipe"/>
 					</value>
 				</li>
 			</operations>
@@ -59,6 +59,24 @@
 							<surgeMitigation>10000</surgeMitigation>
 							<breakdownOnTrip>false</breakdownOnTrip>
 						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Factions Expanded - Pirates</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketPartBase"]/apparel</xpath>
+					<value>
+						<tags>
+							<li>EVA</li>
+						</tags>
 					</value>
 				</li>
 			</operations>

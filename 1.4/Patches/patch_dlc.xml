@@ -175,6 +175,16 @@
 					<xpath>Defs/EnemyShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
 					<value><navyExclusive>true</navyExclusive></value>
 				</li>
+				<!-- EVA -->
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[@Name="ApparelArmorReconBase" or @Name="ApparelArmorCataphractBase" or @Name="ApparelArmorHelmetCataphractBase"]/apparel</xpath>
+					<value><tags><li>EVA</li></tags></value></li>
+				<li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[@Name="ApparelArmorReconBase"]/statBases/Insulation_Cold</xpath>
+					<value><Insulation_Cold>80</Insulation_Cold></value></li>
+				<li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[@Name="ApparelArmorCataphractBase"]/statBases/Insulation_Cold</xpath>
+					<value><Insulation_Cold>100</Insulation_Cold></value></li>
 				<!-- traders -->
 				<li Class="PatchOperationAdd">
 				<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>

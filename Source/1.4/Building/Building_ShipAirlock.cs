@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Verse.AI;
-using Verse.AI.Group;
+using Verse.AI.Group; 
 using Verse.Sound;
 using HarmonyLib;
 using SaveOurShip2;
@@ -83,31 +83,20 @@ namespace RimWorld
             this.def.building.soundDoorOpenManual.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
             if (pawn.Faction == Faction.OfPlayer)
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockBreached"), this, MessageTypeDefOf.PositiveEvent);
-            this.TakeDamage(new DamageInfo(DamageDefOf.Cut, 200));
+            this.TakeDamage(new DamageInfo(DamageDefOf.Cut,200));
         }
-
-        public override bool PawnCanOpen(Pawn p)
+		public override bool PawnCanOpen(Pawn p)
         {
-            if (p.RaceProps.FenceBlocked && p.RaceProps.Roamer && p.CurJobDef != JobDefOf.FollowRoper)
-            {
-                return false;
-            }
-
-            // enemy pawns can pass through their doors if outside or with EVA when player is present
+            if (p.RaceProps.FenceBlocked && p.RaceProps.Roamer && p.CurJobDef != JobDefOf.FollowRoper) return false;
+            //enemy pawns can pass through their doors if outside or with EVA when player is present
             if (p.Map.IsSpace() && p.Faction != Faction.OfPlayer && this.Outerdoor())
             {
-                if (ShipInteriorMod2.ExposedToOutside(p.GetRoom()) ||
-                    (ShipInteriorMod2.GetPawnSpaceModifiersModifiers(p).CanSurviveVacuum && (!this.mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned))) { }
-                else
-                {
-                    return false;
-                }
+                if (ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (ShipInteriorMod2.EVAlevel(p)>3 && (!mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned))) { }
+                else return false;
             }
-
             Lord lord = p.GetLord();
             return base.PawnCanOpen(p) && ((lord != null && lord.LordJob != null && lord.LordJob.CanOpenAnyDoor(p)) || WildManUtility.WildManShouldReachOutsideNow(p) || base.Faction == null || (p.guest != null && p.guest.Released) || GenAI.MachinesLike(base.Faction, p));
         }
-
         public bool Outerdoor()
         {
             foreach (IntVec3 pos in GenAdj.CellsAdjacentCardinal(this))

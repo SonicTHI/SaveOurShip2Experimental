@@ -1355,20 +1355,13 @@ namespace RimWorld
                 Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + ship.Index + ", area: " + ship.Area.Count + ", bldgs: " + ship.BuildingCount + ", cores: " + ship.Bridges.Count);
             }
         }
-        public void RemoveShipAndArea(int index)
+        public void RemoveShipFromCache(int index)
         {
-            SoShipCache ship = ShipsOnMapNew[index];
-            foreach (IntVec3 vec in ship.Area)
-            {
-                MapShipCells.Remove(vec);
-            }
-            RemoveShip(index);
-        }
-        public void RemoveShip(int index)
-        {
-            Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + index + " Removed from cache.");
             if (ShipsOnMapNew.ContainsKey(index))
+            {
+                Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + index + " Removed from cache.");
                 ShipsOnMapNew.Remove(index);
+            }
         }
         public void SpawnGraveyard() //if not present, create a graveyard
         {

@@ -26,7 +26,7 @@ namespace RimWorld
             }
         }*/
 
-        public override void ProcessInput(Event ev)
+        public override void ProcessInput(Event ev) //td change to pass vec, change area attached
         {
             Building b=null;
             base.ProcessInput(ev);
@@ -42,14 +42,14 @@ namespace RimWorld
 
         public void AfterTarget(Building b)
         {
-            if (IntVec3.Zero.GetTerrain(b.Map) != ResourceBank.TerrainDefOf.EmptySpace) //moon
+            if (b == null && IntVec3.Zero.GetTerrain(b.Map) != ResourceBank.TerrainDefOf.EmptySpace) //moon
                 return;
-            List<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true).ToList();
-            if (positions.Contains(position) || positions.NullOrEmpty())
+            HashSet<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true);
+            if (positions.Contains(position) || !positions.Any())
                 return;
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ShipSalvageAbandonConfirm"), delegate
             {
-                ShipInteriorMod2.RemoveShip(positions, targetMap, false);
+                ShipInteriorMod2.RemoveShip(null, false, positions, targetMap);
             }));
         }
     }

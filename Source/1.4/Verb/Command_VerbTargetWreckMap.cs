@@ -66,6 +66,7 @@ namespace RimWorld
             else //legacy move for rocks, etc //td rework
                 MoveShipSketch(b, sourceMap, rotb, true, bMax, false);
         }
+        //legacy move system that can work with rocks
         public Sketch GenerateShipSketch(HashSet<IntVec3> positions, Map map, IntVec3 lowestCorner, byte rotb = 0)
         {
             Sketch sketch = new Sketch();
@@ -95,7 +96,7 @@ namespace RimWorld
             if (b is Building_ShipBridge bridge)
                 cachedParts = bridge.Ship.Buildings.ToList();
             else
-                cachedParts = ShipInteriorMod2.FindBuildingsAttached(b, includeRock);
+                cachedParts = FindBuildingsAttached(b, includeRock);
 
             IntVec3 lowestCorner = new IntVec3(int.MaxValue, 0, int.MaxValue);
             HashSet<IntVec3> positions = new HashSet<IntVec3>();
@@ -149,6 +150,38 @@ namespace RimWorld
             if (Find.TickManager.Paused)
                 Find.TickManager.TogglePaused();
             InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
+        }
+        public List<Building> FindBuildingsAttached(Building root, bool includeRock = false)
+        {
+            if (root == null || root.Destroyed)
+                return new List<Building>();
+
+            var map = root.Map;
+            var containedBuildings = new HashSet<Building>();
+            var cellsTodo = new HashSet<IntVec3>();
+            var cellsDone = new HashSet<IntVec3>();
+            cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
+            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
+            while (cellsTodo.Count > 0)
+            {
+                var current = cellsTodo.First();
+                cellsTodo.Remove(current);
+                cellsDone.Add(current);
+                var containedThings = current.GetThingList(map);
+                if (containedThings.Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))))
+                {
+                    foreach (var t in containedThings)
+                    {
+                        if (t is Building b)
+                        {
+                            containedBuildings.Add(b);
+                            if (b.def.building.shipPart)
+                                cellsTodo.AddRange(GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b)).Where(v => !cellsDone.Contains(v)));
+                        }
+                    }
+                }
+            }
+            return containedBuildings.ToList();
         }
     }
 }

@@ -420,7 +420,7 @@ namespace RimWorld
             {
                 if (engine.CanFire(new Rot4(mapComp.EngineRot)))
                 {
-                    if (engine.On())
+                    if (engine.OnOld())
                     {
                         enginePower += engine.Thrust;
                     }
@@ -869,23 +869,27 @@ namespace RimWorld
         //detach
         public void Tick()
         {
+            /*if (AreaDestroyed.Any())
+            {
+                AreaDestroyed.OrderBy(v => mapComp.MapShipCells[v].Item2); //reorder by corepath, closest check first
+                //CheckForDetach(); //enable for nic
+            }*/
             /*foreach (DetachedShipPart part in DetachedShipParts)
             {
                 part.SpawnSetup(Map, false);
             }
             DetachedShipParts.Clear();*/
-            /*if (DetachCheck)
-            {
-                CheckForDetach();
-                DetachCheck = false;
-            }*/
         }
         public bool CheckForDetach() //finds all shipcells around detached and for each tries to path back to first with lower index, if not possible, detaches all in set
         {
-            /*string str = map + " Ship " + Index + " CheckForDetach, Area " + AreaDestroyed.Count + " cells: ";
-            foreach (IntVec3 vec in AreaDestroyed)
-                str += vec;
-            Log.Message(str);*/
+            /*if (AreaDestroyed.Count > 1)
+            {
+                string str2 = map + " Ship " + Index + " CheckForDetach, Check: " + AreaDestroyed.Count + " cells: ";
+                foreach (IntVec3 vec in AreaDestroyed)
+                    str2 += mapComp.MapShipCells[vec].Item2;
+                Log.Message(str2);
+                Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+            }*/
             if (AreaDestroyed.Any())
             {
                 HashSet<IntVec3> initialCells = new HashSet<IntVec3>(); //cells to start checks from
@@ -1045,6 +1049,7 @@ namespace RimWorld
 
             foreach (IntVec3 vec in detachArea)
             {
+                mapComp.MapShipCells.Remove(vec);
                 //Log.Message("Detaching location " + at);
                 foreach (Thing t in vec.GetThingList(Map).Where(t => t.def.destroyable && !t.Destroyed))
                 {
@@ -1113,7 +1118,6 @@ namespace RimWorld
             }
             foreach (IntVec3 c in detachArea)
             {
-                mapComp.MapShipCells.Remove(c);
                 Map.terrainGrid.RemoveTopLayer(c, false);
                 Map.roofGrid.SetRoof(c, null);
             }

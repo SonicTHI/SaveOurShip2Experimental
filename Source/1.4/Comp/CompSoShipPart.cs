@@ -235,7 +235,7 @@ namespace RimWorld
                         if (!ship.LastBridgeDied)
                         {
                             ship.AreaDestroyed.Add(vec);
-                            ship.CheckForDetach();
+                            ship.CheckForDetach(); //rem for nic
                         }
                     }
                 }

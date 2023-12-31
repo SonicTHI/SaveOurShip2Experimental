@@ -21,7 +21,7 @@ namespace RimWorld
         private static Vector3[] offsetE = { new Vector3(0, 0, -9.2f), new Vector3(-9.2f, 0, 0), new Vector3(0, 0, 9.2f), new Vector3(9.2f, 0, 0) };
         public static IntVec2[] killOffset = { new IntVec2(0, -6), new IntVec2(-6, 0), new IntVec2(0, 4), new IntVec2(4, 0) };
         public static IntVec2[] killOffsetL = { new IntVec2(0, -13), new IntVec2(-13, 0), new IntVec2(0, 7), new IntVec2(7, 0) };
-		public CompProperties_EngineTrail Props
+		public virtual CompProperties_EngineTrail Props
         {
             get { return props as CompProperties_EngineTrail; }
         }
@@ -83,20 +83,28 @@ namespace RimWorld
             }
             return false;
         }
-        public bool On()
+        public void On()
+        {
+            if (Props.energy)
+            {
+                powerComp.PowerOutput = -2000 * Thrust;
+            }
+            active = true;
+        }
+        public bool OnOld()
         {
             if (Props.reactionless)
             {
                 active = true;
                 return true;
             }
-            else if (Props.energy)
+            if (Props.energy)
             {
                 powerComp.PowerOutput = -2000 * Thrust;
                 active = true;
                 return true;
             }
-            else if (refuelComp.Fuel > Props.fuelUse)
+            if (refuelComp.Fuel > Props.fuelUse)
             {
                 active = true;
                 return true;
@@ -189,12 +197,28 @@ namespace RimWorld
         public override void CompTick()
         {
             base.CompTick();
-            if (active && !Props.reactionless) //destroy stuff in plume
+            if (active)
             {
-                if (refuelComp != null && Find.TickManager.TicksGame % 60 == 0)
+                if (Find.TickManager.TicksGame % 60 == 0)
                 {
-                    refuelComp.ConsumeFuel(Props.fuelUse);
+                    if (!flickComp.SwitchIsOn || !powerComp.PowerOn)
+                    {
+                        active = false;
+                        return;
+                    }
+                    if (refuelComp != null)
+                    {
+                        if (refuelComp.Fuel > Props.fuelUse)
+                        {
+                            active = false;
+                            return;
+                        }
+                        refuelComp.ConsumeFuel(Props.fuelUse);
+                    }
                 }
+                if (Props.reactionless)
+                    return;
+                //destroy stuff in plume
                 HashSet<Thing> toBurn = new HashSet<Thing>();
                 foreach (IntVec3 cell in ExhaustArea)
                 {

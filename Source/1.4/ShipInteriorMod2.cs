@@ -103,7 +103,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V96";
+        public static readonly string SOS2EXPversion = "V96f1";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1593,67 +1593,7 @@ namespace SaveOurShip2
 			border.Add(new IntVec3(pos.z, 0, pos.x * -1));
 			border.Add(new IntVec3(pos.z * -1, 0, pos.x * -1));
 		}
-		public static List<Building> FindBuildingsAttached(Building root, bool includeRock = false)
-		{
-			if (root == null || root.Destroyed)
-				return new List<Building>();
-
-			var map = root.Map;
-			var containedBuildings = new HashSet<Building>();
-			var cellsTodo = new HashSet<IntVec3>();
-			var cellsDone = new HashSet<IntVec3>();
-			cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
-			cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
-			while (cellsTodo.Count > 0)
-			{
-				var current = cellsTodo.First();
-				cellsTodo.Remove(current);
-				cellsDone.Add(current);
-				var containedThings = current.GetThingList(map);
-				if (containedThings.Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))))
-				{
-					foreach (var t in containedThings)
-					{
-						if (t is Building b)
-						{
-							containedBuildings.Add(b);
-							if (b.def.building.shipPart)
-								cellsTodo.AddRange(GenAdj.CellsOccupiedBy(b).Concat(GenAdj.CellsAdjacentCardinal(b)).Where(v => !cellsDone.Contains(v)));
-						}
-					}
-				}
-			}
-			return containedBuildings.ToList();
-		}
-		public static HashSet<IntVec3> FindAreaAttached(Building root, bool includeRock = false)
-		{
-			if (root == null || root.Destroyed)
-				return new HashSet<IntVec3>();
-
-			var map = root.Map;
-			var cellsTodo = new HashSet<IntVec3>();
-			var cellsDone = new HashSet<IntVec3>();
-			var cellsFound = new HashSet<IntVec3>();
-			cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
-			cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
-			while (cellsTodo.Count > 0)
-			{
-				var current = cellsTodo.First();
-				cellsTodo.Remove(current);
-				cellsDone.Add(current);
-				if (current.GetThingList(map).Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))) || (includeRock && IsRock(current.GetTerrain(map))))
-				{
-					cellsFound.Add(current);
-					cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v)));
-				}
-			}
-			return cellsFound;
-		}
-		public static HashSet<IntVec3> FindAreaAttachedNew(Building root, bool includeRock = false)
-		{
-			var cells = root.Map.GetComponent<ShipHeatMapComp>().MapShipCells;
-			return cells.Keys.Where(v => cells[v].Item1 == cells[root.Position].Item1).ToHashSet();
-		}
+		
 		public class TimeHelper
 		{
 			private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
@@ -1764,7 +1704,7 @@ namespace SaveOurShip2
                     }
                     buildingsDestroyed.Clear();
                 }
-                sourceMapComp.RemoveShip(shipIndex);
+                sourceMapComp.RemoveShipFromCache(shipIndex);
             }
             //Log.Message("Area: " + ship.Area.Count);
             if (adjustment != IntVec3.Zero)
@@ -2185,11 +2125,15 @@ namespace SaveOurShip2
 
             }
         }
-		public static void SaveShip(Building core, string file)
+		public static void SaveShip(Building_ShipBridge core, string file)
 		{
 			List<Thing> toSave = new List<Thing>();
 			List<Zone> zones = new List<Zone>();
-			HashSet<IntVec3> area = FindAreaAttached(core, false);
+
+            Map map = core.Map;
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+            var ship = mapComp.ShipsOnMapNew[core.ShipIndex];
+            HashSet<IntVec3> area = ship.Area;
 
 			HashSet<Ideo> ideosAboardShip = new HashSet<Ideo>();
 			HashSet<CustomXenotype> xenosAboardShip = new HashSet<CustomXenotype>();
@@ -2198,7 +2142,6 @@ namespace SaveOurShip2
 			List<RoofDef> roofDefs = new List<RoofDef>();
 			List<IntVec3> terrainPos = new List<IntVec3>();
 			List<TerrainDef> terrainDefs = new List<TerrainDef>();
-			Map map = core.Map;
 
 			foreach (IntVec3 pos in area)
 			{
@@ -2350,7 +2293,7 @@ namespace SaveOurShip2
 
 			GameVictoryUtility.ShowCredits(GameVictoryUtility.MakeEndCredits("GameOverShipPlanetLeaveIntro".Translate(), "GameOverShipPlanetLeaveEnding".Translate(), stringBuilder.ToString(), "GameOverColonistsEscaped", null), null, false, 5f);
 
-			RemoveShip(area.ToList(), map, true);
+			RemoveShip(core, true);
 		}
         public static void SaveShipToFile(Building_ShipBridge bridge)
         {
@@ -2422,25 +2365,37 @@ namespace SaveOurShip2
             Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * years);
             Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);*/
         }
-        public static void RemoveShip(List<IntVec3> area, Map map, bool planetTravel)
+		public static void RemoveShip(Building core, bool planetTravel = false, HashSet<IntVec3> area = null, Map map = null)
         {
+			if (core != null)
+            {
+                map = core.Map;
+            }
             var mapComp = map.GetComponent<ShipHeatMapComp>();
+			int index = -1;
+            if (core != null)
+            {
+                index = mapComp.ShipIndexOnVec(core.Position);
+                if (index != -1)
+                {
+                    var ship = mapComp.ShipsOnMapNew[index];
+                    area = ship.Area;
+                    mapComp.RemoveShipFromCache(index);
+                }
+            }
             AirlockBugFlag = true;
-            mapComp.RemoveShipAndArea(mapComp.MapShipCells[area.First()].Item1);
-			List<Thing> things = new List<Thing>();
-			List<Zone> zones = new List<Zone>();
-			foreach (IntVec3 pos in area)
-			{
-				//remove from cache
+            List<Thing> things = new List<Thing>();
+            List<Zone> zones = new List<Zone>();
+            foreach (IntVec3 pos in area)
+            {
                 mapComp.MapShipCells.Remove(pos);
-				map.roofGrid.SetRoof(pos, null);
-				things.AddRange(pos.GetThingList(map));
+                things.AddRange(pos.GetThingList(map));
 				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))
 				{
 					zones.Add(map.zoneManager.ZoneAt(pos));
 				}
 			}
-			foreach (Thing t in things)
+            foreach (Thing t in things)
 			{
 				try
 				{
@@ -2462,9 +2417,14 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in area)
 			{
 				map.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
-			}
+                map.roofGrid.SetRoof(pos, null);
+            }
 			AirlockBugFlag = false;
 
+            if (index != -1)
+            {
+                mapComp.RemoveShipFromCache(index);
+            }
             //regen affected map layers
             List<Section> sourceSec = new List<Section>();
 			if (zones.Any())
@@ -2507,8 +2467,32 @@ namespace SaveOurShip2
 				}
 			}
 			map.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
-		}
-		public static bool CompatibleWithShipLoad(ScenPart item)
+        }
+        public static HashSet<IntVec3> FindAreaAttached(Building root, bool includeRock = false)
+        {
+            if (root == null || root.Destroyed)
+                return new HashSet<IntVec3>();
+
+            var map = root.Map;
+            var cellsTodo = new HashSet<IntVec3>();
+            var cellsDone = new HashSet<IntVec3>();
+            var cellsFound = new HashSet<IntVec3>();
+            cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
+            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
+            while (cellsTodo.Count > 0)
+            {
+                var current = cellsTodo.First();
+                cellsTodo.Remove(current);
+                cellsDone.Add(current);
+                if (current.GetThingList(map).Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))) || (includeRock && IsRock(current.GetTerrain(map))))
+                {
+                    cellsFound.Add(current);
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v)));
+                }
+            }
+            return cellsFound;
+        }
+        public static bool CompatibleWithShipLoad(ScenPart item)
 		{
 			return !(item is ScenPart_PlayerFaction || item is ScenPart_PlayerPawnsArriveMethod || item is ScenPart_ScatterThings || item is ScenPart_Naked || item is ScenPart_NoPossessions || item is ScenPart_GameStartDialog || item is ScenPart_AfterlifeVault || item is ScenPart_SetNeedLevel || item is ScenPart_StartingAnimal || item is ScenPart_StartingMech || item is ScenPart_StartingResearch || item is ScenPart_StartingThing_Defined || item is ScenPart_StartInSpace || item is ScenPart_ThingCount || item is ScenPart_ConfigPage_ConfigureStartingPawnsBase);
 		}

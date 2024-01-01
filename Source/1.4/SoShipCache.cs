@@ -791,12 +791,13 @@ namespace RimWorld
         {
             //if (CoreIsfucked)
             //    return false;
-            if (Bridges.Any(b => b != Core && !b.Destroyed))
+            List<Building_ShipBridge> bridges = Bridges.Where(b => b != Core && !b.Destroyed).ToList();
+            if (bridges.Any())
             {
                 //core died but replacer exists
                 Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Replaced primary bridge.");
 
-                Core = BestCoreReplacer();
+                Core = BestCoreReplacer(bridges);
                 RebuildCorePath();
                 return true;
             }
@@ -819,13 +820,14 @@ namespace RimWorld
             }
             return false;
         }
-        private Building_ShipBridge BestCoreReplacer() //non core, non estroyed bridge closeset to engines
+        private Building_ShipBridge BestCoreReplacer(List<Building_ShipBridge> bridges)
         {
-            if (Engines.NullOrEmpty())
-                return Bridges.First(b => b != Core && !b.Destroyed);
+            //non core, non destroyed bridge closeset to engines
+            if (Engines.NullOrEmpty() || bridges.Count() == 1)
+                return bridges.First();
             IntVec3 closest = Map.Size;
             Building_ShipBridge best = null;
-            foreach (Building_ShipBridge b in Bridges.Where(b => b != Core && !b.Destroyed))
+            foreach (Building_ShipBridge b in bridges)
             {
                 if (closest.LengthManhattan > (b.Position - Engines.First().parent.Position).LengthManhattan)
                     best = b;

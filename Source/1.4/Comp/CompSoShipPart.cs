@@ -25,7 +25,7 @@ namespace RimWorld
         //SoShipPart props mechanoid, archotech, wreckage, foam: override for plating/roof type
 
         //toggles
-        //CacheOff: set on map load to not cause massive joining calcs, proper parts assign to cellsunder, after that map is cached
+        //CacheOff: set on map load to not cause massive joining calcs, proper parts assign to MapShipCells, after that map is cached
         //AirlockBugFlag: set on ship move/remove, when removing things in bulk caches are copied over or deleted
 
         //roof textures

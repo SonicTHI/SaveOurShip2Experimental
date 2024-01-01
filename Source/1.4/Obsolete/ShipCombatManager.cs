@@ -1,4 +1,4 @@
-﻿using RimWorld.Planet;
+using RimWorld.Planet;
 using SaveOurShip2;
 using System;
 using System.Collections.Generic;
@@ -87,7 +87,7 @@ namespace RimWorld
             }
             else if(thing is Pawn)
             {
-                if (ShipInteriorMod2.EVAlevel((Pawn)thing)<3)
+                if (!ShipInteriorMod2.GetPawnSpaceModifiersModifiers((Pawn)thing).CanSurviveVacuum)
                     HealthUtility.DamageUntilDead((Pawn)thing);
                 else
                     HealthUtility.DamageUntilDowned((Pawn)thing);

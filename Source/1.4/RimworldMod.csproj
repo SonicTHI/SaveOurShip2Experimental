@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CachedPawnSpaceModifiers.cs" />
     <Compile Include="Alert_ArchotechSporeMoodLow.cs" />
     <Compile Include="Alert_MechanitesInHomeArea.cs" />
     <Compile Include="ApparelHolographic.cs" />
@@ -217,8 +218,6 @@
     <Compile Include="Comp\CompTargetEffect_RepairItem.cs" />
     <Compile Include="Comp\CompUseEffect_WeatherCancel.cs" />
     <Compile Include="Comp\CompShipBluePrint.cs" />
-    <Compile Include="Comp\HediffComp_Bubble.cs" />
-    <Compile Include="CompProps\HediffCompProperties_Bubble.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_ShipBlueprint.cs" />
     <Compile Include="SoShipCache.cs" />
     <Compile Include="DamageWorker_Mechanite.cs" />
@@ -408,6 +407,7 @@
     <Compile Include="Verb\Command_VerbTargetWreck.cs" />
     <Compile Include="Verb\Command_VerbTargetShip.cs" />
     <Compile Include="Verb\Verb_LaunchProjectileShip.cs" />
+    <Compile Include="Verb\Verb_SpaceBubblePop.cs" />
     <Compile Include="Jobs\WorkGiver_FightMechanites.cs" />
     <Compile Include="Jobs\WorkGiver_InstallConsciousness.cs" />
     <Compile Include="Jobs\WorkGiver_LoadTorpedoTube.cs" />

@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <ThingDef ParentName="BaseInsect" Name="ArchoInsectThingBase" Abstract="True">
+    <devNote>insect</devNote>
+    <statBases>
+      <ToxicResistance>1</ToxicResistance>
+      <ToxicEnvironmentResistance MayRequire="Ludeon.RimWorld.Biotech">0.8</ToxicEnvironmentResistance>
+      <MarketValue>1000</MarketValue>
+      <ComfyTemperatureMin>-100</ComfyTemperatureMin>
+      <ComfyTemperatureMax>100</ComfyTemperatureMax>
+      <HypoxiaResistance>1</HypoxiaResistance>
+      <DecompressionResistance>1</DecompressionResistance>
+      <LeatherAmount>0</LeatherAmount>
+    </statBases>
+    <race>
+      <fleshType>Insectoid</fleshType>
+      <bloodDef>Filth_BloodInsect</bloodDef>
+      <useMeatFrom>Megaspider</useMeatFrom>
+      <foodType>OmnivoreAnimal, AnimalProduct</foodType>
+      <manhunterOnDamageChance>0.50</manhunterOnDamageChance>
+      <baseHungerRate>0.01</baseHungerRate>
+      <lifeExpectancy>5000</lifeExpectancy>
+      <herdMigrationAllowed>false</herdMigrationAllowed>
+    </race>
+    <ingredient>
+      <mergeCompatibilityTags>
+        <li MayRequire="Ludeon.RimWorld.Ideology">InsectMeat</li>
+      </mergeCompatibilityTags>
+    </ingredient>
+    <receivesSignals>true</receivesSignals>
+    <comps>
+      <li Class="CompProperties_CanBeDormant" />
+      <li Class="CompProperties_WakeUpDormant">
+        <wakeUpOnDamage>true</wakeUpOnDamage>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <!--===============================================-->
+
+  <!-- Archospider -->
+  <ThingDef ParentName="ArchoInsectThingBase">
+    <defName>Archospider</defName>
+    <label>archospider</label>
+    <description>Perhaps your archotech spore hates arachnophobes. There are few other excuses for creating this monstrous life-form - a spider with tank-like armor, jaws capable of shearing plasteel, and a breeding rate that threatens to quickly overwhelm a planet's ecosystem. At least it is unfailingly loyal to its masters... so far.\n\nLike all archolife, its cells power themselves vanometrically and it absorbs atoms directly from the air, so it does not need to eat. Archolife can survive vacuum exposure, has no known maximum age, and regenerates scarred or missing body parts. It can even generate a shield in combat.</description>
+    <statBases>
+      <MoveSpeed>5</MoveSpeed>
+      <ArmorRating_Blunt>0.25</ArmorRating_Blunt>
+      <ArmorRating_Sharp>0.4</ArmorRating_Sharp>
+    </statBases>
+    <uiIconScale>1.15</uiIconScale>
+    <race>
+      <body>BeetleLikeWithClaw</body>
+      <baseBodySize>1.2</baseBodySize>
+      <baseHealthScale>4</baseHealthScale>
+      <gestationPeriodDays>12</gestationPeriodDays>
+      <wildness>0.25</wildness>
+      <trainability>Advanced</trainability>
+      <lifeStageAges>
+        <li>
+          <def>EusocialInsectLarva</def>
+          <minAge>0</minAge>
+        </li>
+        <li>
+          <def>EusocialInsectJuvenile</def>
+          <minAge>0.03</minAge>
+        </li>
+        <li>
+          <def>EusocialInsectAdult</def>
+          <minAge>0.2</minAge>
+          <soundWounded>Pawn_BigInsect_Pain</soundWounded>
+          <soundDeath>Pawn_BigInsect_Death</soundDeath>
+          <soundCall>Pawn_BigInsect_Call</soundCall>
+          <soundAngry>Pawn_BigInsect_Angry</soundAngry>
+        </li>
+      </lifeStageAges>
+      <soundMeleeHitPawn>Pawn_Melee_BigBash_HitPawn</soundMeleeHitPawn>
+      <soundMeleeHitBuilding>Pawn_Melee_BigBash_HitBuilding</soundMeleeHitBuilding>
+      <soundMeleeMiss>Pawn_Melee_BigBash_Miss</soundMeleeMiss>
+    </race>
+    <tradeTags>
+      <li>AnimalInsectSpace</li>
+      <li>AnimalInsect</li>
+      <li>AnimalExotic</li>
+    </tradeTags>
+    <tools>
+      <li>
+        <label>head claw</label>
+        <capacities>
+          <li>Cut</li>
+        </capacities>
+        <power>15</power>
+        <cooldownTime>2.6</cooldownTime>
+        <linkedBodyPartsGroup>HeadClaw</linkedBodyPartsGroup>
+      </li>
+      <li>
+        <label>head</label>
+        <capacities>
+          <li>Blunt</li>
+        </capacities>
+        <power>10</power>
+        <cooldownTime>2</cooldownTime>
+        <linkedBodyPartsGroup>HeadAttackTool</linkedBodyPartsGroup>
+        <ensureLinkedBodyPartsGroupAlwaysUsable>true</ensureLinkedBodyPartsGroupAlwaysUsable>
+        <chanceFactor>0.2</chanceFactor>
+      </li>
+    </tools>
+    <comps>
+      <li Class="CompProperties_Archolife">
+        <shield>2</shield>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <PawnKindDef ParentName="ArchoAnimalKindBase">
+    <defName>Archospider</defName>
+    <label>archospider</label>
+    <race>Archospider</race>
+    <combatPower>200</combatPower>
+    <ecoSystemWeight>0.50</ecoSystemWeight>
+    <lifeStages>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Archospider</texPath>
+          <drawSize>1.2</drawSize>
+          <color>(154,125,94)</color>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Megaspider/Dessicated_Megaspider</texPath>
+          <drawSize>1.2</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Archospider</texPath>
+          <drawSize>1.6</drawSize>
+          <color>(154,125,94)</color>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Megaspider/Dessicated_Megaspider</texPath>
+          <drawSize>1.6</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+      <li>
+        <bodyGraphicData>
+          <texPath>Things/Pawn/Animal/Archospider</texPath>
+          <drawSize>2.5</drawSize>
+          <color>(154,125,94)</color>
+          <shadowData>
+            <volume>(0.5, 0.7, 0.43)</volume>
+            <offset>(0,0,-0.1)</offset>
+          </shadowData>
+        </bodyGraphicData>
+        <dessicatedBodyGraphicData>
+          <texPath>Things/Pawn/Animal/Megaspider/Dessicated_Megaspider</texPath>
+          <drawSize>2.5</drawSize>
+        </dessicatedBodyGraphicData>
+      </li>
+    </lifeStages>
+  </PawnKindDef>
+</Defs>

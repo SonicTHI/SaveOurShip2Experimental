@@ -30,6 +30,8 @@
 		<equippedStatOffsets>
 			<MoveSpeed>-0.25</MoveSpeed>
 			<WorkSpeedGlobal>-0.075</WorkSpeedGlobal>
+			<DecompressionResistance>0.75</DecompressionResistance>
+			<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 		</equippedStatOffsets>
 		<thingCategories>
 			<li>ApparelArmor</li>
@@ -63,10 +65,10 @@
 				<li>Spacer</li>
 				<li>EVA</li>
 			</tags>
-			<defaultOutfitTags>
-      </defaultOutfitTags>
+			<defaultOutfitTags />
 		</apparel>
 	</ThingDef>
+
 	<ThingDef ParentName="ArmorMachineableBase">
 		<defName>Apparel_SpaceSuitBodyChild</defName>
 		<label>kid EVA suit</label>
@@ -97,6 +99,8 @@
 		<equippedStatOffsets>
 			<MoveSpeed>-0.25</MoveSpeed>
 			<WorkSpeedGlobal>-0.075</WorkSpeedGlobal>
+			<DecompressionResistance>0.75</DecompressionResistance>
+			<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 		</equippedStatOffsets>
 		<thingCategories>
 			<li>ApparelArmor</li>
@@ -121,8 +125,8 @@
 				<li>Feet</li>
 			</bodyPartGroups>
 			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/EVA/KidEVA</wornGraphicPath>
-		    <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
-		    <developmentalStageFilter>Child</developmentalStageFilter>
+			<canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+			<developmentalStageFilter>Child</developmentalStageFilter>
 			<useWornGraphicMask>true</useWornGraphicMask>
 			<layers>
 				<li>Middle</li>
@@ -132,10 +136,10 @@
 				<li>Spacer</li>
 				<li>EVA</li>
 			</tags>
-			<defaultOutfitTags>
-      </defaultOutfitTags>
+			<defaultOutfitTags />
 		</apparel>
 	</ThingDef>
+
 	<ThingDef ParentName="HatMakeableBase">
 		<defName>Apparel_SpaceSuitHelmet</defName>
 		<label>EVA helmet</label>
@@ -166,7 +170,9 @@
 		<equippedStatOffsets>
 			<MoveSpeed>-0.04</MoveSpeed>
 			<ToxicResistance>0.5</ToxicResistance>
-            <ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
+			<ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
+			<HypoxiaResistance>1</HypoxiaResistance>
+			<DecompressionResistance>0.25</DecompressionResistance>
 		</equippedStatOffsets>
 		<thingCategories>
 			<li>ArmorHeadgear</li>
@@ -190,10 +196,10 @@
 				<li>Spacer</li>
 				<li>EVA</li>
 			</tags>
-			<defaultOutfitTags>
-      </defaultOutfitTags>
+			<defaultOutfitTags />
 		</apparel>
 	</ThingDef>
+
 	<ThingDef ParentName="HatMakeableBase">
 		<defName>Apparel_SpaceSuitHelmetChild</defName>
 		<label>kid EVA helmet</label>
@@ -224,7 +230,9 @@
 		<equippedStatOffsets>
 			<MoveSpeed>-0.04</MoveSpeed>
 			<ToxicResistance>0.5</ToxicResistance>
-            <ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
+			<ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
+			<HypoxiaResistance>1</HypoxiaResistance>
+			<DecompressionResistance>0.25</DecompressionResistance>
 		</equippedStatOffsets>
 		<thingCategories>
 			<li>ArmorHeadgear</li>
@@ -240,8 +248,8 @@
 				<li>FullHead</li>
 			</bodyPartGroups>
 			<wornGraphicPath>Things/Pawn/Humanlike/Apparel/EVA/KidHelmetEVA</wornGraphicPath>
-		    <canBeDesiredForIdeo>false</canBeDesiredForIdeo>
-		    <developmentalStageFilter>Child</developmentalStageFilter>
+			<canBeDesiredForIdeo>false</canBeDesiredForIdeo>
+			<developmentalStageFilter>Child</developmentalStageFilter>
 			<useWornGraphicMask>true</useWornGraphicMask>
 			<layers>
 				<li>Overhead</li>
@@ -250,10 +258,10 @@
 				<li>Spacer</li>
 				<li>EVA</li>
 			</tags>
-			<defaultOutfitTags>
-      </defaultOutfitTags>
+			<defaultOutfitTags />
 		</apparel>
 	</ThingDef>
+
 	<ThingDef ParentName="ArmorMachineableBase">
 		<defName>Apparel_SpaceSuitBodyHeavy</defName>
 		<label>heavy EVA suit</label>
@@ -287,6 +295,8 @@
 		<equippedStatOffsets>
 			<MoveSpeed>-0.4</MoveSpeed>
 			<WorkSpeedGlobal>-0.1</WorkSpeedGlobal>
+			<DecompressionResistance>0.75</DecompressionResistance>
+			<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 		</equippedStatOffsets>
 		<thingCategories>
 			<li>ApparelArmor</li>
@@ -316,8 +326,7 @@
 				<li>Spacer</li>
 				<li>EVA</li>
 			</tags>
-			<defaultOutfitTags>
-      </defaultOutfitTags>
+			<defaultOutfitTags />
 		</apparel>
 		<colorGenerator Class="ColorGenerator_Options">
 			<options>
@@ -341,6 +350,7 @@
 			</options>
 		</colorGenerator>
 	</ThingDef>
+
 	<ThingDef ParentName="ArmorHelmetMakeableBase">
 		<defName>Apparel_SpaceSuitHelmetHeavy</defName>
 		<label>Heavy EVA helmet</label>
@@ -376,7 +386,9 @@
 		<equippedStatOffsets>
 			<MoveSpeed>-0.04</MoveSpeed>
 			<ToxicResistance>0.5</ToxicResistance>
-            <ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
+			<ToxicEnvironmentResistance>1.0</ToxicEnvironmentResistance>
+			<HypoxiaResistance>1</HypoxiaResistance>
+			<DecompressionResistance>0.25</DecompressionResistance>
 		</equippedStatOffsets>
 		<costList>
 			<ComponentSpacer>2</ComponentSpacer>
@@ -397,10 +409,10 @@
 				<li>Spacer</li>
 				<li>EVA</li>
 			</tags>
-			<defaultOutfitTags>
-      </defaultOutfitTags>
+			<defaultOutfitTags />
 		</apparel>
 	</ThingDef>
+
 	<ThingDef ParentName="ApparelBase">
 		<defName>Apparel_SpaceSurvivalBelt</defName>
 		<label>survival belt</label>
@@ -420,6 +432,21 @@
 		</statBases>
 		<thingSetMakerTags>
 		</thingSetMakerTags>
+		<comps>
+			<li Class="CompProperties_Reloadable">
+				<maxCharges>1</maxCharges>
+			</li>
+		</comps>
+		<verbs>
+			<li>
+				<verbClass>Verb_SpaceBubblePop</verbClass>
+				<label>space bubble</label>
+				<violent>false</violent>
+				<hasStandardCommand>true</hasStandardCommand>
+				<targetable>false</targetable>
+				<nonInterruptingSelfCast>true</nonInterruptingSelfCast>
+			</li>
+		</verbs>
 		<costList>
 			<ComponentIndustrial>2</ComponentIndustrial>
 			<Steel>20</Steel>
@@ -439,10 +466,11 @@
 			</skillRequirements>
 		</recipeMaker>
 		<thingCategories>
-			<li>ApparelArmor</li>
+			<li>ApparelUtility</li>
 		</thingCategories>
 		<apparel>
 			<careIfWornByCorpse>false</careIfWornByCorpse>
+			<careIfDamaged>false</careIfDamaged>
 			<bodyPartGroups>
 				<li>Waist</li>
 			</bodyPartGroups>
@@ -454,6 +482,7 @@
 			</tags>
 		</apparel>
 	</ThingDef>
+
 	<ThingDef ParentName="ApparelBase">
 		<defName>Apparel_SpaceSurvivalBeltDummy</defName>
 		<thingClass>ApparelSpaceBelt</thingClass>

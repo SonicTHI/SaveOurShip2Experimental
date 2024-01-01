@@ -11,8 +11,10 @@ namespace RimWorld
 {
     public class WeatherEvent_VacuumDamage : WeatherEvent
     {
-        public override bool Expired {
-            get {
+        public override bool Expired
+        {
+            get
+            {
                 return true;
             }
         }
@@ -22,77 +24,54 @@ namespace RimWorld
         public override void WeatherEventTick()
         {
         }
+
         public override void FireEvent()
         {
             List<Pawn> allPawns = map.mapPawns.AllPawnsSpawned;
-            List<Pawn> pawnsToDamage = new List<Pawn>();
-            List<Pawn> pawnsToSuffocate = new List<Pawn>();
             foreach (Pawn pawn in allPawns.Where(p => !p.Dead))
             {
-                byte eva = ShipInteriorMod2.EVAlevel(pawn);
-                if (eva > 3)
+                CachedPawnSpaceModifiers pawnSpaceModifiers = ShipInteriorMod2.GetPawnSpaceModifiersModifiers(pawn);
+                if (pawnSpaceModifiers.CanSurviveVacuum)
+                {
                     continue;
+                }
+
                 Room room = pawn.Position.GetRoom(map);
+
                 if (ShipInteriorMod2.ExposedToOutside(room))
                 {
-                    RunFromVacuum(pawn);
-                    if (eva == 3)//has inactive bubble
+                    if (ActivateSpaceBubble(pawn))
                     {
-                        eva = ActivateBubble(pawn);
+                        continue;
                     }
-                    else if (eva == 2)//has skin
-                        pawnsToSuffocate.Add(pawn);
-                    else
-                        pawnsToDamage.Add(pawn);
+
+                    RunFromVacuum(pawn);
+                    DoPawnDecompressionDamage(pawn, pawnSpaceModifiers);
+                    DoPawnHypoxiaDamage(pawn, pawnSpaceModifiers, 0.025f);
                 }
-                else if (eva != 1 && !map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) //in ship, no air
+                else if (!map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) // in ship, no air
                 {
-					if (eva == 3)
-					{
-						eva = ActivateBubble(pawn);
-					}
-					else
-						pawnsToSuffocate.Add(pawn);
+                    if (ActivateSpaceBubble(pawn))
+                    {
+                        continue;
+                    }
+
+                    DoPawnHypoxiaDamage(pawn, pawnSpaceModifiers);
                 }
-            }
-            foreach (Pawn thePawn in pawnsToDamage)
-            {
-                if (thePawn.InBed() && thePawn.CurrentBed() is Building_SpaceCrib crib)
-                {
-                    crib.UpdateState(true);
-                    continue;
-                }
-                thePawn.TakeDamage(new DamageInfo(DefDatabase<DamageDef>.GetNamed("VacuumDamage"), 1));
-                HealthUtility.AdjustSeverity(thePawn, ResourceBank.HediffDefOf.SpaceHypoxia, 0.025f);
-            }
-            foreach (Pawn thePawn in pawnsToSuffocate)
-            {
-                if (thePawn.InBed() && thePawn.CurrentBed() is Building_SpaceCrib crib)
-                {
-                    crib.UpdateState(true);
-                    continue;
-                }
-                HealthUtility.AdjustSeverity(thePawn, ResourceBank.HediffDefOf.SpaceHypoxia, 0.0125f);
             }
         }
-        public byte ActivateBubble(Pawn pawn)
+
+        public bool ActivateSpaceBubble(Pawn pawn)
         {
-            foreach (Apparel app in pawn.apparel.WornApparel)
+            Verb verb = pawn?.apparel?.AllApparelVerbs?.FirstOrDefault(a => a is Verb_SpaceBubblePop);
+            if (!verb?.Available() ?? true)
             {
-                if (app.def == ResourceBank.ThingDefOf.Apparel_SpaceSurvivalBelt)
-                {
-                    pawn.health.AddHediff(ResourceBank.HediffDefOf.SpaceBeltBubbleHediff);
-                    pawn.apparel.Remove(app);
-                    pawn.apparel.Wear((Apparel)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Apparel_SpaceSurvivalBeltDummy),
-                        false, true);
-                    GenExplosion.DoExplosion(pawn.Position, pawn.Map, 1, DamageDefOf.Smoke, null, -1, -1f, null, null,
-                        null, null, null, 1f);
-                    ShipInteriorMod2.WorldComp.PawnsInSpaceCache[pawn.thingIDNumber] = 4;
-                    break;
-                }
+                return false;
             }
-            return 4;
+            verb.TryStartCastOn(pawn.Position);
+            return true;
         }
+
         public void RunFromVacuum(Pawn pawn)
         {
             //find first nonvac area and run to it - enemy only
@@ -108,6 +87,29 @@ namespace RimWorld
                 pawn.jobs.StartJob(Flee, JobCondition.InterruptForced);
             }
         }
+
+        public static void DoPawnHypoxiaDamage(Pawn pawn, CachedPawnSpaceModifiers pawnSpaceModifiers, float severity = 0.0125f, float extraFactor = 1.0f)
+        {
+            float pawnResistance = pawnSpaceModifiers?.HypoxiaResistance ?? 0.0f;
+            float serevityMultiplier = Mathf.Max(1.0f - pawnResistance, 0.0f);
+            float severityOffset = severity * serevityMultiplier * extraFactor;
+            if (severityOffset >= 0.0f)
+            {
+                HealthUtility.AdjustSeverity(pawn, ResourceBank.HediffDefOf.SpaceHypoxia, severityOffset);
+            }
+
+        }
+
+        public static void DoPawnDecompressionDamage(Pawn pawn, CachedPawnSpaceModifiers pawnSpaceModifiers, float severity = 1.0f, float extraFactor = 1.0f)
+        {
+            float pawnResistance = pawnSpaceModifiers?.DecompressionResistance ?? 0.0f;
+            float serevityMultiplier = Mathf.Max(1.0f - pawnResistance, 0.0f);
+            float severityOffset = severity * serevityMultiplier * extraFactor;
+            if (severityOffset >= 0.0f)
+            {
+                pawn.TakeDamage(new DamageInfo(DefDatabase<DamageDef>.GetNamed("VacuumDamage"), severityOffset));
+            }
+
+        }
     }
 }
-

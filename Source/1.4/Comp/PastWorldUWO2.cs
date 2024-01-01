@@ -12,12 +12,12 @@ namespace SaveOurShip2
     {
         //private int ShipsHaveInsidesVersion;
         public int PlayerFactionBounty;
-		public List<PreviousWorld> PastWorlds=new List<PreviousWorld>();
+        public List<PreviousWorld> PastWorlds = new List<PreviousWorld>();
         public List<string> Unlocks = new List<string>();
         public bool startedEndgame;
         public bool SoSWin = false;
         public bool renderedThatAlready = false;
-        public Dictionary<int, byte> PawnsInSpaceCache = new Dictionary<int, byte>();
+        public Dictionary<int, CachedPawnSpaceModifiers> PawnsInSpaceCache = new Dictionary<int, CachedPawnSpaceModifiers>();
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
 
         public PastWorldUWO2(World world) : base(world)
@@ -40,8 +40,8 @@ namespace SaveOurShip2
                 Log.Warning("SOS2: Insect faction not found! SOS2 gameplay experience will be affected.");
         }
 
-		public override void ExposeData() {
-			base.ExposeData ();
+        public override void ExposeData() {
+            base.ExposeData ();
             //Scribe_Values.Look<int>(ref ShipsHaveInsidesVersion,"SoSVersion",0);
             Scribe_Collections.Look<string>(ref Unlocks, "Unlocks", LookMode.Value);
             Scribe_Values.Look<int>(ref PlayerFactionBounty, "PlayerFactionBounty", 0);
@@ -109,6 +109,32 @@ namespace SaveOurShip2
             QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("SoSFreeEntanglement"), null, parms),Find.TickManager.TicksGame, Find.TickManager.TicksGame+99999999);
             Find.Storyteller.incidentQueue.Add(qi);
         }*/
-	}
-}
 
+        public CachedPawnSpaceModifiers AddPawnToSpaceCache(Pawn pawn)
+        {
+            CachedPawnSpaceModifiers pawnSpaceModifiers = new CachedPawnSpaceModifiers(pawn);
+            PawnsInSpaceCache[pawn.thingIDNumber] = pawnSpaceModifiers;
+            return pawnSpaceModifiers;
+        }
+
+        public CachedPawnSpaceModifiers GetPawnSpaceModifiersCache(Pawn pawn)
+        {
+            if (PawnsInSpaceCache.ContainsKey(pawn.thingIDNumber))
+            {
+                return PawnsInSpaceCache[pawn.thingIDNumber];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public void RemovePawnFromSpaceCache(Pawn pawn)
+        {
+            if (PawnsInSpaceCache.ContainsKey(pawn.thingIDNumber))
+            {
+                PawnsInSpaceCache.Remove(pawn.thingIDNumber);
+            }
+        }
+    }
+}

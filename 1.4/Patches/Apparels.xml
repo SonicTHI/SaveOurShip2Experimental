@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase" or @ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"][not(equippedStatOffsets)]</xpath>
+    <value>
+      <equippedStatOffsets />
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase"][techLevel="Spacer"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+    <value>
+      <DecompressionResistance>0.75</DecompressionResistance>
+      <VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
+    </value>
+  </Operation>
+
+
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[@ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+    <value>
+      <HypoxiaResistance>1</HypoxiaResistance>
+      <DecompressionResistance>0.25</DecompressionResistance>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[@Name="ApparelArmorReconBase"]/statBases/Insulation_Cold</xpath>
+    <value>
+      <Insulation_Cold>80</Insulation_Cold>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/ThingDef[@Name="ApparelArmorPowerBase"]/statBases/Insulation_Cold</xpath>
+    <value>
+      <Insulation_Cold>90</Insulation_Cold>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Royalty</li>
+    </mods>
+
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/ThingDef[@Name="ApparelArmorCataphractBase"]/statBases/Insulation_Cold</xpath>
+      <value>
+        <Insulation_Cold>100</Insulation_Cold>
+      </value>
+    </match>
+  </Operation>
+</Patch>

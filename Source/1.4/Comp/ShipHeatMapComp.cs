@@ -312,7 +312,7 @@ namespace RimWorld
                         engineRot = ShipsOnMapNew.Values.First(s => s.Engines.Any()).Rot;
                     else
                         engineRot = 3;
-                    Log.Message("SOS2: ".Colorize(Color.cyan) + map + " rot was -1, new rot: " + engineRot);
+                    //Log.Message("SOS2: ".Colorize(Color.cyan) + map + " rot was -1, new rot: " + engineRot);
                 }
                 return engineRot;
             }
@@ -422,7 +422,7 @@ namespace RimWorld
                 }
             }
             CacheOff = false;
-            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Recached, Found ships: " + ShipsOnMapNew.Count);
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Recached,".Colorize(Color.green) + " Found ships: " + ShipsOnMapNew.Count);
         }
         public void CheckAndMerge(HashSet<int> indexes) //slower, finds best ship to merge to, removes all other ships
         {
@@ -463,7 +463,7 @@ namespace RimWorld
         public void CheckAndMerge(HashSet<IntVec3> cellsToMerge) //faster, attaches as a tumor
         {
             int mergeToIndex;
-            IntVec3 mergeTo = IntVec3.Zero;
+            IntVec3 mergeTo = IntVec3.Invalid;
             int mass = 0;
             HashSet<int> ships = new HashSet<int>();
             foreach (IntVec3 vec in cellsToMerge) //find largest ship
@@ -476,7 +476,7 @@ namespace RimWorld
                     mass = ShipsOnMapNew[shipIndex].Mass;
                 }
             }
-            if (mergeTo == IntVec3.Zero) //merging to wrecks only
+            if (mergeTo == IntVec3.Invalid) //merging to wrecks only
             {
                 foreach (IntVec3 vec in cellsToMerge)
                 {
@@ -1091,7 +1091,7 @@ namespace RimWorld
                             Retreating = true;
                             if (!warnedAboutRetreat)
                             {
-                                Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI retreating:".Colorize(Color.red) + Retreating + ", totalThreat:" + totalThreat + ", TargetMapComp.totalThreat:" + TargetMapComp.totalThreat + ", powerRemaining:" + powerRemaining + ", powerCapacity:" + powerCapacity + ", BuildingsCount:" + BuildingsCount + ", BuildingCountAtStart:" + BuildingCountAtStart);
+                                Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI retreating:".Colorize(Color.red) + ", totalThreat:" + totalThreat + ", TargetMapComp.totalThreat:" + TargetMapComp.totalThreat + ", powerRemaining:" + powerRemaining + ", powerCapacity:" + powerCapacity + ", BuildingsCount:" + BuildingsCount + ", BuildingCountAtStart:" + BuildingCountAtStart);
                                 Messages.Message("EnemyShipRetreating".Translate(), MessageTypeDefOf.ThreatBig);
                                 warnedAboutRetreat = true;
                             }
@@ -1352,7 +1352,7 @@ namespace RimWorld
                 SoShipCache ship = ShipsOnMapNew[shipIndex];
                 Building core = ship.Core;
                 ship.LastBridgeDied = false;
-                ship.AreaDestroyed.Clear();
+                //ship.AreaDestroyed.Clear();
                 if (core == null)
                 {
                     core = ShipsOnMapNew[shipIndex].Parts.FirstOrDefault();
@@ -1415,7 +1415,7 @@ namespace RimWorld
         }
         public void EndBattle(Map loser, bool fled, int burnTimeElapsed = 0)
         {
-            Log.Message("SOS2: ".Colorize(Color.cyan) + loser + " Lost ships battle!");
+            Log.Message("SOS2: ".Colorize(Color.cyan) + loser + " Lost ship battle!".Colorize(Color.red));
             //tgtMap is opponent of origin
             Map tgtMap = OriginMapComp.ShipCombatTargetMap;
             var tgtMapComp = OriginMapComp.TargetMapComp;

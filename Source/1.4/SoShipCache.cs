@@ -24,9 +24,7 @@ namespace RimWorld
         //other buildings: +-for count, mass if on shipPart
 
         public HashSet<IntVec3> Area = new HashSet<IntVec3>(); //shipParts add to area, removed in despawn, detach
-        public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //add to when destroyed in combat
         public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
-        //public List<DetachedShipPart> DetachedShipParts = new List<DetachedShipPart>();
         public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
         //for rebuild after battle, reset before combat, rebuild gizmo
         public HashSet<Tuple<BuildableDef, IntVec3, Rot4>> BuildingsDestroyed = new HashSet<Tuple<BuildableDef, IntVec3, Rot4>>();
@@ -524,6 +522,8 @@ namespace RimWorld
         public IntVec3 BridgeKillVec = IntVec3.Invalid; //system is stupid but here we are
         public bool LastBridgeDied = false; //as above, prevents checking for detach untill ship is moved
         public bool PathDirty = true; //unused //td
+        public int LastSafePath = 0; //in combat the lowest path -1 that sufered damage
+        public List<HashSet<IntVec3>> DetachedShipAreas = new List<HashSet<IntVec3>>();
         public void RebuildCache(Building origin, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
         {
             if (origin == null || origin.Destroyed)
@@ -573,8 +573,9 @@ namespace RimWorld
                     path++;
                 //Log.Message("parts at i: "+ current.Count + "/" + i);
             }
+            LastSafePath = path;
             PathDirty = false;
-            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Rebuilt cache, Parts: " + Parts.Count + " Buildings: " + Buildings.Count + " Bridges: " + Bridges.Count + " Area: " + Area.Count + " Core: " + Core + " Name: " + Name);
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Rebuilt cache, Parts: " + Parts.Count + " Buildings: " + Buildings.Count + " Bridges: " + Bridges.Count + " Area: " + Area.Count + " Core: " + Core + " Name: " + Name + " path max: " + LastSafePath);
         }
         public void AddToCache(Building b)
         {
@@ -861,121 +862,117 @@ namespace RimWorld
                 }
                 foreach (IntVec3 vec in current) //find next set cardinal to all cellsDone, exclude cellsDone
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v)));
                 }
                 path++;
             }
+            LastSafePath = path;
             PathDirty = false;
-            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Rebuilt corePath at " + Core.Position);
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Rebuilt corePath at " + Core.Position + " path max: " + LastSafePath);
         }
         //detach
         public void Tick()
         {
-            /*if (AreaDestroyed.Any())
+            foreach (HashSet<IntVec3> area in DetachedShipAreas)
             {
-                AreaDestroyed.OrderBy(v => mapComp.MapShipCells[v].Item2); //reorder by corepath, closest check first
-                //CheckForDetach(); //enable for nic
-            }*/
-            /*foreach (DetachedShipPart part in DetachedShipParts)
-            {
-                part.SpawnSetup(Map, false);
+                FloatAndDestroy(area);
             }
-            DetachedShipParts.Clear();*/
+            DetachedShipAreas.Clear();
         }
-        public bool CheckForDetach() //finds all shipcells around detached and for each tries to path back to first with lower index, if not possible, detaches all in set
+        public void CheckForDetach(List<IntVec3> AreaDetached)
         {
-            /*if (AreaDestroyed.Count > 1)
+            if (AreaDetached.Count == 1) //simple solutions for 1x1 detach:
             {
-                string str2 = map + " Ship " + Index + " CheckForDetach, Check: " + AreaDestroyed.Count + " cells: ";
-                foreach (IntVec3 vec in AreaDestroyed)
-                    str2 += mapComp.MapShipCells[vec].Item2;
-                Log.Message(str2);
-                Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
-            }*/
-            if (AreaDestroyed.Any())
-            {
-                HashSet<IntVec3> initialCells = new HashSet<IntVec3>(); //cells to start checks from
-                HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
-                HashSet<IntVec3> cellsAttached = new HashSet<IntVec3>(); //cells that were checked and are attached
-                foreach (IntVec3 vec in AreaDestroyed)
+                //0 cells attached to AreaDetached: remove this ship from cache on mapcomp
+                //1: no detach
+                List<IntVec3> adjCells = GenAdj.CellsAdjacentCardinal(AreaDetached.First(), Rot4.North, new IntVec2(1, 1)).Where(v => Area.Contains(v)).ToList();
+                if (adjCells.Count == 0)
                 {
-                    foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !AreaDestroyed.Contains(v) && Area.Contains(v) &&  mapComp.MapShipCells[v].Item2 != 0))
-                    {
-                        initialCells.Add(v); //add all cells around the destroyed area
-                    }
+                    mapComp.RemoveShipFromCache(Index);
+                    return;
                 }
-                /*if (AreaDestroyed.Count > 1)
-                    Log.Message("SOS2c: CheckForDetach for " + AreaDestroyed.Count + " destroyed cells. Cells to check for detach: " + initialCells.Count);
-                else
-                    Log.Message("SOS2c: CheckForDetach for " + AreaDestroyed.FirstOrDefault() + " Cells to check for detach: " + initialCells.Count);¸*/
-                foreach (IntVec3 setStartCell in initialCells)
-                {
-                    if (cellsDone.Contains(setStartCell)) //skip already checked cells
-                    {
-                        continue;
-                    }
-                    bool detach = true;
-                    HashSet<IntVec3> cellsToDetach = new HashSet<IntVec3>();
-                    List<IntVec3> cellsTodo = new List<IntVec3>{setStartCell};
-                    while (cellsTodo.Any())
-                    {
-                        IntVec3 current = cellsTodo.First();
-                        cellsTodo.Remove(current);
-                        cellsDone.Add(current);
-                        if (mapComp.MapShipCells[current].Item2 < mapComp.MapShipCells[setStartCell].Item2)
-                        {
-                            cellsAttached.AddRange(cellsDone);
-                            detach = false;
-                            //foreach (IntVec3 vec in cellsToDetach)
-                            //    Log.Message("" + vec);
-                            //Log.Message("SOS2c: CheckForDetach still attached at " + current);
-                            break; //if part with lower corePath found this set is attached
-                        }
-                        if (cellsToDetach.Add(current)) //add current tile && extend search range, skip non ship, destroyed tiles
-                        {
-                            HashSet<IntVec3> temp = GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).ToHashSet();
-                            foreach (IntVec3 v in temp)
-                            {
-                                if (cellsAttached.Contains(v)) //if next to an already attached and checked
-                                {
-                                    detach = false;
-                                    //foreach (IntVec3 vec in cellsToDetach)
-                                    //    Log.Message("" + vec);
-                                    //Log.Message("SOS2c: CheckForDetach still attached to already checked " + current);
-                                    break; //if part with lower corePath found this set is attached
-                                }
-                                if (!cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v))
-                                {
-                                    cellsTodo.Add(v);
-                                }
-
-                            }
-                            if (!detach)
-                                break;
-                            //cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v)));
-                        }
-                    }
-                    if (detach)
-                    {
-                        string str = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach, Detach " + cellsToDetach.Count + " cells: ";
-                        foreach (IntVec3 vec in cellsToDetach)
-                            str += vec;
-                        Log.Message(str);
-                        
-                        if (cellsToDetach.Any())
-                            Detach(cellsToDetach);
-                    }
-                }
-                AreaDestroyed.Clear();
-
-                /*foreach (int i in mapComp.ShipsOnMapNew.Keys)
-                {
-                    Log.Message("SOS2c: area on ship: " + i + " is " + mapComp.ShipsOnMapNew[i].AreaDestroyed.Count + "/" + mapComp.ShipsOnMapNew[i].Area.Count);
-                }*/
-                return true;
+                if (adjCells.Count == 1)
+                    return;
             }
-            return false;
+            //now it gets compliacted and slower
+            //start cells can be any amount and arrangement
+            //find cells around
+            //for each try to path back to LastSafePath or lowest index cell, if not possible detach each set separately
+
+            HashSet<IntVec3> startCells = new HashSet<IntVec3>(); //cells AreaDetached
+            foreach (IntVec3 vec in AreaDetached)
+            {
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !AreaDetached.Contains(v) && Area.Contains(v)))// && mapComp.MapShipCells[v].Item2 != 0))
+                {
+                    startCells.Add(v);
+                }
+            }
+            /*string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + LastSafePath + " with " + startCells.Count + " cells: ";
+            foreach (IntVec3 vec in startCells)
+                str2 += vec;
+            Log.Warning(str2);*/
+
+            HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
+            HashSet<IntVec3> cellsAttached = new HashSet<IntVec3>(); //cells that were checked and are attached
+            foreach (IntVec3 setStartCell in startCells)
+            {
+                if (cellsDone.Contains(setStartCell)) //skip already checked cells
+                {
+                    continue;
+                }
+                bool detach = true;
+                HashSet<IntVec3> cellsToDetach = new HashSet<IntVec3>();
+                List<IntVec3> cellsTodo = new List<IntVec3> { setStartCell };
+                while (cellsTodo.Any())
+                {
+                    IntVec3 current = cellsTodo.First();
+                    cellsTodo.Remove(current);
+                    cellsDone.Add(current);
+                    if (mapComp.MapShipCells[current].Item2 < LastSafePath)
+                    {
+                        cellsAttached.AddRange(cellsDone);
+                        detach = false;
+                        //foreach (IntVec3 vec in cellsToDetach)
+                        //    Log.Warning("" + vec);
+                        //Log.Message("SOS2c: CheckForDetach still attached at " + current);
+                        break; //if part with lower corePath found this set is attached
+                    }
+                    if (cellsToDetach.Add(current)) //add current tile && extend search range, skip non ship, destroyed tiles
+                    {
+                        HashSet<IntVec3> temp = GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).ToHashSet();
+                        foreach (IntVec3 v in temp)
+                        {
+                            if (cellsAttached.Contains(v)) //if next to an already attached and checked
+                            {
+                                detach = false;
+                                //foreach (IntVec3 vec in cellsToDetach)
+                                //    Log.Warning("" + vec);
+                                //Log.Message("SOS2c: CheckForDetach still attached to already checked " + current);
+                                break; //if part with lower corePath found this set is attached
+                            }
+                            if (!cellsDone.Contains(v) && Area.Contains(v) && !AreaDetached.Contains(v))
+                            {
+                                cellsTodo.Add(v);
+                            }
+                        }
+                        if (!detach)
+                            break;
+                        //cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v)));
+                    }
+                }
+                if (detach)
+                {
+                    string str = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach " + cellsToDetach.Count + " cells: ";
+                    foreach (IntVec3 vec in cellsToDetach)
+                        str += vec;
+                    Log.Warning(str);
+
+                    Detach(cellsToDetach);
+                }
+            }
         }
+
+
         public void Detach(HashSet<IntVec3> detachArea) //if bridge found detach as new ship else as wreck
         {
             Building newCore = null;
@@ -999,9 +996,16 @@ namespace RimWorld
             }
             if (newCore == null) //wreck
             {
-                if (mapComp.InCombat) //flot wrecks except in case the last bridge was destroyed
+                if (mapComp.InCombat) //float wrecks except in case the last bridge was destroyed
                 {
-                    FloatAndDestroy(detachArea);
+                    //FloatAndDestroy(detachArea);
+                    DetachedShipAreas.Add(detachArea);
+                    ShipInteriorMod2.AirlockBugFlag = true;
+                    foreach (IntVec3 vec in detachArea)
+                    {
+                        mapComp.MapShipCells.Remove(vec);
+                    }
+                    ShipInteriorMod2.AirlockBugFlag = false;
                     //remove this ship if nothing remains
                     if (!Area.Any())
                     {
@@ -1015,8 +1019,8 @@ namespace RimWorld
             Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach new ship/wreck with: " + newCore);
             if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
             {
-                Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
-                int newKey = mapComp.ShipsOnMapNew.Keys.Max() + 1;
+                //Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+                int newKey = mapComp.ShipsOnMapNew.Keys.Max() + 1000;
                 Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach error, shipID " + newCore.thingIDNumber + " already exits! Using fallback index: " + newKey + ", pausing game. Recheck ship area with infestation overlay. If not correct - save and reload!");
                 newCore.thingIDNumber = newKey;
             }
@@ -1051,7 +1055,7 @@ namespace RimWorld
 
             foreach (IntVec3 vec in detachArea)
             {
-                mapComp.MapShipCells.Remove(vec);
+                //mapComp.MapShipCells.Remove(vec);
                 //Log.Message("Detaching location " + at);
                 foreach (Thing t in vec.GetThingList(Map).Where(t => t.def.destroyable && !t.Destroyed))
                 {
@@ -1094,8 +1098,8 @@ namespace RimWorld
                     else if (comp.Props.isPlating)
                         part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
                 }
+                Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Spawning floating part at: " + part.Position);
                 part.SpawnSetup(Map, false);
-                //DetachedShipParts.Add(part);
             }
             foreach (Pawn p in toKill)
             {

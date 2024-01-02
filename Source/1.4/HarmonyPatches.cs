@@ -4464,13 +4464,13 @@ namespace SaveOurShip2
                     {
                         InfestationCellFinder.tmpCachedInfestationChanceCellColors.Add(new Pair<IntVec3, float>(v, cells[v].Item1));
                     }
-                    foreach (SoShipCache s in mapComp.ShipsOnMapNew.Values)
+                    /*foreach (SoShipCache s in mapComp.ShipsOnMapNew.Values)
                     {
                         foreach (IntVec3 v in s.AreaDestroyed)
                         {
                             InfestationCellFinder.tmpCachedInfestationChanceCellColors.Add(new Pair<IntVec3, float>(v, 0));
                         }
-                    }
+                    }*/
                 }
                 for (int m = 0; m < InfestationCellFinder.tmpCachedInfestationChanceCellColors.Count; m++)
                 {

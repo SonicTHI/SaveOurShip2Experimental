@@ -143,7 +143,7 @@ namespace RimWorld
                 //Log.Message("Force-loading graphic");
 
                 graphicFloor.cachedGraphic = GraphicDatabase.Get(graphicFloor.graphicClass, graphicFloor.texPath, shader, graphicFloor.drawSize, graphicFloor.color, graphicFloor.colorTwo, graphicFloor, graphicFloor.shaderParameters);
-                graphicFloor.cachedGraphic = new Graphic_Linked_Fake(graphicFloor.cachedGraphic);
+                graphicFloor.cachedGraphic = new Graphic_256_Wreckage(graphicFloor.cachedGraphic);
 
                 //typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(graphicFloor, GraphicDatabase.Get(graphicFloor.graphicClass, graphicFloor.texPath, shader, graphicFloor.drawSize, graphicFloor.color, graphicFloor.colorTwo, graphicFloor, graphicFloor.shaderParameters));
                 //typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(graphicFloor, new Graphic_256_Wreckage((Graphic)typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(graphicFloor)));

@@ -200,6 +200,7 @@ namespace RimWorld
             }
 
             ship.RemoveFromCache(parent as Building, mode);
+            List<IntVec3> areaDestroyed = new List<IntVec3>();
             HashSet<Building> buildings = new HashSet<Building>();
             foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
             {
@@ -231,14 +232,17 @@ namespace RimWorld
                     else
                     {
                         ship.Area.Remove(vec);
+                        int path = mapComp.MapShipCells[vec].Item2;
+                        if (ship.LastSafePath > path)
+                            ship.LastSafePath = path;
                         mapComp.MapShipCells.Remove(vec);
-                        if (!ship.LastBridgeDied)
-                        {
-                            ship.AreaDestroyed.Add(vec);
-                            ship.CheckForDetach(); //rem for nic
-                        }
+                        areaDestroyed.Add(vec);
                     }
                 }
+            }
+            if (!ship.LastBridgeDied)
+            {
+                ship.CheckForDetach(areaDestroyed);
             }
             foreach (Building b in buildings) //remove other buildings that are no longer supported by this ship
             {

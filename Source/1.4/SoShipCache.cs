@@ -522,7 +522,7 @@ namespace RimWorld
         public IntVec3 BridgeKillVec = IntVec3.Invalid; //system is stupid but here we are
         public bool LastBridgeDied = false; //as above, prevents checking for detach untill ship is moved
         public bool PathDirty = true; //unused //td
-        public int LastSafePath = 0; //in combat the lowest path -1 that sufered damage
+        public int LastSafePath = -1; //in combat the lowest path -1 that sufered damage
         public List<HashSet<IntVec3>> DetachedShipAreas = new List<HashSet<IntVec3>>();
         public void RebuildCache(Building origin, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
         {
@@ -888,32 +888,41 @@ namespace RimWorld
                 List<IntVec3> adjCells = GenAdj.CellsAdjacentCardinal(AreaDetached.First(), Rot4.North, new IntVec2(1, 1)).Where(v => Area.Contains(v)).ToList();
                 if (adjCells.Count == 0)
                 {
-                    mapComp.RemoveShipFromCache(Index);
+                    //mapComp.RemoveShipFromCache(Index);
                     return;
                 }
                 if (adjCells.Count == 1)
                     return;
             }
-            //now it gets compliacted and slower
+            //now it gets complicated and slower
             //start cells can be any amount and arrangement
             //find cells around
             //for each try to path back to LastSafePath or lowest index cell, if not possible detach each set separately
 
+            int pathTo = int.MaxValue; //lowest path in startCells
+            IntVec3 first = IntVec3.Invalid; //path to this cell
             HashSet<IntVec3> startCells = new HashSet<IntVec3>(); //cells AreaDetached
             foreach (IntVec3 vec in AreaDetached)
             {
                 foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !AreaDetached.Contains(v) && Area.Contains(v)))// && mapComp.MapShipCells[v].Item2 != 0))
                 {
                     startCells.Add(v);
+                    int vecPath = mapComp.MapShipCells[v].Item2; //find lowest - still attached setStart
+                    if (vecPath < pathTo)
+                    {
+                        pathTo = vecPath;
+                        first = v;
+                    }
                 }
             }
-            /*string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + LastSafePath + " with " + startCells.Count + " cells: ";
+            startCells?.Remove(first);
+            /*string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + (LastSafePath - 1) + " or to cell: " + first + " with " + startCells.Count + " cells: ";
             foreach (IntVec3 vec in startCells)
                 str2 += vec;
             Log.Warning(str2);*/
 
             HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
-            HashSet<IntVec3> cellsAttached = new HashSet<IntVec3>(); //cells that were checked and are attached
+            HashSet<IntVec3> cellsAttached = new HashSet<IntVec3> { first }; //cells that were checked and are attached
             foreach (IntVec3 setStartCell in startCells)
             {
                 if (cellsDone.Contains(setStartCell)) //skip already checked cells
@@ -922,11 +931,11 @@ namespace RimWorld
                 }
                 bool detach = true;
                 HashSet<IntVec3> cellsToDetach = new HashSet<IntVec3>();
-                List<IntVec3> cellsTodo = new List<IntVec3> { setStartCell };
-                while (cellsTodo.Any())
+                List<IntVec3> cellsToCheck = new List<IntVec3> { setStartCell };
+                while (cellsToCheck.Any())
                 {
-                    IntVec3 current = cellsTodo.First();
-                    cellsTodo.Remove(current);
+                    IntVec3 current = cellsToCheck.First();
+                    cellsToCheck.Remove(current);
                     cellsDone.Add(current);
                     if (mapComp.MapShipCells[current].Item2 < LastSafePath)
                     {
@@ -952,7 +961,7 @@ namespace RimWorld
                             }
                             if (!cellsDone.Contains(v) && Area.Contains(v) && !AreaDetached.Contains(v))
                             {
-                                cellsTodo.Add(v);
+                                cellsToCheck.Add(v);
                             }
                         }
                         if (!detach)

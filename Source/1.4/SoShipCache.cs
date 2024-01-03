@@ -174,7 +174,7 @@ namespace RimWorld
             if (mapComp.Docked.NullOrEmpty())
             {
                 //Log.Message(Index + " - 1 - " + EnginePower() / Mathf.Pow(BuildingCount, 1.1f));
-                return 14 * EnginePower() / Mathf.Pow(MassSum, 1.2f); //Mathf.Pow(BuildingCount, 1.1f);
+                return EnginePower() / Mathf.Pow(MassSum, 1.2f); //Mathf.Pow(BuildingCount, 1.1f);
             }
 
             float p = EnginePower();
@@ -719,7 +719,7 @@ namespace RimWorld
                                 if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
                                     MaxTakeoff -= refuelable.Props.fuelCapacity;
                             }
-                            EngineMass -= b.def.Size.Area * 20;
+                            EngineMass -= b.def.Size.Area * 60;
                             Engines.Remove(b.TryGetComp<CompEngineTrail>());
                         }
                         else if (b.TryGetComp<CompRCSThruster>() != null)

@@ -10,17 +10,9 @@ using HarmonyLib;
 using System.Text;
 using UnityEngine;
 using Verse.AI.Group;
-using RimWorld.QuestGen;
 using RimworldMod;
-using System.Net;
 using System.IO;
-using System.Collections;
-using UnityEngine.SceneManagement;
-using System.Linq.Expressions;
 using static SaveOurShip2.ModSettings_SoS;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using Verse.Noise;
 
 namespace SaveOurShip2
 {
@@ -103,7 +95,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V96f4";
+        public static readonly string SOS2EXPversion = "V96f5";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1593,34 +1585,6 @@ namespace SaveOurShip2
 			border.Add(new IntVec3(pos.z, 0, pos.x * -1));
 			border.Add(new IntVec3(pos.z * -1, 0, pos.x * -1));
 		}
-		
-		public class TimeHelper
-		{
-			private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
-			public struct TimeMeasure
-			{
-				public string name;
-				public TimeSpan time;
-			}
-
-			public List<TimeMeasure> measures = new List<TimeMeasure>();
-
-			public void Record(string name)
-			{
-				measures.Add(new TimeMeasure { name = name, time = watch.Elapsed });
-				watch.Restart();
-			}
-
-			public string MakeReport()
-			{
-				var sb = new StringBuilder();
-				foreach (var r in measures)
-				{
-					sb.AppendFormat("{0}={1}ms\n", r.name, r.time.TotalMilliseconds);
-				}
-				return sb.ToString();
-			}
-		}
 		public static bool IsRock(TerrainDef def)
 		{
 			return rockTerrains.Contains(def);
@@ -2506,7 +2470,7 @@ namespace SaveOurShip2
 		}
 		public static bool AnyAdjRoomNotOutside(IntVec3 pos, Map map)
 		{
-			foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, new IntVec2(1, 1)))
+			foreach (IntVec3 v in GenAdj.CellsAdjacent8Way(pos, Rot4.North, new IntVec2(1, 1)))
 			{
                 if (!ExposedToOutside(v.GetRoom(map)))
 					return true;
@@ -2578,5 +2542,32 @@ namespace SaveOurShip2
 				return 1;
 			return 0;
 		}
-	}
+    }
+    public class TimeHelper
+    {
+        private System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
+        public struct TimeMeasure
+        {
+            public string name;
+            public TimeSpan time;
+        }
+
+        public List<TimeMeasure> measures = new List<TimeMeasure>();
+
+        public void Record(string name)
+        {
+            measures.Add(new TimeMeasure { name = name, time = watch.Elapsed });
+            watch.Restart();
+        }
+
+        public string MakeReport()
+        {
+            var sb = new StringBuilder();
+            foreach (var r in measures)
+            {
+                sb.AppendFormat("{0}={1}ms\n", r.name, r.time.TotalMilliseconds);
+            }
+            return sb.ToString();
+        }
+    }
 }

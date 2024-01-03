@@ -987,7 +987,6 @@ namespace RimWorld
                 {
                     MapEnginesOn();
                     MapEnginePower *= 40f;
-                    //Log.Message("SOS2: ".Colorize(Color.cyan) + map + " thrust " + MapEnginePower);
                 }
                 else
                 {
@@ -1280,7 +1279,6 @@ namespace RimWorld
                     {
                         MapEnginesOn();
                         MapEnginePower *= 40000f;
-                        //Log.Message("thrust " + MapEnginePower);
                         if (BurnTimer > cond.TicksLeft)
                         {
                             cond.End();
@@ -1314,10 +1312,11 @@ namespace RimWorld
         public void MapEnginesOn()
         {
             MapEnginePower = SlowestThrustToWeight();
+            //Log.Message("thrust " + MapEnginePower);
             //Log.Message("SOS2: ".Colorize(Color.cyan) + map + " SlowestThrustOnMap: " + MapEnginePower);
             foreach (SoShipCache ship in ShipsOnMapNew.Values.Where(s => s.Engines.Any()))
             {
-                ship.MoveAtThrust(MapEnginePower * Mathf.Pow(ship.BuildingCount, 1.1f));
+                ship.MoveAtThrust(MapEnginePower * Mathf.Pow(ship.BuildingCount, 1.2f));
             }
         }
         public float SlowestThrustToWeight() //find worst t/w ship
@@ -1333,7 +1332,7 @@ namespace RimWorld
                 if (currPower < enginePower)
                     enginePower = currPower;
             }
-            return enginePower;
+            return enginePower * 14;
         }
         public void MapFullStop()
         {

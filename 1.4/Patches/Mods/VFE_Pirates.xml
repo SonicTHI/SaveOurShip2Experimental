@@ -19,7 +19,6 @@
           <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase"]/equippedStatOffsets</xpath>
           <value>
             <DecompressionResistance>0.75</DecompressionResistance>
-            <VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
           </value>
         </li>
 

@@ -27,8 +27,8 @@ namespace RimWorld
 
         public override void FireEvent()
         {
-            List<Pawn> allPawns = map.mapPawns.AllPawnsSpawned;
-            foreach (Pawn pawn in allPawns.Where(p => !p.Dead))
+            List<Pawn> allPawns = map.mapPawns.AllPawnsSpawned.Where(p => !p.Dead).ToList();
+            foreach (Pawn pawn in allPawns)
             {
                 CachedPawnSpaceModifiers pawnSpaceModifiers = ShipInteriorMod2.GetPawnSpaceModifiersModifiers(pawn);
                 if (pawnSpaceModifiers.CanSurviveVacuum)
@@ -45,9 +45,9 @@ namespace RimWorld
                         continue;
                     }
 
-                    RunFromVacuum(pawn);
                     DoPawnDecompressionDamage(pawn, pawnSpaceModifiers);
                     DoPawnHypoxiaDamage(pawn, pawnSpaceModifiers, 0.025f);
+                    RunFromVacuum(pawn); // Spam logs ...
                 }
                 else if (!map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) // in ship, no air
                 {
@@ -68,7 +68,7 @@ namespace RimWorld
             {
                 return false;
             }
-            verb.TryStartCastOn(pawn.Position);
+            verb.TryStartCastOn(pawn);
             return true;
         }
 

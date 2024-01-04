@@ -435,6 +435,7 @@
 		<comps>
 			<li Class="CompProperties_Reloadable">
 				<maxCharges>1</maxCharges>
+				<destroyOnEmpty>true</destroyOnEmpty>
 			</li>
 		</comps>
 		<verbs>
@@ -485,9 +486,8 @@
 
 	<ThingDef ParentName="ApparelBase">
 		<defName>Apparel_SpaceSurvivalBeltDummy</defName>
-		<thingClass>ApparelSpaceBelt</thingClass>
 		<label>survival belt (activated)</label>
-		<description>An emergency survival belt used by starship crews. It has released a semi-liquid membrane over the user's body and is actively generating breathable air. For the next three hours, the user can survive exposure to vacuum, although their movements are slowed. The belt is single-use.</description>
+		<description>Deprecated - do not use.</description>
 		<graphicData>
 			<texPath>Things/Pawn/Humanlike/Apparel/ShieldBelt/ShieldBelt</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

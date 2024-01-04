@@ -47,7 +47,7 @@ namespace RimWorld
 
                     DoPawnDecompressionDamage(pawn, pawnSpaceModifiers);
                     DoPawnHypoxiaDamage(pawn, pawnSpaceModifiers, 0.025f);
-                    RunFromVacuum(pawn); // Spam logs ...
+                    RunFromVacuum(pawn);
                 }
                 else if (!map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) // in ship, no air
                 {
@@ -74,18 +74,20 @@ namespace RimWorld
 
         public void RunFromVacuum(Pawn pawn)
         {
-            //find first nonvac area and run to it - enemy only
-            var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
-            if (pawn.Faction != Faction.OfPlayer && !pawn.Downed && pawn.CurJob.def != DefDatabase<JobDef>.GetNamed("FleeVacuum"))
+            // find first nonvac area and run to it - enemy only
+            JobDef fleeVacuumDef = DefDatabase<JobDef>.GetNamed("FleeVacuum");
+            if (PreventPawnFleeVacuum(pawn) || pawn.CurJobDef == fleeVacuumDef)
             {
-                Predicate<Thing> otherValidator = delegate (Thing t)
-                {
-                    return t is Building_ShipAirlock && !((Building_ShipAirlock)t).Outerdoor();
-                };
-                Thing b = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(ResourceBank.ThingDefOf.ShipAirlock), PathEndMode.Touch, TraverseParms.For(pawn), 99f, otherValidator);
-                Job Flee = new Job(DefDatabase<JobDef>.GetNamed("FleeVacuum"), b);
-                pawn.jobs.StartJob(Flee, JobCondition.InterruptForced);
+                return;
             }
+
+            Thing closestThing = ClosestThingReachable(pawn);
+            if (closestThing == null)
+            {
+                return;
+            }
+            Job fleeVacuumJob = new Job(fleeVacuumDef, closestThing);
+            pawn.jobs.StartJob(fleeVacuumJob, JobCondition.InterruptForced);
         }
 
         public static void DoPawnHypoxiaDamage(Pawn pawn, CachedPawnSpaceModifiers pawnSpaceModifiers, float severity = 0.0125f, float extraFactor = 1.0f)
@@ -110,6 +112,22 @@ namespace RimWorld
                 pawn.TakeDamage(new DamageInfo(DefDatabase<DamageDef>.GetNamed("VacuumDamage"), severityOffset));
             }
 
+        }
+
+        private bool PreventPawnFleeVacuum(Pawn pawn)
+        {
+            return !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.Faction == Faction.OfPlayer;
+        }
+
+        private Thing ClosestThingReachable(Pawn pawn)
+        {
+            return GenClosest.ClosestThingReachable(pawn.Position,
+                                                    pawn.Map,
+                                                    ThingRequest.ForDef(ResourceBank.ThingDefOf.ShipAirlock),
+                                                    PathEndMode.Touch,
+                                                    TraverseParms.For(pawn),
+                                                    99f,
+                                                    (Thing thing) => thing is Building_ShipAirlock airlock && !airlock.Outerdoor());
         }
     }
 }

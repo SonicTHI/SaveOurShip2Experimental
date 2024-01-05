@@ -187,7 +187,7 @@ namespace RimWorld
                 ship.RemoveFromCache(parent as Building, mode);
                 return;
             }
-            else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && ((Props.isHull && !Props.isPlating && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map)) || (!Props.isHull && Props.isPlating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
+            else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && parent.def.Size == IntVec2.One && ((Props.isHull && !Props.isPlating && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map)) || (!Props.isHull && Props.isPlating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
             {
                 //replace part with foam, no detach checks
                 foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))
@@ -301,14 +301,14 @@ namespace RimWorld
             }
             if (FoamFill)
             {
-                Thing newWall;
+                Thing replacer;
                 if (Props.isHull)
-                    newWall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.HullFoamWall);
+                    replacer = ThingMaker.MakeThing(ResourceBank.ThingDefOf.HullFoamWall);
                 else
-                    newWall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullfoamTile);
+                    replacer = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullfoamTile);
 
-                newWall.SetFaction(fac);
-                GenPlace.TryPlaceThing(newWall, cellsUnder.First(), map, ThingPlaceMode.Direct);
+                replacer.SetFaction(fac);
+                GenPlace.TryPlaceThing(replacer, cellsUnder.First(), map, ThingPlaceMode.Direct);
             }
         }
         public override void PostDraw()

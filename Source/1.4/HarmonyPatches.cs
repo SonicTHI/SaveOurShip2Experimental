@@ -1256,8 +1256,8 @@ namespace SaveOurShip2
 
 			if (ship.Engines.NullOrEmpty())
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_Engine.label);
-			if (ship.FuelNeeded(true) < ship.Mass)
-				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreFuel", ship.FuelNeeded(true), ship.Mass));
+			if (ship.FuelNeeded(true) < ship.MassActual)
+				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreFuel", ship.FuelNeeded(true), ship.MassActual));
 			if (ship.Sensors.NullOrEmpty())
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
 			if (!ship.HasMannedBridge())

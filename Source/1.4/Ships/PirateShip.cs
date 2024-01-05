@@ -44,24 +44,37 @@ namespace RimWorld
             var mapComp = Map.GetComponent<ShipHeatMapComp>();
             int bounty = ShipInteriorMod2.WorldComp.PlayerFactionBounty;
             int roll = Rand.RangeInclusive(1, 10);
-            if (bounty > 50 && (!parleyed && roll < 6 || roll < 2)) //pirate betrayal
+            if (bounty > 50) //player is pirate
             {
-                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksBetray"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksBetrayDesc"), LetterDefOf.ThreatBig);
-                mapComp.StartShipEncounter(this);
-
+                if ((!parleyed && roll < 5) || (parleyed && roll < 2)) //betrayal
+                {
+                    Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksBetray"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksBetrayDesc"), LetterDefOf.ThreatBig);
+                    mapComp.StartShipEncounter(this);
+                    return;
+                }
             }
-            else if (paidOff && roll < 3) //we want more
+            else //not a pirate
             {
-                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksPay"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksPayDesc"), LetterDefOf.ThreatBig);
-                mapComp.StartShipEncounter(this);
+                if (paidOff || parleyed)
+                {
+                    if (roll < 3) //pirates want more
+                    {
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksPay"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksPayDesc"), LetterDefOf.ThreatBig);
+                        mapComp.StartShipEncounter(this);
+                        return;
+                    }
+                }
+                else //didnt pay/parley
+                {
+                    if (roll < 10)
+                    {
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksWait"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksWaitDesc"), LetterDefOf.ThreatBig);
+                        mapComp.StartShipEncounter(this);
+                        return;
+                    }
+                }
             }
-            else if (!paidOff) //didnt pay
-            {
-                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksWait"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksWaitDesc"), LetterDefOf.ThreatBig);
-                mapComp.StartShipEncounter(this);
-            }
-            else
-                base.Depart();
+            base.Depart();
         }
 
         public override void ExposeData()

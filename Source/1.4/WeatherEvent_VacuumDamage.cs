@@ -1,7 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
-using Verse.Sound;
 using System.Collections.Generic;
 using System.Linq;
 using SaveOurShip2;
@@ -45,9 +43,9 @@ namespace RimWorld
                         continue;
                     }
 
+                    RunFromVacuum(pawn);
                     DoPawnDecompressionDamage(pawn, pawnSpaceModifiers);
                     DoPawnHypoxiaDamage(pawn, pawnSpaceModifiers, 0.025f);
-                    RunFromVacuum(pawn);
                 }
                 else if (!map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) // in ship, no air
                 {
@@ -63,13 +61,13 @@ namespace RimWorld
 
         public bool ActivateSpaceBubble(Pawn pawn)
         {
-            Verb verb = pawn?.apparel?.AllApparelVerbs?.FirstOrDefault(a => a is Verb_SpaceBubblePop);
-            if (!verb?.Available() ?? true)
+            Verb verb = pawn?.apparel?.AllApparelVerbs?.FirstOrDefault(apparel => apparel is Verb_SpaceBubblePop);
+            if (verb?.Available() ?? false)
             {
-                return false;
+                verb.TryStartCastOn(pawn);
+                return true;
             }
-            verb.TryStartCastOn(pawn);
-            return true;
+            return false;
         }
 
         public void RunFromVacuum(Pawn pawn)

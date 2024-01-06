@@ -260,6 +260,7 @@
     <Compile Include="Graphic\Graphic_SingleOnOff.cs" />
     <Compile Include="Comp\HediffCompOnlyInSpace.cs" />
     <Compile Include="Comp\HediffComp_Bubble.cs" />
+    <Compile Include="Comp\HediffComp_Space.cs" />
     <Compile Include="CompProps\HediffCompProperties_GiveSubPart.cs" />
     <Compile Include="CompProps\HediffCompProperties_OnlyInSpace.cs" />
     <Compile Include="CompProps\HediffCompProperties_Bubble.cs" />

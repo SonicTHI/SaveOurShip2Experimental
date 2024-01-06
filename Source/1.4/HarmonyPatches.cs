@@ -583,8 +583,7 @@ namespace SaveOurShip2
 			{
 				Room room = __instance.Position.GetRoom(__instance.Map);
 				if (ShipInteriorMod2.ExposedToOutside(room))
-					__instance.TakeDamage(new DamageInfo(DamageDefOf.Extinguish, 100, 0, -1f, null, null, null,
-						DamageInfo.SourceCategory.ThingOrUnknown, null));
+					__instance.TakeDamage(new DamageInfo(DamageDefOf.Extinguish, 100, category: DamageInfo.SourceCategory.ThingOrUnknown));
 			}
 		}
 	}
@@ -621,8 +620,7 @@ namespace SaveOurShip2
 				Room room = __instance.Position.GetRoom(__instance.Map);
 				if (ShipInteriorMod2.ExposedToOutside(room))
 				{
-					__instance.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 10, 0, -1f, null, null, null,
-						DamageInfo.SourceCategory.ThingOrUnknown, null));
+					__instance.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 10, 0, -1f, category: DamageInfo.SourceCategory.ThingOrUnknown));
 				}
 			}
 		}
@@ -2904,25 +2902,6 @@ namespace SaveOurShip2
                 __instance.nextCellCostLeft = newCellCost;
                 __instance.nextCellCostTotal = newCellCost;
             }
-        }
-    }
-
-
-    [HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Notify_ApparelChanged))]
-    public static class ApparelTracker_Notify_Changed
-    {
-        internal static void Postfix(Pawn_ApparelTracker __instance)
-        {
-            ShipInteriorMod2.WorldComp.RemovePawnFromSpaceCache(__instance?.pawn);
-        }
-    }
-
-    [HarmonyPatch(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.Notify_HediffChanged))]
-    public static class HealthTracker_Notify_Changed
-    {
-        internal static void Postfix(Pawn_HealthTracker __instance)
-        {
-            ShipInteriorMod2.WorldComp.RemovePawnFromSpaceCache(__instance?.pawn);
         }
     }
 

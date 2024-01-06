@@ -63,10 +63,14 @@
 			</layers>
 			<tags>
 				<li>Spacer</li>
-				<li>EVA</li>
 			</tags>
 			<defaultOutfitTags />
 		</apparel>
+		<comps>
+			<li>
+				<compClass>SaveOurShip2.Comp_EVA</compClass>
+			</li>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="ArmorMachineableBase">
@@ -134,10 +138,14 @@
 			</layers>
 			<tags>
 				<li>Spacer</li>
-				<li>EVA</li>
 			</tags>
 			<defaultOutfitTags />
 		</apparel>
+		<comps>
+			<li>
+				<compClass>SaveOurShip2.Comp_EVA</compClass>
+			</li>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="HatMakeableBase">
@@ -194,10 +202,14 @@
 			</layers>
 			<tags>
 				<li>Spacer</li>
-				<li>EVA</li>
 			</tags>
 			<defaultOutfitTags />
 		</apparel>
+		<comps>
+			<li>
+				<compClass>SaveOurShip2.Comp_EVA</compClass>
+			</li>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="HatMakeableBase">
@@ -256,10 +268,14 @@
 			</layers>
 			<tags>
 				<li>Spacer</li>
-				<li>EVA</li>
 			</tags>
 			<defaultOutfitTags />
 		</apparel>
+		<comps>
+			<li>
+				<compClass>SaveOurShip2.Comp_EVA</compClass>
+			</li>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="ArmorMachineableBase">
@@ -324,7 +340,6 @@
 			</layers>
 			<tags>
 				<li>Spacer</li>
-				<li>EVA</li>
 			</tags>
 			<defaultOutfitTags />
 		</apparel>
@@ -349,6 +364,11 @@
 				</li>
 			</options>
 		</colorGenerator>
+		<comps>
+			<li>
+				<compClass>SaveOurShip2.Comp_EVA</compClass>
+			</li>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="ArmorHelmetMakeableBase">
@@ -407,10 +427,14 @@
 			</layers>
 			<tags>
 				<li>Spacer</li>
-				<li>EVA</li>
 			</tags>
 			<defaultOutfitTags />
 		</apparel>
+		<comps>
+			<li>
+				<compClass>SaveOurShip2.Comp_EVA</compClass>
+			</li>
+		</comps>
 	</ThingDef>
 
 	<ThingDef ParentName="ApparelBase">
@@ -440,7 +464,7 @@
 		</comps>
 		<verbs>
 			<li>
-				<verbClass>Verb_SpaceBubblePop</verbClass>
+				<verbClass>SaveOurShip2.Verb_SpaceBubblePop</verbClass>
 				<label>space bubble</label>
 				<violent>false</violent>
 				<hasStandardCommand>true</hasStandardCommand>
@@ -478,9 +502,6 @@
 			<layers>
 				<li>Belt</li>
 			</layers>
-			<tags>
-				<li>BeltDefenseVacuum</li>
-			</tags>
 		</apparel>
 	</ThingDef>
 

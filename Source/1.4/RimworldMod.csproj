@@ -217,6 +217,7 @@
     <Compile Include="Comp\CompTargetEffect_RepairItem.cs" />
     <Compile Include="Comp\CompUseEffect_WeatherCancel.cs" />
     <Compile Include="Comp\CompShipBluePrint.cs" />
+    <Compile Include="Comp\Comp_EVA.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_ShipBlueprint.cs" />
     <Compile Include="SoShipCache.cs" />
     <Compile Include="DamageWorker_Mechanite.cs" />

@@ -1,6 +1,6 @@
-﻿namespace RimWorld
+﻿namespace SaveOurShip2
 {
-    using SaveOurShip2;
+    using RimWorld;
     using Verse;
 
     public class Verb_SpaceBubblePop : Verb

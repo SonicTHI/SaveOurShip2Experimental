@@ -1,9 +1,9 @@
 ﻿
-namespace RimWorld
+namespace SaveOurShip2
 {
     using Verse;
     using UnityEngine;
-    using SaveOurShip2;
+    using RimWorld;
 
     public class HediffComp_Bubble : HediffComp
     {

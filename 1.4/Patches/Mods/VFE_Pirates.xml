@@ -8,26 +8,68 @@
 
     <match Class="PatchOperationSequence">
       <operations>
-        <li Class="PatchOperationAdd">
+        <!-- EVA description -->
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(comps)]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(comps)]</xpath>
+            <value>
+              <comps />
+            </value>
+          </match>
+        </li>
+
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+            <value>
+              <li>
+                <compClass>SaveOurShip2.Comp_EVA</compClass>
+              </li>
+            </value>
+          </match>
+        </li>
+
+        <!-- EVA stats -->
+        <li Class="PatchOperationConditional">
           <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(equippedStatOffsets)]</xpath>
-          <value>
-            <equippedStatOffsets />
-          </value>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(equippedStatOffsets)]</xpath>
+            <value>
+              <equippedStatOffsets />
+            </value>
+          </match>
         </li>
 
-        <li Class="PatchOperationAdd">
-          <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase"]/equippedStatOffsets</xpath>
-          <value>
-            <DecompressionResistance>0.75</DecompressionResistance>
-          </value>
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+            <value>
+              <DecompressionResistance>0.75</DecompressionResistance>
+            </value>
+          </match>
         </li>
 
-        <li Class="PatchOperationAdd">
-          <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets</xpath>
-          <value>
-            <HypoxiaResistance>1</HypoxiaResistance>
-            <DecompressionResistance>0.25</DecompressionResistance>
-          </value>
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+            <value>
+              <DecompressionResistance>0.25</DecompressionResistance>
+            </value>
+          </match>
+        </li>
+
+        <li Class="PatchOperationConditional">
+          <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+          <match Class="PatchOperationAdd">
+            <xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+            <value>
+              <HypoxiaResistance>1</HypoxiaResistance>
+            </value>
+          </match>
         </li>
       </operations>
     </match>

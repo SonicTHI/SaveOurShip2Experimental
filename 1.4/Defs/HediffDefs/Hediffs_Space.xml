@@ -137,7 +137,7 @@
 				<severityPerDay>-8</severityPerDay>
 				<showHoursToRecover>true</showHoursToRecover>
 			</li>
-			<li Class="HediffCompProperties_Bubble" />
+			<li Class="SaveOurShip2.HediffCompProperties_Bubble" />
 		</comps>
 		<label>survival bubble</label>
 		<stages>

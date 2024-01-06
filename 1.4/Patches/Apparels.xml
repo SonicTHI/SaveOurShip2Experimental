@@ -1,27 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <Patch>
-  <Operation Class="PatchOperationAdd">
+  <!-- EVA description -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase" or @ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"][not(comps)]</xpath>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase" or @ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"][not(comps)]</xpath>
+      <value>
+        <comps />
+      </value>
+    </match>
+  </Operation>
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase" or @ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase" or @ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+      <value>
+        <li>
+          <compClass>SaveOurShip2.Comp_EVA</compClass>
+        </li>
+      </value>
+    </match>
+  </Operation>
+
+  <!-- EVA stats -->
+  <Operation Class="PatchOperationConditional">
     <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase" or @ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"][not(equippedStatOffsets)]</xpath>
-    <value>
-      <equippedStatOffsets />
-    </value>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase" or @ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"][not(equippedStatOffsets)]</xpath>
+      <value>
+        <equippedStatOffsets />
+      </value>
+    </match>
   </Operation>
 
-  <Operation Class="PatchOperationAdd">
+  <Operation Class="PatchOperationConditional">
     <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase"][techLevel="Spacer"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
-    <value>
-      <DecompressionResistance>0.75</DecompressionResistance>
-    </value>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[@ParentName="ArmorMachineableBase"][techLevel="Spacer"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+      <value>
+        <DecompressionResistance>0.75</DecompressionResistance>
+      </value>
+    </match>
   </Operation>
 
-
-  <Operation Class="PatchOperationAdd">
+  <Operation Class="PatchOperationConditional">
     <xpath>Defs/ThingDef[@ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
-    <value>
-      <HypoxiaResistance>1</HypoxiaResistance>
-      <DecompressionResistance>0.25</DecompressionResistance>
-    </value>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[@ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+      <value>
+        <DecompressionResistance>0.25</DecompressionResistance>
+      </value>
+    </match>
+  </Operation>
+
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/ThingDef[@ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+    <match Class="PatchOperationAdd">
+      <xpath>Defs/ThingDef[@ParentName="ArmorHelmetMakeableBase"][techLevel="Spacer"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+      <value>
+        <HypoxiaResistance>1</HypoxiaResistance>
+      </value>
+    </match>
   </Operation>
 
   <Operation Class="PatchOperationReplace">

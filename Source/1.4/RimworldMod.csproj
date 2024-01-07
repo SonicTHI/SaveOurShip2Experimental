@@ -89,7 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CachedPawnSpaceModifiers.cs" />
+    <Compile Include="Extensions/PawnExtensions.cs" />
     <Compile Include="Alert_ArchotechSporeMoodLow.cs" />
     <Compile Include="Alert_MechanitesInHomeArea.cs" />
     <Compile Include="ApparelHolographic.cs" />
@@ -261,7 +261,6 @@
     <Compile Include="Graphic\Graphic_SingleOnOffEmpty.cs" />
     <Compile Include="Graphic\Graphic_SingleOnOff.cs" />
     <Compile Include="Comp\HediffCompOnlyInSpace.cs" />
-    <Compile Include="Comp\HediffComp_Space.cs" />
     <Compile Include="CompProps\HediffCompProperties_GiveSubPart.cs" />
     <Compile Include="CompProps\HediffCompProperties_OnlyInSpace.cs" />
     <Compile Include="Comp\HediffComp_GiveSubPart.cs" />

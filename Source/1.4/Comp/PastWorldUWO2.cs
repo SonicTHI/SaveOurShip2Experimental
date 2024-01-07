@@ -17,7 +17,6 @@ namespace SaveOurShip2
         public bool startedEndgame;
         public bool SoSWin = false;
         public bool renderedThatAlready = false;
-        public Dictionary<int, CachedPawnSpaceModifiers> PawnsInSpaceCache = new Dictionary<int, CachedPawnSpaceModifiers>();
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
 
         public PastWorldUWO2(World world) : base(world)
@@ -110,32 +109,5 @@ namespace SaveOurShip2
             QueuedIncident qi = new QueuedIncident(new FiringIncident(IncidentDef.Named("SoSFreeEntanglement"), null, parms),Find.TickManager.TicksGame, Find.TickManager.TicksGame+99999999);
             Find.Storyteller.incidentQueue.Add(qi);
         }*/
-
-        public CachedPawnSpaceModifiers AddPawnToSpaceCache(Pawn pawn)
-        {
-            CachedPawnSpaceModifiers pawnSpaceModifiers = new CachedPawnSpaceModifiers(pawn);
-            PawnsInSpaceCache[pawn.thingIDNumber] = pawnSpaceModifiers;
-            return pawnSpaceModifiers;
-        }
-
-        public CachedPawnSpaceModifiers GetPawnSpaceModifiersCache(Pawn pawn)
-        {
-            if (PawnsInSpaceCache.ContainsKey(pawn.thingIDNumber))
-            {
-                return PawnsInSpaceCache[pawn.thingIDNumber];
-            }
-            else
-            {
-                return AddPawnToSpaceCache(pawn);
-            }
-        }
-
-        public void RemovePawnFromSpaceCache(Pawn pawn)
-        {
-            if (PawnsInSpaceCache.ContainsKey(pawn.thingIDNumber))
-            {
-                PawnsInSpaceCache.Remove(pawn.thingIDNumber);
-            }
-        }
     }
 }

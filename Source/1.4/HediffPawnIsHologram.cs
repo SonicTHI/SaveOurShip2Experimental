@@ -59,16 +59,9 @@ namespace RimWorld
             return pawn.health.hediffSet.hediffs.Where(hediff => hediff.IsPermanent() || hediff.def.chronic || hediff.def.makesSickThought).ToList();
         }
 
-        public override void PostAdd(DamageInfo? dinfo)
-        {
-            base.PostAdd(dinfo);
-            ShipInteriorMod2.WorldComp.RemovePawnFromSpaceCache(pawn);
-        }
-
         public override void PostRemoved()
         {
             base.PostRemoved();
-            ShipInteriorMod2.WorldComp.RemovePawnFromSpaceCache(pawn);
 
             if (!SafeRemoveFlag)
                 Log.Error("Formgel hediff removed from pawn " + pawn.Name + " in an unsafe manner. Please submit your log file to the SoS2 developers as a bug report.");

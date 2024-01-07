@@ -2348,8 +2348,8 @@
 		  <WorkToBuild>1600</WorkToBuild>
 		  <Mass>50</Mass>
 		  <BedRestEffectiveness>1.5</BedRestEffectiveness>
-      <DecompressionResistanceOffset>1</DecompressionResistanceOffset>
-      <HypoxiaResistanceOffset>1</HypoxiaResistanceOffset>
+		  <DecompressionResistanceOffset>1</DecompressionResistanceOffset>
+		  <HypoxiaResistanceOffset>1</HypoxiaResistanceOffset>
 		</statBases>
 		<size>(1,1)</size>
 		<uiOrder>2022</uiOrder>

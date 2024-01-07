@@ -13,7 +13,7 @@ namespace RimWorld
         public Building shipRoot;
         public IntVec3 bottomLeftPos;
         public byte shipRotNum;
-        public bool includeRock;
+        public bool includeRock = false;
         public Map targetMap = null;
         public Faction fac = null;
 

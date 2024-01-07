@@ -10,12 +10,7 @@ namespace RimWorld
 		public bool isHull = false;
 		public bool hermetic = false; //used in SpaceRoomCheck only
 
-        public bool canLight = false;
-		public ThingDef light;
-		public int lightPower = 15;
-		public int sunLightPower = 2500;
-
-		public bool roof = false;
+		public bool roof = false; //on plating, walls since RW roofs everything
 
 		//types for terrain, roof
 		public bool mechanoid = false;

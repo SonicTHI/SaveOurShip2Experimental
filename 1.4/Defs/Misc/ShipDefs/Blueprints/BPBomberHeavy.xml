@@ -195,9 +195,7 @@
 			</li>
 			<li>
 				<key>[</key>
-				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
-					<color>RGBA(0.851, 0.851, 0.784, 1.000)</color>
+				<value><shapeOrDef>Lighting_MURWallLight</shapeOrDef>
 				</value>
 			</li>
 			<li>

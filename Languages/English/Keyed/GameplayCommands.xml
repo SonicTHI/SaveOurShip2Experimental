@@ -56,8 +56,9 @@
 	<ShipInsideToggleEngines>Engage ship engines</ShipInsideToggleEngines>
 	<ShipInsideToggleEnginesDesc>Engage ship engines to clear hazards.</ShipInsideToggleEnginesDesc>
 	<ShipMoveDesc>Deselect to confirm location</ShipMoveDesc>
-	<ShipCombatEscape>Escape combat</ShipCombatEscape>
-	<ShipCombatEscapeDesc>Flee from battle, leaving behind anyone aboard the enemy ship</ShipCombatEscapeDesc>
+	<ShipRebuild>Rebuild ship parts</ShipRebuild>
+	<ShipRebuildDesc>Places blueprints for destroyed buildings on this ship.</ShipRebuildDesc>
+	<!-- combat -->
 	<ShipCombatRetreat>Retreat</ShipCombatRetreat>
 	<ShipCombatRetreatDesc>Try to move away from the enemy ship</ShipCombatRetreatDesc>
 	<ShipCombatStop>Stop</ShipCombatStop>
@@ -66,20 +67,29 @@
 	<ShipCombatMaintainDesc>Maintain distance to the enemy ship</ShipCombatMaintainDesc>
 	<ShipCombatAdvance>Advance</ShipCombatAdvance>
 	<ShipCombatAdvanceDesc>Try to move closer to the enemy ship</ShipCombatAdvanceDesc>
+	<ShipCombatEscape>Escape combat</ShipCombatEscape>
+	<ShipCombatEscapeDesc>Flee from battle, leaving behind anyone aboard the enemy ship</ShipCombatEscapeDesc>
+	<ShipTargetEnd>Stop targeting</ShipTargetEnd>
+	<ShipTargetEndDesc>Stop targeting your current target with your weapons.</ShipTargetEndDesc>
+	<CommandWithdrawShip>Withdraw ship</CommandWithdrawShip>
+	<CommandWithdrawShipDesc>Withdraw this ship from the battle</CommandWithdrawShipDesc>
+	<CommandWithdrawShipLast>Last ship can not withdraw</CommandWithdrawShipLast>
+	<ConfirmWithdrawShipCombat>Withdraw this ship to the graveyard? If you lose or flee, the enemy ship will attack your graveyard.</ConfirmWithdrawShipCombat>
+	<CommandWithdrawWrecks>Withdraw wrecks</CommandWithdrawWrecks>
+	<CommandWithdrawWrecksDesc>Withdraw all wrecks from the battle</CommandWithdrawWrecksDesc>
+	<CommandWithdrawMoveWrecks>Can not move with wrecks on map!</CommandWithdrawMoveWrecks>
+	<ConfirmWithdrawWrecksCombat>Withdraw all wrecks to the graveyard? If you lose or flee, the enemy ship will attack your graveyard. If you win, the wrecks can be retrieved with the salvage bay for a minor amount of fuel.</ConfirmWithdrawWrecksCombat>
 	<CommandScuttleShip>Launch all escape pods</CommandScuttleShip>
 	<CommandScuttleShipDesc>Launches all escape pods to selected destination on the planet.</CommandScuttleShipDesc>
 	<CommandScuttleShipPods>Can not abandon ship with pods in transit to/from it!</CommandScuttleShipPods>
 	<ShipInsideNoLoadedPods>No loaded crypto pods</ShipInsideNoLoadedPods>
 	<CommandLaunchCryptoNotLoaded>Crypto pod not loaded</CommandLaunchCryptoNotLoaded>
-	<CommandWithdrawShip>Withdraw Ship</CommandWithdrawShip>
-	<CommandWithdrawShipDesc>Withdraw this ship from the battle</CommandWithdrawShipDesc>
-	<CommandWithdrawShipLast>Last ship can not withdraw</CommandWithdrawShipLast>
 	<ShipInsideSelectWeapons>Select</ShipInsideSelectWeapons>
 	<ShipInsideSelectWeaponsDesc>Select connected ship-to-ship weapons</ShipInsideSelectWeaponsDesc>
 	<ShipInsideHoldFire>Cease fire</ShipInsideHoldFire>
 	<ShipInsideHoldFireDesc>Stop all connected ship-to-ship weapons from firing on enemy ship</ShipInsideHoldFireDesc>
 	<NotAtMaxShipRange>Not at maximum range</NotAtMaxShipRange>
-	<ShipOnEnemyMap>Ship is on enemy map</ShipOnEnemyMap>
+	<ShipOnEnemyMap>Ship is in unstable orbit.</ShipOnEnemyMap>
 	<!-- airlock -->
 	<ShipInsideToggleDock>Toggle extender</ShipInsideToggleDock>
 	<ShipInsideToggleDockDesc>Extend or retract the airlock extender up to 3 tiles away</ShipInsideToggleDockDesc>
@@ -96,10 +106,14 @@
 	<ShipMoveWreckFlipCommandDesc>Reposition and flip a wreck on your map</ShipMoveWreckFlipCommandDesc>
 	<ShipMoveWreckRotCommand>Rotate wreck</ShipMoveWreckRotCommand>
 	<ShipMoveWreckRotCommandDesc>Reposition and rotate a wreck counter clockwise on your map</ShipMoveWreckRotCommandDesc>
-	<ShipSalvageCommand>Retrieve wreck</ShipSalvageCommand>
-	<ShipSalvageCommandDesc>Retrieve a wreck from target ship</ShipSalvageCommandDesc>
+	<ShipSalvageCommand>Retrieve from {0}</ShipSalvageCommand>
+	<ShipSalvageCommandDesc>Retrieve a wreck from target map {0}</ShipSalvageCommandDesc>
+	<ShipSalvageStablize>Stabilize {0}</ShipSalvageStablize>
+	<ShipSalvageStablizeFuel>Stabilization requires {0} fuel!</ShipSalvageStablizeFuel>
+	<ShipSalvageStablizeDesc>Stabilize the orbit of {0}. This requires enough salvage bays and will consume a minor amount of fuel in your engines.</ShipSalvageStablizeDesc>
+	<ShipSalvageStablizeConfirm>Stabilize the orbit of {0}. This requires enough salvage bays and will consume a minor amount of fuel in your engines.</ShipSalvageStablizeConfirm>
 	<ShipSalvageDisabled>In ship battle or enemy pawns present!</ShipSalvageDisabled>
-	<ShipSalvageAbandonConfirm>Are you sure you want to discard the target?\nEverything connected to it will burn up in the atmosphere!</ShipSalvageAbandonConfirm>
+	<ShipSalvageAbandonConfirm>Are you sure you want to discard the target?\nEverything connected to or on it will burn up in the atmosphere!</ShipSalvageAbandonConfirm>
 	<ShipSalvageBridge>Can not move intact ships with the salvage bay, capture or destroy the bridge.</ShipSalvageBridge>
 	<ShipSalvageCount>Not enough salvage bays. {0}/{1}</ShipSalvageCount>
 	<ShipClaimWrecksCommand>Claim wrecks</ShipClaimWrecksCommand>

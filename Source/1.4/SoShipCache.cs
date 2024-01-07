@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Verse;
 using SaveOurShip2;
-using RimWorld.Planet;
 using UnityEngine;
 
 namespace RimWorld
@@ -25,11 +24,10 @@ namespace RimWorld
         //other buildings: +-for count, mass if on shipPart
 
         public HashSet<IntVec3> Area = new HashSet<IntVec3>(); //shipParts add to area, removed in despawn, detach
-        public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //add to when destroyed in combat
         public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
         public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
         //for rebuild after battle, reset before combat, rebuild gizmo
-        public HashSet<Tuple<BuildableDef,IntVec3,Rot4>> BuildingsDestroyed = new HashSet<Tuple<BuildableDef, IntVec3, Rot4>>();
+        public HashSet<Tuple<BuildableDef, IntVec3, Rot4>> BuildingsDestroyed = new HashSet<Tuple<BuildableDef, IntVec3, Rot4>>();
         public HashSet<Building> BuildingsNonRot = new HashSet<Building>();
         public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
         public List<CompRCSThruster> RCSs = new List<CompRCSThruster>();
@@ -42,12 +40,6 @@ namespace RimWorld
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
-        public int Mass = 0;
-        public float MaxTakeoff = 0;
-        public int BuildingCount = 0;
-        public int BuildingCountAtCombatStart = 0;
-        public int ThreatRaw = 0;
-        public bool DetachCheck = false;
         private Map map;
         public Map Map
         {
@@ -62,12 +54,8 @@ namespace RimWorld
             }
         }
         public ShipHeatMapComp mapComp;
-        public bool PathDirty = true;
-        public float[] ThreatPerSegment = new[] { 1f, 1f, 1f, 1f };
-        public int Threat => ThreatRaw + Mass / 100;
-        public bool Rotatable => !BuildingsNonRot.Any();
-        public float ThrustRaw = 0;
-        public float ThrustRatio => ThrustRaw * 500f / Mass;
+        public Building_ShipBridge Core; //main bridge
+        public int Index = -1;
         private string name;
         public string Name
         {
@@ -82,61 +70,164 @@ namespace RimWorld
                 return name;
             }
         }
-        public int Index = -1;
-        public Building_ShipBridge Core; //main bridge
-        public Faction Faction => Buildings.First().Faction;
-        public bool IsWreck => Core == null;
-        public bool IsStuck => Core == null || Bridges.All(b => b.TacCon); //ship cant move with taccon
-        public Rot4 Rot => Engines.FirstOrDefault().parent.Rotation;
-        public bool EnginesCanActivate()
+        public Faction Faction => Buildings?.FirstOrDefault()?.Faction;
+        public void Capture(Faction fac)
         {
-            if (Engines.Any(e => e.CanFire(Rot)))
+            foreach (Building building in Buildings)
+            {
+                if (building.def.CanHaveFaction)
+                    building.SetFaction(fac);
+            }
+        }
+        //threat
+        public int BuildingCount = 0;
+        public int BuildingCountAtCombatStart = 0;
+        public int ThreatRaw = 0;
+        public int Threat => ThreatRaw + Mass / 100;
+        public float ThreatCurrent; //updates on ActualThreatPerSegment
+        public float[] ThreatPerSegment = new[] { 1f, 1f, 1f, 1f };
+        public float[] ActualThreatPerSegment() //turrets that cant actually fire due to ammo
+        {
+            ThreatCurrent = 0;
+            float[] actualThreatPerSegment = ThreatPerSegment;
+            foreach (var turret in Turrets)
+            {
+                int threat = turret.heatComp.Props.threat;
+                var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
+                var fuel = turret.TryGetComp<CompRefuelable>();
+                if (!turret.Active || (torp != null && !torp.Loaded) || (fuel != null && fuel.Fuel == 0f))
+                {
+                    if (turret.heatComp.Props.maxRange > 150) //long
+                    {
+                        actualThreatPerSegment[0] -= threat / 6f;
+                        actualThreatPerSegment[1] -= threat / 4f;
+                        actualThreatPerSegment[2] -= threat / 2f;
+                        actualThreatPerSegment[3] -= threat;
+                    }
+                    else if (turret.heatComp.Props.maxRange > 100) //med
+                    {
+                        actualThreatPerSegment[0] -= threat / 4f;
+                        actualThreatPerSegment[1] -= threat / 2f;
+                        actualThreatPerSegment[2] -= threat;
+                    }
+                    else if (turret.heatComp.Props.maxRange > 50) //short
+                    {
+                        actualThreatPerSegment[0] -= threat / 2f;
+                        actualThreatPerSegment[1] -= threat;
+                    }
+                    else //cqc
+                        actualThreatPerSegment[0] -= threat;
+                }
+                else
+                {
+                    ThreatCurrent += threat;
+                }
+            }
+            return actualThreatPerSegment;
+        }
+        //movement
+        public int Mass = 0;
+        public int EngineMass = 0;
+        public int MassSum => Mass + EngineMass;
+        public float MaxTakeoff = 0;
+        public float ThrustRaw = 0;
+        public float ThrustRatio => 14 * ThrustRaw * 500f / Mathf.Pow(MassSum, 1.2f);
+        public int Rot => Engines.First().parent.Rotation.AsInt;
+        public bool IsWreck => Core == null; //not a real ship
+        public bool IsStuck => IsWreck || Bridges.All(b => b.TacCon) || Engines.NullOrEmpty(); //ship but cant move on its own
+        public bool CanFire() //ship has any engine that can fire
+        {
+            if (IsStuck)
+                return false;
+            if (Engines.Any(e => e.CanFire()))
                 return true;
             return false;
         }
-        public bool CanMove => !IsStuck && EnginesCanActivate();
-        public float EnginesOn()
+        public bool CanMove() //ship can move if it can fire and is aligned to map rot
+        {
+            if (IsStuck)
+                return false;
+            if (Engines.Any(e => e.CanFire(new Rot4(mapComp.EngineRot))))
+                return true;
+            return false;
+        }
+        public bool IsStuckAndNotAssisted() //is the stuck ship docked to a ship that can move
+        {
+            if (IsStuck)
+            {
+                if (mapComp.Docked.Any())
+                {
+                    foreach (int i in DockedTo())
+                    {
+                        var ship = mapComp.ShipsOnMapNew[i];
+                        if (ship.CanMove())
+                            return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public float ThrustToWeight() //actual combat t/w, calcs in docked
+        {
+            if (mapComp.Docked.NullOrEmpty())
+            {
+                //Log.Message(Index + " - 1 - " + EnginePower() / Mathf.Pow(BuildingCount, 1.1f));
+                return EnginePower() / Mathf.Pow(MassSum, 1.2f); //Mathf.Pow(BuildingCount, 1.1f);
+            }
+
+            float p = EnginePower();
+            int c = MassSum;
+            foreach (int i in DockedTo())
+            {
+                var ship = mapComp.ShipsOnMapNew[i];
+                p += ship.EnginePower();
+                c += ship.MassSum;
+            }
+            //Log.Message(Index + " - 2 - " + p / Mathf.Pow(c, 1.1f));
+            return p / Mathf.Pow(c, 1.2f);
+        }
+        public float EnginePower()
         {
             if (IsStuck)
                 return 0;
             float enginePower = 0;
             foreach (var engine in Engines)
             {
-                if (engine.CanFire(Rot))
-                {
-                    if (engine.On())
-                    {
-                        enginePower += engine.Thrust;
-                    }
-                    else
-                        engine.Off();
-                }
-                else
-                    engine.Off();
-            }
-            return enginePower;
-        }
-        public int EnginePower()
-        {
-            if (IsStuck || Engines.NullOrEmpty())
-                return 0;
-            int enginePower = 0;
-            foreach (var engine in Engines)
-            {
-                if (engine.CanFire(Rot))
+                if (engine.CanFire(new Rot4(mapComp.EngineRot)))
                 {
                     enginePower += engine.Thrust;
                 }
             }
             return enginePower;
         }
-        public void MoveAtThrust(int thrust)
+        public HashSet<int> DockedTo() //other ships docked to this
+        {
+            HashSet<int> dockedTo = new HashSet<int>();
+            foreach (Building_ShipAirlock b in mapComp.Docked)
+            {
+                int i = mapComp.ShipIndexOnVec(b.Position);
+                int i2 = mapComp.ShipIndexOnVec(b.dockedTo.Position);
+                if (i == Index && i2 != Index) //dock on this, get docked
+                {
+                    dockedTo.Add(i2);
+                }
+                if (i2 == Index && i != Index) //reverse
+                {
+                    dockedTo.Add(i);
+                }
+            }
+            return dockedTo;
+        }
+        public void MoveAtThrust(float thrust)
         {
             List<CompEngineTrail> list = new List<CompEngineTrail>();
-            list = Engines.Where(e => e.CanFire(Rot)).OrderByDescending(e => e.Props.energy).ThenBy(e => e.Thrust).ToList();
+            list = Engines.Where(e => e.CanFire(new Rot4(mapComp.EngineRot))).OrderBy(e => e.Thrust).ThenBy(e => e.Props.energy).ThenBy(e => e.Props.reactionless).ToList();
             int i = 0;
             foreach (CompEngineTrail engine in list)
             {
+                //Log.Message(Index + " " + engine);
                 i += engine.Thrust;
                 engine.On();
                 if (i > thrust)
@@ -150,61 +241,22 @@ namespace RimWorld
                 engine.Off();
             }
         }
-        public void Capture(Faction fac)
-        {
-            foreach (Building building in Buildings)
-            {
-                if (building.def.CanHaveFaction)
-                    building.SetFaction(fac);
-            }
-        }
         //shipmove
-        public bool CanShipMove(float needFuel)
+        public void CreateShipSketchIfFuelPct(float fuelPercentNeeded, Map map, byte rot = 0, bool atmospheric = false)
         {
-            if (!IsStuck && RCSs.Any())
-            {
-                float fuel = 0;
-                foreach (var engine in Engines.Where(e => !e.Props.reactionless))
-                {
-                    fuel += engine.refuelComp.Fuel;
-                }
-                if (fuel > needFuel)
-                    return true;
-            }
-            return false;
+            if (HasPilotRCSAndFuel(fuelPercentNeeded, atmospheric))
+                CreateShipSketch(map, rot);
         }
-        public bool HasPilotRCSAndFuel(float fuelPercentNeeded, bool RCS = false)
+        public bool HasPilotRCSAndFuel(float fuelPercentNeeded, bool atmospheric)
         {
-            float fuelNeeded = Mass;
-            Log.Message("Mass: " + Mass + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
-            if (RCS && RCSs.Count * 2000 < fuelNeeded) //2k weight/RCS to move
-            {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
-                return false;
-            }
-            fuelNeeded *= fuelPercentNeeded;
-            if (TakeoffCurrent() < fuelNeeded)
-            {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailFuel", fuelNeeded), Core, MessageTypeDefOf.NeutralEvent);
-                return false;
-            }
             if (!HasMannedBridge())
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailPilot"), Core, MessageTypeDefOf.NeutralEvent);
                 return false;
             }
+            if (!HasRCSAndFuel(fuelPercentNeeded, atmospheric))
+                return false;
             return true;
-        }
-        public float TakeoffCurrent()
-        {
-            float fuelHad = 0f;
-            foreach (CompEngineTrail engine in Engines.Where(e => e.Props.takeOff))
-            {
-                fuelHad += engine.refuelComp.Fuel;
-                if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
-                    fuelHad += engine.refuelComp.Fuel;
-            }
-            return fuelHad;
         }
         public bool HasMannedBridge()
         {
@@ -221,6 +273,78 @@ namespace RimWorld
                 }
             }
             return false;
+        }
+        public bool HasRCSAndFuel(float fuelPercentNeeded, bool atmospheric)
+        {
+            float fuelNeeded = Mass;
+            Log.Message("Mass: " + Mass + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
+            if (atmospheric && (RCSs.Count * 2000 < fuelNeeded || Engines.Any(e => e.Props.reactionless))) //2k weight/RCS to move
+            {
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
+                return false;
+            }
+            fuelNeeded *= fuelPercentNeeded;
+            if (FuelNeeded(atmospheric) < fuelNeeded)
+            {
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailFuel", fuelNeeded), Core, MessageTypeDefOf.NeutralEvent);
+                return false;
+            }
+            return true;
+        }
+        public float FuelNeeded(bool atmospheric)
+        {
+            float fuelHad = 0f;
+            foreach (CompEngineTrail engine in Engines.Where(e => !e.Props.energy && (!atmospheric || e.Props.takeOff)))
+            {
+                fuelHad += engine.refuelComp.Fuel;
+                if (engine.refuelComp.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
+                    fuelHad += engine.refuelComp.Fuel;
+            }
+            return fuelHad;
+        }
+        public void CreateShipSketch(Map targetMap, byte rotb = 0)
+        {
+            IntVec3 lowestCorner = LowestCorner(rotb, Map);
+            Sketch sketch = new Sketch();
+            IntVec3 rot = new IntVec3(0, 0, 0);
+            foreach (IntVec3 pos in Area)
+            {
+                if (rotb == 1)
+                {
+                    rot.x = targetMap.Size.x - pos.z;
+                    rot.z = pos.x;
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
+                }
+                else if (rotb == 2)
+                {
+                    rot.x = targetMap.Size.x - pos.x;
+                    rot.z = targetMap.Size.z - pos.z;
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
+                }
+                else
+                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos - lowestCorner, Rot4.North);
+            }
+            MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(sketch).TryMakeMinified();
+            if (IsWreck)
+                fakeMover.shipRoot = Buildings.First();
+            else
+                fakeMover.shipRoot = Core;
+            fakeMover.shipRotNum = rotb;
+            fakeMover.bottomLeftPos = lowestCorner;
+            ShipInteriorMod2.shipOriginMap = Map;
+            fakeMover.targetMap = targetMap;
+            fakeMover.Position = fakeMover.shipRoot.Position;
+            fakeMover.SpawnSetup(targetMap, false);
+            List<object> selected = new List<object>();
+            foreach (object ob in Find.Selector.SelectedObjects)
+                selected.Add(ob);
+            foreach (object ob in selected)
+                Find.Selector.Deselect(ob);
+            Current.Game.CurrentMap = targetMap;
+            Find.Selector.Select(fakeMover);
+            if (Find.TickManager.Paused)
+                Find.TickManager.TogglePaused();
+            InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
         }
         public IntVec3 LowestCorner(byte rotb, Map map)
         {
@@ -283,97 +407,80 @@ namespace RimWorld
             }
             return cells;
         }
-        public Sketch GenerateShipSketch(Map targetMap, IntVec3 lowestCorner, byte rotb = 0)
+
+        //dep
+        public float EnginesOn() //dep
         {
-            Sketch sketch = new Sketch();
-            IntVec3 rot = new IntVec3(0, 0, 0);
-            foreach (IntVec3 pos in Area)
+            if (IsStuck)
+                return 0;
+            float enginePower = 0;
+            foreach (var engine in Engines)
             {
-                if (rotb == 1)
+                if (engine.CanFire(new Rot4(mapComp.EngineRot)))
                 {
-                    rot.x = targetMap.Size.x - pos.z;
-                    rot.z = pos.x;
-                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
-                }
-                else if (rotb == 2)
-                {
-                    rot.x = targetMap.Size.x - pos.x;
-                    rot.z = targetMap.Size.z - pos.z;
-                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
+                    if (engine.OnOld())
+                    {
+                        enginePower += engine.Thrust;
+                    }
+                    else
+                        engine.Off();
                 }
                 else
-                    sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos - lowestCorner, Rot4.North);
+                    engine.Off();
             }
-            return sketch;
+            return enginePower;
         }
-        public void MoveShipSketch(Map targetMap, byte rotb = 0, bool salvage = false, int bMax = 0, bool includeRock = false)
+        public bool ConsumeFuel(bool fromSpace, bool toSpace)
         {
-            if (salvage && !IsStuck)
+            float fuelNeeded = Mass;
+            float energyNeeded = 0;
+            float fuelStored = 0f;
+            float normalThrust = 0;
+            float energyThrust = 0f;
+            foreach (CompEngineTrail engine in Engines)
             {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageBridge"), MessageTypeDefOf.NeutralEvent);
-                return;
-            }
-
-            float bCountF = BuildingCount * 2.5f;
-            if (salvage && bCountF > bMax)
-            {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
-            }
-            //td add rock terrain and walls
-            IntVec3 lowestCorner = LowestCorner(rotb, Map);
-            Sketch shipSketch = GenerateShipSketch(targetMap, lowestCorner, rotb);
-            MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(shipSketch).TryMakeMinified();
-            if (IsWreck)
-                fakeMover.shipRoot = Buildings.First();
-            else
-                fakeMover.shipRoot = Core;
-            fakeMover.includeRock = includeRock;
-            fakeMover.shipRotNum = rotb;
-            fakeMover.bottomLeftPos = lowestCorner;
-            ShipInteriorMod2.shipOriginMap = Map;
-            fakeMover.targetMap = targetMap;
-            fakeMover.Position = fakeMover.shipRoot.Position;
-            fakeMover.SpawnSetup(targetMap, false);
-            List<object> selected = new List<object>();
-            foreach (object ob in Find.Selector.SelectedObjects)
-                selected.Add(ob);
-            foreach (object ob in selected)
-                Find.Selector.Deselect(ob);
-            Current.Game.CurrentMap = targetMap;
-            Find.Selector.Select(fakeMover);
-            if (Find.TickManager.Paused)
-                Find.TickManager.TogglePaused();
-            InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
-        }
-        //dep
-        public List<Thing> ThingsOnShip() //dep
-        {
-            List<Thing> things = new List<Thing>();
-            foreach (IntVec3 v in Area)
-            {
-                foreach (Thing t in v.GetThingList(Core.Map))
+                if (engine.Props.energy || engine.Props.reactionless) //td add energy drain
                 {
-                    if (!things.Contains(t))
-                        things.Add(t);
+
+                    energyThrust += engine.Thrust;
+                }
+                else if ((fromSpace && toSpace) || (engine.Props.takeOff && (fromSpace || toSpace)))
+                {
+                    //take fuel from any engine in space, when landing or taking off only from capable engines
+                    fuelStored += engine.refuelComp.Fuel;
+                    normalThrust += engine.Thrust;
+                    if (engine.PodFueled)
+                    {
+                        fuelStored += engine.refuelComp.Fuel;
+                        if (ModsConfig.BiotechActive && !fromSpace)
+                        {
+                            foreach (IntVec3 v in engine.ExhaustArea)
+                                v.Pollute(map, true);
+                        }
+                    }
                 }
             }
-            return things;
-        }
-        public List<Building> BuildingsOnShip() //dep
-        {
-            if (Buildings.Any())
-                return Buildings.ToList();
 
-            List<Building> buildings = new List<Building>();
-            foreach (IntVec3 v in Area)
+            if (fromSpace) //reduce fuel need, energy helps % wise of thrust
             {
-                foreach (Thing t in v.GetThingList(Core.Map))
+                if (toSpace) //space map 1%
                 {
-                    if (t is Building b && !buildings.Contains(b))
-                        buildings.Add(b);
+                    fuelNeeded *= 0.01f;
+                    energyNeeded = fuelNeeded * energyThrust / (normalThrust + energyThrust);
                 }
+                else //to ground 10%
+                    fuelNeeded *= 0.1f;
+
+                fuelNeeded *= normalThrust / (normalThrust + energyThrust);
             }
-            return buildings;
+
+            if (fuelNeeded > fuelStored)
+                return false;
+            foreach (CompEngineTrail engine in Engines.Where(e => !e.Props.energy && ((fromSpace && toSpace) || (e.Props.takeOff && (fromSpace || toSpace)))))
+            {
+                engine.refuelComp.ConsumeFuel(fuelNeeded * engine.refuelComp.Fuel / fuelStored);
+            }
+            return true;
         }
         public void AllOff()
         {
@@ -381,40 +488,6 @@ namespace RimWorld
             var heatnNet = Core.TryGetComp<CompShipHeat>().myNet;
             heatnNet.ShieldsOff();
             heatnNet.TurretsOff();
-        }
-        public float[] ActualThreatPerSegment() //dep turrets that cant actually fire due to ammo
-        {
-            float[] actualThreatPerSegment = ThreatPerSegment;
-            foreach (var turret in Turrets)
-            {
-                var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
-                var fuel = turret.TryGetComp<CompRefuelable>();
-                if ((torp != null && !torp.Loaded) || (fuel != null && fuel.Fuel == 0f))
-                {
-                    int threat = turret.heatComp.Props.threat;
-                    if (turret.heatComp.Props.maxRange > 150) //long
-                    {
-                        actualThreatPerSegment[0] -= threat / 6f;
-                        actualThreatPerSegment[1] -= threat / 4f;
-                        actualThreatPerSegment[2] -= threat / 2f;
-                        actualThreatPerSegment[3] -= threat;
-                    }
-                    else if (turret.heatComp.Props.maxRange > 100) //med
-                    {
-                        actualThreatPerSegment[0] -= threat / 4f;
-                        actualThreatPerSegment[1] -= threat / 2f;
-                        actualThreatPerSegment[2] -= threat;
-                    }
-                    else if (turret.heatComp.Props.maxRange > 50) //short
-                    {
-                        actualThreatPerSegment[0] -= threat / 2f;
-                        actualThreatPerSegment[1] -= threat;
-                    }
-                    else //cqc
-                        actualThreatPerSegment[0] -= threat;
-                }
-            }
-            return actualThreatPerSegment;
         }
         //AI
         public void PurgeCheck()
@@ -446,11 +519,16 @@ namespace RimWorld
             }
         }
         //cache
+        public IntVec3 BridgeKillVec = IntVec3.Invalid; //system is stupid but here we are
+        public bool LastBridgeDied = false; //as above, prevents checking for detach untill ship is moved
+        public bool PathDirty = true; //unused //td
+        public int LastSafePath = -1; //in combat the lowest path -1 that sufered damage
+        public List<HashSet<IntVec3>> DetachedShipAreas = new List<HashSet<IntVec3>>();
         public void RebuildCache(Building origin, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
         {
             if (origin == null || origin.Destroyed)
             {
-                Log.Error("SOS2 ship recache: tried merging to null or destroyed origin");
+                Log.Error(map + " SOS2 ship recache: tried merging to null or destroyed origin");
                 return;
             }
             Map = origin.Map;
@@ -495,13 +573,9 @@ namespace RimWorld
                     path++;
                 //Log.Message("parts at i: "+ current.Count + "/" + i);
             }
+            LastSafePath = path;
             PathDirty = false;
-            Log.Message("Rebuilt cache for ship: " + Index);
-            Log.Message("Parts: " + Parts.Count);
-            Log.Message("Buildings: " + Buildings.Count);
-            Log.Message("Bridges: " + Bridges.Count);
-            Log.Message("Area: " + Area.Count);
-            Log.Message("Core: " + Core);
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Rebuilt cache, Parts: " + Parts.Count + " Buildings: " + Buildings.Count + " Bridges: " + Bridges.Count + " Area: " + Area.Count + " Core: " + Core + " Name: " + Name + " path max: " + LastSafePath);
         }
         public void AddToCache(Building b)
         {
@@ -537,6 +611,7 @@ namespace RimWorld
                                 if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
                                     MaxTakeoff += refuelable.Props.fuelCapacity;
                             }
+                            EngineMass += b.def.Size.Area * 60;
                             Engines.Add(b.TryGetComp<CompEngineTrail>());
                         }
                         else if (b.TryGetComp<CompRCSThruster>() != null)
@@ -605,7 +680,7 @@ namespace RimWorld
                     else if (heatComp is CompShipCombatShield shield)
                         Shields.Add(shield);
                 }
-                else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
+                else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)
                     ThreatRaw += 5;
                 Mass += b.def.Size.x * b.def.Size.z * 3;
             }
@@ -644,6 +719,7 @@ namespace RimWorld
                                 if (refuelable.Props.fuelFilter.AllowedThingDefs.Contains(ResourceBank.ThingDefOf.ShuttleFuelPods))
                                     MaxTakeoff -= refuelable.Props.fuelCapacity;
                             }
+                            EngineMass -= b.def.Size.Area * 60;
                             Engines.Remove(b.TryGetComp<CompEngineTrail>());
                         }
                         else if (b.TryGetComp<CompRCSThruster>() != null)
@@ -659,7 +735,7 @@ namespace RimWorld
                             if (b.TryGetComp<CompBuildingConsciousness>() != null)
                                 AICores.Remove(bridge);
                             if (bridge == Core)
-                                ReplaceCoreOrWreck();
+                                ReplaceCore();
                             //bridge.ShipIndex = -1;
                             //bridge.ShipName = "destroyed ship";
                         }
@@ -707,37 +783,57 @@ namespace RimWorld
                     else if (heatComp is CompShipCombatShield shield)
                         Shields.Remove(shield);
                 }
-                else if (b.def == ThingDef.Named("ShipSpinalAmplifier"))
+                else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)
                     ThreatRaw -= 5;
                 Mass -= b.def.Size.x * b.def.Size.z * 3;
             }
         }
-        public bool ReplaceCoreOrWreck() //before despawn try find replacer for core
+        public bool ReplaceCore() //before despawn try find replacer for core
         {
-            if (Bridges.NullOrEmpty()) //core died, no replacements
+            //if (CoreIsfucked)
+            //    return false;
+            List<Building_ShipBridge> bridges = Bridges.Where(b => b != Core && !b.Destroyed).ToList();
+            if (bridges.Any())
             {
-                Log.Message("SOS2c: ship wrecked: " + Index);
-                Core = null;
-                ResetCorePath();
-                if (mapComp.InCombat) //if last ship end combat else move to grave
-                {
-                    if (mapComp.ShipsOnMapNew.Count > 1)
-                        mapComp.DestroyedIncombat.Add(Index, null);
-                    else
-                        mapComp.EndBattle(Map, false);
-                }
+                //core died but replacer exists
+                Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Replaced primary bridge.");
+
+                Core = BestCoreReplacer(bridges);
+                RebuildCorePath();
                 return true;
             }
-            var replacer = Bridges.FirstOrDefault(b => b != Core && !b.Destroyed);
-            if (replacer == null) //hull under core died, no replacer exists
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Has 0 cores remaining.");
+            Core = null;
+            ResetCorePath();
+            LastBridgeDied = true;
+            if (BridgeKillVec != IntVec3.Invalid)
             {
-                return false;
+                Area.Remove(BridgeKillVec);
+                mapComp.MapShipCells.Remove(BridgeKillVec);
             }
-            //core died but replacer exists
-            Log.Message("SOS2c: replaced primary bridge on ship: " + Index);
-            Core = replacer;
-            RebuildCorePath();
-            return true;
+
+            if (mapComp.InCombat) //if last ship end combat else move to grave
+            {
+                if (mapComp.ShipsOnMapNew.Count > 1)
+                    mapComp.ShipsToMove.Add(Index);
+                else
+                    mapComp.EndBattle(Map, false);
+            }
+            return false;
+        }
+        private Building_ShipBridge BestCoreReplacer(List<Building_ShipBridge> bridges)
+        {
+            //non core, non destroyed bridge closeset to engines
+            if (Engines.NullOrEmpty() || bridges.Count() == 1)
+                return bridges.First();
+            IntVec3 closest = Map.Size;
+            Building_ShipBridge best = null;
+            foreach (Building_ShipBridge b in bridges)
+            {
+                if (closest.LengthManhattan > (b.Position - Engines.First().parent.Position).LengthManhattan)
+                    best = b;
+            }
+            return best;
         }
         public void ResetCorePath()
         {
@@ -766,114 +862,134 @@ namespace RimWorld
                 }
                 foreach (IntVec3 vec in current) //find next set cardinal to all cellsDone, exclude cellsDone
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v)));
                 }
                 path++;
             }
+            LastSafePath = path;
             PathDirty = false;
-            Log.Message("SOS2c: RebuildCorePath Rebuilt corePath for ship: " + Index +" at " + Core.Position);
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Rebuilt corePath at " + Core.Position + " path max: " + LastSafePath);
         }
         //detach
         public void Tick()
         {
-            if (DetachCheck)
+            foreach (HashSet<IntVec3> area in DetachedShipAreas)
             {
-                CheckForDetach();
-                DetachCheck = false;
+                FloatAndDestroy(area);
             }
+            DetachedShipAreas.Clear();
         }
-        public bool CheckForDetach() //finds all shipcells around detached and for each tries to path back to first with lower index, if not possible, detaches all in set
+        public void CheckForDetach(List<IntVec3> AreaDetached)
         {
-            if (AreaDestroyed.Any())
+            if (AreaDetached.Count == 1) //simple solutions for 1x1 detach:
             {
-                HashSet<IntVec3> initialCells = new HashSet<IntVec3>(); //cells to start checks from
-                HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
-                HashSet<IntVec3> cellsAttached = new HashSet<IntVec3>(); //cells that were checked and are attached
-                foreach (IntVec3 vec in AreaDestroyed)
+                //0 cells attached to AreaDetached: remove this ship from cache on mapcomp
+                //1: no detach
+                List<IntVec3> adjCells = GenAdj.CellsAdjacentCardinal(AreaDetached.First(), Rot4.North, new IntVec2(1, 1)).Where(v => Area.Contains(v)).ToList();
+                if (adjCells.Count == 0)
                 {
-                    foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !AreaDestroyed.Contains(v) && Area.Contains(v) &&  mapComp.MapShipCells[v].Item2 != 0))
-                    {
-                        initialCells.Add(v);
-                    }
+                    //mapComp.RemoveShipFromCache(Index);
+                    return;
                 }
-                /*if (AreaDestroyed.Count > 1)
-                    Log.Warning("SOS2c: CheckForDetach for " + AreaDestroyed.Count + " destroyed cells. Cells to check for detach: " + initialCells.Count);
-                else
-                    Log.Message("SOS2c: CheckForDetach for " + AreaDestroyed.FirstOrDefault() + " Cells to check for detach: " + initialCells.Count);¸*/
-                foreach (IntVec3 setStartCell in initialCells)
-                {
-                    if (cellsDone.Contains(setStartCell)) //skip already checked cells
-                    {
-                        continue;
-                    }
-                    bool detach = true;
-                    HashSet<IntVec3> cellsToDetach = new HashSet<IntVec3>();
-                    List<IntVec3> cellsTodo = new List<IntVec3>{setStartCell};
-                    while (cellsTodo.Any())
-                    {
-                        IntVec3 current = cellsTodo.First();
-                        cellsTodo.Remove(current);
-                        cellsDone.Add(current);
-                        if (mapComp.MapShipCells[current].Item2 < mapComp.MapShipCells[setStartCell].Item2)
-                        {
-                            cellsAttached.AddRange(cellsDone);
-                            detach = false;
-                            //foreach (IntVec3 vec in cellsToDetach)
-                            //    Log.Warning("" + vec);
-                            //Log.Message("SOS2c: CheckForDetach still attached at " + current);
-                            break; //if part with lower corePath found this set is attached
-                        }
-                        if (cellsToDetach.Add(current)) //add current tile && extend search range, skip non ship, destroyed tiles
-                        {
-                            HashSet<IntVec3> temp = GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).ToHashSet();
-                            foreach (IntVec3 v in temp)
-                            {
-                                if (cellsAttached.Contains(v)) //if next to an already attached and checked
-                                {
-                                    detach = false;
-                                    //foreach (IntVec3 vec in cellsToDetach)
-                                    //    Log.Warning("" + vec);
-                                    //Log.Message("SOS2c: CheckForDetach still attached to already checked " + current);
-                                    break; //if part with lower corePath found this set is attached
-                                }
-                                if (!cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v))
-                                {
-                                    cellsTodo.Add(v);
-                                }
-
-                            }
-                            if (!detach)
-                                break;
-                            //cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v)));
-                        }
-                    }
-                    if (detach)
-                    {
-                        string str = "SOS2c: CheckForDetach on ship " + Index + ", Detach " + cellsToDetach.Count + " cells: ";
-                        foreach (IntVec3 vec in cellsToDetach)
-                            str += vec;
-                        Log.Warning(str);
-                        
-                        Detach(cellsToDetach);
-                    }
-                }
-                AreaDestroyed.Clear();
-
-                /*foreach (int i in mapComp.ShipsOnMapNew.Keys)
-                {
-                    Log.Message("SOS2c: area on ship: " + i + " is " + mapComp.ShipsOnMapNew[i].AreaDestroyed.Count + "/" + mapComp.ShipsOnMapNew[i].Area.Count);
-                }*/
-                return true;
+                if (adjCells.Count == 1)
+                    return;
             }
-            return false;
+            //now it gets complicated and slower
+            //start cells can be any amount and arrangement
+            //find cells around
+            //for each try to path back to LastSafePath or lowest index cell, if not possible detach each set separately
+
+            int pathTo = int.MaxValue; //lowest path in startCells
+            IntVec3 first = IntVec3.Invalid; //path to this cell
+            HashSet<IntVec3> startCells = new HashSet<IntVec3>(); //cells AreaDetached
+            foreach (IntVec3 vec in AreaDetached)
+            {
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !AreaDetached.Contains(v) && Area.Contains(v)))// && mapComp.MapShipCells[v].Item2 != 0))
+                {
+                    startCells.Add(v);
+                    int vecPath = mapComp.MapShipCells[v].Item2; //find lowest - still attached setStart
+                    if (vecPath < pathTo)
+                    {
+                        pathTo = vecPath;
+                        first = v;
+                    }
+                }
+            }
+            startCells?.Remove(first);
+            /*string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + (LastSafePath - 1) + " or to cell: " + first + " with " + startCells.Count + " cells: ";
+            foreach (IntVec3 vec in startCells)
+                str2 += vec;
+            Log.Warning(str2);*/
+
+            HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
+            HashSet<IntVec3> cellsAttached = new HashSet<IntVec3> { first }; //cells that were checked and are attached
+            foreach (IntVec3 setStartCell in startCells)
+            {
+                if (cellsDone.Contains(setStartCell)) //skip already checked cells
+                {
+                    continue;
+                }
+                bool detach = true;
+                HashSet<IntVec3> cellsToDetach = new HashSet<IntVec3>();
+                List<IntVec3> cellsToCheck = new List<IntVec3> { setStartCell };
+                while (cellsToCheck.Any())
+                {
+                    IntVec3 current = cellsToCheck.First();
+                    cellsToCheck.Remove(current);
+                    cellsDone.Add(current);
+                    if (mapComp.MapShipCells[current].Item2 < LastSafePath)
+                    {
+                        cellsAttached.AddRange(cellsDone);
+                        detach = false;
+                        //foreach (IntVec3 vec in cellsToDetach)
+                        //    Log.Warning("" + vec);
+                        //Log.Message("SOS2c: CheckForDetach still attached at " + current);
+                        break; //if part with lower corePath found this set is attached
+                    }
+                    if (cellsToDetach.Add(current)) //add current tile && extend search range, skip non ship, destroyed tiles
+                    {
+                        HashSet<IntVec3> temp = GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).ToHashSet();
+                        foreach (IntVec3 v in temp)
+                        {
+                            if (cellsAttached.Contains(v)) //if next to an already attached and checked
+                            {
+                                detach = false;
+                                //foreach (IntVec3 vec in cellsToDetach)
+                                //    Log.Warning("" + vec);
+                                //Log.Message("SOS2c: CheckForDetach still attached to already checked " + current);
+                                break; //if part with lower corePath found this set is attached
+                            }
+                            if (!cellsDone.Contains(v) && Area.Contains(v) && !AreaDetached.Contains(v))
+                            {
+                                cellsToCheck.Add(v);
+                            }
+                        }
+                        if (!detach)
+                            break;
+                        //cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v) && !AreaDestroyed.Contains(v)));
+                    }
+                }
+                if (detach)
+                {
+                    string str = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach " + cellsToDetach.Count + " cells: ";
+                    foreach (IntVec3 vec in cellsToDetach)
+                        str += vec;
+                    Log.Warning(str);
+
+                    Detach(cellsToDetach);
+                }
+            }
         }
+
+
         public void Detach(HashSet<IntVec3> detachArea) //if bridge found detach as new ship else as wreck
         {
             Building newCore = null;
             DestroyMode mode = DestroyMode.Vanish;
-            if (mapComp.InCombat && newCore == null)
+            if (mapComp.InCombat)
                 mode = DestroyMode.KillFinalize;
-            foreach (IntVec3 vec in detachArea) //clean buildings, try to find bridge on detached
+
+            foreach (IntVec3 vec in detachArea) //clear area, remove buildings, try to find bridge on detached
             {
                 foreach (Thing t in vec.GetThingList(Map))
                 {
@@ -884,38 +1000,55 @@ namespace RimWorld
                         RemoveFromCache(b, mode);
                     }
                 }
-            }
-            foreach (IntVec3 vec in detachArea) //clean area indexes
-            {
                 Area.Remove(vec);
                 mapComp.MapShipCells[vec] = new Tuple<int, int>(-1, -1);
             }
             if (newCore == null) //wreck
             {
-                if (mapComp.InCombat) //float wreck in battle and destroy it
+                if (mapComp.InCombat) //float wrecks except in case the last bridge was destroyed
                 {
-                    FloatAndDestroy(detachArea);
+                    //FloatAndDestroy(detachArea);
+                    DetachedShipAreas.Add(detachArea);
+                    ShipInteriorMod2.AirlockBugFlag = true;
+                    foreach (IntVec3 vec in detachArea)
+                    {
+                        mapComp.MapShipCells.Remove(vec);
+                    }
+                    ShipInteriorMod2.AirlockBugFlag = false;
+                    //remove this ship if nothing remains
+                    if (!Area.Any())
+                    {
+                        Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Area was empty, removing ship");
+                        mapComp.ShipsOnMapNew.Remove(Index);
+                    }
                     return;
                 }
                 newCore = (Building)detachArea.First().GetThingList(Map).First(t => t.TryGetComp<CompSoShipPart>() != null);
             }
-            Log.Message("SOS2c: Detach new ship/wreck with: " + newCore);
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach new ship/wreck with: " + newCore);
             if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
             {
-                Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
-                int newKey = mapComp.ShipsOnMapNew.Keys.Max() + 1;
-                Log.Error("SOS2c: Detach error, shipID " + newCore.thingIDNumber + " already exits! Using fallback index: " + newKey + ", pausing game. Recheck ship area with infestation overlay. If not correct - save and reload!");
+                //Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+                int newKey = mapComp.ShipsOnMapNew.Keys.Max() + 1000;
+                Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach error, shipID " + newCore.thingIDNumber + " already exits! Using fallback index: " + newKey + ", pausing game. Recheck ship area with infestation overlay. If not correct - save and reload!");
                 newCore.thingIDNumber = newKey;
             }
+            //make new ship
             mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
-            mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore, AreaDestroyed);
+            mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore);
             if (mapComp.InCombat)
             {
-                mapComp.DestroyedIncombat.Add(newCore.thingIDNumber, null);
+                if (mapComp.HasShipMapAI)
+                    mapComp.hasAnyPartDetached = true;
+                mapComp.ShipsToMove.Add(newCore.thingIDNumber);
             }
-            if (Map == mapComp.ShipCombatOriginMap)
-                mapComp.hasAnyPlayerPartDetached = true;
-            return;
+            //remove this ship if nothing remains
+            if (!Area.Any())
+            {
+                Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+                Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Area is empty!");
+                //mapComp.ShipsOnMapNew.Remove(Index);
+            }
         }
         private void FloatAndDestroy(HashSet<IntVec3> detachArea)
         {
@@ -928,8 +1061,10 @@ namespace RimWorld
             int maxX = int.MinValue;
             int minZ = int.MaxValue;
             int maxZ = int.MinValue;
+
             foreach (IntVec3 vec in detachArea)
             {
+                //mapComp.MapShipCells.Remove(vec);
                 //Log.Message("Detaching location " + at);
                 foreach (Thing t in vec.GetThingList(Map).Where(t => t.def.destroyable && !t.Destroyed))
                 {
@@ -946,20 +1081,20 @@ namespace RimWorld
                     if (t is Building b && b.def.building.shipPart)
                     {
                         toReplace.Add(b);
-                        if (t.Position.x < minX)
-                            minX = t.Position.x;
-                        if (t.Position.x > maxX)
-                            maxX = t.Position.x;
-                        if (t.Position.z < minZ)
-                            minZ = t.Position.z;
-                        if (t.Position.z > maxZ)
-                            maxZ = t.Position.z;
                     }
                 }
+                if (vec.x < minX)
+                    minX = vec.x;
+                if (vec.x > maxX)
+                    maxX = vec.x;
+                if (vec.z < minZ)
+                    minZ = vec.z;
+                if (vec.z > maxZ)
+                    maxZ = vec.z;
             }
             if (toReplace.Any()) //any shipPart, make a floating wreck
             {
-                DetachedShipPart part = (DetachedShipPart)ThingMaker.MakeThing(ThingDef.Named("DetachedShipPart"));
+                DetachedShipPart part = (DetachedShipPart)ThingMaker.MakeThing(ResourceBank.ThingDefOf.DetachedShipPart);
                 part.Position = new IntVec3(minX, 0, minZ);
                 part.xSize = maxX - minX + 1;
                 part.zSize = maxZ - minZ + 1;
@@ -972,6 +1107,7 @@ namespace RimWorld
                     else if (comp.Props.isPlating)
                         part.wreckage[t.Position.x - minX, t.Position.z - minZ] = 2;
                 }
+                Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Spawning floating part at: " + part.Position);
                 part.SpawnSetup(Map, false);
             }
             foreach (Pawn p in toKill)

@@ -78,6 +78,8 @@ namespace SaveOurShip2
             public static ThingDef ShipArchotechPillarD;
             public static ThingDef Ship_Beam;
 			public static ThingDef Ship_Beam_Wrecked;
+            public static ThingDef Ship_BeamMech;
+            public static ThingDef Ship_BeamArchotech;
             public static ThingDef HullFoamWall;
             public static ThingDef ShipAirlockWrecked;
 			public static ThingDef ShipHullTileWrecked;
@@ -146,7 +148,7 @@ namespace SaveOurShip2
 		public static class RoofDefOf
 		{
 			public static RoofDef RoofShip;
-		}
+        }
 
 		[DefOf]
 		public static class HediffDefOf
@@ -163,9 +165,15 @@ namespace SaveOurShip2
 		{
 			[MayRequireIdeology]
 			public static MemeDef Structure_Archist;
-		}
+        }
 
-		[DefOf]
+        [DefOf]
+        public static class JobDefOf
+        {
+            public static JobDef FleeVacuum;
+        }
+        
+        [DefOf]
 		public static class BiomeDefOf
 		{
 			public static BiomeDef OuterSpaceBiome;

@@ -68,7 +68,7 @@ namespace RimWorld
             else if (!(bounty > 50 && Rand.Bool)) //attack
             {
                 var mapComp = map.GetComponent<ShipHeatMapComp>();
-                mapComp.StartShipEncounter(mapComp.MapRootListAll.FirstOrDefault(), ship);
+                mapComp.StartShipEncounter(ship);
             }
             return true;
         }

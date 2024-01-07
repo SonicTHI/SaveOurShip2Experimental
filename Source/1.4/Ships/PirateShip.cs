@@ -47,18 +47,18 @@ namespace RimWorld
             if (bounty > 50 && (!parleyed && roll < 6 || roll < 2)) //pirate betrayal
             {
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksBetray"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksBetrayDesc"), LetterDefOf.ThreatBig);
-                mapComp.StartShipEncounter(mapComp.MapRootListAll.FirstOrDefault(), this);
+                mapComp.StartShipEncounter(this);
 
             }
             else if (paidOff && roll < 3) //we want more
             {
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksPay"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksPayDesc"), LetterDefOf.ThreatBig);
-                mapComp.StartShipEncounter(mapComp.MapRootListAll.FirstOrDefault(), this);
+                mapComp.StartShipEncounter(this);
             }
             else if (!paidOff) //didnt pay
             {
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksWait"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksWaitDesc"), LetterDefOf.ThreatBig);
-                mapComp.StartShipEncounter(mapComp.MapRootListAll.FirstOrDefault(), this);
+                mapComp.StartShipEncounter(this);
             }
             else
                 base.Depart();

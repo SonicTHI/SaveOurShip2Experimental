@@ -29,7 +29,7 @@ namespace RimWorld
         {
             var mapComp = ((Map)parms.target).GetComponent<ShipHeatMapComp>();
             mapComp.LastAttackTick = Find.TickManager.TicksGame;
-            mapComp.StartShipEncounter(mapComp.MapRootListAll.FirstOrDefault(), fac: parms.faction);
+            mapComp.StartShipEncounter(fac: parms.faction);
             return true;
         }
     }

@@ -101,11 +101,12 @@
 				<hermetic>true</hermetic>
 				<mechanoid>true</mechanoid>
 				<roof>true</roof>
-				<canLight>true</canLight>
+			</li>
+			<!--li Class="CompProperties_SoShipLight">
 				<light>Ship_Beam_Light_Mech</light>
 				<lightPower>15</lightPower>
 				<sunLightPower>2500</sunLightPower>
-			</li>
+			</li-->
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -297,7 +298,7 @@
 		<defName>ShipInside_SolarGeneratorMech</defName>
 		<label>mechanoid solar generator</label>
 		<designatorDropdown>Ship_SolarGenerators</designatorDropdown>
-		<description>Produces electricity from sunlight. Does not work in the dark or under artificial light.</description>
+		<description>Produces electricity from sunlight. Up to 750W in space and 375W on planet surface. Does not work in the dark or under artificial light.</description>
 		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>

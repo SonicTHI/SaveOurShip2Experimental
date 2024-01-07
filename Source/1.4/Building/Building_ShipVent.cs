@@ -9,11 +9,13 @@ namespace RimWorld
         private const float heatpipeTemp = 60; //higher = more diff to push heat to net
         public bool heatWithPower=true;
         private CompShipHeat heatComp;
+        public IntVec3 ventTo;
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
             heatComp = this.TryGetComp<CompShipHeat>();
+            ventTo = Position + IntVec3.North.RotatedBy(Rotation);
         }
 
         public override void TickRare()
@@ -24,11 +26,10 @@ namespace RimWorld
                 float energyLimit;
                 float tempChange;
                 float conductance;
-                IntVec3 vec = this.Position + IntVec3.North.RotatedBy(this.Rotation);
-                Room room = vec.GetRoom(Map);
+                Room room = ventTo.GetRoom(Map);
                 if (room != null && room.ProperRoom && room.OpenRoofCount <= 0 && !room.UsesOutdoorTemperature)
                 {
-                    float roomTemp = vec.GetTemperature(this.Map);
+                    float roomTemp = ventTo.GetTemperature(Map);
                     if (roomTemp < this.compTempControl.targetTemperature - 3)
                     {
                         //heat room up to target temp if enough heat available, else use power (same as vanilla heater)
@@ -40,7 +41,7 @@ namespace RimWorld
                             conductance = Mathf.InverseLerp(120f, 20f, roomTemp);
 
                         energyLimit = this.compTempControl.Props.energyPerSecond * conductance * -1.367f; //-64*-1.3672 = 21*4.1667
-                        tempChange = GenTemperature.ControlTemperatureTempChange(vec, base.Map, energyLimit, this.compTempControl.targetTemperature);
+                        tempChange = GenTemperature.ControlTemperatureTempChange(ventTo, Map, energyLimit, this.compTempControl.targetTemperature);
                         if (heatComp.RemHeatFromNetwork(energyLimit * 0.02f))
                         {
                             //Log.Message("Rem heat:" + energyLimit * 0.02f + " TC:" + - tempChange);
@@ -65,7 +66,7 @@ namespace RimWorld
                         if (conductance < 0.0)
                             conductance = 0.0f;
                         energyLimit = this.compTempControl.Props.energyPerSecond * conductance * 4.167f;
-                        tempChange = GenTemperature.ControlTemperatureTempChange(vec, this.Map, energyLimit, this.compTempControl.targetTemperature);
+                        tempChange = GenTemperature.ControlTemperatureTempChange(ventTo, Map, energyLimit, this.compTempControl.targetTemperature);
                         flag = !Mathf.Approximately(tempChange, 0.0f);
                         if (flag && heatComp.AddHeatToNetwork(-energyLimit * 0.02f))
                         {

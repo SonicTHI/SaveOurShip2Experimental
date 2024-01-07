@@ -10,9 +10,6 @@ using HarmonyLib;
 using SaveOurShip2;
 using RimworldMod;
 using UnityEngine;
-using System.Net.NetworkInformation;
-using Verse.Noise;
-using MonoMod.Utils;
 
 namespace RimWorld
 {
@@ -25,6 +22,7 @@ namespace RimWorld
         public bool hacked = false;
         public bool failed = false;
         public bool docked = false;
+        public Building dockedTo;
         public Building First;
         public Building Second;
         public int firstRot = -1; //doors dont have normal rot so this is used for extender gfx
@@ -89,10 +87,10 @@ namespace RimWorld
         {
             if (p.RaceProps.FenceBlocked && p.RaceProps.Roamer && p.CurJobDef != JobDefOf.FollowRoper) return false;
             //enemy pawns can pass through their doors if outside or with EVA when player is present
-            if (p.Map.IsSpace() && p.Faction != Faction.OfPlayer && this.Outerdoor())
+            if (p.Map.IsSpace() && p.Faction != Faction.OfPlayer && Outerdoor())
             {
-                if (ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (ShipInteriorMod2.GetPawnSpaceModifiersModifiers(p).CanSurviveVacuum && (!mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned))) { }
-                else return false;
+                if (!(ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (ShipInteriorMod2.GetPawnSpaceModifiersModifiers(p).CanSurviveVacuum && (!mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned)) || p.CurJobDef == ResourceBank.JobDefOf.FleeVacuum))
+                    return false;
             }
             Lord lord = p.GetLord();
             return base.PawnCanOpen(p) && ((lord != null && lord.LordJob != null && lord.LordJob.CanOpenAnyDoor(p)) || WildManUtility.WildManShouldReachOutsideNow(p) || base.Faction == null || (p.guest != null && p.guest.Released) || GenAI.MachinesLike(base.Faction, p));
@@ -108,6 +106,18 @@ namespace RimWorld
                 }
             }
             return false;
+        }
+        public IntVec3 VacuumSafeSpot()
+        {
+            foreach (IntVec3 pos in GenAdj.CellsAdjacentCardinal(this))
+            {
+                Room room = pos.GetRoom(Map);
+                if (room != null && !(room.OpenRoofCount > 0 || room.TouchesMapEdge))
+                {
+                    return pos;
+                }
+            }
+            return IntVec3.Invalid;
         }
         public override string GetInspectString()
         {
@@ -132,6 +142,7 @@ namespace RimWorld
             Scribe_Values.Look<bool>(ref hacked, "hacked", false);
             Scribe_Values.Look<bool>(ref failed, "failed", false);
             Scribe_Values.Look<bool>(ref docked, "docked", false);
+            Scribe_References.Look<Building>(ref dockedTo, "dockedTo");
             Scribe_Values.Look<int>(ref dist, "dist", 0);
             Scribe_Values.Look<int>(ref startTick, "startTick", 0);
             Scribe_Values.Look<int>(ref firstRot, "firstRot", -1);
@@ -147,11 +158,17 @@ namespace RimWorld
         //docking - doors dont have proper rot
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
         {
+            base.Destroy(mode);
+        }
+        public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
+        {
             if (docked)
             {
                 DeSpawnDock();
             }
-            base.Destroy(mode);
+            mapComp.Docked.Remove(this);
+            dockedTo = null;
+            base.DeSpawn(mode);
         }
         public override void Tick()
         {
@@ -199,7 +216,7 @@ namespace RimWorld
                 else
                     toggleDock.icon = ContentFinder<Texture2D>.Get("UI/DockingOff");
 
-                if (startTick > 0 || mapComp.InCombat || !powerComp.PowerOn || !canDock)
+                if (startTick > 0 || !powerComp.PowerOn || !canDock)
                 {
                     toggleDock.Disable();
                 }
@@ -274,9 +291,44 @@ namespace RimWorld
         {
             IntVec3 rot = GenAdj.CardinalDirections[First.Rotation.AsByte];
             //place fake walls, floor, extend
-            for (int i = 1; i < dist; i++)
+            for (int i = 1; i < dist + 1; i++)
             {
                 IntVec3 offset = rot * -i;
+                if (i == dist) //register dock - ship part or extender at dist LR
+                {
+                    foreach (Thing t in (First.Position + offset).GetThingList(Map))
+                    {
+                        if (t.TryGetComp<CompSoShipPart>() != null) //connect to ship part //td check if edifice?
+                        {
+                            foreach (Thing t2 in (Second.Position + offset).GetThingList(Map))
+                            {
+                                if (t2.TryGetComp<CompSoShipPart>() != null)
+                                {
+                                    dockedTo = t as Building;
+                                    mapComp.Docked.Add(this);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        else if (t.TryGetComp<CompSoShipDocking>() != null) //to extender //td check for cheese
+                        {
+                            foreach (Thing t2 in (Second.Position + offset).GetThingList(Map))
+                            {
+                                var c2 = t2.TryGetComp<CompSoShipDocking>();
+                                if (c2 != null)
+                                {
+                                    dockedTo = c2.dockParent;
+                                    mapComp.Docked.Add(this);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+
                 Thing thing;
                 thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, First.Position + offset, Map);
@@ -302,6 +354,15 @@ namespace RimWorld
         public void DeSpawnDock(bool force = false)
         {
             unfoldComp.Target = 0.0f;
+            if (mapComp.Docked.Contains(this)) //was docked to ship
+            {
+                dockedTo = null;
+                mapComp.Docked.Remove(this);
+                if (!mapComp.AnyShipCanMove()) //if any ship got stuck and stop move
+                {
+                    mapComp.MapFullStop();
+                }
+            }
             if (extenders.Any())
             {
                 if (extenders.Count > 3)

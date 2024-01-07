@@ -1,8 +1,6 @@
 ﻿using SaveOurShip2;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using Verse;
 
@@ -15,20 +13,18 @@ namespace RimWorld
             if (ShipInteriorMod2.HasSoS2CK)
                 return AcceptanceReport.WasAccepted;
             CompEngineTrail engineprev = null;
-            List<SoShipCache> ships = map.GetComponent<ShipHeatMapComp>().ShipsOnMapNew.Values.ToList();
-            if (ships.Any(s => s.Engines.Any()))
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+            if (mapComp.ShipsOnMapNew.Values.Any(s => s.Engines.Any()))
             {
                 //prefer player owned non wreck ships
-                List<SoShipCache> shipsE = ships.Where(s => !s.IsWreck && s.Faction == Faction.OfPlayer).ToList();
-                if (!shipsE.NullOrEmpty())
-                    engineprev = shipsE.First().Engines.First();
-                else
-                    engineprev = ships.First().Engines.First();
+                if (mapComp.ShipsOnMapNew.Values.Any(s => s.Engines.Any() && !s.IsWreck && s.Faction == Faction.OfPlayer))
+                    engineprev = mapComp.ShipsOnMapNew.Values.Where(s => s.Engines.Any() && !s.IsWreck && s.Faction == Faction.OfPlayer).First().Engines.First();
+                else if (mapComp.ShipsOnMapNew.Values.Any(s => s.Engines.Any()))
+                    engineprev = mapComp.ShipsOnMapNew.Values.First().Engines.First();
             }
-            if (engineprev == null || (engineprev != null && engineprev.parent.Rotation == rot))
-                return AcceptanceReport.WasAccepted;
-            else
+            if (engineprev != null && engineprev.parent.Rotation != rot)
                 return AcceptanceReport.WasRejected;
+            return AcceptanceReport.WasAccepted;
         }
         public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, Color ghostCol, Thing thing = null)
         {

@@ -73,19 +73,22 @@ namespace RimWorld
         public void RunFromVacuum(Pawn pawn)
         {
             // find first nonvac area and run to it - enemy only
-            JobDef fleeVacuumDef = DefDatabase<JobDef>.GetNamed("FleeVacuum");
+            JobDef fleeVacuumDef = ResourceBank.JobDefOf.FleeVacuum;
             if (PreventPawnFleeVacuum(pawn) || pawn.CurJobDef == fleeVacuumDef)
             {
                 return;
             }
 
             Thing closestThing = ClosestThingReachable(pawn);
-            if (closestThing == null)
+            if (closestThing != null)
             {
-                return;
+                IntVec3 v = ((Building_ShipAirlock)closestThing).VacuumSafeSpot();
+                if (v.Standable(pawn.Map))
+                {
+                    Job fleeVacuumJob = new Job(fleeVacuumDef, closestThing);
+                    pawn.jobs.StartJob(fleeVacuumJob, JobCondition.InterruptForced);
+                }
             }
-            Job fleeVacuumJob = new Job(fleeVacuumDef, closestThing);
-            pawn.jobs.StartJob(fleeVacuumJob, JobCondition.InterruptForced);
         }
 
         public static void DoPawnHypoxiaDamage(Pawn pawn, CachedPawnSpaceModifiers pawnSpaceModifiers, float severity = 0.0125f, float extraFactor = 1.0f)
@@ -119,13 +122,17 @@ namespace RimWorld
 
         private Thing ClosestThingReachable(Pawn pawn)
         {
+            bool validator(Thing thing)
+            {
+                return thing is Building_ShipAirlock airlock && airlock.Outerdoor() && airlock.VacuumSafeSpot() != IntVec3.Invalid;
+            }
             return GenClosest.ClosestThingReachable(pawn.Position,
                                                     pawn.Map,
                                                     ThingRequest.ForDef(ResourceBank.ThingDefOf.ShipAirlock),
                                                     PathEndMode.Touch,
                                                     TraverseParms.For(pawn),
                                                     99f,
-                                                    (Thing thing) => thing is Building_ShipAirlock airlock && !airlock.Outerdoor());
+                                                    validator);
         }
     }
 }

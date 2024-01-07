@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.Sound;
 using SaveOurShip2;
 
 namespace RimWorld
@@ -14,9 +12,16 @@ namespace RimWorld
     public class CompShipSalvageBay : ThingComp
     {
         public static int salvageCapacity = 5000;
+        public CompProperties_SalvageBay Props
+        {
+            get
+            {
+                return (CompProperties_SalvageBay)props;
+            }
+        }
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-			var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
 
 			foreach (Gizmo item in base.CompGetGizmosExtra())
             {
@@ -24,26 +29,67 @@ namespace RimWorld
             }
             if (parent.Faction == Faction.OfPlayer && mapComp.IsPlayerShipMap || (Prefs.DevMode && ShipInteriorMod2.HasSoS2CK))
 			{
-				List<Map> salvagableMaps = new List<Map>();
-                foreach (Map map in Find.Maps)
-				{
-					if (map.GetComponent<ShipHeatMapComp>().IsGraveyard)
-						salvagableMaps.Add(map);
-				}
-				foreach (Map map in salvagableMaps)
+                if (Props.archo && (parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? false))
+                {
+                    //td
+                }
+				foreach (Map map in Find.Maps.Where(m => m.GetComponent<ShipHeatMapComp>().IsGraveyard))
 				{
                     Command_VerbTargetWreckMap retrieveShipEnemy = new Command_VerbTargetWreckMap
                     {
-                        salvageBay = (Building)this.parent,
-                        sourceMap = this.parent.Map,
+                        salvageBay = (Building)parent,
+                        sourceMap = parent.Map,
                         targetMap = map,
 						icon = ContentFinder<Texture2D>.Get("UI/SalvageShip"),
-						defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageCommand") + " (" + map + ")",
-						defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageCommandDesc") + map
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageCommand", map.Parent.Label),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageCommandDesc", map.Parent.Label)
 					};
-					if (mapComp.InCombat)
-						retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+                    /*Command_Action stablizeShipEnemy = new Command_Action
+                    {
+                        action = delegate
+                        {
+                            var targetMapComp = map.GetComponent<ShipHeatMapComp>();
+                            int bCount = map.listerBuildings.allBuildingsNonColonist.Count + map.listerBuildings.allBuildingsColonist.Count;
+                            int bMax = mapComp.SalvBayCount * salvageCapacity;
+                            if (bCount > bMax)
+                            {
+                                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", bCount, bMax), MessageTypeDefOf.NeutralEvent);
+                            }
+                            else
+                            {
+                                float req = bCount * 0.01f;
+                                float fuel = 0;
+                                foreach (SoShipCache ship in targetMapComp.ShipsOnMapNew.Values.Where(s => !s.IsStuck))
+                                {
+                                    //td calc fuel
+                                }
+                                if (req > fuel)
+                                {
+                                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeFuel", req), MessageTypeDefOf.NeutralEvent);
+                                }
+                                else
+                                {
+                                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeConfirm", map.Parent.Label), delegate
+                                    {
+                                        //td consume req
+                                        map.Parent.GetComponent<TimedForcedExitShip>().ticksLeftToForceExitAndRemoveMap += 60000;
+                                        float adj = Rand.Range(0.025f, 0.075f);
+                                        ((WorldObjectOrbitingShip)map.Parent).theta = ((WorldObjectOrbitingShip)parent.Map.Parent).theta + adj;
+                                    }));
+                                }
+                            }
+                        },
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageStablize", map.Parent.Label),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeDesc", map.Parent.Label),
+                        icon = ContentFinder<Texture2D>.Get("UI/StabilizeShip")
+                    };*/
+                    if (mapComp.InCombat)
+                    {
+                        retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+                        //stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+                    }
 					yield return retrieveShipEnemy;
+                    //yield return stablizeShipEnemy;
                 }
                 Command_VerbTargetWreckMap moveWreck = new Command_VerbTargetWreckMap
                 {

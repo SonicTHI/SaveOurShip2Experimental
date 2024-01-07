@@ -25,7 +25,7 @@ namespace SaveOurShip2
 
         private void Draw()
         {
-            ThingDef moteDef = Props.customMote ?? ResourceBank.ThingDefOf.Mote_SurvivalBubble;
+            ThingDef moteDef = Props.customMote ?? ResourceBank.ThingDefOf.Mote_Bubble;
             if (mote is null || mote.Destroyed)
             {
                 mote = MoteMaker.MakeAttachedOverlay(Pawn, moteDef, Vector3.zero, Props.scale);

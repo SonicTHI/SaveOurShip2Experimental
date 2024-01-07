@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+using SaveOurShip2;
 using Verse;
 
 namespace RimWorld
 {
-    class HediffPawnIsHologram : HediffWithComps
+    class HediffPawnIsHologram : Hediff
     {
         public static bool SafeRemoveFlag = false;
 
@@ -33,8 +31,8 @@ namespace RimWorld
             {
                 try
                 {
-                    pawn.health.hediffSet.GetMissingPartsCommonAncestors().ToList().ForEach(hediff => HealthUtility.Cure(hediff.Part, pawn));
-                    CureableHediffs().ToList().ForEach(hediff => HealthUtility.Cure(hediff));
+                    MissingParts().ForEach(hediff => HealMissingPart(hediff.Part));
+                    CureableHediffs().ForEach(hediff => HealthUtility.Cure(hediff));
                 }
                 catch (Exception e)
                 {
@@ -43,14 +41,35 @@ namespace RimWorld
             }
         }
 
-        public IEnumerable<Hediff> CureableHediffs()
+        public void HealMissingPart(BodyPartRecord part)
         {
-            return pawn.health.hediffSet.hediffs.Where(hediff => hediff.IsPermanent() || hediff.def.chronic || hediff.def.makesSickThought);
+            HealthUtility.Cure(part, pawn);
+            Hediff_Injury wound = HediffMaker.MakeHediff(HediffDefOf.Bruise, pawn, part) as Hediff_Injury;
+            wound.Severity = part.def.GetMaxHealth(pawn) - 1;
+            pawn.health.AddHediff(wound, part);
+        }
+
+        public List<Hediff> MissingParts()
+        {
+            return pawn.health.hediffSet.hediffs.Where(hediff => hediff is Hediff_MissingPart).ToList();
+        }
+
+        public List<Hediff> CureableHediffs()
+        {
+            return pawn.health.hediffSet.hediffs.Where(hediff => hediff.IsPermanent() || hediff.def.chronic || hediff.def.makesSickThought).ToList();
+        }
+
+        public override void PostAdd(DamageInfo? dinfo)
+        {
+            base.PostAdd(dinfo);
+            ShipInteriorMod2.WorldComp.RemovePawnFromSpaceCache(pawn);
         }
 
         public override void PostRemoved()
         {
             base.PostRemoved();
+            ShipInteriorMod2.WorldComp.RemovePawnFromSpaceCache(pawn);
+
             if (!SafeRemoveFlag)
                 Log.Error("Formgel hediff removed from pawn " + pawn.Name + " in an unsafe manner. Please submit your log file to the SoS2 developers as a bug report.");
         }

@@ -128,7 +128,7 @@ namespace SaveOurShip2
             public static ThingDef Turret_Autocannon;
             public static ThingDef Turret_Sniper;
             public static ThingDef MechSerumResurrector;
-            public static ThingDef Mote_SurvivalBubble;
+            public static ThingDef Mote_Bubble;
         }
 
 		[DefOf]

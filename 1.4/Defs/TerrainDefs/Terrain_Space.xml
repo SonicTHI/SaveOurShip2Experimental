@@ -24,6 +24,7 @@
 		</tags>
 		<extinguishesFire>true</extinguishesFire>
 	</TerrainDef>
+
 	<TerrainDef Name="ShipFloorBase" Abstract="True">
 		<layerable>true</layerable>
 		<renderPrecedence>70</renderPrecedence>

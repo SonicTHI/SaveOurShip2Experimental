@@ -2,7 +2,7 @@
 
 <Defs>
   <ThingDef ParentName="MoteBase">
-    <defName>Mote_SurvivalBubble</defName>
+    <defName>Mote_Bubble</defName>
     <altitudeLayer>MoteOverhead</altitudeLayer>
     <thingClass>MoteAttached</thingClass>
     <mote>

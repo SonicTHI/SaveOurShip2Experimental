@@ -40,8 +40,9 @@ namespace SaveOurShip2
                 Log.Warning("SOS2: Insect faction not found! SOS2 gameplay experience will be affected.");
         }
 
-        public override void ExposeData() {
-            base.ExposeData ();
+        public override void ExposeData()
+        {
+            base.ExposeData();
             //Scribe_Values.Look<int>(ref ShipsHaveInsidesVersion,"SoSVersion",0);
             Scribe_Collections.Look<string>(ref Unlocks, "Unlocks", LookMode.Value);
             Scribe_Values.Look<int>(ref PlayerFactionBounty, "PlayerFactionBounty", 0);
@@ -125,7 +126,7 @@ namespace SaveOurShip2
             }
             else
             {
-                return null;
+                return AddPawnToSpaceCache(pawn);
             }
         }
 

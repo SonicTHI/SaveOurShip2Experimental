@@ -276,11 +276,6 @@
 		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a human consciousness via psychic entanglement.</descriptionShort>
 		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
 		<everCurableByItem>false</everCurableByItem>
-		<comps>
-			<li>
-				<compClass>SaveOurShip2.HediffComp_Space</compClass>
-			</li>
-		</comps>
 		<stages>
 			<li>
 				<totalBleedFactor>0.1</totalBleedFactor>
@@ -331,11 +326,6 @@
 		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a machine persona via psychic entanglement.</descriptionShort>
 		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
 		<everCurableByItem>false</everCurableByItem>
-		<comps>
-			<li>
-				<compClass>SaveOurShip2.HediffComp_Space</compClass>
-			</li>
-		</comps>
 		<stages>
 			<li>
 				<totalBleedFactor>0.1</totalBleedFactor>
@@ -394,11 +384,6 @@
 		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by an archotech spore via psychic entanglement.</descriptionShort>
 		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
 		<everCurableByItem>false</everCurableByItem>
-		<comps>
-			<li>
-				<compClass>SaveOurShip2.HediffComp_Space</compClass>
-			</li>
-		</comps>
 		<stages>
 			<li>
 				<totalBleedFactor>0</totalBleedFactor>

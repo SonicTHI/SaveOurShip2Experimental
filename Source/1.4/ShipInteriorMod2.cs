@@ -2614,14 +2614,7 @@ namespace SaveOurShip2
 
         public static CachedPawnSpaceModifiers GetPawnSpaceModifiersModifiers(Pawn pawn)
         {
-            CachedPawnSpaceModifiers cachedPawnSpaceModifiers = WorldComp.GetPawnSpaceModifiersCache(pawn);
-            if (cachedPawnSpaceModifiers != null)
-            {
-                return cachedPawnSpaceModifiers;
-            }
-            CachedPawnSpaceModifiers pawnSpaceModifiers = WorldComp.AddPawnToSpaceCache(pawn);
-
-            return pawnSpaceModifiers;
+            return WorldComp.GetPawnSpaceModifiersCache(pawn);
         }
     }
 }

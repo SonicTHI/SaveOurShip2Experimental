@@ -87,10 +87,10 @@ namespace RimWorld
             }
             if (playerJTPower == 0)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ResourceBank.ThingDefOf.Ship_Engine_Interplanetary.label);
-            else if (playerJTPower < Ship.Mass)
+            else if (playerJTPower < Ship.MassActual)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreJTEngines"));
-            if (PowerComp.PowerNet?.CurrentStoredEnergy() < Ship.Mass)
-                result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", Ship.Mass));
+            if (PowerComp.PowerNet?.CurrentStoredEnergy() < Ship.MassActual)
+                result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", Ship.MassActual));
             if (!mapComp.IsPlayerShipMap)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipOnEnemyMap")); //td desc from non stable map
             if (ShipCountdown.CountingDown)
@@ -161,9 +161,8 @@ namespace RimWorld
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipName", Ship.Name));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsNotoriety", ShipInteriorMod2.WorldComp.PlayerFactionBounty));
                         stringBuilder.AppendLine();
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", Ship.Mass));
-                        stringBuilder.AppendLine("bcount" + Ship.BuildingCount);
-                        //stringBuilder.AppendLine("thrust actual" + Ship.ThrustToWeight() * 500);
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", Ship.MassActual));
+                        //stringBuilder.AppendLine("bcount" + Ship.BuildingCount);
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", Ship.MaxTakeoff));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipEnergy", PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
                         stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity, (heatComp.myNet.Depletion > 0) ? (" ("+ heatComp.myNet.StorageCapacityRaw + " maximum)") : ""));

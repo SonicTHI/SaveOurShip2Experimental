@@ -292,7 +292,7 @@ namespace RimWorld
         public bool ToggleEngines = false; //OOC for events
         public int BurnTimer = 0; //OOC for events
         public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
-        List<Building> cores = new List<Building>(); //used on ship spawn for naming, etc.
+        List<Building> cores = new List<Building>(); //td recheck use
         public bool IsPlayerShipMap => map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting;
         public ShipHeatMapComp GraveComp => ShipGraveyard.GetComponent<ShipHeatMapComp>();
         public int engineRot = -1;
@@ -660,14 +660,16 @@ namespace RimWorld
             }
             else //using player ship combat rating
             {
-                CR = MapThreat() * 0.9f;
+                CR = MapThreat();
+                if (!fleet || passingShip == null)
+                    CR *= 0.9f;
                 if (!Prefs.DevMode && CR > 30)
                 {
                     int daysPassed = GenDate.DaysPassedSinceSettle;
                     if (daysPassed < 30) //reduce difficulty early on
-                        CR *= 0.5f;
+                        CR *= 0.6f;
                     else if (daysPassed < 60)
-                        CR *= 0.75f;
+                        CR *= 0.8f;
                 }
                 CR *= Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.1f, 5f);
                 if (CR < 30) //minimum rating
@@ -788,9 +790,9 @@ namespace RimWorld
             {
                 mp.Name = "Ship fleet " + newMap.uniqueID;
             }
-            else if (cores.First() is Building_ShipBridge bridge && bridge.ShipName != null)
+            else
             {
-                mp.Name = bridge.ShipName + " " + newMap.uniqueID;
+                mp.Name = shipDef.label + " " + newMap.uniqueID;
             }
             return newMap;
         }

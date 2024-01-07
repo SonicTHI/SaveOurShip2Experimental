@@ -95,7 +95,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V96f5";
+        public static readonly string SOS2EXPversion = "V96f6";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1824,7 +1824,7 @@ namespace SaveOurShip2
 			//move map - draw fuel
 			if (core is Building_ShipBridge && playerMove)
 			{
-				float fuelNeeded = ship.Mass;
+				float fuelNeeded = ship.MassActual;
 				float fuelStored = 0f;
 				List<CompEngineTrail> engines = new List<CompEngineTrail>();
 				foreach (CompEngineTrail engine in ship.Engines.Where(e => e.flickComp.SwitchIsOn && !e.Props.energy && !e.Props.reactionless && e.refuelComp.Fuel > 0 && (!targetMapIsSpace || e.Props.takeOff)))

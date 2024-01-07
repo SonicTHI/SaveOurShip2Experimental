@@ -129,6 +129,7 @@ namespace RimWorld
         public int Mass = 0;
         public int EngineMass = 0;
         public int MassSum => Mass + EngineMass;
+        public float MassActual => Mathf.Pow(MassSum, 1.2f) / 14;
         public float MaxTakeoff = 0;
         public float ThrustRaw = 0;
         public float ThrustRatio => 14 * ThrustRaw * 500f / Mathf.Pow(MassSum, 1.2f);
@@ -276,8 +277,8 @@ namespace RimWorld
         }
         public bool HasRCSAndFuel(float fuelPercentNeeded, bool atmospheric)
         {
-            float fuelNeeded = Mass;
-            Log.Message("Mass: " + Mass + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
+            float fuelNeeded = MassActual;
+            Log.Message("Mass: " + MassActual + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
             if (atmospheric && (RCSs.Count * 2000 < fuelNeeded || Engines.Any(e => e.Props.reactionless))) //2k weight/RCS to move
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
@@ -432,7 +433,7 @@ namespace RimWorld
         }
         public bool ConsumeFuel(bool fromSpace, bool toSpace)
         {
-            float fuelNeeded = Mass;
+            float fuelNeeded = MassActual;
             float energyNeeded = 0;
             float fuelStored = 0f;
             float normalThrust = 0;

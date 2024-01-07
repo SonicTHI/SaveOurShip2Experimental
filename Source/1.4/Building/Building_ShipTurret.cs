@@ -334,16 +334,16 @@ namespace RimWorld
                 if (!PlayerControlled && mapComp.HasShipMapAI) //AI targeting
                 {
                     //Target pawns with the Psychic Flayer
-                    if (spinalComp != null && !spinalComp.Props.destroysHull && mapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.Any())
+                    if (spinalComp != null && !spinalComp.Props.destroysHull && mapComp.ShipCombatTargetMap.mapPawns.FreeColonistsAndPrisoners.Any())
                     {
-                        shipTarget = mapComp.ShipCombatOriginMap.mapPawns.FreeColonistsAndPrisoners.RandomElement();
+                        shipTarget = mapComp.ShipCombatTargetMap.mapPawns.FreeColonistsAndPrisoners.RandomElement();
                     }
                     else //try bridges, else random
                     {
                         if (mapComp.OriginMapComp.MapRootListAll.Any(b => !b.Destroyed))
                             shipTarget = mapComp.OriginMapComp.MapRootListAll.RandomElement();
                         else
-                            shipTarget = mapComp.ShipCombatOriginMap.listerBuildings.allBuildingsColonist.RandomElement();
+                            shipTarget = mapComp.ShipCombatTargetMap.listerBuildings.allBuildingsColonist.RandomElement();
                     }
                 }
                 if (shipTarget.IsValid)

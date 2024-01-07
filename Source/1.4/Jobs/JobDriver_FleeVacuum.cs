@@ -9,7 +9,7 @@ namespace RimWorld
 	{
 		public override bool TryMakePreToilReservations(bool errorOnFailed)
 		{
-			if (pawn.CanReach(TargetA, PathEndMode.Touch, Danger.Deadly))
+			if (pawn.CanReach(TargetA, PathEndMode.OnCell, Danger.Deadly))
 				return true;
 			return false;
 		}
@@ -17,7 +17,7 @@ namespace RimWorld
 		{
 			if (TargetA != LocalTargetInfo.Invalid)
 				this.FailOnDespawnedOrNull(TargetIndex.A);
-			yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.Touch);
+			yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.OnCell);
 		}
 	}
 }

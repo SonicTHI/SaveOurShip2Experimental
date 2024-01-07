@@ -73,6 +73,21 @@ namespace RimWorld
                 };
                 yield return toggleShields;
             }
+            var mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
+            /*if (!mapComp.InCombat && mapComp.HasTarget)
+            {
+                Command_Action endTarget = new Command_Action
+                {
+                    action = delegate
+                    {
+                        mapComp.EndTarget();
+                    },
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipTargetEnd"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipTargetEndDesc"),
+                    icon = ContentFinder<Texture2D>.Get("UI/EndBattle_Icon")
+                };
+                yield return endTarget;
+            }*/
             if (!myNet.Turrets.Any())
                 yield break;
             if (myNet.Turrets.Any(t => ((Building_ShipTurret)t.parent).holdFire == false))

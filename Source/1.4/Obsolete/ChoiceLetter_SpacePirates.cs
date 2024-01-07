@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
-
+/*
 namespace RimWorld
 {
     public class ChoiceLetter_SpacePirates : ChoiceLetter
@@ -34,7 +34,7 @@ namespace RimWorld
             choiceLetter_SpacePirates.parely = true;
         }
         choiceLetter_SpacePirates.StartTimeout(6000);
-        Find.LetterStack.ReceiveLetter(choiceLetter_SpacePirates, null);*/
+        Find.LetterStack.ReceiveLetter(choiceLetter_SpacePirates, null);
         public override IEnumerable<DiaOption> Choices
         {
             get
@@ -62,7 +62,7 @@ namespace RimWorld
                         if (!parely)
                         {
                             var mapComp = map.GetComponent<ShipHeatMapComp>();
-                            mapComp.StartShipEncounter(mapComp.MapRootListAll.FirstOrDefault(), null, null, Faction.OfPirates);
+                            mapComp.StartShipEncounter(null, null, Faction.OfPirates);
                         }
                         Find.LetterStack.RemoveLetter(this);
                     };
@@ -94,3 +94,4 @@ namespace RimWorld
         public string signalReject;
     }
 }
+*/

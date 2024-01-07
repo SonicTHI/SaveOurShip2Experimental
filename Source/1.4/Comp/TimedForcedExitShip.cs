@@ -88,7 +88,7 @@ namespace RimWorld.Planet
 		{
 			if (mapParent.Map.IsSpace())
 			{
-				List<Pawn> toKill = new List<Pawn>();
+                List<Pawn> toKill = new List<Pawn>();
 				foreach (Thing t in mapParent.Map.spawnedThings)
 				{
 					if (t is Pawn p)
@@ -105,10 +105,11 @@ namespace RimWorld.Planet
 						letterString += deadPawn.LabelShort + "\n";
 					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelPawnsLostReEntry"), letterString,
 						LetterDefOf.NegativeEvent);
-				}
-				if (!mapParent.Map.GetComponent<ShipHeatMapComp>().ShipCombatOrigin)
+                }
+                var mapComp = mapParent.Map.GetComponent<ShipHeatMapComp>();
+                if (!mapComp.ShipCombatOrigin)
 				{
-					mapParent.Map.GetComponent<ShipHeatMapComp>().BurnUpSet = true;
+                    mapComp.BurnUpSet = true;
 				}
 				else
 					Find.WorldObjects.Remove(mapParent);

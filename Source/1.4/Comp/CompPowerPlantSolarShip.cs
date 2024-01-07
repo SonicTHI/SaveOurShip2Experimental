@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RimworldMod;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -10,47 +11,57 @@ namespace RimWorld
         private static readonly Vector2 BarSize = new Vector2(0.3f, 0.07f);
         private static readonly Material PowerPlantSolarBarFilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.5f, 0.475f, 0.1f), false);
         private static readonly Material PowerPlantSolarBarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.15f, 0.15f, 0.15f), false);
-        private static float FullSunPower
-        {
-            get { return 800f; }
-        }
+        private static float FullSunPower = 300;
         private const float NightPower = 0.0f;
         private CompProperties_PowerPlantSolarShip PropsSolar
         {
             get { return props as CompProperties_PowerPlantSolarShip; }
         }
+        UnfoldComponent compUnfold;
+        public List<IntVec3> unfoldTo;
 
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+            compUnfold = parent.TryGetComp<UnfoldComponent>();
+            IntVec3 v = IntVec3.South.RotatedBy(parent.Rotation);
+            unfoldTo = new List<IntVec3>
+            {
+                parent.Position + v,
+                parent.Position + v * 2,
+                parent.Position + v * 3
+            };
+            if (parent.Map.IsSpace())
+                FullSunPower = 600;
+            else
+                FullSunPower = 300;
+        }
         protected override float DesiredPowerOutput
         {
             get
             {
-                float desire = Mathf.Lerp(NightPower * PropsSolar.bonusPower, FullSunPower * PropsSolar.bonusPower, this.parent.Map.skyManager.CurSkyGlow) * this.RoofedPowerOutputFactor;
-                IntVec3 intVec3_2 = this.parent.Position + IntVec3.South.RotatedBy(this.parent.Rotation);
-                IntVec3 intVec3_3 = this.parent.Position + (IntVec3.South.RotatedBy(this.parent.Rotation) * 2);
-                IntVec3 intVec3_4 = this.parent.Position + (IntVec3.South.RotatedBy(this.parent.Rotation) * 3);
+                float desire = Mathf.Lerp(NightPower * PropsSolar.bonusPower, FullSunPower * PropsSolar.bonusPower, parent.Map.skyManager.CurSkyGlow) * RoofedPowerOutputFactor;
 
-                if (intVec3_4.Impassable(parent.Map) || intVec3_3.Impassable(parent.Map) || intVec3_2.Impassable(parent.Map) || (intVec3_4.GetRoom(parent.Map)?.IsDoorway ?? false) || (intVec3_3.GetRoom(parent.Map)?.IsDoorway ?? false) || (intVec3_2.GetRoom(parent.Map)?.IsDoorway ?? false))
+                if (unfoldTo.Any(s => s.Impassable(parent.Map) || (s.GetRoom(parent.Map)?.IsDoorway ?? false)))
                 {
                     desire = 0.0f;
                 }
 
-                UnfoldComponent comp = this.parent.GetComp<UnfoldComponent>();
-                if(comp != null)
+                if (compUnfold != null)
                 {
                     if (Mathf.Approximately(desire, 0.0f))
                     {
-                        comp.Target = 0.0f;
+                        compUnfold.Target = 0.0f;
                     }
                     else
                     {
-                        comp.Target = 1.0f;
-                        if (!comp.IsAtTarget)
+                        compUnfold.Target = 1.0f;
+                        if (!compUnfold.IsAtTarget)
                         {
                             desire = 0.0f;
                         }
                     }
                 }
-
                 return desire;
             }
         }
@@ -61,15 +72,11 @@ namespace RimWorld
             {
                 int num1 = 0;
                 int num2 = 0;
-                List<IntVec3> rects = new List<IntVec3>();
-                rects.Add(this.parent.Position + IntVec3.South.RotatedBy(this.parent.Rotation));
-                rects.Add(this.parent.Position + (IntVec3.South.RotatedBy(this.parent.Rotation) * 2));
-                rects.Add(this.parent.Position + (IntVec3.South.RotatedBy(this.parent.Rotation) * 3));
-                foreach (IntVec3 c in rects)
+                foreach (IntVec3 c in unfoldTo)
                 {
-                    ++num1;
-                    if (this.parent.Map.roofGrid.Roofed(c))
-                        ++num2;
+                    num1++;
+                    if (parent.Map.roofGrid.Roofed(c))
+                        num2++;
                 }
                 return (float)(num1 - num2) / (float)num1;
             }

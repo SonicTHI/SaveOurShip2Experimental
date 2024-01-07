@@ -562,7 +562,7 @@
 		<defName>ShipTurret_ACI</defName>
 		<label>cannon turret</label>
 		<designatorDropdown>ShipTurrets_AC</designatorDropdown>
-		<description>A starship turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range. Can be set to intercept torpedoes rather than firing at the enemy ship.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A starship turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range. Can be set to intercept torpedoes rather than firing at the enemy ship.\n\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
@@ -734,7 +734,7 @@
 		<defName>ShipTurret_ACII</defName>
 		<label>large cannon turret</label>
 		<designatorDropdown>ShipTurrets_AC</designatorDropdown>
-		<description>A large turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A large turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range. Capable of ship ground defense.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/HardpointYellow</texPath>
 			<drawSize>(3,3)</drawSize>
@@ -886,7 +886,7 @@
 		<defName>ShipTurret_ACIII</defName>
 		<label>artillery turret</label>
 		<designatorDropdown>ShipTurrets_AC</designatorDropdown>
-		<description>A capital-class turret that rapidly accelerates a stream of massive uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A capital-class turret that rapidly accelerates a stream of massive uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/HardpointYellow</texPath>
 			<drawSize>(5,5)</drawSize>
@@ -1042,7 +1042,7 @@
 		<defName>ShipTurret_Laser</defName>
 		<label>laser turret</label>
 		<designatorDropdown>ShipTurrets_Laser</designatorDropdown>
-		<description>A starship turret that fires a powerful laser. While it can inflict devastating damage, it is only usable at short range. Can be set to intercept torpedoes rather than firing on the enemy ship.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A starship turret that fires a powerful laser. While it can inflict devastating damage, it is only usable at short range. Can be set to intercept torpedoes rather than firing on the enemy ship. Capable of ship ground defense.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/HardpointRed</texPath>
 		</graphicData>
@@ -1220,7 +1220,7 @@
 		<defName>ShipTurret_Laser_Large</defName>
 		<label>large laser turret</label>
 		<designatorDropdown>ShipTurrets_Laser</designatorDropdown>
-		<description>A large turret that fires a powerful laser. While it can inflict devastating damage, it is only usable at short range.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A large turret that fires a powerful laser. While it can inflict devastating damage, it is only usable at short range.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/HardpointRed</texPath>
 			<drawSize>(3,3)</drawSize>
@@ -1298,9 +1298,9 @@
 			<shaderType>TransparentPostLight</shaderType>
 		</graphicData>
 		<projectile>
-			<explosionRadius>1.9</explosionRadius>
+			<explosionRadius>2.1</explosionRadius>
 			<damageDef>ShipLaserTwo</damageDef>
-			<speed>400</speed>
+			<speed>150</speed>
 		</projectile>
 	</ThingDef>
 	<DamageDef Name="ShipLaserTwo">
@@ -1337,7 +1337,7 @@
 		<defName>ShipTurret_Plasma</defName>
 		<label>plasma turret</label>
 		<designatorDropdown>ShipTurrets_Plasma</designatorDropdown>
-		<description>A starship turret that fires a burst of superheated plasma. This balanced weapon can be used at up to medium range.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A starship turret that fires a burst of superheated plasma. This balanced weapon can be used at up to medium range. Capable of ship ground defense.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/HardpointGreen</texPath>
 		</graphicData>
@@ -1501,7 +1501,7 @@
 		<defName>ShipTurret_Plasma_Large</defName>
 		<label>large plasma turret</label>
 		<designatorDropdown>ShipTurrets_Plasma</designatorDropdown>
-		<description>A large turret that fires a burst of superheated plasma. This balanced weapon can be used at up to medium range.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A large turret that fires a burst of superheated plasma. This balanced weapon can be used at up to medium range.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/HardpointGreen</texPath>
 			<drawSize>(3,3)</drawSize>
@@ -1639,7 +1639,7 @@
 		<defName>ShipTurret_Kinetic</defName>
 		<label>railgun turret</label>
 		<designatorDropdown>ShipTurrets_Kinetic</designatorDropdown>
-		<description>A starship turret that accelerates metal slugs to relativistic speeds. Can hit targets at long range.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A starship turret that accelerates metal slugs to relativistic speeds. Can hit targets at long range. Capable of ship ground defense.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
@@ -1792,7 +1792,7 @@
 		<defName>ShipTurret_Kinetic_Large</defName>
 		<label>large railgun turret</label>
 		<designatorDropdown>ShipTurrets_Kinetic</designatorDropdown>
-		<description>A large turret that accelerates metal slugs to relativistic speeds. Capable of inaccurate fire at very long range.\n\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>A large turret that accelerates metal slugs to relativistic speeds. Capable of inaccurate fire at very long range.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
@@ -2032,7 +2032,7 @@
 	<ThingDef ParentName="ShipSpinalTurretBuilding">
 		<defName>ShipSpinalBarrelLaser</defName>
 		<label>spinal barrel: laser</label>
-		<description>The final segment of a spinal-mount cannon. Should be placed outside the ship, unless you want a new hole in your hull.</description>
+		<description>The final segment of a spinal-mount cannon.\n\nShould be placed outside the ship, unless you want a new hole in your hull.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Laser</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
@@ -2136,7 +2136,7 @@
 	<ThingDef ParentName="ShipSpinalTurretBuilding">
 		<defName>ShipSpinalBarrelPlasma</defName>
 		<label>spinal barrel: plasma</label>
-		<description>The final segment of a spinal-mount cannon. Should be placed outside the ship, unless you want a new hole in your hull.</description>
+		<description>The final segment of a spinal-mount cannon.\n\nShould be placed outside the ship, unless you want a new hole in your hull.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Plasma</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
@@ -2260,7 +2260,7 @@
 	<ThingDef ParentName="ShipSpinalTurretBuilding">
 		<defName>ShipSpinalBarrelKinetic</defName>
 		<label>spinal barrel: railgun</label>
-		<description>The final segment of a spinal-mount cannon. Should be placed outside the ship, unless you want a new hole in your hull.</description>
+		<description>The final segment of a spinal-mount cannon.\n\nShould be placed outside the ship, unless you want a new hole in your hull.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Kinetic</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>

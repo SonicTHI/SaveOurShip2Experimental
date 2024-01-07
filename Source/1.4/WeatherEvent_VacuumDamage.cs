@@ -28,8 +28,7 @@ namespace RimWorld
             List<Pawn> allPawns = map.mapPawns.AllPawnsSpawned.Where(p => !p.Dead).ToList();
             foreach (Pawn pawn in allPawns)
             {
-                CachedPawnSpaceModifiers pawnSpaceModifiers = ShipInteriorMod2.GetPawnSpaceModifiersModifiers(pawn);
-                if (pawnSpaceModifiers.CanSurviveVacuum)
+                if (pawn.CanSurviveVacuum())
                 {
                     continue;
                 }
@@ -44,8 +43,8 @@ namespace RimWorld
                     }
 
                     RunFromVacuum(pawn);
-                    DoPawnDecompressionDamage(pawn, pawnSpaceModifiers);
-                    DoPawnHypoxiaDamage(pawn, pawnSpaceModifiers, 0.025f);
+                    DoPawnDecompressionDamage(pawn);
+                    DoPawnHypoxiaDamage(pawn, 0.025f);
                 }
                 else if (!map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) // in ship, no air
                 {
@@ -54,7 +53,7 @@ namespace RimWorld
                         continue;
                     }
 
-                    DoPawnHypoxiaDamage(pawn, pawnSpaceModifiers);
+                    DoPawnHypoxiaDamage(pawn);
                 }
             }
         }
@@ -91,9 +90,9 @@ namespace RimWorld
             }
         }
 
-        public static void DoPawnHypoxiaDamage(Pawn pawn, CachedPawnSpaceModifiers pawnSpaceModifiers, float severity = 0.0125f, float extraFactor = 1.0f)
+        public static void DoPawnHypoxiaDamage(Pawn pawn, float severity = 0.0125f, float extraFactor = 1.0f)
         {
-            float pawnResistance = pawnSpaceModifiers?.HypoxiaResistance ?? 0.0f;
+            float pawnResistance = pawn.HypoxiaResistance();
             float serevityMultiplier = Mathf.Max(1.0f - pawnResistance, 0.0f);
             float severityOffset = severity * serevityMultiplier * extraFactor;
             if (severityOffset >= 0.0f)
@@ -103,9 +102,9 @@ namespace RimWorld
 
         }
 
-        public static void DoPawnDecompressionDamage(Pawn pawn, CachedPawnSpaceModifiers pawnSpaceModifiers, float severity = 1.0f, float extraFactor = 1.0f)
+        public static void DoPawnDecompressionDamage(Pawn pawn, float severity = 1.0f, float extraFactor = 1.0f)
         {
-            float pawnResistance = pawnSpaceModifiers?.DecompressionResistance ?? 0.0f;
+            float pawnResistance = pawn.DecompressionResistance();
             float serevityMultiplier = Mathf.Max(1.0f - pawnResistance, 0.0f);
             float severityOffset = severity * serevityMultiplier * extraFactor;
             if (severityOffset >= 0.0f)

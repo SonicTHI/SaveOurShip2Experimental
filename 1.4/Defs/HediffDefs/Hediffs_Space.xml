@@ -138,9 +138,6 @@
 				<showHoursToRecover>true</showHoursToRecover>
 			</li>
 			<li Class="SaveOurShip2.HediffCompProperties_Bubble" />
-			<li>
-				<compClass>SaveOurShip2.HediffComp_Space</compClass>
-			</li>
 		</comps>
 		<label>survival bubble</label>
 		<stages>

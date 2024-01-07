@@ -280,7 +280,6 @@
   
   <!-- Archotech lung -->
   <HediffDef ParentName="AddedBodyPartBase">
-    <hediffClass>HediffWithComps</hediffClass>
     <defName>SoSArchotechLung</defName>
     <label>archotech lung</label>
     <labelNoun>an archotech lung</labelNoun>
@@ -301,11 +300,6 @@
         </statOffsets>
       </li>
     </stages>
-    <comps>
-      <li>
-        <compClass>SaveOurShip2.HediffComp_Space</compClass>
-      </li>
-    </comps>
   </HediffDef>
 
   <ThingDef ParentName="BodyPartArchotechBase">
@@ -621,7 +615,6 @@
   
   <!-- Archotech skin -->
   <HediffDef ParentName="ImplantHediffBase">
-    <hediffClass>HediffWithComps</hediffClass>
     <defName>SoSArchotechSkin</defName>
     <label>archotech skin</label>
     <description>Installed archotech skin.</description>
@@ -644,11 +637,6 @@
     <tags>
       <li>ArmorGland</li>
     </tags>
-    <comps>
-      <li>
-        <compClass>SaveOurShip2.HediffComp_Space</compClass>
-      </li>
-    </comps>
   </HediffDef>
 
   <ThingDef ParentName="BodyPartArchotechBase">

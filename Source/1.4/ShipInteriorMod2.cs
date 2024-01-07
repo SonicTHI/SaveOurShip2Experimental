@@ -1936,10 +1936,6 @@ namespace SaveOurShip2
 						//post move
 						if (fac != null && spawnThing is Building && spawnThing.def.CanHaveFaction)
 							spawnThing.SetFaction(fac);
-						if (spawnThing is Pawn pawn)
-						{
-							WorldComp.RemovePawnFromSpaceCache(pawn);
-						}
 					}
 					catch (Exception e)
 					{
@@ -2477,11 +2473,6 @@ namespace SaveOurShip2
 			}
 			return false;
 		}
-
-        public static CachedPawnSpaceModifiers GetPawnSpaceModifiersModifiers(Pawn pawn)
-        {
-            return WorldComp.GetPawnSpaceModifiersCache(pawn);
-        }
     }
 
     public class TimeHelper

@@ -2849,7 +2849,7 @@ namespace SaveOurShip2
             {
                 return;
             }
-            float vacuumSpeedMultiplier = ShipInteriorMod2.GetPawnSpaceModifiersModifiers(___pawn).VacuumSpeedMultiplier;
+            float vacuumSpeedMultiplier = ___pawn.GetStatValue(ResourceBank.StatDefOf.VacuumSpeedMultiplier);
             if (vacuumSpeedMultiplier > 0.0f && vacuumSpeedMultiplier != 1.0f)
             {
                 int newCellCost = Mathf.RoundToInt(__instance.nextCellCostLeft / vacuumSpeedMultiplier);

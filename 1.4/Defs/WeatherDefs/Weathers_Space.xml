@@ -3,7 +3,6 @@
   <WeatherDef>
     <defName>OuterSpaceWeather</defName>
     <label>outer space</label>
-    <isBad>true</isBad>
     <description>It's... space. Try not to go outside.</description>
     <windSpeedFactor>0.0</windSpeedFactor>
     <repeatable>true</repeatable>
@@ -33,7 +32,7 @@
       <overlay>(0.6,0.6,0.6)</overlay>
       <saturation>1.25</saturation>
     </skyColorsNightMid>
-    <eventMakers>
+	<eventMakers>
       <li>
         <averageInterval>120</averageInterval>
         <eventClass>WeatherEvent_VacuumDamage</eventClass>
@@ -41,3 +40,11 @@
     </eventMakers>
   </WeatherDef>
 </Defs>
+
+
+
+
+
+
+
+

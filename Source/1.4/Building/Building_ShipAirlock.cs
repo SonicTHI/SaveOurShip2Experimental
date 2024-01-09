@@ -89,7 +89,7 @@ namespace RimWorld
             //enemy pawns can pass through their doors if outside or with EVA when player is present
             if (p.Map.IsSpace() && p.Faction != Faction.OfPlayer && Outerdoor())
             {
-                if (!(ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (p.CanSurviveVacuum() && (!mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned)) || p.CurJobDef == ResourceBank.JobDefOf.FleeVacuum))
+                if (!(ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (p.SOS_CanSurviveVacuum() && (!mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned)) || p.CurJobDef == ResourceBank.JobDefOf.FleeVacuum))
                     return false;
             }
             Lord lord = p.GetLord();

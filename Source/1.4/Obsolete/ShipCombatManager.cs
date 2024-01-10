@@ -87,7 +87,7 @@ namespace RimWorld
             }
             else if(thing is Pawn pawn)
             {
-                if (pawn.SOS_CanSurviveVacuum())
+                if (pawn.CanSurviveVacuum())
                     HealthUtility.DamageUntilDowned(pawn);
                 else
                     HealthUtility.DamageUntilDead(pawn);

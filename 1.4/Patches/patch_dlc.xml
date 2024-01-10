@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Patch>
 	<Operation Class="PatchOperationFindMod">
 		<mods>
@@ -173,11 +173,100 @@
 				</li>
 				<li Class="PatchOperationAdd">
 					<xpath>Defs/EnemyShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
-					<value><navyExclusive>true</navyExclusive></value>
+					<value>
+						<navyExclusive>true</navyExclusive>
+					</value>
 				</li>
+
+				<!-- apparels -->
+				<!-- EVA description -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"][not(comps)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"][not(comps)]</xpath>
+						<value>
+							<comps />
+						</value>
+					</match>
+				</li>
+
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+						<value>
+							<li>
+								<compClass>SaveOurShip2.Comp_EVA</compClass>
+							</li>
+						</value>
+					</match>
+				</li>
+
+				<!-- EVA stats -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase" or defName="Apparel_ArmorLocust"][not(equippedStatOffsets)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase" or defName="Apparel_ArmorLocust"][not(equippedStatOffsets)]</xpath>
+						<value>
+							<equippedStatOffsets />
+						</value>
+					</match>
+				</li>
+
+				<!-- Armor DecompressionResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+						<value>
+							<DecompressionResistance>0.75</DecompressionResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Helmets DecompressionResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetCataphractBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetCataphractBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+						<value>
+							<DecompressionResistance>0.25</DecompressionResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Helmets HypoxiaResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetCataphractBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetCataphractBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+						<value>
+							<HypoxiaResistance>1</HypoxiaResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Locust Armor VacuumSpeedMultiplier -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[defName="Apparel_ArmorLocust"]/equippedStatOffsets[not(VacuumSpeedMultiplier)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[defName="Apparel_ArmorLocust"]/equippedStatOffsets[not(VacuumSpeedMultiplier)]</xpath>
+						<value>
+							<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
+						</value>
+					</match>
+				</li>
+
+				<li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[@Name="ApparelArmorCataphractBase"]/statBases/Insulation_Cold</xpath>
+					<value>
+						<Insulation_Cold>100</Insulation_Cold>
+					</value>
+				</li>
+
 				<!-- traders -->
 				<li Class="PatchOperationAdd">
-				<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+					<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
 					<value>
 						<li Class="StockGenerator_SingleDef">
 							<thingDef>ShipTorpedo_HighExplosive</thingDef>
@@ -186,7 +275,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-				<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+					<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
 					<value>
 						<li Class="StockGenerator_SingleDef">
 							<thingDef>ShipTorpedo_EMP</thingDef>
@@ -195,7 +284,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-				<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+					<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
 					<value>
 						<li Class="StockGenerator_SingleDef">
 							<thingDef>ShipTorpedo_Antimatter</thingDef>
@@ -215,11 +304,13 @@
 			<operations>
 				<!-- mech buildable -->
 				<li Class="PatchOperationAdd">
-					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName = "Ship_BeamMech_Unpowered" or defName = "Ship_BeamMech" or  defName="ShipAirlockMech" or defName="ShipHullTileMech" or defName="ShipInside_SolarGeneratorMech" or defName="ShipInside_PassiveVentMechanoid"]</xpath>
-					<value><designationCategory>Ship</designationCategory></value>
+					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName = "Ship_BeamMech_Unpowered" or defName = "Ship_BeamMech" or defName="ShipAirlockMech" or defName="ShipHullTileMech" or defName="ShipInside_SolarGeneratorMech" or defName="ShipInside_PassiveVentMechanoid"]</xpath>
+					<value>
+						<designationCategory>Ship</designationCategory>
+					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName="Ship_BeamMech_Unpowered" or defName="Ship_BeamMech" or  defName="ShipAirlockMech" or defName="ShipHullTileMech"]</xpath>
+					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName="Ship_BeamMech_Unpowered" or defName="Ship_BeamMech" or defName="ShipAirlockMech" or defName="ShipHullTileMech"]</xpath>
 					<value>
 						<researchPrerequisites>
 							<li>ShipBasics</li>

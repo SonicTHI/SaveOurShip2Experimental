@@ -955,6 +955,7 @@
 				<fuelUse>1</fuelUse>
 				<takeOff>true</takeOff>
 			</li>
+			<li Class="Rimefeller.CompProperties_Pipe" MayRequire="Dubwise.Rimefeller" />
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_ShipEngine</li>
@@ -1028,6 +1029,7 @@
 				<fuelUse>2</fuelUse>
 				<takeOff>true</takeOff>
 			</li>
+			<li Class="Rimefeller.CompProperties_Pipe" MayRequire="Dubwise.Rimefeller" />
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_ShipEngine</li>
@@ -1793,6 +1795,11 @@
 				<efficiency>0.95</efficiency>
 				<transmitsPower>true</transmitsPower>
 			</li>
+			<li Class="RT_Fuse.CompProperties_RTFuse" MayRequire="ratys.rtfuse">
+				<compClass>RT_Fuse.CompRTFuse</compClass>
+				<surgeMitigation>1000</surgeMitigation>
+				<breakdownOnTrip>false</breakdownOnTrip>
+			</li>
 		</comps>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<designationCategory>Ship</designationCategory>
@@ -1846,6 +1853,11 @@
 				<storedEnergyMax>10000</storedEnergyMax>
 				<efficiency>0.95</efficiency>
 				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="RT_Fuse.CompProperties_RTFuse" MayRequire="ratys.rtfuse">
+				<compClass>RT_Fuse.CompRTFuse</compClass>
+				<surgeMitigation>10000</surgeMitigation>
+				<breakdownOnTrip>false</breakdownOnTrip>
 			</li>
 		</comps>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
@@ -2833,6 +2845,7 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
+			<li Class="Rimefeller.CompProperties_Pipe" MayRequire="Dubwise.Rimefeller" />
 		</comps>
 		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
 	</ThingDef>

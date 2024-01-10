@@ -28,7 +28,7 @@ namespace RimWorld
             List<Pawn> allPawns = map.mapPawns.AllPawnsSpawned.Where(p => !p.Dead).ToList();
             foreach (Pawn pawn in allPawns)
             {
-                if (pawn.SOS_CanSurviveVacuum())
+                if (pawn.CanSurviveVacuum())
                 {
                     continue;
                 }
@@ -92,7 +92,7 @@ namespace RimWorld
 
         public static void DoPawnHypoxiaDamage(Pawn pawn, float severity = 0.0125f, float extraFactor = 1.0f)
         {
-            float pawnResistance = pawn.SOS_HypoxiaResistance();
+            float pawnResistance = pawn.HypoxiaResistance();
             float serevityMultiplier = Mathf.Max(1.0f - pawnResistance, 0.0f);
             float severityOffset = severity * serevityMultiplier * extraFactor;
             if (severityOffset >= 0.0f)
@@ -104,7 +104,7 @@ namespace RimWorld
 
         public static void DoPawnDecompressionDamage(Pawn pawn, float severity = 1.0f, float extraFactor = 1.0f)
         {
-            float pawnResistance = pawn.SOS_DecompressionResistance();
+            float pawnResistance = pawn.DecompressionResistance();
             float serevityMultiplier = Mathf.Max(1.0f - pawnResistance, 0.0f);
             float severityOffset = severity * serevityMultiplier * extraFactor;
             if (severityOffset >= 0.0f)

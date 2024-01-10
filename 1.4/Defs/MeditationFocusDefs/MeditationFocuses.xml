@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  
-  <MeditationFocusDef>
-    <defName>Archotech</defName>
-    <label>archotech</label>
-  </MeditationFocusDef>
-  
+	<MeditationFocusDef>
+		<defName>Archotech</defName>
+		<label>archotech</label>
+		<modExtensions>
+			<li Class="VanillaPsycastsExpanded.MeditationFocusExtension" MayRequire="vanillaexpanded.vpsycastse">
+				<icon>UI/PsyfocusIcons/PsyfocusArchotechnology</icon>
+			</li>
+		</modExtensions>
+	</MeditationFocusDef>
 </Defs>

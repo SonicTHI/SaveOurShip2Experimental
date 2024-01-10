@@ -1249,7 +1249,7 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>An advanced reactionless engine capable of interplanetary and interstellar travel.\n\nCannot be used inside a planets' athmopshere. This larger version usually found on big warships using two manifolds in a more efficient configuration.\n\nJT mass limit: 30000\nThrust: 1500</description>
+		<description>An advanced reactionless engine capable of interplanetary and interstellar travel.\n\nCannot be used inside a planets' athmopshere. This larger version usually found on big warships using two manifolds in a more efficient configuration.\n\nJT mass limit: 30000\nThrust: 2000</description>
 		<size>(5,5)</size>
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
@@ -1270,7 +1270,7 @@
 					<drawSize>(11,26.5)</drawSize>
 				</graphicData-->
 				<energy>true</energy>
-				<thrust>3</thrust>
+				<thrust>4</thrust>
 			</li>
 		</comps>
 		<placeWorkers>

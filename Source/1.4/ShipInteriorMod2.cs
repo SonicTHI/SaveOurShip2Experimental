@@ -95,7 +95,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V96f6";
+        public static readonly string SOS2EXPversion = "V97";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1031,7 +1031,7 @@ namespace SaveOurShip2
 				}
 				catch (Exception e)
 				{
-					Log.Warning("Ship part was not generated properly: " + shape.shapeOrDef + " at " + offset.x + shape.x + ", " + offset.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
+					Log.Warning("SOS2: ".Colorize(Color.cyan) + map + "Ship part was not generated properly: ".Colorize(Color.red) + shape.shapeOrDef + " at " + offset.x + shape.x + ", " + offset.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
 				}
 			}
 			//generate SOS2 shapedefs
@@ -1065,15 +1065,9 @@ namespace SaveOurShip2
 						else
 							thing = ThingMaker.MakeThing(ThingDef.Named(def.defName.Substring(0, def.defName.Length - 8)));
 						if (thing is Pawn p)
-						{
-							if (p.RaceProps.IsMechanoid)
-								p.SetFactionDirect(Faction.OfMechanoids);
-							else if (p.RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
-								p.SetFactionDirect(Faction.OfInsects);
-							p.ageTracker.AgeBiologicalTicks = 36000000;
-							p.ageTracker.AgeChronologicalTicks = 36000000;
-							if (lord != null)
-								lord.AddPawn(p);
+                        {
+                            SoShipPawnGen(p);
+                            lord?.AddPawn(p);
 							pawnsOnShip.Add(p);
 						}
 						else if (thing is Hive)
@@ -1102,18 +1096,12 @@ namespace SaveOurShip2
 						if (thing.def.CanHaveFaction)
 						{
 							if (thing is Pawn p)
-							{
-								if (p.RaceProps.IsMechanoid)
-									p.SetFactionDirect(Faction.OfMechanoids);
-								else if (p.RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
-									p.SetFactionDirect(Faction.OfInsects);
-								p.ageTracker.AgeBiologicalTicks = 36000000;
-								p.ageTracker.AgeChronologicalTicks = 36000000;
-								if (lord != null)
-									lord.AddPawn(p);
-								pawnsOnShip.Add(p);
-							}
-							else if (thing is Hive)
+                            {
+                                SoShipPawnGen(p);
+                                lord?.AddPawn(p);
+                                pawnsOnShip.Add(p);
+                            }
+                            else if (thing is Hive)
 								thing.SetFactionDirect(Faction.OfInsects);
 							else
 								thing.SetFactionDirect(fac);
@@ -1137,7 +1125,7 @@ namespace SaveOurShip2
 				}
 				catch (Exception e)
 				{
-					Log.Warning("Ship shape was not generated properly: " + shape.shapeOrDef + " at " + offset.x + shape.x + ", " + offset.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
+					Log.Warning("SOS2: ".Colorize(Color.cyan) + map + "Ship shape was not generated properly: ".Colorize(Color.red) + shape.shapeOrDef + " at " + offset.x + shape.x + ", " + offset.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
 				}
 			}
 			//cargo
@@ -1258,7 +1246,7 @@ namespace SaveOurShip2
 								mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_AssaultShip(invaderFac, false), map);
 							else
 								mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_DefendShip(invaderFac, map.Center), map);
-							Log.Message("Spawned invaders from: " + invaderFac);
+							Log.Message("SOS2: ".Colorize(Color.cyan) + map + "Spawned invaders from: " + invaderFac);
 						}
 						else
 							invaderFac = mapComp.InvaderLord.faction;
@@ -1302,6 +1290,22 @@ namespace SaveOurShip2
 				}
 			}
 			//SL SpawnLights(map, spawnLights);
+        }
+        private static void SoShipPawnGen(Pawn p) //td make proper pawngen req?
+        {
+            if (p.RaceProps.IsMechanoid)
+            {
+                p.SetFactionDirect(Faction.OfMechanoids);
+                p.ageTracker.AgeBiologicalTicks = (long)(Rand.Range(200f, 2500f) * 3600000f);
+                p.ageTracker.AgeChronologicalTicks = p.ageTracker.AgeBiologicalTicks;
+            }
+            else
+            {
+                if (p.RaceProps.BloodDef.defName.Equals("Filth_BloodInsect"))
+                    p.SetFactionDirect(Faction.OfInsects);
+                p.ageTracker.AgeBiologicalTicks = 36000000;
+                p.ageTracker.AgeChronologicalTicks = 36000000;
+            }
         }
         public static void SpawnLights(Map map, Dictionary<IntVec3, Tuple<int, ColorInt, bool>> shape)
         {
@@ -1801,7 +1805,6 @@ namespace SaveOurShip2
                         shipIndexes.Add(targetMapComp.MapShipCells[vec].Item1);
                     }
                 }
-                Log.Message("Adjacent ships found in area: " + shipIndexes.Count);
             }
             if (devMode)
 				watch.Record("processSourceArea");
@@ -1952,7 +1955,7 @@ namespace SaveOurShip2
 			AirlockBugFlag = false;
 			if (shipIndexes.Count > 1) //ship cache: adjacent ships found, merge in order: largest ship, ship, wreck
             {
-                Log.Message("SOS2: ".Colorize(Color.cyan) + " ship move found adjacent ships, merging!");
+                Log.Message("SOS2: ".Colorize(Color.cyan) + " ship move found adjacent ships in area, merging!");
                 targetMapComp.CheckAndMerge(shipIndexes);
             }
             //move zones

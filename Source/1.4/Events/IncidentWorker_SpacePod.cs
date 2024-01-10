@@ -13,7 +13,6 @@ namespace RimWorld
 {
     public class IncidentWorker_SpacePod : IncidentWorker
     {
-        Map map;
         protected override bool CanFireNowSub(IncidentParms parms)
         {
             Map map = (Map)parms.target;

@@ -461,7 +461,7 @@ namespace SaveOurShip2
 		public static bool Prefix(ref int ___cachedOpenRoofCount, out bool __state)
 		{
 			__state = false;
-			if (___cachedOpenRoofCount == -1)
+			if (___cachedOpenRoofCount == -1 && !ShipInteriorMod2.AirlockBugFlag)
 				__state = true;
 			return true;
 		}

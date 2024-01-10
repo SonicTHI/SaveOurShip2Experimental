@@ -410,15 +410,29 @@ namespace RimWorld
                     ShipsOnMapNew[MapRootListAll[i].thingIDNumber].RebuildCache(MapRootListAll[i]);
                 }
             }
+            List<IntVec3> invalidCells = new List<IntVec3>(); //might happen with wrecks - temp solution
             foreach (IntVec3 vec in MapShipCells.Keys.ToList()) //ship wrecks from leftovers
             {
                 if (MapShipCells[vec].Item1 == -1)
                 {
                     Thing t = vec.GetThingList(map).FirstOrDefault(b => b.TryGetComp<CompSoShipPart>() != null);
+                    if (t == null)
+                    {
+                        invalidCells.Add(vec);
+                        continue;
+                    }
                     int mergeToIndex = t.thingIDNumber;
 
                     ShipsOnMapNew.Add(mergeToIndex, new SoShipCache());
                     ShipsOnMapNew[mergeToIndex].RebuildCache(t as Building);
+                }
+            }
+            if (invalidCells.Any())
+            {
+                Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Recaching found ".Colorize(Color.red) + invalidCells.Count + " invalid cells! FIXING.");
+                foreach (IntVec3 vec in invalidCells)
+                {
+                    MapShipCells.Remove(vec);
                 }
             }
             CacheOff = false;
@@ -1318,7 +1332,7 @@ namespace RimWorld
             //Log.Message("SOS2: ".Colorize(Color.cyan) + map + " SlowestThrustOnMap: " + MapEnginePower);
             foreach (SoShipCache ship in ShipsOnMapNew.Values.Where(s => s.Engines.Any()))
             {
-                ship.MoveAtThrust(MapEnginePower * Mathf.Pow(ship.BuildingCount, 1.2f));
+                ship.MoveAtThrustToWeight(MapEnginePower);
             }
         }
         public float SlowestThrustToWeight() //find worst t/w ship

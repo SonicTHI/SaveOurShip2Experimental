@@ -126,7 +126,7 @@ namespace RimWorld
                     SetShipTerrain(v);
                 }
             }
-            if (ShipInteriorMod2.AirlockBugFlag) //MoveShip - cache is off
+            if (ShipInteriorMod2.AirlockBugFlag) //MoveShip - cache is off, dont make roof or floor
             {
                 return;
             }

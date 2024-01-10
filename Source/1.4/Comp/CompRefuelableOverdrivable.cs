@@ -9,14 +9,12 @@ namespace RimWorld
 {
     class CompRefuelableOverdrivable : CompRefuelable
     {
-        private CompFlickable flickComp;
         private CompPowerTraderOverdrivable overdriveComp;
         private float ConsumptionRatePerTick => Props.fuelConsumptionRate / 60000f;
 
         public override void Initialize(CompProperties props)
         {
             base.Initialize(props);
-            flickComp = parent.GetComp<CompFlickable>();
             overdriveComp = parent.GetComp<CompPowerTraderOverdrivable>();
         }
 

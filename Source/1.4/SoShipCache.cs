@@ -221,8 +221,9 @@ namespace RimWorld
             }
             return dockedTo;
         }
-        public void MoveAtThrust(float thrust)
+        public void MoveAtThrustToWeight(float thrust)
         {
+            thrust *= Mathf.Pow(MassSum, 1.2f);
             List<CompEngineTrail> list = new List<CompEngineTrail>();
             list = Engines.Where(e => e.CanFire(new Rot4(mapComp.EngineRot))).OrderBy(e => e.Thrust).ThenBy(e => e.Props.energy).ThenBy(e => e.Props.reactionless).ToList();
             int i = 0;
@@ -981,8 +982,6 @@ namespace RimWorld
                 }
             }
         }
-
-
         public void Detach(HashSet<IntVec3> detachArea) //if bridge found detach as new ship else as wreck
         {
             Building newCore = null;

@@ -133,9 +133,11 @@
 		<initialSeverity>1</initialSeverity>
 		<isBad>false</isBad>
 		<comps>
-			<li Class="HediffCompProperties_Bubble">
+			<li Class="HediffCompProperties_SeverityPerDay">
 				<severityPerDay>-8</severityPerDay>
+				<showHoursToRecover>true</showHoursToRecover>
 			</li>
+			<li Class="SaveOurShip2.HediffCompProperties_Bubble" />
 		</comps>
 		<label>survival bubble</label>
 		<stages>
@@ -151,6 +153,8 @@
 					</li>
 				</capMods>
 				<statOffsets>
+					<HypoxiaResistance>1</HypoxiaResistance>
+					<DecompressionResistance>1</DecompressionResistance>
 					<ComfyTemperatureMin>-100</ComfyTemperatureMin>
 				</statOffsets>
 			</li>
@@ -300,6 +304,9 @@
 					<ArmorRating_Heat>0.5</ArmorRating_Heat>
 					<ToxicResistance>0.5</ToxicResistance>
 					<ImmunityGainSpeed>1</ImmunityGainSpeed>
+					<DecompressionResistance>1</DecompressionResistance>
+					<HypoxiaResistance>1</HypoxiaResistance>
+					<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 				</statOffsets>
 			</li>
 		</stages>
@@ -349,6 +356,9 @@
 					<ImmunityGainSpeed>1</ImmunityGainSpeed>
 					<MechBandwidth MayRequire="Ludeon.RimWorld.Biotech">16</MechBandwidth>
 					<MechControlGroups MayRequire="Ludeon.RimWorld.Biotech">2</MechControlGroups>
+					<DecompressionResistance>1</DecompressionResistance>
+					<HypoxiaResistance>1</HypoxiaResistance>
+					<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 				</statOffsets>
 				<capMods>
 					<li>
@@ -413,6 +423,9 @@
 					<TradePriceImprovement>0.10</TradePriceImprovement>
 					<MechBandwidth MayRequire="Ludeon.RimWorld.Biotech">32</MechBandwidth>
 					<MechControlGroups MayRequire="Ludeon.RimWorld.Biotech">2</MechControlGroups>
+					<DecompressionResistance>1</DecompressionResistance>
+					<HypoxiaResistance>1</HypoxiaResistance>
+					<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 				</statOffsets>
 				<capMods>
 					<li>

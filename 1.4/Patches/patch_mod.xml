@@ -1,87 +1,82 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <Patch>
-	<Operation Class="PatchOperationFindMod">
-		<mods>
-			<li>Rimefeller</li>
-		</mods>
-		<match Class="PatchOperationSequence">
-			<success>Normal</success>
-			<operations>
-				<li Class="PatchOperationAdd">
-					<xpath>Defs/ThingDef[defName="Ship_Engine" or defName="Ship_Engine_Small" or defName="ShipAirlockBeamWall"]/comps</xpath>
-					<value>
-						<li Class="Rimefeller.CompProperties_Pipe"/>
-					</value>
-				</li>
-			</operations>
-		</match>
-	</Operation>
-	<Operation Class="PatchOperationFindMod">
-		<mods>
-			<li>Vanilla Psycasts Expanded</li>
-		</mods>
-		<match Class="PatchOperationSequence">
-			<success>Always</success>
-			<operations>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>Defs/MeditationFocusDef[defName="Archotech"]</xpath>
-					<value>
-						<li Class="VanillaPsycastsExpanded.MeditationFocusExtension">
-							<icon>UI/PsyfocusIcons/PsyfocusArchotechnology</icon>
-						</li>
-					</value>
-				</li>
-			</operations>
-		</match>
-	</Operation>
-	<Operation Class="PatchOperationFindMod">
-		<mods>
-			<li>RT Fuse</li>
-		</mods>
-		<match Class="PatchOperationSequence">
-			<success>Normal</success>
-			<operations>
-				<li Class="PatchOperationAdd">
-					<xpath>Defs/ThingDef[defName="ShipCapacitorSmall"]/comps</xpath>
-					<value>
-						<li Class="RT_Fuse.CompProperties_RTFuse">
-							<compClass>RT_Fuse.CompRTFuse</compClass>
-							<surgeMitigation>1000</surgeMitigation>
-							<breakdownOnTrip>false</breakdownOnTrip>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAdd">
-					<xpath>Defs/ThingDef[defName="ShipCapacitor"]/comps</xpath>
-					<value>
-						<li Class="RT_Fuse.CompProperties_RTFuse">
-							<compClass>RT_Fuse.CompRTFuse</compClass>
-							<surgeMitigation>10000</surgeMitigation>
-							<breakdownOnTrip>false</breakdownOnTrip>
-						</li>
-					</value>
-				</li>
-			</operations>
-		</match>
-	</Operation>
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 			<li>Vanilla Factions Expanded - Pirates</li>
 		</mods>
+
 		<match Class="PatchOperationSequence">
-			<success>Normal</success>
 			<operations>
-				<li Class="PatchOperationAdd">
-					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketPartBase"]/apparel</xpath>
-					<value>
-						<tags>
-							<li>EVA</li>
-						</tags>
-					</value>
+				<!-- EVA description -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(comps)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(comps)]</xpath>
+						<value>
+							<comps />
+						</value>
+					</match>
+				</li>
+
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+						<value>
+							<li>
+								<compClass>SaveOurShip2.Comp_EVA</compClass>
+							</li>
+						</value>
+					</match>
+				</li>
+
+				<!-- EVA stats -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(equippedStatOffsets)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(equippedStatOffsets)]</xpath>
+						<value>
+							<equippedStatOffsets />
+						</value>
+					</match>
+				</li>
+
+				<!-- Warcasket DecompressionResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+						<value>
+							<DecompressionResistance>0.75</DecompressionResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Warcasket Helmet DecompressionResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+						<value>
+							<DecompressionResistance>0.25</DecompressionResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Warcasket Helmet HypoxiaResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+						<value>
+							<HypoxiaResistance>1</HypoxiaResistance>
+						</value>
+					</match>
 				</li>
 			</operations>
 		</match>
 	</Operation>
+
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 			<li>LWM's Deep Storage</li>

@@ -109,4 +109,6 @@
 	<ShipQuestPillarBdesc>Attack the mechanoid moon base and attempt to recover an archotech pillar.\n\nThis will also provoke a mechanoid warship!</ShipQuestPillarBdesc>
 	<MeditationFocusPerPillarAbstract>{1} per nearby archotech pillar (max {0})</MeditationFocusPerPillarAbstract>
 	<MeditationFocusPerPillar>{2} per nearby archotech pillar ({0} / {1})</MeditationFocusPerPillar>
+
+	<SOS.EVACapable>EVA capable.</SOS.EVACapable>
 </LanguageData>

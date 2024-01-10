@@ -1,4 +1,4 @@
-﻿using RimWorld.Planet;
+using RimWorld.Planet;
 using SaveOurShip2;
 using System;
 using System.Collections.Generic;
@@ -85,12 +85,12 @@ namespace RimWorld
                     }
                 }
             }
-            else if(thing is Pawn)
+            else if(thing is Pawn pawn)
             {
-                if (ShipInteriorMod2.EVAlevel((Pawn)thing)<3)
-                    HealthUtility.DamageUntilDead((Pawn)thing);
+                if (pawn.CanSurviveVacuum())
+                    HealthUtility.DamageUntilDowned(pawn);
                 else
-                    HealthUtility.DamageUntilDowned((Pawn)thing);
+                    HealthUtility.DamageUntilDead(pawn);
                 Salvage.Add(thing);
             }
             else if((thing.def.category == ThingCategory.Item || thing is Corpse) && thing.TryGetComp<CompExplosive>()==null)

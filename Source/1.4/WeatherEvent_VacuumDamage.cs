@@ -1,7 +1,5 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
-using Verse.Sound;
 using System.Collections.Generic;
 using System.Linq;
 using SaveOurShip2;
@@ -11,8 +9,10 @@ namespace RimWorld
 {
     public class WeatherEvent_VacuumDamage : WeatherEvent
     {
-        public override bool Expired {
-            get {
+        public override bool Expired
+        {
+            get
+            {
                 return true;
             }
         }
@@ -22,99 +22,116 @@ namespace RimWorld
         public override void WeatherEventTick()
         {
         }
+
         public override void FireEvent()
         {
-            List<Pawn> allPawns = map.mapPawns.AllPawnsSpawned;
-            List<Pawn> pawnsToDamage = new List<Pawn>();
-            List<Pawn> pawnsToSuffocate = new List<Pawn>();
-            foreach (Pawn pawn in allPawns.Where(p => !p.Dead))
+            List<Pawn> allPawns = map.mapPawns.AllPawnsSpawned.Where(p => !p.Dead).ToList();
+            foreach (Pawn pawn in allPawns)
             {
-                byte eva = ShipInteriorMod2.EVAlevel(pawn);
-                if (eva > 3)
+                if (pawn.CanSurviveVacuum())
+                {
                     continue;
+                }
+
                 Room room = pawn.Position.GetRoom(map);
+
                 if (ShipInteriorMod2.ExposedToOutside(room))
                 {
-                    RunFromVacuum(pawn);
-                    if (eva == 3)//has inactive bubble
+                    if (ActivateSpaceBubble(pawn))
                     {
-                        eva = ActivateBubble(pawn);
+                        continue;
                     }
-                    else if (eva == 2)//has skin
-                        pawnsToSuffocate.Add(pawn);
-                    else
-                        pawnsToDamage.Add(pawn);
+
+                    RunFromVacuum(pawn);
+                    DoPawnDecompressionDamage(pawn);
+                    DoPawnHypoxiaDamage(pawn, 0.025f);
                 }
-                else if (eva != 1 && !map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) //in ship, no air
+                else if (!map.GetComponent<ShipHeatMapComp>().VecHasLS(pawn.Position)) // in ship, no air
                 {
-					if (eva == 3)
-					{
-						eva = ActivateBubble(pawn);
-					}
-					else
-						pawnsToSuffocate.Add(pawn);
+                    if (ActivateSpaceBubble(pawn))
+                    {
+                        continue;
+                    }
+
+                    DoPawnHypoxiaDamage(pawn);
                 }
-            }
-            foreach (Pawn thePawn in pawnsToDamage)
-            {
-                if (thePawn.InBed() && thePawn.CurrentBed() is Building_SpaceCrib crib)
-                {
-                    crib.UpdateState(true);
-                    continue;
-                }
-                thePawn.TakeDamage(new DamageInfo(DefDatabase<DamageDef>.GetNamed("VacuumDamage"), 1));
-                HealthUtility.AdjustSeverity(thePawn, ResourceBank.HediffDefOf.SpaceHypoxia, 0.025f);
-            }
-            foreach (Pawn thePawn in pawnsToSuffocate)
-            {
-                if (thePawn.InBed() && thePawn.CurrentBed() is Building_SpaceCrib crib)
-                {
-                    crib.UpdateState(true);
-                    continue;
-                }
-                HealthUtility.AdjustSeverity(thePawn, ResourceBank.HediffDefOf.SpaceHypoxia, 0.0125f);
             }
         }
-        public byte ActivateBubble(Pawn pawn)
+
+        public bool ActivateSpaceBubble(Pawn pawn)
         {
-            foreach (Apparel app in pawn.apparel.WornApparel)
+            Verb verb = pawn?.apparel?.AllApparelVerbs?.FirstOrDefault(apparel => apparel is Verb_SpaceBubblePop);
+            if (verb?.Available() ?? false)
             {
-                if (app.def == ResourceBank.ThingDefOf.Apparel_SpaceSurvivalBelt)
-                {
-                    pawn.health.AddHediff(ResourceBank.HediffDefOf.SpaceBeltBubbleHediff);
-                    pawn.apparel.Remove(app);
-                    pawn.apparel.Wear((Apparel)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Apparel_SpaceSurvivalBeltDummy),
-                        false, true);
-                    GenExplosion.DoExplosion(pawn.Position, pawn.Map, 1, DamageDefOf.Smoke, null, -1, -1f, null, null,
-                        null, null, null, 1f);
-                    ShipInteriorMod2.WorldComp.PawnsInSpaceCache[pawn.thingIDNumber] = 4;
-                    break;
-                }
+                verb.TryStartCastOn(pawn);
+                return true;
             }
-            return 4;
+            return false;
         }
+
         public void RunFromVacuum(Pawn pawn)
         {
-            //find first nonvac area and run to it - enemy only
-            var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
-            if (pawn.Faction != Faction.OfPlayer && !pawn.Downed && pawn.CurJobDef != ResourceBank.JobDefOf.FleeVacuum)
+            // find first nonvac area and run to it - enemy only
+            JobDef fleeVacuumDef = ResourceBank.JobDefOf.FleeVacuum;
+            if (PreventPawnFleeVacuum(pawn) || pawn.CurJobDef == fleeVacuumDef)
             {
-                Predicate<Thing> otherValidator = delegate (Thing t)
+                return;
+            }
+
+            Thing closestThing = ClosestThingReachable(pawn);
+            if (closestThing != null)
+            {
+                IntVec3 v = ((Building_ShipAirlock)closestThing).VacuumSafeSpot();
+                if (v.Standable(pawn.Map))
                 {
-                    return t is Building_ShipAirlock a && a.Outerdoor() && a.VacuumSafeSpot() != IntVec3.Invalid;
-                };
-                Thing b = GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, ThingRequest.ForDef(ResourceBank.ThingDefOf.ShipAirlock), PathEndMode.Touch, TraverseParms.For(pawn), 99f, otherValidator);
-                if (b != null)
-                {
-                    IntVec3 v = ((Building_ShipAirlock)b).VacuumSafeSpot();
-                    if (v.Standable(pawn.Map))
-                    {
-                        Job Flee = new Job(ResourceBank.JobDefOf.FleeVacuum, v);
-                        pawn.jobs.StartJob(Flee, JobCondition.InterruptForced);
-                    }
+                    Job fleeVacuumJob = new Job(fleeVacuumDef, closestThing);
+                    pawn.jobs.StartJob(fleeVacuumJob, JobCondition.InterruptForced);
                 }
             }
+        }
+
+        public static void DoPawnHypoxiaDamage(Pawn pawn, float severity = 0.0125f, float extraFactor = 1.0f)
+        {
+            float pawnResistance = pawn.HypoxiaResistance();
+            float serevityMultiplier = Mathf.Max(1.0f - pawnResistance, 0.0f);
+            float severityOffset = severity * serevityMultiplier * extraFactor;
+            if (severityOffset >= 0.0f)
+            {
+                HealthUtility.AdjustSeverity(pawn, ResourceBank.HediffDefOf.SpaceHypoxia, severityOffset);
+            }
+
+        }
+
+        public static void DoPawnDecompressionDamage(Pawn pawn, float severity = 1.0f, float extraFactor = 1.0f)
+        {
+            float pawnResistance = pawn.DecompressionResistance();
+            float serevityMultiplier = Mathf.Max(1.0f - pawnResistance, 0.0f);
+            float severityOffset = severity * serevityMultiplier * extraFactor;
+            if (severityOffset >= 0.0f)
+            {
+                pawn.TakeDamage(new DamageInfo(DefDatabase<DamageDef>.GetNamed("VacuumDamage"), severityOffset));
+            }
+
+        }
+
+        private bool PreventPawnFleeVacuum(Pawn pawn)
+        {
+            return !pawn.Spawned || pawn.Dead || pawn.Downed || pawn.Faction == Faction.OfPlayer;
+        }
+
+        private Thing ClosestThingReachable(Pawn pawn)
+        {
+            bool validator(Thing thing)
+            {
+                return thing is Building_ShipAirlock airlock && airlock.Outerdoor() && airlock.VacuumSafeSpot() != IntVec3.Invalid;
+            }
+            return GenClosest.ClosestThingReachable(pawn.Position,
+                                                    pawn.Map,
+                                                    ThingRequest.ForDef(ResourceBank.ThingDefOf.ShipAirlock),
+                                                    PathEndMode.Touch,
+                                                    TraverseParms.For(pawn),
+                                                    99f,
+                                                    validator);
         }
     }
 }
-

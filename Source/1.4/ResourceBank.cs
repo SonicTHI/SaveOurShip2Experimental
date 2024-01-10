@@ -130,6 +130,7 @@ namespace SaveOurShip2
             public static ThingDef Turret_Autocannon;
             public static ThingDef Turret_Sniper;
             public static ThingDef MechSerumResurrector;
+            public static ThingDef Mote_Bubble;
         }
 
 		[DefOf]
@@ -229,6 +230,16 @@ namespace SaveOurShip2
             public static WorldObjectDef WreckSpace;
             public static WorldObjectDef SiteSpace;
             public static WorldObjectDef MoonPillarSite;
+        }
+
+        [DefOf]
+        public static class StatDefOf
+        {
+            public static StatDef DecompressionResistance;
+            public static StatDef DecompressionResistanceOffset;
+            public static StatDef HypoxiaResistance;
+            public static StatDef HypoxiaResistanceOffset;
+            public static StatDef VacuumSpeedMultiplier;
         }
     }
 }

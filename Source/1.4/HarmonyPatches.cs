@@ -583,8 +583,7 @@ namespace SaveOurShip2
 			{
 				Room room = __instance.Position.GetRoom(__instance.Map);
 				if (ShipInteriorMod2.ExposedToOutside(room))
-					__instance.TakeDamage(new DamageInfo(DamageDefOf.Extinguish, 100, 0, -1f, null, null, null,
-						DamageInfo.SourceCategory.ThingOrUnknown, null));
+					__instance.TakeDamage(new DamageInfo(DamageDefOf.Extinguish, 100, category: DamageInfo.SourceCategory.ThingOrUnknown));
 			}
 		}
 	}
@@ -621,8 +620,7 @@ namespace SaveOurShip2
 				Room room = __instance.Position.GetRoom(__instance.Map);
 				if (ShipInteriorMod2.ExposedToOutside(room))
 				{
-					__instance.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 10, 0, -1f, null, null, null,
-						DamageInfo.SourceCategory.ThingOrUnknown, null));
+					__instance.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, 10, 0, -1f, category: DamageInfo.SourceCategory.ThingOrUnknown));
 				}
 			}
 		}
@@ -2841,103 +2839,22 @@ namespace SaveOurShip2
 		}
 	}*/
 
-    //EVA
+    // EVA
     [HarmonyPatch(typeof(Pawn_PathFollower), "SetupMoveIntoNextCell")]
-	public static class EVAMovesFastInSpace
-	{
-		public static void Postfix(Pawn_PathFollower __instance, Pawn ___pawn)
-		{
-			if (___pawn.Map.terrainGrid.TerrainAt(__instance.nextCell) == ResourceBank.TerrainDefOf.EmptySpace &&
-				ShipInteriorMod2.EVAlevel(___pawn) > 6)
-			{
-				__instance.nextCellCostLeft /= 4;
-				__instance.nextCellCostTotal /= 4;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Notify_ApparelAdded))]
-	public static class ApparelTracker_Notify_Added
-	{
-		internal static void Postfix(Pawn_ApparelTracker __instance)
-		{
-			ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == __instance?.pawn?.thingIDNumber);
-		}
-	}
-
-	[HarmonyPatch(typeof(Pawn_ApparelTracker), nameof(Pawn_ApparelTracker.Notify_ApparelRemoved))]
-	public static class ApparelTracker_Notify_Removed
-	{
-		internal static void Postfix(Pawn_ApparelTracker __instance)
-		{
-			ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == __instance?.pawn?.thingIDNumber);
-		}
-	}
-
-	[HarmonyPatch(typeof(Recipe_InstallArtificialBodyPart), "ApplyOnPawn")]
-	public static class LungInstall
-	{
-		internal static void Postfix(Pawn pawn, BodyPartRecord part, Recipe_InstallArtificialBodyPart __instance)
-		{
-			if (__instance.recipe.addsHediff == ResourceBank.HediffDefOf.SoSArchotechLung)
-				ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
-		}
-	}
-
-	[HarmonyPatch(typeof(Recipe_RemoveBodyPart), "ApplyOnPawn")]
-	public static class LungRemove
-	{
-		internal static void Postfix(Pawn pawn, BodyPartRecord part)
-		{
-			if (part.def.defName.Equals("SoSArchotechLung"))
-				ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
-		}
-	}
-
-	[HarmonyPatch(typeof(Recipe_InstallImplant), "ApplyOnPawn")]
-	public static class SkinInstall
-	{
-		internal static void Postfix(Pawn pawn, BodyPartRecord part, Recipe_InstallImplant __instance)
-		{
-			if (__instance.recipe.addsHediff == ResourceBank.HediffDefOf.SoSArchotechSkin)
-				ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
-		}
-	}
-
-	[HarmonyPatch(typeof(Recipe_RemoveImplant), "ApplyOnPawn")]
-	public static class SkinRemove
-	{
-		internal static void Postfix(Pawn pawn, BodyPartRecord part)
-		{
-			if (part.def.defName.Equals("SoSArchotechSkin"))
-				ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == pawn?.thingIDNumber);
-		}
-	}
-
-	[HarmonyPatch(typeof(Pawn), "Kill")]
-	public static class DeathRemove
-	{
-		internal static void Postfix(Pawn __instance)
-		{
-			ShipInteriorMod2.WorldComp.PawnsInSpaceCache.RemoveAll(p => p.Key == __instance.thingIDNumber);
-		}
-	}
-
-    [HarmonyPatch(typeof(ThingDef), "SpecialDisplayStats")] //would be better as an actual stat display but this ll do
-    public static class AddEVADescription
+    public static class EVAMovesFastInSpace
     {
-        internal static void Postfix(ref IEnumerable<StatDrawEntry> __result, ThingDef __instance)
+        public static void Postfix(Pawn_PathFollower __instance, Pawn ___pawn)
         {
-			if (__instance.IsApparel)
+            if (___pawn.Map.terrainGrid.TerrainAt(__instance.nextCell) != ResourceBank.TerrainDefOf.EmptySpace)
             {
-                //bool eva = false;
-                if (__instance.apparel.tags != null && __instance.apparel.tags.Contains("EVA"))
-                {
-                    //eva = true;
-					if (!__instance.description.EndsWith("EVA capable."))
-						__instance.description += "\n\nEVA capable.";
-                }
-                //__result.AddItem(new StatDrawEntry(StatCategoryDefOf.Apparel, "EVA", eva.ToString(), "EVAdesc", 2756, null, null, false));
+                return;
+            }
+            float vacuumSpeedMultiplier = ___pawn.GetStatValue(ResourceBank.StatDefOf.VacuumSpeedMultiplier);
+            if (vacuumSpeedMultiplier > 0.0f && vacuumSpeedMultiplier != 1.0f)
+            {
+                int newCellCost = Mathf.RoundToInt(__instance.nextCellCostLeft / vacuumSpeedMultiplier);
+                __instance.nextCellCostLeft = newCellCost;
+                __instance.nextCellCostTotal = newCellCost;
             }
         }
     }

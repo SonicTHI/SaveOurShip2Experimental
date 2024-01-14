@@ -1926,15 +1926,16 @@
 			<li Class="CompProperties_Refuelable">
 				<compClass>CompRefuelableOverdrivable</compClass>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>2500</initialConfigurableTargetFuelLevel>
+				<initialConfigurableTargetFuelLevel>2500.0</initialConfigurableTargetFuelLevel>
 				<fuelConsumptionRate>10</fuelConsumptionRate>
-				<fuelCapacity>2500</fuelCapacity>
+				<fuelCapacity>2500.0</fuelCapacity>
 				<fuelFilter>
 					<thingDefs>
 						<li>ShuttleFuelPods</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+				<autoRefuelPercent>0.95</autoRefuelPercent>
 			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>
@@ -2015,15 +2016,16 @@
 			<li Class="CompProperties_Refuelable">
 				<compClass>CompRefuelableOverdrivable</compClass>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>500</initialConfigurableTargetFuelLevel>
+				<initialConfigurableTargetFuelLevel>500.0</initialConfigurableTargetFuelLevel>
 				<fuelConsumptionRate>3</fuelConsumptionRate>
-				<fuelCapacity>500</fuelCapacity>
+				<fuelCapacity>500.0</fuelCapacity>
 				<fuelFilter>
 					<thingDefs>
 						<li>ShuttleFuelPods</li>
 					</thingDefs>
 				</fuelFilter>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
+				<autoRefuelPercent>0.95</autoRefuelPercent>
 			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSource</compClass>

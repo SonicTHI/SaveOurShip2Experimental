@@ -630,7 +630,7 @@ namespace RimWorld
                 ShipCombatTargetMap = null; //td no ship combat vs no ship maps, for now
                 return;
             }
-            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Starting combat vs map: " + targetMap);
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Starting combat vs map: ".Colorize(Color.green) + ShipCombatTargetMap);
             TargetMapComp.ShipCombatTargetMap = ShipCombatOriginMap;
             TargetMapComp.ShipCombatOriginMap = ShipCombatOriginMap;
             TargetMapComp.HasShipMapAI = true; //td for now set manually here
@@ -821,7 +821,8 @@ namespace RimWorld
                 BuildingCountAtStart += ship.BuildingCountAtCombatStart;
                 ship.BuildingsDestroyed.Clear();
             }
-            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " BuildingsCount:" + BuildingsCount + ", BuildingCountAtStart:" + BuildingCountAtStart);
+            BuildingsCount = BuildingCountAtStart;
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " BuildingCountAtStart: ".Colorize(Color.green) + BuildingCountAtStart);
             ShipGraveyard = null;
             InCombat = true;
             BurnUpSet = false;
@@ -1136,19 +1137,19 @@ namespace RimWorld
                             if (OriginMapComp.Range > maxRange[best]) //forward
                             {
                                 if (Heading != 1)
-                                    Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI ship now moving backward Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
+                                    Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI now moving forward".Colorize(Color.green) + " Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
                                 Heading = 1;
                             }
                             else if (OriginMapComp.Range <= minRange[best]) //back
                             {
                                 if (Heading != -1)
-                                    Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI ship now moving backward Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
+                                    Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI now moving backward".Colorize(Color.green) + " Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
                                 Heading = -1;
                             }
                             else //chill
                             {
                                 if (Heading != 0)
-                                    Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI ship now moving backward Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
+                                    Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI now stopped".Colorize(Color.green) + " Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
                                 Heading = 0;
                             }
                         }

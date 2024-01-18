@@ -939,7 +939,7 @@
 					</thingDefs>
 				</fuelFilter>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
-				<autoRefuelPercent>1</autoRefuelPercent>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showFuelGizmo>false</showFuelGizmo>
 				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
@@ -1013,7 +1013,7 @@
 					</thingDefs>
 				</fuelFilter>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
-				<autoRefuelPercent>1</autoRefuelPercent>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showFuelGizmo>false</showFuelGizmo>
 				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
@@ -1089,7 +1089,7 @@
 					</thingDefs>
 				</fuelFilter>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
-				<autoRefuelPercent>1</autoRefuelPercent>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showFuelGizmo>false</showFuelGizmo>
 				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
@@ -1934,6 +1934,7 @@
 						<li>ShuttleFuelPods</li>
 					</thingDefs>
 				</fuelFilter>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
 			<li Class="CompProperties_ShipHeat">
@@ -2023,6 +2024,7 @@
 						<li>ShuttleFuelPods</li>
 					</thingDefs>
 				</fuelFilter>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
 			<li Class="CompProperties_ShipHeat">
@@ -2654,7 +2656,7 @@
 					</thingDefs>
 				</fuelFilter>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
-				<autoRefuelPercent>1</autoRefuelPercent>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
 			<li Class="CompProperties_HullFoamDistributor"/>

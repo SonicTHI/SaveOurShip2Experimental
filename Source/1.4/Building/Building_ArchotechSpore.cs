@@ -1017,14 +1017,17 @@ namespace RimWorld
                 builder.AppendLine(p.NameFullColored);
             }
             builder.AppendLine();
-
             builder.AppendLine(GameVictoryUtility.InMemoryOfSection());
-
-            builder.AppendLine("Save Our Ship 2 was developed by Kentington and Thain, with community maintenance and feature expansions by SonicTHI and Owlchemist");
-            builder.AppendLine("Special thanks to art/code contributors Oskar Potocki, K', Sarg, Karim, Saakra, and Revolus");
+            builder.AppendLine("Save Our Ship 2 was developed by Kentington, Thain and SonicTHI");
             builder.AppendLine();
-            builder.AppendLine("Shipwrights: (Insert Boi here), AlfadorZero, choppytehbear, Dammerung, DianaWinters, Foxtrot, Inert, Jameson, Moonshine Dusk");
-            builder.AppendLine("Testing squad: Phsarjk, i am has yes, Fuji, Reviire, Ian, choppytehbear, Jameson, Generic Scout, Waipa, Xanthos, BUTTERSKY, Karim, firethestars, Haldicar, jamhax, Jenden, maraworf, Red_Bunny, rostock, sprocket, El Jojo, Zahc, Dutchman, Zero Jackal, Tiberiumkyle, swordspell, SonicTHI, Shabm, Reviire, Kasodus, Red_Bunny, melandor, Madman, K', Jenden, Insert Witty Joke, Ifailatgaming, choppytehbear, Capitão Escarlate, Bunkier, Bumblybear, Bubbadoge, Abraxas, (Insert Boi here)");
+            builder.AppendLine("Special thanks to Owlchemist for his code contributions.");
+            builder.AppendLine();
+            builder.AppendLine("Other contributors (code, art, design or QA):");
+            builder.AppendLine("Oskar Potocki, Thamuzz1331, Trollam, Boris, K', Sarg, Karim, Saakra, Revolus, MatthewTeply, dkargin, HG, DianaWinters, UrbanMonkey, M.A.G.Gen., Epicguru, sdanchenko, m00nl1ght-dev");
+            builder.AppendLine();
+            builder.AppendLine("Shipwrights: Oninnaise, VVither_Skeleton, (Insert Boi here), AlfadorZero, choppytehbear, Dammerung, Foxtrot, Inert, Jameson, Moonshine Dusk");
+            builder.AppendLine();
+            builder.AppendLine("Testing squad: Buns Buns Cat, Phsarjk, i am has yes, Fuji, Reviire, Ian, Generic Scout, Waipa, Xanthos, BUTTERSKY, firethestars, Haldicar, jamhax, Jenden, maraworf, Red_Bunny, rostock, sprocket, El Jojo, Zahc, Dutchman, Zero Jackal, Tiberiumkyle, swordspell, Shabm, Kasodus, Red_Bunny, melandor, Madman, Jenden, Insert Witty Joke, Ifailatgaming, Capitão Escarlate, Bunkier, Bumblybear, Bubbadoge, Abraxas, Rage Nova, twsta, transcendant, thecaffiend, Manifold Paradox, WhiteGiverMa");
 
             //Log.Message(builder.ToString());
 

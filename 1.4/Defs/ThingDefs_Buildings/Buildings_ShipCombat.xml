@@ -592,9 +592,10 @@
 					</thingDefs>
 				</fuelFilter>
 				<fuelCapacity>25</fuelCapacity>
-				<fuelMultiplier>0.5</fuelMultiplier>
 				<initialFuelPercent>1</initialFuelPercent>
-				<autoRefuelPercent>0.5</autoRefuelPercent>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 				<showFuelGizmo>true</showFuelGizmo>
 				<minimumFueledThreshold>1</minimumFueledThreshold>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
@@ -758,10 +759,12 @@
 						<li>Uranium</li>
 					</thingDefs>
 				</fuelFilter>
-				<fuelCapacity>25</fuelCapacity>
-				<fuelMultiplier>0.125</fuelMultiplier>
+				<fuelCapacity>50</fuelCapacity>
+				<fuelMultiplier>0.5</fuelMultiplier>
 				<initialFuelPercent>1</initialFuelPercent>
-				<autoRefuelPercent>0.5</autoRefuelPercent>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 				<showFuelGizmo>true</showFuelGizmo>
 				<minimumFueledThreshold>1</minimumFueledThreshold>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
@@ -910,10 +913,12 @@
 						<li>Uranium</li>
 					</thingDefs>
 				</fuelFilter>
-				<fuelCapacity>25</fuelCapacity>
-				<fuelMultiplier>0.03125</fuelMultiplier>
+				<fuelCapacity>100</fuelCapacity>
+				<fuelMultiplier>0.25</fuelMultiplier>
 				<initialFuelPercent>1</initialFuelPercent>
-				<autoRefuelPercent>0.5</autoRefuelPercent>
+				<autoRefuelPercent>0.9</autoRefuelPercent>
+				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
+				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 				<showFuelGizmo>true</showFuelGizmo>
 				<minimumFueledThreshold>1</minimumFueledThreshold>
 				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>

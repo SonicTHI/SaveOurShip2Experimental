@@ -41,11 +41,14 @@ namespace RimWorld
         public CompEquippable GunCompEq => gun.TryGetComp<CompEquippable>();
         public override LocalTargetInfo CurrentTarget => currentTargetInt;
         public override Verb AttackVerb => GunCompEq.PrimaryVerb;
-        public override bool IsEverThreat => Faction == Faction.OfPlayer; //prevent player pawns auto attacking
+        public override bool IsEverThreat => Faction == Faction.OfPlayer && !Map.IsSpace(); //prevent player pawns auto attacking
         public bool Active
         {
             get
             {
+                //if (SpinalHasNoAmps) //td req recheck system when parts placed by player, AI skip
+                //    return false;
+                //needs power, heat and bridge on net
                 if (Spawned && heatComp.myNet != null && !heatComp.myNet.venting && (powerComp == null || powerComp.PowerOn) && (heatComp.myNet.PilCons.Any() || heatComp.myNet.AICores.Any() || heatComp.myNet.TacCons.Any()))
                 {
                     return true;
@@ -77,7 +80,7 @@ namespace RimWorld
         {
             top = new TurretTop(this);
         }
-
+        List<Thing> amps = new List<Thing>();
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
@@ -171,12 +174,33 @@ namespace RimWorld
         public bool InRange(LocalTargetInfo target)
         {
             float range = Position.DistanceTo(target.Cell);
-            //Log.Message(range + " " + AttackVerb.verbProps.minRange);
             if (range > AttackVerb.verbProps.minRange && range < AttackVerb.verbProps.range)
             {
                 return true;
             }
             return false;
+        }
+        public bool InRangeSC(float range)
+        {
+            if ((!useOptimalRange && heatComp.Props.maxRange > range) || (useOptimalRange && heatComp.Props.optRange > range))
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool WarmingUp
+        {
+            get
+            {
+                return burstWarmupTicksLeft > 0;
+            }
+        }
+        public bool SpinalHasNoAmps
+        {
+            get
+            {
+                return spinalComp != null && AmplifierCount == -1;
+            }
         }
         public override void Tick()
         {
@@ -204,7 +228,7 @@ namespace RimWorld
                     GunCompEq.verbTracker.VerbsTick();
                     if (AttackVerb.state != VerbState.Bursting)
                     {
-                        if (burstWarmupTicksLeft > 0)
+                        if (WarmingUp)
                         {
                             burstWarmupTicksLeft--;
                             if (burstWarmupTicksLeft == 0)
@@ -214,7 +238,7 @@ namespace RimWorld
                         }
                         else
                         {
-                            if (burstCooldownTicksLeft > 0 && !heatComp.Venting)
+                            if (burstCooldownTicksLeft > 0)
                             {
                                 burstCooldownTicksLeft--;
                             }
@@ -234,48 +258,44 @@ namespace RimWorld
             }
             else
             {
-                if (!mapComp.InCombat || (spinalComp != null && AmplifierCount == -1))
+                if (!mapComp.InCombat || SpinalHasNoAmps)
                 {
                     ResetForcedTarget();
                 }
-                if (Active)
+                if (Active && !stunner.Stunned)
                 {
                     GunCompEq.verbTracker.VerbsTick();
-                    if (stunner.Stunned || AttackVerb.state == VerbState.Bursting)
+                    if (AttackVerb.state != VerbState.Bursting)
                     {
-                        return;
-                    }
-                    else if (burstCooldownTicksLeft > 0 && !heatComp.Venting)
-                    {
-                        burstCooldownTicksLeft--;
-                    }
-                    if (mapComp.InCombat)
-                    {
-                        bool pdActive = false;
-                        if (heatComp.Props.pointDefense && this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0)
+                        if (burstCooldownTicksLeft > 0)
                         {
-                            pdActive = IncomingPtDefTargetsInRange();
-                            if (!PlayerControlled)
+                            burstCooldownTicksLeft--;
+                        }
+                        if (mapComp.InCombat && !heatComp.Venting)
+                        {
+                            if (heatComp.Props.pointDefense) //PD mode
                             {
-                                if (pdActive)
-                                    PointDefenseMode = true;
-                                else
-                                    PointDefenseMode = false;
+                                bool pdActive = false;
+                                if (burstCooldownTicksLeft <= 0 && this.IsHashIntervalTick(10))
+                                {
+                                    pdActive = IncomingPtDefTargetsInRange();
+                                    if (!PlayerControlled)
+                                    {
+                                        if (pdActive)
+                                            PointDefenseMode = true;
+                                        else
+                                            PointDefenseMode = false;
+                                    }
+                                }
+                                if (pdActive && PointDefenseMode)
+                                {
+                                    if (Find.TickManager.TicksGame > mapComp.lastPDTick + 10 && !holdFire)
+                                        BeginBurst();
+                                }
                             }
-                        }
-                        //PD mode
-                        if (pdActive && PointDefenseMode)
-                        {
-                            if (Find.TickManager.TicksGame > mapComp.lastPDTick + 10 && !holdFire)
-                                BeginBurst();
-                        }
-                        //check if we are in range
-                        else
-                        {
-                            float range = mapComp.OriginMapComp.Range;
-                            if ((!useOptimalRange && heatComp.Props.maxRange > range) || (useOptimalRange && heatComp.Props.optRange > range))
+                            if (InRangeSC(mapComp.OriginMapComp.Range))
                             {
-                                if (burstWarmupTicksLeft > 0)
+                                if (WarmingUp)
                                 {
                                     burstWarmupTicksLeft--;
                                     if (burstWarmupTicksLeft == 0)
@@ -283,7 +303,7 @@ namespace RimWorld
                                         BeginBurst();
                                     }
                                 }
-                                else if (this.IsHashIntervalTick(10) && burstCooldownTicksLeft <= 0)
+                                else if (burstCooldownTicksLeft <= 0 && this.IsHashIntervalTick(10))
                                 {
                                     TryStartShootSomething(true);
                                 }
@@ -291,6 +311,7 @@ namespace RimWorld
                         }
                     }
                     top.TurretTopTick();
+                    return;
                 }
                 else
                 {
@@ -298,8 +319,7 @@ namespace RimWorld
                 }
             }
         }
-
-        protected void TryStartShootSomething(bool canBeginBurstImmediately)
+        protected void TryStartShootSomething(bool canBeginBurstImmediately) //find new target and shoot at it if ready
         {
             bool isValid = currentTargetInt.IsValid;
             if (GroundDefenseMode)
@@ -325,8 +345,7 @@ namespace RimWorld
             }
             else
             {
-                SpinalRecalc();
-                if (!base.Spawned || (holdFire && CanToggleHoldFire) || !AttackVerb.Available() || PointDefenseMode || !mapComp.InCombat || (spinalComp != null && AmplifierCount == -1))
+                if (!base.Spawned || (holdFire && CanToggleHoldFire) || !AttackVerb.Available() || PointDefenseMode || !mapComp.InCombat || SpinalHasNoAmps)
                 {
                     ResetCurrentTarget();
                     return;
@@ -439,6 +458,12 @@ namespace RimWorld
             //cant fire spinals opposite of heading
             if (spinalComp != null)
             {
+                SpinalRecalc();
+                if (AmplifierCount == -1)
+                {
+                    return;
+                }
+
                 if ((Rotation == new Rot4(mapComp.EngineRot) && mapComp.Heading == -1) || (Rotation == new Rot4(mapComp.EngineRot + 2) && mapComp.Heading == 1))
                 {
                     if (mapComp.HasShipMapAI)
@@ -730,7 +755,7 @@ namespace RimWorld
             {
                 yield return gizmo;
             }
-            if (!PlayerControlled || (spinalComp != null && AmplifierCount == -1))
+            if (!PlayerControlled || SpinalHasNoAmps)
                 yield break;
 
             if (CanSetForcedTarget)
@@ -950,10 +975,13 @@ namespace RimWorld
         {
             if (spinalComp == null)
                 return;
+            if (AmplifierCount != -1 && amps.All(a => a != null && !a.Destroyed)) //no changes if all amps intact
+                return;
+            amps.Clear();
             AmplifierCount = -1;
             float ampBoost = 0;
             bool foundNonAmp = false;
-            Thing amp=this;
+            Thing amp = this;
             IntVec3 previousThingPos;
             IntVec3 vec;
             if (Rotation.AsByte == 0)
@@ -986,6 +1014,7 @@ namespace RimWorld
                 //found amp
                 if (amp.Position == previousThingPos)
                 {
+                    amps.Add(amp);
                     AmplifierCount += 1;
                     ampBoost += ampComp.Props.ampAmount;
                     ampComp.SetColor(spinalComp.Props.color);
@@ -993,6 +1022,7 @@ namespace RimWorld
                 //found emitter
                 else if (amp.Position == previousThingPos + vec && ampComp.Props.stackEnd)
                 {
+                    amps.Add(amp);
                     AmplifierCount += 1;
                     foundNonAmp = true;
                 }

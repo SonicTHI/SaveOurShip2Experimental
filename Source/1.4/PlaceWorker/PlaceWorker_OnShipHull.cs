@@ -11,20 +11,20 @@ namespace RimWorld
 			CellRect occupiedRect = GenAdj.OccupiedRect(loc, rot, def.Size);
 			foreach (IntVec3 vec in occupiedRect)
 			{
-				bool hasShipPart = false;
+				bool hasPlating = false;
 				foreach (Thing t in vec.GetThingList(map))
 				{
-					if (t is Building b)
+					if (t is Building b && b.Faction == Faction.OfPlayer)
 					{
 						var shipPart = b.TryGetComp<CompSoShipPart>();
 						if (shipPart != null && shipPart.Props.isPlating)
 						{
-							hasShipPart = true;
+							hasPlating = true;
 							break;
 						}
 					}
 				}
-				if (!hasShipPart)
+				if (!hasPlating)
 					return new AcceptanceReport(TranslatorFormattedStringExtensions.Translate("MustPlaceOnShipHull"));
 			}
 			//special check for bays

@@ -95,7 +95,7 @@ namespace RimWorld
                 int threat = turret.heatComp.Props.threat;
                 var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
                 var fuel = turret.TryGetComp<CompRefuelable>();
-                if (!turret.Active || (torp != null && !torp.Loaded) || (fuel != null && fuel.Fuel == 0f))
+                if (!turret.Active || turret.SpinalHasNoAmps || (torp != null && !torp.Loaded) || (fuel != null && fuel.Fuel == 0f))
                 {
                     if (turret.heatComp.Props.maxRange > 150) //long
                     {
@@ -653,6 +653,9 @@ namespace RimWorld
                     if (b is Building_ShipTurret turret)
                     {
                         Turrets.Add(turret);
+                        if (turret.spinalComp != null)
+                            turret.SpinalRecalc();
+
                         int threat = heatComp.Props.threat;
                         if (heatComp.Props.maxRange > 150) //long
                         {

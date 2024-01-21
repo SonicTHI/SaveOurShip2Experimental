@@ -208,7 +208,7 @@ namespace RimWorld
                     }
                     if (refuelComp != null)
                     {
-                        if (refuelComp.Fuel > Props.fuelUse)
+                        if (refuelComp.Fuel < Props.fuelUse)
                         {
                             active = false;
                             return;

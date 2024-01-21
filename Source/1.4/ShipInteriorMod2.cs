@@ -95,7 +95,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V97f1";
+        public static readonly string SOS2EXPversion = "V97f2";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1600,6 +1600,11 @@ namespace SaveOurShip2
 		//td change or make new for call on ship direct
         public static void MoveShip(Building core, Map targetMap, IntVec3 adjustment, Faction fac = null, byte rotNum = 0, bool includeRock = false)
 		{
+			if (core.DestroyedOrNull())
+            {
+                Log.Warning("SOS2: ".Colorize(Color.cyan) + "Ship move to map: ".Colorize(Color.red) + targetMap + " failed, target destroyed!".Colorize(Color.red));
+                return;
+			}
 			bool devMode = false;
 			var watch = new TimeHelper();
 			if (Prefs.DevMode)
@@ -1636,7 +1641,12 @@ namespace SaveOurShip2
 			Map sourceMap = core.Map;
 			bool sourceMapIsSpace = sourceMap.IsSpace();
             var sourceMapComp = sourceMap.GetComponent<ShipHeatMapComp>();
-            int shipIndex = sourceMapComp.MapShipCells[core.Position].Item1;
+			int shipIndex = sourceMapComp.ShipIndexOnVec(core.Position);
+			if (shipIndex == -1)
+            {
+                Log.Error("SOS2: ".Colorize(Color.cyan) + sourceMap + " Ship move to map: ".Colorize(Color.red) + targetMap + " failed, no valid ship index found! Save, reload and report!".Colorize(Color.red));
+                return;
+            }
             HashSet<int> shipIndexes = new HashSet<int> { shipIndex };
             var ship = sourceMapComp.ShipsOnMapNew[shipIndex];
 			HashSet<IntVec3> sourceArea = new HashSet<IntVec3>(ship.Area);

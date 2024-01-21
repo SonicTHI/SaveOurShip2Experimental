@@ -16,6 +16,10 @@ namespace RimWorld
         public bool parleyed = false;
         public bool paidOff = false;
 
+
+        public PirateShip()
+        {
+        }
         public PirateShip(TraderKindDef def, Faction faction = null)
         {
             ticksUntilDeparture = Rand.RangeInclusive(6000, 12000);

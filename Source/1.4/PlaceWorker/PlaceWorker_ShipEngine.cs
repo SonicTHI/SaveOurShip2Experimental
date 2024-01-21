@@ -20,7 +20,7 @@ namespace RimWorld
                 if (mapComp.ShipsOnMapNew.Values.Any(s => s.Engines.Any() && !s.IsWreck && s.Faction == Faction.OfPlayer))
                     engineprev = mapComp.ShipsOnMapNew.Values.Where(s => s.Engines.Any() && !s.IsWreck && s.Faction == Faction.OfPlayer).First().Engines.First();
                 else if (mapComp.ShipsOnMapNew.Values.Any(s => s.Engines.Any()))
-                    engineprev = mapComp.ShipsOnMapNew.Values.First().Engines.First();
+                    engineprev = mapComp.ShipsOnMapNew.Values.First(s => s.Engines.Any()).Engines.First();
             }
             if (engineprev != null && engineprev.parent.Rotation != rot)
                 return AcceptanceReport.WasRejected;

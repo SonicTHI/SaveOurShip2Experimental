@@ -56,6 +56,35 @@ namespace RimWorld
         public bool FullyLoaded => LoadedShells.Count >= Props.maxTorpedoes;
         public bool StorageTabVisible => true;
 
+        /*none of this works, how? no idea, calling in turret
+        public override void PostDeSpawn(Map map)
+        {
+            Log.Message("3");
+            if (ShipInteriorMod2.AirlockBugFlag)
+            {
+                foreach (ThingDef def in loadedShells)
+                {
+                    Log.Message("1");
+                    Thing thing = ThingMaker.MakeThing(def);
+                    GenPlace.TryPlaceThing(thing, parent.Position, map, ThingPlaceMode.Near, null, null, default);
+                }
+            }
+            base.PostDeSpawn(map);
+        }
+        public override void PostDestroy(DestroyMode mode, Map previousMap)
+        {
+            Log.Message("2");
+            if (previousMap != null)
+            {
+                foreach (ThingDef def in loadedShells)
+                {
+                    Log.Message("1");
+                    Thing thing = ThingMaker.MakeThing(def);
+                    GenPlace.TryPlaceThing(thing, parent.Position, previousMap, ThingPlaceMode.Near, null, null, default);
+                }
+            }
+            base.PostDestroy(mode, previousMap);
+        }*/
         public override void PostExposeData()
         {
             Scribe_Collections.Look<ThingDef>(ref preventShells, "preventShells");

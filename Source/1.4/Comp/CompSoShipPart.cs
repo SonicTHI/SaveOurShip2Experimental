@@ -221,13 +221,23 @@ namespace RimWorld
                 }
                 if (!partExists) //no shippart remains, remove from area
                 {
-                    //if last bridge and this is corepath 0 - tile was hit before bridge, ship will die once bridge does
                     //if bridge died already, this tile will as well
                     //td this is not 100% foolproof - bridge could be repaired or tile bellow removed by player
-                    if ((ship.Bridges.Count == 0 || ship.Bridges.Count == 1) && mapComp.MapShipCells[vec].Item2 == 0)
+                    if (mapComp.MapShipCells[vec].Item2 == 0) //tile under bridge was hit before bridge
                     {
-                        Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " PreDeSpawn: Plating under last core died.");
-                        ship.BridgeKillVec = vec;
+                        if (ship.Bridges.Count > 1) //replace bridge
+                        {
+                            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " PreDeSpawn: Plating under main core died, replacing.");
+                            ship.Area.Remove(vec);
+                            mapComp.MapShipCells.Remove(vec);
+                            ship.ReplaceCore();
+                            Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+                        }
+                        else //if last bridge, ship will wreck once bridge does
+                        {
+                            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " PreDeSpawn: Plating under last core died.");
+                            ship.BridgeKillVec = vec;
+                        }
                     }
                     else
                     {
@@ -242,7 +252,8 @@ namespace RimWorld
             }
             if (!ship.LastBridgeDied)
             {
-                ship.CheckForDetach(areaDestroyed);
+                if (areaDestroyed.Any())
+                    ship.CheckForDetach(areaDestroyed);
             }
             foreach (Building b in buildings) //remove other buildings that are no longer supported by this ship
             {

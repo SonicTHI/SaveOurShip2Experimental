@@ -95,7 +95,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V97f2";
+        public static readonly string SOS2EXPversion = "V97f3";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1672,7 +1672,7 @@ namespace SaveOurShip2
                 targetMapComp.ShipsOnMapNew.Add(shipIndex, sourceMapComp.ShipsOnMapNew[shipIndex]);
                 ship = targetMapComp.ShipsOnMapNew[shipIndex];
                 ship.Map = targetMap;
-                if (adjustment != IntVec3.Zero && ship.BuildingsDestroyed.Any())
+                if (adjustment != IntVec3.Zero && ship.BuildingsDestroyed.Any()) //cache: adjust destroyed
                 {
                     HashSet<Tuple<BuildableDef, IntVec3, Rot4>> buildingsDestroyed = new HashSet<Tuple<BuildableDef, IntVec3, Rot4>>(ship.BuildingsDestroyed);
                     ship.BuildingsDestroyed.Clear();
@@ -1684,16 +1684,15 @@ namespace SaveOurShip2
                 }
                 sourceMapComp.RemoveShipFromCache(shipIndex);
             }
-            //Log.Message("Area: " + ship.Area.Count);
-            if (adjustment != IntVec3.Zero)
+            if (adjustment != IntVec3.Zero) //cache: adjust area
             {
                 ship.Area.Clear();
                 foreach (IntVec3 pos in sourceArea)
                 {
                     ship.Area.Add(Transform(pos));
                 }
-                //Log.Message("Area: " + ship.Area.Count);
             }
+            //Log.Message("Area: " + ship.Area.Count);
 
             foreach (IntVec3 pos in sourceArea)
 			{

@@ -136,6 +136,7 @@ namespace RimWorld
             {
                 Command_Action renameShip = new Command_Action
                 {
+                    groupable = false,
                     action = delegate
                     {
                         Find.WindowStack.Add(new Dialog_NameShip(Ship));
@@ -152,6 +153,7 @@ namespace RimWorld
                 yield return renameShip;
                 Command_Action showReport = new Command_Action
                 {
+                    groupable = false,
                     action = delegate
                     {
                         float capacity = 0;
@@ -206,6 +208,7 @@ namespace RimWorld
                 {
                     Command_Action abandon = new Command_Action
                     {
+                        groupable = false,
                         action = delegate
                         {
                             CameraJumper.TryJump(CameraJumper.GetWorldTarget(this.Map.Parent));
@@ -305,6 +308,7 @@ namespace RimWorld
                     yield return escape;
                     Command_Action withdraw = new Command_Action
                     {
+                        groupable = false,
                         action = delegate
                         {
                             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmWithdrawShipCombat"), delegate
@@ -331,6 +335,7 @@ namespace RimWorld
                         wrecksOnMap = true;
                         Command_Action withdrawWrecks = new Command_Action
                         {
+                            groupable = false,
                             action = delegate
                             {
                                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmWithdrawWrecksCombat"), delegate
@@ -512,6 +517,7 @@ namespace RimWorld
                     {
                         Command_Action gotoNewWorld = new Command_Action
                         {
+                            groupable = false,
                             action = delegate
                             {
                                 ShipInteriorMod2.SpaceTravelWarning(delegate { ShipInteriorMod2.SaveShipFlag = true; ShipCountdown.InitiateCountdown(this); });
@@ -542,6 +548,7 @@ namespace RimWorld
                         }*/
                         Command_Action moveShip = new Command_Action
                         {
+                            groupable = false,
                             action = delegate
                             {
                                 Ship.CreateShipSketchIfFuelPct(0.01f, Map);
@@ -553,6 +560,7 @@ namespace RimWorld
                         //flip
                         Command_Action moveShipFlip = new Command_Action
                         {
+                            groupable = false,
                             action = delegate
                             {
                                 Ship.CreateShipSketchIfFuelPct(0.01f, Map, 2);
@@ -564,6 +572,7 @@ namespace RimWorld
                         //CCW rot
                         Command_Action moveShipRot = new Command_Action
                         {
+                            groupable = false,
                             action = delegate
                             {
                                 Ship.CreateShipSketchIfFuelPct(0.01f, Map, 1);
@@ -617,6 +626,7 @@ namespace RimWorld
                         {
                             Command_Action landShip = new Command_Action
                             {
+                                groupable = false,
                                 action = delegate
                                 {
                                     Ship.CreateShipSketchIfFuelPct(0.1f, m, 0, true);
@@ -654,6 +664,7 @@ namespace RimWorld
                         {
                             Command_Action goGetThatPillarA = new Command_Action
                             {
+                                groupable = false,
                                 action = delegate
                                 {
                                     AttackableShip station = new AttackableShip
@@ -674,6 +685,7 @@ namespace RimWorld
                         {
                             Command_Action goGetThatPillarB = new Command_Action
                             {
+                                groupable = false,
                                 action = delegate
                                 {
                                     float CR = Mathf.Max(mapComp.MapThreat() * 0.9f, 1500);
@@ -698,6 +710,7 @@ namespace RimWorld
                         {
                             Command_Action startBattle = new Command_Action
                             {
+                                groupable = false,
                                 action = delegate
                                 {
                                     if (Find.TickManager.Paused)
@@ -710,6 +723,7 @@ namespace RimWorld
                             yield return startBattle;
                             Command_Action startFleetBattle = new Command_Action
                             {
+                                groupable = false,
                                 action = delegate
                                 {
                                     if (Find.TickManager.Paused)
@@ -722,6 +736,7 @@ namespace RimWorld
                             yield return startFleetBattle;
                             Command_Action loadshipdef = new Command_Action
                             {
+                                groupable = false,
                                 action = delegate
                                 {
                                     Find.WindowStack.Add(new Dialog_LoadShipDef("shipdeftoload", this.Map));
@@ -740,6 +755,7 @@ namespace RimWorld
                                 {
                                     Command_Action attackPirateShip = new Command_Action
                                     {
+                                        groupable = false,
                                         action = delegate
                                         {
                                             mapComp.StartShipEncounter(passingShip);
@@ -754,6 +770,7 @@ namespace RimWorld
                                 {
                                     Command_Action attackTradeShip = new Command_Action
                                     {
+                                        groupable = false,
                                         action = delegate
                                         {
                                             mapComp.StartShipEncounter(passingShip);
@@ -768,6 +785,7 @@ namespace RimWorld
                                 {
                                     Command_Action attackAttackableShip = new Command_Action
                                     {
+                                        groupable = false,
                                         action = delegate
                                         {
                                             mapComp.StartShipEncounter(passingShip);
@@ -782,6 +800,7 @@ namespace RimWorld
                                 {
                                     Command_Action approachDerelictShip = new Command_Action
                                     {
+                                        groupable = false,
                                         action = delegate
                                         {
                                             mapComp.StartShipEncounter(passingShip);
@@ -800,6 +819,7 @@ namespace RimWorld
                     {
                         Command_Action returnShip = new Command_Action
                         {
+                            groupable = false,
                             action = delegate
                             {
                                 if (mapComp.GraveOrigin == null)
@@ -833,6 +853,7 @@ namespace RimWorld
             {
                 Command_Action launch = new Command_Action()
                 {
+                    groupable = false,
                     action = new Action(TryLaunch),
                     hotKey = KeyBindingDefOf.Misc1,
                     defaultLabel = "CommandShipLaunch".Translate(),

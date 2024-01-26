@@ -72,7 +72,7 @@
 	<MustPlaceNearSpinalMountPort>Must place adjacent to a spinal-mount module</MustPlaceNearSpinalMountPort>
 	<MustPlaceInsideShipFramework>Must place in a room bordered only by ship parts.</MustPlaceInsideShipFramework>
 	<MustPlaceInsideShip>Must place inside a fully enclosed ship hull.</MustPlaceInsideShip>
-	<MustPlaceOnShipHull>Must place on ship hull.</MustPlaceOnShipHull>
+	<MustPlaceOnShipHull>Must place on owned ship hull.</MustPlaceOnShipHull>
 	<MustNotPlaceOnShipPart>Space occupied.</MustNotPlaceOnShipPart>
 	
 	<NoSalvageBays>No salvage bays available</NoSalvageBays>

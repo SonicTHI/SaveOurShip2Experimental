@@ -107,7 +107,7 @@ namespace RimWorld
 			List<Thing> toSpawn = new List<Thing>();
 			foreach(Thing t in c.GetThingList(parent.Map))
             {
-				if(Conversions.ContainsKey(t.def))
+				if (Conversions.ContainsKey(t.def))
                 {
 					Thing replacement = ThingMaker.MakeThing(Conversions[t.def]);
 					replacement.Rotation = t.Rotation;

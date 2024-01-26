@@ -1470,7 +1470,7 @@ namespace SaveOurShip2
             if (respawningAfterLoad)
                 return;
             var mapComp = map.GetComponent<ShipHeatMapComp>();
-            if (mapComp.CacheOff || mapComp.ShipsOnMapNew.NullOrEmpty() || __instance.TryGetComp<CompSoShipPart>() != null)
+            if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag || mapComp.ShipsOnMapNew.NullOrEmpty() || __instance.TryGetComp<CompSoShipPart>() != null)
                 return;
             foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance)) //if any part spawned on ship
             {
@@ -1492,7 +1492,7 @@ namespace SaveOurShip2
         public static bool PreDeSpawn(Building __instance, DestroyMode mode)
         {
             var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-            if (mapComp.CacheOff)
+            if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
                 return true;
             var shipComp = __instance.TryGetComp<CompSoShipPart>();
             if (shipComp != null) //predespawn for ship parts

@@ -93,6 +93,7 @@ namespace RimWorld
                 }
                 Command_VerbTargetWreckMap moveWreck = new Command_VerbTargetWreckMap
                 {
+                    groupable = false,
                     salvageBay = (Building)this.parent,
                     sourceMap = this.parent.Map,
                     targetMap = this.parent.Map,
@@ -102,6 +103,7 @@ namespace RimWorld
                 };
                 Command_VerbTargetWreckMap moveWreckFlip = new Command_VerbTargetWreckMap
                 {
+                    groupable = false,
                     salvageBay = (Building)this.parent,
                     sourceMap = this.parent.Map,
                     targetMap = this.parent.Map,
@@ -112,6 +114,7 @@ namespace RimWorld
                 };
                 Command_VerbTargetWreckMap moveWreckRot = new Command_VerbTargetWreckMap
                 {
+                    groupable = false,
                     salvageBay = (Building)this.parent,
                     sourceMap = this.parent.Map,
                     targetMap = this.parent.Map,
@@ -133,6 +136,7 @@ namespace RimWorld
                 Command_VerbTargetWreck removeTargetWreck = new Command_VerbTargetWreck
                 {
                     //abandon target wreck (rem rock floor)
+                    groupable = false,
                     targetMap = this.parent.Map,
                     position = this.parent.Position,
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommand"),

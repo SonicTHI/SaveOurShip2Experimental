@@ -868,13 +868,24 @@ namespace RimWorld
         public override void MapComponentTick()
         {
             base.MapComponentTick();
-            foreach (SoShipCache ship in ShipsOnMap())
+            List<SoShipCache> shipToRemove = new List<SoShipCache>();
+            foreach (SoShipCache ship in ShipsOnMapNew.Values)
             {
                 ship.Tick();
                 /*if (ship.Index % 100 == Find.TickManager.TicksGame)
                 {
                     ship.RareTick();
                 }*/
+                if (!ship.Area.Any())
+                    shipToRemove.Add(ship);
+            }
+            if (shipToRemove.Any())
+            {
+                foreach (SoShipCache cache in shipToRemove)
+                {
+                    RemoveShipFromCache(cache.Index);
+                }
+                Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Removed " + shipToRemove.Count + " ships. Remaining: " + ShipsOnMapNew.Count);
             }
             if (!map.IsSpace())
                 return;

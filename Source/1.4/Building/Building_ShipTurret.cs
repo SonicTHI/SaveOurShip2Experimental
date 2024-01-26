@@ -107,6 +107,19 @@ namespace RimWorld
             base.PostMake();
             MakeGun();
         }
+        public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
+        {
+            Map map = Map;
+            base.Destroy(mode);
+            if (torpComp != null)
+            {
+                foreach (ThingDef def in torpComp.LoadedShells)
+                {
+                    Thing thing = ThingMaker.MakeThing(def);
+                    GenPlace.TryPlaceThing(thing, Position, map, ThingPlaceMode.Near, null, null, default);
+                }
+            }
+        }
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
             base.DeSpawn(mode);

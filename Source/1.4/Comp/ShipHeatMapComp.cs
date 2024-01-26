@@ -628,6 +628,7 @@ namespace RimWorld
             if (TargetMapComp.IsGraveyard)
             {
                 ShipCombatTargetMap = null; //td no ship combat vs no ship maps, for now
+                targetMapComp = null;
                 return;
             }
             Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Starting combat vs map: ".Colorize(Color.green) + ShipCombatTargetMap);

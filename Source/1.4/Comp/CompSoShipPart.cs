@@ -231,7 +231,7 @@ namespace RimWorld
                             ship.Area.Remove(vec);
                             mapComp.MapShipCells.Remove(vec);
                             ship.ReplaceCore();
-                            Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+                            //Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
                         }
                         else //if last bridge, ship will wreck once bridge does
                         {

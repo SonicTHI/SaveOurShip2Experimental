@@ -1045,11 +1045,10 @@ namespace RimWorld
                     threatPerSegment[2] += actualThreatPerSegment[2];
                     threatPerSegment[3] += actualThreatPerSegment[3];
                     //threatPerSegment = threatPerSegment.Zip(ship.ActualThreatPerSegment, (x, y) => x + y).ToArray();
-                    //Log.Message("map threat: " + threatPerSegment[0] + " " + threatPerSegment[1] + " " + threatPerSegment[2] + " " + threatPerSegment[3] + " ");
-
                     BuildingsCount += ship.Buildings.Count;
                     totalThreat += ship.ThreatCurrent;
                 }
+                //Log.Message("SOS2: ".Colorize(Color.cyan) + map + " threat CSML: " + threatPerSegment[0] + " " + threatPerSegment[1] + " " + threatPerSegment[2] + " " + threatPerSegment[3] + " ");
 
                 //shipAI distance, boarding
                 if (HasShipMapAI)

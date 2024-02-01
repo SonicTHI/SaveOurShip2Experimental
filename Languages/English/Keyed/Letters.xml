@@ -35,7 +35,7 @@
   <LetterLabelPawnsLostReEntry>Atmospheric re-entry</LetterLabelPawnsLostReEntry>
   <LetterPawnsLostReEntry>The following people and animals have perished due to atmospheric re-entry:</LetterPawnsLostReEntry>
   <LetterLabelSpaceAsteroids>Asteroid field</LetterLabelSpaceAsteroids>
-  <LetterSpaceAsteroids>Ship has entered an asteroid field field. Engage engines to evade or brace for impact!</LetterSpaceAsteroids>
+  <LetterSpaceAsteroids>Ship has entered an asteroid field. Engage engines to evade or brace for impact!</LetterSpaceAsteroids>
   
   <LetterLabelSatelliteRepairFail>Repair failed</LetterLabelSatelliteRepairFail>
   <LetterSatelliteRepairFail>{0} failed to repair the ancient satellite. Further attempts are still possible, but will be more difficult.</LetterSatelliteRepairFail>

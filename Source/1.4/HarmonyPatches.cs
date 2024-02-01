@@ -478,27 +478,34 @@ namespace SaveOurShip2
 						return ___cachedOpenRoofCount;
 					}
 				}
-				foreach (IntVec3 vec in __instance.BorderCells)
-				{
-					bool hasShipPart = false;
-					foreach (Thing t in vec.GetThingList(__instance.Map))
-					{
-						if (t is Building b)
-						{
-							var shipPart = b.TryGetComp<CompSoShipPart>();
-							if (b.def.mineable || (shipPart != null && shipPart.Props.hermetic))
-							{
-								hasShipPart = true;
-								break;
-							}
-						}
-					}
-					if (!hasShipPart)
-					{
-						___cachedOpenRoofCount = 1;
-						return ___cachedOpenRoofCount;
-					}
-				}
+				try
+                {
+                    foreach (IntVec3 vec in __instance.BorderCells)
+                    {
+                        bool hasShipPart = false;
+                        foreach (Thing t in vec.GetThingList(__instance.Map))
+                        {
+                            if (t is Building b)
+                            {
+                                var shipPart = b.TryGetComp<CompSoShipPart>();
+                                if (b.def.mineable || (shipPart != null && shipPart.Props.hermetic))
+                                {
+                                    hasShipPart = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!hasShipPart)
+                        {
+                            ___cachedOpenRoofCount = 1;
+                            return ___cachedOpenRoofCount;
+                        }
+                    }
+                }
+				catch (Exception e)
+                {
+                    Log.Warning("SOS2: ".Colorize(Color.cyan) + __instance.Map + " OpenRoofCount error in patch: SpaceRoomCheck".Colorize(Color.red) + "\n" + e);
+                }
 			}
 			return ___cachedOpenRoofCount;
 		}

@@ -31,11 +31,12 @@
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipEngine</defName>
 		<label>rocket propulsion</label>
-		<description>Construct chemical engines for a ship. These can reach orbit, but no further.</description>
+		<description>Construct chemical engines for a ship. These can reach orbit, but not much further.</description>
 		<baseCost>1000</baseCost>
 		<techLevel>Industrial</techLevel>
 		<prerequisites>
-			<li>ShipBasics</li>
+			<li>BiofuelRefining</li>
+			<li>Machining</li>
 		</prerequisites>
 		<tab>ResearchTabShip</tab>
 		<researchViewX>0</researchViewX>

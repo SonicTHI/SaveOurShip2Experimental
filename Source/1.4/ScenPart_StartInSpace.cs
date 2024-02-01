@@ -219,15 +219,15 @@ namespace RimWorld
 					}
 				}
 			}
-			List<Building> spawns = new List<Building>();
-			List<IntVec3> spawnPos = GetSpawnCells(spaceMap, out spawns);
+			List<Building> spawners = new List<Building>();
+			List<IntVec3> spawnPos = GetSpawnCells(spaceMap, out spawners);
 			foreach (List<Thing> thingies in list)
 			{
 				IntVec3 nextPos = spaceMap.Center;
 				nextPos = spawnPos.RandomElement();
 				spawnPos.Remove(nextPos);
 				if (spawnPos.Count == 0)
-					spawnPos = GetSpawnCells(spaceMap, out spawns); //reuse spawns
+					spawnPos = GetSpawnCells(spaceMap, out spawners); //reuse spawns
 
 				foreach (Thing thingy in thingies)
 				{
@@ -237,30 +237,30 @@ namespace RimWorld
 				if (scen.startType == ShipStartFlags.Station)
 					FloodFillerFog.FloodUnfog(nextPos, spaceMap);
 			}
-			foreach (Building b in spawns.Where(b => !b.Destroyed)) //remove spawn points
+			foreach (Building b in spawners.Where(b => !b.Destroyed)) //remove spawn points
 			{
 				b.Destroy();
 			}
-			spawns.Clear();
+			spawners.Clear();
 			spawnPos.Clear();
 		}
-		static List<IntVec3> GetSpawnCells(Map spaceMap, out List<Building> spawns) //spawn placer > crypto > salvbay > bridge
+		static List<IntVec3> GetSpawnCells(Map spaceMap, out List<Building> spawners) //spawn placer > crypto > salvbay > bridge
 		{
-			spawns = new List<Building>();
+			spawners = new List<Building>();
 			List<IntVec3> spawncells = new List<IntVec3>();
-			foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist.Where(b => b.def.defName.Equals("PawnSpawnerStart")))
+			foreach (Building b in spaceMap.listerThings.AllThings.Where(b => b is Building && b.def.defName.Equals("PawnSpawnerStart")))
 			{
 				spawncells.Add(b.Position);
-				spawns.Add(b);
+				spawners.Add(b);
 			}
 			if (spawncells.Any())
-			{
-				return spawncells;
+            {
+                return spawncells;
 			}
 			//backups
 			List<IntVec3> salvBayCells = new List<IntVec3>();
 			List<IntVec3> bridgeCells = new List<IntVec3>();
-			foreach (Building b in spaceMap.listerBuildings.allBuildingsColonist)
+			foreach (Building b in spaceMap.listerThings.AllThings.Where(b => b is Building))
 			{
 				if (b is Building_CryptosleepCasket c && !c.HasAnyContents)
 				{

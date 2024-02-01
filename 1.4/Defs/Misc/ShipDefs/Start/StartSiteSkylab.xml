@@ -3,7 +3,7 @@
 	<EnemyShipDef>
 		<defName>StartSiteSkylab</defName>
 		<saveSysVer>2</saveSysVer>
-		<offsetX>68</offsetX>
+		<offsetX>56</offsetX>
 		<offsetZ>56</offsetZ>
 		<sizeX>70</sizeX>
 		<sizeZ>113</sizeZ>

@@ -12,6 +12,7 @@ namespace SaveOurShip2
     {
         //private int ShipsHaveInsidesVersion;
         public int PlayerFactionBounty;
+        public int LastSporeGiftTick;
         public List<PreviousWorld> PastWorlds = new List<PreviousWorld>();
         public List<string> Unlocks = new List<string>();
         public bool startedEndgame;
@@ -45,6 +46,7 @@ namespace SaveOurShip2
             //Scribe_Values.Look<int>(ref ShipsHaveInsidesVersion,"SoSVersion",0);
             Scribe_Collections.Look<string>(ref Unlocks, "Unlocks", LookMode.Value);
             Scribe_Values.Look<int>(ref PlayerFactionBounty, "PlayerFactionBounty", 0);
+            Scribe_Values.Look<int>(ref LastSporeGiftTick, "LastSporeGiftTick", 0);
             Scribe_Values.Look<bool>(ref startedEndgame, "StartedEndgame");
 
             if (Scribe.mode != LoadSaveMode.PostLoadInit)

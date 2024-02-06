@@ -125,6 +125,7 @@ namespace SaveOurShip2
             public static ThingDef Bullet_Ground_Laser;
             public static ThingDef Bullet_Fake_Psychic;
             public static ThingDef ShipCombatLaserMote;
+            public static ThingDef ArchotechExoticParticles;
             public static ThingDef DetachedShipPart;
             //vanilla defs
             public static ThingDef Turret_Autocannon;
@@ -196,6 +197,7 @@ namespace SaveOurShip2
             public static ResearchProjectDef ArchotechPsychicManipulation;
             public static ResearchProjectDef ArchotechPsylink;
             public static ResearchProjectDef ArchotechBroadManipulation;
+            public static ResearchProjectDef ArchotechExotics;
         }
 
 		[DefOf]

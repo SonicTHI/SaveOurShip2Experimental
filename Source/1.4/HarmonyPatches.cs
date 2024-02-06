@@ -1915,7 +1915,7 @@ namespace SaveOurShip2
             }
 			else //psitech compat
 			{
-                foreach (ThingDef item in DefDatabase<ThingDef>.AllDefs.Where((ThingDef def) => def.IsCryptosleepCasket && def != ThingDef.Named("PTPsychicTraier")))
+                foreach (ThingDef item in DefDatabase<ThingDef>.AllDefs.Where((ThingDef def) => def.IsCryptosleepCasket && !def.defName.StartsWith("PTPsychicTraier")))
                 {
                     Building_CryptosleepCasket building_CryptosleepCasket = (Building_CryptosleepCasket)GenClosest.ClosestThingReachable(p.PositionHeld, p.MapHeld, ThingRequest.ForDef(item), PathEndMode.InteractionCell, TraverseParms.For(traveler), 9999f, (Thing x) => !((Building_CryptosleepCasket)x).HasAnyContents && traveler.CanReserve(x, 1, -1, null, ignoreOtherReservations));
                     if (building_CryptosleepCasket != null)

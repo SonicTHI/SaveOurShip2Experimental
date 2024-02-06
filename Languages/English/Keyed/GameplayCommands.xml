@@ -225,6 +225,8 @@
 	<CraftArchothrumbo>Spawn archothrumbo</CraftArchothrumbo>
 	<ArchotechOptimizeMatter>Optimize matter</ArchotechOptimizeMatter>
 	<ArchotechOptimizeMatterDesc>Automatically convert standard hull to archotech hull in a slowly widening radius. This will not affect large structures such as heatsinks or shield generators.</ArchotechOptimizeMatterDesc>
+	<ArchotechSporeGiftParticles>Auto gift particles</ArchotechSporeGiftParticles>
+	<ArchotechSporeGiftParticlesDesc>Automatically accept and convert spore rewards to exotic particles</ArchotechSporeGiftParticlesDesc>
 	<ArchotechDemandGift>Demand gift</ArchotechDemandGift>
 	<ArchotechDemandGiftDesc>Demand an immediate gift from your archotech spore. This will result in a stacking -40 mood penalty!</ArchotechDemandGiftDesc>
 	<ArchotechNoGiftsUnlocked>No gifts unlocked by research</ArchotechNoGiftsUnlocked>

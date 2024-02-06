@@ -21,7 +21,7 @@ namespace RimWorld
 					for (int j = 0; j < list.Count; j++)
 					{
 						Building_ArchotechSpore spore = list[j] as Building_ArchotechSpore;
-						if(spore!=null && spore.mood < 0.5f)
+						if(spore!=null && spore.Mood < 0.5f)
                         {
 							return spore;
                         }

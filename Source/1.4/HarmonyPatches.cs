@@ -1890,14 +1890,42 @@ namespace SaveOurShip2
 	[HarmonyPatch(typeof(Building_CryptosleepCasket), "FindCryptosleepCasketFor")]
 	public static class AllowCrittersleepCaskets
 	{
-		public static bool Prefix()
+		public static bool Prefix(Pawn p) //keep original for normal use
 		{
-			return false;
-		}
-		public static void Postfix(ref Building_CryptosleepCasket __result, Pawn p, Pawn traveler, ThingOwner ___innerContainer,
+			if (p.RaceProps.Animal || ModLister.HasActiveModWithName("PsiTech"))
+				return false;
+            return true;
+        }
+		public static void Postfix(ref Building_CryptosleepCasket __result, Pawn p, Pawn traveler,
 			bool ignoreOtherReservations = false)
 		{
-			foreach (var current in GetCryptosleepDefs())
+			__result = null;
+            if (p.RaceProps.Animal)
+            {
+                foreach (ThingDef item in DefDatabase<ThingDef>.AllDefs.Where((ThingDef def) => def == ResourceBank.ThingDefOf.CrittersleepCasket || def == ResourceBank.ThingDefOf.CrittersleepCasketLarge))
+                {
+                    Building_CryptosleepCasket building_CryptosleepCasket = (Building_CryptosleepCasket)GenClosest.ClosestThingReachable(p.PositionHeld, p.MapHeld, ThingRequest.ForDef(item), PathEndMode.InteractionCell, TraverseParms.For(traveler), 9999f, (Thing x) => CanAccept(x, p) && traveler.CanReserve(x, 1, -1, null, ignoreOtherReservations));
+                    if (building_CryptosleepCasket != null)
+                    {
+                        __result = building_CryptosleepCasket;
+                        return;
+                    }
+                }
+                return;
+            }
+			else //psitech compat
+			{
+                foreach (ThingDef item in DefDatabase<ThingDef>.AllDefs.Where((ThingDef def) => def.IsCryptosleepCasket && def != ThingDef.Named("PTPsychicTraier")))
+                {
+                    Building_CryptosleepCasket building_CryptosleepCasket = (Building_CryptosleepCasket)GenClosest.ClosestThingReachable(p.PositionHeld, p.MapHeld, ThingRequest.ForDef(item), PathEndMode.InteractionCell, TraverseParms.For(traveler), 9999f, (Thing x) => !((Building_CryptosleepCasket)x).HasAnyContents && traveler.CanReserve(x, 1, -1, null, ignoreOtherReservations));
+                    if (building_CryptosleepCasket != null)
+                    {
+                        __result = building_CryptosleepCasket;
+                        return;
+                    }
+                }
+            }
+            /*foreach (var current in GetCryptosleepDefs())
 			{
 				if (current == ResourceBank.ThingDefOf.Cryptonest)
 					continue;
@@ -1951,10 +1979,19 @@ namespace SaveOurShip2
 						return arg_33_0;
 					});
 				if (building_CryptosleepCasket != null) __result = building_CryptosleepCasket;
-			}
+			}*/
 		}
 
-		private static IEnumerable<ThingDef> GetCryptosleepDefs()
+        private static bool CanAccept(Thing x, Pawn p)
+        {
+			var innerContainer = ((Building_Casket)x).innerContainer;
+			return (x.def == ResourceBank.ThingDefOf.CrittersleepCasket
+				&& p.BodySize <= ShipInteriorMod2.crittersleepBodySize && innerContainer.Count < 8)
+				|| (x.def == ResourceBank.ThingDefOf.CrittersleepCasketLarge
+				&& p.BodySize <= ShipInteriorMod2.crittersleepBodySize && innerContainer.Count < 32);
+        }
+
+        /*private static IEnumerable<ThingDef> GetCryptosleepDefs()
 		{
 			return ModLister.HasActiveModWithName("PsiTech")
 				? DefDatabase<ThingDef>.AllDefs.Where(def =>
@@ -1962,7 +1999,7 @@ namespace SaveOurShip2
 					typeof(Building_CryptosleepCasket).IsAssignableFrom(def.thingClass))
 				: DefDatabase<ThingDef>.AllDefs.Where(def =>
 					typeof(Building_CryptosleepCasket).IsAssignableFrom(def.thingClass));
-		}
+		}*/
 	}
 
 	[HarmonyPatch(typeof(JobDriver_CarryToCryptosleepCasket), "MakeNewToils")]

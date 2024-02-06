@@ -242,6 +242,7 @@
 		<initialResistanceRange>17~26</initialResistanceRange>
 	</PawnKindDef>
 
+	<!--space bugs-->
 	<ThingDef ParentName="BaseInsect" Name="SpaceInsectThingBase" Abstract="True">
 		<statBases>
 			<ComfyTemperatureMax>20</ComfyTemperatureMax>
@@ -257,9 +258,6 @@
 			<useMeatFrom>Megaspider</useMeatFrom>
 		</race>
 	</ThingDef>
-
-	<!--===============================================-->
-
 	<!-- Astromite -->
 	<ThingDef ParentName="SpaceInsectThingBase">
 		<defName>Astromite</defName>
@@ -328,7 +326,6 @@
 			</li>
 		</tools>
 	</ThingDef>
-
 	<PawnKindDef ParentName="AnimalKindBase">
 		<defName>Astromite</defName>
 		<label>astromite</label>
@@ -376,7 +373,6 @@
 			</li>
 		</lifeStages>
 	</PawnKindDef>
-
 	<!-- Stellapede -->
 	<ThingDef ParentName="SpaceInsectThingBase">
 		<defName>Stellapede</defName>
@@ -451,7 +447,6 @@
 			<li>AnimalInsect</li>
 		</tradeTags>
 	</ThingDef>
-
 	<PawnKindDef ParentName="AnimalKindBase">
 		<defName>Stellapede</defName>
 		<label>stellapede</label>
@@ -499,7 +494,6 @@
 			</li>
 		</lifeStages>
 	</PawnKindDef>
-
 	<!-- Cosmopillar -->
 	<ThingDef ParentName="SpaceInsectThingBase">
 		<defName>Cosmopillar</defName>
@@ -569,7 +563,6 @@
 			</li>
 		</tools>
 	</ThingDef>
-
 	<PawnKindDef ParentName="AnimalKindBase">
 		<defName>Cosmopillar</defName>
 		<label>cosmopillar</label>
@@ -618,9 +611,32 @@
 		</lifeStages>
 	</PawnKindDef>
 
-	<!--===============================================-->
-
-	<ThingDef ParentName="BasePawn">
+	<PawnKindDef>
+		<defName>SoSHologram</defName>
+		<label>machine persona</label>
+		<backstoryCategories>
+			<li>SoSHologram</li>
+		</backstoryCategories>
+		<race>Human</race>
+		<combatPower>30</combatPower>
+		<isFighter>false</isFighter>
+		<defaultFactionType>Ancients</defaultFactionType>
+		<chemicalAddictionChance>0</chemicalAddictionChance>
+		<weaponMoney>
+			<min>0</min>
+			<max>0</max>
+		</weaponMoney>
+		<apparelMoney>
+			<min>0</min>
+			<max>0</max>
+		</apparelMoney>
+		<techHediffsChance>0</techHediffsChance>
+		<combatEnhancingDrugsChance>0</combatEnhancingDrugsChance>
+		<initialWillRange>999~999</initialWillRange>
+		<initialResistanceRange>999~999</initialResistanceRange>
+	</PawnKindDef>
+	<!--obsolete-->
+	<!--ThingDef ParentName="BasePawn">
 		<defName>SoSHologramRace</defName>
 		<label>Deprecated - do not use</label>
 		<description>Obsolete hologram race from earlier versions of Save Our Ship 2. If you're still seeing this after game load, please report a bug.</description>
@@ -748,29 +764,5 @@
 		</race>
 		<butcherProducts>
 		</butcherProducts>
-	</ThingDef>
-	<PawnKindDef>
-		<defName>SoSHologram</defName>
-		<label>machine persona</label>
-		<backstoryCategories>
-			<li>SoSHologram</li>
-		</backstoryCategories>
-		<race>Human</race>
-		<combatPower>30</combatPower>
-		<isFighter>false</isFighter>
-		<defaultFactionType>Ancients</defaultFactionType>
-		<chemicalAddictionChance>0</chemicalAddictionChance>
-		<weaponMoney>
-			<min>0</min>
-			<max>0</max>
-		</weaponMoney>
-		<apparelMoney>
-			<min>0</min>
-			<max>0</max>
-		</apparelMoney>
-		<techHediffsChance>0</techHediffsChance>
-		<combatEnhancingDrugsChance>0</combatEnhancingDrugsChance>
-		<initialWillRange>999~999</initialWillRange>
-		<initialResistanceRange>999~999</initialResistanceRange>
-	</PawnKindDef>
+	</ThingDef-->
 </Defs>

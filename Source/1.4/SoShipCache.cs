@@ -86,7 +86,7 @@ namespace RimWorld
         public int Threat => ThreatRaw + Mass / 100;
         public float ThreatCurrent; //updates on ActualThreatPerSegment
         public float[] ThreatPerSegment = new[] { 1f, 1f, 1f, 1f };
-        public float[] ActualThreatPerSegment() //turrets that cant actually fire due to ammo
+        public float[] ActualThreatPerSegment()
         {
             ThreatCurrent = 0;
             float[] actualThreatPerSegment = ThreatPerSegment;
@@ -95,7 +95,7 @@ namespace RimWorld
                 int threat = turret.heatComp.Props.threat;
                 var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
                 var fuel = turret.TryGetComp<CompRefuelable>();
-                if (!turret.Active || turret.SpinalHasNoAmps || (torp != null && !torp.Loaded) || (fuel != null && fuel.Fuel == 0f))
+                if (!turret.Active || turret.SpinalHasNoAmps || (torp != null && !torp.Loaded) || (fuel != null && fuel.Fuel == 0f)) //turrets that cant fire due to ammo
                 {
                     if (turret.heatComp.Props.maxRange > 150) //long
                     {
@@ -118,7 +118,7 @@ namespace RimWorld
                     else //cqc
                         actualThreatPerSegment[0] -= threat;
                 }
-                else
+                else //turrets that can fire
                 {
                     ThreatCurrent += threat;
                 }
@@ -515,7 +515,7 @@ namespace RimWorld
                             shield.flickComp.SwitchIsOn = true;
                         }
                     }
-                    if (myNet.RatioInNetwork > 0.85f && !myNet.venting)
+                    if (myNet != null && myNet.RatioInNetwork > 0.85f && !myNet.venting)
                         myNet.StartVent();
                 }
             }

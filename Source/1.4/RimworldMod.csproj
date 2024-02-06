@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -132,8 +132,8 @@
     <Compile Include="PlaceWorker\PlaceWorker_ShipPlating.cs" />
     <Compile Include="Projectile\Projectile_ExplosiveShipDebris.cs" />
     <Compile Include="ResourceBank.cs" />
-    <Compile Include="CompProps\CompProperties_HologramRemover.cs" />
-    <Compile Include="Comp\CompHologramRemover.cs" />
+    <Compile Include="Obsolete\CompProperties_HologramRemover.cs" />
+    <Compile Include="Obsolete\CompHologramRemover.cs" />
     <Compile Include="ScenPart_LoadShip.cs" />
     <Compile Include="SpaceNavyDef.cs" />
     <Compile Include="CompProps\CompProperties_ShipBlueprint.cs" />
@@ -156,7 +156,7 @@
     <Compile Include="Comp\CompHibernatableSoS.cs" />
     <Compile Include="Comp\CompHolodeck.cs" />
     <Compile Include="Obsolete\CompHologramGlower.cs" />
-    <Compile Include="Comp\CompHologramRelay.cs" />
+    <Compile Include="Obsolete\CompHologramRelay.cs" />
     <Compile Include="Comp\CompHullFoamDistributor.cs" />
     <Compile Include="Comp\CompLongRangeMineralScannerSpace.cs" />
     <Compile Include="Comp\CompLongRangeMineralScannerSpaceAI.cs" />
@@ -177,7 +177,7 @@
     <Compile Include="CompProps\CompProperties_HibernatableSoS.cs" />
     <Compile Include="CompProps\CompProperties_Holodeck.cs" />
     <Compile Include="Obsolete\CompProperties_HologramGlower.cs" />
-    <Compile Include="CompProps\CompProperties_HologramRelay.cs" />
+    <Compile Include="Obsolete\CompProperties_HologramRelay.cs" />
     <Compile Include="CompProps\CompProperties_LongRangeMineralScannerSpaceAI.cs" />
     <Compile Include="CompProps\CompProperties_LongRangeMineralScannerSpace.cs" />
     <Compile Include="CompProps\CompProperties_Overlay.cs" />

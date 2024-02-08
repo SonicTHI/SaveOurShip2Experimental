@@ -16,8 +16,8 @@ namespace RimWorld
         static readonly string FILENAME_NONE = "Select ship to load";
 
         string filename = "Select ship to load";
-        bool discardLog;
-        bool discardTales;
+        bool discardLog = true;
+        bool discardTales = true;
         string playerFactionName;
         FactionDef playerFactionDef;
         List<GameComponent> components;
@@ -40,6 +40,7 @@ namespace RimWorld
         OutfitDatabase outfitDatabase;
         DrugPolicyDatabase drugPolicyDatabase;
         FoodRestrictionDatabase foodRestrictionDatabase;
+        int traveltime;
 
         public override bool CanCoexistWith(ScenPart other)
         {
@@ -49,6 +50,8 @@ namespace RimWorld
         {
             base.ExposeData();
             Scribe_Values.Look<string>(ref filename, "filename");
+            Scribe_Values.Look<bool>(ref discardLog, "discardLog");
+            Scribe_Values.Look<bool>(ref discardTales, "discardTales");
         }
         public override void DoEditInterface(Listing_ScenEdit listing)
         {
@@ -57,35 +60,45 @@ namespace RimWorld
             Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
             Rect rect3 = new Rect(scenPartRect.x, scenPartRect.y + 2 * scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
             if (!HasValidFilename())
+            {
+                //set true here since somehow it gets set to false
+                discardLog = true;
+                discardTales = true;
                 LoadLatest();
+            }
+
             if (Widgets.ButtonText(rect1, filename))
             {
                 FloatMenuUtility.MakeMenu(Directory.GetFiles(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2")), (string path) => Path.GetFileNameWithoutExtension(path), (string path) => () => { filename = Path.GetFileNameWithoutExtension(path); });
             }
             if (Widgets.ButtonText(rect2, "Discard log: " + discardLog.ToString()))
             {
-                List<FloatMenuOption> toggleLog = new List<FloatMenuOption>();
-                toggleLog.Add(new FloatMenuOption("Discard log: True", delegate ()
+                List<FloatMenuOption> toggleLog = new List<FloatMenuOption>
                 {
-                    discardLog = true;
-                }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
-                toggleLog.Add(new FloatMenuOption("Discard log: False", delegate ()
-                {
-                    discardLog = false;
-                }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                    new FloatMenuOption("Discard log: True", delegate ()
+                    {
+                        discardLog = true;
+                    }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0),
+                    new FloatMenuOption("Discard log: False", delegate ()
+                    {
+                        discardLog = false;
+                    }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0)
+                };
                 Find.WindowStack.Add(new FloatMenu(toggleLog));
             }
             if (Widgets.ButtonText(rect3, "Discard tales: " + discardTales.ToString()))
             {
-                List<FloatMenuOption> toggleTales = new List<FloatMenuOption>();
-                toggleTales.Add(new FloatMenuOption("Discard tales: True", delegate ()
+                List<FloatMenuOption> toggleTales = new List<FloatMenuOption>
                 {
-                    discardTales = true;
-                }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
-                toggleTales.Add(new FloatMenuOption("Discard tales: False", delegate ()
-                {
-                    discardTales = false;
-                }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                    new FloatMenuOption("Discard tales: True", delegate ()
+                    {
+                        discardTales = true;
+                    }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0),
+                    new FloatMenuOption("Discard tales: False", delegate ()
+                    {
+                        discardTales = false;
+                    }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0)
+                };
                 Find.WindowStack.Add(new FloatMenu(toggleTales));
             }
         }
@@ -98,20 +111,26 @@ namespace RimWorld
 
         public bool HasValidFilename()
         {
-            return filename != FILENAME_NONE;
+            return filename != "Select ship to load";
         }
 
-        public override void PreConfigure()
+        public override void PreConfigure() //called after scenario is started
         {
+            Log.Message("SOS2: ".Colorize(Color.cyan) + "PreConfigure");
             base.PreConfigure();
-            LoadLatest();
+            if (!HasValidFilename())
+            {
+                Log.Message("SOS2: ".Colorize(Color.cyan) + "PreConfigure called LoadLatest");
+                LoadLatest();
+            }
         }
-        private void LoadLatest() //load latest save as default
+        private void LoadLatest() //load latest ship as default
         {
+            Log.Message("SOS2: ".Colorize(Color.cyan) + "LoadLatest");
             string folder = Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2");
             if (!Directory.Exists(folder))
             {
-                Log.Error("Created SOS2 ship save directory, you are using a load ship scenario part but have no ships to load!");
+                Log.Error("SOS2: ".Colorize(Color.cyan) + "You are using a load ship scenario part but have no ships to load!");
                 Directory.CreateDirectory(folder);
             }
             var directory = new DirectoryInfo(folder);
@@ -119,9 +138,9 @@ namespace RimWorld
             if (mostRecentFile != null)
                 filename = Path.GetFileNameWithoutExtension(mostRecentFile.FullName);
         }
-
         public void DoEarlyInit() //Scenario.GetFirstConfigPage call via patch
         {
+            Log.Message("SOS2: ".Colorize(Color.cyan) + "DoEarlyInit");
             ShipInteriorMod2.LoadShipFlag = true;
             LoadShip();
             //remove incompatible scenario parts - not sure if this works at all
@@ -136,32 +155,32 @@ namespace RimWorld
         }
         void LoadShip()
         {
+            Log.Message("SOS2: ".Colorize(Color.cyan) + "LoadShip");
             Scribe.mode = LoadSaveMode.Inactive;
-
             Scribe.loader.InitLoading(Path.Combine(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2"), filename + ".sos2"));
 
+            //PostWorldGenerate
             Scribe_Defs.Look<FactionDef>(ref playerFactionDef, "playerFactionDef");
             Scribe_Values.Look(ref playerFactionName, "playerFactionName");
             //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
             Scribe_Deep.Look(ref playerFactionIdeo, "playerFactionIdeo");
+            Scribe_Collections.Look<Ideo>(ref ideosAboardShip, "ideos", LookMode.Deep);
             //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
-
             Scribe_Deep.Look<TickManager>(ref tickManager, false, "tickManager");
             Scribe_Deep.Look<PlaySettings>(ref playSettings, false, "playSettings");
             Scribe_Deep.Look<StoryWatcher>(ref storyWatcher, false, "storyWatcher");
             Scribe_Deep.Look<ResearchManager>(ref researchManager, false, "researchManager");
-            Scribe_Deep.Look<TaleManager>(ref taleManager, false, "taleManager");
             Scribe_Deep.Look<OutfitDatabase>(ref outfitDatabase, false, "outfitDatabase");
             Scribe_Deep.Look<DrugPolicyDatabase>(ref drugPolicyDatabase, false, "drugPolicyDatabase");
             Scribe_Deep.Look<FoodRestrictionDatabase>(ref foodRestrictionDatabase, false, "foodRestrictionDatabase");
             Scribe_Deep.Look<UniqueIDsManager>(ref Current.Game.uniqueIDsManager, true, "uniqueIDsManager");
-
-            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
-            Scribe_Collections.Look<Ideo>(ref ideosAboardShip, "ideos", LookMode.Deep);
-            //typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, false);
             Scribe_Collections.Look<CustomXenotype>(ref xenosAboardShip, "xenotypes", LookMode.Deep);
             Scribe_Deep.Look<CustomXenogermDatabase>(ref customXenogermDatabase, false, "customXenogermDatabase");
+            Scribe_Deep.Look<TaleManager>(ref taleManager, false, "taleManager");
+            //Scribe_Deep.Look<PlayLog>(ref playLog, false, "playLog");
+            //er Accessing TicksAbs but gameStartAbsTick is not set yet (you most likely want to use GenTicks.TicksAbs instead).
 
+            //GenerateShipSpaceMap
             Scribe_Collections.Look<Thing>(ref toLoad, "shipThings", LookMode.Deep);
             Scribe_Collections.Look<Zone>(ref zonesToLoad, "shipZones", LookMode.Deep);
             Scribe_Collections.Look<IntVec3>(ref terrainPos, "terrainPos");
@@ -175,40 +194,64 @@ namespace RimWorld
         {
             if (HasValidFilename())
             {
+                Log.Message("SOS2: ".Colorize(Color.cyan) + "PostWorldGenerate");
                 Faction.OfPlayer.def = playerFactionDef;
                 Faction.OfPlayer.Name = playerFactionName;
                 foreach (Ideo ideo in ideosAboardShip)
                     AddIdeo(ideo);
                 foreach (CustomXenotype xeno in xenosAboardShip)
                     Current.Game.customXenotypeDatabase.customXenotypes.Add(xeno);
+                foreach (CustomXenogerm xeno in customXenogermDatabase.CustomXenogermsForReading)
+                    Current.Game.customXenogermDatabase.Add(xeno);
+                //time
                 Current.Game.tickManager = tickManager;
-                Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * Rand.RangeInclusive(ModSettings_SoS.minTravelTime, ModSettings_SoS.maxTravelTime));
+                traveltime = Rand.RangeInclusive(ModSettings_SoS.minTravelTime, ModSettings_SoS.maxTravelTime);
+                Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * traveltime);
 
                 Current.Game.playSettings = playSettings;
                 Current.Game.storyWatcher = storyWatcher;
                 Current.Game.researchManager = researchManager;
-                if (!discardTales)
-                    Current.Game.taleManager = taleManager;
-                if (Current.Game.taleManager == null)
-                    Current.Game.taleManager = new TaleManager();
-                if (!discardLog)
-                {
-                    Scribe_Deep.Look<PlayLog>(ref playLog, false, "playLog");
-                    Current.Game.playLog = playLog; //playerlog calls gameStartAbsTick before set up, use GenTicks.TicksAbs
-                    if (Current.Game.playLog == null)
-                        Current.Game.playLog = new PlayLog();
-                }
                 Current.Game.outfitDatabase = outfitDatabase;
                 Current.Game.drugPolicyDatabase = drugPolicyDatabase;
                 Current.Game.foodRestrictionDatabase = foodRestrictionDatabase;
-
-                foreach (CustomXenogerm xeno in customXenogermDatabase.CustomXenogermsForReading)
-                    Current.Game.customXenogermDatabase.Add(xeno);
-
+                //tales
+                if (taleManager == null )
+                {
+                    Log.Warning("SOS2: ".Colorize(Color.cyan) + "tales were null!");
+                    Current.Game.taleManager = new TaleManager();
+                }
+                else if (discardTales)
+                {
+                    Log.Message("SOS2: ".Colorize(Color.cyan) + "cleared tales!");
+                    Current.Game.taleManager = new TaleManager();
+                }
+                else
+                {
+                    Log.Message("SOS2: ".Colorize(Color.cyan) + "tales imported!");
+                    Current.Game.taleManager = taleManager;
+                }
+                //log
+                Scribe_Deep.Look<PlayLog>(ref playLog, false, "playLog");
+                if (playLog == null)
+                {
+                    Log.Warning("SOS2: ".Colorize(Color.cyan) + "playLog was null!");
+                    Current.Game.playLog = new PlayLog();
+                }
+                else if (discardLog)
+                {
+                    Log.Message("SOS2: ".Colorize(Color.cyan) + "cleared playLog!");
+                    Current.Game.playLog = new PlayLog();
+                }
+                else
+                {
+                    Log.Message("SOS2: ".Colorize(Color.cyan) + "playLog imported!");
+                    Current.Game.playLog = playLog;
+                }
+                //game comps
                 Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep); //init issue
                 if (components.NullOrEmpty())
                 {
-                    Log.Message("comps are null");
+                    Log.Warning("SOS2: ".Colorize(Color.cyan) + "comps were null!");
                     return;
                 }
                 List<GameComponent> toClobber = new List<GameComponent>();
@@ -285,6 +328,7 @@ namespace RimWorld
 
         public static Map GenerateShipSpaceMap()
         {
+            Log.Message("SOS2: ".Colorize(Color.cyan) + "GenerateShipSpaceMap");
             ScenPart_LoadShip scen = (ScenPart_LoadShip)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_LoadShip);
             if (scen.filename != FILENAME_NONE)
             {
@@ -293,8 +337,8 @@ namespace RimWorld
                 ((WorldObjectOrbitingShip)spaceMap.Parent).radius = 150;
                 ((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
                 Current.ProgramState = ProgramState.MapInitializing;
-
-                ShipInteriorMod2.AirlockBugFlag = true;
+                var mapComp = spaceMap.GetComponent<ShipHeatMapComp>();
+                mapComp.CacheOff = true;
 
                 Scribe.loader.crossRefs.ResolveAllCrossReferences();
 
@@ -307,7 +351,7 @@ namespace RimWorld
                             thing.SpawnSetup(spaceMap, thing is Building_ShipBridge);
                             if(thing.def.CanHaveFaction)
                                 thing.SetFaction(Faction.OfPlayer);
-                            if(thing is IThingHolder holder && holder.GetDirectlyHeldThings()!=null)
+                            if(thing is IThingHolder holder && holder.GetDirectlyHeldThings() != null)
                             {
                                 foreach (Thing heldThing in holder.GetDirectlyHeldThings())
                                 {
@@ -345,7 +389,7 @@ namespace RimWorld
                     spaceMap.roofGrid.SetRoof(scen.roofPos[i], scen.roofDefs[i]);
                 }
 
-                ShipInteriorMod2.AirlockBugFlag = false;
+                mapComp.CacheOff = false;
 
                 Current.ProgramState = ProgramState.Playing;
                 IntVec2 secs = spaceMap.mapDrawer.SectionCount;
@@ -389,20 +433,46 @@ namespace RimWorld
         }
         public override void PostGameStart() //post load cleaup, open player crypto, sickness
         {
-            foreach (Pawn p in Find.CurrentMap.mapPawns.AllPawns)
+            Map map = Find.CurrentMap;
+            map.GetComponent<ShipHeatMapComp>().RecacheMap();
+            //kill non crypto pawns
+            //List<Pawn> toKill = new List<Pawn>();
+            try
             {
-                p.needs.mood.thoughts.memories.Memories.Clear(); //clear memories as they might relate to old things
-                p.royalty = new Pawn_RoyaltyTracker(p); //reset royal everything
-            }
-            foreach (Building b in Find.CurrentMap.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompCryptoLaunchable>() != null))
-            {
-                Building_CryptosleepCasket c = b as Building_CryptosleepCasket;
-                if (c.ContainedThing is Pawn p)
+                foreach (Pawn p in map.mapPawns.AllPawns)
                 {
-                    p.health.AddHediff(HediffDefOf.CryptosleepSickness, null, null, null);
+                    /*if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!ShipInteriorMod2.IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map != map))
+                        toKill.Add(p);*/
+                    p.needs.mood.thoughts.memories.Memories.Clear(); //clear memories as they might relate to old things
+                    p.royalty = new Pawn_RoyaltyTracker(p); //reset royal everything
                 }
-                c.Open();
+                /*foreach (Pawn p in toKill)
+                    p.Kill(null);*/
+                foreach (Thing t in map.spawnedThings)
+                {
+                    if (t is Corpse c)
+                    {
+                        var compRot = c.GetComp<CompRottable>();
+                        if (t.GetRoom() != null && t.GetRoom().Temperature > 0 && compRot != null)
+                            compRot.RotProgress = compRot.PropsRot.TicksToDessicated;
+                    }
+                }
+                //eject crypto pawns
+                foreach (Building b in map.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompCryptoLaunchable>() != null))
+                {
+                    Building_CryptosleepCasket c = b as Building_CryptosleepCasket;
+                    if (c.ContainedThing is Pawn p)
+                    {
+                        p.health.AddHediff(HediffDefOf.CryptosleepSickness, null, null, null);
+                    }
+                    c.Open();
+                }
             }
+            catch (Exception e)
+            {
+                Log.Warning(e.Message + "\n" + e.StackTrace);
+            }
+            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed", traveltime), LetterDefOf.NeutralEvent);
         }
     }
 }

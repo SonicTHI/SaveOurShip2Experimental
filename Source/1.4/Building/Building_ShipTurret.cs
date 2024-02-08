@@ -111,7 +111,7 @@ namespace RimWorld
         {
             Map map = Map;
             base.Destroy(mode);
-            if (torpComp != null)
+            if (torpComp != null && !ShipInteriorMod2.AirlockBugFlag)
             {
                 foreach (ThingDef def in torpComp.LoadedShells)
                 {

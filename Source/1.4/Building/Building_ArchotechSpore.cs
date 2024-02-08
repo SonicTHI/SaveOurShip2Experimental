@@ -1056,7 +1056,7 @@ namespace RimWorld
             builder.AppendLine();
             builder.AppendLine("Shipwrights: Oninnaise, VVither_Skeleton, (Insert Boi here), AlfadorZero, choppytehbear, Dammerung, Foxtrot, Inert, Jameson, Moonshine Dusk");
             builder.AppendLine();
-            builder.AppendLine("Testing squad: Buns Buns Cat, Phsarjk, i am has yes, Fuji, Reviire, Ian, Generic Scout, Waipa, Xanthos, BUTTERSKY, firethestars, Haldicar, jamhax, Jenden, maraworf, Red_Bunny, rostock, sprocket, El Jojo, Zahc, Dutchman, Zero Jackal, Tiberiumkyle, swordspell, Shabm, Kasodus, Red_Bunny, melandor, Madman, Jenden, Insert Witty Joke, Ifailatgaming, Capitão Escarlate, Bunkier, Bumblybear, Bubbadoge, Abraxas, Rage Nova, twsta, transcendant, thecaffiend, Manifold Paradox, WhiteGiverMa");
+            builder.AppendLine("Testing squad: Buns Buns Cat, Phsarjk, i am has yes, Fuji, Reviire, Ian, Generic Scout, Waipa, Xanthos, BUTTERSKY, firethestars, Haldicar, jamhax, Jenden, maraworf, Red_Bunny, rostock, sprocket, El Jojo, Zahc, Dutchman, Zero Jackal, Tiberiumkyle, swordspell, Shabm, Kasodus, Red_Bunny, melandor, Madman, Jenden, Insert Witty Joke, Ifailatgaming, Capitão Escarlate, Bunkier, Bumblybear, Bubbadoge, Abraxas, Rage Nova, twsta, transcendant, thecaffiend, Manifold Paradox, WhiteGiverMa, Gago, Nerevarest");
 
             //Log.Message(builder.ToString());
 

@@ -46,18 +46,20 @@ namespace RimWorld
 			//selection 1
 			if (Widgets.ButtonText(rect1, "Start on: " + startType.ToString(), true, true, true))
 			{
-				List<FloatMenuOption> toggleType = new List<FloatMenuOption>();
-				toggleType.Add(new FloatMenuOption("Start on: ship", delegate ()
-				{
-					startType = ShipStartFlags.Ship;
-					enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
-				}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
-				toggleType.Add(new FloatMenuOption("Start on: station", delegate ()
-				{
-					startType = ShipStartFlags.Station;
-					enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
-				}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
-				Find.WindowStack.Add(new FloatMenu(toggleType));
+                List<FloatMenuOption> toggleType = new List<FloatMenuOption>
+                {
+                    new FloatMenuOption("Start on: ship", delegate ()
+					{
+						startType = ShipStartFlags.Ship;
+						enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
+					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0),
+                    new FloatMenuOption("Start on: station", delegate ()
+                    {
+                        startType = ShipStartFlags.Station;
+                        enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
+                    }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0)
+                };
+                Find.WindowStack.Add(new FloatMenu(toggleType));
 
 			}
 			//selection 2

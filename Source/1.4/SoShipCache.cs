@@ -410,6 +410,7 @@ namespace RimWorld
             return cells;
         }
 
+        public List<Pawn> PawnsOnShip => Map.mapPawns.AllPawns.Where(p => Area.Contains(p.Position)).ToList();
         //dep
         public float EnginesOn() //dep
         {

@@ -13,6 +13,8 @@ using Verse.AI.Group;
 using RimworldMod;
 using System.IO;
 using static SaveOurShip2.ModSettings_SoS;
+using Verse.Noise;
+using Mono.Cecil.Cil;
 
 namespace SaveOurShip2
 {
@@ -95,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V97f7";
+        public static readonly string SOS2EXPversion = "V97f8";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1447,6 +1449,10 @@ namespace SaveOurShip2
 					foreach (Thing t in vec.GetThingList(map).Where(t => !t.Destroyed))
 					{
                         toDestroySet.Add(t);
+						if (t is Building b && b.def.building.shipPart)
+						{
+							areaSet.AddRange(b.OccupiedRect());
+                        }
 					}
 				}
 				foreach (IntVec3 vec in GenRadial.RadialCellsAround(v, exploRadius, exploRadius + 1))
@@ -2133,8 +2139,7 @@ namespace SaveOurShip2
 							a.DeSpawnDock();
 						}
 						var engineComp = t.TryGetComp<CompEngineTrail>();
-						if (engineComp != null)
-							engineComp.Off();
+						engineComp?.Off();
 					}
 					else if (t is Pawn p)
                     {
@@ -2267,14 +2272,26 @@ namespace SaveOurShip2
 
 			RemoveShip(core, true);
 		}
-        public static void SaveShipToFile(Building_ShipBridge bridge)
+        public static void SaveShipToFile(Building_ShipBridge core)
         {
-            KillAllColonistsNotInCrypto(bridge.Map, bridge);
+            Map map = core.Map;
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+            var ship = mapComp.ShipsOnMapNew[core.ShipIndex];
+            List<Pawn> toKill = new List<Pawn>();
+            foreach (Pawn p in ship.PawnsOnShip)
+            {
+                if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map != map))
+                    toKill.Add(p);
+            }
+            foreach (Pawn p in toKill)
+                p.Kill(null);
+
+            TravelEffects(core.Map, core);
             string folder = Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
-            string filename = Path.Combine(folder, Faction.OfPlayer.Name + "_" + bridge.ShipName + ".sos2");
-            SaveShip(bridge, filename);
+            string filename = Path.Combine(folder, Faction.OfPlayer.Name + "_" + core.ShipName + ".sos2");
+            SaveShip(core, filename);
         }
         public static void SpaceTravelWarning(Action action)
         {
@@ -2295,25 +2312,8 @@ namespace SaveOurShip2
             dialog_NodeTree.closeOnCancel = true;
             Find.WindowStack.Add(dialog_NodeTree);
         }
-        public static void KillAllColonistsNotInCrypto(Map shipMap, Building_ShipBridge bridge)
+        public static void TravelEffects(Map shipMap, Building_ShipBridge bridge)
         {
-            List<Pawn> toKill = new List<Pawn>();
-            foreach (Pawn p in shipMap.mapPawns.AllPawns)
-            {
-                if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map != shipMap))
-                    toKill.Add(p);
-            }
-            foreach (Pawn p in toKill)
-                p.Kill(null);
-            foreach (Thing t in shipMap.spawnedThings)
-            {
-                if (t is Corpse c)
-                {
-                    var compRot = c.GetComp<CompRottable>();
-                    if (t.GetRoom() != null && t.GetRoom().Temperature > 0 && compRot != null)
-                        compRot.RotProgress = compRot.PropsRot.TicksToDessicated;
-                }
-            }
             WorldComp.renderedThatAlready = false;
 
             float EnergyCost = 100000;
@@ -2331,11 +2331,6 @@ namespace SaveOurShip2
                     capacitor.SetStoredEnergyPct(0.05f);
                 }
             }
-
-            //Oddly enough, interstellar flight takes a lot of time
-            /*int years = Rand.RangeInclusive(minTravelTime.Value, maxTravelTime.Value);
-            Current.Game.tickManager.DebugSetTicksGame(Current.Game.tickManager.TicksAbs + 3600000 * years);
-            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed",years), LetterDefOf.NeutralEvent);*/
         }
 		public static void RemoveShip(Building core, bool planetTravel = false, HashSet<IntVec3> area = null, Map map = null)
         {
@@ -2376,8 +2371,7 @@ namespace SaveOurShip2
 					if (t.def.destroyable && !t.Destroyed)
 					{
 						CompRefuelable refuelable = t.TryGetComp<CompRefuelable>();
-						if (refuelable != null)
-							refuelable.ConsumeFuel(refuelable.Fuel); //To avoid CompRefuelable.PostDestroy
+						refuelable?.ConsumeFuel(refuelable.Fuel); //To avoid CompRefuelable.PostDestroy
 						t.Destroy(DestroyMode.Vanish);
 					}
 				}

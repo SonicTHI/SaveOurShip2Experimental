@@ -2,7 +2,7 @@
 <Defs>
 	<ThingDef ParentName="AnimalThingBase" Name="ArchoAnimalThingBase" Abstract="True">
 		<statBases>
-			<MarketValue>1000</MarketValue>
+			<MarketValue>3000</MarketValue>
 			<ComfyTemperatureMin>-100</ComfyTemperatureMin>
 			<ComfyTemperatureMax>100</ComfyTemperatureMax>
 			<HypoxiaResistance>1</HypoxiaResistance>
@@ -14,14 +14,13 @@
 			<herdMigrationAllowed>false</herdMigrationAllowed>
 		</race>
 	</ThingDef>
-
 	<PawnKindDef ParentName="AnimalKindBase" Name="ArchoAnimalKindBase" Abstract="True">
 		<canArriveManhunter>false</canArriveManhunter>
 	</PawnKindDef>
 
 	<ThingDef ParentName="BigBirdThingBase" Name="ArchoBigBirdThingBase" Abstract="True">
 		<statBases>
-			<MarketValue>1000</MarketValue>
+			<MarketValue>3000</MarketValue>
 			<ComfyTemperatureMin>-100</ComfyTemperatureMin>
 			<ComfyTemperatureMax>100</ComfyTemperatureMax>
 			<HypoxiaResistance>1</HypoxiaResistance>
@@ -34,7 +33,6 @@
 			<herdMigrationAllowed>false</herdMigrationAllowed>
 		</race>
 	</ThingDef>
-
 	<PawnKindDef ParentName="BigBirdKindBase" Name="ArchoBigBirdKindBase" Abstract="True">
 		<canArriveManhunter>false</canArriveManhunter>
 	</PawnKindDef>
@@ -44,7 +42,7 @@
 		<statBases>
 			<ToxicResistance>1</ToxicResistance>
 			<ToxicEnvironmentResistance MayRequire="Ludeon.RimWorld.Biotech">0.8</ToxicEnvironmentResistance>
-			<MarketValue>1000</MarketValue>
+			<MarketValue>2000</MarketValue>
 			<ComfyTemperatureMin>-100</ComfyTemperatureMin>
 			<ComfyTemperatureMax>100</ComfyTemperatureMax>
 			<HypoxiaResistance>1</HypoxiaResistance>
@@ -74,8 +72,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
-	<!--===============================================-->
 
 	<!-- Archocat -->
 	<ThingDef ParentName="ArchoAnimalThingBase">
@@ -233,7 +229,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoAnimalKindBase">
 		<defName>Archocat</defName>
 		<label>archocat</label>
@@ -393,7 +388,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoAnimalKindBase">
 		<defName>Archomutt</defName>
 		<label>archomutt</label>
@@ -555,7 +549,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoAnimalKindBase">
 		<defName>Archojerboa</defName>
 		<label>archojerboa</label>
@@ -714,7 +707,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
 	<PawnKindDef Name="Archoffalo" ParentName="ArchoAnimalKindBase">
 		<defName>Archoffalo</defName>
 		<label>archoffalo</label>
@@ -903,7 +895,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoAnimalKindBase">
 		<defName>Archolope</defName>
 		<label>archolope</label>
@@ -1104,7 +1095,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoAnimalKindBase">
 		<defName>Archothrumbo</defName>
 		<label>archothrumbo</label>
@@ -1165,8 +1155,6 @@
 			</li>
 		</lifeStages>
 	</PawnKindDef>
-
-	<!--=========================================================-->
 
 	<!-- Archotortoise -->
 	<ThingDef ParentName="ArchoAnimalThingBase">
@@ -1260,7 +1248,6 @@
 			<li>AnimalExotic</li>
 		</tradeTags>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoAnimalKindBase">
 		<defName>Archotortoise</defName>
 		<label>archotortoise</label>
@@ -1304,7 +1291,6 @@
 			</li>
 		</lifeStages>
 	</PawnKindDef>
-
 	<ThingDef ParentName="EggFertBase">
 		<defName>EggArchotortoiseFertilized</defName>
 		<label>archotortoise egg (fert.)</label>
@@ -1316,7 +1302,7 @@
 			<graphicClass>Graphic_StackCount</graphicClass>
 		</graphicData>
 		<statBases>
-			<MarketValue>23.0</MarketValue>
+			<MarketValue>200</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="CompProperties_Hatcher">
@@ -1453,7 +1439,6 @@
 			<li>AnimalExotic</li>
 		</tradeTags>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoAnimalKindBase">
 		<defName>Archopanda</defName>
 		<label>archopanda</label>
@@ -1613,7 +1598,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoBigBirdKindBase">
 		<defName>Archostrich</defName>
 		<label>archostrich</label>
@@ -1687,7 +1671,6 @@
 			</li>
 		</lifeStages>
 	</PawnKindDef>
-
 	<ThingDef ParentName="EggFertBase">
 		<defName>EggArchostrichFertilized</defName>
 		<label>archostrich egg (fert.)</label>
@@ -1699,7 +1682,7 @@
 			<graphicClass>Graphic_StackCount</graphicClass>
 		</graphicData>
 		<statBases>
-			<MarketValue>100.0</MarketValue>
+			<MarketValue>200</MarketValue>
 			<Nutrition>1.0</Nutrition>
 		</statBases>
 		<comps>
@@ -1710,7 +1693,6 @@
 		</comps>
 		<tradeability>Sellable</tradeability>
 	</ThingDef>
-
 	<ThingDef ParentName="EggUnfertBase">
 		<defName>EggArchostrichUnfertilized</defName>
 		<label>archostrich egg (unfert.)</label>
@@ -1722,7 +1704,7 @@
 			<graphicClass>Graphic_StackCount</graphicClass>
 		</graphicData>
 		<statBases>
-			<MarketValue>23.0</MarketValue>
+			<MarketValue>25</MarketValue>
 			<Nutrition>1.0</Nutrition>
 		</statBases>
 		<tradeability>Sellable</tradeability>
@@ -1801,7 +1783,6 @@
 			</li>
 		</comps>
 	</ThingDef>
-
 	<PawnKindDef ParentName="ArchoAnimalKindBase">
 		<defName>Archospider</defName>
 		<label>archospider</label>

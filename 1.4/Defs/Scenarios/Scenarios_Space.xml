@@ -195,9 +195,9 @@
 	<ScenarioDef>
 		<defName>SoSLoadShip</defName>
 		<label>Load Ship</label>
-		<description>FOR TESTING ONLY - CURRENTLY REQUIRES A SAVE+RELOAD AFTER START.\nHAS MANY OTHER ISSUES, PLEASE REPORT THEM PROPERLY WITH LOGS!\n\nStart with a ship that has left for another planet. Edit the scenario and select your saved ship bellow. You can also choose to discard logs and tales, lowering your save size. This will disable many other types of scenario part, such as starting pawns.</description>
+		<description>SAVE+RELOAD AFTER START!\nAFTER, REPORT ISSUES PROPERLY WITH A PLAYER.LOG - SEE SOS2 GITHUB!\n\nStart with a ship that has left for another planet. You can edit the scenario and select your saved ship bellow. You can also choose to discard logs and tales, lowering your save size. This will disable many other types of scenario part, such as starting pawns.</description>
 		<scenario>
-			<summary>Start with the last ship that has left for another planet.</summary>
+			<summary>Start with a ship that has left for another planet.</summary>
 			<playerFaction>
 				<def>PlayerFaction</def>
 				<factionDef>PlayerColony</factionDef>

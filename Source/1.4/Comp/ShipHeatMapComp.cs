@@ -1373,7 +1373,7 @@ namespace RimWorld
         }
         public void RemoveShipFromBattle(int shipIndex) //only call this on mapcomp tick!
         {
-            if (ShipsOnMapNew.Values.Count() > 1) //move to graveyard if not last ship
+            if (ShipsOnMapNew.Values.Count(s => !s.IsWreck) > 1) //move to graveyard if not last ship
             {
                 Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
                 SoShipCache ship = ShipsOnMapNew[shipIndex];
@@ -1391,11 +1391,15 @@ namespace RimWorld
                         SpawnGraveyard();
                     ShipInteriorMod2.MoveShip(core, ShipGraveyard, new IntVec3(0, 0, 0));
                 }
+                Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ships remaining: " + ShipsOnMapNew.Count);
+                foreach (SoShipCache s in ShipsOnMapNew.Values)
+                {
+                    Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + s.Index + ", area: " + s.Area.Count + ", bldgs: " + s.BuildingCount + ", cores: " + s.Bridges.Count);
+                }
             }
-            Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ships remaining: " + ShipsOnMapNew.Count);
-            foreach (SoShipCache ship in ShipsOnMapNew.Values)
+            else
             {
-                Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + ship.Index + ", area: " + ship.Area.Count + ", bldgs: " + ship.BuildingCount + ", cores: " + ship.Bridges.Count);
+                EndBattle(map, false);
             }
         }
         public void SpawnGraveyard() //if not present, create a graveyard

@@ -8,10 +8,8 @@ using SaveOurShip2;
 
 namespace RimWorld
 {
-    [StaticConstructorOnStartup]
     public class CompShipSalvageBay : ThingComp
     {
-        public static int salvageCapacity = 5000;
         public CompProperties_SalvageBay Props
         {
             get
@@ -19,6 +17,7 @@ namespace RimWorld
                 return (CompProperties_SalvageBay)props;
             }
         }
+        public int SalvageWeight => Props.weight;
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
 			var mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
@@ -29,10 +28,6 @@ namespace RimWorld
             }
             if (parent.Faction == Faction.OfPlayer && mapComp.IsPlayerShipMap || (Prefs.DevMode && ShipInteriorMod2.HasSoS2CK))
 			{
-                if (Props.archo && (parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? false))
-                {
-                    //td
-                }
 				foreach (Map map in Find.Maps.Where(m => m.GetComponent<ShipHeatMapComp>().IsGraveyard))
 				{
                     Command_VerbTargetWreckMap retrieveShipEnemy = new Command_VerbTargetWreckMap
@@ -44,52 +39,41 @@ namespace RimWorld
 						defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageCommand", map.Parent.Label),
 						defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageCommandDesc", map.Parent.Label)
 					};
-                    /*Command_Action stablizeShipEnemy = new Command_Action
+                    if (Props.beam && (parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? false))
                     {
-                        action = delegate
+                        Command_VerbTargetMap beam = new Command_VerbTargetMap
                         {
-                            var targetMapComp = map.GetComponent<ShipHeatMapComp>();
-                            int bCount = map.listerBuildings.allBuildingsNonColonist.Count + map.listerBuildings.allBuildingsColonist.Count;
-                            int bMax = mapComp.SalvBayCount * salvageCapacity;
-                            if (bCount > bMax)
-                            {
-                                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", bCount, bMax), MessageTypeDefOf.NeutralEvent);
-                            }
-                            else
-                            {
-                                float req = bCount * 0.01f;
-                                float fuel = 0;
-                                foreach (SoShipCache ship in targetMapComp.ShipsOnMapNew.Values.Where(s => !s.IsStuck))
-                                {
-                                    //td calc fuel
-                                }
-                                if (req > fuel)
-                                {
-                                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeFuel", req), MessageTypeDefOf.NeutralEvent);
-                                }
-                                else
-                                {
-                                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeConfirm", map.Parent.Label), delegate
-                                    {
-                                        //td consume req
-                                        map.Parent.GetComponent<TimedForcedExitShip>().ticksLeftToForceExitAndRemoveMap += 60000;
-                                        float adj = Rand.Range(0.025f, 0.075f);
-                                        ((WorldObjectOrbitingShip)map.Parent).theta = ((WorldObjectOrbitingShip)parent.Map.Parent).theta + adj;
-                                    }));
-                                }
-                            }
-                        },
+                            salvageBay = (Building)parent,
+                            sourceMap = parent.Map,
+                            targetMap = map,
+                            mode = CommandMode.scoop,
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageBeam", map.Parent.Label),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageBeamDesc", map.Parent.Label),
+                            icon = ContentFinder<Texture2D>.Get("UI/SalvageBeam")
+                        };
+                        if (mapComp.InCombat)
+                        {
+                            beam.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+                        }
+                        yield return beam;
+                    }
+                    Command_VerbTargetMap stablizeShipEnemy = new Command_VerbTargetMap
+                    {
+                        salvageBay = (Building)parent,
+                        sourceMap = parent.Map,
+                        targetMap = map,
+                        mode = CommandMode.stabilize,
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageStablize", map.Parent.Label),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeDesc", map.Parent.Label),
                         icon = ContentFinder<Texture2D>.Get("UI/StabilizeShip")
-                    };*/
+                    };
                     if (mapComp.InCombat)
                     {
                         retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
-                        //stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+                        stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
                     }
 					yield return retrieveShipEnemy;
-                    //yield return stablizeShipEnemy;
+                    yield return stablizeShipEnemy;
                 }
                 Command_VerbTargetWreckMap moveWreck = new Command_VerbTargetWreckMap
                 {

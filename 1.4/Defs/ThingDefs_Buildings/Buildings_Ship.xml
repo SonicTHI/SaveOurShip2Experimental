@@ -2178,7 +2178,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Moves enemy ship wrecks to your map. More bays are required for larger ships. Can also move and get rid of unwanted wrecks.\n\nWeight limit: 5000</description>
+		<description>Moves wrecks to your map or removes unwanted ones. More bays are required to move larger ships.\n\nWeight limit: 5000</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2193,6 +2193,61 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart"/>
 			<li Class="CompProperties_SalvageBay"/>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipSalvageBayNano</defName>
+		<label>glittertech salvage bay</label>
+		<graphicData>
+			<texPath>Things/Building/Ship/SalvageBayNano</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(5,5.6)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<researchPrerequisites>
+			<li>ShipSalvageBayGlitter</li>
+		</researchPrerequisites>
+		<altitudeLayer>DoorMoveable</altitudeLayer>
+		<passability>Standable</passability>
+		<fillPercent>0.1</fillPercent>
+		<statBases>
+			<WorkToBuild>5000</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<description>Unlike the normal salvage bay this version uses a tractor beam based on a reverse JT principle. Moves wrecks to your map or removes unwanted ones. It can also retrieve small loose objects from around enemy wrecks. \n\nWeight limit: 10000</description>
+		<size>(5,5)</size>
+		<designationCategory>Ship</designationCategory>
+		<rotatable>false</rotatable>
+		<building>
+			<isEdifice>false</isEdifice>
+		</building>
+		<costList>
+			<Steel>250</Steel>
+			<Plasteel>100</Plasteel>
+			<ComponentSpacer>12</ComponentSpacer>
+			<SoSEntanglementManifold>1</SoSEntanglementManifold>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SoShipPart"/>
+			<li Class="CompProperties_SalvageBay">
+				<beam>true</beam>
+				<weight>10000</weight>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>2000</basePowerConsumption>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_OnShipHull</li>
@@ -2228,7 +2283,7 @@
 			<MaxHitPoints>1000</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Generates a field which masks heat emissions, hiding your ship from passive scans. This prevents random ship battles from starting, but is not helpful once combat has already begun. It also cannot protect you from the powerful scanners used to find ships with high Notoriety.\n\nWhile the device is active, your ship's radiators will be disabled and heat capacity will decrease.</description>
+		<description>Generates a field which masks heat emissions, hiding your ship from passive scans. This prevents random ship battles from starting, but is not helpful once combat has already begun. It also cannot protect you from the powerful scanners used to find ships with high Notoriety.\n\nWhile the device is active, your ship's heat sinks will be disabled and heat capacity will decrease.</description>
 		<designationCategory>Ship</designationCategory>
 		<comps>
 			<li Class="CompProperties_Power">

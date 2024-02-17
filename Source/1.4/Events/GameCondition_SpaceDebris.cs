@@ -27,6 +27,7 @@ namespace RimWorld
         };
         public override void ExposeData()
         {
+            base.ExposeData();
             Scribe_Values.Look<IntRange>(ref this.initialStrikeDelay, "initialStrikeDelay", default(IntRange), false);
             Scribe_Values.Look<IntRange>(ref this.TicksBetweenStrikes, "ticksBetweenStrikes", default(IntRange), false);
             Scribe_Values.Look<int>(ref this.nextLaunchProjTicks, "nextLaunchProjTicks", 0, false);

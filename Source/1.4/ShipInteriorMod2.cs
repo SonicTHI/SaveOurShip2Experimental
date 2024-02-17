@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V97f9";
+        public static readonly string SOS2EXPversion = "V98";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1627,7 +1627,8 @@ namespace SaveOurShip2
 			List<Tuple<IntVec3, RoofDef>> roofToCopy = new List<Tuple<IntVec3, RoofDef>>();
 			List<IntVec3> fireExplosions = new List<IntVec3>();
 			List<CompEngineTrail> nukeExplosions = new List<CompEngineTrail>();
-			IntVec3 rot = IntVec3.Zero;
+            List<Pawn> pawns = new List<Pawn>();
+            IntVec3 rot = IntVec3.Zero;
 			int rotb = 4 - rotNum;
 
 			// Transforms vector from initial position to final according to desired movement/rotation.
@@ -1725,7 +1726,6 @@ namespace SaveOurShip2
 				if (!targetMapIsSpace)
 					targetMap.snowGrid.SetDepth(adjustedPos, 0f);
 				//add all things from area
-				List<Pawn> pawns = new List<Pawn>();
 				foreach (Thing t in pos.GetThingList(sourceMap))
 				{
 					if (t is Building b)
@@ -2062,8 +2062,8 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("moveRoof");
 
-			//restore temp in ship
-			foreach (Tuple<IntVec3, float> t in posTemp)
+            //restore temp in ship
+            foreach (Tuple<IntVec3, float> t in posTemp)
 			{
 				Room room = t.Item1.GetRoom(targetMap);
 				room.Temperature = t.Item2;
@@ -2086,9 +2086,13 @@ namespace SaveOurShip2
 				}
 			}
 
-            //power
             if (sourceMap != targetMap)
             {
+                //pawns to lord
+                foreach (Pawn p in pawns)
+                    AddPawnToLord(targetMap, p);
+
+                //power
                 sourceMap.powerNetManager.UpdatePowerNetsAndConnections_First();
                 targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
             }
@@ -2103,7 +2107,40 @@ namespace SaveOurShip2
 
             }
         }
-		public static void SaveShip(Building_ShipBridge core, string file)
+        public static void AddPawnToLord(Map map, Pawn p)
+        {
+			if (!p.HostileTo(Faction.OfPlayer) || p.Dead)
+                return;
+
+			p.GetLord()?.RemovePawn(p);
+            var mapComp = map.GetComponent<ShipHeatMapComp>();
+            if (map == FindPlayerShipMap()) //if placed on player home, assault it
+            {
+                if (mapComp.InvaderLord == null)
+                {
+                    mapComp.InvaderLord = LordMaker.MakeNewLord(p.Faction, new LordJob_AssaultShip(p.Faction), map);
+                }
+                if (p.Faction == mapComp.InvaderLord.faction)
+                {
+                    mapComp.InvaderLord.AddPawn(p);
+					return;
+                }
+            }
+			//other faction or on wreck map
+            if (mapComp.ShipLord == null)
+            {
+                mapComp.ShipLord = LordMaker.MakeNewLord(p.Faction, new LordJob_DefendShip(), map);
+            }
+            if (p.Faction == mapComp.ShipLord.faction)
+            {
+                mapComp.ShipLord.AddPawn(p);
+                return;
+            }
+			//fallback
+            Lord lord = LordMaker.MakeNewLord(p.Faction, new LordJob_DefendShip(), map);
+            lord.AddPawn(p);
+        }
+        public static void SaveShip(Building_ShipBridge core, string file)
 		{
 			List<Thing> toSave = new List<Thing>();
 			List<Zone> zones = new List<Zone>();

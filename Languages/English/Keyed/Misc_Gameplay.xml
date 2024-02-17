@@ -104,9 +104,9 @@
 	<ArchotechSporeMoodLowDescNoRoyalty>Your archotech spore's mood is low, and it may decide to start playing "pranks" on your crew.\n\nThe spore's mood can be improved by sacrificing prisoners' brains to it.</ArchotechSporeMoodLowDescNoRoyalty>
 	
 	<ShipQuestPillarA>Attack KSS Horizon</ShipQuestPillarA>
-	<ShipQuestPillarAdesc>Attempt to engage the ancient terraforming station and recover an archotech pillar</ShipQuestPillarAdesc>
+	<ShipQuestPillarADesc>Attempt to engage the ancient terraforming station and recover an archotech pillar</ShipQuestPillarADesc>
 	<ShipQuestPillarB>Raid moon base</ShipQuestPillarB>
-	<ShipQuestPillarBdesc>Attack the mechanoid moon base and attempt to recover an archotech pillar.\n\nThis will also provoke a mechanoid warship!</ShipQuestPillarBdesc>
+	<ShipQuestPillarBDesc>Attack the mechanoid moon base and attempt to recover an archotech pillar.\n\nThis will also provoke a mechanoid warship!</ShipQuestPillarBDesc>
 	<MeditationFocusPerPillarAbstract>{1} per nearby archotech pillar (max {0})</MeditationFocusPerPillarAbstract>
 	<MeditationFocusPerPillar>{2} per nearby archotech pillar ({0} / {1})</MeditationFocusPerPillar>
 

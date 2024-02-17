@@ -108,14 +108,17 @@
 	<ShipMoveWreckRotCommandDesc>Reposition and rotate a wreck counter clockwise on your map</ShipMoveWreckRotCommandDesc>
 	<ShipSalvageCommand>Retrieve from {0}</ShipSalvageCommand>
 	<ShipSalvageCommandDesc>Retrieve a wreck from target map {0}</ShipSalvageCommandDesc>
+	<ShipSalvageBeam>Retrieve debris from {0}</ShipSalvageBeam>
+	<ShipSalvageBeamDesc>Retrieve loose, free-floating debris from target map {0}</ShipSalvageBeamDesc>
 	<ShipSalvageStablize>Stabilize {0}</ShipSalvageStablize>
 	<ShipSalvageStablizeFuel>Stabilization requires {0} fuel!</ShipSalvageStablizeFuel>
-	<ShipSalvageStablizeDesc>Stabilize the orbit of {0}. This requires enough salvage bays and will consume a minor amount of fuel in your engines.</ShipSalvageStablizeDesc>
-	<ShipSalvageStablizeConfirm>Stabilize the orbit of {0}. This requires enough salvage bays and will consume a minor amount of fuel in your engines.</ShipSalvageStablizeConfirm>
+	<ShipSalvageStablizeDesc>Stabilize the orbit of {0}. This requires enough salvage bays and will consume fuel in your engines.</ShipSalvageStablizeDesc>
+	<ShipSalvageStablizeConfirm>Stabilize the orbit of {0}. This requires enough salvage bays and will consume {1} chemfuel equivalent in your engines.</ShipSalvageStablizeConfirm>
 	<ShipSalvageDisabled>In ship battle or enemy pawns present!</ShipSalvageDisabled>
 	<ShipSalvageAbandonConfirm>Are you sure you want to discard the target?\nEverything connected to or on it will burn up in the atmosphere!</ShipSalvageAbandonConfirm>
 	<ShipSalvageBridge>Can not move intact ships with the salvage bay, capture or destroy the bridge.</ShipSalvageBridge>
 	<ShipSalvageCount>Not enough salvage bays. {0}/{1}</ShipSalvageCount>
+	<ShipSalvageNoSpace>Not enough space on salvage bay.</ShipSalvageNoSpace>
 	<ShipClaimWrecksCommand>Claim wrecks</ShipClaimWrecksCommand>
 	<ShipClaimWrecksCommandDesc>Claim all wrecks on this map</ShipClaimWrecksCommandDesc>
 	<ShipClaimWrecksSuccess>Claimed {0} buildings!</ShipClaimWrecksSuccess>

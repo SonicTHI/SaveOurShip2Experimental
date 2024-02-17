@@ -94,13 +94,13 @@ namespace RimWorld
                 lastPrankTick = tick+Rand.Range(40000,80000);
             }
 
-            if(unlockedPsy || ResourceBank.ResearchProjectDefOf.ArchotechPsychicField.IsFinished)
+            if (unlockedPsy || ResourceBank.ResearchProjectDefOf.ArchotechPsychicField.IsFinished)
             {
                 unlockedPsy = true;
                 fieldStrength += 0.001f * (1+ NumConnectedPillars);
             }
 
-            if (tick- ShipInteriorMod2.WorldComp.LastSporeGiftTick > 90000 * (5- NumConnectedPillars) * (3-Mood))
+            if (tick - ShipInteriorMod2.WorldComp.LastSporeGiftTick > 90000 * (5- NumConnectedPillars) * (3-Mood))
             {
                 int numUnlock = 0;
                 foreach (ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)
@@ -125,7 +125,7 @@ namespace RimWorld
             if (Mood < 0.8f && tick > lastPrankTick)
                 PlayPrank(tick);
 
-            if(!ideoCrisis && tick % 20000 == 0 && ModsConfig.IdeologyActive)
+            if (!ideoCrisis && tick % 20000 == 0 && ModsConfig.IdeologyActive)
             {
                 ideoCrisis = true;
 
@@ -517,16 +517,12 @@ namespace RimWorld
                             FloatMenuOption op = new FloatMenuOption(map.Parent.Label, delegate {
                                 CameraJumper.TryJump(Position, map);
                                 Find.Targeter.BeginTargeting(TargetingParameters.ForAttackAny(), delegate (LocalTargetInfo target) {
-                                    if (target.HasThing && target.Thing is Pawn)
+                                    if (target.HasThing && target.Thing is Pawn p && p.GetPsylinkLevel() < 6)
                                     {
-                                        Pawn pawn = (Pawn)target.Thing;
-                                        if (pawn.GetPsylinkLevel() < 6)
-                                        {
-                                            pawn.ChangePsylinkLevel(1);
-                                            fieldStrength -= fieldCostPsylink;
-                                            SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
-                                            FleckMaker.Static(Position, Map, FleckDefOf.PsycastAreaEffect, 10f);
-                                        }
+                                        p.ChangePsylinkLevel(1);
+                                        fieldStrength -= fieldCostPsylink;
+                                        SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
+                                        FleckMaker.Static(Position, Map, FleckDefOf.PsycastAreaEffect, 10f);
                                     }
                                 });
                             });
@@ -577,7 +573,7 @@ namespace RimWorld
                     };
                     giz.Add(toggleGiftParticles);
                 }
-                Command_Action demandGift = new Command_Action
+                /*Command_Action demandGift = new Command_Action
                 {
                     action = delegate
                     {
@@ -593,7 +589,7 @@ namespace RimWorld
                     demandGift.disabled = true;
                     demandGift.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNoGiftsUnlocked");
                 }
-                giz.Add(demandGift);
+                giz.Add(demandGift);*/
             }
 			
             if (NumConnectedPillars>=4)

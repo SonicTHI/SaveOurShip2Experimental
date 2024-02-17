@@ -49,7 +49,7 @@ namespace RimWorld
         {
             if (b == null)
                 return;
-            int bMax = sourceMap.GetComponent<ShipHeatMapComp>().SalvBayCount * CompShipSalvageBay.salvageCapacity;
+            int bMax = sourceMap.GetComponent<ShipHeatMapComp>().MaxSalvageWeightOnMap();
             var mapComp = b.Map.GetComponent<ShipHeatMapComp>();
             int shipIndex = mapComp.ShipIndexOnVec(b.Position);
             if (shipIndex != -1)

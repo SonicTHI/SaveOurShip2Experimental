@@ -55,6 +55,20 @@
 		<researchViewX>6</researchViewX>
 		<researchViewY>0</researchViewY>
 	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSalvageBayGlitter</defName>
+		<label>glittertech salvage bay</label>
+		<description>Utilize a reversed polarity JT beam to quickly retrieve salvage after a space battle.\nNote: Actually constructing the bay will require an Entanglement Manifold, a very rare artifact.</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>SoSJTDrive</li>
+			<li>ShipSalvageBay</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>7</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
 	<!-- bridge, sensor -->
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipPilotSeat</defName>

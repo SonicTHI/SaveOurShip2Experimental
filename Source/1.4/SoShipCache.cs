@@ -820,7 +820,7 @@ namespace RimWorld
 
             if (mapComp.InCombat) //if last ship end combat else move to grave
             {
-                if (mapComp.ShipsOnMapNew.Count > 1)
+                if (mapComp.ShipsOnMapNew.Values.Any(s => !s.IsWreck))
                     mapComp.ShipsToMove.Add(Index);
                 else
                     mapComp.EndBattle(Map, false);

@@ -338,6 +338,15 @@ namespace RimWorld
         public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
         public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
         public int SalvBayCount => map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null).Count();
+        public int MaxSalvageWeightOnMap()
+        {
+            int total = 0;
+            foreach (Building b in map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null))
+            {
+                total += b.TryGetComp<CompShipSalvageBay>().SalvageWeight;
+            }
+            return total;
+        }
 
         //ship cache functions
         public bool CacheOff = true; //set on map load to not cause massive joining calcs, proper parts assign to MapShipCells
@@ -1373,7 +1382,7 @@ namespace RimWorld
         }
         public void RemoveShipFromBattle(int shipIndex) //only call this on mapcomp tick!
         {
-            if (ShipsOnMapNew.Values.Count(s => !s.IsWreck) > 1) //move to graveyard if not last ship
+            if (ShipsOnMapNew.Values.Any(s => !s.IsWreck)) //move to graveyard if not last ship
             {
                 Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
                 SoShipCache ship = ShipsOnMapNew[shipIndex];

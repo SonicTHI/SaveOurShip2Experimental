@@ -820,60 +820,6 @@
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 	</ThingDef>
-	<!--ThingDef ParentName="BuildingBase">
-		<defName>ShipSalvageBayNano</defName>
-		<label>glittertech salvage bay</label>
-		<graphicData>
-			<texPath>Things/Building/Ship/SalvageBayNano</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<drawSize>(5,5.6)</drawSize>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-			</damageData>
-		</graphicData>
-		<researchPrerequisites>
-			<li>ShipSalvageBay</li>
-		</researchPrerequisites>
-		<altitudeLayer>DoorMoveable</altitudeLayer>
-		<passability>Standable</passability>
-		<fillPercent>0.1</fillPercent>
-		<statBases>
-			<WorkToBuild>5000</WorkToBuild>
-			<MaxHitPoints>500</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<description>Unlike the normal salvage bay this version uses a tractor beam based on a reverse JT principle. It can retrieve small loose objects from around enemy wrecks. More bays are required for larger ships. Can also move and get rid of unwanted wrecks.\n\nWeight limit: 10000</description>
-		<size>(5,5)</size>
-		<designationCategory>Ship</designationCategory>
-		<rotatable>false</rotatable>
-		<building>
-			<isEdifice>false</isEdifice>
-		</building>
-		<costList>
-			<Steel>250</Steel>
-			<Plasteel>100</Plasteel>
-			<ComponentSpacer>12</ComponentSpacer>
-			<SoSEntanglementManifold>1</SoSEntanglementManifold>
-		</costList>
-		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_SalvageBay">
-				<archo>true</archo>
-			</li>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>2000</basePowerConsumption>
-			</li>
-		</comps>
-		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
-		</placeWorkers>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-	</ThingDef-->
 	<!-- combat -->
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsinkAntiEntropy</defName>

@@ -44,7 +44,7 @@ namespace RimWorld
 					foundPillarSpot = true;
 					GenSpawn.Spawn(ThingDef.Named("ShipArchotechPillarD"), cell, map);
 					Lord theLord = LordMaker.MakeNewLord(Faction.OfInsects, new LordJob_DefendBase(Faction.OfInsects,cell), map);
-					for (int i = 0; i < 4; i++)
+					for (int i = 0; i < 6; i++)
 					{
 						Pawn spider = (Pawn)GenSpawn.Spawn(PawnGenerator.GeneratePawn(PawnKindDef.Named("Archospider"), Faction.OfInsects), cell, map);
 						theLord.AddPawn(spider);
@@ -58,7 +58,7 @@ namespace RimWorld
             }
         }
 
-		private void Dig(IntVec3 start, float dir, float width, List<IntVec3> group, Map map, bool closed, HashSet<IntVec3> visited = null)
+		private new void Dig(IntVec3 start, float dir, float width, List<IntVec3> group, Map map, bool closed, HashSet<IntVec3> visited = null)
 		{
 			HashSet<IntVec3> tmpGroupSet = new HashSet<IntVec3>();
 			FloatRange BranchedTunnelWidthOffset = new FloatRange(0.2f, 0.4f);
@@ -115,14 +115,14 @@ namespace RimWorld
 				if (cell.InBounds(map) && Rand.Chance(0.001f))
 				{
 					Hive hive = (Hive)GenSpawn.Spawn(ThingDefOf.Hive, cell, map);
-					hive.PawnSpawner.SpawnPawnsUntilPoints(200);
+					hive.PawnSpawner.SpawnPawnsUntilPoints(300);
 					hive.PawnSpawner.canSpawnPawns = false;
 					hive.GetComp<CompSpawnerHives>().canSpawnHives = false;
 				}
 			}
 		}
 
-		private void SetCaveAround(IntVec3 around, float tunnelWidth, Map map, HashSet<IntVec3> visited, out bool hitAnotherTunnel)
+		private new void SetCaveAround(IntVec3 around, float tunnelWidth, Map map, HashSet<IntVec3> visited, out bool hitAnotherTunnel)
 		{
 			hitAnotherTunnel = false;
 			int num = GenRadial.NumCellsInRadius(tunnelWidth / 2f);

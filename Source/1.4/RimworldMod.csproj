@@ -405,6 +405,7 @@
     <Compile Include="Thought\ThoughtWorker_SpaceThoughts.cs" />
     <Compile Include="Comp\TimedForcedExitShip.cs" />
     <Compile Include="Comp\UnfoldComponent.cs" />
+    <Compile Include="Verb\Command_VerbTargetMap.cs" />
     <Compile Include="Verb\Command_VerbTargetWreckMap.cs" />
     <Compile Include="Verb\Command_VerbTargetWreck.cs" />
     <Compile Include="Verb\Command_VerbTargetShip.cs" />

@@ -1,11 +1,6 @@
 ﻿using RimworldMod;
 using SaveOurShip2;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 using Verse;
 using Verse.Noise;
 
@@ -18,7 +13,7 @@ namespace RimWorld
             Map map = (Map)parms.target;
             if (map.GetComponent<ShipHeatMapComp>().InCombat)
                 return false;
-            if (map.listerBuildings.allBuildingsColonist.Any(x => x.def == ResourceBank.ThingDefOf.ShipSalvageBay))
+            if (map.listerBuildings.allBuildingsColonist.Any(t => t.TryGetComp<CompShipSalvageBay>() != null))
                 return true;
             return false;
         }

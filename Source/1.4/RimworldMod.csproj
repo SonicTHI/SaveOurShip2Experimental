@@ -96,6 +96,7 @@
     <Compile Include="ArchotechGiftDef.cs" />
     <Compile Include="Comp\CompProperties_SoShipLight.cs" />
     <Compile Include="Comp\CompSoShipLight.cs" />
+    <Compile Include="PlaceWorker\PlaceWorker_ShipBay.cs" />
     <Compile Include="Ships\PirateShip.cs" />
     <Compile Include="Ships\AttackableShip.cs" />
     <Compile Include="Building\Building_ArchotechPillar.cs" />

@@ -4,7 +4,7 @@ using Verse;
 
 namespace RimWorld
 {
-	public class PlaceWorker_InsideStarship : PlaceWorker
+	/*public class PlaceWorker_InsideStarship : PlaceWorker
 	{
 		public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{
@@ -36,6 +36,6 @@ namespace RimWorld
 			}
 			return new AcceptanceReport(TranslatorFormattedStringExtensions.Translate("MustPlaceInsideShip"));
 		}
-	}
+	}*/
 }
 

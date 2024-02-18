@@ -1133,7 +1133,7 @@ namespace SaveOurShip2
                             if (Rand.Chance(0.025f * skill + mapComp.MapThreat() / 400 - bounty / 40))
                             {
                                 //social + shipstr vs bounty for piracy dialog
-                                Find.WindowStack.Add(new Dialog_Pirate(__instance.Map.listerBuildings.allBuildingsColonist.Where(t => t.def == ResourceBank.ThingDefOf.ShipSalvageBay).Count(), __instance));
+                                Find.WindowStack.Add(new Dialog_Pirate(__instance));
                                 bounty += 4;
                             }
                             else
@@ -2693,7 +2693,7 @@ namespace SaveOurShip2
 		public static bool Prefix(Skyfaller __instance)
 		{
 			if (__instance.Position.GetThingList(__instance.Map).Any(t =>
-				t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || t.def == ResourceBank.ThingDefOf.ShipSalvageBay))
+				t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || t.TryGetComp<CompShipSalvageBay>() != null))
 			{
 				return false;
 			}
@@ -2759,9 +2759,9 @@ namespace SaveOurShip2
 		public static void Postfix(Map map, ref IntVec3 __result)
 		{
 			//find first salvagebay
-			Building b = map.listerBuildings.allBuildingsColonist.Where(x => x.def == ResourceBank.ThingDefOf.ShipSalvageBay).FirstOrDefault();
-			if (map.IsSpace() && b != null)
-				__result = b.Position;
+			Building bay = map.listerBuildings.allBuildingsColonist.FirstOrDefault(b => b.TryGetComp<CompShipSalvageBay>() != null);
+			if (map.IsSpace() && bay != null)
+				__result = bay.Position;
 		}
 	}
 
@@ -2792,8 +2792,8 @@ namespace SaveOurShip2
 		{
 			if (__instance.mapParent.Map.IsSpace())
 			{
-				IEnumerable<Thing> bays = __instance.mapParent.Map.listerThings.AllThings.Where(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || t.def == ResourceBank.ThingDefOf.ShipSalvageBay);
-				if (bays.Any())
+				IEnumerable<Thing> bays = __instance.mapParent.Map.listerBuildings.allBuildingsColonist.Where(b => b.def == ResourceBank.ThingDefOf.ShipShuttleBay || b.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || b.TryGetComp<CompShipSalvageBay>() != null);
+                if (bays.Any())
 				{
 					__result = bays.RandomElement().Position;
 				}

@@ -3,7 +3,6 @@ using SaveOurShip2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
@@ -28,29 +27,55 @@ namespace RimWorld
 
         public override void ProcessInput(Event ev) //td change to pass vec, change area attached
         {
-            Building b=null;
+            IntVec3 c = IntVec3.Invalid;
             base.ProcessInput(ev);
             SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
             Targeter targeter = Find.Targeter;
             TargetingParameters parms = new TargetingParameters();
-            parms.canTargetBuildings = true;
+            parms.canTargetLocations = true;
             Find.Targeter.BeginTargeting(parms, (Action<LocalTargetInfo>)delegate (LocalTargetInfo x)
             {
-                b = x.Cell.GetFirstBuilding(targetMap);
-            }, (Pawn)null, delegate { AfterTarget(b); });
+                c = x.Cell;
+            }, null, delegate { AfterTarget(c); });
         }
 
-        public void AfterTarget(Building b)
+        public void AfterTarget(IntVec3 c)
         {
-            if (b == null && IntVec3.Zero.GetTerrain(b.Map) != ResourceBank.TerrainDefOf.EmptySpace) //moon
+            if (c == IntVec3.Invalid || IntVec3.Zero.GetTerrain(targetMap) != ResourceBank.TerrainDefOf.EmptySpace) //moon
                 return;
-            HashSet<IntVec3> positions = ShipInteriorMod2.FindAreaAttached(b, true);
-            if (positions.Contains(position) || !positions.Any())
-                return;
+
+            var mapComp = targetMap.GetComponent<ShipHeatMapComp>();
+            int index = mapComp.ShipIndexOnVec(c);
+            HashSet<IntVec3> positions = null;
+            if (index == -1) //rock
+            {
+                positions = FindRocksAttached(c);
+                //Log.Message("SOS2: ".Colorize(Color.cyan) + targetMap + " found rocks attached: " + positions.Count);
+                if (!positions.Any())
+                    return;
+            }
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ShipSalvageAbandonConfirm"), delegate
             {
-                ShipInteriorMod2.RemoveShip(null, false, positions, targetMap);
+                ShipInteriorMod2.RemoveShipOrArea(targetMap, index, positions);
             }));
+        }
+        public HashSet<IntVec3> FindRocksAttached(IntVec3 root)
+        {
+            var cellsTodo = new HashSet<IntVec3> { root };
+            var cellsDone = new HashSet<IntVec3>();
+            var cellsFound = new HashSet<IntVec3>();
+            while (cellsTodo.Count > 0)
+            {
+                var current = cellsTodo.First();
+                cellsTodo.Remove(current);
+                cellsDone.Add(current);
+                if (current.GetThingList(targetMap).Any(t => t is Building b && b.def.building.isNaturalRock) || ShipInteriorMod2.IsRock(current.GetTerrain(targetMap)))
+                {
+                    cellsFound.Add(current);
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && targetMap.GetComponent<ShipHeatMapComp>().ShipIndexOnVec(v) == -1));
+                }
+            }
+            return cellsFound;
         }
     }
 }

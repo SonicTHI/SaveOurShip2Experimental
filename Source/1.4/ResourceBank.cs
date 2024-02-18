@@ -105,7 +105,6 @@ namespace SaveOurShip2
             public static ThingDef ShuttleFuelPods;
             public static ThingDef ShipShuttleBay;
 			public static ThingDef ShipShuttleBayLarge;
-			public static ThingDef ShipSalvageBay;
             public static ThingDef ShipConsoleScience;
             public static ThingDef Cryptonest;
             public static ThingDef CrittersleepCasket;

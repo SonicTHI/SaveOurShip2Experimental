@@ -337,7 +337,6 @@ namespace RimWorld
         public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
         public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
         public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
-        public int SalvBayCount => map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null).Count();
         public int MaxSalvageWeightOnMap()
         {
             int total = 0;

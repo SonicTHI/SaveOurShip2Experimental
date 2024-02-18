@@ -11,7 +11,7 @@ using Verse.Sound;
 
 namespace RimWorld
 {
-    class Dialog_SalvageShip : Window
+    /*class Dialog_SalvageShip : Window
     {
         private enum Tab
         {
@@ -302,5 +302,5 @@ namespace RimWorld
             ShipCombatManager.Salvage.Clear();
             ShipCombatManager.SalvageGeneric.Clear();
         }
-    }
+    }*/
 }

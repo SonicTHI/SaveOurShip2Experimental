@@ -2100,6 +2100,7 @@
 			<li Class="CompProperties_SoShipPart"/>
 		</comps>
 		<placeWorkers>
+			<li>PlaceWorker_ShipBay</li>
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -2148,6 +2149,7 @@
 			<li Class="CompProperties_SoShipPart"/>
 		</comps>
 		<placeWorkers>
+			<li>PlaceWorker_ShipBay</li>
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -2195,6 +2197,7 @@
 			<li Class="CompProperties_SalvageBay"/>
 		</comps>
 		<placeWorkers>
+			<li>PlaceWorker_ShipBay</li>
 			<li>PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -2251,6 +2254,7 @@
 		</comps>
 		<placeWorkers>
 			<li>PlaceWorker_OnShipHull</li>
+			<li>PlaceWorker_ShipBay</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>

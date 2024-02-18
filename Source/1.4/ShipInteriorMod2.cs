@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V98";
+        public static readonly string SOS2EXPversion = "V98f1";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -2307,7 +2307,7 @@ namespace SaveOurShip2
 
 			GameVictoryUtility.ShowCredits(GameVictoryUtility.MakeEndCredits("GameOverShipPlanetLeaveIntro".Translate(), "GameOverShipPlanetLeaveEnding".Translate(), stringBuilder.ToString(), "GameOverColonistsEscaped", null), null, false, 5f);
 
-			RemoveShip(core, true);
+			RemoveShipOrArea(map, core.ShipIndex);
 		}
         public static void SaveShipToFile(Building_ShipBridge core)
         {
@@ -2323,7 +2323,7 @@ namespace SaveOurShip2
             foreach (Pawn p in toKill)
                 p.Kill(null);
 
-            TravelEffects(core.Map, core);
+            TravelEffects(core);
             string folder = Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
@@ -2349,7 +2349,7 @@ namespace SaveOurShip2
             dialog_NodeTree.closeOnCancel = true;
             Find.WindowStack.Add(dialog_NodeTree);
         }
-        public static void TravelEffects(Map shipMap, Building_ShipBridge bridge)
+        public static void TravelEffects(Building_ShipBridge bridge)
         {
             WorldComp.renderedThatAlready = false;
 
@@ -2369,24 +2369,19 @@ namespace SaveOurShip2
                 }
             }
         }
-		public static void RemoveShip(Building core, bool planetTravel = false, HashSet<IntVec3> area = null, Map map = null)
+		public static void RemoveShipOrArea(Map map, int index = -1, HashSet<IntVec3> area = null)
         {
-			if (core != null)
-            {
-                map = core.Map;
-            }
             var mapComp = map.GetComponent<ShipHeatMapComp>();
-			int index = -1;
-            if (core != null)
+            if (index != -1)
             {
-                index = mapComp.ShipIndexOnVec(core.Position);
-                if (index != -1)
-                {
-                    var ship = mapComp.ShipsOnMapNew[index];
-                    area = ship.Area;
-                    mapComp.RemoveShipFromCache(index);
-                }
+                var ship = mapComp.ShipsOnMapNew[index];
+                area = ship.Area;
+                mapComp.RemoveShipFromCache(index);
             }
+            else if (!area.Any())
+			{
+				return;
+			}
             AirlockBugFlag = true;
             List<Thing> things = new List<Thing>();
             List<Zone> zones = new List<Zone>();
@@ -2403,7 +2398,7 @@ namespace SaveOurShip2
 			{
 				try
 				{
-					if (!planetTravel && t is Pawn)
+					if (t is Pawn)
 						t.Kill();
 					if (t.def.destroyable && !t.Destroyed)
 					{
@@ -2470,30 +2465,6 @@ namespace SaveOurShip2
 				}
 			}
 			map.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
-        }
-        public static HashSet<IntVec3> FindAreaAttached(Building root, bool includeRock = false)
-        {
-            if (root == null || root.Destroyed)
-                return new HashSet<IntVec3>();
-
-            var map = root.Map;
-            var cellsTodo = new HashSet<IntVec3>();
-            var cellsDone = new HashSet<IntVec3>();
-            var cellsFound = new HashSet<IntVec3>();
-            cellsTodo.AddRange(GenAdj.CellsOccupiedBy(root));
-            cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(root));
-            while (cellsTodo.Count > 0)
-            {
-                var current = cellsTodo.First();
-                cellsTodo.Remove(current);
-                cellsDone.Add(current);
-                if (current.GetThingList(map).Any(t => t is Building b && (b.def.building.shipPart || (includeRock && b.def.building.isNaturalRock))) || (includeRock && IsRock(current.GetTerrain(map))))
-                {
-                    cellsFound.Add(current);
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v)));
-                }
-            }
-            return cellsFound;
         }
         public static bool CompatibleWithShipLoad(ScenPart item)
 		{

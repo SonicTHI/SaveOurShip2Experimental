@@ -123,7 +123,7 @@ namespace RimWorld
 				List<CompTransporter> transportersInGroup = this.TransportersInGroup;
 				for (int i = 0; i < transportersInGroup.Count; i++)
 				{
-					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || (t.def == ResourceBank.ThingDefOf.ShipSalvageBay && transportersInGroup.All(tr => tr.parent.def == ResourceBank.ThingDefOf.PersonalShuttle)))) //td change to proper check per shuttle pos and type
+					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || (t.TryGetComp<CompShipSalvageBay>() != null && transportersInGroup.All(tr => tr.parent.def == ResourceBank.ThingDefOf.PersonalShuttle)))) //td change to proper check per shuttle pos and type
 					{
 						return true;
 					}

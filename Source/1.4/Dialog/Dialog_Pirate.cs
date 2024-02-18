@@ -84,10 +84,10 @@ namespace RimWorld
             }
         }
 
-        public Dialog_Pirate(int numSalvageBays, TradeShip tradeShip)
+        public Dialog_Pirate(TradeShip tradeShip)
         {
-            this.numSalvageBays = numSalvageBays;
             this.map = tradeShip.Map;
+            this.numSalvageBays = map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null).Count();
             this.tradeShip = tradeShip;
             transporters = new List<ThingOwner>();
             for (int i = 0; i < numSalvageBays; i++)
@@ -271,7 +271,7 @@ namespace RimWorld
         public override void PostClose()
         {
             base.PostClose();
-            Thing[] bays = map.spawnedThings.Where(t => t.def == ResourceBank.ThingDefOf.ShipSalvageBay).ToArray();
+            Thing[] bays = map.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompShipSalvageBay>() != null).ToArray();
             for (int i = 0; i < numSalvageBays; i++)
             {
                 ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();

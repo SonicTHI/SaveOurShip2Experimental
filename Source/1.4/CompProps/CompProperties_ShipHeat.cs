@@ -18,6 +18,7 @@ namespace RimWorld
         public float projectileSpeed = 1;
         public bool pointDefense = false;
         public bool groundDefense = false;
+        public bool showOnRoof = false;
         public ThingDef groundProjectile;
         public float groundMissRadius = 0;
         public float heatPerSecond = 0;

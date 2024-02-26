@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RimworldMod;
+using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -19,26 +21,51 @@ namespace RimWorld
             if (parent.IsHashIntervalTick(60))
             {
                 Pawn myPawn = parent as Pawn;
+                if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore")) //no archo before spore
+                {
+                    myPawn.Destroy(DestroyMode.Vanish);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSuddenDeath"), parent, MessageTypeDefOf.NeutralEvent);
+                    return;
+                }
                 if (myPawn.needs.food.CurLevel < myPawn.needs.food.MaxLevel)
                     myPawn.needs.food.CurLevel += 0.01f;
-			}
-			if (parent.Spawned&&((CompProperties_Archolife)props).purr && parent.IsHashIntervalTick(600))
-			{
-				foreach (Pawn p in parent.Map.mapPawns.FreeColonistsAndPrisonersSpawned)
-				{
-					if (p.Position.DistanceTo(parent.Position) < 15)
-						p.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDef.Named("PsychicPurr"));
-				}
-			}
-			if (parent.IsHashIntervalTick(60000))
-            {
-                Pawn myPawn = parent as Pawn;
-                if (myPawn.health.hediffSet.hediffs.Where((Hediff hd) => hd.IsPermanent() || hd.def.chronic || hd is Hediff_MissingPart).TryRandomElement(out Hediff result))
+
+                if (parent.IsHashIntervalTick(600)) //no archo without spore, purr
                 {
-                    HealthUtility.Cure(result);
-                    if (PawnUtility.ShouldSendNotificationAbout(myPawn))
+                    bool hasSpore = false;
+                    foreach (Map m in Find.Maps)
                     {
-                        Messages.Message("MessagePermanentWoundHealed".Translate(parent.LabelCap, myPawn.LabelShort, result.Label, myPawn.Named("PAWN")), myPawn, MessageTypeDefOf.PositiveEvent);
+                        if (m.listerBuildings.allBuildingsColonist.Any(b => b.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
+                        {
+                            hasSpore = true;
+                            break;
+                        }
+                    }
+                    if (!hasSpore)
+                    {
+						myPawn.Kill(new DamageInfo(DamageDefOf.Deterioration, 100f));
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSporeDeath", parent), parent, MessageTypeDefOf.NegativeEvent);
+                        return;
+                    }
+
+                    if (parent.Spawned && ((CompProperties_Archolife)props).purr)
+                    {
+                        foreach (Pawn p in parent.Map.mapPawns.FreeColonistsAndPrisonersSpawned)
+                        {
+                            if (p.Position.DistanceTo(parent.Position) < 15)
+                                p.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDef.Named("PsychicPurr"));
+                        }
+                    }
+                }
+                if (parent.IsHashIntervalTick(60000))
+                {
+                    if (myPawn.health.hediffSet.hediffs.Where((Hediff hd) => hd.IsPermanent() || hd.def.chronic || hd is Hediff_MissingPart).TryRandomElement(out Hediff result))
+                    {
+                        HealthUtility.Cure(result);
+                        if (PawnUtility.ShouldSendNotificationAbout(myPawn))
+                        {
+                            Messages.Message("MessagePermanentWoundHealed".Translate(parent.LabelCap, myPawn.LabelShort, result.Label, myPawn.Named("PAWN")), myPawn, MessageTypeDefOf.PositiveEvent);
+                        }
                     }
                 }
             }

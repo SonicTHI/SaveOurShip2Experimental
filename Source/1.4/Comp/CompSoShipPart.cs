@@ -331,7 +331,8 @@ namespace RimWorld
             {
                 foreach (Thing t in parent.Position.GetThingList(parent.Map).Where(t => t is Building))
                 {
-                    if (t.TryGetComp<CompShipHeat>() != null && t.def.altitudeLayer == AltitudeLayer.WorldClipper)
+                    var heatComp = t.TryGetComp<CompShipHeat>();
+                    if (heatComp != null && heatComp.Props.showOnRoof)// t.def.altitudeLayer == AltitudeLayer.WorldClipper)
                     {
                         return;
                     }

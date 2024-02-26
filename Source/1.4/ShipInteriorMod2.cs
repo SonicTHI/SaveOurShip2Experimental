@@ -15,6 +15,7 @@ using System.IO;
 using static SaveOurShip2.ModSettings_SoS;
 using Verse.Noise;
 using Mono.Cecil.Cil;
+using System.Net.NetworkInformation;
 
 namespace SaveOurShip2
 {
@@ -66,6 +67,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
             Scribe_Values.Look(ref persistShipUI, "persistShipUI", false);
+            Scribe_Values.Look(ref showVersionUI, "showVersionUI", true);
 
             Scribe_Values.Look(ref minTravelTime, "minTravelTime", 5);
 			Scribe_Values.Look(ref maxTravelTime, "maxTravelTime", 100);
@@ -84,7 +86,8 @@ namespace SaveOurShip2
 			//useVacuumPathfinding = true,
 			renderPlanet = false,
 			useSplashScreen = true,
-			persistShipUI = false;
+			persistShipUI = false,
+			showVersionUI = true;
 		public static int
 			minTravelTime = 5,
 			maxTravelTime = 100,
@@ -97,7 +100,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V98f1";
+        public static readonly string SOS2EXPversion = "V98f2";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -147,8 +150,8 @@ namespace SaveOurShip2
 
 			options.Label("SoS.Settings.FleetChance".Translate("0", "1", "0.3", Math.Round(fleetChance, 1).ToString()), -1f, "SoS.Settings.FleetChance.Desc".Translate());
 			fleetChance = options.Slider((float)fleetChance, 0f, 1f);
-
 			options.Gap();
+
 			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
 			//options.CheckboxLabeled("SoS.Settings.UseVacuumPathfinding".Translate(), ref useVacuumPathfinding, "SoS.Settings.UseVacuumPathfinding.Desc".Translate());
 			options.Gap();
@@ -162,16 +165,17 @@ namespace SaveOurShip2
 			options.CheckboxLabeled("SoS.Settings.RenderPlanet".Translate(), ref renderPlanet, "SoS.Settings.RenderPlanet.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.UseSplashScreen".Translate(), ref useSplashScreen, "SoS.Settings.UseSplashScreens.Desc".Translate());
 			options.Gap();
+
             options.CheckboxLabeled("SoS.Settings.PersistShipUI".Translate(), ref persistShipUI, "SoS.Settings.PersistShipUI.Desc".Translate());
             options.Label("SoS.Settings.OffsetUIx".Translate(), -1f, "SoS.Settings.OffsetUIx.Desc".Translate());
 			string bufferX = offsetUIx.ToString();
 			options.TextFieldNumeric<int>(ref offsetUIx, ref bufferX, int.MinValue, int.MaxValue);
-
 			options.Label("SoS.Settings.OffsetUIy".Translate(), -1f, "SoS.Settings.OffsetUIy.Desc".Translate());
 			string bufferY = offsetUIy.ToString();
 			options.TextFieldNumeric<int>(ref offsetUIy, ref bufferY, int.MinValue, int.MaxValue);
 
-			options.End();
+            options.CheckboxLabeled("SoS.Settings.ShowVersionUI".Translate(), ref showVersionUI, "SoS.Settings.ShowVersionUI.Desc".Translate());
+            options.End();
 			base.DoSettingsWindowContents(inRect);
 		}
 		public override string SettingsCategory()
@@ -806,8 +810,14 @@ namespace SaveOurShip2
                 {
                     IntVec3 adjPos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
                     if (shape.shapeOrDef.Equals("PawnSpawnerGeneric"))
-					{
-						PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.stuff), shape.faction ?? fac);
+                    {
+                        if (shape.faction != null) //faction override
+                        {
+                            var facOver = Find.FactionManager.FirstFactionOfDef(FactionDef.Named(shape.faction));
+                            if (facOver != null)
+                                fac = facOver;
+                        }
+                        PawnGenerationRequest req = new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed(shape.stuff), fac);
 						Pawn pawn = PawnGenerator.GeneratePawn(req);
 						lord?.AddPawn(pawn);
                         GenSpawn.Spawn(pawn, adjPos, map);
@@ -1107,7 +1117,7 @@ namespace SaveOurShip2
 								thing.SetFactionDirect(Faction.OfInsects);
 							else
 								thing.SetFactionDirect(fac);
-						}
+                        }
 						if (thing is Building_ShipTurret turret)
 							turret.burstCooldownTicksLeft = 300;
 						if (thing.TryGetComp<CompColorable>() != null)

@@ -89,13 +89,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions/PawnExtensions.cs" />
     <Compile Include="Alert_ArchotechSporeMoodLow.cs" />
     <Compile Include="Alert_MechanitesInHomeArea.cs" />
     <Compile Include="ApparelHolographic.cs" />
     <Compile Include="ArchotechGiftDef.cs" />
     <Compile Include="Comp\CompProperties_SoShipLight.cs" />
     <Compile Include="Comp\CompSoShipLight.cs" />
+    <Compile Include="Extensions\PawnExtensions.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_ShipBay.cs" />
     <Compile Include="Ships\PirateShip.cs" />
     <Compile Include="Ships\AttackableShip.cs" />
@@ -239,7 +239,7 @@
     <Compile Include="Obsolete\Dialog_SalvageShip.cs" />
     <Compile Include="EnemyShipDef.cs" />
     <Compile Include="EnemyShipPartDef.cs" />
-    <Compile Include="Comp\EnvironmentCachingUtility.cs" />
+    <Compile Include="Extensions\EnvironmentCachingUtility.cs" />
     <Compile Include="MapGen\GenStep_EverythingIsRocks.cs" />
     <Compile Include="MapGen\GenStep_HackableSatellite.cs" />
     <Compile Include="MapGen\GenStep_BlackBoxMission.cs" />

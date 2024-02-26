@@ -306,6 +306,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatCapacity>200</heatCapacity>
 				<heatVent>8</heatVent>
 				<heatLoss>2</heatLoss>
@@ -354,6 +355,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatSink</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatCapacity>1000</heatCapacity>
 				<heatVent>32</heatVent>
 				<heatLoss>6</heatLoss>
@@ -469,6 +471,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatCapacity>200</heatCapacity>
 				<heatLoss>1</heatLoss>
 				<heatPurge>5</heatPurge>
@@ -525,6 +528,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeatPurge</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatCapacity>1000</heatCapacity>
 				<heatLoss>3</heatLoss>
 				<heatPurge>25</heatPurge>
@@ -566,6 +570,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>2</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>50</optRange>
@@ -743,6 +748,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>4</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>50</optRange>
@@ -897,6 +903,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>12</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>50</optRange>
@@ -1054,6 +1061,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>10</heatPerPulse>
 				<energyToFire>80</energyToFire>
 				<optRange>50</optRange>
@@ -1233,6 +1241,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>30</heatPerPulse>
 				<energyToFire>240</energyToFire>
 				<optRange>50</optRange>
@@ -1349,6 +1358,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>15</heatPerPulse>
 				<energyToFire>50</energyToFire>
 				<optRange>100</optRange>
@@ -1514,6 +1524,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>45</heatPerPulse>
 				<energyToFire>150</energyToFire>
 				<optRange>100</optRange>
@@ -1648,6 +1659,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>5</heatPerPulse>
 				<energyToFire>60</energyToFire>
 				<optRange>150</optRange>
@@ -1801,6 +1813,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>15</heatPerPulse>
 				<energyToFire>180</energyToFire>
 				<optRange>150</optRange>
@@ -2464,6 +2477,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>
@@ -2500,6 +2514,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>
@@ -2536,6 +2551,7 @@
 		<comps>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
+				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
 				<optRange>300</optRange>

@@ -328,8 +328,35 @@ namespace SaveOurShip2
 		}
 	}
 
-	//biome
-	[HarmonyPatch(typeof(MapDrawer), "DrawMapMesh", null)]
+    [HarmonyPatch(typeof(LetterStack), "LettersOnGUI")] //version info
+    public static class ShipCKWarning
+    {
+        [HarmonyPrefix]
+        public static bool DrawWarning(ref float baseY)
+        {
+			if (!ModSettings_SoS.showVersionUI || !Find.CurrentMap.IsSpace())
+				return true;
+
+            float num = (float)UI.screenWidth - 200f;
+            Rect rect = new Rect(num, baseY - 16f, 193f, 26f);
+            Text.Anchor = TextAnchor.MiddleRight;
+            string text = "SOS2EXP " + ShipInteriorMod2.SOS2EXPversion;
+            float x = Text.CalcSize(text).x;
+            Rect rect2 = new Rect(rect.xMax - x, rect.y, x, rect.height);
+            if (Mouse.IsOver(rect2))
+            {
+                Widgets.DrawHighlight(rect2);
+            }
+            TooltipHandler.TipRegionByKey(rect2, "SOS2EXP " + ShipInteriorMod2.SOS2EXPversion + "\nThis tag can be disabled in mod options.");
+            Widgets.Label(rect2, text);
+            Text.Anchor = TextAnchor.UpperLeft;
+            baseY -= 26f;
+            return true;
+        }
+    }
+
+    //biome
+    [HarmonyPatch(typeof(MapDrawer), "DrawMapMesh", null)]
 	public static class RenderPlanetBehindMap
 	{
 		public const float altitude = 1100f;

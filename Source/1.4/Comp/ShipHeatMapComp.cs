@@ -8,8 +8,6 @@ using RimWorld.Planet;
 using UnityEngine;
 using Verse.AI.Group;
 using RimworldMod;
-using System.Reflection;
-using Verse.Noise;
 
 namespace RimWorld
 {
@@ -1120,7 +1118,7 @@ namespace RimWorld
                     {
                         //True, totalThreat:1, TargetMapComp.totalThreat:1, TurretNum:0
                         //retreat
-                        if (Retreating || totalThreat / TargetMapComp.totalThreat < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
+                        if (Retreating || totalThreat / (TargetMapComp.totalThreat * 0.9f * Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.3f, 3f)) < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
                         {
                             Heading = -1;
                             Retreating = true;
@@ -1224,6 +1222,7 @@ namespace RimWorld
                                 }
                             }
                         }
+                        startedBoarderLoad = true;
                     }
                     if (startedBoarderLoad && !launchedBoarders && !Retreating) //td change per ship?
                     {

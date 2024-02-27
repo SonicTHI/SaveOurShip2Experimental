@@ -32,20 +32,23 @@ namespace RimWorld
 
                 if (parent.IsHashIntervalTick(600)) //no archo without spore, purr
                 {
-                    bool hasSpore = false;
-                    foreach (Map m in Find.Maps)
+					if (parent.Faction == Faction.OfPlayer)
                     {
-                        if (m.listerBuildings.allBuildingsColonist.Any(b => b.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
+                        bool hasSpore = false;
+                        foreach (Map m in Find.Maps)
                         {
-                            hasSpore = true;
-                            break;
+                            if (m.listerBuildings.allBuildingsColonist.Any(b => b.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
+                            {
+                                hasSpore = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!hasSpore)
-                    {
-						myPawn.Kill(new DamageInfo(DamageDefOf.Deterioration, 100f));
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSporeDeath", parent), parent, MessageTypeDefOf.NegativeEvent);
-                        return;
+                        if (!hasSpore)
+                        {
+                            myPawn.Kill(new DamageInfo(DamageDefOf.Deterioration, 100f));
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSporeDeath", parent), parent, MessageTypeDefOf.NegativeEvent);
+                            return;
+                        }
                     }
 
                     if (parent.Spawned && ((CompProperties_Archolife)props).purr)

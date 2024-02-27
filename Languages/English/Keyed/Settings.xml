@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<SoS.Settings.ShowVersionUI>SOS2EXP {0}</SoS.Settings.ShowVersionUI>
+	<SoS.Settings.ShowVersionUI.Desc>If checked, will show SOS2 version on UI on maps in space.</SoS.Settings.ShowVersionUI.Desc>
+	
 	<SoS.Settings.DifficultySoS>Difficulty factor (Min: {0} Max: {1} Default: {2} Current: {3})</SoS.Settings.DifficultySoS>
 	<SoS.Settings.DifficultySoS.Desc>Affects the size and strength of enemy ships.</SoS.Settings.DifficultySoS.Desc>
 	
@@ -38,7 +41,4 @@
 	
 	<SoS.Settings.OffsetUIy>Ship UI offset Y</SoS.Settings.OffsetUIy>
 	<SoS.Settings.OffsetUIy.Desc>UI offset vertical from bellow the pawn bar.</SoS.Settings.OffsetUIy.Desc>
-	
-	<SoS.Settings.PersistShipUI>Show version on UI</SoS.Settings.PersistShipUI>
-	<SoS.Settings.PersistShipUI.Desc>If checked, will show SOS2 version on UI on maps in space.</SoS.Settings.PersistShipUI.Desc>
 </LanguageData>

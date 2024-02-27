@@ -29,12 +29,12 @@ namespace RimWorld
 
 		public bool OptimizeMatter = true;
 
-		public override void PostExposeData()
+        public override void PostExposeData()
 		{
 			Scribe_Values.Look(ref age, "age", 0);
 			Scribe_Values.Look(ref ticksToConversion, "ticksToConversion", 0);
 			Scribe_Values.Look(ref OptimizeMatter, "optimize", true);
-		}
+        }
 
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
@@ -89,19 +89,23 @@ namespace RimWorld
 					ticksToConversion = 1;
 					num3 = GenMath.RoundRandom(1f / num2);
 				}
-				for (int i = 0; i < num3; i++)
+				bool anyConverted = false;
+                for (int i = 0; i < num3; i++)
 				{
-					ConvertHullTile(currentRadius);
-				}
-			}
+					if (ConvertHullTile(currentRadius))
+                        anyConverted = true;
+                }
+				if (!anyConverted)
+                    OptimizeMatter = false;
+            }
 		}
 
-		private void ConvertHullTile(float radius)
+		private bool ConvertHullTile(float radius)
         {
 			IntVec3 c = parent.Position + (Rand.InsideUnitCircleVec3 * radius).ToIntVec3();
 			if (!c.InBounds(parent.Map))
 			{
-				return;
+				return false;
 			}
 			List<Thing> toDestroy = new List<Thing>();
 			List<Thing> toSpawn = new List<Thing>();
@@ -132,8 +136,10 @@ namespace RimWorld
 				}
 				if (terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipMech && terrain!= ResourceBank.TerrainDefOf.ShipWreckageTerrain && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam)
 					parent.Map.terrainGrid.SetTerrain(c, terrain);
-			}
-		}
+                return true;
+            }
+            return false;
+        }
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {

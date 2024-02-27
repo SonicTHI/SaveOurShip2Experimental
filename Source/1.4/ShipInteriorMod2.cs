@@ -100,7 +100,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V98f2";
+        public static readonly string SOS2EXPversion = "V98f3";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -138,8 +138,10 @@ namespace SaveOurShip2
 		{
 			Listing_Standard options = new Listing_Standard();
 			options.Begin(inRect);
+            options.CheckboxLabeled("SoS.Settings.ShowVersionUI".Translate(SOS2EXPversion), ref showVersionUI, "SoS.Settings.ShowVersionUI.Desc".Translate());
+            options.Gap();
 
-			options.Label("SoS.Settings.DifficultySoS".Translate("0.5", "10", "1", Math.Round(difficultySoS, 1).ToString()), -1f, "SoS.Settings.DifficultySoS.Desc".Translate());
+            options.Label("SoS.Settings.DifficultySoS".Translate("0.5", "10", "1", Math.Round(difficultySoS, 1).ToString()), -1f, "SoS.Settings.DifficultySoS.Desc".Translate());
 			difficultySoS = options.Slider((float)difficultySoS, 0.5f, 10f);
 
 			options.Label("SoS.Settings.FrequencySoS".Translate("0", "10", "1", Math.Round(frequencySoS, 1).ToString()), -1f, "SoS.Settings.FrequencySoS.Desc".Translate());
@@ -174,7 +176,6 @@ namespace SaveOurShip2
 			string bufferY = offsetUIy.ToString();
 			options.TextFieldNumeric<int>(ref offsetUIy, ref bufferY, int.MinValue, int.MaxValue);
 
-            options.CheckboxLabeled("SoS.Settings.ShowVersionUI".Translate(), ref showVersionUI, "SoS.Settings.ShowVersionUI.Desc".Translate());
             options.End();
 			base.DoSettingsWindowContents(inRect);
 		}

@@ -18,8 +18,8 @@ using RimworldMod;
 
 namespace SaveOurShip2
 {
-	//GUI
-	[HarmonyPatch(typeof(ColonistBar), "ColonistBarOnGUI")]
+    //GUI
+    [HarmonyPatch(typeof(ColonistBar), "ColonistBarOnGUI")]
 	public static class ShipCombatOnGUI
 	{
 		public static void Postfix(ColonistBar __instance)
@@ -355,6 +355,19 @@ namespace SaveOurShip2
         }
     }
 
+    [HarmonyPatch(typeof(Designator_Install), "DesignateSingleCell")] //makes selector place the bp on click
+    public static class ProcessInputShipMove
+    {
+        public static void Postfix(Designator_Install __instance)
+        {
+            if (__instance.PlacingDef == ResourceBank.ThingDefOf.ShipMoveBlueprint)
+            {
+                Find.Selector.ClearSelection();
+				if (Find.TickManager.Paused)
+                    Find.TickManager.TogglePaused();
+            }
+        }
+    }
     //biome
     [HarmonyPatch(typeof(MapDrawer), "DrawMapMesh", null)]
 	public static class RenderPlanetBehindMap

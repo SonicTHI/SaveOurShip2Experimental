@@ -29,13 +29,15 @@ namespace RimWorld
 
         static FieldInfo mapField = typeof(TravelingTransportPods).GetField("initialTile", BindingFlags.Instance | BindingFlags.NonPublic);
 
-        public bool IsShip => this.def == ResourceBank.WorldObjectDefOf.ShipEnemy || this.def == ResourceBank.WorldObjectDefOf.WreckSpace;
+        ShipHeatMapComp mapComp => Map.GetComponent<ShipHeatMapComp>();
+
+        public bool IsShip => def == ResourceBank.WorldObjectDefOf.ShipEnemy || def == ResourceBank.WorldObjectDefOf.WreckSpace;
 
         public override Vector3 DrawPos
         {
             get
             {
-                if(radius==0)
+                if (radius == 0)
                 {
                     radius = 150f;
                     theta = -3;
@@ -71,13 +73,13 @@ namespace RimWorld
 		{
 			base.Tick();
             //move ship to next pos if player owned, on raretick, not in combat or encounter or durring shuttle use
-            if (startMove && Find.TickManager.TicksGame % 60 == 0 && this.def.canBePlayerHome && !this.Map.GetComponent<ShipHeatMapComp>().InCombat)
+            if (startMove && Find.TickManager.TicksGame % 60 == 0 && def.canBePlayerHome && !mapComp.InCombat)
             {
                 preventMove = false;
                 foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
                 {
                     int initialTile = (int)mapField.GetValue(obj);
-                    if (initialTile == this.Tile || obj.destinationTile == this.Tile)
+                    if (initialTile == Tile || obj.destinationTile == Tile)
                     {
                         preventMove = true;
                         break;
@@ -124,7 +126,6 @@ namespace RimWorld
             }
             if (this.HasMap)
             {
-                var mapComp = this.Map.GetComponent<ShipHeatMapComp>();
                 yield return new Command_Action
                 {
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandShowMap"),
@@ -293,7 +294,6 @@ namespace RimWorld
 
         void Abandon(WorldObjectOrbitingShip ship)
         {
-            var mapComp = Map.GetComponent<ShipHeatMapComp>();
             if (mapComp.InCombat)
                 mapComp.EndBattle(Map, false);
             if (Map.mapPawns.AnyColonistSpawned)
@@ -325,7 +325,6 @@ namespace RimWorld
 
         public override bool ShouldRemoveMapNow(out bool alsoRemoveWorldObject)
         {
-            var mapComp = Map.GetComponent<ShipHeatMapComp>();
             if (mapComp.BurnUpSet)
             {
                 //td recheck all of this after VF, generally pods need origin to exist till they land

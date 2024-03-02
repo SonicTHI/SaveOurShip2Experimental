@@ -20,13 +20,7 @@
             }
 
             Pawn wearer = comp.Wearer;
-            GenExplosion.DoExplosion(wearer.Position,
-                                     wearer.Map,
-                                     1,
-                                     DamageDefOf.Smoke,
-                                     null,
-                                     postExplosionSpawnChance: 1.0f,
-                                     screenShakeFactor: 0.0f);
+            GenExplosion.DoExplosion(wearer.Position, wearer.Map, 1, DamageDefOf.Smoke,  null, postExplosionSpawnChance: 1.0f, screenShakeFactor: 0.0f);
             comp.UsedOnce();
             wearer.health.AddHediff(ResourceBank.HediffDefOf.SpaceBeltBubbleHediff);
         }

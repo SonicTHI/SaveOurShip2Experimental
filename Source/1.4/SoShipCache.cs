@@ -40,6 +40,7 @@ namespace RimWorld
         public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
         public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
         public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
+        public List<Pawn> PawnsOnShip => Map.mapPawns.AllPawns.Where(p => Area.Contains(p.Position)).ToList();
         private Map map;
         public Map Map
         {
@@ -344,9 +345,7 @@ namespace RimWorld
                 Find.Selector.Deselect(ob);
             Current.Game.CurrentMap = targetMap;
             Find.Selector.Select(fakeMover);
-            if (Find.TickManager.Paused)
-                Find.TickManager.TogglePaused();
-            InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
+            InstallationDesignatorDatabase.DesignatorFor(ResourceBank.ThingDefOf.ShipMoveBlueprint).ProcessInput(null);
         }
         public IntVec3 LowestCorner(byte rotb, Map map)
         {
@@ -408,89 +407,6 @@ namespace RimWorld
                 }
             }
             return cells;
-        }
-
-        public List<Pawn> PawnsOnShip => Map.mapPawns.AllPawns.Where(p => Area.Contains(p.Position)).ToList();
-        //dep
-        public float EnginesOn() //dep
-        {
-            if (IsStuck)
-                return 0;
-            float enginePower = 0;
-            foreach (var engine in Engines)
-            {
-                if (engine.CanFire(new Rot4(mapComp.EngineRot)))
-                {
-                    if (engine.OnOld())
-                    {
-                        enginePower += engine.Thrust;
-                    }
-                    else
-                        engine.Off();
-                }
-                else
-                    engine.Off();
-            }
-            return enginePower;
-        }
-        public bool ConsumeFuel(bool fromSpace, bool toSpace)
-        {
-            float fuelNeeded = MassActual;
-            float energyNeeded = 0;
-            float fuelStored = 0f;
-            float normalThrust = 0;
-            float energyThrust = 0f;
-            foreach (CompEngineTrail engine in Engines)
-            {
-                if (engine.Props.energy || engine.Props.reactionless) //td add energy drain
-                {
-
-                    energyThrust += engine.Thrust;
-                }
-                else if ((fromSpace && toSpace) || (engine.Props.takeOff && (fromSpace || toSpace)))
-                {
-                    //take fuel from any engine in space, when landing or taking off only from capable engines
-                    fuelStored += engine.refuelComp.Fuel;
-                    normalThrust += engine.Thrust;
-                    if (engine.PodFueled)
-                    {
-                        fuelStored += engine.refuelComp.Fuel;
-                        if (ModsConfig.BiotechActive && !fromSpace)
-                        {
-                            foreach (IntVec3 v in engine.ExhaustArea)
-                                v.Pollute(map, true);
-                        }
-                    }
-                }
-            }
-
-            if (fromSpace) //reduce fuel need, energy helps % wise of thrust
-            {
-                if (toSpace) //space map 1%
-                {
-                    fuelNeeded *= 0.01f;
-                    energyNeeded = fuelNeeded * energyThrust / (normalThrust + energyThrust);
-                }
-                else //to ground 10%
-                    fuelNeeded *= 0.1f;
-
-                fuelNeeded *= normalThrust / (normalThrust + energyThrust);
-            }
-
-            if (fuelNeeded > fuelStored)
-                return false;
-            foreach (CompEngineTrail engine in Engines.Where(e => !e.Props.energy && ((fromSpace && toSpace) || (e.Props.takeOff && (fromSpace || toSpace)))))
-            {
-                engine.refuelComp.ConsumeFuel(fuelNeeded * engine.refuelComp.Fuel / fuelStored);
-            }
-            return true;
-        }
-        public void AllOff()
-        {
-            EnginesOff();
-            var heatnNet = Core.TryGetComp<CompShipHeat>().myNet;
-            heatnNet.ShieldsOff();
-            heatnNet.TurretsOff();
         }
         //AI
         public void PurgeCheck()

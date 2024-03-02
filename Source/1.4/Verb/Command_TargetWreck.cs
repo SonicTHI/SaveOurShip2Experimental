@@ -10,24 +10,13 @@ using Verse.Sound;
 
 namespace RimWorld
 {
-    public class Command_VerbTargetWreckMap : Command
+    public class Command_TargetWreck : Command
     {
         public Building salvageBay;
         public int salvageBayNum;
         public byte rotb = 0;
         public Map sourceMap;
         public Map targetMap;
-        
-        public override void MergeWith(Gizmo other)
-        {
-            /*base.MergeWith(other);
-            Command_VerbTargetWreck command_VerbTargetShip = other as Command_VerbTargetWreck;
-            if (command_VerbTargetShip == null)
-            {
-                Log.ErrorOnce("Tried to merge Command_VerbTarget with unexpected type", 73406263);
-                return;
-            }*/
-        }
 
         public override void ProcessInput(Event ev)
         {
@@ -42,7 +31,7 @@ namespace RimWorld
             Find.Targeter.BeginTargeting(parms, (Action<LocalTargetInfo>)delegate (LocalTargetInfo x)
             {
                 b = x.Cell.GetFirstBuilding(targetMap);
-            }, (Pawn)null, delegate { AfterTarget(b); });
+            }, null, delegate { AfterTarget(b); });
         }
 
         public void AfterTarget(Building b)
@@ -147,9 +136,7 @@ namespace RimWorld
                 Find.Selector.Deselect(ob);
             Current.Game.CurrentMap = targetMap;
             Find.Selector.Select(fakeMover);
-            if (Find.TickManager.Paused)
-                Find.TickManager.TogglePaused();
-            InstallationDesignatorDatabase.DesignatorFor(ThingDef.Named("ShipMoveBlueprint")).ProcessInput(null);
+            InstallationDesignatorDatabase.DesignatorFor(ResourceBank.ThingDefOf.ShipMoveBlueprint).ProcessInput(null);
         }
         public List<Building> FindBuildingsAttached(Building root, bool includeRock = false)
         {

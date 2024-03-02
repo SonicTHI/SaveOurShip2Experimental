@@ -788,7 +788,7 @@ namespace RimWorld
                 }
                 else
                 {
-                    Command_VerbTargetShip command_VerbTargetShip = new Command_VerbTargetShip
+                    Command_TargetShipCombat command_VerbTargetShip = new Command_TargetShipCombat
                     {
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandSetForceAttackTarget"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandSetForceAttackTargetDesc"),

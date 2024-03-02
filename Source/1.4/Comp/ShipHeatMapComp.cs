@@ -780,7 +780,15 @@ namespace RimWorld
                 faction.TryAffectGoodwillWith(Faction.OfPlayer, -150);
 
             //spawn map
-            newMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), new IntVec3(250, 1, 250), ResourceBank.WorldObjectDefOf.ShipEnemy);
+            IntVec3 mapSize = new IntVec3(250, 1, 250);
+            if (fleet && CR > 2000 && ModSettings_SoS.enemyMapSize > 250)
+            {
+                int mapX = Math.Max(250, (ModSettings_SoS.enemyMapSize + 100) / 2);
+                mapSize = new IntVec3(mapX, 1, ModSettings_SoS.enemyMapSize);
+            }
+
+            newMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy);
+
             var mp = (WorldObjectOrbitingShip)newMap.Parent;
             mp.radius = radius;
             mp.theta = theta;

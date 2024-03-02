@@ -21,24 +21,13 @@ namespace RimWorld
         target = 4
     }
 
-    public class Command_VerbTargetMap : Command
+    public class Command_SelectShipMap : Command
     {
         public Building salvageBay;
         public int salvageBayNum;
         public Map sourceMap;
         public Map targetMap;
         public CommandMode mode = 0;
-        
-        public override void MergeWith(Gizmo other)
-        {
-            /*base.MergeWith(other);
-            Command_VerbTargetWreck command_VerbTargetShip = other as Command_VerbTargetWreck;
-            if (command_VerbTargetShip == null)
-            {
-                Log.ErrorOnce("Tried to merge Command_VerbTarget with unexpected type", 73406263);
-                return;
-            }*/
-        }
 
         public override void ProcessInput(Event ev)
         {

@@ -9,23 +9,12 @@ using Verse.Sound;
 
 namespace RimWorld
 {
-    public class Command_VerbTargetWreck : Command
+    public class Command_TargetShipRemove : Command
     {
         public Map targetMap;
         public IntVec3 position;
-        /*
-        public override void MergeWith(Gizmo other)
-        {
-            base.MergeWith(other);
-            Command_VerbTargetWreck command_VerbTargetShip = other as Command_VerbTargetWreck;
-            if (command_VerbTargetShip == null)
-            {
-                Log.ErrorOnce("Tried to merge Command_VerbTarget with unexpected type", 73406263);
-                return;
-            }
-        }*/
 
-        public override void ProcessInput(Event ev) //td change to pass vec, change area attached
+        public override void ProcessInput(Event ev)
         {
             IntVec3 c = IntVec3.Invalid;
             base.ProcessInput(ev);
@@ -38,7 +27,6 @@ namespace RimWorld
                 c = x.Cell;
             }, null, delegate { AfterTarget(c); });
         }
-
         public void AfterTarget(IntVec3 c)
         {
             if (c == IntVec3.Invalid || IntVec3.Zero.GetTerrain(targetMap) != ResourceBank.TerrainDefOf.EmptySpace) //moon

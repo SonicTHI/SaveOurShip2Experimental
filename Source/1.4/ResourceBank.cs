@@ -126,6 +126,7 @@ namespace SaveOurShip2
             public static ThingDef ShipCombatLaserMote;
             public static ThingDef ArchotechExoticParticles;
             public static ThingDef DetachedShipPart;
+            public static ThingDef ShipMoveBlueprint;
             //vanilla defs
             public static ThingDef Turret_Autocannon;
             public static ThingDef Turret_Sniper;

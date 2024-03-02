@@ -73,7 +73,8 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref maxTravelTime, "maxTravelTime", 100);
             Scribe_Values.Look(ref offsetUIx, "offsetUIx");
 			Scribe_Values.Look(ref offsetUIy, "offsetUIy");
-			base.ExposeData();
+            Scribe_Values.Look(ref enemyMapSize, "enemyMapSize");
+            base.ExposeData();
 		}
 
 		public static double
@@ -92,7 +93,8 @@ namespace SaveOurShip2
 			minTravelTime = 5,
 			maxTravelTime = 100,
             offsetUIx = 0,
-            offsetUIy = 0;
+            offsetUIy = 0,
+			enemyMapSize = 0;
 	}
 	public class ShipInteriorMod2 : Mod
 	{
@@ -100,7 +102,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V98f3";
+        public static readonly string SOS2EXPversion = "V98f4";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -138,43 +140,54 @@ namespace SaveOurShip2
 		{
 			Listing_Standard options = new Listing_Standard();
 			options.Begin(inRect);
+            options.columnWidthInt = 300;
+
             options.CheckboxLabeled("SoS.Settings.ShowVersionUI".Translate(SOS2EXPversion), ref showVersionUI, "SoS.Settings.ShowVersionUI.Desc".Translate());
+
             options.Gap();
-
-            options.Label("SoS.Settings.DifficultySoS".Translate("0.5", "10", "1", Math.Round(difficultySoS, 1).ToString()), -1f, "SoS.Settings.DifficultySoS.Desc".Translate());
-			difficultySoS = options.Slider((float)difficultySoS, 0.5f, 10f);
-
-			options.Label("SoS.Settings.FrequencySoS".Translate("0", "10", "1", Math.Round(frequencySoS, 1).ToString()), -1f, "SoS.Settings.FrequencySoS.Desc".Translate());
-			frequencySoS = options.Slider((float)frequencySoS, 0f, 10f);
-
-			options.Label("SoS.Settings.NavyShipChance".Translate("0", "1", "0.2", Math.Round(navyShipChance, 1).ToString()), -1f, "SoS.Settings.NavyShipChance.Desc".Translate());
-			navyShipChance = options.Slider((float)navyShipChance, 0f, 1f);
-
-			options.Label("SoS.Settings.FleetChance".Translate("0", "1", "0.3", Math.Round(fleetChance, 1).ToString()), -1f, "SoS.Settings.FleetChance.Desc".Translate());
-			fleetChance = options.Slider((float)fleetChance, 0f, 1f);
-			options.Gap();
-
-			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
-			//options.CheckboxLabeled("SoS.Settings.UseVacuumPathfinding".Translate(), ref useVacuumPathfinding, "SoS.Settings.UseVacuumPathfinding.Desc".Translate());
-			options.Gap();
-
-			options.Label("SoS.Settings.MinTravelTime".Translate("1", "50", "5", minTravelTime.ToString()), -1f, "SoS.Settings.MinTravelTime.Desc".Translate());
-			minTravelTime = (int)options.Slider(minTravelTime, 1f, 50f);
-
-			options.Label("SoS.Settings.MaxTravelTime".Translate("50", "1000", "100", maxTravelTime.ToString()), -1f, "SoS.Settings.MaxTravelTime.Desc".Translate());
-			maxTravelTime = (int)options.Slider(maxTravelTime, 1f, 1000f);
-
-			options.CheckboxLabeled("SoS.Settings.RenderPlanet".Translate(), ref renderPlanet, "SoS.Settings.RenderPlanet.Desc".Translate());
-			options.CheckboxLabeled("SoS.Settings.UseSplashScreen".Translate(), ref useSplashScreen, "SoS.Settings.UseSplashScreens.Desc".Translate());
-			options.Gap();
-
+            options.CheckboxLabeled("SoS.Settings.RenderPlanet".Translate(), ref renderPlanet, "SoS.Settings.RenderPlanet.Desc".Translate());
+            options.Gap();
+            options.Gap();
+            options.Label("SoS.Settings.UI".Translate());
+            options.GapLine();
+            options.CheckboxLabeled("SoS.Settings.UseSplashScreen".Translate(), ref useSplashScreen, "SoS.Settings.UseSplashScreen.Desc".Translate());
             options.CheckboxLabeled("SoS.Settings.PersistShipUI".Translate(), ref persistShipUI, "SoS.Settings.PersistShipUI.Desc".Translate());
             options.Label("SoS.Settings.OffsetUIx".Translate(), -1f, "SoS.Settings.OffsetUIx.Desc".Translate());
-			string bufferX = offsetUIx.ToString();
-			options.TextFieldNumeric<int>(ref offsetUIx, ref bufferX, int.MinValue, int.MaxValue);
-			options.Label("SoS.Settings.OffsetUIy".Translate(), -1f, "SoS.Settings.OffsetUIy.Desc".Translate());
-			string bufferY = offsetUIy.ToString();
-			options.TextFieldNumeric<int>(ref offsetUIy, ref bufferY, int.MinValue, int.MaxValue);
+            string bufferX = offsetUIx.ToString();
+            options.TextFieldNumeric<int>(ref offsetUIx, ref bufferX, int.MinValue, int.MaxValue);
+            options.Label("SoS.Settings.OffsetUIy".Translate(), -1f, "SoS.Settings.OffsetUIy.Desc".Translate());
+            string bufferY = offsetUIy.ToString();
+            options.TextFieldNumeric<int>(ref offsetUIy, ref bufferY, int.MinValue, int.MaxValue);
+
+            options.NewColumn();
+            options.columnWidthInt = 550;
+            options.Label("SoS.Settings.Gameplay".Translate());
+            options.GapLine();
+            options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
+            options.Label("SoS.Settings.DifficultySoS".Translate("0.5", "10", "1", Math.Round(difficultySoS, 1).ToString()), -1f, "SoS.Settings.DifficultySoS.Desc".Translate());
+			difficultySoS = options.Slider((float)difficultySoS, 0.5f, 10f);
+			options.Label("SoS.Settings.FrequencySoS".Translate("0", "10", "1", Math.Round(frequencySoS, 1).ToString()), -1f, "SoS.Settings.FrequencySoS.Desc".Translate());
+			frequencySoS = options.Slider((float)frequencySoS, 0f, 10f);
+			options.Label("SoS.Settings.NavyShipChance".Translate("0", "1", "0.2", Math.Round(navyShipChance, 1).ToString()), -1f, "SoS.Settings.NavyShipChance.Desc".Translate());
+			navyShipChance = options.Slider((float)navyShipChance, 0f, 1f);
+			options.Label("SoS.Settings.FleetChance".Translate("0", "1", "0.3", Math.Round(fleetChance, 1).ToString()), -1f, "SoS.Settings.FleetChance.Desc".Translate());
+			fleetChance = options.Slider((float)fleetChance, 0f, 1f);
+
+            //options.CheckboxLabeled("SoS.Settings.UseVacuumPathfinding".Translate(), ref useVacuumPathfinding, "SoS.Settings.UseVacuumPathfinding.Desc".Translate());
+            options.Gap();
+            options.Gap();
+            options.Label("SoS.Settings.Misc".Translate());
+            options.GapLine();
+            options.Label("SoS.Settings.MinTravelTime".Translate("1", "50", "5", minTravelTime.ToString()), -1f, "SoS.Settings.MinTravelTime.Desc".Translate());
+			minTravelTime = (int)options.Slider(minTravelTime, 1f, 50f);
+			options.Label("SoS.Settings.MaxTravelTime".Translate("50", "1000", "100", maxTravelTime.ToString()), -1f, "SoS.Settings.MaxTravelTime.Desc".Translate());
+			maxTravelTime = (int)options.Slider(maxTravelTime, 1f, 1000f);
+            options.Gap();
+            options.Gap();
+            options.Label("SoS.Settings.Danger".Translate());
+            options.GapLine();
+            options.Label("SoS.Settings.EnemyMapSize".Translate("250", "750", "250", enemyMapSize.ToString()), -1f, "SoS.Settings.EnemyMapSize.Desc".Translate());
+            enemyMapSize = (int)options.Slider(enemyMapSize, 250, 750);
 
             options.End();
 			base.DoSettingsWindowContents(inRect);

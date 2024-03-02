@@ -30,7 +30,7 @@ namespace RimWorld
 			{
 				foreach (Map map in Find.Maps.Where(m => m.GetComponent<ShipHeatMapComp>().IsGraveyard))
 				{
-                    Command_VerbTargetWreckMap retrieveShipEnemy = new Command_VerbTargetWreckMap
+                    Command_TargetWreck retrieveShipEnemy = new Command_TargetWreck
                     {
                         salvageBay = (Building)parent,
                         sourceMap = parent.Map,
@@ -41,7 +41,7 @@ namespace RimWorld
 					};
                     if (Props.beam && (parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? false))
                     {
-                        Command_VerbTargetMap beam = new Command_VerbTargetMap
+                        Command_SelectShipMap beam = new Command_SelectShipMap
                         {
                             salvageBay = (Building)parent,
                             sourceMap = parent.Map,
@@ -57,7 +57,7 @@ namespace RimWorld
                         }
                         yield return beam;
                     }
-                    Command_VerbTargetMap stablizeShipEnemy = new Command_VerbTargetMap
+                    Command_SelectShipMap stablizeShipEnemy = new Command_SelectShipMap
                     {
                         salvageBay = (Building)parent,
                         sourceMap = parent.Map,
@@ -75,7 +75,7 @@ namespace RimWorld
 					yield return retrieveShipEnemy;
                     yield return stablizeShipEnemy;
                 }
-                Command_VerbTargetWreckMap moveWreck = new Command_VerbTargetWreckMap
+                Command_TargetWreck moveWreck = new Command_TargetWreck
                 {
                     groupable = false,
                     salvageBay = (Building)this.parent,
@@ -85,7 +85,7 @@ namespace RimWorld
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckCommandDesc")
                 };
-                Command_VerbTargetWreckMap moveWreckFlip = new Command_VerbTargetWreckMap
+                Command_TargetWreck moveWreckFlip = new Command_TargetWreck
                 {
                     groupable = false,
                     salvageBay = (Building)this.parent,
@@ -96,7 +96,7 @@ namespace RimWorld
                     defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckFlipCommand"),
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckFlipCommandDesc")
                 };
-                Command_VerbTargetWreckMap moveWreckRot = new Command_VerbTargetWreckMap
+                Command_TargetWreck moveWreckRot = new Command_TargetWreck
                 {
                     groupable = false,
                     salvageBay = (Building)this.parent,
@@ -117,7 +117,7 @@ namespace RimWorld
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommandDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/SalvageClaim")
                 };
-                Command_VerbTargetWreck removeTargetWreck = new Command_VerbTargetWreck
+                Command_TargetShipRemove removeTargetWreck = new Command_TargetShipRemove
                 {
                     //abandon target wreck (rem rock floor)
                     groupable = false,

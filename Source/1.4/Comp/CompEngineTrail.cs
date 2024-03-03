@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
+using Verse.Sound;
 
 namespace RimWorld
 {
@@ -40,6 +41,8 @@ namespace RimWorld
         public CompFlickable flickComp;
         public CompRefuelable refuelComp;
         public CompPowerTrader powerComp;
+        Sustainer sustainer;
+
         public bool CanFire()
         {
             if (flickComp.SwitchIsOn && powerComp.PowerOn)
@@ -118,6 +121,10 @@ namespace RimWorld
                 powerComp.PowerOutput = -200 * Thrust;
             }
             active = false;
+            /*if (sustainer != null && !sustainer.Ended)
+            {
+                sustainer.End();
+            }*/
         }
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -150,6 +157,7 @@ namespace RimWorld
             if (mapComp.ShipsOnMapNew.Values.Any(s => !s.IsWreck && s.Engines.Any()))
                 mapComp.EngineRot = -1;
             Off();
+            //sustainer = null;
             base.PostDeSpawn(map);
         }
         public override void PostDraw()
@@ -203,18 +211,26 @@ namespace RimWorld
                 {
                     if (!flickComp.SwitchIsOn || !powerComp.PowerOn)
                     {
-                        active = false;
+                        Off();
                         return;
                     }
                     if (refuelComp != null)
                     {
                         if (refuelComp.Fuel < Props.fuelUse)
                         {
-                            active = false;
+                            Off();
                             return;
                         }
                         refuelComp.ConsumeFuel(Props.fuelUse);
                     }
+                    /*if (!Props.soundWorking.NullOrUndefined())
+                    {
+                        if (sustainer == null || sustainer.Ended)
+                        {
+                            sustainer = Props.soundWorking.TrySpawnSustainer(SoundInfo.InMap(parent, MaintenanceType.None));
+                        }
+                        sustainer.Maintain();
+                    }*/
                 }
                 if (Props.reactionless)
                     return;

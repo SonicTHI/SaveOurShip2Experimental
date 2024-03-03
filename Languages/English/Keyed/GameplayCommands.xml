@@ -168,12 +168,12 @@
 	<!-- blueprints -->
 	<ShipBlueprintDisabled>Requires starflight basics research</ShipBlueprintDisabled>
 	<ShipBlueprintFailed>Blueprint placement failed! Area must support heavy construction and be clear of non-owned objects and mountain roof.</ShipBlueprintFailed>
-	<ShipBlueprintPlace1>Plating blueprints</ShipBlueprintPlace1>
-	<ShipBlueprintPlace1Desc>Place ship plating blueprints. Construct this before placing hull blueprints.</ShipBlueprintPlace1Desc>
-	<ShipBlueprintPlace2>Hull blueprints</ShipBlueprintPlace2>
-	<ShipBlueprintPlace2Desc>Place ship hull blueprints. Construct this before placing interior blueprints.</ShipBlueprintPlace2Desc>
-	<ShipBlueprintPlace3>Place interior blueprints</ShipBlueprintPlace3>
-	<ShipBlueprintPlace3Desc>Place ship interior blueprints.</ShipBlueprintPlace3Desc>
+	<ShipBlueprintPlace1>Ship frame blueprints</ShipBlueprintPlace1>
+	<ShipBlueprintPlace1Desc>Place ship plating and outer hull blueprints. Construct this before placing ship hull!</ShipBlueprintPlace1Desc>
+	<ShipBlueprintPlace2>Ship hull blueprints</ShipBlueprintPlace2>
+	<ShipBlueprintPlace2Desc>Place ship hull blueprints. Construct this before placing interior blueprints!</ShipBlueprintPlace2Desc>
+	<ShipBlueprintPlace3>Ship interior blueprints</ShipBlueprintPlace3>
+	<ShipBlueprintPlace3Desc>Place ship interior blueprints. Construct frame and hull blueprints before placing these!</ShipBlueprintPlace3Desc>
 	<!-- holo/spore -->
 	<SoSSpawnHologram>Spawn formgel</SoSSpawnHologram>
 	<SoSSpawnHologramDesc>Assemble a formgel through which this consciousness can affect the world</SoSSpawnHologramDesc>

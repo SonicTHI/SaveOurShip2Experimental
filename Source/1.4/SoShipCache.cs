@@ -281,7 +281,7 @@ namespace RimWorld
         {
             float fuelNeeded = MassActual;
             Log.Message("Mass: " + MassActual + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
-            if (atmospheric && (RCSs.Count * 2000 < fuelNeeded || Engines.Any(e => e.Props.reactionless))) //2k weight/RCS to move
+            if (atmospheric && (1000 < fuelNeeded || RCSs.Count * 2000 < fuelNeeded || Engines.Any(e => e.Props.reactionless))) //2k weight/RCS to move
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
                 return false;
@@ -846,7 +846,7 @@ namespace RimWorld
             HashSet<IntVec3> cellsAttached = new HashSet<IntVec3> { first }; //cells that were checked and are attached
             foreach (IntVec3 setStartCell in startCells)
             {
-                if (mapComp.MapShipCells[setStartCell].Item2 < LastSafePath)
+                if (mapComp.MapShipCells[setStartCell]?.Item2 < LastSafePath)
                 {
                     cellsAttached.Add(setStartCell);
                 }

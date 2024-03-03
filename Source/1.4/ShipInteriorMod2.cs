@@ -94,7 +94,7 @@ namespace SaveOurShip2
 			maxTravelTime = 100,
             offsetUIx = 0,
             offsetUIy = 0,
-			enemyMapSize = 0;
+			enemyMapSize = 250;
 	}
 	public class ShipInteriorMod2 : Mod
 	{
@@ -102,7 +102,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V98f4";
+        public static readonly string SOS2EXPversion = "V98f5";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -934,7 +934,7 @@ namespace SaveOurShip2
 
 							if (thing.def.CanHaveFaction) //set faction
                             {
-                                if (partComp != null && partComp.Props.isPlating && !partComp.Props.isHull)
+                                if (partComp != null && partComp.Props.Plating)
                                 {
                                     if (fac == Faction.OfPlayer) //only set faction to player hull
                                         thing.SetFactionDirect(fac);
@@ -1532,25 +1532,6 @@ namespace SaveOurShip2
 				}
 			}
 			//secondaries?
-		}
-		private static void GenerateHull(List<IntVec3> border, List<IntVec3> interior, Faction fac, Map map)
-		{
-			foreach (IntVec3 vec in border)
-			{
-				if (!GenSpawn.WouldWipeAnythingWith(vec, Rot4.South, ResourceBank.ThingDefOf.Ship_Beam, map, (Thing x) => x.def.category == ThingCategory.Building) && !vec.GetThingList(map).Where(t => t.TryGetComp<CompSoShipPart>()?.Props.isPlating ?? false).Any())
-				{
-					Thing wall = ThingMaker.MakeThing(ResourceBank.ThingDefOf.Ship_Beam);
-					wall.SetFactionDirect(fac);
-					GenSpawn.Spawn(wall, vec, map);
-				}
-			}
-			foreach (IntVec3 vec in interior)
-			{
-				Thing floor = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullTile);
-				if (fac == Faction.OfPlayer)
-					floor.SetFactionDirect(fac);
-				GenSpawn.Spawn(floor, vec, map);
-			}
 		}
 		public static void RectangleUtility(int xCorner, int zCorner, int x, int z, ref List<IntVec3> border,
 			ref List<IntVec3> interior)

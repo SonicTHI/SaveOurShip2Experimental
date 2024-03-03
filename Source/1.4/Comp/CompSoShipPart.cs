@@ -187,7 +187,7 @@ namespace RimWorld
                 ship.RemoveFromCache(parent as Building, mode);
                 return;
             }
-            else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && parent.def.Size == IntVec2.One && ((Props.isHull && !Props.isPlating && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map)) || (!Props.isHull && Props.isPlating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
+            else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && parent.def.Size == IntVec2.One && (Props.Hull && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map) || (Props.Plating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
             {
                 //replace part with foam, no detach checks
                 foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))

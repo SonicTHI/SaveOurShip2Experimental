@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -64,11 +62,12 @@ namespace RimWorld
             yield return place2;
             yield return place3;
         }
-        public void SpawnShipDefBlueprint(EnemyShipDef shipdef, IntVec3 pos, Map map, int tier)
+        public void SpawnShipDefBlueprint(EnemyShipDef shipDef, IntVec3 pos, Map map, int tier)
         {
             //get area
             HashSet<IntVec3> Area = new HashSet<IntVec3>();
-            foreach (ShipShape shape in shipdef.parts.Where(s => DefDatabase<ThingDef>.GetNamedSilentFail(s.shapeOrDef) != null))
+            HashSet<IntVec3> Plating = new HashSet<IntVec3>();
+            foreach (ShipShape shape in shipDef.parts.Where(s => DefDatabase<ThingDef>.GetNamedSilentFail(s.shapeOrDef) != null))
             {
                 ThingDef def = ThingDef.Named(shape.shapeOrDef);
                 if (!def.IsBuildingArtificial)
@@ -78,6 +77,9 @@ namespace RimWorld
                 {
                     v = new IntVec3(pos.x + shape.x + 1, 0, pos.z + shape.z + 1);
                     Area.Add(v);
+                    var comp = def.GetCompProperties<CompProperties_SoShipPart>();
+                    if (comp != null && comp.Plating)
+                        Plating.Add(v);
                     continue;
                 }
                 for (int i = 0; i < def.size.x; i++)
@@ -122,35 +124,36 @@ namespace RimWorld
                 }
             }
             //place
-            foreach (ShipShape shape in shipdef.parts.Where(s => DefDatabase<ThingDef>.GetNamedSilentFail(s.shapeOrDef) != null))
+            foreach (ShipShape shape in shipDef.parts.Where(s => DefDatabase<ThingDef>.GetNamedSilentFail(s.shapeOrDef) != null))
             {
                 ThingDef def = ThingDef.Named(shape.shapeOrDef);
-                if (!def.IsBuildingArtificial)
+                if (!def.IsBuildingArtificial || !def.IsResearchFinished)
                     continue;
+                IntVec3 v = new IntVec3(pos.x + shape.x + 1, 0, pos.z + shape.z + 1);
                 var comp = def.GetCompProperties<CompProperties_SoShipPart>();
-                if (tier == 1 && !(comp != null && comp.isPlating && !comp.isHull)) //hull only
+                //tier 1: plating and hull not on plating
+                //tier 2: hull (all, placecheck prevents dupes/overwrites)
+                //tier 3: rest, non ship part
+                if (tier == 1 && (comp != null && (comp.Plating || (comp.isHull && !Plating.Contains(v)))) || (tier == 2 && def.building.shipPart && comp != null && !comp.Plating) || tier == 3 && !def.building.shipPart)
                 {
-                    continue;
-                }
-                else if (tier == 2 && (!def.building.shipPart || (comp != null && comp.isPlating && !comp.isHull))) //ship parts
-                {
-                    continue;
-                }
-                else if (tier == 3 && def.building.shipPart) //everything else
-                {
-                    continue;
-                }
-                if (def.IsResearchFinished)
-                {
-                    ThingDef stuff = GenStuff.DefaultStuffFor(def);
-                    if (def.MadeFromStuff)
+                    if (GenConstruct.CanPlaceBlueprintAt(def, v, shape.rot, map))
                     {
-                        if (shape.stuff != null)
-                            stuff = ThingDef.Named(shape.stuff);
+                        ThingDef stuff = GenStuff.DefaultStuffFor(def);
+                        if (def.MadeFromStuff)
+                        {
+                            if (shape.stuff != null)
+                                stuff = ThingDef.Named(shape.stuff);
+                        }
+                        GenConstruct.PlaceBlueprintForBuild(def, v, map, shape.rot, Faction.OfPlayer, stuff);
                     }
-                    IntVec3 v = new IntVec3(pos.x + shape.x + 1, 0, pos.z + shape.z + 1);
-                    GenConstruct.PlaceBlueprintForBuild(def, v, map, shape.rot, Faction.OfPlayer, stuff);
                 }
+            }
+            if (tier == 3) //place core
+            {
+                ThingDef def = ThingDef.Named(shipDef.core.shapeOrDef);
+                IntVec3 v = new IntVec3(pos.x + shipDef.core.x + 1, 0, pos.z + shipDef.core.z + 1);
+                if (GenConstruct.CanPlaceBlueprintAt(def, v, shipDef.core.rot, map))
+                    GenConstruct.PlaceBlueprintForBuild(def, v, map, shipDef.core.rot, Faction.OfPlayer, null);
             }
         }
     }

@@ -8,9 +8,13 @@ namespace RimWorld
 		public bool isPlating = false;
 		public bool isHardpoint = false;
 		public bool isHull = false;
-		public bool hermetic = false; //used in SpaceRoomCheck only
+		public bool hermetic = false; //used for vacuum SpaceRoomCheck only
+        public bool roof = false; //on plating and walls (since RW roofs everything)
 
-		public bool roof = false; //on plating, walls since RW roofs everything
+        public bool Hull => !isPlating && isHull; //hull only
+        public bool Plating => isPlating && !isHull; //plating and hardpoints - these can be under other ship parts
+        public bool Airlock => isPlating && isHull; //airlocks have both plating and hull
+
 
 		//types for terrain, roof
 		public bool mechanoid = false;

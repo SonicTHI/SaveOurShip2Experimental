@@ -222,6 +222,7 @@ namespace SaveOurShip2
 		public static class SoundDefOf
         {
 			public static SoundDef ShipPurgeHiss;
+            public static SoundDef ShipEngineFuel;
         }
 
         [DefOf]

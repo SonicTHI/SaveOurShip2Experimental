@@ -8,7 +8,8 @@ using Verse;
 
 namespace RimWorld
 {
-    class Bullet_HologramLaser : Bullet
+    //dep
+    /*class Bullet_HologramLaser : Bullet
     {
         protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
@@ -27,5 +28,5 @@ namespace RimWorld
             else
                 GenSpawn.Spawn(obj, this.Position, this.launcher.Map, 0);
         }
-    }
+    }*/
 }

@@ -7,11 +7,12 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompProperties_HologramRelay : CompProperties
+    //dep
+    /*class CompProperties_HologramRelay : CompProperties
     {
         public CompProperties_HologramRelay()
         {
             this.compClass = typeof(CompHologramRelay);
         }
-    }
+    }*/
 }

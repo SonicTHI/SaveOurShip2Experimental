@@ -117,7 +117,6 @@
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
-    <Compile Include="Obsolete\ChoiceLetter_SpacePirates.cs" />
     <Compile Include="Events\ChoiceLetter_SpacePod.cs" />
     <Compile Include="CompProps\CompProperties_SoShipDocking.cs" />
     <Compile Include="CompProps\CompProperties_RCSThruster.cs" />
@@ -266,8 +265,7 @@
     <Compile Include="CompProps\HediffCompProperties_OnlyInSpace.cs" />
     <Compile Include="Comp\HediffComp_GiveSubPart.cs" />
     <Compile Include="HediffPawnIsHologram.cs" />
-    <Compile Include="Hediff_AddedPartNoRemoveSubparts.cs" />
-    <Compile Include="HideLightingLayersInSpace.cs" />
+    <Compile Include="Obsolete\Hediff_AddedPartNoRemoveSubparts.cs" />
     <Compile Include="Comp\InsectPillarSiteComp.cs" />
     <Compile Include="Jobs\JobDriver_FleeVacuum.cs" />
     <Compile Include="Jobs\JobDriver_InstallConsciousness.cs" />
@@ -322,7 +320,7 @@
     <Compile Include="PlaceWorker\PlaceWorker_ShipVent.cs" />
     <Compile Include="PlaceWorker\Placeworker_SolarShip.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_SpinalMountPort.cs" />
-    <Compile Include="PreviousWorld.cs" />
+    <Compile Include="Obsolete\PreviousWorld.cs" />
     <Compile Include="Obsolete\Bullet_HologramLaser.cs" />
     <Compile Include="Projectile\Projectile_SoSFake.cs" />
     <Compile Include="Projectile\Projectile_ExplosiveShipCombat.cs" />

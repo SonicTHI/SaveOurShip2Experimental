@@ -11,6 +11,7 @@ using Verse.Sound;
 
 namespace RimWorld
 {
+    //dep old salvage system
     /*class Dialog_SalvageShip : Window
     {
         private enum Tab

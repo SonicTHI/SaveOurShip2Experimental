@@ -8,9 +8,9 @@ using Verse;
 namespace RimWorld
 {
     //DEPRECATED
-    class CompHologramGlower : ThingComp
+    /*class CompHologramGlower : ThingComp
     {
-        /*IntVec3 lastCell = IntVec3.Zero;
+        IntVec3 lastCell = IntVec3.Zero;
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -40,6 +40,6 @@ namespace RimWorld
         {
             base.PostExposeData();
             Scribe_Values.Look<IntVec3>(ref lastCell, "lastCell");
-        }*/
-    }
+        }
+    }*/
 }

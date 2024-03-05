@@ -7,7 +7,8 @@ using Verse;
 
 namespace RimWorld
 {
-	public class Hediff_AddedPartNoRemoveSubparts : Hediff_Implant
+    //dep tongue nonsense
+    /*public class Hediff_AddedPartNoRemoveSubparts : Hediff_Implant
 	{
 		public override string TipStringExtra
 		{
@@ -25,5 +26,5 @@ namespace RimWorld
 			pawn.health.RestorePart(base.Part, this, checkStateChange: false);
 			base.PostAdd(dinfo);
 		}
-	}
+	}*/
 }

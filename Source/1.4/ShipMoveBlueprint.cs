@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace RimWorld
         public ShipMoveBlueprint(Sketch sketch)
         {
             shipSketch = sketch;
-            this.def = DefDatabase<ThingDef>.GetNamed("ShipMoveBlueprint");
+            this.def = ResourceBank.ThingDefOf.ShipMoveBlueprint;
         }
 
         public override void DrawAt(Vector3 drawLoc, bool flip = false)

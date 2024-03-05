@@ -143,6 +143,8 @@ namespace RimWorld
             Scribe_Values.Look<bool>(ref InCombat, "InCombat", false);
             Scribe_Values.Look<bool>(ref BurnUpSet, "BurnUpSet", false);
             Scribe_Values.Look<bool>(ref ToggleEngines, "ToggleEngines", false);
+            Scribe_Values.Look<float>(ref Altitude, "Altitude", 1100);
+            Scribe_Values.Look<int>(ref Ascend, "Ascend", 0);
             Scribe_Values.Look<int>(ref BurnTimer, "BurnTimer");
             Scribe_Values.Look<int>(ref LastAttackTick, "LastShipBattleTick", 0);
             Scribe_Values.Look<int>(ref LastBountyRaidTick, "LastBountyRaidTicks", 0);
@@ -289,6 +291,8 @@ namespace RimWorld
         public bool BurnUpSet = false; //force terminate map+WO if no player pawns or pods present or in flight to
         public bool ToggleEngines = false; //OOC for events
         public int BurnTimer = 0; //OOC for events
+        public float Altitude = 1100;
+        public int Ascend = 0;
         public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
         List<Building> cores = new List<Building>(); //td recheck use
         public bool IsPlayerShipMap => map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting;
@@ -904,8 +908,26 @@ namespace RimWorld
             }
             if (!map.IsSpace())
                 return;
+            /*if (Ascend != 0)
+            {
+                if (Ascend > 0)
+                    Altitude += 0.1f;
+                else
+                    Altitude -= 0.1f;
 
-            if (InCombat)
+                ShipInteriorMod2.WorldComp.renderedThatAlready = false;
+                if (Altitude > 1100) //orbit reached - if not home, warn orbit fail, allow to move to home
+                {
+                    Altitude = 1100;
+                    Ascend = 0;
+                }
+                if (Altitude < 100) //ground reached - warn landing, if timer out, crash ship - new map, damage
+                {
+                    Altitude = 100;
+                    Ascend = 0;
+                }
+            }*/
+            else if (InCombat)
             {
                 foreach (int index in ShipsToMove)
                 {
@@ -1001,6 +1023,26 @@ namespace RimWorld
         }
         public void SlowTick()
         {
+            /*if (Ascend != 0)
+            {
+                if (Ascend > 0) //consume fuel
+                {
+                    //foreach (SoShipCache ship in ShipsOnMapNew.Values)
+                }
+                else //consume fuel at start and end
+                {
+
+                }
+                foreach (IntVec3 v in map.AllCells.Except(MapShipCells.Keys)) //kill anything off ship
+                {
+                    foreach (Thing t in v.GetThingList(map))
+                    {
+                        if (t is Pawn p)
+                            p.Kill(new DamageInfo(DamageDefOf.Crush, 10000));
+                        t.Destroy();
+                    }
+                }
+            }*/
             if (InCombat)
             {
                 if (Maintain) //distance maintain

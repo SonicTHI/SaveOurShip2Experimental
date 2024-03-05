@@ -7,7 +7,8 @@ using Verse;
 
 namespace RimWorld
 {
-    public class PreviousWorld : IExposable //Light(er)weight version of World, with no processing time wasted on it
+    //dep planet travel save
+    /*public class PreviousWorld : IExposable //Light(er)weight version of World, with no processing time wasted on it
     {
         public WorldInfo info = new WorldInfo();
         public List<WorldComponent> components = new List<WorldComponent>();
@@ -63,5 +64,5 @@ namespace RimWorld
             Scribe_References.Look<Faction>(ref this.donatedFaction, "donatedFaction");
             Scribe_Values.Look<float>(ref this.donatedAmount, "donatedAmount");
         }
-    }
+    }*/
 }

@@ -281,7 +281,7 @@ namespace RimWorld
         {
             float fuelNeeded = MassActual;
             Log.Message("Mass: " + MassActual + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
-            if (atmospheric && (1000 < fuelNeeded || RCSs.Count * 2000 < fuelNeeded || Engines.Any(e => e.Props.reactionless))) //2k weight/RCS to move
+            if (atmospheric && ((1000 < fuelNeeded && RCSs.Count * 2000 < fuelNeeded) || Engines.Any(e => e.Props.reactionless))) //2k weight/RCS to move
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
                 return false;

@@ -13,7 +13,7 @@ namespace SaveOurShip2
         //private int ShipsHaveInsidesVersion;
         public int PlayerFactionBounty;
         public int LastSporeGiftTick;
-        public List<PreviousWorld> PastWorlds = new List<PreviousWorld>();
+        //public List<PreviousWorld> PastWorlds = new List<PreviousWorld>();
         public List<string> Unlocks = new List<string>();
         public bool startedEndgame;
         public bool SoSWin = false;

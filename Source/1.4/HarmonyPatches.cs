@@ -15,6 +15,7 @@ using Verse.AI.Group;
 using RimWorld.QuestGen;
 using System.Collections;
 using RimworldMod;
+using System.Threading.Tasks;
 
 namespace SaveOurShip2
 {
@@ -368,11 +369,12 @@ namespace SaveOurShip2
             }
         }
     }
+
     //biome
     [HarmonyPatch(typeof(MapDrawer), "DrawMapMesh", null)]
 	public static class RenderPlanetBehindMap
 	{
-		public const float altitude = 1100f;
+		public const float altitudeNominal = 1100f;
 		public static void Prefix()
 		{
 			var worldComp = ShipInteriorMod2.WorldComp;
@@ -391,7 +393,8 @@ namespace SaveOurShip2
 			var cameraDriver = Find.WorldCameraDriver;
 			worldRender.wantedMode = WorldRenderMode.Planet;
 			cameraDriver.JumpTo(Find.CurrentMap.Tile);
-			cameraDriver.altitude = altitude;
+			float altitude = Find.CurrentMap.GetComponent<ShipHeatMapComp>().Altitude;
+            cameraDriver.altitude = altitude;
 			cameraDriver.desiredAltitude = altitude;
 			cameraDriver.Update();
 			worldRender.CheckActivateWorldCamera();
@@ -426,7 +429,7 @@ namespace SaveOurShip2
 
 			if (!worldRender.layers.FirstOrFallback().ShouldRegenerate)
 				worldComp.renderedThatAlready = true;
-		}
+        }
 	}
 
 	[HarmonyPatch(typeof(SectionLayer), "FinalizeMesh", null)]
@@ -737,8 +740,206 @@ namespace SaveOurShip2
 		}
 	}
 
-	//map
-	[HarmonyPatch(typeof(CompShipPart), "CompGetGizmosExtra")]
+	//biome lighting
+    [HarmonyPatch(typeof(SkyManager), "SkyManagerUpdate")]
+    public class FixLightingColors
+    {
+        public static void Postfix()
+        {
+            if (!MapChangeHelper.MapIsSpace) return;
+
+            MatBases.LightOverlay.color = new Color(1.0f, 1.0f, 1.0f);
+        }
+    }
+
+    [HarmonyPatch(typeof(Section), MethodType.Constructor, typeof(IntVec3), typeof(Map))]
+    [StaticConstructorOnStartup]
+    public class SectionConstructorPatch
+    {
+        private static Type SunShadowsType;
+        private static Type TerrainType;
+
+        static SectionConstructorPatch()
+        {
+            SunShadowsType = AccessTools.TypeByName("SectionLayer_SunShadows");
+            TerrainType = AccessTools.TypeByName("SectionLayer_Terrain");
+        }
+
+        public static void Postfix(Map map, Section __instance, List<SectionLayer> ___layers)
+        {
+            if (!map.IsSpace()) return;
+
+            // Kill shadows
+            ___layers.RemoveAll(layer => SunShadowsType.IsInstanceOfType(layer));
+
+            // Get and store terrain layer for recalculation
+            var terrain = ___layers.Find(layer => TerrainType.IsInstanceOfType(layer));
+            SectionThreadManager.AddSection(map, __instance, terrain);
+        }
+    }
+
+    [HarmonyPatch(typeof(SectionLayer_Terrain), nameof(SectionLayer_Terrain.Regenerate))]
+    public class SectionRegenerateHelper
+    {
+        public static void Postfix(SectionLayer __instance, Section ___section)
+        {
+            if (!___section.map.IsSpace()) return;
+
+            MeshRecalculateHelper.RecalculatePlanetLayer(__instance);
+        }
+    }
+
+    [HarmonyPatch(typeof(MapInterface), "Notify_SwitchedMap")]
+    public class MapChangeHelper
+    {
+        public static bool MapIsSpace;
+
+        public static void Postfix()
+        {
+            // Make sure we're on a map and not loading (causes issues if we are)
+            if (Find.CurrentMap == null || Scribe.mode != LoadSaveMode.Inactive) return;
+
+            MapIsSpace = Find.CurrentMap.IsSpace();
+        }
+    }
+
+    [HarmonyPatch(typeof(Game), "LoadGame")]
+    public class GameLoadHelper
+    {
+        public static void Postfix()
+        {
+            // We need to execute the change notification exactly once on load after the game is fully loaded, which is
+            // done here, after all loading is completed
+            MapChangeHelper.Postfix();
+        }
+    }
+
+    [HarmonyPatch(typeof(Game), "FinalizeInit")]
+    public class FinalizeInitHelper
+    {
+        public static void Postfix()
+        {
+            // Update the camera driver and camera on init - faster than using the game's methods by far, and much
+            // faster than using Unity GetComponents every frame
+            SectionThreadManager.Driver = Find.CameraDriver;
+            SectionThreadManager.GameCamera = Find.CameraDriver.GetComponent<Camera>();
+
+        }
+    }
+
+    [HarmonyPatch(typeof(Game), "UpdatePlay")]
+    public class SectionThreadManager
+    {
+        public static CameraDriver Driver;
+        public static Camera GameCamera;
+        public static Vector3 Center;
+        public static float CellsHigh;
+        public static float CellsWide;
+
+        public static Dictionary<Map, Dictionary<Section, SectionLayer>> MapSections =
+            new Dictionary<Map, Dictionary<Section, SectionLayer>>();
+        private static Vector3 lastCameraPosition = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+
+        public static void AddSection(Map map, Section section, SectionLayer layer)
+        {
+            Dictionary<Section, SectionLayer> sections;
+            if (!MapSections.TryGetValue(map, out sections))
+            {
+                sections = new Dictionary<Section, SectionLayer>();
+                MapSections.Add(map, sections);
+            }
+
+            sections.Add(section, layer);
+        }
+
+        // Thread spawner
+        public static void Prefix()
+        {
+            if (!MapChangeHelper.MapIsSpace || !MapSections.ContainsKey(Find.CurrentMap)) return;
+
+            // Calculate all the various fields we're going to be using this call before we start making threads
+            Center = GameCamera.transform.position;
+            var ratio = (float)UI.screenWidth / UI.screenHeight;
+            CellsHigh = UI.screenHeight / Find.CameraDriver.CellSizePixels;
+            CellsWide = CellsHigh * ratio;
+
+            // Camera hasn't moved, no need to update
+            if ((lastCameraPosition - Center).magnitude < 1e-4) return;
+            lastCameraPosition = Center;
+            var sections = MapSections[Find.CurrentMap];
+
+            var visibleRect = Driver.CurrentViewRect;
+            foreach (var entry in sections)
+            {
+                if (!visibleRect.Overlaps(entry.Key.CellRect)) continue;
+
+                MeshRecalculateHelper.RecalculatePlanetLayer(entry.Value);
+            }
+        }
+
+        // The real thread waiter
+        public static void Postfix()
+        {
+            if (!MeshRecalculateHelper.Tasks.Any()) return;
+
+            // Wait on threads to complete
+            Task.WaitAll(MeshRecalculateHelper.Tasks.ToArray());
+            MeshRecalculateHelper.Tasks.Clear();
+
+            // Draw the layers since we stopped it previously - must be done on main thread to prevent crashes
+            foreach (var layer in MeshRecalculateHelper.LayersToDraw)
+            {
+                var mesh = layer.GetSubMesh(ResourceBank.PlanetMaterial);
+                if (!mesh.finalized || mesh.disabled) continue;
+
+                Graphics.DrawMesh(mesh.mesh, Vector3.zero, Quaternion.identity, mesh.material, 0);
+            }
+            MeshRecalculateHelper.LayersToDraw.Clear();
+        }
+    }
+
+    public class MeshRecalculateHelper //contains everything related to recalculating planet meshes
+    {
+        public static List<Task> Tasks = new List<Task>();
+        public static List<SectionLayer> LayersToDraw = new List<SectionLayer>();
+
+        public static void RecalculatePlanetLayer(SectionLayer instance)
+        {
+            var mesh = instance.GetSubMesh(ResourceBank.PlanetMaterial);
+            Tasks.Add(Task.Factory.StartNew(() => RecalculateMesh(mesh)));
+            LayersToDraw.Add(instance);
+        }
+
+        private static void RecalculateMesh(object info)
+        {
+            if (!(info is LayerSubMesh mesh))
+            {
+                Log.Error("Save Our Ship tried to start a calculate thread with an incorrect info object type");
+                return;
+            }
+
+            lock (mesh)
+            {
+                mesh.finalized = false;
+                mesh.Clear(MeshParts.UVs);
+                for (var i = 0; i < mesh.verts.Count; i++)
+                {
+                    var xdiff = mesh.verts[i].x - SectionThreadManager.Center.x;
+                    var xfromEdge = xdiff + SectionThreadManager.CellsWide / 2f;
+                    var zdiff = mesh.verts[i].z - SectionThreadManager.Center.z;
+                    var zfromEdge = zdiff + SectionThreadManager.CellsHigh / 2f;
+
+                    mesh.uvs.Add(new Vector3(xfromEdge / SectionThreadManager.CellsWide,
+                        zfromEdge / SectionThreadManager.CellsHigh, 0.0f));
+                }
+
+                mesh.FinalizeMesh(MeshParts.UVs);
+            }
+        }
+    }
+
+    //map
+    [HarmonyPatch(typeof(CompShipPart), "CompGetGizmosExtra")]
 	public static class NoGizmoInSpace
 	{
 		public static bool Prefix(CompShipPart __instance, out bool __state)
@@ -1342,7 +1543,11 @@ namespace SaveOurShip2
 				Map map = ShipInteriorMod2.GeneratePlayerShipMap(size);
 
 				ShipInteriorMod2.MoveShip(ShipInteriorMod2.shipOriginRoot, map, IntVec3.Zero);
-				map.weatherManager.TransitionTo(ResourceBank.WeatherDefOf.OuterSpaceWeather);
+				var mapComp = map.GetComponent<ShipHeatMapComp>();
+				//mapComp.Altitude = 100;
+				//mapComp.Ascend = 1;
+				//engines on
+                map.weatherManager.TransitionTo(ResourceBank.WeatherDefOf.OuterSpaceWeather);
 				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"),
 					TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
 				ShipInteriorMod2.shipOriginRoot = null;
@@ -2923,7 +3128,7 @@ namespace SaveOurShip2
 		}
 	}*/
 
-    // EVA
+    //EVA
     [HarmonyPatch(typeof(Pawn_PathFollower), "SetupMoveIntoNextCell")]
     public static class EVAMovesFastInSpace
     {
@@ -3156,7 +3361,7 @@ namespace SaveOurShip2
         }
 	}
 
-    // Formgels - simpler than holograms!
+    //Formgels - simpler than holograms!
     [HarmonyPatch(typeof(Pawn), "Kill")]
 	public static class CorpseRemoval
 	{
@@ -3677,10 +3882,10 @@ namespace SaveOurShip2
 		}
 	}
 
-	//[HarmonyPatch(typeof(JobGiver_FightFiresNearPoint),"TryGiveJob")]
-	public class FixFireBugC //Manually patched since *someone* made this an internal class!
+	[HarmonyPatch(typeof(JobGiver_FightFiresNearPoint),"TryGiveJob")]
+	public static class FixFireBugC
 	{
-		public void Postfix(ref Job __result, Pawn pawn)
+		public static void Postfix(ref Job __result, Pawn pawn)
 		{
 			Thing thing = GenClosest.ClosestThingReachable(pawn.GetLord().CurLordToil.FlagLoc, pawn.Map, ThingRequest.ForDef(ResourceBank.ThingDefOf.MechaniteFire), PathEndMode.Touch, TraverseParms.For(pawn), 25);
 			if (thing != null)

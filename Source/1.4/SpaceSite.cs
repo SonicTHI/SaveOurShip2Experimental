@@ -9,7 +9,7 @@ using Verse;
 
 namespace RimWorld.Planet
 {
-    class SpaceSite : Site
+    class SpaceSite : Site //legacy space sites using RW mapgen
     {
         public float theta;
         public float radius;

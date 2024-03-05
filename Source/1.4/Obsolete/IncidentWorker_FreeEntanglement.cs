@@ -6,7 +6,8 @@ using Verse;
 
 namespace RimWorld
 {
-    class IncidentWorker_FreeEntanglement : IncidentWorker
+    //dep
+    /*class IncidentWorker_FreeEntanglement : IncidentWorker
     {
         protected override bool CanFireNowSub(IncidentParms parms)
         {
@@ -28,5 +29,5 @@ namespace RimWorld
             }
             return true;
         }
-    }
+    }*/
 }

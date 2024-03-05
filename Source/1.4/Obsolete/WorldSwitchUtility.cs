@@ -12,10 +12,9 @@ using System.Text;
 
 namespace SaveOurShip2
 {
-    public static class WorldSwitchUtility
+    //dep old planet travel
+    /*public static class WorldSwitchUtility
     {
-        //dep
-        /*
         public static bool LoadShipFlag = false; //NOTE: This is set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
         public static bool StartShipFlag = false; //as above but for ScenPart_StartInSpace
         private static PastWorldUWO2 PastWorldTrackerInternal = null;
@@ -173,6 +172,6 @@ namespace SaveOurShip2
                 Find.WorldObjects.Add(newSettlement);
             }
             action.Invoke();
-        }*/
-    }
+        }
+    }*/
 }

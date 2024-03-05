@@ -13,9 +13,6 @@ using Verse.AI.Group;
 using RimworldMod;
 using System.IO;
 using static SaveOurShip2.ModSettings_SoS;
-using Verse.Noise;
-using Mono.Cecil.Cil;
-using System.Net.NetworkInformation;
 
 namespace SaveOurShip2
 {
@@ -42,13 +39,11 @@ namespace SaveOurShip2
                 LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(errorLong, null, null, null, null, "ERROR: ".Colorize(Color.red), false, null, null, WindowLayer.Super)), null, false, null);
                 return;
             }
-            Harmony pat = new Harmony("ShipInteriorMod2");
             ShipInteriorMod2.HasSoS2CK = ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
-
-            //Legacy methods. All 3 of these could technically be merged
+            //Legacy methods. All of these could technically be merged
             ShipInteriorMod2.DefsLoaded();
-			ShipInteriorMod2.SceneLoaded();
-			pat.PatchAll();
+            Harmony pat = new Harmony("ShipInteriorMod2");
+            pat.PatchAll();
 			//Needs an init delay
 			if (useSplashScreen) LongEventHandler.QueueLongEvent(() => ShipInteriorMod2.UseCustomSplashScreen(), "ShipInteriorMod2", false, null);
 		}
@@ -102,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V98f5";
+        public static readonly string SOS2EXPversion = "V98f6";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -279,14 +274,55 @@ namespace SaveOurShip2
 				"VFEA_OpportunitySite_SealedVault",
 				"VFEM_OpportunitySite_LootedVault"
 			};
+            //shuttle, archolife cosmetics
+            if (!loadedGraphics)
+            {
+                foreach (ThingDef thingToResolve in CompShuttleCosmetics.GraphicsToResolve.Keys)
+                {
+                    Graphic_Single[] graphicsResolved = new Graphic_Single[CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics.Count];
+                    Graphic_Multi[] graphicsHoverResolved = new Graphic_Multi[CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover.Count];
 
-			/*foreach (TraitDef AITrait in DefDatabase<TraitDef>.AllDefs.Where(t => t.exclusionTags.Contains("AITrait")))
+                    for (int i = 0; i < CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics.Count; i++)
+                    {
+                        Graphic_Single graphic = new Graphic_Single();
+                        GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i].texPath, ShaderDatabase.Cutout, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i].drawSize, Color.white, Color.white, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i], 0, null, "");
+                        graphic.Init(req);
+                        graphicsResolved[i] = graphic;
+                    }
+                    for (int i = 0; i < CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover.Count; i++)
+                    {
+                        Graphic_Multi graphic = new Graphic_Multi();
+                        GraphicRequest req = new GraphicRequest(typeof(Graphic_Multi), CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i].texPath, ShaderDatabase.Cutout, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i].drawSize, Color.white, Color.white, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i], 0, null, "");
+                        graphic.Init(req);
+                        graphicsHoverResolved[i] = graphic;
+                    }
+
+                    CompShuttleCosmetics.graphics.Add(thingToResolve.defName, graphicsResolved);
+                    CompShuttleCosmetics.graphicsHover.Add(thingToResolve.defName, graphicsHoverResolved);
+                }
+                foreach (ThingDef thingToResolve in CompArcholifeCosmetics.GraphicsToResolve.Keys)
+                {
+                    Graphic_Multi[] graphicsResolved = new Graphic_Multi[CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics.Count];
+                    for (int i = 0; i < CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics.Count; i++)
+                    {
+                        Graphic_Multi graphic = new Graphic_Multi();
+                        GraphicRequest req = new GraphicRequest(typeof(Graphic_Multi), CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i].texPath, ShaderDatabase.Cutout, CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i].drawSize, Color.white, Color.white, CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i], 0, null, "");
+                        graphic.Init(req);
+                        graphicsResolved[i] = graphic;
+                    }
+
+                    CompArcholifeCosmetics.graphics.Add(thingToResolve.defName, graphicsResolved);
+                }
+                loadedGraphics = true;
+            }
+
+            /*foreach (TraitDef AITrait in DefDatabase<TraitDef>.AllDefs.Where(t => t.exclusionTags.Contains("AITrait")))
             {
                 typeof(TraitDef).GetField("commonality", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(AITrait, 0);
             }*/
-			//foreach (EnemyShipDef def in DefDatabase<EnemyShipDef>.AllDefs)
-			//{
-			/*def.ConvertToSymbolTable();
+            //foreach (EnemyShipDef def in DefDatabase<EnemyShipDef>.AllDefs)
+            //{
+            /*def.ConvertToSymbolTable();
 			def.ConvertToBigString();
 			string path = Path.Combine(GenFilePaths.SaveDataFolderPath, "RecycledShips");
 			DirectoryInfo dir = new DirectoryInfo(path);
@@ -332,53 +368,10 @@ namespace SaveOurShip2
 				Scribe.ExitNode();
 				Scribe_Values.Look<string>(ref def.bigString, "bigString");
 			});*/
-			//def.ConvertFromBigString();
-			//def.ConvertFromSymbolTable();
-			//}
-		}
-		public static void SceneLoaded()
-		{
-			if (!loadedGraphics)
-			{
-				foreach (ThingDef thingToResolve in CompShuttleCosmetics.GraphicsToResolve.Keys)
-				{
-					Graphic_Single[] graphicsResolved = new Graphic_Single[CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics.Count];
-					Graphic_Multi[] graphicsHoverResolved = new Graphic_Multi[CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover.Count];
-
-					for (int i = 0; i < CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics.Count; i++)
-					{
-						Graphic_Single graphic = new Graphic_Single();
-						GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i].texPath, ShaderDatabase.Cutout, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i].drawSize, Color.white, Color.white, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics[i], 0, null, "");
-						graphic.Init(req);
-						graphicsResolved[i] = graphic;
-					}
-					for (int i = 0; i < CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover.Count; i++)
-					{
-						Graphic_Multi graphic = new Graphic_Multi();
-						GraphicRequest req = new GraphicRequest(typeof(Graphic_Multi), CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i].texPath, ShaderDatabase.Cutout, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i].drawSize, Color.white, Color.white, CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover[i], 0, null, "");
-						graphic.Init(req);
-						graphicsHoverResolved[i] = graphic;
-					}
-
-					CompShuttleCosmetics.graphics.Add(thingToResolve.defName, graphicsResolved);
-					CompShuttleCosmetics.graphicsHover.Add(thingToResolve.defName, graphicsHoverResolved);
-				}
-				foreach (ThingDef thingToResolve in CompArcholifeCosmetics.GraphicsToResolve.Keys)
-                {
-					Graphic_Multi[] graphicsResolved = new Graphic_Multi[CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics.Count];
-					for (int i = 0; i < CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics.Count; i++)
-                    {
-						Graphic_Multi graphic = new Graphic_Multi();
-						GraphicRequest req = new GraphicRequest(typeof(Graphic_Multi), CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i].texPath, ShaderDatabase.Cutout, CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i].drawSize, Color.white, Color.white, CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics[i], 0, null, "");
-						graphic.Init(req);
-						graphicsResolved[i] = graphic;
-                    }
-
-					CompArcholifeCosmetics.graphics.Add(thingToResolve.defName, graphicsResolved);
-                }
-				loadedGraphics = true;
-			}
-		}
+            //def.ConvertFromBigString();
+            //def.ConvertFromSymbolTable();
+            //}
+        }
 		public static void UseCustomSplashScreen()
 		{
 			((UI_BackgroundMain)UIMenuBackgroundManager.background).overrideBGImage = ResourceBank.Splash;

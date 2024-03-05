@@ -11,7 +11,8 @@ using Verse.AI.Group;
 
 namespace RimWorld
 {
-    [StaticConstructorOnStartup]
+    //dep old SCM salvage
+    /*[StaticConstructorOnStartup]
     class ShipCombatManager
     {
         //obsolete
@@ -100,5 +101,5 @@ namespace RimWorld
                     Salvage.Add(thing);
             }
         }
-    }
+    }*/
 }

@@ -1513,7 +1513,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(ShipCountdown), "InitiateCountdown", new Type[] { typeof(Building) })]
+	/*[HarmonyPatch(typeof(ShipCountdown), "InitiateCountdown", new Type[] { typeof(Building) })]
 	public static class SetShipGroundMap
 	{
 		public static bool Prefix(Building launchingShipRoot)
@@ -1521,7 +1521,7 @@ namespace SaveOurShip2
 			ShipInteriorMod2.shipOriginRoot = launchingShipRoot;
 			return true;
 		}
-	}
+	}*/
 
 	[HarmonyPatch(typeof(ShipCountdown), "CountdownEnded")]
 	public static class LaunchShipToSpace
@@ -1530,27 +1530,34 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.SaveShipFlag)
 			{
-				ShipInteriorMod2.SaveShipToFile((Building_ShipBridge)ShipInteriorMod2.shipOriginRoot);
-			}
-			else if (ShipInteriorMod2.shipOriginRoot != null)
+				ShipInteriorMod2.SaveShipToFile((Building_ShipBridge)ShipCountdown.shipRoot);
+                //ShipInteriorMod2.shipOriginRoot = null;
+            }
+			else// if (ShipInteriorMod2.shipOriginRoot != null)
 			{
-				ScreenFader.StartFade(Color.clear, 1f);
-				IntVec3 size = ShipInteriorMod2.shipOriginRoot.Map.Size;
+				Map originMap = ShipCountdown.shipRoot.Map;
+
+                ScreenFader.StartFade(Color.clear, 1f);
+				IntVec3 size = originMap.Size;
                 if (size.x < Find.World.info.initialMapSize.x && size.y < Find.World.info.initialMapSize.y)
 				{
 					size = Find.World.info.initialMapSize;
 				}
 				Map map = ShipInteriorMod2.GeneratePlayerShipMap(size);
-
-				ShipInteriorMod2.MoveShip(ShipInteriorMod2.shipOriginRoot, map, IntVec3.Zero);
-				var mapComp = map.GetComponent<ShipHeatMapComp>();
-				//mapComp.Altitude = 100;
-				//mapComp.Ascend = 1;
-				//engines on
+				ShipInteriorMod2.MoveShip(ShipCountdown.shipRoot, map, IntVec3.Zero);
                 map.weatherManager.TransitionTo(ResourceBank.WeatherDefOf.OuterSpaceWeather);
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"),
+                //ShipInteriorMod2.shipOriginRoot = null;
+                //position WO over origin
+                /*((WorldObjectOrbitingShip)map.Parent).drawPos = originMap.Parent.DrawPos;
+                var mapComp = map.GetComponent<ShipHeatMapComp>();
+				mapComp.Altitude = 110;
+				mapComp.Heading = 1;
+				mapComp.ToggleEngines = true;*/
+                //if (Find.TickManager.Paused)
+                //    Find.TickManager.TogglePaused();
+                //CameraJumper.TryJump(map.Center, map);
+                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"),
 					TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
-				ShipInteriorMod2.shipOriginRoot = null;
 			}
 			return false;
 		}
@@ -1628,7 +1635,7 @@ namespace SaveOurShip2
                 foreach (Thing t in ___map.thingGrid.ThingsAt(c))
                 {
                     var shipPart = t.TryGetComp<CompSoShipPart>();
-                    if (shipPart != null && (shipPart.Props.isPlating || shipPart.Props.isHardpoint || shipPart.Props.isHull))
+                    if (shipPart != null && shipPart.Props.AnyPart)
                     {
                         shipPart.SetShipTerrain(c);
                         break;

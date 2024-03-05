@@ -97,14 +97,14 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V98f6";
+        public static readonly string SOS2EXPversion = "V98f7";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
         public static readonly float crittersleepBodySize = 0.7f;
 		public static bool loadedGraphics = false;
 		public static bool AirlockBugFlag = false; //see CompSoShipPart
-        public static Building shipOriginRoot = null; //used for patched original launch code
+        //public static Building shipOriginRoot = null; //used for patched original launch code
 		public static Map shipOriginMap = null; //used to check for shipmove map size problem, reset after move
         public static bool SaveShipFlag = false; //used in patch to trigger ending scene
         public static bool LoadShipFlag = false; //set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap

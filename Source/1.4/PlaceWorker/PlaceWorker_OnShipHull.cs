@@ -17,7 +17,7 @@ namespace RimWorld
 					if (t is Building b && b.Faction == Faction.OfPlayer)
 					{
 						var shipPart = b.TryGetComp<CompSoShipPart>();
-						if (shipPart != null && shipPart.Props.isPlating)
+						if (shipPart != null && (shipPart.Props.isPlating || (shipPart.Props.isHardpoint && def.defName.Contains("Turret"))))
 						{
 							hasPlating = true;
 						}

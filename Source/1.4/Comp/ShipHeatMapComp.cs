@@ -144,7 +144,7 @@ namespace RimWorld
             Scribe_Values.Look<bool>(ref BurnUpSet, "BurnUpSet", false);
             Scribe_Values.Look<bool>(ref ToggleEngines, "ToggleEngines", false);
             Scribe_Values.Look<float>(ref Altitude, "Altitude", 1100);
-            Scribe_Values.Look<int>(ref Ascend, "Ascend", 0);
+            Scribe_Values.Look<int>(ref Heading, "Heading");
             Scribe_Values.Look<int>(ref BurnTimer, "BurnTimer");
             Scribe_Values.Look<int>(ref LastAttackTick, "LastShipBattleTick", 0);
             Scribe_Values.Look<int>(ref LastBountyRaidTick, "LastBountyRaidTicks", 0);
@@ -153,7 +153,6 @@ namespace RimWorld
             {
                 //SC only - both maps
                 targetMapComp = null;
-                Scribe_Values.Look<int>(ref Heading, "Heading");
                 Scribe_Values.Look<bool>(ref Scanned, "Scanned");
                 Scribe_Values.Look<int>(ref BuildingCountAtStart, "BuildingCountAtStart");
                 Scribe_Values.Look<bool>(ref Maintain, "Maintain");
@@ -188,7 +187,6 @@ namespace RimWorld
         public int lastPDTick = 0; //mapwide PD tick delay
         public int BuildingCountAtStart = 0; //AI retreat param
         public int BuildingsCount;
-        public int Heading; //+closer, -apart
         public float MapEnginePower;
         public bool Maintain = false; //map will try to maintain RangeToKeep
         public float RangeToKeep;
@@ -292,7 +290,7 @@ namespace RimWorld
         public bool ToggleEngines = false; //OOC for events
         public int BurnTimer = 0; //OOC for events
         public float Altitude = 1100;
-        public int Ascend = 0;
+        public int Heading; //in combat: +closer, -apart, OOC from/to
         public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
         List<Building> cores = new List<Building>(); //td recheck use
         public bool IsPlayerShipMap => map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting;
@@ -891,10 +889,6 @@ namespace RimWorld
             foreach (SoShipCache ship in ShipsOnMapNew.Values)
             {
                 ship.Tick();
-                /*if (ship.Index % 100 == Find.TickManager.TicksGame)
-                {
-                    ship.RareTick();
-                }*/
                 if (!ship.Area.Any())
                     shipToRemove.Add(ship);
             }
@@ -908,26 +902,8 @@ namespace RimWorld
             }
             if (!map.IsSpace())
                 return;
-            /*if (Ascend != 0)
-            {
-                if (Ascend > 0)
-                    Altitude += 0.1f;
-                else
-                    Altitude -= 0.1f;
 
-                ShipInteriorMod2.WorldComp.renderedThatAlready = false;
-                if (Altitude > 1100) //orbit reached - if not home, warn orbit fail, allow to move to home
-                {
-                    Altitude = 1100;
-                    Ascend = 0;
-                }
-                if (Altitude < 100) //ground reached - warn landing, if timer out, crash ship - new map, damage
-                {
-                    Altitude = 100;
-                    Ascend = 0;
-                }
-            }*/
-            else if (InCombat)
+            if (InCombat)
             {
                 foreach (int index in ShipsToMove)
                 {
@@ -1010,6 +986,36 @@ namespace RimWorld
                     return;
                 }
             }
+            /*else if (Heading != 0) //altitude
+            {
+                if (Heading > 0)
+                {
+                    Altitude += 0.1f * MapEnginePower;
+                }
+                else
+                {
+                    Altitude -= 0.1f * MapEnginePower;
+                }
+
+                ShipInteriorMod2.WorldComp.renderedThatAlready = false;
+                if (Altitude > 1100) //orbit reached - if not home, warn orbit fail, allow to move to home
+                {
+                    Altitude = 1100;
+                    Heading = 0;
+                    MapFullStop();
+                    if (map.Parent.def != ResourceBank.WorldObjectDefOf.ShipOrbiting)
+                    {
+                        //allow move to home - separate gizmo on bridge
+
+                        //warn
+                    }
+                }
+                else if (Altitude < 110) //ground reached - warn landing, if timer out, crash ship - new map, damage
+                {
+                    Altitude = 110;
+                    Heading = 0;
+                }
+            }*/
             if (callSlowTick) //origin only: call both slow ticks
             {
                 SlowTick();
@@ -1023,26 +1029,6 @@ namespace RimWorld
         }
         public void SlowTick()
         {
-            /*if (Ascend != 0)
-            {
-                if (Ascend > 0) //consume fuel
-                {
-                    //foreach (SoShipCache ship in ShipsOnMapNew.Values)
-                }
-                else //consume fuel at start and end
-                {
-
-                }
-                foreach (IntVec3 v in map.AllCells.Except(MapShipCells.Keys)) //kill anything off ship
-                {
-                    foreach (Thing t in v.GetThingList(map))
-                    {
-                        if (t is Pawn p)
-                            p.Kill(new DamageInfo(DamageDefOf.Crush, 10000));
-                        t.Destroy();
-                    }
-                }
-            }*/
             if (InCombat)
             {
                 if (Maintain) //distance maintain
@@ -1068,7 +1054,7 @@ namespace RimWorld
                 }
                 //engine power calcs
                 bool anyShipCanMove = AnyShipCanMove();
-                if (anyShipCanMove && Heading != 0) //can we move and should we move
+                if (AnyShipCanMove() && Heading != 0) //can we move and should we move
                 {
                     MapEnginesOn();
                     MapEnginePower *= 40f;
@@ -1319,8 +1305,49 @@ namespace RimWorld
                     }
                 }
             }
-            else
+            else //OOC - events
             {
+                /*if (Heading != 0)
+                {
+                    if (Heading > 0) //consume fuel, if not enough engine power, lose altitude
+                    {
+                        //reduce durration per engine vs mass
+                        if (AnyShipCanMove() && ToggleEngines) //can we move and should we move
+                        {
+                            MapEnginesOn();
+                            Log.Message(""+ MapEnginePower);
+                            MapEnginePower *= 400f;
+                            /*if (BurnTimer > cond.TicksLeft)
+                            {
+                                cond.End();
+                                BurnTimer = 0;
+                                MapFullStop();
+                            }
+                            else
+                            {
+                                BurnTimer += (int)MapEnginePower;
+                                //Log.Message("ticks remain " + map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris).TicksLeft);
+                            }
+                        }
+                        else
+                        {
+                            MapFullStop();
+                        }
+                    }
+                    else //consume fuel at start and end
+                    {
+
+                    }
+                    foreach (IntVec3 v in map.AllCells.Except(MapShipCells.Keys)) //kill anything off ship
+                    {
+                        foreach (Thing t in v.GetThingList(map))
+                        {
+                            if (t is Pawn p)
+                                p.Kill(new DamageInfo(DamageDefOf.Crush, 10000));
+                            t.Destroy();
+                        }
+                    }
+                }*/
                 if (Find.TickManager.TicksGame % 6000 == 0) //very slow checks - decomp, bounty
                 {
                     foreach (SoShipCache ship in ShipsOnMapNew.Values) //decompresson
@@ -1359,8 +1386,7 @@ namespace RimWorld
                 if (cond != null)//map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
                 {
                     //reduce durration per engine vs mass
-                    bool anyShipCanMove = AnyShipCanMove();
-                    if (anyShipCanMove && ToggleEngines) //can we move and should we move
+                    if (AnyShipCanMove() && ToggleEngines) //can we move and should we move
                     {
                         MapEnginesOn();
                         MapEnginePower *= 40000f;
@@ -1482,13 +1508,10 @@ namespace RimWorld
         public void ShipBuildingsOff() //td should no longer be needed for engines
         {
             //td destroy all proj?
-            foreach (SoShipCache ship in OriginMapComp.ShipsOnMapNew.Values)
-            {
-                ship.EnginesOff();
-            }
+            OriginMapComp.MapFullStop();
+            TargetMapComp.MapFullStop();
             foreach (SoShipCache ship in OriginMapComp.TargetMapComp.ShipsOnMapNew.Values)
             {
-                ship.EnginesOff();
                 foreach (CompShipCombatShield s in ship.Shields)
                 {
                     s.flickComp.SwitchIsOn = false;

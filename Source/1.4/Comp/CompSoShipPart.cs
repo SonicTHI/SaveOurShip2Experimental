@@ -112,7 +112,7 @@ namespace RimWorld
             isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
             isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
             isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
-            if (!respawningAfterLoad && (Props.isPlating || Props.isHardpoint || Props.isHull))
+            if (!respawningAfterLoad && Props.AnyPart)
             {
                 if (!ShipInteriorMod2.AirlockBugFlag)
                 {
@@ -275,8 +275,9 @@ namespace RimWorld
         public override void PostDeSpawn(Map map) //proper parts only
         {
             base.PostDeSpawn(map);
-            if (!(Props.isPlating || Props.isHardpoint || Props.isHull))
+            if (!Props.AnyPart)
                 return;
+
             foreach (IntVec3 pos in cellsUnder)
             {
                 bool stillHasTile = false;

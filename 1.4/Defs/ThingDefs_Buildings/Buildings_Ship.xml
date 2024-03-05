@@ -802,7 +802,6 @@
 		<description>Support structure for attaching buildings and turrets to a ship's exterior. Anything built atop this will be considered part of the ship.\n\nIntegrated nano-composite armor reduces damage to turrets placed atop this hardpoint by half.</description>
 		<comps>
 			<li Class="CompProperties_SoShipPart">
-				<isPlating>true</isPlating>
 				<isHardpoint>true</isHardpoint>
 			</li>
 			<li>
@@ -810,7 +809,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipHull</li>
+			<li>PlaceWorker_ShipPlating</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>

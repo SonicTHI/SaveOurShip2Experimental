@@ -489,7 +489,7 @@ namespace RimWorld
                     yield return endTarget;
                 }*/
                 //engine burn
-                else if (Map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
+                else if (Map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris)) //mapComp.Heading != 0 || 
                 {
                     List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove()).ToList();
                     bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
@@ -498,9 +498,15 @@ namespace RimWorld
                         toggleAction = delegate
                         {
                             if (anyEngineOn)
+                            {
                                 mapComp.ToggleEngines = false;
+
+                            }
                             else
+                            {
                                 mapComp.ToggleEngines = true;
+                                //mapComp.Heading = 1;
+                            }
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEngines"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEnginesDesc"),

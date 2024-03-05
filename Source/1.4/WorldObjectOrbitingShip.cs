@@ -33,6 +33,7 @@ namespace RimWorld
 
         public bool IsShip => def == ResourceBank.WorldObjectDefOf.ShipEnemy || def == ResourceBank.WorldObjectDefOf.WreckSpace;
 
+        public Vector3 drawPos;
         public override Vector3 DrawPos
         {
             get

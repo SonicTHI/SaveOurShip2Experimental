@@ -6,7 +6,7 @@ namespace RimWorld
 {
 	public class PlaceWorker_ShipHull : PlaceWorker
 	{
-		//not under mountain
+		//not under mountain, on hardpoints or bps
 		public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{
 			CellRect occupiedRect = GenAdj.OccupiedRect(loc, rot, def.Size);
@@ -18,8 +18,12 @@ namespace RimWorld
                 {
                     if (t is Building b)
                     {
-                        if (b is Building_SteamGeyser)
+                        if (b is Building_SteamGeyser || (b.TryGetComp<CompSoShipPart>()?.Props.isHardpoint ?? false))
                             return false;
+                    }
+                    else if (t is Blueprint_Build) //td no idea why this cant be checked for def.shipPart, etc.
+                    {
+                        return false;
                     }
                 }
             }

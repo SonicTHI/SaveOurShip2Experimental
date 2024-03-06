@@ -1056,8 +1056,7 @@ namespace RimWorld
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCaptured"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCapturedDesc"), LetterDefOf.PositiveEvent);
                 ShipInteriorMod2.WorldComp.Unlocks.Add("ArchotechSpore");
             }
-            if (pawn != null)
-                pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
+            pawn?.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
 
             mapComp.ShipsOnMapNew[shipIndex].Capture(Faction.OfPlayer);
             if (mapComp.InCombat)

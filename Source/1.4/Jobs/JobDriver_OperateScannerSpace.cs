@@ -14,7 +14,8 @@ namespace RimWorld
         protected override IEnumerable<Toil> MakeNewToils()
         {
             CompLongRangeMineralScannerSpace scannerComp = this.job.targetA.Thing.TryGetComp<CompLongRangeMineralScannerSpace>();
-            this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
+            if (TargetA != LocalTargetInfo.Invalid)
+                this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
             this.FailOnBurningImmobile(TargetIndex.A);
             this.FailOn(() => !scannerComp.CanUseNow);
             yield return Toils_Goto.GotoThing(TargetIndex.A, PathEndMode.InteractionCell);
@@ -24,7 +25,7 @@ namespace RimWorld
                 Pawn actor = work.actor;
                 Building building = (Building)actor.CurJob.targetA.Thing;
                 scannerComp.Used(actor);
-                actor.skills.Learn(SkillDefOf.Intellectual, 0.035f, false);
+                actor.skills.Learn(SkillDefOf.Intellectual, 0.035f);
                 actor.GainComfortFromCellIfPossible();
             };
             //work.PlaySustainerOrSound(scannerComp.Props.soundWorking, 1f);

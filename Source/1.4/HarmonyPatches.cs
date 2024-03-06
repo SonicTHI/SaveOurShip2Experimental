@@ -1849,9 +1849,9 @@ namespace SaveOurShip2
 				}
 			}
 		}
-	}
+    }
 
-	[HarmonyPatch(typeof(ShortCircuitUtility), nameof(ShortCircuitUtility.DoShortCircuit))]
+    [HarmonyPatch(typeof(ShortCircuitUtility), nameof(ShortCircuitUtility.DoShortCircuit))]
 	public static class NoShortCircuitCapacitors
 	{
 		static bool Prepare()

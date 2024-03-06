@@ -97,7 +97,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public static readonly string SOS2EXPversion = "V98f7";
+        public static readonly string SOS2EXPversion = "V98f8";
         public static readonly int SOS2ReqCurrentMinor = 4;
         public static readonly int SOS2ReqCurrentBuild = 3704;
 
@@ -1617,7 +1617,6 @@ namespace SaveOurShip2
 			}
 			HashSet<Thing> toSave = new HashSet<Thing>();
 			List<Thing> toDestroy = new List<Thing>();
-			List<CompPower> toRePower = new List<CompPower>();
 			List<Zone> zonesToCopy = new List<Zone>();
 			List<Room> roomsToTemp = new List<Room>();
 			List<Tuple<IntVec3, float>> posTemp = new List<Tuple<IntVec3, float>>();
@@ -1935,7 +1934,7 @@ namespace SaveOurShip2
 							spawnThing.Position += adjustment;
 						try
 						{
-							if (!spawnThing.Destroyed && spawnThing.TryGetComp<CompShipLight>()==null)
+							if (!spawnThing.Destroyed && spawnThing.TryGetComp<CompShipLight>() == null)
 							{
 								spawnThing.SpawnSetup(targetMap, false);
 							}
@@ -2084,16 +2083,19 @@ namespace SaveOurShip2
 				}
 			}
 
-            if (sourceMap != targetMap)
-            {
-                //pawns to lord
-                foreach (Pawn p in pawns)
-                    AddPawnToLord(targetMap, p);
+			if (sourceMap != targetMap)
+			{
+				//pawns to lord
+				foreach (Pawn p in pawns)
+					AddPawnToLord(targetMap, p);
 
                 //power
+                ship.ForceRePower = 2;
                 sourceMap.powerNetManager.UpdatePowerNetsAndConnections_First();
                 targetMap.powerNetManager.UpdatePowerNetsAndConnections_First();
             }
+			else
+				ship.ForceRePower = 1;
 
             //heat
             targetMap.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
@@ -2127,7 +2129,7 @@ namespace SaveOurShip2
 			//other faction or on wreck map
             if (mapComp.ShipLord == null)
             {
-                mapComp.ShipLord = LordMaker.MakeNewLord(p.Faction, new LordJob_DefendShip(), map);
+                mapComp.ShipLord = LordMaker.MakeNewLord(p.Faction, new LordJob_DefendShip(p.Faction, map.Center), map);
             }
             if (p.Faction == mapComp.ShipLord.faction)
             {
@@ -2135,7 +2137,7 @@ namespace SaveOurShip2
                 return;
             }
 			//fallback
-            Lord lord = LordMaker.MakeNewLord(p.Faction, new LordJob_DefendShip(), map);
+            Lord lord = LordMaker.MakeNewLord(p.Faction, new LordJob_DefendShip(p.Faction, map.Center), map);
             lord.AddPawn(p);
         }
         public static void SaveShip(Building_ShipBridge core, string file)

@@ -245,6 +245,45 @@ namespace RimWorld
             }
         }
         //shipmove
+        public byte ForceRePower = 0; //0 - no, 1 - same map, 2 - different map
+
+        public void TickForceRePower()
+        {
+            if (Core == null || Core.PowerComp == null)
+            {
+                ForceRePower = 0;
+                return;
+            }
+            if (Core.PowerComp.PowerNet == null)
+                return;
+
+            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ForceRePower mode: " + ForceRePower);
+            if (ForceRePower == 2) //reconnect
+            {
+                List<CompPower> pComps = new List<CompPower>();
+                foreach (CompPower p in Core.PowerComp.PowerNet.connectors)
+                {
+                    pComps.Add(p);
+                }
+                foreach (CompPower p in pComps)
+                {
+                    p.TryManualReconnect();
+                }
+            }
+            //repower
+            foreach (CompPowerTrader p in Core.PowerComp.PowerNet.powerComps)
+            {
+                if (!p.PowerOn && FlickUtility.WantsToBeOn(p.parent) && !p.parent.IsBrokenDown())
+                {
+                    PowerNet.partsWantingPowerOn.Add(p);
+                }
+            }
+            foreach (CompPowerTrader p in PowerNet.partsWantingPowerOn)
+            {
+                p.PowerOn = true;
+            }
+            ForceRePower = 0;
+        }
         public void CreateShipSketchIfFuelPct(float fuelPercentNeeded, Map map, byte rot = 0, bool atmospheric = false)
         {
             if (HasPilotRCSAndFuel(fuelPercentNeeded, atmospheric))
@@ -801,6 +840,10 @@ namespace RimWorld
                 FloatAndDestroy(area);
             }
             DetachedShipAreas.Clear();
+            if (ForceRePower > 0)
+            {
+                TickForceRePower();
+            }
         }
         public void CheckForDetach(List<IntVec3> areaDestroyed)
         {

@@ -172,6 +172,8 @@ namespace SaveOurShip2
         public static class JobDefOf
         {
             public static JobDef FleeVacuum;
+            public static JobDef BreachAirlock;
+            //public static JobDef DefendBreacher;
         }
         
         [DefOf]

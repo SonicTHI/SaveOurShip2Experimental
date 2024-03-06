@@ -96,6 +96,8 @@
     <Compile Include="Comp\CompProperties_SoShipLight.cs" />
     <Compile Include="Comp\CompSoShipLight.cs" />
     <Compile Include="Extensions\PawnExtensions.cs" />
+    <Compile Include="Jobs\JobDriver_DefendBreacher.cs" />
+    <Compile Include="Jobs\JobGiver_AIDefendBreacher.cs" />
     <Compile Include="PlaceWorker\PlaceWorker_ShipBay.cs" />
     <Compile Include="Ships\PirateShip.cs" />
     <Compile Include="Ships\AttackableShip.cs" />

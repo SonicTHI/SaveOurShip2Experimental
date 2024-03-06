@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SaveOurShip2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,7 +64,7 @@ namespace RimWorld
             if (thing != null)
 			{
 				//Log.Message("Breachjob for:" + thing);
-				Job job = JobMaker.MakeJob(DefDatabase<JobDef>.GetNamed("BreachAirlock"), thing);
+				Job job = JobMaker.MakeJob(ResourceBank.JobDefOf.BreachAirlock, thing);
                 job.expiryInterval = 2000;
                 job.checkOverrideOnExpire = true;
                 return job;

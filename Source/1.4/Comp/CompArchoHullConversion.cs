@@ -10,24 +10,18 @@ using RimworldMod;
 
 namespace RimWorld
 {
-	[StaticConstructorOnStartup]
 	class CompArchoHullConversion : ThingComp
     {
-		private int age;
+        public bool OptimizeMatter = true;
+        private int ticksToConversion;
+        private int age;
+        public float AgeDays => (float)age / 60000f;
 
-		private int ticksToConversion;
-
-		protected CompProperties_ArchoHullConversion Props => (CompProperties_ArchoHullConversion)props;
-
-		public float AgeDays => (float)age / 60000f;
-
-		public float CurrentRadius => Props.radiusPerDayCurve.Evaluate(AgeDays);
-
-		Dictionary<ThingDef, ThingDef> Conversions = new Dictionary<ThingDef, ThingDef>();
-
-		ResearchProjectDef OptimizationProject = ResearchProjectDef.Named("ArchotechHullConversion");
-
-		public bool OptimizeMatter = true;
+        public ShipHeatMapComp mapComp;
+        ResearchProjectDef OptimizationProject = ResearchProjectDef.Named("ArchotechHullConversion");
+        Dictionary<ThingDef, ThingDef> Conversions = new Dictionary<ThingDef, ThingDef>();
+        protected CompProperties_ArchoHullConversion Props => (CompProperties_ArchoHullConversion)props;
+        public float CurrentRadius => Props.radiusPerDayCurve.Evaluate(AgeDays);
 
         public override void PostExposeData()
 		{
@@ -63,11 +57,12 @@ namespace RimWorld
 			Conversions.Add(ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("ShipInside_PassiveVentArchotech"));
 			Conversions.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockArchotech"));
 			Conversions.Add(ThingDef.Named("ShipHullTileMech"), ThingDef.Named("ShipHullTileArchotech"));
-		}
+            mapComp = parent?.Map?.GetComponent<ShipHeatMapComp>();
+        }
 
 		public override void CompTick()
 		{
-			if (!OptimizeMatter || !parent.Spawned || !OptimizationProject.IsFinished || this.parent.Map.IsSpace() && this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat || this.parent.Map.mapPawns.AllPawns.Where(p => p.HostileTo(Faction.OfPlayer)).Any())
+			if (!OptimizeMatter || !parent.Spawned || !OptimizationProject.IsFinished || parent.Map.IsSpace() && parent.Map.GetComponent<ShipHeatMapComp>().InCombat || parent.Map.mapPawns.AllPawns.Where(p => p.HostileTo(Faction.OfPlayer)).Any())
 			{
 				return;
 			}
@@ -89,21 +84,17 @@ namespace RimWorld
 					ticksToConversion = 1;
 					num3 = GenMath.RoundRandom(1f / num2);
 				}
-				bool anyConverted = false;
                 for (int i = 0; i < num3; i++)
 				{
-					if (ConvertHullTile(currentRadius))
-                        anyConverted = true;
+					ConvertHullTile(currentRadius);
                 }
-				if (!anyConverted)
-                    OptimizeMatter = false;
             }
 		}
 
 		private bool ConvertHullTile(float radius)
         {
 			IntVec3 c = parent.Position + (Rand.InsideUnitCircleVec3 * radius).ToIntVec3();
-			if (!c.InBounds(parent.Map))
+			if (!c.InBounds(parent.Map) || mapComp.ShipIndexOnVec(parent.Position) != mapComp.ShipIndexOnVec(c))
 			{
 				return false;
 			}

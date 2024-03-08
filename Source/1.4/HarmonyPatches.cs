@@ -348,7 +348,7 @@ namespace SaveOurShip2
             {
                 Widgets.DrawHighlight(rect2);
             }
-            TooltipHandler.TipRegionByKey(rect2, "SOS2EXP " + ShipInteriorMod2.SOS2EXPversion + "\nThis tag can be disabled in mod options.");
+            TooltipHandler.TipRegionByKey(rect2, TranslatorFormattedStringExtensions.Translate("SoS.Settings.ShowVersionUI.Tip"));
             Widgets.Label(rect2, text);
             Text.Anchor = TextAnchor.UpperLeft;
             baseY -= 26f;

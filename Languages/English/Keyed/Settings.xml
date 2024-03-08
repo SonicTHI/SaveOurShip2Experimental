@@ -2,6 +2,7 @@
 <LanguageData>
 	<SoS.Settings.ShowVersionUI>SOS2EXP {0}</SoS.Settings.ShowVersionUI>
 	<SoS.Settings.ShowVersionUI.Desc>If checked, will show SOS2 version on UI on maps in space.</SoS.Settings.ShowVersionUI.Desc>
+	<SoS.Settings.ShowVersionUI.Tip>This tag can be disabled in mod options.</SoS.Settings.ShowVersionUI.Tip>
 	<SoS.Settings.RenderPlanet>Dynamic planet rendering</SoS.Settings.RenderPlanet>
 	<SoS.Settings.RenderPlanet.Desc>If checked, orbital maps will show a day/night cycle on the planet. Disable this option if the game runs slowly in space.</SoS.Settings.RenderPlanet.Desc>
 	

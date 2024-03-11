@@ -13,6 +13,7 @@
 			<lifeExpectancy>5000</lifeExpectancy>
 			<herdMigrationAllowed>false</herdMigrationAllowed>
 		</race>
+		<tradeability>Sellable</tradeability>
 	</ThingDef>
 	<PawnKindDef ParentName="AnimalKindBase" Name="ArchoAnimalKindBase" Abstract="True">
 		<canArriveManhunter>false</canArriveManhunter>
@@ -32,6 +33,7 @@
 			<lifeExpectancy>5000</lifeExpectancy>
 			<herdMigrationAllowed>false</herdMigrationAllowed>
 		</race>
+		<tradeability>Sellable</tradeability>
 	</ThingDef>
 	<PawnKindDef ParentName="BigBirdKindBase" Name="ArchoBigBirdKindBase" Abstract="True">
 		<canArriveManhunter>false</canArriveManhunter>
@@ -71,6 +73,7 @@
 				<wakeUpOnDamage>true</wakeUpOnDamage>
 			</li>
 		</comps>
+		<tradeability>Sellable</tradeability>
 	</ThingDef>
 
 	<!-- Archocat -->

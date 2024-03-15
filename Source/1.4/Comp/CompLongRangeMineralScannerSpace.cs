@@ -1,6 +1,6 @@
 ﻿using RimWorld.Planet;
 using RimWorld.QuestGen;
-using RimworldMod;
+
 using SaveOurShip2;
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace RimWorld
             {
                 if (!parent.Spawned || powerComp == null || !powerComp.PowerOn || parent.Faction != Faction.OfPlayer || !parent.Map.IsSpace())
                     return false;
-                return scanShips || scanSites || mapComp.InCombat;
+                return scanShips || scanSites || mapComp.ShipMapState == ShipMapState.inCombat;
             }
         }
 
@@ -53,13 +53,13 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            this.powerComp = this.parent.GetComp<CompPowerTrader>();
-            this.mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
+            powerComp = parent.GetComp<CompPowerTrader>();
+            mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
         }
 
         public void Used(Pawn worker)
         {
-            if (!this.CanUseNow)
+            if (!CanUseNow)
             {
                 Log.Error("Used while CanUseNow is false.");
             }
@@ -69,22 +69,22 @@ namespace RimWorld
             if (Find.TickManager.TicksGame % 60 == 0)
             {
                 float statValue = worker.GetStatValue(StatDefOf.ResearchSpeed, true);
-                if (!mapComp.InCombat)
+                if (mapComp.ShipMapState == ShipMapState.inCombat)
+                {
+                    if (Find.TickManager.TicksGame % 300 == 0 && Rand.RangeInclusive(0, 21) > statValue)
+                        ScannedRoom();
+                }
+                else
                 {
                     float rate = findRate;
                     if (mapComp.Cloaks.Any(c => c.active))
                         rate /= 4;
-                    this.daysWorkingSinceLastMinerals += 60 * statValue / rate;
-                    float mtb = this.Props.mtbDays / statValue;
-                    if (this.daysWorkingSinceLastMinerals >= this.Props.guaranteedToFindLumpAfterDaysWorking || Rand.MTBEventOccurs(mtb, 40000f, 60f))
+                    daysWorkingSinceLastMinerals += 60 * statValue / rate;
+                    float mtb = Props.mtbDays / statValue;
+                    if (daysWorkingSinceLastMinerals >= Props.guaranteedToFindLumpAfterDaysWorking || Rand.MTBEventOccurs(mtb, 40000f, 60f))
                     {
-                        this.FoundMinerals(worker);
+                        FoundMinerals(worker);
                     }
-                }
-                else if (Find.TickManager.TicksGame % 300 == 0)
-                {
-                    if (Rand.RangeInclusive(0,21) > statValue)
-                        ScannedRoom();
                 }
             }
         }
@@ -125,7 +125,7 @@ namespace RimWorld
                 int fuelCost = Rand.RangeInclusive((int)Props.minShuttleFuelPercent, (int)Props.maxShuttleFuelPercent);
                 slate.Set<int>("fuelCost", fuelCost, false);
                 slate.Set<float>("radius", Rand.Range(120f, 180f), false);
-                slate.Set<float>("theta", Rand.Range(((WorldObjectOrbitingShip)this.parent.Map.Parent).theta - 0.25f, ((WorldObjectOrbitingShip)this.parent.Map.Parent).theta + 0.25f), false);
+                slate.Set<float>("theta", Rand.Range(((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta - 0.25f, ((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta + 0.25f), false);
                 slate.Set<float>("phi", Rand.Range(-1f, 1f), false);
                 for (int i = 0; i < Find.World.grid.TilesCount; i++)
                 {
@@ -278,9 +278,9 @@ namespace RimWorld
                         defaultLabel = "Dev: Find site now",
                         action = delegate
                         {
-                            if (!mapComp.InCombat)
+                            if (mapComp.ShipMapState == ShipMapState.nominal)
                                 this.FoundMinerals(PawnsFinder.AllMaps_FreeColonists.FirstOrDefault<Pawn>());
-                            else
+                            else if(mapComp.ShipMapState == ShipMapState.inCombat)
                                 ScannedRoom();
                         }
                     };

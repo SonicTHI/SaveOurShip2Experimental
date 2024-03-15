@@ -1,12 +1,11 @@
-﻿using RimworldMod;
-using SaveOurShip2;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -32,7 +31,7 @@ namespace RimWorld
 
                 if (parent.IsHashIntervalTick(600)) //no archo without spore, purr
                 {
-					if (parent.Faction == Faction.OfPlayer)
+					if (parent.Faction == Faction.OfPlayer && ModSettings_SoS.archoRemove)
                     {
                         bool hasSpore = false;
                         foreach (Map m in Find.Maps)

@@ -25,7 +25,7 @@ namespace RimWorld
                 PsychicDroneStarted = true;
                 Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelBlackBoxMissionPsychic"), TranslatorFormattedStringExtensions.Translate("LetterBlackBoxMissionPsychic"), LetterDefOf.NegativeEvent);
                 SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(this.parent.Map);
-                typeof(CompCauseGameCondition_PsychicEmanation).GetField("droneLevel", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(this.parent.GetComp<CompCauseGameCondition_PsychicEmanation>(), PsychicDroneLevel.BadExtreme);
+                parent.GetComp<CompCauseGameCondition_PsychicEmanation>().droneLevel = PsychicDroneLevel.BadExtreme;
             }
             if (!GreetedColonists && Find.TickManager.TicksGame % 59 == 0)
             {

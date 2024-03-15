@@ -29,7 +29,7 @@ namespace RimWorld
                         tornadoes.Add((Tornado)t);
                 }
                 foreach (Tornado t in tornadoes)
-                    typeof(Tornado).GetField("ticksLeftToDisappear", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(t, 1);
+                    t.ticksLeftToDisappear = 1;
             }
             this.parent.Destroy();
         }

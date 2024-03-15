@@ -6,7 +6,7 @@ using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using SaveOurShip2;
-using RimworldMod;
+
 
 namespace RimWorld
 {
@@ -84,7 +84,7 @@ namespace RimWorld
                 }
                 yield return launch;
                 //direct send to enemy ship
-                if (this.parent.Map.Parent is WorldObjectOrbitingShip && this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat)
+                if (this.parent.Map.Parent is WorldObjectOrbitingShip && this.parent.Map.GetComponent<ShipHeatMapComp>().ShipMapState == ShipMapState.inCombat)
                 {
                     Command_Action launchDirect = new Command_Action();
                     launchDirect.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShuttleCommandLaunchGroup");
@@ -216,7 +216,7 @@ namespace RimWorld
             {
                 Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, null, delegate (GlobalTargetInfo target)
                 {
-                    if (!target.IsValid || refuelComp == null || refuelComp.FuelPercentOfMax == 1.0f || (target.WorldObject is WorldObjectOrbitingShip && mapComp.InCombat && parent.Map == mapComp.OriginMapComp.ShipCombatTargetMap && refuelComp.FuelPercentOfMax >= 0.25f))
+                    if (!target.IsValid || refuelComp == null || refuelComp.FuelPercentOfMax == 1.0f || (target.WorldObject is WorldObjectOrbitingShip && mapComp.ShipMapState == ShipMapState.inCombat && parent.Map == mapComp.OriginMapComp.ShipCombatTargetMap && refuelComp.FuelPercentOfMax >= 0.25f))
                     {
                         return null;
                     }
@@ -354,7 +354,7 @@ namespace RimWorld
                         return true;
                     }
                     //only pods incombat if enemy t/w above
-                    else if (!ModSettings_SoS.easyMode && mapComp.InCombat && mapComp.TargetMapComp.MapEnginePower > 0.02f)
+                    else if (!ModSettings_SoS.easyMode && mapComp.ShipMapState == ShipMapState.inCombat && mapComp.TargetMapComp.MapEnginePower > 0.02f)
                     {
                         foreach (CompTransporter t in this.TransportersInGroup)
                         {
@@ -711,7 +711,7 @@ namespace RimWorld
             var mapComp = map.GetComponent<ShipHeatMapComp>();
             var fuelComp = this.parent.TryGetComp<CompRefuelable>();
             float amount = 0;
-            if (target.WorldObject is WorldObjectOrbitingShip || (mapComp.InCombat && map == mapComp.OriginMapComp.ShipCombatTargetMap))
+            if (target.WorldObject is WorldObjectOrbitingShip || (mapComp.ShipMapState == ShipMapState.inCombat && map == mapComp.OriginMapComp.ShipCombatTargetMap))
             {
                 fuelComp?.ConsumeFuel(fuelComp.Props.fuelCapacity * 0.25f);
             }

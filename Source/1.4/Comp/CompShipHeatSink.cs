@@ -6,7 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using SaveOurShip2;
-using RimworldMod;
+
 
 namespace RimWorld
 {
@@ -94,7 +94,7 @@ namespace RimWorld
                         if (!RemHeatFromNetwork(Props.heatVent * 5))
                             myNet.venting = false;
                     }
-                    else if (myNet.Depletion > 0 && !mapComp.InCombat && !mapComp.Cloaks.Any(c => c.active))
+                    else if (myNet.Depletion > 0 && mapComp.ShipMapState != ShipMapState.inCombat && !mapComp.Cloaks.Any(c => c.active))
                         RemoveDepletionFromNetwork(Props.heatVent / 10f);
                 }
                 if (myNet.StorageUsed > 0)

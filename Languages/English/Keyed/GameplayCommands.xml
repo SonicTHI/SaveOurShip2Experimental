@@ -13,17 +13,13 @@
 	<ShuttleChangeColorDesc>Change this shuttle's color</ShuttleChangeColorDesc>
 	<ShuttleCommandLaunchGroup>Launch at opposing ship</ShuttleCommandLaunchGroup>
 	<ShuttleCommandLaunchGroupDesc>Take off and fly to opposing ship</ShuttleCommandLaunchGroupDesc>
-	<!-- orbit -->
-	<ShipInsideMoveWestFar>Long burn west</ShipInsideMoveWestFar>
-	<ShipInsideMoveWestFarDesc>Move the ship westward.</ShipInsideMoveWestFarDesc>
+	<!-- world -->
 	<ShipInsideMoveWest>Short burn west</ShipInsideMoveWest>
 	<ShipInsideMoveWestDesc>Move the ship westward.</ShipInsideMoveWestDesc>
 	<ShipInsideMoveEast>Short burn east</ShipInsideMoveEast>
 	<ShipInsideMoveEastDesc>Move the ship eastward.</ShipInsideMoveEastDesc>
-	<ShipInsideMoveEastFar>Long burn east</ShipInsideMoveEastFar>
-	<ShipInsideMoveEastFarDesc>Move the ship eastward.</ShipInsideMoveEastFarDesc>
-	<ShipInsideMoveComplete>Orbital reposition complete</ShipInsideMoveComplete>
-	
+	<ShipInsideMoveStop>Stop orbital movement</ShipInsideMoveStop>
+	<ShipInsideMoveStopDesc>Reverse burn into geosynchronous orbit.</ShipInsideMoveStopDesc>
 	<ShipInsideAbandonHome>Abandon ship</ShipInsideAbandonHome>
 	<ShipInsideAbandonHomeDesc>Abandon your ship, any colonists on it will be lost.</ShipInsideAbandonHomeDesc>
 	<ShipInsideLeaveGraveyard>Abandon wreck</ShipInsideLeaveGraveyard>

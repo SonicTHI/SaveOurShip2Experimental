@@ -1,8 +1,6 @@
 ﻿using SaveOurShip2;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using RimworldMod;
+
 using Verse;
 
 namespace RimWorld
@@ -23,7 +21,13 @@ namespace RimWorld
             base.CompTick();
             if (Find.TickManager.TicksGame % 250 != 0 || !this.parent.Map.IsSpace() || !this.powerComp.PowerOn || this.parent.Faction != Faction.OfPlayer)
                 return;
-            if (!mapComp.InCombat)
+
+            if (mapComp.ShipMapState == ShipMapState.inCombat)
+            {
+                if (Find.TickManager.TicksGame % 500 == 0)
+                    ScannedRoom();
+            }
+            else
             {
                 float rate = Rate;
                 if (mapComp.Cloaks.Any(c => c.active))
@@ -34,10 +38,6 @@ namespace RimWorld
                 {
                     this.FoundMinerals(null);
                 }
-            }
-            else if (Find.TickManager.TicksGame % 500 == 0)
-            {
-                ScannedRoom();
             }
         }
     }

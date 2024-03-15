@@ -3,7 +3,7 @@ using Verse;
 
 namespace RimWorld
 {
-	public class CompProperties_ShipLight : CompProperties
+	/*public class CompProperties_ShipLight : CompProperties
 	{
 		public GraphicData lightGraphic;
 		public GraphicData sunLightGraphic;
@@ -14,5 +14,5 @@ namespace RimWorld
 		{
 			compClass = typeof(CompShipLight);
 		}
-	}
+	}*/
 }

@@ -159,7 +159,8 @@
 		</researchPrerequisites>
 		<designationHotKey>Misc1</designationHotKey>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+
+	<!--ThingDef ParentName="BuildingBase">
 		<defName>Ship_Beam_Light</defName>
 		<label>ship light</label>
 		<thingClass>Building</thingClass>
@@ -210,7 +211,7 @@
 		    </li>
 		</comps>
 		<tickerType>Rare</tickerType>
-	</ThingDef>
+	</ThingDef-->
 	<!-- corners -->
 	<ThingDef ParentName="BuildingShipHullBase" Name="ShipCornerBase" Abstract="True">
 		<thingClass>Building</thingClass>

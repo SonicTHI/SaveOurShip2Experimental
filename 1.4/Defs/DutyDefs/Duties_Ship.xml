@@ -64,7 +64,7 @@
 					<targetKeepRadius>72</targetKeepRadius>
 				</li>
 				<li Class="JobGiver_AIBreachAirlock"/>
-				<!--li Class="JobGiver_AIDefendBreacher"/-->
+				<li Class="JobGiver_AIDefendBreacher"/>
 				<li Class="JobGiver_AIGotoNearestHostile"/>
 				<li Class="JobGiver_AITrashColonyClose"/>
 				<li Class="JobGiver_AITrashBuildingsDistant"/>

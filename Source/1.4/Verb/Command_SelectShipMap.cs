@@ -1,20 +1,18 @@
-﻿using RimWorld;
-using RimWorld.Planet;
-using SaveOurShip2;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
-using Verse.Noise;
 using Verse.Sound;
+using RimWorld.Planet;
+using SaveOurShip2;
 
 namespace RimWorld
 {
     //mode
     [Flags]
-    public enum CommandMode
+    public enum SelectShipMapMode
     {
         scoop = 1,
         stabilize = 2,
@@ -27,7 +25,7 @@ namespace RimWorld
         public int salvageBayNum;
         public Map sourceMap;
         public Map targetMap;
-        public CommandMode mode = 0;
+        public SelectShipMapMode mode = 0;
 
         public override void ProcessInput(Event ev)
         {
@@ -36,7 +34,7 @@ namespace RimWorld
 
             var mapComp = sourceMap.GetComponent<ShipHeatMapComp>();
             var tgtMapComp = targetMap.GetComponent<ShipHeatMapComp>();
-            if (mode == CommandMode.scoop) //scoop up any thing that is not a building and not on ship
+            if (mode == SelectShipMapMode.scoop) //scoop up any thing that is not a building and not on ship
             {
                 bool space = false;
                 foreach (IntVec3 vec in salvageBay.OccupiedRect())
@@ -83,7 +81,7 @@ namespace RimWorld
                         ShipInteriorMod2.AddPawnToLord(sourceMap, p);
                 }
             }
-            else if (mode == CommandMode.stabilize)
+            else if (mode == SelectShipMapMode.stabilize)
             {
                 int bCount = targetMap.listerBuildings.allBuildingsNonColonist.Count + targetMap.listerBuildings.allBuildingsColonist.Count;
                 int bMax = mapComp.MaxSalvageWeightOnMap();
@@ -120,7 +118,7 @@ namespace RimWorld
                             }
                             targetMap.Parent.GetComponent<TimedForcedExitShip>().ticksLeftToForceExitAndRemoveMap += 60000;
                             float adj = Rand.Range(0.025f, 0.075f);
-                            ((WorldObjectOrbitingShip)targetMap.Parent).theta = ((WorldObjectOrbitingShip)sourceMap.Parent).theta + adj;
+                            ((WorldObjectOrbitingShip)targetMap.Parent).Theta = ((WorldObjectOrbitingShip)sourceMap.Parent).Theta + adj;
                         }));
                     }
                     else

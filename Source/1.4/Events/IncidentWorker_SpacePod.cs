@@ -1,8 +1,6 @@
-﻿using RimworldMod;
-using SaveOurShip2;
-using System.Linq;
+﻿using System.Linq;
 using Verse;
-using Verse.Noise;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -11,7 +9,7 @@ namespace RimWorld
         protected override bool CanFireNowSub(IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            if (map.GetComponent<ShipHeatMapComp>().InCombat)
+            if (map.GetComponent<ShipHeatMapComp>().ShipMapState != ShipMapState.nominal)
                 return false;
             if (map.listerBuildings.allBuildingsColonist.Any(t => t.TryGetComp<CompShipSalvageBay>() != null))
                 return true;

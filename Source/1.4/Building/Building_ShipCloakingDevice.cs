@@ -31,7 +31,7 @@ namespace RimWorld
             base.Tick();
             if (Find.TickManager.TicksGame % 60 == 0)
             {
-                if (heatComp.myNet == null || heatComp.myNet.StorageCapacityRaw == 0 || heatComp.myNet.venting || mapComp.InCombat)
+                if (heatComp.myNet == null || heatComp.myNet.StorageCapacityRaw == 0 || heatComp.myNet.venting || mapComp.ShipMapState == ShipMapState.inCombat)
                 {
                     flickComp.SwitchIsOn = false;
                     active = false;

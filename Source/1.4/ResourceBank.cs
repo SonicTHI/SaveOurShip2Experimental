@@ -1,6 +1,7 @@
 using Verse;
 using RimWorld;
 using UnityEngine;
+using Verse.AI;
 
 namespace SaveOurShip2
 {
@@ -173,9 +174,15 @@ namespace SaveOurShip2
         {
             public static JobDef FleeVacuum;
             public static JobDef BreachAirlock;
-            //public static JobDef DefendBreacher;
+            public static JobDef DefendBreacher;
         }
-        
+
+        [DefOf]
+        public static class DutyDefOf
+        {
+            public static DutyDef SoSAssaultShip;
+        }
+
         [DefOf]
 		public static class BiomeDefOf
 		{

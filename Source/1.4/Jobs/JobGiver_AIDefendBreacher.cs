@@ -9,7 +9,7 @@ using Verse.AI.Group;
 
 namespace RimWorld
 {
-    /*public class JobGiver_AIDefendBreacher : ThinkNode_JobGiver
+    public class JobGiver_AIDefendBreacher : ThinkNode_JobGiver
     {
         protected override Job TryGiveJob(Pawn defender)
         {
@@ -17,13 +17,12 @@ namespace RimWorld
             if (breachers.Any())
             {
                 Pawn pawn = breachers.RandomElement();
-                if (!defender.CanReserve(pawn))
+                if (defender.CanReserve(pawn, 5))
                 {
-                    return null;
+                    return new Job(ResourceBank.JobDefOf.DefendBreacher, pawn);
                 }
-                return new Job(ResourceBank.JobDefOf.DefendBreacher, pawn);
             }
             return null;
         }
-    }*/
+    }
 }

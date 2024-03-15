@@ -262,7 +262,8 @@ namespace Verse
 
             public override Material MatAt(Rot4 rot, Thing thing = null)
             {
-                if ((thing is Building_CryptosleepCasket && ((ThingOwner)typeof(Building_CryptosleepCasket).GetField("innerContainer", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(thing)).Count > 0) || (thing.TryGetComp<CompPowerTrader>() != null && thing.TryGetComp<CompPowerTrader>().PowerNet!=null && thing.TryGetComp<CompPowerTrader>().PowerOn))
+                var powerComp = thing.TryGetComp<CompPowerTrader>();
+                if ((thing is Building_CryptosleepCasket c && c.innerContainer.Any()) || (powerComp != null && powerComp.PowerNet != null && powerComp.PowerOn))
                 {
                     switch (rot.AsInt)
                     {

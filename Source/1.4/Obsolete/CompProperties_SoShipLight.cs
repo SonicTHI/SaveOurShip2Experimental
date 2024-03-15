@@ -2,7 +2,7 @@
 
 namespace RimWorld
 {
-    public class CompProperties_SoShipLight : CompProperties
+    /*public class CompProperties_SoShipLight : CompProperties
     {
         public ThingDef light;
         public int lightPower = 15;
@@ -13,5 +13,5 @@ namespace RimWorld
         {
             compClass = typeof(CompSoShipLight);
         }
-    }
+    }*/
 }

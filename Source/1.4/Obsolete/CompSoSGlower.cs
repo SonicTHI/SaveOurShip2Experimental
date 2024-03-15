@@ -3,7 +3,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompSoSGlower : CompGlower
+    /*class CompSoSGlower : CompGlower
     {
         protected override void SetGlowColorInternal(ColorInt? color)
         {
@@ -25,5 +25,5 @@ namespace RimWorld
                 }
             }
         }
-    }
+    }*/
 }

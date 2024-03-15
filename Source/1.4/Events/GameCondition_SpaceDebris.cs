@@ -3,10 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.Noise;
 
 namespace RimWorld
 {
@@ -89,7 +87,14 @@ namespace RimWorld
                 projectile.Launch(null, spawnCell.ToVector3Shifted(), targetCell, targetCell, ProjectileHitFlags.All, equipment: null);
                 this.nextLaunchProjTicks = Find.TickManager.TicksGame + TicksBetweenStrikes.RandomInRange;
             }
-
+        }
+        public override void End()
+        {
+            var mapComp = SingleMap.GetComponent<ShipHeatMapComp>();
+            mapComp.ShipMapState = ShipMapState.nominal;
+            mapComp.BurnTimer = 0;
+            mapComp.MapFullStop();
+            base.End();
         }
     }
 }

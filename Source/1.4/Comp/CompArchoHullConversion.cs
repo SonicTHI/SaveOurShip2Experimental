@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using RimworldMod;
+
 
 namespace RimWorld
 {
@@ -62,7 +62,7 @@ namespace RimWorld
 
 		public override void CompTick()
 		{
-			if (!OptimizeMatter || !parent.Spawned || !OptimizationProject.IsFinished || parent.Map.IsSpace() && parent.Map.GetComponent<ShipHeatMapComp>().InCombat || parent.Map.mapPawns.AllPawns.Where(p => p.HostileTo(Faction.OfPlayer)).Any())
+			if (!OptimizeMatter || !parent.Spawned || !OptimizationProject.IsFinished || parent.Map.IsSpace() && parent.Map.GetComponent<ShipHeatMapComp>().ShipMapState != ShipMapState.nominal || parent.Map.mapPawns.AllPawns.Where(p => p.HostileTo(Faction.OfPlayer)).Any())
 			{
 				return;
 			}

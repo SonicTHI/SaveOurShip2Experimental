@@ -5,8 +5,9 @@ using System.Text;
 using Verse;
 using SaveOurShip2;
 using UnityEngine;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
     public class SoShipCache
     {
@@ -246,18 +247,15 @@ namespace RimWorld
         }
         //shipmove
         public byte ForceRePower = 0; //0 - no, 1 - same map, 2 - different map
-
-        public void TickForceRePower()
+        public void ForceRePowerOnTick()
         {
-            if (Core == null || Core.PowerComp == null)
+            if (Core?.PowerComp?.PowerNet == null)
             {
                 ForceRePower = 0;
                 return;
             }
-            if (Core.PowerComp.PowerNet == null)
-                return;
 
-            Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ForceRePower mode: " + ForceRePower);
+            //Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ForceRePower mode: " + ForceRePower);
             if (ForceRePower == 2) //reconnect
             {
                 List<CompPower> pComps = new List<CompPower>();
@@ -287,7 +285,7 @@ namespace RimWorld
         public void CreateShipSketchIfFuelPct(float fuelPercentNeeded, Map map, byte rot = 0, bool atmospheric = false)
         {
             if (HasPilotRCSAndFuel(fuelPercentNeeded, atmospheric))
-                CreateShipSketch(map, rot);
+                CreateShipSketch(map, rot, atmospheric);
         }
         public bool HasPilotRCSAndFuel(float fuelPercentNeeded, bool atmospheric)
         {
@@ -344,7 +342,7 @@ namespace RimWorld
             }
             return fuelHad;
         }
-        public void CreateShipSketch(Map targetMap, byte rotb = 0)
+        public void CreateShipSketch(Map targetMap, byte rotb = 0, bool atmospheric = false)
         {
             IntVec3 lowestCorner = LowestCorner(rotb, Map);
             Sketch sketch = new Sketch();
@@ -374,7 +372,9 @@ namespace RimWorld
             fakeMover.shipRotNum = rotb;
             fakeMover.bottomLeftPos = lowestCorner;
             ShipInteriorMod2.shipOriginMap = Map;
+            fakeMover.originMap = Map;
             fakeMover.targetMap = targetMap;
+            fakeMover.atmospheric = atmospheric;
             fakeMover.Position = fakeMover.shipRoot.Position;
             fakeMover.SpawnSetup(targetMap, false);
             List<object> selected = new List<object>();
@@ -409,13 +409,54 @@ namespace RimWorld
             }
             return lowestCorner;
         }
+        public IntVec3 MaximumCorner()
+        {
+            IntVec3 maxCorner = new IntVec3(0, 0, 0);
+            foreach (IntVec3 v in Area)
+            {
+                if (v.x > maxCorner.x)
+                    maxCorner.x = v.x;
+                if (v.z > maxCorner.z)
+                    maxCorner.z = v.z;
+            }
+            return maxCorner;
+        }
+        public IntVec3 Size(out IntVec3 min)
+        {
+            min = new IntVec3(int.MaxValue, 0, int.MaxValue);
+            IntVec3 max = new IntVec3(0, 0, 0);
+            foreach (IntVec3 v in Area)
+            {
+                if (v.x < min.x)
+                    min.x = v.x;
+                else if (v.x > max.x)
+                    max.x = v.x;
+                if (v.z < min.z)
+                    min.z = v.z;
+                else if (v.z > max.z)
+                    max.z = v.z;
+            }
+            IntVec3 size = new IntVec3(max.x - min.x, 0, max.z - min.z);
+            Log.Message("Ship size: " + size);
+            return size;
+        }
+        public IntVec3 CenterShipOnMap()
+        {
+            IntVec3 min;
+            IntVec3 size = Size(out min);
+            IntVec3 adj = new IntVec3(Map.Size.x / 2, 0, Map.Size.z / 2) - new IntVec3(size.x / 2, 0, size.z / 2);
+            //Log.Message("Ship adj: " + adj);
+            //Log.Message("Ship pos: " + min);
+            //Log.Message("Ship center: " + (adj - min));
+            return adj - min;
+        }
         public IEnumerable<Building> OuterNonShipWalls()
         {
             foreach (Building b in Buildings.Where(b => !Parts.Contains(b) && b.def.passability == Traversability.Impassable && (b.def.Size.x == 1 || b.def.Size.z == 1)))
             {
                 bool air = false;
                 bool vac = false;
-                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(b.Position, Rot4.North, new IntVec2(1, 1)))
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(b.Position, Rot4.North, IntVec2.One))
                 {
                     Room room = v.GetRoom(Map);
                     if (room == null)
@@ -438,7 +479,7 @@ namespace RimWorld
             HashSet<IntVec3> cells = new HashSet<IntVec3>();
             foreach (IntVec3 vec in Area)
             {
-                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !Area.Contains(v)))
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, IntVec2.One).Where(v => !Area.Contains(v)))
                 {
                     Room room = v.GetRoom(Map);
                     if (room != null && room.TouchesMapEdge)
@@ -446,6 +487,45 @@ namespace RimWorld
                 }
             }
             return cells;
+        }
+        public HashSet<IntVec3> BorderCells()
+        {
+            HashSet<IntVec3> cells = new HashSet<IntVec3>();
+            foreach (IntVec3 vec in Area)
+            {
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, IntVec2.One).Where(v => !Area.Contains(v)))
+                {
+                    Room room = v.GetRoom(Map);
+                    if (room != null && room.TouchesMapEdge)
+                        cells.Add(v);
+                }
+            }
+            return cells;
+        }
+
+        public float WeBeCrashing = 0;
+        public void CrashShip()
+        {
+            foreach (IntVec3 c in OuterCells())
+            {
+                if (Rand.Chance(WeBeCrashing / 2))
+                    GenExplosion.DoExplosion(c, Map, Rand.Range(3.9f, 7.9f), DamageDefOf.Bomb, null, 500);
+            }
+            foreach (IntVec3 c in Area)
+            {
+                if (Rand.Chance(WeBeCrashing / 4))
+                    GenExplosion.DoExplosion(c, Map, Rand.Range(1.9f, 4.9f), DamageDefOf.Bomb, null, 50);
+            }
+            //pawns
+            foreach (Pawn p in PawnsOnShip)
+            {
+                int chance = Rand.RangeInclusive(1, 3);
+                if (Rand.Chance(WeBeCrashing) && chance == 1)
+                    HealthUtility.DamageLegsUntilIncapableOfMoving(p);
+                else if (Rand.Chance(WeBeCrashing) && chance == 2)
+                    HealthUtility.DamageUntilDowned(p);
+            }
+            WeBeCrashing = 0;
         }
         //AI
         public void PurgeCheck()
@@ -525,7 +605,7 @@ namespace RimWorld
                 }
                 foreach (IntVec3 vec in current) //find next set cardinal to all cellsDone, exclude cellsDone
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, IntVec2.One).Where(v => !cellsDone.Contains(v) && mapComp.MapShipCells.ContainsKey(v)));
                 }
                 if (path > -1)
                     path++;
@@ -651,7 +731,7 @@ namespace RimWorld
             if (Buildings.Remove(b))
             {
                 BuildingCount--;
-                if (mapComp.InCombat && !IsWreck && b.def.blueprintDef != null && (mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly))
+                if (mapComp.ShipMapState == ShipMapState.inCombat && !IsWreck && b.def.blueprintDef != null && (mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly))
                 {
                     BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(b.def, b.Position, b.Rotation));
                 }
@@ -764,7 +844,7 @@ namespace RimWorld
             Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Has 0 cores remaining.");
             Core = null;
             ResetCorePath();
-            if (mapComp.InCombat) //turn into wreck but do not float it
+            if (mapComp.ShipMapState == ShipMapState.inCombat) //turn into wreck but do not float it
                 LastBridgeDied = true;
 
             if (BridgeKillVec != IntVec3.Invalid)
@@ -773,7 +853,7 @@ namespace RimWorld
                 mapComp.MapShipCells.Remove(BridgeKillVec);
             }
 
-            if (mapComp.InCombat) //if last ship end combat else move to grave
+            if (mapComp.ShipMapState == ShipMapState.inCombat) //if last ship end combat else move to grave
             {
                 if (mapComp.ShipsOnMapNew.Values.Any(s => !s.IsWreck))
                     mapComp.ShipsToMove.Add(Index);
@@ -824,7 +904,7 @@ namespace RimWorld
                 }
                 foreach (IntVec3 vec in current) //find next set cardinal to all cellsDone, exclude cellsDone
                 {
-                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && Area.Contains(v)));
+                    cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(vec, Rot4.North, IntVec2.One).Where(v => !cellsDone.Contains(v) && Area.Contains(v)));
                 }
                 path++;
             }
@@ -842,7 +922,11 @@ namespace RimWorld
             DetachedShipAreas.Clear();
             if (ForceRePower > 0)
             {
-                TickForceRePower();
+                ForceRePowerOnTick();
+                if (WeBeCrashing > 0) //bad juju
+                {
+                    CrashShip();
+                }
             }
         }
         public void CheckForDetach(List<IntVec3> areaDestroyed)
@@ -851,7 +935,7 @@ namespace RimWorld
             {
                 //0 cells attached to areaDestroyed: remove this ship from cache on mapcomp
                 //1: no detach
-                List<IntVec3> adjCells = GenAdj.CellsAdjacentCardinal(areaDestroyed.First(), Rot4.North, new IntVec2(1, 1)).Where(v => Area.Contains(v)).ToList();
+                List<IntVec3> adjCells = GenAdj.CellsAdjacentCardinal(areaDestroyed.First(), Rot4.North, IntVec2.One).Where(v => Area.Contains(v)).ToList();
                 if (adjCells.Count < 2)
                     return;
             }
@@ -865,7 +949,7 @@ namespace RimWorld
             HashSet<IntVec3> startCells = new HashSet<IntVec3>(); //cells areaDestroyed
             foreach (IntVec3 vec in areaDestroyed) //find first still attached cell around detach area
             {
-                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, new IntVec2(1, 1)).Where(v => !areaDestroyed.Contains(v) && Area.Contains(v)))// && mapComp.MapShipCells[v].Item2 != 0))
+                foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, IntVec2.One).Where(v => !areaDestroyed.Contains(v) && Area.Contains(v)))// && mapComp.MapShipCells[v].Item2 != 0))
                 {
                     startCells.Add(v);
                     int vecPath = mapComp.MapShipCells[v].Item2;
@@ -906,7 +990,7 @@ namespace RimWorld
                     cellsToCheckInSet.Remove(current);
                     if (cellsDoneInSet.Add(current)) //extend search range
                     {
-                        foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => Area.Contains(v) && !areaDestroyed.Contains(v))) //skip non ship, destroyed tiles
+                        foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(current, Rot4.North, IntVec2.One).Where(v => Area.Contains(v) && !areaDestroyed.Contains(v))) //skip non ship, destroyed tiles
                         {
                             //if part with lower corePath found or next to an already attached and checked this set is attached
                             if (cellsAttached.Contains(v) || mapComp.MapShipCells[v].Item2 < LastSafePath)
@@ -941,7 +1025,7 @@ namespace RimWorld
         {
             Building newCore = null;
             DestroyMode mode = DestroyMode.Vanish;
-            if (mapComp.InCombat)
+            if (mapComp.ShipMapState == ShipMapState.inCombat)
                 mode = DestroyMode.KillFinalize;
 
             foreach (IntVec3 vec in detachArea) //clear area, remove buildings, try to find bridge on detached
@@ -960,9 +1044,8 @@ namespace RimWorld
             }
             if (newCore == null) //wreck
             {
-                if (mapComp.InCombat) //float wrecks except in case the last bridge was destroyed
+                if (mapComp.ShipMapState == ShipMapState.inCombat || mapComp.ShipMapState == ShipMapState.inTransit) //float wrecks except in case the last bridge was destroyed
                 {
-                    //FloatAndDestroy(detachArea);
                     DetachedShipAreas.Add(detachArea);
                     ShipInteriorMod2.AirlockBugFlag = true;
                     foreach (IntVec3 vec in detachArea)
@@ -991,7 +1074,7 @@ namespace RimWorld
             //make new ship
             mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
             mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore);
-            if (mapComp.InCombat)
+            if (mapComp.ShipMapState == ShipMapState.inCombat)
             {
                 if (mapComp.HasShipMapAI)
                     mapComp.hasAnyPartDetached = true;

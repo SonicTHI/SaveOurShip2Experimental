@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using Verse;
 using System.Collections.Generic;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -135,12 +136,12 @@ namespace RimWorld
             base.PostSpawnSetup(respawningAfterLoad);
 			if (parent.TryGetComp<CompShuttleCosmetics>() != null)
 				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);
-			Current.Game.GetComponent<RimworldMod.EnvironmentCachingUtility>().shuttleCache.Add(parent);
+			Current.Game.GetComponent<EnvironmentCachingUtility>().shuttleCache.Add(parent);
         }
 
 		public override void PostDeSpawn(Map map)
 		{
-			Current.Game.GetComponent<RimworldMod.EnvironmentCachingUtility>().shuttleCache.Remove(parent);
+			Current.Game.GetComponent<EnvironmentCachingUtility>().shuttleCache.Remove(parent);
 		}
     }
 }

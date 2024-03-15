@@ -5,15 +5,14 @@ using System.Text;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
+using SaveOurShip2;
 
 namespace RimWorld
 {
-    [StaticConstructorOnStartup]
     class LordToil_AssaultShip : LordToil
 	{
 		private bool attackDownedIfStarving;
 		private bool canPickUpOpportunisticWeapons;
-		static DutyDef assaultShip = DefDatabase<DutyDef>.GetNamed("SoSAssaultShip");
 		public override bool ForceHighStoryDanger
 		{
 			get
@@ -42,7 +41,7 @@ namespace RimWorld
 		{
 			for (int i = 0; i < this.lord.ownedPawns.Count; i++)
 			{
-				this.lord.ownedPawns[i].mindState.duty = new PawnDuty(assaultShip);
+				this.lord.ownedPawns[i].mindState.duty = new PawnDuty(ResourceBank.DutyDefOf.SoSAssaultShip);
 				this.lord.ownedPawns[i].mindState.duty.attackDownedIfStarving = this.attackDownedIfStarving;
 				this.lord.ownedPawns[i].mindState.duty.pickupOpportunisticWeapon = this.canPickUpOpportunisticWeapons;
 			}

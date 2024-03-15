@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Verse;
-using Verse.Grammar;
 
 namespace RimWorld.QuestGen
 {
@@ -31,7 +29,7 @@ namespace RimWorld.QuestGen
 				dropPods.inSignal = (QuestGenUtility.HardcodedSignalWithQuestID(inSignal.GetValue(slate)) ?? QuestGen.slate.Get<string>("inSignal"));
 				
 				dropPods.mapParent = QuestGen.slate.Get<Map>("map").Parent;
-				((List<Thing>)typeof(QuestPart_DropPods).GetField("items", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(dropPods)).AddRange(contents.GetValue(slate));
+                dropPods.items.AddRange(contents.GetValue(slate));
 
 				QuestGen.quest.AddPart(dropPods);
 			}

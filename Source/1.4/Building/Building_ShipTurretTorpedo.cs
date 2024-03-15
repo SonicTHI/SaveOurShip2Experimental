@@ -72,7 +72,7 @@ namespace RimWorld
         public override void Tick()
         {
             base.Tick();
-            if (this.mapComp.InCombat)
+            if (mapComp.ShipMapState == ShipMapState.inCombat)
             {
                 if (ticksSinceOpen < TicksToOpenNow && powerComp.PowerOn)
                     ticksSinceOpen++;

@@ -111,7 +111,7 @@ namespace RimWorld
                     return false;
                 }
             }
-            if (!mapComp.InCombat)
+            if (mapComp.ShipMapState != ShipMapState.inCombat)
             {
                 foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)
                 {

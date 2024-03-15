@@ -1,5 +1,5 @@
 ﻿using RimWorld.Planet;
-using RimworldMod;
+
 using RimWorld;
 using SaveOurShip2;
 using System;
@@ -127,8 +127,8 @@ namespace RimWorld
 			if (size.x < 250 || size.z < 250)
 				size = new IntVec3(250, 0, 250);
             Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, size, ResourceBank.WorldObjectDefOf.ShipOrbiting);
-			((WorldObjectOrbitingShip)spaceMap.Parent).radius = 150;
-			((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
+			((WorldObjectOrbitingShip)spaceMap.Parent).Radius = 150;
+			((WorldObjectOrbitingShip)spaceMap.Parent).Theta = 2.75f;
 			Current.ProgramState = ProgramState.MapInitializing;
 
 			ScenPart_StartInSpace scen = (ScenPart_StartInSpace)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_StartInSpace);

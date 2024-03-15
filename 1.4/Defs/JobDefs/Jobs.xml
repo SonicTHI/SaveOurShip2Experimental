@@ -84,12 +84,12 @@
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
   </JobDef>
   
-  <!--JobDef>
+  <JobDef>
     <defName>DefendBreacher</defName>
     <driverClass>JobDriver_DefendBreacher</driverClass>
     <reportString>guarding TargetA.</reportString>
     <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
-  </JobDef-->
+  </JobDef>
   
   <JobDef>
     <defName>RepairItemWithGel</defName>

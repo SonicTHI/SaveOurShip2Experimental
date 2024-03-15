@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using SaveOurShip2;
 using Verse;
 
-namespace RimworldMod
+namespace SaveOurShip2
 {
     public class EnvironmentCachingUtility : GameComponent
     {
-
         private Dictionary<int, bool> spaceMaps = new Dictionary<int, bool>();
         public HashSet<Thing> shuttleCache = new HashSet<Thing>();
         public List<RimWorld.ShipHeatMapComp> shipHeatMapCompCache = new List<RimWorld.ShipHeatMapComp>();
@@ -33,7 +31,6 @@ namespace RimworldMod
         {
             spaceMaps = new Dictionary<int, bool>();
         }
-
     }
 
     public static class AccessExtensions

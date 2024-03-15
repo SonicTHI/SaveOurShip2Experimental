@@ -9,7 +9,6 @@ using Verse.Sound;
 using SaveOurShip2;
 using RimWorld.Planet;
 using HarmonyLib;
-using RimworldMod;
 
 namespace RimWorld
 {
@@ -271,7 +270,7 @@ namespace RimWorld
             }
             else
             {
-                if (!mapComp.InCombat || SpinalHasNoAmps)
+                if (mapComp.ShipMapState != ShipMapState.inCombat || SpinalHasNoAmps)
                 {
                     ResetForcedTarget();
                 }
@@ -284,7 +283,7 @@ namespace RimWorld
                         {
                             burstCooldownTicksLeft--;
                         }
-                        if (mapComp.InCombat && !heatComp.Venting)
+                        if (mapComp.ShipMapState == ShipMapState.inCombat && !heatComp.Venting)
                         {
                             if (heatComp.Props.pointDefense) //PD mode
                             {
@@ -358,7 +357,7 @@ namespace RimWorld
             }
             else
             {
-                if (!base.Spawned || (holdFire && CanToggleHoldFire) || !AttackVerb.Available() || PointDefenseMode || !mapComp.InCombat || SpinalHasNoAmps)
+                if (!base.Spawned || (holdFire && CanToggleHoldFire) || !AttackVerb.Available() || PointDefenseMode || mapComp.ShipMapState != ShipMapState.inCombat || SpinalHasNoAmps)
                 {
                     ResetCurrentTarget();
                     return;
@@ -941,7 +940,7 @@ namespace RimWorld
             else
                 shipTarget = LocalTargetInfo.Invalid;
             burstWarmupTicksLeft = 0;
-            if ((mapComp.InCombat || GroundDefenseMode) && burstCooldownTicksLeft <= 0)
+            if ((mapComp.ShipMapState == ShipMapState.inCombat || GroundDefenseMode) && burstCooldownTicksLeft <= 0)
             {
                 TryStartShootSomething(false);
             }

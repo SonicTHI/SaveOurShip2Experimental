@@ -28,7 +28,7 @@ namespace RimWorld
             }
             if (parent.Faction == Faction.OfPlayer && mapComp.IsPlayerShipMap || (Prefs.DevMode && ShipInteriorMod2.HasSoS2CK))
 			{
-				foreach (Map map in Find.Maps.Where(m => m.GetComponent<ShipHeatMapComp>().IsGraveyard))
+				foreach (Map map in Find.Maps.Where(m => m.GetComponent<ShipHeatMapComp>().ShipMapState == ShipMapState.isGraveyard))
 				{
                     Command_TargetWreck retrieveShipEnemy = new Command_TargetWreck
                     {
@@ -46,12 +46,12 @@ namespace RimWorld
                             salvageBay = (Building)parent,
                             sourceMap = parent.Map,
                             targetMap = map,
-                            mode = CommandMode.scoop,
+                            mode = SelectShipMapMode.scoop,
                             defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageBeam", map.Parent.Label),
                             defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageBeamDesc", map.Parent.Label),
                             icon = ContentFinder<Texture2D>.Get("UI/SalvageBeam")
                         };
-                        if (mapComp.InCombat)
+                        if (mapComp.ShipMapState != ShipMapState.nominal)
                         {
                             beam.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
                         }
@@ -62,12 +62,12 @@ namespace RimWorld
                         salvageBay = (Building)parent,
                         sourceMap = parent.Map,
                         targetMap = map,
-                        mode = CommandMode.stabilize,
+                        mode = SelectShipMapMode.stabilize,
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageStablize", map.Parent.Label),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeDesc", map.Parent.Label),
                         icon = ContentFinder<Texture2D>.Get("UI/StabilizeShip")
                     };
-                    if (mapComp.InCombat)
+                    if (mapComp.ShipMapState != ShipMapState.nominal)
                     {
                         retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
                         stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
@@ -127,7 +127,7 @@ namespace RimWorld
                     defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommandDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")
                 };
-                if (mapComp.InCombat || GenHostility.AnyHostileActiveThreatToPlayer(parent.Map))
+                if (mapComp.ShipMapState != ShipMapState.nominal || GenHostility.AnyHostileActiveThreatToPlayer(parent.Map))
                 {
                     moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
                     moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));

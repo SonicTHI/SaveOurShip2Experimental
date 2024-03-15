@@ -1,7 +1,5 @@
 ﻿using SaveOurShip2;
 using System;
-using System.Collections.Generic;
-using System.IO.Ports;
 using System.Linq;
 using Verse;
 
@@ -13,7 +11,7 @@ namespace RimWorld
         {
             Map map = (Map)parms.target;
             var mapComp = map.GetComponent<ShipHeatMapComp>();
-            if (mapComp.InCombat || mapComp.NextTargetMap != null || map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris) || ModSettings_SoS.frequencySoS == 0 || Find.TickManager.TicksGame < mapComp.LastAttackTick + 300000 / ModSettings_SoS.frequencySoS)
+            if (mapComp.ShipMapState != ShipMapState.nominal || mapComp.NextTargetMap != null || ModSettings_SoS.frequencySoS == 0 || Find.TickManager.TicksGame < mapComp.LastAttackTick + 300000 / ModSettings_SoS.frequencySoS)
                 return false;
 
             foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)

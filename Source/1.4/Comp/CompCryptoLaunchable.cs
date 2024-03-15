@@ -6,7 +6,7 @@ using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
 using SaveOurShip2;
-using RimworldMod;
+
 
 namespace RimWorld
 {

@@ -286,7 +286,7 @@ namespace RimWorld
                         {
                             options.Add(new FloatMenuOption(name, delegate
                             {
-                                this.HologramColor = colors[colorNames.FirstIndexOf(colorname => colorname == name)];
+                                HologramColor = colors[colorNames.FirstIndexOf(colorname => colorname == name)];
                                 Consciousness.story.HairColor = HologramColor;
                                 Consciousness.story.skinColorOverride = HologramColor;
                                 Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
@@ -302,7 +302,7 @@ namespace RimWorld
                 });
             }
 
-            if (!this.parent.Map.GetComponent<ShipHeatMapComp>().InCombat && ((!Props.canMergeAI && !Props.canMergeHuman) || Props.healOnMerge)) //AI or archotech
+            if (parent.Map.GetComponent<ShipHeatMapComp>().ShipMapState != ShipMapState.inCombat && ((!Props.canMergeAI && !Props.canMergeHuman) || Props.healOnMerge)) //AI or archotech
             {
                 gizmos.Add(new Command_Action
                 {

@@ -10,7 +10,7 @@ using SaveOurShip2;
 
 namespace RimWorld
 {
-    public class CompShipLight : ThingComp
+    /*public class CompShipLight : ThingComp
     {
         Building shipPart;
         public CompSoShipLight lightComp;
@@ -72,7 +72,7 @@ namespace RimWorld
                     DrawLight(Rot4.West, layer);
                 if ((lightDirections & 8) == 8)
                     DrawLight(Rot4.North, layer);
-            }*/
+            }/
         }
         public override void PostExposeData()
         {
@@ -159,7 +159,7 @@ namespace RimWorld
                     }
                 }
                 else if ((lightDirections & 8) == 8)
-                    AddGlower(pos, color, sunLight);*/
+                    AddGlower(pos, color, sunLight);/
             }
 
             if (dirty && parent.Spawned)
@@ -264,5 +264,5 @@ namespace RimWorld
                 UpdateLight(lightComp.lightColor);
             }
         }
-    }
+    }*/
 }

@@ -93,8 +93,8 @@
     <Compile Include="Alert_MechanitesInHomeArea.cs" />
     <Compile Include="ApparelHolographic.cs" />
     <Compile Include="ArchotechGiftDef.cs" />
-    <Compile Include="Comp\CompProperties_SoShipLight.cs" />
-    <Compile Include="Comp\CompSoShipLight.cs" />
+    <Compile Include="Obsolete\CompProperties_SoShipLight.cs" />
+    <Compile Include="Obsolete\CompSoShipLight.cs" />
     <Compile Include="Extensions\PawnExtensions.cs" />
     <Compile Include="Jobs\JobDriver_DefendBreacher.cs" />
     <Compile Include="Jobs\JobGiver_AIDefendBreacher.cs" />
@@ -188,7 +188,7 @@
     <Compile Include="CompProps\CompProperties_PowerPlantSolarShip.cs" />
     <Compile Include="CompProps\CompProperties_ShuttleCosmetics.cs" />
     <Compile Include="CompProps\CompProperties_CryptoLaunchable.cs" />
-    <Compile Include="CompProps\CompProperties_ShipLight.cs" />
+    <Compile Include="Obsolete\CompProperties_ShipLight.cs" />
     <Compile Include="CompProps\CompProperties_SoShipPart.cs" />
     <Compile Include="CompProps\CompProperties_SpinalMount.cs" />
     <Compile Include="CompProps\CompProperties_ShipHeat.cs" />
@@ -207,11 +207,11 @@
     <Compile Include="Comp\CompArcholife.cs" />
     <Compile Include="Comp\CompShuttleCosmetics.cs" />
     <Compile Include="Comp\CompCryptoLaunchable.cs" />
-    <Compile Include="Comp\CompShipLight.cs" />
-    <Compile Include="Comp\CompSoSGlower.cs" />
+    <Compile Include="Obsolete\CompShipLight.cs" />
+    <Compile Include="Obsolete\CompSoSGlower.cs" />
     <Compile Include="Comp\CompSoShipPart.cs" />
     <Compile Include="Comp\CompSoSPowerTrader.cs" />
-    <Compile Include="Comp\CompSoSSchedule.cs" />
+    <Compile Include="Obsolete\CompSoSSchedule.cs" />
     <Compile Include="Comp\CompSpinalMount.cs" />
     <Compile Include="Comp\CompSoSUnlock.cs" />
     <Compile Include="Comp\CompShuttleLaunchable.cs" />

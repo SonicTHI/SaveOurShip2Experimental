@@ -126,10 +126,6 @@ namespace RimWorld
                 //Log.Message("Force-loading graphic");
                 graphicWall.cachedGraphic = GraphicDatabase.Get(graphicWall.graphicClass, graphicWall.texPath, shader, graphicWall.drawSize, graphicWall.color, graphicWall.colorTwo, graphicWall, graphicWall.shaderParameters);
                 graphicWall.cachedGraphic = new Graphic_Linked_Fake(graphicWall.cachedGraphic);
-
-                //typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(graphicWall, GraphicDatabase.Get(graphicWall.graphicClass, graphicWall.texPath, shader, graphicWall.drawSize, graphicWall.color, graphicWall.colorTwo, graphicWall, graphicWall.shaderParameters));
-                //typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(graphicWall, new Graphic_Linked_Fake((Graphic)typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(graphicWall)));
-                //Log.Message("Force-loaded graphic " + typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(graphicWall));
                 ForceLoadedGraphic = true;
             }
             if (!ForceLoadedGraphic2)
@@ -141,13 +137,8 @@ namespace RimWorld
                 }
                 Shader shader = cutout.Shader;
                 //Log.Message("Force-loading graphic");
-
                 graphicFloor.cachedGraphic = GraphicDatabase.Get(graphicFloor.graphicClass, graphicFloor.texPath, shader, graphicFloor.drawSize, graphicFloor.color, graphicFloor.colorTwo, graphicFloor, graphicFloor.shaderParameters);
                 graphicFloor.cachedGraphic = new Graphic_256_Wreckage(graphicFloor.cachedGraphic);
-
-                //typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(graphicFloor, GraphicDatabase.Get(graphicFloor.graphicClass, graphicFloor.texPath, shader, graphicFloor.drawSize, graphicFloor.color, graphicFloor.colorTwo, graphicFloor, graphicFloor.shaderParameters));
-                //typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(graphicFloor, new Graphic_256_Wreckage((Graphic)typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(graphicFloor)));
-                //Log.Message("Force-loaded graphic " + typeof(GraphicData).GetField("cachedGraphic", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(graphicFloor));
                 ForceLoadedGraphic2 = true;
             }
             for (int x=0;x<wreckage.GetLength(0);x++)

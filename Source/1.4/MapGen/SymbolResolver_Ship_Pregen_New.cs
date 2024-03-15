@@ -11,9 +11,6 @@ namespace RimWorld.BaseGen
         private struct SpawnDescriptor
         {
             public IntVec3 offset;
-
-            public ThingDef def;
-
             public Rot4 rot;
         }
 

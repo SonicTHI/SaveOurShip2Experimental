@@ -145,7 +145,7 @@
 		<designationCategory>Ship</designationCategory>
 	</ThingDef>
 	
-	<ThingDef ParentName="BuildingBase">
+	<!--ThingDef ParentName="BuildingBase">
 		<defName>Ship_Beam_Light_Archo</defName>
 		<label>ship light</label>
 		<thingClass>Building</thingClass>
@@ -196,7 +196,7 @@
 		    </li>
 		</comps>
 		<tickerType>Rare</tickerType>
-	</ThingDef>
+	</ThingDef-->
 	<!-- corners -->
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerArchotech" Abstract="True">
 		<designatorDropdown>Ship_Beams_Archotech</designatorDropdown>
@@ -1218,7 +1218,7 @@
 	<ThingDef ParentName="ShipSpinalTurretBuilding">
 		<defName>ShipSpinalBarrelPsychic</defName>
 		<label>spinal barrel: psychic flayer</label>
-		<description>The final segment of a spinal-mount cannon. Fires a beam of directed psychic trauma that stuns crew and will likely cause brain damage. Ignores hull (but not shields).\n\nUnlike other spinal weapons, the psychic flayer cannot damage your own ship.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>The final segment of a spinal-mount cannon. Fires a beam of directed psychic trauma that stuns crew and will likely cause brain damage. Ignores hull (but not shields).\n\nUnlike other spinal weapons, the psychic flayer cannot damage your own ship.\nMust be connected to a pilot/tactical console or AI core via the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Psychic</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
@@ -1362,7 +1362,7 @@
 	<ThingDef ParentName="ShipSpinalTurretBuilding">
 		<defName>ShipSpinalBarrelMechanite</defName>
 		<label>spinal barrel: disassembler</label>
-		<description>The final segment of a spinal-mount cannon. A modified railgun which launches globs of disassembler mechanites.\n\nShould be placed outside the ship, unless you want a new hole in your hull.\nMust be connected to a bridge/tactical console with the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
+		<description>The final segment of a spinal-mount cannon. A modified railgun which launches globs of disassembler mechanites.\n\nShould be placed outside the ship, unless you want a new hole in your hull.\nMust be connected to a pilot/tactical console or AI core via the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Shipeater</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>

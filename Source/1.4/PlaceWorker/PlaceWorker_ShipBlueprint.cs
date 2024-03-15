@@ -25,7 +25,7 @@ namespace RimWorld
                 if (!pos.InBounds(map))
                     return;
                 postitions.Add(pos);
-                if (clear && !ValidPosition(pos, map))
+                if (clear && !ShipInteriorMod2.CanPlaceShipOnVec(pos, map, true))
                     clear = false;
             }
             if (!clear)
@@ -65,13 +65,6 @@ namespace RimWorld
                     }
                 }
             }*/
-            return true;
-        }
-        public bool ValidPosition(IntVec3 v, Map map)
-        {
-            RoofDef roof = map.roofGrid.RoofAt(v);
-            if (v.InNoBuildEdgeArea(map) || (roof != null && roof.isThickRoof) || !v.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy) || v.Fogged(map) || v.GetThingList(map).Any(t => t is Building b && b.Faction != Faction.OfPlayer))
-                return false;
             return true;
         }
         public List<IntVec3> GenerateBlueprintSketch(EnemyShipDef shipDef)

@@ -1,12 +1,12 @@
-﻿using RimWorld.QuestGen;
-using SaveOurShip2;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using RimWorld.QuestGen;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -549,7 +549,7 @@ namespace RimWorld
 
             if (Consciousness != null) //gifting
             {
-                bool anyGiftsUnlocked = false;
+                /*bool anyGiftsUnlocked = false;
                 foreach (ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)
                 {
                     if (def.research.IsFinished)
@@ -557,7 +557,7 @@ namespace RimWorld
                         anyGiftsUnlocked = true;
                         break;
                     }
-                }
+                }*/
                 if (ResourceBank.ResearchProjectDefOf.ArchotechExotics.IsFinished)
                 {
                     Command_Toggle toggleGiftParticles = new Command_Toggle

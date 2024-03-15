@@ -1,5 +1,4 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -66,10 +65,10 @@ namespace RimWorld
 
         public override void ProcessInput(Event ev)
         {
-            var mapComp = this.turrets.FirstOrDefault().Map.GetComponent<ShipHeatMapComp>();
+            var mapComp = turrets.FirstOrDefault().Map.GetComponent<ShipHeatMapComp>();
             base.ProcessInput(ev);
             SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
-            if (!mapComp.InCombat)
+            if (mapComp.ShipMapState != ShipMapState.inCombat)
             {
                 Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecauseNotInShipCombat"), null, MessageTypeDefOf.RejectInput, historical: false);
                 return;

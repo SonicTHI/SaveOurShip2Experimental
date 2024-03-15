@@ -7,10 +7,21 @@ using SaveOurShip2;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse.AI.Group;
-using RimworldMod;
+using Verse.Noise;
 
 namespace RimWorld
 {
+    //ship map state, only use on space maps
+    public enum ShipMapState : byte
+    {
+        nominal, //stable, maintained orbit - player home ship only
+        inCombat, //fighting another ship - player or enemy ship
+        isGraveyard, //will fall to the ground
+        inTransit, //moving from/to planet surface
+        inEvent, //events that have movement - meteors
+        burnUpSet //force terminate map+WO if no player pawns or pods present or in flight to
+    }
+
     public class ShipHeatMapComp : MapComponent
     {
         public List<ShipHeatNet> cachedNets = new List<ShipHeatNet>();
@@ -60,8 +71,7 @@ namespace RimWorld
                 ShipHeatNet net = new ShipHeatNet();
                 net.GridID = gridID;
                 gridID++;
-                HashSet<CompShipHeat> batch = new HashSet<CompShipHeat>();
-                batch.Add(comp);
+                HashSet<CompShipHeat> batch = new HashSet<CompShipHeat>() { comp };
                 AccumulateToNetNew(batch, net);
                 list.Add(net);
             }
@@ -139,17 +149,23 @@ namespace RimWorld
             Scribe_References.Look<Map>(ref NextTargetMap, "NextTargetMap");
             Scribe_References.Look<Map>(ref ShipGraveyard, "ShipCombatGraveyard");
             Scribe_References.Look<Map>(ref GraveOrigin, "GraveOrigin");
-            Scribe_Values.Look<bool>(ref IsGraveyard, "IsGraveyard", false);
-            Scribe_Values.Look<bool>(ref InCombat, "InCombat", false);
-            Scribe_Values.Look<bool>(ref BurnUpSet, "BurnUpSet", false);
-            Scribe_Values.Look<bool>(ref ToggleEngines, "ToggleEngines", false);
-            Scribe_Values.Look<float>(ref Altitude, "Altitude", 1100);
+
+            Scribe_Values.Look<IntVec3>(ref MoveToVec, "MoveToVec");
+            Scribe_References.Look<Map>(ref MoveToMap, "MoveToMap");
+            Scribe_Values.Look<int>(ref MoveToTile, "MoveToTile");
+            Scribe_References.Look<Map>(ref PrevMap, "PrevMap");
+            Scribe_Values.Look<int>(ref PrevTile, "PrevTile");
+            Scribe_Values.Look<bool>(ref Takeoff, "Takeoff");
+
+            Scribe_Values.Look<ShipMapState>(ref ShipMapState, "ShipMapState", 0);
+            Scribe_Values.Look<bool>(ref EnginesOn, "ToggleEngines", false);
+            Scribe_Values.Look<float>(ref Altitude, "Altitude", 1000);
             Scribe_Values.Look<int>(ref Heading, "Heading");
             Scribe_Values.Look<int>(ref BurnTimer, "BurnTimer");
             Scribe_Values.Look<int>(ref LastAttackTick, "LastShipBattleTick", 0);
             Scribe_Values.Look<int>(ref LastBountyRaidTick, "LastBountyRaidTicks", 0);
             Scribe_Collections.Look<Building_ShipAirlock>(ref Docked, "Docked", LookMode.Reference);
-            if (InCombat)
+            if (ShipMapState == ShipMapState.inCombat)
             {
                 //SC only - both maps
                 targetMapComp = null;
@@ -269,30 +285,35 @@ namespace RimWorld
 
         //all maps
         public Lord ShipLord; //AI ship lord - defends or attacks
-        public Lord InvaderLord; //second AI ship lord for wreck second facton 
+        public Lord InvaderLord; //second AI ship lord for wreck second facton
         public Map NextTargetMap; //if any, will trigger battle after 10s
         public Map ShipGraveyard; //map to put destroyed ships to
         public Map GraveOrigin; //check if parent is in combat
+
+        //atmospheric move
+        public IntVec3 MoveToVec; //vec to move to after altitude reached
+        public Map MoveToMap; //ship move after altitude reached
+        public int MoveToTile; //if ground target map is closed, find new valid LZ near this
+        public Map PrevMap; //on takeoff, fallback to MoveToMap
+        public int PrevTile; //on takeoff, fallback to MoveToTile
+        public bool Takeoff; //started from planet
+        public float Altitude = ShipInteriorMod2.altitudeNominal;
+        public int Heading; //in combat: +closer, -apart, OOC: +up, 0down, -forcedown
         public bool IsGraveOriginInCombat
         {
             get
             {
                 if (GraveOrigin == null)
                     return false;
-                if (GraveOrigin.GetComponent<ShipHeatMapComp>().InCombat)
+                if (GraveOrigin.GetComponent<ShipHeatMapComp>().ShipMapState == ShipMapState.inCombat)
                     return true;
                 return false;
             }
         }
-        public bool IsGraveyard = false; //temp map, will be removed in a few days
-        public bool InCombat = false;
-        public bool BurnUpSet = false; //force terminate map+WO if no player pawns or pods present or in flight to
-        public bool ToggleEngines = false; //OOC for events
+        public ShipMapState ShipMapState; //new state system
+        public bool EnginesOn = false; //OOC for events
         public int BurnTimer = 0; //OOC for events
-        public float Altitude = 1100;
-        public int Heading; //in combat: +closer, -apart, OOC from/to
-        public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
-        List<Building> cores = new List<Building>(); //td recheck use
+        public WorldObjectOrbitingShip mapParent => map.Parent as WorldObjectOrbitingShip;
         public bool IsPlayerShipMap => map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting;
         public ShipHeatMapComp GraveComp => ShipGraveyard.GetComponent<ShipHeatMapComp>();
         public int engineRot = -1;
@@ -331,7 +352,8 @@ namespace RimWorld
             }
         }
 
-        //non SC caches
+        //map caches
+        public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
         public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>(); //workjob, hit detect
         public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>(); //td get this into shipcache?
         public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
@@ -618,7 +640,7 @@ namespace RimWorld
         public void StartShipEncounter(PassingShip passingShip = null, Map targetMap = null, Faction fac = null, int range = 0, bool fleet = false, bool bounty = false)
         {
             //startup on origin
-            if (MapRootListAll.NullOrEmpty() || InCombat || BurnUpSet)
+            if (ShipMapState != ShipMapState.nominal || MapRootListAll.NullOrEmpty())
             {
                 Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Error: Unable to start ship encounter.");
                 return;
@@ -629,11 +651,11 @@ namespace RimWorld
             //target or create map + spawn ships
             ShipCombatOriginMap = map;
             if (targetMap == null)
-                ShipCombatTargetMap = SpawnEnemyShipMap(passingShip, fac, fleet, bounty, out cores);
+                ShipCombatTargetMap = SpawnEnemyShipMap(passingShip, fac, fleet, bounty);
             else
                 ShipCombatTargetMap = targetMap;
             //if ship is derelict switch to "encounter"
-            if (TargetMapComp.IsGraveyard)
+            if (TargetMapComp.ShipMapState == ShipMapState.isGraveyard)
             {
                 ShipCombatTargetMap = null; //td no ship combat vs no ship maps, for now
                 targetMapComp = null;
@@ -654,18 +676,18 @@ namespace RimWorld
 
             callSlowTick = true;
         }
-        public Map SpawnEnemyShipMap(PassingShip passingShip, Faction faction, bool fleet, bool bounty, out List<Building> cores)
+        public Map SpawnEnemyShipMap(PassingShip passingShip, Faction faction, bool fleet, bool bounty)
         {
             Map newMap = new Map();
-            cores = new List<Building>();
+            List<Building> cores = new List<Building>();
             EnemyShipDef shipDef = null;
             SpaceNavyDef navyDef = null;
             int wreckLevel = 0;
             bool shieldsActive = true;
             float CR = 0;
             float radius = 150f;
-            float theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta - 0.1f + 0.002f * Rand.Range(0, 20);
-            float phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).phi - 0.01f + 0.001f * Rand.Range(-20, 20);
+            float theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta - 0.1f + 0.002f * Rand.Range(0, 20);
+            float phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Phi - 0.01f + 0.001f * Rand.Range(-20, 20);
 
             if (passingShip is AttackableShip attackableShip)
             {
@@ -679,7 +701,7 @@ namespace RimWorld
                 navyDef = derelictShip.spaceNavyDef;
                 faction = derelictShip.shipFaction;
                 wreckLevel = derelictShip.wreckLevel;
-                theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta + (0.05f + 0.002f * Rand.Range(0, 40)) * (Rand.Bool ? 1 : -1);
+                theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta + (0.05f + 0.002f * Rand.Range(0, 40)) * (Rand.Bool ? 1 : -1);
             }
             else //using player ship combat rating
             {
@@ -792,14 +814,14 @@ namespace RimWorld
             newMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy);
 
             var mp = (WorldObjectOrbitingShip)newMap.Parent;
-            mp.radius = radius;
-            mp.theta = theta;
-            mp.phi = phi;
+            mp.Radius = radius;
+            mp.Theta = theta;
+            mp.Phi = phi;
             var newMapComp = newMap.GetComponent<ShipHeatMapComp>();
             if (passingShip is DerelictShip d)
             {
                 shieldsActive = false;
-                newMapComp.IsGraveyard = true;
+                newMapComp.ShipMapState = ShipMapState.isGraveyard;
                 newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
                 Find.LetterStack.ReceiveLetter("ShipEncounterStart".Translate(), "ShipEncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
             }
@@ -841,8 +863,7 @@ namespace RimWorld
             BuildingsCount = BuildingCountAtStart;
             Log.Message("SOS2: ".Colorize(Color.cyan) + map + " BuildingCountAtStart: ".Colorize(Color.green) + BuildingCountAtStart);
             ShipGraveyard = null;
-            InCombat = true;
-            BurnUpSet = false;
+            ShipMapState = ShipMapState.inCombat;
             Heading = 0;
             MapEnginePower = 0;
             Maintain = false;
@@ -903,7 +924,7 @@ namespace RimWorld
             if (!map.IsSpace())
                 return;
 
-            if (InCombat)
+            if (ShipMapState == ShipMapState.inCombat)
             {
                 foreach (int index in ShipsToMove)
                 {
@@ -986,36 +1007,37 @@ namespace RimWorld
                     return;
                 }
             }
-            /*else if (Heading != 0) //altitude
+            else if (ShipMapState == ShipMapState.inTransit) //altitude - 0 at max or min only
             {
-                if (Heading > 0)
+                if (MapEnginePower > 0)
                 {
-                    Altitude += 0.1f * MapEnginePower;
-                }
-                else
-                {
-                    Altitude -= 0.1f * MapEnginePower;
-                }
-
-                ShipInteriorMod2.WorldComp.renderedThatAlready = false;
-                if (Altitude > 1100) //orbit reached - if not home, warn orbit fail, allow to move to home
-                {
-                    Altitude = 1100;
-                    Heading = 0;
-                    MapFullStop();
-                    if (map.Parent.def != ResourceBank.WorldObjectDefOf.ShipOrbiting)
+                    if (Heading > 0) //ascend
                     {
-                        //allow move to home - separate gizmo on bridge
-
-                        //warn
+                        Altitude += 0.1f * MapEnginePower;
+                    }
+                    else if (Heading < 0) //descend
+                    {
+                        Altitude -= 0.1f * MapEnginePower;
                     }
                 }
-                else if (Altitude < 110) //ground reached - warn landing, if timer out, crash ship - new map, damage
+                else if (Altitude > ShipInteriorMod2.altitudeLand) //descend unless in stable or startup altitude
                 {
-                    Altitude = 110;
-                    Heading = 0;
+                    Altitude -= 0.2f;
                 }
-            }*/
+                if (Find.TickManager.TicksGame % 2 == 0 && ShipInteriorMod2.WorldComp.renderedThatAlready == true)
+                    ShipInteriorMod2.WorldComp.renderedThatAlready = false;
+                //move WO
+                //max 1000 = 150, min 130 = 100
+                float ratio = (Altitude - ShipInteriorMod2.altitudeLand) / (ShipInteriorMod2.altitudeNominal - ShipInteriorMod2.altitudeLand);
+                if (!Takeoff) //reverse scaling - altitude always points up
+                {
+                    ratio = 1 - ratio;
+                }
+                //vec to target - vec to origin, scale by altitude
+                //td get a math wizard to make this a curve and point it at equator orbit or around planet to ground
+                Vector3 d = mapParent.targetDrawPos - mapParent.originDrawPos;
+                mapParent.drawPos = mapParent.originDrawPos + new Vector3(d.x * ratio, d.y * ratio, d.z * ratio);
+            }
             if (callSlowTick) //origin only: call both slow ticks
             {
                 SlowTick();
@@ -1029,7 +1051,7 @@ namespace RimWorld
         }
         public void SlowTick()
         {
-            if (InCombat)
+            if (ShipMapState == ShipMapState.inCombat)
             {
                 if (Maintain) //distance maintain
                 {
@@ -1307,36 +1329,114 @@ namespace RimWorld
             }
             else //OOC - events
             {
-                /*if (Heading != 0)
+                if (ShipMapState == ShipMapState.inTransit)
                 {
+                    /*
+                     * transit system:
+                     * on ground, no spacehome: move to new spacehome and transit to orbit (ShipInteriorMod2)
+                     * on ground, spacehome exists: placeworker on spacehome via (MinifiedThingShipMove), spawn and move to transit map, at destination attempt auto move to placeworker, if fail warn
+                     * in orbit on spacehome, only ship: transit spacehome to ground via (MinifiedThingShipMove), at destination attempt auto move to placeworker, if fail make new map and land on it
+                     * in orbit on spacehome with other ships: move to transit map via (MinifiedThingShipMove) and transit to ground, at destination attempt auto move to placeworker, if fail make new map and land on it
+                     all vars are stored in this except WO drawPos (current, target, origin)
+                    */
+                    if (Altitude >= ShipInteriorMod2.altitudeNominal) //orbit reached
+                    {
+                        Altitude = ShipInteriorMod2.altitudeNominal;
+                        Heading = 0;
+                        MapFullStop();
+                        Map spacehome = ShipInteriorMod2.FindPlayerShipMap();
+                        if (spacehome == null) //spacehome is gone, make new
+                        {
+                            spacehome = ShipInteriorMod2.GeneratePlayerShipMap(map.Size);
+                        }
+                        if (map != spacehome) //arriving from temp map
+                        {
+                            if (ShipInteriorMod2.CanShipLandOnMap(map, MoveToMap)) //landing area clear
+                            {
+                                ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, MoveToMap, MoveToVec);
+                                if (MapShipCells.NullOrEmpty() && !map.PlayerPawnsForStoryteller.Any())
+                                {
+                                    ShipMapState = ShipMapState.burnUpSet; //remove transit map if clear
+                                    return;
+                                }
+                            }
+                            else //blocked
+                            {
+                                //td message ready to move
+                                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"), TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
+                            }
+                            ShipMapState = ShipMapState.isGraveyard;
+                            map.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(10000);
+                        }
+                        else //arriving on spacehome
+                        {
+                            ((WorldObjectOrbitingShip)map.Parent).SetNominalPos();
+                            ShipMapState = ShipMapState.nominal;
+                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"), TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
+                        }
+                    }
+                    else if (Heading < 1 && Altitude <= ShipInteriorMod2.altitudeLand && Altitude > ShipInteriorMod2.altitudeLand - 15) //ground reached, not in startup altitude
+                    {
+                        Altitude = ShipInteriorMod2.altitudeLand;
+                        Heading = 0;
+                        int targetTile = -1;
+
+                        if (Takeoff) //fell from space
+                        {
+                            if (PrevMap == null) //takeoff map was closed
+                                MoveToTile = PrevTile;
+                            else
+                                MoveToMap = PrevMap;
+                        }
+
+                        if (MoveToMap != null && ShipInteriorMod2.CanShipLandOnMap(map, MoveToMap)) //ground map exists and has room
+                        {
+                            ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, MoveToMap, MoveToVec);
+                        }
+                        else //moveto map was closed or no room
+                        {
+                            targetTile = MoveToTile;
+                            int tile = -1;
+                            List<int> tiles = ShipInteriorMod2.PossibleShipLandingTiles(targetTile, 2, 5);
+                            if (!tiles.NullOrEmpty())
+                                tile = tiles.RandomElement();
+                            else
+                            {
+                                tiles = ShipInteriorMod2.PossibleShipLandingTiles(targetTile, 5, 20);
+                                if (!tiles.NullOrEmpty())
+                                    tile = tiles.RandomElement();
+                            }
+                            if (tile != -1)
+                            {
+                                SettleUtility.AddNewHome(tile, Faction.OfPlayer); //td change this to landed ship
+                                var newMapPar = GetOrGenerateMapUtility.GetOrGenerateMap(tile, map.Size, null).Parent;
+                                ((Settlement)newMapPar).Name = "Landed ship";
+                                ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, newMapPar.Map, IntVec3.Zero, clearArea: true);
+                            }
+                            else //td ship gone, pawns spawn like vanilla on random nearby map via pods
+                            {
+                                //ShipMapState = ShipMapState.burnUpSet;
+                            }
+                        }
+                    }
+                    else if (EnginesOn && Heading < 0 && Altitude == ShipInteriorMod2.altitudeNominal - 50) //end first burn down
+                    {
+                        Log.Message("first burn done");
+                        MapFullStop();
+                    }
+
                     if (Heading > 0) //consume fuel, if not enough engine power, lose altitude
                     {
                         //reduce durration per engine vs mass
-                        if (AnyShipCanMove() && ToggleEngines) //can we move and should we move
+                        if (AnyShipCanMove() && EnginesOn) //can we move and should we move
                         {
                             MapEnginesOn();
-                            Log.Message(""+ MapEnginePower);
                             MapEnginePower *= 400f;
-                            /*if (BurnTimer > cond.TicksLeft)
-                            {
-                                cond.End();
-                                BurnTimer = 0;
-                                MapFullStop();
-                            }
-                            else
-                            {
-                                BurnTimer += (int)MapEnginePower;
-                                //Log.Message("ticks remain " + map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris).TicksLeft);
-                            }
                         }
                         else
                         {
                             MapFullStop();
                         }
-                    }
-                    else //consume fuel at start and end
-                    {
-
                     }
                     foreach (IntVec3 v in map.AllCells.Except(MapShipCells.Keys)) //kill anything off ship
                     {
@@ -1347,7 +1447,8 @@ namespace RimWorld
                             t.Destroy();
                         }
                     }
-                }*/
+                }
+
                 if (Find.TickManager.TicksGame % 6000 == 0) //very slow checks - decomp, bounty
                 {
                     foreach (SoShipCache ship in ShipsOnMapNew.Values) //decompresson
@@ -1375,26 +1476,24 @@ namespace RimWorld
                         }
                     }
                 }
-                //trigger combat with graveyard
-                if (IsGraveyard && NextTargetMap != null && Find.TickManager.TicksGame > LastAttackTick + 600)
+                //trigger combat with next target
+                if (NextTargetMap != null && Find.TickManager.TicksGame > LastAttackTick + 600)
                 {
                     StartShipEncounter(null, NextTargetMap);
                     NextTargetMap = null;
                     return;
                 }
                 var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
-                if (cond != null)//map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris))
+                if (cond != null)
                 {
                     //reduce durration per engine vs mass
-                    if (AnyShipCanMove() && ToggleEngines) //can we move and should we move
+                    if (AnyShipCanMove() && EnginesOn) //can we move and should we move
                     {
                         MapEnginesOn();
                         MapEnginePower *= 40000f;
                         if (BurnTimer > cond.TicksLeft)
                         {
                             cond.End();
-                            BurnTimer = 0;
-                            MapFullStop();
                         }
                         else
                         {
@@ -1472,7 +1571,7 @@ namespace RimWorld
                     Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " Removing with: " + core);
                     if (ShipGraveyard == null)
                         SpawnGraveyard();
-                    ShipInteriorMod2.MoveShip(core, ShipGraveyard, new IntVec3(0, 0, 0));
+                    ShipInteriorMod2.MoveShip(core, ShipGraveyard, IntVec3.Zero);
                 }
                 Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ships remaining: " + ShipsOnMapNew.Count);
                 foreach (SoShipCache s in ShipsOnMapNew.Values)
@@ -1496,12 +1595,12 @@ namespace RimWorld
             ShipGraveyard = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), map.Size, ResourceBank.WorldObjectDefOf.WreckSpace);
             ShipGraveyard.fogGrid.ClearAllFog();
             var mp = (WorldObjectOrbitingShip)ShipGraveyard.Parent;
-            mp.radius = 150;
-            mp.theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).theta + adj;
-            mp.phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).phi - 0.01f + 0.001f * Rand.Range(0, 20);
+            mp.Radius = 150;
+            mp.Theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta + adj;
+            mp.Phi = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Phi - 0.01f + 0.001f * Rand.Range(0, 20);
             mp.Name += "Wreckage nr." + ShipGraveyard.uniqueID;
             var graveMapComp = ShipGraveyard.GetComponent<ShipHeatMapComp>();
-            graveMapComp.IsGraveyard = true;
+            graveMapComp.ShipMapState = ShipMapState.isGraveyard;
             graveMapComp.GraveOrigin = map;
             graveMapComp.ShipFaction = ShipFaction;
         }
@@ -1531,8 +1630,8 @@ namespace RimWorld
             Map tgtMap = OriginMapComp.ShipCombatTargetMap;
             var tgtMapComp = OriginMapComp.TargetMapComp;
             tgtMapComp.HasShipMapAI = false;
-            tgtMapComp.InCombat = false;
-            OriginMapComp.InCombat = false;
+            tgtMapComp.ShipMapState = ShipMapState.isGraveyard;
+            OriginMapComp.ShipMapState = ShipMapState.nominal;
             OriginMapComp.ShipBuildingsOff();
             OriginMapComp.ShipGraveyard?.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000) - burnTimeElapsed);
             tgtMapComp.ShipGraveyard?.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000) - burnTimeElapsed);
@@ -1540,12 +1639,11 @@ namespace RimWorld
             {
                 if (fled) //target fled, remove target
                 {
-                    tgtMapComp.BurnUpSet = true;
+                    tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
                     Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipRetreated"), MessageTypeDefOf.ThreatBig);
                 }
                 else //target lost
                 {
-                    tgtMapComp.IsGraveyard = true;
                     if (OriginMapComp.attackedTradeship)
                         ShipInteriorMod2.WorldComp.PlayerFactionBounty += 15;
                     tgtMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000) - burnTimeElapsed);
@@ -1568,7 +1666,7 @@ namespace RimWorld
                 else //origin fled or lost with no graveyard, remove target
                 {
                     //td instead launch boarders to origin
-                    tgtMapComp.BurnUpSet = true;
+                    tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
                 }
             }
 

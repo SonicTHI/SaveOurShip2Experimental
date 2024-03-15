@@ -1,20 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 	<SoS.Settings.ShowVersionUI>SOS2EXP {0}</SoS.Settings.ShowVersionUI>
-	<SoS.Settings.ShowVersionUI.Desc>If checked, will show SOS2 version on UI on maps in space.</SoS.Settings.ShowVersionUI.Desc>
-	<SoS.Settings.ShowVersionUI.Tip>This tag can be disabled in mod options.</SoS.Settings.ShowVersionUI.Tip>
 	<SoS.Settings.RenderPlanet>Dynamic planet rendering</SoS.Settings.RenderPlanet>
-	<SoS.Settings.RenderPlanet.Desc>If checked, orbital maps will show a day/night cycle on the planet. Disable this option if the game runs slowly in space.</SoS.Settings.RenderPlanet.Desc>
+	<SoS.Settings.RenderPlanet.Desc>If checked, orbital maps will show a day/night cycle on the planet. Disable this option if the game runs slowly in space. Default: off</SoS.Settings.RenderPlanet.Desc>
 	
 	<SoS.Settings.UI>Interface settings:</SoS.Settings.UI>
 	<SoS.Settings.UseSplashScreen>SoS splash screen</SoS.Settings.UseSplashScreen>
-	<SoS.Settings.UseSplashScreen.Desc>If checked, RimWorld will use SoS2's new splash screen. Restart the game after changing this setting.</SoS.Settings.UseSplashScreen.Desc>
+	<SoS.Settings.UseSplashScreen.Desc>If checked, RimWorld will use SoS2's new splash screen. Restart the game after changing this setting. Default: on</SoS.Settings.UseSplashScreen.Desc>
 	<SoS.Settings.PersistShipUI>Persistent ship UI</SoS.Settings.PersistShipUI>
-	<SoS.Settings.PersistShipUI.Desc>If checked, will show your ship power and heat even out of combat.</SoS.Settings.PersistShipUI.Desc>
+	<SoS.Settings.PersistShipUI.Desc>If checked, will show your ship power and heat even out of combat. Default: off</SoS.Settings.PersistShipUI.Desc>
 	<SoS.Settings.OffsetUIx>Ship UI offset X</SoS.Settings.OffsetUIx>
 	<SoS.Settings.OffsetUIx.Desc>UI offset horizontal from the center of your screen.</SoS.Settings.OffsetUIx.Desc>
 	<SoS.Settings.OffsetUIy>Ship UI offset Y</SoS.Settings.OffsetUIy>
 	<SoS.Settings.OffsetUIy.Desc>UI offset vertical from bellow the pawn bar.</SoS.Settings.OffsetUIy.Desc>
+	
+	<SoS.Settings.Misc>Misc settings:</SoS.Settings.Misc>
+	<SoS.Settings.EasyMode>Easy boarding mode</SoS.Settings.EasyMode>
+	<SoS.Settings.EasyMode.Desc>If checked, will prevent player pawns from dying to point defense and enable player pods and shuttles landing outside of enemy ships in combat. Default: off</SoS.Settings.EasyMode.Desc>
+	<SoS.Settings.ArchoRemove>Remove archo animals</SoS.Settings.ArchoRemove>
+	<SoS.Settings.ArchoRemove.Desc>Removes archo animals if they are spawned into the game before the required building is built. Default: on</SoS.Settings.ArchoRemove.Desc>
+	<SoS.Settings.Debug>Debug mode</SoS.Settings.Debug>
+	<SoS.Settings.Debug.Desc>Will draw ship area and list all ships/wrecks on map on screen with mouse over for details. Default: off</SoS.Settings.Debug.Desc>
+	
+	<!--SoS.Settings.UseVacuumPathfinding>Use vacuum pathfinding</SoS.Settings.UseVacuumPathfinding>
+	<SoS.Settings.UseVacuumPathfinding.Desc>If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.</SoS.Settings.UseVacuumPathfinding.Desc-->
 	
 	<SoS.Settings.Gameplay>Gameplay settings:</SoS.Settings.Gameplay>
 	<SoS.Settings.DifficultySoS>Ship combat difficulty factor (Min: {0} Max: {1} Default: {2} Current: {3})</SoS.Settings.DifficultySoS>
@@ -25,13 +34,8 @@
 	<SoS.Settings.NavyShipChance.Desc>How likely navies will appear in random encounters.</SoS.Settings.NavyShipChance.Desc>
 	<SoS.Settings.FleetChance>Random fleet chance (Min: {0} Max: {1} Default: {2} Current: {3})</SoS.Settings.FleetChance>
 	<SoS.Settings.FleetChance.Desc>Chance for random unknown enemy ships and traders to be fleets. Will be ignored at very low or high combat rating.</SoS.Settings.FleetChance.Desc>
-	<SoS.Settings.EasyMode>Easy boarding mode</SoS.Settings.EasyMode>
-	<SoS.Settings.EasyMode.Desc>If checked, will prevent player pawns from dying to point defense and enable player pods and shuttles landing outside of enemy ships in combat.</SoS.Settings.EasyMode.Desc>
 	
-	<!--SoS.Settings.UseVacuumPathfinding>Use vacuum pathfinding</SoS.Settings.UseVacuumPathfinding>
-	<SoS.Settings.UseVacuumPathfinding.Desc>If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.</SoS.Settings.UseVacuumPathfinding.Desc-->
-	
-	<SoS.Settings.Misc>Misc settings:</SoS.Settings.Misc>
+	<SoS.Settings.Travel>Travel settings:</SoS.Settings.Travel>
 	<SoS.Settings.MinTravelTime>Minimum travel time (Min: {0} Max: {1} Default: {2} Current: {3})</SoS.Settings.MinTravelTime>
 	<SoS.Settings.MinTravelTime.Desc>Minimum number of years that pass when traveling to a new world.</SoS.Settings.MinTravelTime.Desc>
 	<SoS.Settings.MaxTravelTime>Maximum travel time (Min: {0} Max: {1} Default: {2} Current: {3})</SoS.Settings.MaxTravelTime>

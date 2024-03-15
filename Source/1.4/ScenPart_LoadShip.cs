@@ -1,4 +1,4 @@
-﻿using RimworldMod;
+﻿
 using SaveOurShip2;
 using System;
 using System.Collections.Generic;
@@ -334,8 +334,8 @@ namespace RimWorld
             {
                 int newTile = ShipInteriorMod2.FindWorldTilePlayer();
                 Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, ResourceBank.WorldObjectDefOf.ShipOrbiting);
-                ((WorldObjectOrbitingShip)spaceMap.Parent).radius = 150;
-                ((WorldObjectOrbitingShip)spaceMap.Parent).theta = 2.75f;
+                ((WorldObjectOrbitingShip)spaceMap.Parent).Radius = 150;
+                ((WorldObjectOrbitingShip)spaceMap.Parent).Theta = 2.75f;
                 Current.ProgramState = ProgramState.MapInitializing;
                 var mapComp = spaceMap.GetComponent<ShipHeatMapComp>();
                 mapComp.CacheOff = true;

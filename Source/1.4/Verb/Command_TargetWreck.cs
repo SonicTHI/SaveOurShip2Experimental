@@ -1,5 +1,4 @@
-﻿using RimWorld;
-using SaveOurShip2;
+﻿using SaveOurShip2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,6 +125,7 @@ namespace RimWorld
             fakeMover.shipRotNum = rotb;
             fakeMover.bottomLeftPos = lowestCorner;
             ShipInteriorMod2.shipOriginMap = b.Map;
+            fakeMover.originMap = sourceMap;
             fakeMover.targetMap = targetMap;
             fakeMover.Position = b.Position;
             fakeMover.SpawnSetup(targetMap, false);

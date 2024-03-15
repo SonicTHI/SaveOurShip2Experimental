@@ -510,7 +510,7 @@
 			<Steel>100</Steel>
 			<Plasteel>200</Plasteel>
 			<Uranium>120</Uranium>
-			<ComponentSpacer>22</ComponentSpacer>
+			<ComponentSpacer>12</ComponentSpacer>
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>

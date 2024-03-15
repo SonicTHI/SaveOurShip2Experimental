@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -32,7 +30,7 @@ namespace RimWorld
                 {
                     radius = 200f;
                     Map map = ShipInteriorMod2.FindPlayerShipMap();
-                    theta = ((WorldObjectOrbitingShip)map.Parent).theta;
+                    theta = ((WorldObjectOrbitingShip)map.Parent).Theta;
                 }
                 return Vector3.SlerpUnclamped(orbitVec * radius, orbitVec * radius * -1, theta * -1); //TODO phi
             }
@@ -61,15 +59,15 @@ namespace RimWorld
         public override void Print(LayerSubMesh subMesh)
         {
             float averageTileSize = Find.WorldGrid.averageTileSize;
-            WorldRendererUtility.PrintQuadTangentialToPlanet(this.DrawPos, 1.7f * averageTileSize, 0.008f, subMesh, false, false, true);
+            WorldRendererUtility.PrintQuadTangentialToPlanet(DrawPos, 1.7f * averageTileSize, 0.008f, subMesh, false, false, true);
         }
 
         public override bool ShouldRemoveMapNow(out bool alsoRemoveWorldObject)
         {
             alsoRemoveWorldObject = true;
-            if (Find.World.worldObjects.AllWorldObjects.Any(ob => ob is TravelingTransportPods && ((int)typeof(TravelingTransportPods).GetField("initialTile", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(ob) == this.Tile || ((TravelingTransportPods)ob).destinationTile == this.Tile)))
+            if (Find.World.worldObjects.AllWorldObjects.Any(ob => ob is TravelingTransportPods p && (p.initialTile == Tile || p.destinationTile == Tile)))
                 return false;
-            if (this.Map.listerBuildings.allBuildingsNonColonist.Any(t => t.TryGetComp<CompBlackBoxAI>() != null))
+            if (Map.listerBuildings.allBuildingsNonColonist.Any(t => t.TryGetComp<CompBlackBoxAI>() != null))
                 return false;
             return base.ShouldRemoveMapNow(out alsoRemoveWorldObject);
         }
@@ -78,7 +76,7 @@ namespace RimWorld
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append(base.GetInspectString());
-            stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SpaceSiteFuelCost", this.fuelCost));
+            stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SpaceSiteFuelCost", fuelCost));
             return stringBuilder.ToString();
         }
     }

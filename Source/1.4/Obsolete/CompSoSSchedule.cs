@@ -2,7 +2,7 @@
 
 namespace RimWorld
 {
-    class CompSoSSchedule : CompSchedule
+    /*class CompSoSSchedule : CompSchedule
     {
         CompSoShipLight partInt;
 
@@ -26,5 +26,5 @@ namespace RimWorld
                 parent.BroadcastCompSignal("ScheduledOn");
             }
         }
-    }
+    }*/
 }

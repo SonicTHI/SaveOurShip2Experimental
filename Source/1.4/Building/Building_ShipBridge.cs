@@ -6,11 +6,8 @@ using UnityEngine;
 using Verse;
 using RimWorld.Planet;
 using SaveOurShip2;
-using System.Reflection;
 using System.Text;
 using Verse.AI;
-using RimworldMod;
-using Verse.Noise;
 
 namespace RimWorld
 {
@@ -284,8 +281,24 @@ namespace RimWorld
 					};
 					yield return toggleShields;
                 }
+                if (heatNet.Sinks.Any())
+                {
+                    Command_Action vent = new Command_Action
+                    {
+                        action = delegate
+                        {
+                            heatNet.StartVent();
+                        },
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipHeatPurge"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeDesc"),
+                        icon = ContentFinder<Texture2D>.Get("UI/ActiveVent"),
+                        disabled = heatNet.venting || heatNet.RatioInNetworkRaw < 0.1f,
+                        disabledReason = heatNet.venting ? TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeVenting") : TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeNotEnough")
+                    };
+                    yield return vent;
+                }
                 //incombat
-                if (mapComp.InCombat)
+                if (mapComp.ShipMapState == ShipMapState.inCombat)
                 {
                     Command_Action escape = new Command_Action
                     {
@@ -320,7 +333,7 @@ namespace RimWorld
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShip"),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShipDesc"),
                     };
-                    if (mapComp.IsGraveyard || mapComp.ShipsOnMapNew.Count(s => !s.Value.IsWreck) <= 1)
+                    if (mapComp.ShipsOnMapNew.Count(s => !s.Value.IsWreck) <= 1)
                     {
                         withdraw.disabled = true;
                         withdraw.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShipLast");
@@ -330,7 +343,7 @@ namespace RimWorld
                     List<SoShipCache> shipStuck = new List<SoShipCache>(mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()));
 
                     bool wrecksOnMap = false;
-                    if (!mapComp.IsGraveyard && mapComp.ShipsOnMapNew.Count > 1 && shipStuck.Any())
+                    if (mapComp.ShipsOnMapNew.Count > 1 && shipStuck.Any())
                     {
                         wrecksOnMap = true;
                         Command_Action withdrawWrecks = new Command_Action
@@ -456,22 +469,6 @@ namespace RimWorld
                         };
                         yield return selectWeapons;
                     }
-                    if (heatNet.Sinks.Any())
-                    {
-                        Command_Action vent = new Command_Action
-                        {
-                            action = delegate
-                            {
-                                heatNet.StartVent();
-                            },
-                            icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/ActiveVent"),
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipHeatPurge"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeDesc"),
-                            disabled = heatNet.venting || heatNet.RatioInNetworkRaw < 0.1f,
-                            disabledReason = heatNet.venting ? TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeVenting") : TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeNotEnough")
-                        };
-                        yield return vent;
-                    }
                 }
                 //intarget
                 /*else if (mapComp.HasTarget) //end target
@@ -489,7 +486,7 @@ namespace RimWorld
                     yield return endTarget;
                 }*/
                 //engine burn
-                else if (Map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris)) //mapComp.Heading != 0 || 
+                else if (mapComp.ShipMapState == ShipMapState.inTransit || mapComp.ShipMapState == ShipMapState.inEvent)
                 {
                     List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove()).ToList();
                     bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
@@ -499,13 +496,13 @@ namespace RimWorld
                         {
                             if (anyEngineOn)
                             {
-                                mapComp.ToggleEngines = false;
-
+                                mapComp.MapFullStop();
+                                mapComp.Heading = 0;
                             }
                             else
                             {
-                                mapComp.ToggleEngines = true;
-                                //mapComp.Heading = 1;
+                                mapComp.EnginesOn = true;
+                                mapComp.Heading = 1;
                             }
                         },
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEngines"),
@@ -519,7 +516,7 @@ namespace RimWorld
                 else
                 {
                     //space - move, land
-                    if (!mapComp.IsGraveyard || ckActive)
+                    if (mapComp.ShipMapState == ShipMapState.nominal || ckActive)
                     {
                         Command_Action gotoNewWorld = new Command_Action
                         {
@@ -635,6 +632,7 @@ namespace RimWorld
                                 groupable = false,
                                 action = delegate
                                 {
+                                    mapComp.MoveToMap = m;
                                     Ship.CreateShipSketchIfFuelPct(0.1f, m, 0, true);
                                 },
                                 defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand") + " (" + m.Parent.Label + ")",
@@ -712,7 +710,7 @@ namespace RimWorld
                             yield return goGetThatPillarB;
                         }
                         //dev stuff
-                        if (Prefs.DevMode && !mapComp.IsGraveyard)
+                        if (Prefs.DevMode && mapComp.ShipMapState == ShipMapState.nominal)
                         {
                             Command_Action startBattle = new Command_Action
                             {
@@ -820,8 +818,43 @@ namespace RimWorld
                             }
                         }
                     }
+                    //space - in transit
+                    else if (mapComp.ShipMapState == ShipMapState.inTransit)
+                    {
+                        /*if (mapComp.Altitude == ShipInteriorMod2.altitudeLand) //arrived at map
+                        {
+                            Command_Action landShip = new Command_Action //direct landing gizmo, grayed if zone not clear
+                            {
+                                groupable = false,
+                                action = delegate
+                                {
+                                    ShipInteriorMod2.MoveShip(this, mapComp.MoveToMap, IntVec3.Zero);
+                                },
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand"),
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideLandDesc"),
+                                icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon")
+                            };
+                            if (!ShipInteriorMod2.CanShipLandOnMap(Ship, mapComp.MoveToMap)) //area clear allow direct landing, else prompt
+                            {
+                                landShip.Disable();
+                                Command_Action divertShip = new Command_Action
+                                {
+                                    groupable = false,
+                                    action = delegate
+                                    {
+                                        Ship.CreateShipSketchIfFuelPct(0.1f, mapComp.MoveToMap, 0, false);
+                                    },
+                                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand"),
+                                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideLandDesc"),
+                                    icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon")
+                                };
+                                yield return divertShip;
+                            }
+                            yield return landShip;
+                        }*/
+                    }
                     //in graveyard, not player map - return to player map
-                    else if (!mapComp.IsPlayerShipMap)
+                    else if (mapComp.ShipMapState == ShipMapState.isGraveyard)
                     {
                         Command_Action returnShip = new Command_Action
                         {
@@ -830,9 +863,7 @@ namespace RimWorld
                             {
                                 if (mapComp.GraveOrigin == null)
                                 {
-                                    Map m = ShipInteriorMod2.FindPlayerShipMap();
-                                    if (m == null)
-                                        m = ShipInteriorMod2.GeneratePlayerShipMap(Map.Size);
+                                    Map m = ShipInteriorMod2.FindPlayerShipMap() ?? ShipInteriorMod2.GeneratePlayerShipMap(Map.Size);
                                     mapComp.GraveOrigin = m;
                                 }
                                 Ship.CreateShipSketchIfFuelPct(0.01f, mapComp.GraveOrigin);
@@ -860,7 +891,17 @@ namespace RimWorld
                 Command_Action launch = new Command_Action()
                 {
                     groupable = false,
-                    action = new Action(TryLaunch),
+                    action = delegate
+                    {
+                        if (CanLaunchNow)
+                        {
+                            Map playerShipMap = ShipInteriorMod2.FindPlayerShipMap();
+                            if (playerShipMap != null) //player ship in orbit already, move to temp map
+                                Ship.CreateShipSketchIfFuelPct(0.5f, playerShipMap, 0, true);
+                            else
+                                ShipCountdown.InitiateCountdown(this);
+                        }
+                    },
                     hotKey = KeyBindingDefOf.Misc1,
                     defaultLabel = "CommandShipLaunch".Translate(),
                     defaultDesc = "CommandShipLaunchDesc".Translate(),
@@ -906,21 +947,6 @@ namespace RimWorld
             }*/
             //TODO add "solar system" option
         }
-		private void TryLaunch()
-		{
-			if (CanLaunchNow)
-			{
-                Map m = ShipInteriorMod2.FindPlayerShipMap();
-                if (m != null)
-                {
-                    Ship.CreateShipSketchIfFuelPct(1, m, 0, true);
-                }
-                else
-                {
-                    ShipCountdown.InitiateCountdown(this);
-                }
-			}
-		}
         private bool ChoseWorldTarget(GlobalTargetInfo target)
         {
             foreach (CompCryptoLaunchable pod in Ship.Pods)
@@ -957,8 +983,9 @@ namespace RimWorld
             ShipIndex = shipIndex;
             if (!Map.IsSpace())
                 return;
+
             var countdownComp = Map.Parent.GetComponent<TimedForcedExitShip>();
-            if (countdownComp != null && !mapComp.IsGraveyard && countdownComp.ForceExitAndRemoveMapCountdownActive)
+            if (countdownComp != null && mapComp.ShipMapState != ShipMapState.isGraveyard && countdownComp.ForceExitAndRemoveMapCountdownActive)
             {
                 countdownComp.ResetForceExitAndRemoveMapCountdown();
                 Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
@@ -972,7 +999,7 @@ namespace RimWorld
         {
             if (mapComp.MapRootListAll.Contains(this))
                 mapComp.MapRootListAll.Remove(this);
-            if (Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty() && mapComp.IsPlayerShipMap) //last bridge on player map - deorbit
+            if (Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty() && mapComp.IsPlayerShipMap && mapComp.ShipMapState != ShipMapState.inTransit) //last bridge on player map - deorbit warn
             {
                 var countdownComp = Map.Parent.GetComponent<TimedForcedExitShip>();
                 if (countdownComp != null && !countdownComp.ForceExitAndRemoveMapCountdownActive)
@@ -1059,7 +1086,7 @@ namespace RimWorld
             pawn?.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
 
             mapComp.ShipsOnMapNew[shipIndex].Capture(Faction.OfPlayer);
-            if (mapComp.InCombat)
+            if (mapComp.ShipMapState == ShipMapState.inCombat)
             {
                 mapComp.ShipsToMove.Add(ShipIndex);
             }

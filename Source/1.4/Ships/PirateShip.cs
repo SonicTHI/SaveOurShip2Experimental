@@ -1,10 +1,9 @@
-﻿using SaveOurShip2;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
-using Verse.Noise;
+using SaveOurShip2;
 
 namespace RimWorld
 {

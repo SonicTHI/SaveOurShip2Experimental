@@ -1,11 +1,11 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Verse;
 
-namespace Verse
+namespace RimWorld
 {
     public class Graphic_SingleOnOffEmpty : Graphic
     {

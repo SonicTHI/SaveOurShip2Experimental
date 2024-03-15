@@ -1,12 +1,10 @@
-﻿using RimworldMod;
-using SaveOurShip2;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -15,7 +13,7 @@ namespace RimWorld
         protected override bool CanFireNowSub(IncidentParms parms)
         {
             Map map = (Map)parms.target;
-            if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris) || map.GetComponent<ShipHeatMapComp>().InCombat)
+            if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris) || map.GetComponent<ShipHeatMapComp>().ShipMapState != ShipMapState.nominal)
                 return false;
             return true;
         }
@@ -46,6 +44,7 @@ namespace RimWorld
                 spawnCell = new IntVec3(0, 0, map.Size.z / 2);
             }
             map.gameConditionManager.RegisterCondition(gameCondition_SpaceDebris);
+            map.GetComponent<ShipHeatMapComp>().ShipMapState = ShipMapState.inEvent;
             if (gameCondition_SpaceDebris.asteroids)
                 base.SendStandardLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSpaceAsteroids"), TranslatorFormattedStringExtensions.Translate("LetterSpaceAsteroids"), def.letterDef, parms, new TargetInfo(spawnCell, map, false), Array.Empty<NamedArgument>());
             else

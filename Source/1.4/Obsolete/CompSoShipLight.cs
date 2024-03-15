@@ -10,7 +10,7 @@ using SaveOurShip2;
 
 namespace RimWorld
 {
-    [StaticConstructorOnStartup]
+    /*[StaticConstructorOnStartup]
     public class CompSoShipLight : ThingComp
     {
         //props light: def of the wall light to be attached
@@ -238,5 +238,5 @@ namespace RimWorld
             else
                 Log.Error("Failed to initialize ship lighting at position " + parent.Position + " - please report this bug to the SoS2 team.");
         }
-    }
+    }*/
 }

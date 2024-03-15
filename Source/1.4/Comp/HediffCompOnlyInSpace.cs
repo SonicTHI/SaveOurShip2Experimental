@@ -1,7 +1,7 @@
 ﻿using SaveOurShip2;
 using System;
 using System.Collections.Generic;
-using RimworldMod;
+
 using Verse;
 
 namespace RimWorld

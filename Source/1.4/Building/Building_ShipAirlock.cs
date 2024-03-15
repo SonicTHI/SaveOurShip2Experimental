@@ -8,7 +8,6 @@ using Verse.AI.Group;
 using Verse.Sound;
 using HarmonyLib;
 using SaveOurShip2;
-using RimworldMod;
 using UnityEngine;
 
 namespace RimWorld
@@ -89,7 +88,7 @@ namespace RimWorld
             //enemy pawns can pass through their doors if outside or with EVA when player is present
             if (p.Map.IsSpace() && p.Faction != Faction.OfPlayer && Outerdoor())
             {
-                if (!(ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (p.CanSurviveVacuum() && (!mapComp.InCombat || p.Map.mapPawns.AnyColonistSpawned)) || p.CurJobDef == ResourceBank.JobDefOf.FleeVacuum))
+                if (!(ShipInteriorMod2.ExposedToOutside(p.GetRoom()) || (p.CanSurviveVacuum() && (mapComp.ShipMapState != ShipMapState.inCombat || p.Map.mapPawns.AnyColonistSpawned)) || p.CurJobDef == ResourceBank.JobDefOf.FleeVacuum))
                     return false;
             }
             Lord lord = p.GetLord();
@@ -177,7 +176,7 @@ namespace RimWorld
             if (startTick > 0 && Find.TickManager.TicksGame > startTick)
             {
                 startTick = 0;
-                if (!mapComp.InCombat && CanDock())
+                if (mapComp.ShipMapState != ShipMapState.inCombat && CanDock())
                 {
                     SpawnDock();
                 }

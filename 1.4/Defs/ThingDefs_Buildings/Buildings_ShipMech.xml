@@ -133,7 +133,7 @@
 		<designationHotKey>Misc1</designationHotKey>
 	</ThingDef>
 	
-	<ThingDef ParentName="BuildingBase">
+	<!--ThingDef ParentName="BuildingBase">
 		<defName>Ship_Beam_Light_Mech</defName>
 		<label>ship light</label>
 		<thingClass>Building</thingClass>
@@ -184,7 +184,7 @@
 		    </li>
 		</comps>
 		<tickerType>Rare</tickerType>
-	</ThingDef>
+	</ThingDef-->
 	<!-- corners -->
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerMech" Abstract="True">
 		<designatorDropdown>Ship_Beams_Mech</designatorDropdown>

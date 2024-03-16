@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <TraitDef>
+    <defName>AIChromaphileRed</defName>
+    <degreeDatas>
+      <li>
+        <label>chromaphile (red)</label>
+        <description>{PAWN_nameDef} is oddly obsessed with a specific color. {PAWN_pronoun} gains a mood bonus from being around red objects, but dislikes being around blue or green.</description>
+      </li>
+    </degreeDatas>
+    <conflictingTraits>
+      <li>AIChromaphileGreen</li>
+      <li>AIChromaphileBlue</li>
+    </conflictingTraits>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+  
+  <TraitDef>
+    <defName>AIChromaphileGreen</defName>
+    <degreeDatas>
+      <li>
+        <label>chromaphile (green)</label>
+        <description>{PAWN_nameDef} is oddly obsessed with a specific color. {PAWN_pronoun} gains a mood bonus from being around green objects, but dislikes being around red or blue.</description>
+      </li>
+    </degreeDatas>
+    <conflictingTraits>
+      <li>AIChromaphileRed</li>
+      <li>AIChromaphileBlue</li>
+    </conflictingTraits>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+  
+  <TraitDef>
+    <defName>AIChromaphileBlue</defName>
+    <degreeDatas>
+      <li>
+        <label>chromaphile (blue)</label>
+        <description>{PAWN_nameDef} is oddly obsessed with a specific color. {PAWN_pronoun} gains a mood bonus from being around blue objects, but dislikes being around red or green.</description>
+      </li>
+    </degreeDatas>
+    <conflictingTraits>
+      <li>AIChromaphileGreen</li>
+      <li>AIChromaphileRed</li>
+    </conflictingTraits>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+  
+  <TraitDef>
+    <defName>AIVoyeur</defName>
+    <degreeDatas>
+      <li>
+        <label>emotional voyeur</label>
+        <description>{PAWN_nameDef} is fascinated by extreme emotional states. {PAWN_pronoun} will gain a mood bonus by observing crewmates who are either inspired or having a mental break, but will quickly grow bored if no such crewmate exists.</description>
+      </li>
+    </degreeDatas>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+  
+  <TraitDef>
+    <defName>AISurgicalEnthusiast</defName>
+    <degreeDatas>
+      <li>
+        <label>surgical enthusiast</label>
+        <description>To {PAWN_nameDef}, organic bodies are the most fascinating objects in the universe. {PAWN_pronoun} will be happy if {PAWN_pronoun} has recently performed surgery, but if it's been too long since the last operation, {PAWN_pronoun} may decide to randomly operate on a sleeping or unconscious crewmate.</description>
+        <skillGains>
+          <li>
+            <key>Medicine</key>
+            <value>4</value>
+          </li>
+        </skillGains>
+      </li>
+    </degreeDatas>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+  
+  <!--<TraitDef>
+    <defName>AIMachineFucker</defName>
+    <degreeDatas>
+      <li>
+        <label>mechanophile</label>
+        <description>Something about its fellow machines is erotic to {PAWN_nameDef}. If {PAWN_pronoun} is not in a romantic relationship, {PAWN_pronoun} will occasionally try to... um... "interface" with the ship's mechanical buildings, often leaving them broken.</description>
+      </li>
+    </degreeDatas>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>!-->
+  
+  <TraitDef>
+    <defName>AITinkerer</defName>
+    <degreeDatas>
+      <li>
+        <label>self-tinkerer</label>
+        <description>{PAWN_nameDef} frequently modifies {PAWN_possessive} own code. {PAWN_pronoun} will randomly gain bonuses or penalties to {PAWN_possessive} stats, with better results if {PAWN_possessive} Intellectual skill is high. A bad code patch may occasionally cause {PAWN_nameDef} to have a mental break.</description>
+		<skillGains>
+          <li>
+            <key>Intellectual</key>
+            <value>4</value>
+          </li>
+        </skillGains>
+      </li>
+    </degreeDatas>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+  
+  <TraitDef>
+    <defName>AIEmpath</defName>
+    <degreeDatas>
+      <li>
+        <label>empath</label>
+        <description>{PAWN_nameDef} is a natural psychic empath. {PAWN_pronoun} gains a bonus or penalty to {PAWN_possessive} mood based on the moods of those nearby.</description>
+      </li>
+    </degreeDatas>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+  
+  <TraitDef>
+    <defName>AIFilthLover</defName>
+    <degreeDatas>
+      <li>
+        <label>detritophile</label>
+        <description>{PAWN_nameDef} finds dirt and debris fascinating. {PAWN_pronoun} gains a mood bonus from being in dirty environments, but will become annoyed if a room is overly clean.</description>
+      </li>
+    </degreeDatas>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+  
+  <TraitDef>
+    <defName>AIRoguePlanter</defName>
+    <degreeDatas>
+      <li>
+        <label>rogue planter</label>
+        <description>{PAWN_nameDef} has engineered a unique strain of fungus-plant hybrid, capable of surviving in almost any environment, which {PAWN_pronoun} calls {PAWN_possessive} "child." Nobody knows where {PAWN_pronoun} keeps the spores, but {PAWN_pronoun} will occasionally plant one in a random location.\n\nIf the "child" is destroyed, {PAWN_nameDef} will suffer a mood penalty. If it is allowed to grow, the results will be unpredictable...</description>
+      </li>
+    </degreeDatas>
+    <exclusionTags>
+      <li>AITrait</li>
+    </exclusionTags>
+  </TraitDef>
+</Defs>

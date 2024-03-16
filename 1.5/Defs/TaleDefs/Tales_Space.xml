@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <TaleDef>
+    <defName>ShipCombat</defName>
+    <label>space combat</label>
+    <taleClass>Tale_SinglePawn</taleClass>
+    <type>Volatile</type>
+    <baseInterest>5</baseInterest>
+    <rulePack>
+      <rulesStrings>
+        <li>tale_noun->an attack on [PAWN_nameDef]'s [Community]</li>
+        <li>tale_noun->an assault on [PAWN_nameDef]'s [Community]</li>
+        <li>tale_noun->[PAWN_nameDef]'s [Community] being attacked by [Enemy]s</li>
+        <li>image->[Quantity_adjphrase] [Enemy]s [circumstance_phrase]</li>
+        <li>image->an army [circumstance_phrase]</li>
+        <li>image->an overwhelming force [circumstance_phrase]</li>
+        <li>image->an invading force [circumstance_phrase]</li>
+        <li>image->stylized [Color] banners [circumstance_phrase]</li>
+        <li>image->an enormous [Enemy] [circumstance_phrase]</li>
+        <li>circumstance_phrase->advancing over a [TerrainFeature]</li>
+        <li>circumstance_phrase->completely encircling a [Community]</li>
+        <li>circumstance_phrase->attacking [Quantity_adjphrase] [PersonJob]s</li>
+        <li>circumstance_phrase->roaring in victory</li>
+        <li>circumstance_phrase->brandishing [Weapon]s</li>
+        <li>circumstance_phrase->covered in [Gore]</li>
+        <li>desc_sentence->[PAWN_nameDef] organizes a resistance while [defender_circumstance].</li>
+        <li>desc_sentence->[PAWN_nameDef] wields a [Weapon] defensively while [defender_circumstance].</li>
+        <li>desc_sentence->[PAWN_nameDef] lies on the ground, wounded.</li>
+        <li>desc_sentence->[PAWN_nameDef] retaliates with [PAWN_possessive] [Weapon] while [defender_circumstance].</li>
+        <li>desc_sentence->[PAWN_nameDef] stands as tall as a building, [defender_circumstance].</li>
+        <li>desc_sentence->[PAWN_nameDef] wears a [AdjectiveBadass] expression.</li>
+        <li>desc_sentence->[PAWN_nameDef] wears a [AdjectiveAngsty] expression.</li>
+        <li>desc_sentence->The ground is coated in [Gore].</li>
+        <li>desc_sentence->[Quantity_adjphrase] [PersonJob]s flee the area.</li>
+        <li>desc_sentence->[Quantity_adjphrase] [Animal]s flee the area.</li>
+        <li>defender_circumstance->shouting triumphantly</li>
+        <li>defender_circumstance->glowing [Color]</li>
+        <li>defender_circumstance->raising a fist in defiance</li>
+        <li>defender_circumstance->flexing [PAWN_possessive] muscles</li>
+      </rulesStrings>
+    </rulePack>
+  </TaleDef>
+  <TaleDef>
+    <defName>SpaceDebris</defName>
+    <label>space debris</label>
+    <taleClass>Tale_SinglePawn</taleClass>
+    <type>Volatile</type>
+    <baseInterest>20</baseInterest>
+    <rulePack>
+      <rulesStrings>
+        <li>tale_noun->space debris that threatened [PAWN_nameDef]'s [Community]</li>
+        <li>tale_noun->[PAWN_nameDef]'s [Community] being menaced by space debris</li>
+        <li>image->[Quantity_adjphrase] lightning strikes [circumstance_phrase]</li>
+        <li>image->[behavior] wall of rocks [circumstance_phrase]</li>
+        <li>image->[behavior] wall of [Color] rocks [circumstance_phrase]</li>
+        <li>image->[behavior] cloud of ash and smoke [circumstance_phrase]</li>
+        <li>image->[behavior] wave of dust [circumstance_phrase]</li>
+        <li>behavior->a</li>
+        <li>behavior->an advancing</li>
+        <li>behavior->an approaching</li>
+        <li>circumstance_phrase->advancing towards a [Community]</li>
+        <li>circumstance_phrase->in an intimidating cloud</li>
+        <li>circumstance_phrase->nearly enveloping a [TerrainFeature]</li>
+        <li>circumstance_phrase->nearly enveloping [Quantity_adjphrase] [TerrainFeature]s</li>
+        <li>desc_sentence->[PAWN_nameDef] watches with visible fright.</li>
+        <li>desc_sentence->[PAWN_nameDef] watches with awe on [PAWN_possessive] face.</li>
+        <li>desc_sentence->[PAWN_nameDef] is coordinating defensive measures.</li>
+        <li>desc_sentence->[Quantity_adjphrase] [PersonJob]s rush to prepare.</li>
+      </rulesStrings>
+    </rulePack>
+  </TaleDef>
+</Defs>

@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipBasics</defName>
+		<label>starflight basics</label>
+		<description>Construct the structural and supportive elements of a starship. This is the first step in building a ship to leave this star system.</description>
+		<baseCost>4000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>AdvancedFabrication</li>
+		</prerequisites>
+		<researchViewX>18.00</researchViewX>
+		<researchViewY>2.90</researchViewY>
+		<discoveredLetterTitle>About: Launching the ship</discoveredLetterTitle>
+		<discoveredLetterText>Escaping from this planet - it would be freedom at last, and maybe a return home.\n\nBut before you can even consider interstellar spaceflight, you'll need to reach orbit. The minimum requirements for a spaceworthy craft are a rocket engine, a ship bridge and basic sensors. To survive in space, your colonists will also need either a life-support system or EVA suits.\n\nThe amount of chemfuel required to launch a ship into orbit depends on its size. Larger ships may need multiple engines.</discoveredLetterText>
+		<discoveredLetterMinDifficulty>1</discoveredLetterMinDifficulty>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipReactor</defName>
+		<label>ship fission reactor</label>
+		<description>Burn uranium fuel pods for long-term power.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>1</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipEngine</defName>
+		<label>rocket propulsion</label>
+		<description>Construct chemical engines for a ship. These can reach orbit, but not much further.</description>
+		<baseCost>1000</baseCost>
+		<techLevel>Industrial</techLevel>
+		<prerequisites>
+			<li>BiofuelRefining</li>
+			<li>Machining</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>SoSJTDrive</defName>
+		<label>Johnson-Tanaka Drive</label>
+		<description>Understand the principles behind the reactionless Johnson-Tanaka drive, capable of interplanetary and interstellar travel.\nNote: Actually constructing the drive will require an Entanglement Manifold, a very rare artifact.</description>
+		<baseCost>4000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>6</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSalvageBayGlitter</defName>
+		<label>glittertech salvage bay</label>
+		<description>Utilize a reversed polarity JT beam to quickly retrieve salvage after a space battle.\nNote: Actually constructing the bay will require an Entanglement Manifold, a very rare artifact.</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>SoSJTDrive</li>
+			<li>ShipSalvageBay</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>7</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
+	<!-- bridge, sensor -->
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipPilotSeat</defName>
+		<label>ship navigation</label>
+		<description>Allow your colonists to pilot a ship, with basic computer assistance.</description>
+		<baseCost>800</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>ShipEngine</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipComputerCore</defName>
+		<label>ship computer core</label>
+		<description>Allows coercing an existing AI persona into a usable ship computer core for long-range guidance.</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>ShipPilotSeat</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef>
+		<defName>ShipAvatarCasket</defName>
+		<label>afterlife casket</label>
+		<description>Utilize mechanites to break down a deceased body and create a formgel which mimics its biological functions - allowing the dead to live again.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipComputerCore</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+			<li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>3</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSensorCluster</defName>
+		<label>basic ship sensors</label>
+		<description>Construct sensors for a ship, capable of basic navigation and observing areas from orbit.</description>
+		<baseCost>1000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>GroundPenetratingScanner</li>
+			<li>LongRangeMineralScanner</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>2</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSensorClusterAdv</defName>
+		<label>advanced ship sensors</label>
+		<description>Construct advanced sensors for a ship, capable of scanning the interior of enemy ships.</description>
+		<baseCost>4000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipSensorCluster</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>2</researchViewY>
+	</ResearchProjectDef>
+	<!-- ls, eva, crypto -->
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipLifeSupport</defName>
+		<label>ship life support</label>
+		<description>Recycle oxygen to keep non-cryptosleeping colonists alive.</description>
+		<baseCost>1200</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>1.5</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSpaceSuits</defName>
+		<label>EVA suits</label>
+		<description>Self-contained life support systems allow colonists to survive in outer space.</description>
+		<baseCost>800</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipLifeSupport</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>1.5</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSpaceSuitsHeavy</defName>
+		<label>EVA powered armor</label>
+		<description>Apply life-support technology to powered armor, producing an armored suit which allows its occupant to survive in outer space.</description>
+		<baseCost>600</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipSpaceSuits</li>
+			<li>PoweredArmor</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>1.5</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>Crittersleep</defName>
+		<label>crittersleep caskets</label>
+		<description>Construct crittersleep caskets, which can hold multiple small animals, and cryptonests for holding eggs.</description>
+		<baseCost>800</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>Cryptosleep</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>4</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipCryptosleep</defName>
+		<label>escape pods</label>
+		<description>Construct a specialized cryptosleep casket capable of surviving atmospheric re-entry, and which does not need to be opened manually. It would be a good idea to have at least one aboard a starship.</description>
+		<baseCost>800</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>Cryptosleep</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>5</researchViewX>
+		<researchViewY>0</researchViewY>
+	</ResearchProjectDef>
+
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipCapacitor</defName>
+		<label>capacitor arrays</label>
+		<description>Utilize the dielectric properties of plasteel for efficient, high-capacity energy storage.</description>
+		<baseCost>1200</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>Batteries</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>2.75</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSalvageBay</defName>
+		<label>salvage bay</label>
+		<description>Utilize an automated gantry and swarms of tug drones to quickly retrieve salvage after a space battle.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>1</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>HullFoam</defName>
+		<label>hullfoam</label>
+		<description>Craft hullfoam, a sprayable substance that hardens into airtight barriers. Useful for quickly patching holes in starships.</description>
+		<baseCost>1000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>3.25</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipShields</defName>
+		<label>ship shields</label>
+		<description>Protect your ship with a momentum-repulsor field.</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>ShieldBelt</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>3.25</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipCloaking</defName>
+		<label>cloaking device</label>
+		<description>Hide your ship's heat emissions, preventing enemies from noticing you.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipHeatsink</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>3.25</researchViewY>
+	</ResearchProjectDef>
+	<!-- shuttles -->
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipShuttleBay</defName>
+		<label>shuttle bay</label>
+		<description>Construct shuttle docking bays, for ferrying cargo to and from a ship.</description>
+		<baseCost>1000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>ShuttlePersonal</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>0.5</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef>
+		<defName>ShuttlePersonal</defName>
+		<label>Personal Shuttle</label>
+		<description>Construct personal shuttles, which act much like reusable transport pods.</description>
+		<baseCost>1000</baseCost>
+		<techLevel>Industrial</techLevel>
+		<prerequisites>
+			<li>TransportPod</li>
+			<li>ShipEngine</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>0.5</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef>
+		<defName>ShuttleCargo</defName>
+		<label>Cargo Shuttle</label>
+		<description>Miniaturized ship components allow cargo shuttles to carry much more weight than simpler models.</description>
+		<baseCost>1500</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipReactor</li>
+			<li>ShuttlePersonal</li>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+			<li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>1</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef>
+		<defName>ShuttleHeavy</defName>
+		<label>Heavy Cargo Shuttle</label>
+		<description>Quickly transport a caravan's worth of goods with this advanced cargo shuttle.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShuttleCargo</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+			<li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>3</researchViewX>
+		<researchViewY>1</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef>
+		<defName>ShuttleDropship</defName>
+		<label>Superheavy Dropship</label>
+		<description>Deliver tonnes of goods, or an entire battalion of marines, with this superheavy shuttle.</description>
+		<baseCost>4000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShuttleHeavy</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+			<li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>4</researchViewX>
+		<researchViewY>1</researchViewY>
+	</ResearchProjectDef>
+	<!-- weapons, sinks -->
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipTurretAC</defName>
+		<label>ship cannons</label>
+		<description>Construct ballistic slugthrowers for ship-to-ship combat. Unlike energy weapons, these require ammo but need almost no cooling.</description>
+		<baseCost>800</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>3.75</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipTurretLaser</defName>
+		<label>laser turrets</label>
+		<description>Construct small lasers for ship-to-ship combat. Highly damaging but only usable at short range. Can intercept torpedoes.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>4.25</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipTurretPlasma</defName>
+		<label>plasma turrets</label>
+		<description>Construct small plasma cannons for ship-to-ship combat. These weapons are balanced and most effective at intermediate range.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>4.75</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipTurretKinetic</defName>
+		<label>railgun turrets</label>
+		<description>Construct small railguns for ship-to-ship combat. Most effective at long range.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>5.25</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipHeatsink</defName>
+		<label>heatsinks</label>
+		<description>Keep your ship's weapons and shields operational longer by channeling their heat into a heatsink.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>1</researchViewX>
+		<researchViewY>2.75</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipHeatManifold</defName>
+		<label>purge ports</label>
+		<description>Construct a specialized heatsink which rapidly bleeds stored heat by dumping silver.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipHeatsink</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>2.75</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipTurretMedium</defName>
+		<label>cruiser armaments</label>
+		<description>Construct larger versions of ship turrets, suitable for a mid-sized cruiser.</description>
+		<baseCost>4000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipTurretAC</li>
+			<li>ShipTurretLaser</li>
+			<li>ShipTurretPlasma</li>
+			<li>ShipTurretKinetic</li>
+			<li>ShipShields</li>
+			<li>ShipHeatsink</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>4.25</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipTurretLarge</defName>
+		<label>capital ship armaments</label>
+		<description>Construct modular spinal-mount weapons, typically seen only on capital ships.</description>
+		<baseCost>6000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipTurretMedium</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>3</researchViewX>
+		<researchViewY>4.25</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipTorpedoes</defName>
+		<label>ship torpedoes</label>
+		<description>Launch powerful torpedoes at enemy ships. Effective at overwhelming shields.</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+			<li>Mortars</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>5.25</researchViewY>
+	</ResearchProjectDef>
+	<!-- holodeck -->
+	<ResearchProjectDef>
+		<defName>Holodeck_Basic</defName>
+		<label>basic holodeck</label>
+		<description>Improvise a holodeck from simple components.</description>
+		<baseCost>1000</baseCost>
+		<techLevel>Industrial</techLevel>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>2</researchViewX>
+		<researchViewY>2</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef>
+		<defName>Holodeck_Standard</defName>
+		<label>advanced holodeck</label>
+		<description>Construct an improved holodeck with modern, high-resolution projectors.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Holodeck_Basic</li>
+			<li>MultiAnalyzer</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+			<li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>3</researchViewX>
+		<researchViewY>2</researchViewY>
+	</ResearchProjectDef>
+	<ResearchProjectDef>
+		<defName>Holodeck_AI</defName>
+		<label>sapient holodeck</label>
+		<description>Coerce a machine persona into creating endlessly entertaining simulations for your colonists.</description>
+		<baseCost>4000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>Holodeck_Standard</li>
+			<li>MultiAnalyzer</li>
+		</prerequisites>
+		<requiredResearchBuilding>HiTechResearchBench</requiredResearchBuilding>
+		<requiredResearchFacilities>
+			<li>MultiAnalyzer</li>
+		</requiredResearchFacilities>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>4</researchViewX>
+		<researchViewY>2</researchViewY>
+	</ResearchProjectDef>
+</Defs>

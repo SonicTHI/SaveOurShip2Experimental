@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <DamageDef>
+    <defName>VacuumDamage</defName>
+    <label>decompression</label>
+    <workerClass>DamageWorker_Frostbite</workerClass>
+    <externalViolence>false</externalViolence>
+    <deathMessage>{0} has ruptured.</deathMessage>
+    <hediff>VacuumDamageHediff</hediff>
+    <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+    <canUseDeflectMetalEffect>false</canUseDeflectMetalEffect>
+  </DamageDef>
+
+  <DamageDef>
+    <defName>FormgelSlime</defName>
+    <label>formgel slime</label>
+    <canInterruptJobs>false</canInterruptJobs>
+    <makesBlood>false</makesBlood>
+    <defaultDamage>0</defaultDamage>
+    <explosionCellFleck>BlastExtinguisher</explosionCellFleck>
+    <explosionColorEdge>(1, 1, 1, 0.05)</explosionColorEdge>
+    <soundExplosion>Explosion_Stun</soundExplosion>
+    <harmsHealth>false</harmsHealth>
+    <combatLogRules>Damage_Smoke</combatLogRules>
+  </DamageDef>
+  
+</Defs>

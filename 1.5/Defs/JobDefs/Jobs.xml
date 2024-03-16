@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <JobDef>
+    <defName>CarryToCryptonest</defName>
+    <driverClass>JobDriver_CarryToCryptonest</driverClass>
+    <reportString>carrying eggs to cryptonest.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+  
+  <JobDef>
+    <defName>OperateScannerSpace</defName>
+    <driverClass>JobDriver_OperateScannerSpace</driverClass>
+    <reportString>scanning at TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>HackSatellite</defName>
+    <driverClass>JobDriver_HackSatellite</driverClass>
+    <reportString>hacking TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>RepairSatellite</defName>
+    <driverClass>JobDriver_RepairSatellite</driverClass>
+    <reportString>repairing TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>PersuadeAI</defName>
+    <driverClass>JobDriver_PersuadeAI</driverClass>
+    <reportString>persuading TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>HackBlackBoxConsole</defName>
+    <driverClass>JobDriver_HackLabConsole</driverClass>
+    <reportString>hacking TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>LoadTorpedoTube</defName>
+    <driverClass>JobDriver_LoadTorpedoTube</driverClass>
+    <reportString>Loading torpedo tube.</reportString>
+  </JobDef>
+  
+  <JobDef>
+    <defName>LoadShipBuilding</defName>
+    <driverClass>JobDriver_LoadShipBuilding</driverClass>
+    <reportString>Refueling TargetA.</reportString>
+  </JobDef>
+  
+  <JobDef>
+    <defName>ManShipBridge</defName>
+    <driverClass>JobDriver_ManShipBridge</driverClass>
+    <reportString>manning bridge.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>HackEnemyShip</defName>
+    <driverClass>JobDriver_HackShipBridge</driverClass>
+    <reportString>hacking TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>HackAirlock</defName>
+    <driverClass>JobDriver_HackAirlock</driverClass>
+    <reportString>hacking TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>BreachAirlock</defName>
+    <driverClass>JobDriver_BreachAirlock</driverClass>
+    <reportString>breaching TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>DefendBreacher</defName>
+    <driverClass>JobDriver_DefendBreacher</driverClass>
+    <reportString>guarding TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>RepairItemWithGel</defName>
+    <driverClass>JobDriver_RepairItemWithGel</driverClass>
+    <reportString>repairing TargetA.</reportString>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>SacrificeToArchotech</defName>
+    <driverClass>JobDriver_SacrificeToArchotech</driverClass>
+    <reportString>sacrificing TargetA.</reportString>
+    <alwaysShowWeapon>true</alwaysShowWeapon>
+    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>FleeVacuum</defName>
+    <driverClass>JobDriver_FleeVacuum</driverClass>
+    <reportString>fleeing from vacuum.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
+  </JobDef>
+  
+  <JobDef>
+    <defName>InstallConsciousness</defName>
+    <driverClass>JobDriver_InstallConsciousness</driverClass>
+    <reportString>installing consciousness of TargetB.</reportString>
+  </JobDef>
+  
+  <JobDef>
+    <defName>MergeWithSpore</defName>
+    <driverClass>JobDriver_MergeWithSpore</driverClass>
+    <reportString>merging with archotech spore.</reportString>
+  </JobDef>
+  
+  <JobDef>
+    <defName>ResurrectHologram</defName>
+    <driverClass>JobDriver_ResurrectHologram</driverClass>
+    <reportString>resurrecting brain in TargetA.</reportString>
+  </JobDef>
+</Defs>

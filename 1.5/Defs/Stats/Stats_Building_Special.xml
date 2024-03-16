@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <StatDef>
+    <defName>DecompressionResistanceOffset</defName>
+    <label>decompression resistance offset</label>
+    <description>Decompression resistance is offset by this value.</description>
+    <category>Building</category>
+    <defaultBaseValue>0</defaultBaseValue>
+    <minValue>0</minValue>
+    <maxValue>1</maxValue>
+    <toStringStyle>PercentZero</toStringStyle>
+    <hideAtValue>0</hideAtValue>
+    <displayPriorityInCategory>2000</displayPriorityInCategory>
+  </StatDef>
+
+  <StatDef>
+    <defName>HypoxiaResistanceOffset</defName>
+    <label>hypoxia resistance offset</label>
+    <description>Hypoxia resistance is offset by this value.</description>
+    <category>Building</category>
+    <defaultBaseValue>0</defaultBaseValue>
+    <minValue>0</minValue>
+    <maxValue>1</maxValue>
+    <toStringStyle>PercentZero</toStringStyle>
+    <hideAtValue>0</hideAtValue>
+    <displayPriorityInCategory>2000</displayPriorityInCategory>
+  </StatDef>
+</Defs>

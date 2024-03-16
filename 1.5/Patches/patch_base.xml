@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<Operation Class="PatchOperationSequence">
+		<operations>
+			<!-- randy -->
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/StorytellerDef[defName="Randy"]/comps/li[1]/allowedTargetTags</xpath>
+				<value>
+					<li>Map_SpaceHome</li>
+				</value>
+			</li>
+			<!-- events -->
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/IncidentDef[defName="PsychicSoothe" or defName="PsychicDrone" or defName = "OrbitalTraderArrival"]/targetTags</xpath>
+				<value>
+					<li>Map_SpaceHome</li>
+				</value>
+			</li>
+			<!-- buildable -->
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]/costList</xpath>
+				<value>
+					<ArchotechExoticParticles>4</ArchotechExoticParticles>
+				</value>
+			</li>
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]/statBases</xpath>
+				<value>
+					<WorkToBuild>5000</WorkToBuild>
+				</value>
+			</li>
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
+				<value>
+					<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+				</value>
+			</li>
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
+				<value>
+					<researchPrerequisites>
+						<li>ArchotechVanometrics</li>
+					</researchPrerequisites>
+				</value>
+			</li>
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="VanometricPowerCell"]</xpath>
+				<value>
+					<designationCategory>Power</designationCategory>
+				</value>
+			</li>
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="Shell_AntigrainWarhead"]</xpath>
+				<value>
+					<costList>
+						<Steel>20</Steel>
+						<ArchotechExoticParticles>6</ArchotechExoticParticles>
+						<ComponentSpacer>2</ComponentSpacer>
+					</costList>
+					<recipeMaker>
+						<workSpeedStat>GeneralLaborSpeed</workSpeedStat>
+						<effectWorking>Cook</effectWorking>
+						<soundWorking>Recipe_Machining</soundWorking>
+						<workAmount>2000</workAmount>
+						<targetCountAdjustment>5</targetCountAdjustment>
+						<workSkill>Crafting</workSkill>
+						<recipeUsers>
+							<li>TableMachining</li>
+						</recipeUsers>
+						<skillRequirements>
+							<Crafting>12</Crafting>
+						</skillRequirements>
+						<researchPrerequisite>ArchotechAntimatter</researchPrerequisite>
+					</recipeMaker>
+				</value>
+			</li>
+			<!-- traders -->
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/TraderKindDef[defName="Orbital_CombatSupplier"]/stockGenerators</xpath>
+				<value>
+					<li Class="StockGenerator_SingleDef">
+						<thingDef>ShipTorpedo_HighExplosive</thingDef>
+						<countRange>0~10</countRange>
+					</li>
+					<li Class="StockGenerator_SingleDef">
+						<thingDef>ShipTorpedo_EMP</thingDef>
+						<countRange>0~4</countRange>
+					</li>
+					<li Class="StockGenerator_SingleDef">
+						<thingDef>ShipTorpedo_Antimatter</thingDef>
+						<countRange>0~1</countRange>
+					</li>
+					<li Class="StockGenerator_Category">
+						<categoryDef>ShipBlueprints</categoryDef>
+						<thingDefCountRange>1~2</thingDefCountRange>
+						<countRange>1~1</countRange>
+					</li>
+				</value>
+			</li>
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/TraderKindDef[defName="Caravan_Outlander_CombatSupplier"]/stockGenerators</xpath>
+				<value>
+					<li Class="StockGenerator_SingleDef">
+						<thingDef>ShipTorpedo_HighExplosive</thingDef>
+						<countRange>0~3</countRange>
+					</li>
+					<li Class="StockGenerator_SingleDef">
+						<thingDef>ShipTorpedo_EMP</thingDef>
+						<countRange>0~1</countRange>
+					</li>
+					<li Class="StockGenerator_Category">
+						<categoryDef>ShipBlueprints</categoryDef>
+						<thingDefCountRange>0~1</thingDefCountRange>
+						<countRange>0~1</countRange>
+					</li>
+				</value>
+			</li>
+			<!-- misc -->
+			<li Class="PatchOperationAdd">
+				<xpath>Defs/ThingDef[defName="HiTechResearchBench"]/comps/li[3]/linkableFacilities</xpath>
+				<value>
+					<li>ArchotechUplink</li>
+				</value>
+			</li>
+		</operations>
+	</Operation>
+
+	<!-- mechanoids -->
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/ThingDef[@Name="BaseMechanoid"]/statBases</xpath>
+		<value>
+			<HypoxiaResistance>1</HypoxiaResistance>
+			<DecompressionResistance>1</DecompressionResistance>
+			<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
+		</value>
+	</Operation>
+
+	<!-- apparels -->
+	<!-- EVA description -->
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"][not(comps)]</xpath>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"][not(comps)]</xpath>
+			<value>
+				<comps />
+			</value>
+		</match>
+	</Operation>
+
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+			<value>
+				<li>
+					<compClass>SaveOurShip2.Comp_EVA</compClass>
+				</li>
+			</value>
+		</match>
+	</Operation>
+
+	<!-- EVA stats -->
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"][not(equippedStatOffsets)]</xpath>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"][not(equippedStatOffsets)]</xpath>
+			<value>
+				<equippedStatOffsets />
+			</value>
+		</match>
+	</Operation>
+
+	<!-- Armor DecompressionResistance -->
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+			<value>
+				<DecompressionResistance>0.75</DecompressionResistance>
+			</value>
+		</match>
+	</Operation>
+
+	<!-- Helmets DecompressionResistance -->
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetPowerBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetPowerBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+			<value>
+				<DecompressionResistance>0.25</DecompressionResistance>
+			</value>
+		</match>
+	</Operation>
+
+	<!-- Helmets HypoxiaResistance -->
+	<Operation Class="PatchOperationConditional">
+		<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetPowerBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetPowerBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+			<value>
+				<HypoxiaResistance>1</HypoxiaResistance>
+			</value>
+		</match>
+	</Operation>
+
+	<!-- Recon Armor Insulation_Cold -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[@Name="ApparelArmorReconBase"]/statBases/Insulation_Cold</xpath>
+		<value>
+			<Insulation_Cold>80</Insulation_Cold>
+		</value>
+	</Operation>
+
+	<!-- Marine Armor Insulation_Cold -->
+	<Operation Class="PatchOperationReplace">
+		<xpath>Defs/ThingDef[@Name="ApparelArmorPowerBase"]/statBases/Insulation_Cold</xpath>
+		<value>
+			<Insulation_Cold>90</Insulation_Cold>
+		</value>
+	</Operation>
+</Patch>

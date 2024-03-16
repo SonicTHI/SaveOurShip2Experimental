@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<BiomeDef>
+		<defName>OuterSpaceBiome</defName>
+		<label>outer space</label>
+		<description>It's... space.</description>
+		<workerClass>BiomeWorker_OuterSpace</workerClass>
+		<canAutoChoose>false</canAutoChoose>
+		<allowRoads>false</allowRoads>
+		<allowRivers>false</allowRivers>
+		<allowFarmingCamps>false</allowFarmingCamps>
+		<animalDensity>0</animalDensity>
+		<plantDensity>0</plantDensity>
+		<hasVirtualPlants>false</hasVirtualPlants>
+		<canBuildBase>false</canBuildBase>
+		<texture>World/Biomes/space</texture>
+		<forageability>0</forageability>
+		<soundsAmbient />
+		<diseaseMtbDays>99999</diseaseMtbDays>
+		<diseases/>
+		<terrainsByFertility>
+			<li>
+				<terrain>EmptySpace</terrain>
+				<min>-999</min>
+				<max>999</max>
+			</li>
+		</terrainsByFertility>
+		<terrainPatchMakers />
+		<baseWeatherCommonalities>
+			<OuterSpaceWeather>99</OuterSpaceWeather>
+		</baseWeatherCommonalities>
+		<wildAnimals />
+		<wildPlants />
+		<modExtensions>
+			<li Class="GeologicalLandforms.BiomeProperties" MayRequire="m00nl1ght.GeologicalLandforms">
+				<allowLandforms>false</allowLandforms>
+				<allowBiomeTransitions>false</allowBiomeTransitions>
+			</li>
+		</modExtensions>
+	</BiomeDef>
+</Defs>

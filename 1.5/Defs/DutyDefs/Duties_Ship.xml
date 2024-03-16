@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<DutyDef>
+		<defName>SoSDefendShip</defName>
+		<alwaysShowWeapon>true</alwaysShowWeapon>
+		<thinkNode Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="JobGiver_TakeCombatEnhancingDrug">
+					<onlyIfInDanger>true</onlyIfInDanger>
+				</li>
+				<li Class="JobGiver_RepairShields"/>
+				<li Class="JobGiver_FightMechanitesNearPoint">
+					<maxDistFromPoint>99</maxDistFromPoint>
+				</li>
+				<li Class="JobGiver_FightFiresNearPoint">
+					<maxDistFromPoint>99</maxDistFromPoint>
+				</li>
+				<li Class="JobGiver_EnterTransporter"/>
+				<li Class="JobGiver_AIDefendShip">
+					<targetAcquireRadius>99</targetAcquireRadius>
+					<targetKeepRadius>99</targetKeepRadius>
+				</li>
+				<li Class="JobGiver_LoadTorpedoes">
+					<maxDistFromPoint>39</maxDistFromPoint>
+				</li>
+				<!--li Class="JobGiver_LoadShipBuilding">
+					<maxDistFromPoint>39</maxDistFromPoint>
+				</li-->
+				<li Class="JobGiver_SeekSafeTemperature"/>
+				<li Class="JobGiver_ManShipBridge">
+					<maxDistFromPoint>99</maxDistFromPoint>
+				</li>
+				<li Class="ThinkNode_ForbidOutsideFlagRadius">
+					<maxDistToSquadFlag>99</maxDistToSquadFlag>
+					<subNodes>
+						<li Class="ThinkNode_Subtree">
+							<treeDef>SatisfyBasicNeedsAndWork</treeDef>
+						</li>
+					</subNodes>
+				</li>
+				<li Class="ThinkNode_ConditionalCloseToDutyTarget">
+					<maxDistToDutyTarget>99</maxDistToDutyTarget>
+					<subNodes>
+						<li Class="JobGiver_WanderAnywhere">
+							<wanderRadius>12</wanderRadius>
+						</li>
+					</subNodes>
+				</li>
+				<li Class="JobGiver_WanderNearDutyLocation"/>
+			</subNodes>
+		</thinkNode>
+	</DutyDef>
+	<DutyDef>
+		<defName>SoSAssaultShip</defName>
+		<alwaysShowWeapon>true</alwaysShowWeapon>
+		<thinkNode Class="ThinkNode_Priority">
+			<subNodes>
+				<li Class="JobGiver_TakeCombatEnhancingDrug"/>
+				<li Class="ThinkNode_Subtree" MayRequire="Ludeon.RimWorld.Biotech">
+					<treeDef>Abilities_Aggressive</treeDef>
+				</li>
+				<li Class="JobGiver_AIFightEnemies">
+					<targetAcquireRadius>65</targetAcquireRadius>
+					<targetKeepRadius>72</targetKeepRadius>
+				</li>
+				<li Class="JobGiver_AIBreachAirlock"/>
+				<li Class="JobGiver_AIDefendBreacher"/>
+				<li Class="JobGiver_AIGotoNearestHostile"/>
+				<li Class="JobGiver_AITrashColonyClose"/>
+				<li Class="JobGiver_AITrashBuildingsDistant"/>
+				<li Class="JobGiver_AITrashBuildingsDistant">
+					<attackAllInert>true</attackAllInert>
+				</li>
+			</subNodes>
+		</thinkNode>
+		<constantThinkNode Class="ThinkNode_ConditionalCanPickupOpportunisticWeapon">
+			<subNodes>
+				<!-- Try to pick up nearby weapons -->
+				<li Class="JobGiver_PickUpOpportunisticWeapon"/>
+			</subNodes>
+		</constantThinkNode>
+	</DutyDef>
+</Defs>

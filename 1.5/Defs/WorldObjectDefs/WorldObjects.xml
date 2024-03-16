@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<WorldObjectDef>
+		<defName>ShipOrbiting</defName>
+		<label>Orbiting Ship</label>
+		<description>A ship you have launched into orbit.</description>
+		<worldObjectClass>WorldObjectOrbitingShip</worldObjectClass>
+		<texture>UI/shipOrbiting</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>UI/shipOrbiting</expandingIconTexture>
+		<expandingIconPriority>70</expandingIconPriority>
+		<IncidentTargetTags>
+			<li>Map_SpaceHome</li>
+		</IncidentTargetTags>
+		<mapGenerator>EmptySpaceMap</mapGenerator>
+		<canBePlayerHome>true</canBePlayerHome>
+		<comps>
+			<li Class="WorldObjectCompProperties_TimedForcedExitShip"/>
+		</comps>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>ShipEnemy</defName>
+		<label>Enemy Ship</label>
+		<description>A nearby hostile ship.</description>
+		<worldObjectClass>WorldObjectOrbitingShip</worldObjectClass>
+		<texture>UI/IncomingShip_Icon_Pirate</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>UI/IncomingShip_Icon_Pirate</expandingIconTexture>
+		<expandingIconPriority>60</expandingIconPriority>
+		<mapGenerator>EmptySpaceMap</mapGenerator>
+		<canBePlayerHome>false</canBePlayerHome>
+		<comps>
+			<li Class="WorldObjectCompProperties_TimedForcedExitShip"/>
+		</comps>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>WreckSpace</defName>
+		<label>Space Wreck</label>
+		<description>A nearby space wreck.</description>
+		<worldObjectClass>WorldObjectOrbitingShip</worldObjectClass>
+		<texture>UI/IncomingShip_Icon_Wreck</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>UI/IncomingShip_Icon_Wreck</expandingIconTexture>
+		<expandingIconPriority>60</expandingIconPriority>
+		<mapGenerator>EmptySpaceMap</mapGenerator>
+		<canBePlayerHome>false</canBePlayerHome>
+		<comps>
+			<li Class="WorldObjectCompProperties_TimedForcedExitShip"/>
+		</comps>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>SiteSpace</defName>
+		<worldObjectClass>SpaceSite</worldObjectClass>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconPriority>70</expandingIconPriority>
+		<comps>
+			<li Class="WorldObjectCompProperties_Timeout"/>
+			<li Class="WorldObjectCompProperties_DefeatAllEnemiesQuest"/>
+			<li Class="WorldObjectCompProperties_ItemStashContents"/>
+			<li Class="WorldObjectCompProperties_DownedRefugee"/>
+			<li Class="WorldObjectCompProperties_PrisonerWillingToJoin"/>
+			<li Class="WorldObjectCompProperties_TimedForcedExitShip"/>
+			<li Class="WorldObjectCompProperties_EnterCooldown"/>
+			<li Class="WorldObjectCompProperties_TimedDetectionRaids"/>
+		</comps>
+		<mapGenerator>EmptySpaceMap</mapGenerator>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>ShipEngineImpactSite</defName>
+		<label>impact site</label>
+		<description>The impact site of an ancient ship's engine.</description>
+		<worldObjectClass>MapParent</worldObjectClass>
+		<texture>UI/Ship_Drive_Icon</texture>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>UI/Ship_Drive_Icon</expandingIconTexture>
+		<expandingIconPriority>50</expandingIconPriority>
+		<expandMore>true</expandMore>
+		<IncidentTargetTags>
+			<li>Map_PlayerHome</li>
+		</IncidentTargetTags>
+		<mapGenerator>ShipEngineImpactSite</mapGenerator>
+		<canBePlayerHome>true</canBePlayerHome>
+		<comps>
+			<li Class="WorldObjectCompProperties_ShipEngineImpactSite"/>
+			<li Class="WorldObjectCompProperties_FormCaravan"/>
+		</comps>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>MoonPillarSite</defName>
+		<label>moon base site</label>
+		<description>A mechanoid base on the moon, where an archotech pillar is being studied.</description>
+		<worldObjectClass>MoonBase</worldObjectClass>
+		<texture>UI/Moon_Icon_Quest</texture>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>UI/Moon_Icon_Quest</expandingIconTexture>
+		<expandingIconPriority>80</expandingIconPriority>
+		<expandMore>true</expandMore>
+		<mapGenerator>MoonPillarSite</mapGenerator>
+		<comps>
+			<li Class="WorldObjectCompProperties_MoonPillarSite"/>
+		</comps>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>TribalPillarSite</defName>
+		<label>star totem site</label>
+		<description>The holiest site of this planet's tribes: the impact crater of an archotech pillar.</description>
+		<worldObjectClass>MapParent</worldObjectClass>
+		<texture>UI/ArchotechTotem_Icon_Quest</texture>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>UI/ArchotechTotem_Icon_Quest</expandingIconTexture>
+		<expandingIconPriority>50</expandingIconPriority>
+		<expandMore>true</expandMore>
+		<mapGenerator>TribalPillarSite</mapGenerator>
+		<comps>
+			<li Class="WorldObjectCompProperties_TribalPillarSite"/>
+			<li Class="WorldObjectCompProperties_FormCaravan"/>
+		</comps>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>InsectPillarSite</defName>
+		<label>mother hive site</label>
+		<description>The location of this planet's largest insect hive, apparently built around an archotech pillar.</description>
+		<worldObjectClass>MapParent</worldObjectClass>
+		<texture>UI/ArchotechCavern_Icon_Quest</texture>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>UI/ArchotechCavern_Icon_Quest</expandingIconTexture>
+		<expandingIconPriority>50</expandingIconPriority>
+		<expandMore>true</expandMore>
+		<mapGenerator>InsectPillarSite</mapGenerator>
+		<comps>
+			<li Class="WorldObjectCompProperties_InsectPillarSite"/>
+			<li Class="WorldObjectCompProperties_FormCaravan"/>
+		</comps>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>TravelingShuttlesPersonal</defName>
+		<label>shuttles</label>
+		<description>Shuttles in flight.</description>
+		<worldObjectClass>TravelingTransportPods</worldObjectClass>
+		<texture>Things/ShuttleHover/ShuttlePersonal_north</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>Things/ShuttleHover/ShuttlePersonal_south</expandingIconTexture>
+		<expandingIconPriority>60</expandingIconPriority>
+		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>TravelingShuttlesCargo</defName>
+		<label>shuttles</label>
+		<description>Shuttles in flight.</description>
+		<worldObjectClass>TravelingTransportPods</worldObjectClass>
+		<texture>Things/ShuttleHover/Shuttle_south</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>Things/ShuttleHover/Shuttle_south</expandingIconTexture>
+		<expandingIconPriority>60</expandingIconPriority>
+		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>TravelingShuttlesHeavy</defName>
+		<label>shuttles</label>
+		<description>Shuttles in flight.</description>
+		<worldObjectClass>TravelingTransportPods</worldObjectClass>
+		<texture>Things/ShuttleHover/ShuttleHeavy_north</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>Things/ShuttleHover/ShuttleHeavy_south</expandingIconTexture>
+		<expandingIconPriority>60</expandingIconPriority>
+		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
+	</WorldObjectDef>
+	<WorldObjectDef>
+		<defName>TravelingShuttlesDropship</defName>
+		<label>shuttles</label>
+		<description>Shuttles in flight.</description>
+		<worldObjectClass>TravelingTransportPods</worldObjectClass>
+		<texture>Things/ShuttleHover/ShuttleDropship_north</texture>
+		<useDynamicDrawer>true</useDynamicDrawer>
+		<expandingIcon>true</expandingIcon>
+		<expandingIconTexture>Things/ShuttleHover/ShuttleDropship_south</expandingIconTexture>
+		<expandingIconPriority>60</expandingIconPriority>
+		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
+	</WorldObjectDef>
+</Defs>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Defs>
+  <ThingDef ParentName="MoteBase">
+    <defName>Mote_Bubble</defName>
+    <altitudeLayer>MoteOverhead</altitudeLayer>
+    <thingClass>MoteAttached</thingClass>
+    <mote>
+      <fadeInTime>0.1</fadeInTime>
+      <fadeOutTime>0.1</fadeOutTime>
+      <solidTime>999999</solidTime>
+      <needsMaintenance>True</needsMaintenance>
+      <fadeOutUnmaintained>True</fadeOutUnmaintained>
+    </mote>
+    <graphicData>
+      <shaderType>Transparent</shaderType>
+      <texPath>Other/ShieldBubble</texPath>
+      <drawSize>(1.25, 1.25)</drawSize>
+      <color>(0, 1, 1, 1)</color>
+    </graphicData>
+  </ThingDef>
+</Defs>

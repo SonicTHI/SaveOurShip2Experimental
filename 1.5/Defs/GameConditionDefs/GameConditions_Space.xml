@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <GameConditionDef>
+    <defName>SpaceDebris</defName>
+    <conditionClass>GameCondition_SpaceDebris</conditionClass>
+    <label>space debris</label>
+    <description>A space debris field.</description>
+    <endMessage>Ship has cleared the debris field.</endMessage>
+    <letterDef>NegativeEvent</letterDef>
+    <canBePermanent>true</canBePermanent>
+  </GameConditionDef>
+</Defs>

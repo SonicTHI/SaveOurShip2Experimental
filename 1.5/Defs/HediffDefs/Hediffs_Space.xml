@@ -1,0 +1,456 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<HediffDef ParentName="InjuryBase">
+		<defName>VacuumDamageHediff</defName>
+		<label>decompression</label>
+		<displayWound>false</displayWound>
+		<description>A decompression injury.</description>
+		<comps>
+			<li Class="HediffCompProperties_TendDuration">
+				<labelTendedWell>bandaged</labelTendedWell>
+				<labelTendedWellInner>sutured</labelTendedWellInner>
+				<labelSolidTendedWell>set</labelSolidTendedWell>
+			</li>
+			<li Class="HediffCompProperties_Infecter">
+				<infectionChance>0.1</infectionChance>
+			</li>
+			<li Class="HediffCompProperties_GetsPermanent">
+				<permanentLabel>decompression scar</permanentLabel>
+			</li>
+		</comps>
+		<injuryProps>
+			<painPerSeverity>0.05</painPerSeverity>
+			<averagePainPerSeverityPermanent>0.01</averagePainPerSeverityPermanent>
+			<canMerge>true</canMerge>
+			<destroyedLabel>Lost to decompression</destroyedLabel>
+		</injuryProps>
+	</HediffDef>
+	<HediffDef>
+		<defName>SpaceHypoxia</defName>
+		<defaultLabelColor>(0.8, 0.8, 0.35)</defaultLabelColor>
+		<hediffClass>HediffWithComps</hediffClass>
+		<label>hypoxia</label>
+		<description>Organ failure due to lack of oxygen. Quickly fatal if no EVA suit or life-supported room can be found.</description>
+		<lethalSeverity>1</lethalSeverity>
+		<makesSickThought>true</makesSickThought>
+		<comps>
+			<li Class="HediffCompProperties_SeverityPerDay">
+				<severityPerDay>-1</severityPerDay>
+			</li>
+		</comps>
+		<stages>
+			<li>
+				<label>initial</label>
+			</li>
+			<li>
+				<label>minor</label>
+				<minSeverity>0.1</minSeverity>
+				<vomitMtbDays>2</vomitMtbDays>
+				<painOffset>0</painOffset>
+				<capMods>
+					<li>
+						<capacity>Moving</capacity>
+						<offset>-0.1</offset>
+					</li>
+					<li>
+						<capacity>Consciousness</capacity>
+						<offset>-0.10</offset>
+					</li>
+					<li>
+						<capacity>Breathing</capacity>
+						<offset>-0.2</offset>
+					</li>
+				</capMods>
+			</li>
+			<li>
+				<label>serious</label>
+				<minSeverity>0.25</minSeverity>
+				<vomitMtbDays>1</vomitMtbDays>
+				<painOffset>0.05</painOffset>
+				<capMods>
+					<li>
+						<capacity>Moving</capacity>
+						<offset>-0.3</offset>
+					</li>
+					<li>
+						<capacity>Consciousness</capacity>
+						<offset>-0.20</offset>
+					</li>
+					<li>
+						<capacity>Breathing</capacity>
+						<offset>-0.7</offset>
+					</li>
+				</capMods>
+			</li>
+			<li>
+				<label>extreme</label>
+				<minSeverity>0.6</minSeverity>
+				<vomitMtbDays>0.75</vomitMtbDays>
+				<painOffset>0.25</painOffset>
+				<capMods>
+					<li>
+						<capacity>Moving</capacity>
+						<offset>-0.7</offset>
+					</li>
+					<li>
+						<capacity>Consciousness</capacity>
+						<setMax>-0.7</setMax>
+					</li>
+					<li>
+						<capacity>Breathing</capacity>
+						<offset>-0.7</offset>
+					</li>
+				</capMods>
+			</li>
+			<li>
+				<label>extreme</label>
+				<minSeverity>0.9</minSeverity>
+				<lifeThreatening>true</lifeThreatening>
+				<vomitMtbDays>0.25</vomitMtbDays>
+				<painOffset>0.6</painOffset>
+				<capMods>
+					<li>
+						<capacity>Moving</capacity>
+						<offset>-0.9</offset>
+					</li>
+					<li>
+						<capacity>Consciousness</capacity>
+						<setMax>-0.9</setMax>
+					</li>
+					<li>
+						<capacity>Breathing</capacity>
+						<offset>-0.9</offset>
+					</li>
+				</capMods>
+			</li>
+		</stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>SpaceBeltBubbleHediff</defName>
+		<hediffClass>HediffWithComps</hediffClass>
+		<defaultLabelColor>(0.67, 0, 0.67)</defaultLabelColor>
+		<description>This creature is surrounded by a protective bubble, allowing it to survive vacuum exposure.</description>
+		<initialSeverity>1</initialSeverity>
+		<isBad>false</isBad>
+		<comps>
+			<li Class="HediffCompProperties_SeverityPerDay">
+				<severityPerDay>-8</severityPerDay>
+				<showHoursToRecover>true</showHoursToRecover>
+			</li>
+			<li Class="SaveOurShip2.HediffCompProperties_Bubble" />
+		</comps>
+		<label>survival bubble</label>
+		<stages>
+			<li>
+				<capMods>
+					<li>
+						<capacity>Moving</capacity>
+						<postFactor>0.9</postFactor>
+					</li>
+					<li>
+						<capacity>Manipulation</capacity>
+						<postFactor>0.9</postFactor>
+					</li>
+				</capMods>
+				<statOffsets>
+					<HypoxiaResistance>1</HypoxiaResistance>
+					<DecompressionResistance>1</DecompressionResistance>
+					<ComfyTemperatureMin>-100</ComfyTemperatureMin>
+				</statOffsets>
+			</li>
+		</stages>
+	</HediffDef>
+	<!--HediffDef>
+    <defName>ZeroGSickness</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.7, 1.0, 0.7)</defaultLabelColor>
+    <label>zero-G sickness</label>
+    <description>Temporary disorientation caused by lack of gravity.</description>
+    <comps>
+      <li Class="HediffCompProperties_Immunizable">
+        <immunityPerDayNotSick>-0.06</immunityPerDayNotSick>
+        <immunityPerDaySick>0.75</immunityPerDaySick>
+        <severityPerDayNotImmune>0.5</severityPerDayNotImmune>
+        <severityPerDayImmune>-2</severityPerDayImmune>
+      </li>
+	  <li Class="HediffCompProperties_OnlyInSpace">
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>initial-hidden</label>
+        <becomeVisible>false</becomeVisible>
+      </li>
+      <li>
+        <label>off-balance</label>
+        <minSeverity>0.05</minSeverity>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>-0.05</offset>
+          </li>
+        </capMods>
+      </li>
+      <li>
+        <label>dizzy</label>
+        <minSeverity>0.2</minSeverity>
+        <vomitMtbDays>1</vomitMtbDays>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>-0.1</offset>
+          </li>
+        </capMods>
+      </li>
+      <li>
+        <label>ill</label>
+        <minSeverity>0.40</minSeverity>
+        <vomitMtbDays>0.5</vomitMtbDays>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>-0.2</offset>
+          </li>
+        </capMods>
+      </li>
+      <li>
+        <label>nauseated</label>
+        <minSeverity>0.60</minSeverity>
+        <vomitMtbDays>0.125</vomitMtbDays>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <offset>-0.25</offset>
+          </li>
+        </capMods>
+      </li>
+      <li>
+        <label>vomiting uncontrollably</label>
+        <minSeverity>0.80</minSeverity>
+        <vomitMtbDays>0.0625</vomitMtbDays>
+        <capMods>
+          <li>
+            <capacity>Consciousness</capacity>
+            <setMax>0.10</setMax>
+          </li>
+        </capMods>
+      </li>
+    </stages>
+	</HediffDef-->
+	<HediffDef ParentName="DiseaseBase">
+		<defName>ThrusterSpeed</defName>
+		<label>EVA thrusters online</label>
+		<description>Deprecated - do not use</description>
+		<labelNoun>active thrusters</labelNoun>
+		<comps>
+			<li Class="HediffCompProperties_Disappears">
+				<disappearsAfterTicks>
+					<min>200</min>
+					<max>200</max>
+				</disappearsAfterTicks>
+			</li>
+		</comps>
+		<stages>
+			<li>
+				<capMods>
+					<li>
+						<capacity>Moving</capacity>
+						<offset>10</offset>
+					</li>
+				</capMods>
+			</li>
+		</stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>SoSHologram</defName>
+		<label>formgel</label>
+		<hediffClass>HediffPawnIsHologram</hediffClass>
+		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
+		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a human consciousness via psychic entanglement.
+\nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.
+\nUnlike holograms, a formgel is capable of engaging in the full range of human activities, including sexual reproduction and drug use. Its mimicry of biological functions extends to the abilities of its subject's xenotype, and it can even adapt to a newly implanted xenogerm. Although it is immune to most organic pathogens, exotic diseases such as sensory mechanites can still infect a formgel.
+\nFormgels are the invention of nanoscientist Dr. Kimberly Yao, designed as a next-generation replacement for hologram technology. Although hardlight fields were capable of imitating the shape of a human body and performing most crew duties, the lack of high-resolution sensory feedback inevitably resulted in a sense of dissociation and progressive psychosis in brains operating holographic avatars. Yao initially tested the technology on herself as part of her successful evolution into an archotech superintelligence, and formgels can now be found aboard starships throughout known space.</description>
+		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a human consciousness via psychic entanglement.</descriptionShort>
+		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
+		<everCurableByItem>false</everCurableByItem>
+		<stages>
+			<li>
+				<totalBleedFactor>0.1</totalBleedFactor>
+				<painFactor>0.1</painFactor>
+				<naturalHealingFactor>5</naturalHealingFactor>
+				<hungerRateFactorOffset>-0.9</hungerRateFactorOffset>
+				<foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>
+				<makeImmuneTo>
+				  <li>Flu</li>
+				  <li>Malaria</li>
+				  <li>SleepingSickness</li>
+				  <li>Plague</li>
+				  <li>WoundInfection</li>
+				  <li>LungRot</li>
+				  <li>GutWorms</li>
+				  <li>MuscleParasites</li>
+				</makeImmuneTo>
+				<statFactors>
+					<MarketValue>0</MarketValue>
+					<Flammability>0.5</Flammability>
+					<MeatAmount>0</MeatAmount>
+					<LeatherAmount>0</LeatherAmount>
+					<RoyalFavorValue>0</RoyalFavorValue>
+					<LifespanFactor>100</LifespanFactor>
+				</statFactors>
+				<statOffsets>
+					<ComfyTemperatureMin>-120</ComfyTemperatureMin>
+					<ComfyTemperatureMax>50</ComfyTemperatureMax>
+					<ArmorRating_Heat>0.5</ArmorRating_Heat>
+					<ToxicResistance>0.5</ToxicResistance>
+					<ImmunityGainSpeed>1</ImmunityGainSpeed>
+					<DecompressionResistance>1</DecompressionResistance>
+					<HypoxiaResistance>1</HypoxiaResistance>
+					<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
+				</statOffsets>
+			</li>
+		</stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>SoSHologramMachine</defName>
+		<label>persona formgel</label>
+		<hediffClass>HediffPawnIsHologram</hediffClass>
+		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
+		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a machine persona via psychic entanglement.
+\nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.
+\nUnlike holograms, a formgel is capable of engaging in the full range of human activities, including sexual reproduction and drug use. Its mimicry of biological functions extends to the abilities of its subject's xenotype, and it can even adapt to a newly implanted xenogerm. Although it is immune to most organic pathogens, exotic diseases such as sensory mechanites can still infect a formgel.
+\nFormgels are the invention of nanoscientist Dr. Kimberly Yao, designed as a next-generation replacement for hologram technology. Although hardlight fields were capable of imitating the shape of a human body and performing most crew duties, the lack of high-resolution sensory feedback inevitably resulted in a sense of dissociation and progressive psychosis in brains operating holographic avatars. Yao initially tested the technology on herself as part of her successful evolution into an archotech superintelligence, and formgels can now be found aboard starships throughout known space.</description>
+		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a machine persona via psychic entanglement.</descriptionShort>
+		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
+		<everCurableByItem>false</everCurableByItem>
+		<stages>
+			<li>
+				<totalBleedFactor>0.1</totalBleedFactor>
+				<painFactor>0.1</painFactor>
+				<naturalHealingFactor>5</naturalHealingFactor>
+				<hungerRateFactorOffset>-0.9</hungerRateFactorOffset>
+				<foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>
+				<makeImmuneTo>
+				  <li>Flu</li>
+				  <li>Malaria</li>
+				  <li>SleepingSickness</li>
+				  <li>Plague</li>
+				  <li>WoundInfection</li>
+				  <li>LungRot</li>
+				  <li>GutWorms</li>
+				  <li>MuscleParasites</li>
+				</makeImmuneTo>
+				<statFactors>
+					<MarketValue>0</MarketValue>
+					<Flammability>0.5</Flammability>
+					<MeatAmount>0</MeatAmount>
+					<LeatherAmount>0</LeatherAmount>
+					<RoyalFavorValue>0</RoyalFavorValue>
+					<LifespanFactor>100</LifespanFactor>
+				</statFactors>
+				<statOffsets>
+					<ComfyTemperatureMin>-120</ComfyTemperatureMin>
+					<ComfyTemperatureMax>50</ComfyTemperatureMax>
+					<ArmorRating_Heat>0.5</ArmorRating_Heat>
+					<ToxicResistance>0.5</ToxicResistance>
+					<ImmunityGainSpeed>1</ImmunityGainSpeed>
+					<MechBandwidth MayRequire="Ludeon.RimWorld.Biotech">16</MechBandwidth>
+					<MechControlGroups MayRequire="Ludeon.RimWorld.Biotech">2</MechControlGroups>
+					<DecompressionResistance>1</DecompressionResistance>
+					<HypoxiaResistance>1</HypoxiaResistance>
+					<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
+				</statOffsets>
+				<capMods>
+					<li>
+						<capacity>Consciousness</capacity>
+						<offset>0.5</offset>
+					</li>
+				</capMods>
+			</li>
+		</stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>SoSHologramArchotech</defName>
+		<label>archotech formgel</label>
+		<hediffClass>HediffPawnIsHologram</hediffClass>
+		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
+		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by an archotech spore via psychic entanglement.
+\nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.
+\nUnlike holograms, a formgel is capable of engaging in the full range of human activities, including sexual reproduction and drug use. Its mimicry of biological functions extends to the abilities of its subject's xenotype, and it can even adapt to a newly implanted xenogerm. Although it is immune to most organic pathogens, exotic diseases such as sensory mechanites can still infect a formgel.
+\nFormgels are the invention of nanoscientist Dr. Kimberly Yao, designed as a next-generation replacement for hologram technology. Although hardlight fields were capable of imitating the shape of a human body and performing most crew duties, the lack of high-resolution sensory feedback inevitably resulted in a sense of dissociation and progressive psychosis in brains operating holographic avatars. Yao initially tested the technology on herself as part of her successful evolution into an archotech superintelligence, and formgels can now be found aboard starships throughout known space.</description>
+		<descriptionShort>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by an archotech spore via psychic entanglement.</descriptionShort>
+		<countsAsAddedPartOrImplant>true</countsAsAddedPartOrImplant>
+		<everCurableByItem>false</everCurableByItem>
+		<stages>
+			<li>
+				<totalBleedFactor>0</totalBleedFactor>
+				<painFactor>0</painFactor>
+				<naturalHealingFactor>10</naturalHealingFactor>
+				<hungerRateFactorOffset>-0.95</hungerRateFactorOffset>
+				<foodPoisoningChanceFactor>0</foodPoisoningChanceFactor>
+				<makeImmuneTo>
+				  <li>Flu</li>
+				  <li>Malaria</li>
+				  <li>SleepingSickness</li>
+				  <li>Plague</li>
+				  <li>WoundInfection</li>
+				  <li>LungRot</li>
+				  <li>GutWorms</li>
+				  <li>MuscleParasites</li>
+				</makeImmuneTo>
+				<statFactors>
+					<MarketValue>0</MarketValue>
+					<Flammability>0.25</Flammability>
+					<MeatAmount>0</MeatAmount>
+					<LeatherAmount>0</LeatherAmount>
+					<RoyalFavorValue>0</RoyalFavorValue>
+					<LifespanFactor>1000</LifespanFactor>
+					<CertaintyLossFactor MayRequire="Ludeon.RimWorld.Ideology">0</CertaintyLossFactor>
+				</statFactors>
+				<statOffsets>
+					<ComfyTemperatureMin>-150</ComfyTemperatureMin>
+					<ComfyTemperatureMax>100</ComfyTemperatureMax>
+					<ArmorRating_Heat>0.9</ArmorRating_Heat>
+					<ToxicResistance>0.9</ToxicResistance>
+					<ImmunityGainSpeed>2</ImmunityGainSpeed>
+					<ArmorRating_Sharp>0.75</ArmorRating_Sharp>
+					<ArmorRating_Blunt>0.5</ArmorRating_Blunt>
+					<GlobalLearningFactor>1</GlobalLearningFactor>
+					<PsychicEntropyRecoveryRate MayRequire="Ludeon.RimWorld.Royalty">2</PsychicEntropyRecoveryRate>
+					<PsychicEntropyMax MayRequire="Ludeon.RimWorld.Royalty">1000</PsychicEntropyMax>
+					<MeditationFocusGain MayRequire="Ludeon.RimWorld.Royalty">2</MeditationFocusGain>
+					<NegotiationAbility>0.50</NegotiationAbility>
+					<TradePriceImprovement>0.10</TradePriceImprovement>
+					<MechBandwidth MayRequire="Ludeon.RimWorld.Biotech">32</MechBandwidth>
+					<MechControlGroups MayRequire="Ludeon.RimWorld.Biotech">2</MechControlGroups>
+					<DecompressionResistance>1</DecompressionResistance>
+					<HypoxiaResistance>1</HypoxiaResistance>
+					<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
+				</statOffsets>
+				<capMods>
+					<li>
+						<capacity>Consciousness</capacity>
+						<offset>2</offset>
+					</li>
+				</capMods>
+			</li>
+		</stages>
+	</HediffDef>
+	<HediffDef>
+		<defName>HologramDisconnected</defName>
+		<defaultLabelColor>(0.8, 0.8, 0.35)</defaultLabelColor>
+		<hediffClass>HediffWithComps</hediffClass>
+		<label>Consciousness offline</label>
+		<description>This formgel's conscious substrate lacks power. Until it is restored, the swarm will remain in a comatose standby mode.</description>
+		<stages>
+			<li>
+				<capMods>
+				  <li>
+					<capacity>Consciousness</capacity>
+					<setMax>0.1</setMax>
+				  </li>
+				</capMods>
+			</li>
+		</stages>
+	</HediffDef>
+</Defs>

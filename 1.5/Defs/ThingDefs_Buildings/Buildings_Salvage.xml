@@ -1,0 +1,682 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<!-- hull -->
+	<ThingDef ParentName="BuildingShipHullBase">
+		<defName>Ship_Beam_Wrecked</defName>
+		<label>wrecked hull</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Wrecked_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Wall</li>
+				<li>Rock</li>
+			</linkFlags>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+				<edgeTop>Damage/Edge</edgeTop>
+				<edgeBot>Damage/Edge</edgeBot>
+				<edgeLeft>Damage/Edge</edgeLeft>
+				<edgeRight>Damage/Edge</edgeRight>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
+		<statBases>
+			<WorkToBuild>1600</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>The outer structural elements of a ship's hull that have been damaged beyond repair. No longer spaceworthy.</description>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
+		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+				<wreckage>true</wreckage>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+			</li>
+		</comps>
+		<rotatable>false</rotatable>
+		<building>
+			<shipPart>true</shipPart>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<costList>
+			<Steel>8</Steel>
+			<Plasteel>2</Plasteel>
+		</costList>
+		<designationHotKey>Misc1</designationHotKey>
+	</ThingDef>
+	<!-- hull misc -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipAirlockWrecked</defName>
+		<label>damaged airlock</label>
+		<description>The wreckage of an airlock, barely able to maintain minimum pressure.</description>
+		<category>Building</category>
+		<thingClass>Building_Door</thingClass>
+		<altitudeLayer>DoorMoveable</altitudeLayer>
+		<fillPercent>1</fillPercent>
+		<useHitPoints>true</useHitPoints>
+		<graphicData>
+			<texPath>Things/Building/Ship/Airlock_Mover_Wrecked</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<damageData>
+				<!--  no damage marks because they don't move with the door
+        <rect>(0,0.12,1,0.76)</rect>-->
+				<enabled>false</enabled>
+			</damageData>
+		</graphicData>
+		<uiIconPath>Things/Building/Door/Autodoor_MenuIcon</uiIconPath>
+		<costList>
+			<Steel>20</Steel>
+			<Plasteel>12</Plasteel>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isHull>true</isHull>
+				<isPlating>true</isPlating>
+				<wreckage>true</wreckage>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Forbiddable"/>
+		</comps>
+		<designationHotKey>Misc2</designationHotKey>
+		<statBases>
+			<WorkToBuild>1200</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0.0</Flammability>
+		</statBases>
+		<selectable>true</selectable>
+		<tickerType>Normal</tickerType>
+		<rotatable>false</rotatable>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<holdsRoof>true</holdsRoof>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<blockLight>true</blockLight>
+		<drawerType>RealtimeOnly</drawerType>
+		<building>
+			<shipPart>true</shipPart>
+			<isInert>true</isInert>
+			<canPlaceOverWall>true</canPlaceOverWall>
+			<soundDoorOpenPowered>Door_OpenPowered</soundDoorOpenPowered>
+			<soundDoorClosePowered>Door_ClosePowered</soundDoorClosePowered>
+			<soundDoorOpenManual>Door_OpenManual</soundDoorOpenManual>
+			<soundDoorCloseManual>Door_CloseManual</soundDoorCloseManual>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Door/Door_Blueprint</texPath>
+			</blueprintGraphicData>
+			<blueprintClass>Blueprint_Door</blueprintClass>
+		</building>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+	</ThingDef>
+	<!-- plating -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipHullTileWrecked</defName>
+		<label>hull wreckage</label>
+		<thingClass>Building</thingClass>
+		<!--drawerType>MapMeshAndRealTime</drawerType-->
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<isInert>true</isInert>
+			<isEdifice>false</isEdifice>
+			<shipPart>true</shipPart>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Ship/HullPlate</texPath>
+			</blueprintGraphicData>
+		</building>
+		<!--coversFloor>false</coversFloor>
+		<altitudeLayer>LowPlant</altitudeLayer-->
+		<coversFloor>true</coversFloor>
+		<altitudeLayer>Floor</altitudeLayer>
+		<passability>Standable</passability>
+		<placingDraggableDimensions>2</placingDraggableDimensions>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToBuild>100</WorkToBuild>
+			<Flammability>0.0</Flammability>
+			<Beauty>-1</Beauty>
+		</statBases>
+		<description>Wreckage of a ship's hull. No longer spaceworthy.</description>
+		<costList>
+			<Steel>1</Steel>
+			<Plasteel>1</Plasteel>
+		</costList>
+		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<isPlating>true</isPlating>
+				<wreckage>true</wreckage>
+			</li>
+		</comps>
+		<placeWorkers>
+			<li>PlaceWorker_ShipHull</li>
+		</placeWorkers>
+		<rotatable>false</rotatable>
+		<selectable>false</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<constructEffect>ConstructMetal</constructEffect>
+		<fillPercent>0.0</fillPercent>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+	</ThingDef>
+	<!-- misc, legacy -->
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipChunkSalvage</defName>
+		<label>ship salvage</label>
+		<description>Advanced spacecraft systems, relatively intact. Can be deconstructed to yield spacer components.</description>
+		<category>Building</category>
+		<minifiedDef>MinifiedThing</minifiedDef>
+		<graphicData>
+			<texPath>Things/Building/SalvageChunk</texPath>
+			<graphicClass>Graphic_Random</graphicClass>
+			<drawSize>(2,2)</drawSize>
+			<damageData>
+				<rect>(0.1,0.1,1.8,1.8)</rect>
+			</damageData>
+			<shadowData>
+				<volume>(1.39,0.5,1.25)</volume>
+			</shadowData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<pathCost>35</pathCost>
+		<blockWind>true</blockWind>
+		<passability>PassThroughOnly</passability>
+		<fillPercent>0.50</fillPercent>
+		<size>(2,2)</size>
+		<statBases>
+			<MaxHitPoints>300</MaxHitPoints>
+			<Flammability>0.2</Flammability>
+			<Beauty>-20</Beauty>
+			<WorkToBuild>12000</WorkToBuild>
+			<Mass>120</Mass>
+		</statBases>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>2</ChunkSlagSteel>
+		</killedLeavings>
+		<costList>
+			<ComponentSpacer>4</ComponentSpacer>
+			<Steel>36</Steel>
+			<Plasteel>16</Plasteel>
+		</costList>
+		<building>
+			<claimable>true</claimable>
+			<alwaysDeconstructible>true</alwaysDeconstructible>
+		</building>
+		<selectable>true</selectable>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<drawerType>MapMeshOnly</drawerType>
+		<repairEffect>ConstructMetal</repairEffect>
+		<thingCategories>
+			<li>BuildingsSpecial</li>
+		</thingCategories>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Space_Satellite_Core</defName>
+		<label>satellite core</label>
+		<description>The core of an ancient communications nexus. Repairing this will take considerable skill, and once repaired, the system will also need to be hacked by a skilled researcher. Either step can result in the activation of defense systems.\n\nThe spoils of victory are great, however - this satellite could be used as a backdoor into ancient orbital bombardment, solar energy collection, or weather-control arrays.\n\nAlternatively, you could simply deconstruct it, but this is virtually guaranteed to provoke defenses.</description>
+		<thingClass>Building_SatelliteCore</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/Satellite</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(5,5)</drawSize>
+			<damageData>
+				<rect>(0.25,0.25,4.5,4.5)</rect>
+			</damageData>
+			<shadowData>
+				<volume>(1.39,0.5,1.25)</volume>
+			</shadowData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<pathCost>35</pathCost>
+		<blockWind>true</blockWind>
+		<passability>Impassable</passability>
+		<fillPercent>0.50</fillPercent>
+		<size>(5,5)</size>
+		<statBases>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Beauty>-20</Beauty>
+			<WorkToBuild>12000</WorkToBuild>
+			<Mass>120</Mass>
+		</statBases>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>9</ChunkSlagSteel>
+		</killedLeavings>
+		<costList>
+			<ComponentSpacer>16</ComponentSpacer>
+			<Steel>100</Steel>
+			<Plasteel>40</Plasteel>
+		</costList>
+		<building>
+			<claimable>false</claimable>
+			<alwaysDeconstructible>true</alwaysDeconstructible>
+		</building>
+		<selectable>true</selectable>
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		<drawerType>MapMeshOnly</drawerType>
+		<repairEffect>ConstructMetal</repairEffect>
+		<tickerType>Rare</tickerType>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_DamagedReactor</defName>
+		<label>damaged reactor</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/ShipReactorDamaged</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(5.71,6.67)</drawSize>
+			<damageData>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<WorkToBuild>50000</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<killedLeavings>
+			<ChunkSlagSteel>9</ChunkSlagSteel>
+		</killedLeavings>
+		<tickerType>Normal</tickerType>
+		<description>An ancient, badly damaged fission reactor. Until it is shut down, it will inflict severe radiation sickness on any nearby creature.</description>
+		<size>(5,5)</size>
+		<building>
+			<claimable>false</claimable>
+		</building>
+		<costList>
+			<Steel>250</Steel>
+			<Plasteel>100</Plasteel>
+			<Silver>50</Silver>
+			<ComponentSpacer>10</ComponentSpacer>
+		</costList>
+		<comps>
+			<li Class="CompProperties_Explosive">
+				<explosiveRadius>20</explosiveRadius>
+				<explosiveDamageType>Bomb</explosiveDamageType>
+				<chanceNeverExplodeFromDamage>0</chanceNeverExplodeFromDamage>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerPlant</compClass>
+				<basePowerConsumption>-3500</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="CompProperties_Breakdownable"/>
+			<li Class="CompProperties_DamagedReactor"/>
+		</comps>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_LabConsole</defName>
+		<label>lab console</label>
+		<description>An ancient but functional control console. A skilled researcher might be able to use this to shut down the ship's reactors.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/BlackBoxMissionConsoleLab</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(4,5)</drawSize>
+			<damageData>
+				<rect>(0,0,3,1.8)</rect>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+			<shadowData>
+				<volume>(3,0.5,2)</volume>
+			</shadowData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>70</pathCost>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>false</castEdgeShadows>
+		<fillPercent>0.5</fillPercent>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<MaxHitPoints>250</MaxHitPoints>
+			<WorkToBuild>2200</WorkToBuild>
+			<Flammability>0.6</Flammability>
+		</statBases>
+		<size>(1,3)</size>
+		<costList>
+			<Steel>120</Steel>
+			<ComponentIndustrial>4</ComponentIndustrial>
+		</costList>
+		<interactionCellOffset>(1,0,0)</interactionCellOffset>
+		<hasInteractionCell>true</hasInteractionCell>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<comps>
+			<li Class="CompProperties_BlackBoxConsole"/>
+		</comps>
+		<building>
+			<claimable>false</claimable>
+		</building>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_SecurityConsole</defName>
+		<label>security console</label>
+		<description>An ancient but functional control console. A skilled researcher could use this to open the ship's locked doors.</description>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/BlackBoxMissionConsoleSecurity</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(4,5)</drawSize>
+			<damageData>
+				<rect>(0,0,3,1.8)</rect>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
+			<shadowData>
+				<volume>(3,0.5,2)</volume>
+			</shadowData>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<pathCost>70</pathCost>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>false</castEdgeShadows>
+		<fillPercent>0.5</fillPercent>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<MaxHitPoints>250</MaxHitPoints>
+			<WorkToBuild>2200</WorkToBuild>
+			<Flammability>0.6</Flammability>
+		</statBases>
+		<size>(1,3)</size>
+		<costList>
+			<Steel>120</Steel>
+			<ComponentIndustrial>4</ComponentIndustrial>
+		</costList>
+		<interactionCellOffset>(-1,0,0)</interactionCellOffset>
+		<hasInteractionCell>true</hasInteractionCell>
+		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+		<comps>
+			<li Class="CompProperties_BlackBoxConsole"/>
+		</comps>
+		<building>
+			<claimable>false</claimable>
+		</building>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>BlackBoxAI</defName>
+		<label>insane AI</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/ShipComputerCore</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<WorkToBuild>16000</WorkToBuild>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>The ancient ship's AI core. Hostile, psychically capable, and deeply disturbed. Only the most gifted negotiators would have any hope of talking it out of suicide, and you will only get one chance at this.</description>
+		<size>(3,3)</size>
+		<comps>
+			<li Class="CompProperties_CausesGameCondition_PsychicEmanation">
+				<conditionDef>PsychicDroner</conditionDef>
+				<compClass>CompCauseGameCondition_PsychicEmanation</compClass>
+				<worldRange>1</worldRange>
+				<droneLevelIncreaseInterval>-1</droneLevelIncreaseInterval>
+				<droneLevel>3</droneLevel>
+			</li>
+			<li Class="CompProperties_BlackBoxAI"/>
+		</comps>
+		<placeWorkers>
+		</placeWorkers>
+		<building>
+			<claimable>false</claimable>
+		</building>
+		<costList>
+			<Steel>150</Steel>
+			<ComponentSpacer>4</ComponentSpacer>
+			<Gold>70</Gold>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>JTDriveSalvage</defName>
+		<label>Ancient Johnson-Tanaka drive</label>
+		<thingClass>Building</thingClass>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Ship/ShipEngine</texPath>
+			<graphicClass>Graphic_Multi</graphicClass>
+			<drawSize>(4.25,3.19)</drawSize>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<statBases>
+			<WorkToBuild>60000</WorkToBuild>
+			<MaxHitPoints>600</MaxHitPoints>
+			<Flammability>0</Flammability>
+			<Mass>1000</Mass>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>An advanced reactionless engine capable of interplanetary and interstellar travel. Damaged by re-entry but still mostly functional.\n\nSafely opening the drive to reverse-engineer it will require a lengthy momentum discharge process, which is certain to attract raiders.</description>
+		<size>(3,3)</size>
+		<comps>
+			<li Class="CompProperties_HibernatableSoS">
+				<incidentTargetWhileStarting>Map_RaidBeacon</incidentTargetWhileStarting>
+			</li>
+		</comps>
+		<costList>
+			<Steel>100</Steel>
+			<Plasteel>200</Plasteel>
+			<Uranium>120</Uranium>
+			<ComponentSpacer>12</ComponentSpacer>
+		</costList>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<designationHotKey>Misc5</designationHotKey>
+	</ThingDef>
+	<ThingDef ParentName="BuildingNaturalBase">
+		<defName>SpaceHive</defName>
+		<label>hive</label>
+		<description>A hive of giant insects. If activated, it will spawn additional insects and hives over time, as well as valuable insect jelly.</description>
+		<thingClass>Hive</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Natural/Hive</texPath>
+			<graphicClass>Graphic_Random</graphicClass>
+			<drawSize>1.6</drawSize>
+		</graphicData>
+		<uiIconScale>0.65</uiIconScale>
+		<altitudeLayer>Building</altitudeLayer>
+		<rotatable>false</rotatable>
+		<fillPercent>0.5</fillPercent>
+		<statBases>
+			<MaxHitPoints>130</MaxHitPoints>
+			<Flammability>1.0</Flammability>
+		</statBases>
+		<pathCost>50</pathCost>
+		<receivesSignals>true</receivesSignals>
+		<blockWind>true</blockWind>
+		<tickerType>Normal</tickerType>
+		<passability>PassThroughOnly</passability>
+		<killedLeavings>
+			<InsectJelly>30</InsectJelly>
+		</killedLeavings>
+		<comps>
+			<li Class="CompProperties_CanBeDormant">
+				<startsDormant>true</startsDormant>
+			</li>
+			<li Class="CompProperties_WakeUpDormant"/>
+			<li Class="CompProperties_SpawnerPawn">
+				<spawnablePawnKinds>
+					<li>Astromite</li>
+					<li>Stellapede</li>
+					<li>Cosmopillar</li>
+				</spawnablePawnKinds>
+				<lordJob>LordJob_DefendAndExpandHive</lordJob>
+				<spawnSound>Hive_Spawn</spawnSound>
+				<initialPawnsPoints>200</initialPawnsPoints>
+				<maxSpawnedPawnsPoints>500</maxSpawnedPawnsPoints>
+			</li>
+			<li Class="CompProperties_SelfhealHitpoints">
+				<ticksPerHeal>6000</ticksPerHeal><!-- 60k ticks = 1 day, 10 hp per day -->
+			</li>
+			<li Class="CompProperties_SpawnerHives"/>
+			<li Class="CompProperties_Spawner">
+				<thingToSpawn>InsectJelly</thingToSpawn>
+				<spawnCount>20</spawnCount>
+				<spawnIntervalRange>26000~30000</spawnIntervalRange>
+				<spawnMaxAdjacent>40</spawnMaxAdjacent>
+				<spawnForbidden>true</spawnForbidden>
+				<saveKeysPrefix>jelly</saveKeysPrefix>
+			</li>
+			<li Class="CompProperties_Spawner">
+				<thingToSpawn>GlowPod</thingToSpawn>
+				<spawnCount>1</spawnCount>
+				<spawnIntervalRange>30000~60000</spawnIntervalRange>
+				<spawnMaxAdjacent>1</spawnMaxAdjacent>
+				<saveKeysPrefix>pod</saveKeysPrefix>
+				<inheritFaction>true</inheritFaction>
+			</li>
+			<li Class="CompProperties_HeatPusher">
+				<heatPerSecond>6</heatPerSecond>
+				<heatPushMaxTemperature>38</heatPushMaxTemperature>
+			</li>
+			<li Class="CompProperties_SpawnerFilth">
+				<filthDef>Filth_Slime</filthDef>
+				<spawnCountOnSpawn>10</spawnCountOnSpawn>
+				<spawnMtbHours>4</spawnMtbHours>
+				<spawnRadius>5</spawnRadius>
+			</li>
+			<li Class="CompProperties_Maintainable">
+				<ticksHealthy>60000</ticksHealthy>
+				<ticksNeedsMaintenance>60000</ticksNeedsMaintenance>
+				<damagePerTickRare>10</damagePerTickRare>
+			</li>
+		</comps>
+	</ThingDef>
+	<!-- floating, last 2 are only used for graphics? -->
+	<ThingDef ParentName="EtherealThingBase">
+		<defName>DetachedShipPart</defName>
+		<label>Detached Ship Part</label>
+		<thingClass>DetachedShipPart</thingClass>
+		<description>A destroyed portion of a spaceship.</description>
+		<altitudeLayer>Projectile</altitudeLayer>
+		<useSameGraphicForGhost>true</useSameGraphicForGhost>
+		<rotatable>false</rotatable>
+		<selectable>false</selectable>
+		<hasCustomRectForSelector>true</hasCustomRectForSelector>
+		<drawerType>RealtimeOnly</drawerType>
+		<drawOffscreen>true</drawOffscreen>
+		<canLoadIntoCaravan>false</canLoadIntoCaravan>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<Mass>0</Mass>
+		</statBases>
+		<thingCategories>
+			<li>BuildingsSpecial</li>
+		</thingCategories>
+		<tickerType>Normal</tickerType>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_Beam_Wrecked_Fake</defName>
+		<label>wrecked hull</label>
+		<thingClass>Building</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Wrecked_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<castEdgeShadows>true</castEdgeShadows>
+		<statBases>
+			<WorkToBuild>1600</WorkToBuild>
+			<MaxHitPoints>500</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<description>The outer structural elements of a ship's hull. Damaged beyond repair.</description>
+		<rotatable>false</rotatable>
+		<building>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<costList>
+		</costList>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipHullTileWreckedFake</defName>
+		<label>hull wreckage</label>
+		<thingClass>Building</thingClass>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Terrain/Surfaces/TileWreckage</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<building>
+			<ai_chillDestination>false</ai_chillDestination>
+			<isInert>true</isInert>
+			<isEdifice>false</isEdifice>
+		</building>
+		<coversFloor>true</coversFloor>
+		<altitudeLayer>Floor</altitudeLayer>
+		<passability>Standable</passability>
+		<statBases>
+			<MaxHitPoints>200</MaxHitPoints>
+			<WorkToBuild>100</WorkToBuild>
+			<Flammability>0.0</Flammability>
+		</statBases>
+		<description>Wreckage of a ship's hull. No longer spaceworthy.</description>
+		<costList>
+		</costList>
+		<rotatable>false</rotatable>
+		<selectable>false</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<fillPercent>0.0</fillPercent>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+	</ThingDef>
+</Defs>

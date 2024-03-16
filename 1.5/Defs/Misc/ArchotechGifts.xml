@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Defs>
+
+  <ArchotechGiftDef>
+    <defName>ArchotechExotics</defName>
+	<research>ArchotechExotics</research>
+	<thing>ArchotechExoticParticles</thing>
+  </ArchotechGiftDef>
+
+  <ArchotechGiftDef>
+    <defName>ArchotechMechanites</defName>
+	<research>ArchotechMechanites</research>
+	<thing>ArchotechRepairGel</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>Luci</defName>
+	<research>ArchotechBioMechanites</research>
+	<thing>Luciferium</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>Glittermeds</defName>
+	<research>ArchotechBioMechanites</research>
+	<thing>MedicineUltratech</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>HealerMech</defName>
+	<research>ArchotechBioMechanitesTwo</research>
+	<thing>MechSerumHealer</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ResurrectorMech</defName>
+	<research>ArchotechBioMechanitesTwo</research>
+	<thing>MechSerumResurrector</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechEye</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>ArchotechEye</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechArm</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>ArchotechArm</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechLeg</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>ArchotechLeg</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechEar</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechEar</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechNose</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechNose</thing>
+  </ArchotechGiftDef>
+  
+  <!--ArchotechGiftDef>
+    <defName>ArchotechJaw</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechJaw</thing>
+  </ArchotechGiftDef-->
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechHeart</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechHeart</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechLung</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechLung</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechStomach</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechStomach</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechKidney</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechKidney</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechLiver</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechLiver</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechSpine</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechSpine</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechSkin</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSArchotechSkin</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechPsychicManipulator</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSPsychicManipulator</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechPsychicPredictor</defName>
+	<research>SoSArchotechOrgans</research>
+	<thing>SoSPsychicPredictor</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechLifePod</defName>
+	<research>ArchotechAnimals</research>
+	<thing>ArcholifePod</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechMechaniteWeapon</defName>
+	<research>ArchotechMechaniteWeapon</research>
+	<thing>ArchotechMechaniteCore</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechPsychicWeapon</defName>
+	<research>ArchotechPsychicWeapon</research>
+	<thing>ArchotechPsychicCore</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechPsychicEffectorA</defName>
+	<research>ArchotechPsychicEffectors</research>
+	<thing>PsychicAnimalPulser</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechPsychicEffectorB</defName>
+	<research>ArchotechPsychicEffectors</research>
+	<thing>PsychicSoothePulser</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechPsychicEffectorC</defName>
+	<research>ArchotechPsychicEffectors</research>
+	<thing>Apparel_PsychicShockLance</thing>
+  </ArchotechGiftDef>
+  
+  <ArchotechGiftDef>
+    <defName>ArchotechPsychicEffectorD</defName>
+	<research>ArchotechPsychicEffectors</research>
+	<thing>Apparel_PsychicInsanityLance</thing>
+  </ArchotechGiftDef>
+
+  <ArchotechGiftDef>
+    <defName>ArchotechPsychicEffectorE</defName>
+	<research>ArchotechPsychicEffectors</research>
+	<thing>PsychicEmanator</thing>
+  </ArchotechGiftDef>
+</Defs>

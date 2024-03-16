@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Factions Expanded - Pirates</li>
+		</mods>
+
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!-- EVA description -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(comps)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(comps)]</xpath>
+						<value>
+							<comps />
+						</value>
+					</match>
+				</li>
+
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+						<value>
+							<li>
+								<compClass>SaveOurShip2.Comp_EVA</compClass>
+							</li>
+						</value>
+					</match>
+				</li>
+
+				<!-- EVA stats -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(equippedStatOffsets)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"][not(equippedStatOffsets)]</xpath>
+						<value>
+							<equippedStatOffsets />
+						</value>
+					</match>
+				</li>
+
+				<!-- Warcasket DecompressionResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+						<value>
+							<DecompressionResistance>0.75</DecompressionResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Warcasket Helmet DecompressionResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+						<value>
+							<DecompressionResistance>0.25</DecompressionResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Warcasket Helmet HypoxiaResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketHelmetBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+						<value>
+							<HypoxiaResistance>1</HypoxiaResistance>
+						</value>
+					</match>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>LWM's Deep Storage</li>
+		</mods>
+		<match Class="PatchOperationAdd">
+			<xpath>Defs/ThingDef[defName="LWM_Pallet_Covered"]/building/fixedStorageSettings/filter/categories</xpath>
+			<value>
+				<li>SpaceTorpedoes</li>
+			</value>
+		</match>
+	</Operation>
+</Patch>

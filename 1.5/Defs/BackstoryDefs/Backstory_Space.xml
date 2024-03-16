@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<BackstoryDef>
+		<defName>SoSHologram</defName>
+		<ignoreIllegalLabelCharacterConfigError>False</ignoreIllegalLabelCharacterConfigError>
+		<identifier>SoSHologram</identifier>
+		<slot>Childhood</slot>
+		<title>machine persona</title>
+		<titleShort>persona</titleShort>
+		<baseDesc>[PAWN_nameDef] is a machine persona. [PAWN_pronoun] interacts with the world via a formgel, a swarm of mechanites which mimics a human body.</baseDesc>
+		<bodyTypeMale>Male</bodyTypeMale>
+		<bodyTypeFemale>Female</bodyTypeFemale>
+		<spawnCategories>
+			<li>SoSHologram</li>
+		</spawnCategories>
+		<requiredWorkTags>AllWork</requiredWorkTags>
+	</BackstoryDef>
+</Defs>

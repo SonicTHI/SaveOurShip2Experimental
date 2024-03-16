@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <ThingDef ParentName="ResourceBase">
+    <defName>ArcholifePod</defName>
+    <label>archolife pod</label>
+    <description>A slurry of synthetic cells wrapped in a single-use incubator. Can be programmed (select a pawn and right-click) to "hatch" a radically redesigned version of an ordinary creature. Spawning an archothrumbo requires a stack of 10.</description>
+    <thingClass>Thing_ArcholifePod</thingClass>
+    <graphicData>
+      <texPath>Things/Item/Special/ArcholifePod</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <resourceReadoutPriority>Middle</resourceReadoutPriority>
+    <soundInteract>Metal_Drop</soundInteract>
+    <soundDrop>Metal_Drop</soundDrop>
+    <stackLimit>10</stackLimit>
+    <useHitPoints>true</useHitPoints>
+    <statBases>
+      <MarketValue>1000</MarketValue>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Mass>2</Mass>
+      <Flammability>0.2</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Items</li>
+    </thingCategories>
+    <tradeability>Sellable</tradeability>
+    <techLevel>Archotech</techLevel>
+  </ThingDef>
+
+  <ThingDef ParentName="MechSerumBase">
+    <defName>ArchotechRepairGel</defName>
+    <label>mechanite repair gel</label>
+    <description>A one-use super-dose of mechanites tuned to repair damaged items. Applied to an object such as a weapon or piece of apparel, it restores the object to full condition.</description>
+    <graphicData>
+      <texPath>Things/Item/Special/RestorationGel</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <stackLimit>10</stackLimit>
+    <statBases>
+      <MarketValue>500</MarketValue>
+    </statBases>
+    <thingCategories>
+      <li>Items</li>
+    </thingCategories>
+    <tradeability>Sellable</tradeability>
+    <thingSetMakerTags>
+      <li>RewardStandardMidFreq</li>
+    </thingSetMakerTags>
+    <comps>
+      <li Class="CompProperties_Usable">
+        <useJob>UseItem</useJob>
+        <useLabel>Use repair gel</useLabel>
+        <useDuration>0</useDuration>
+      </li>
+      <li Class="CompProperties_Targetable">
+        <compClass>CompTargetable_DamagedItem</compClass>
+      </li>
+      <li>
+        <compClass>CompTargetEffect_RepairItem</compClass>
+      </li>
+    </comps>
+  </ThingDef>
+
+  <ThingDef ParentName="ResourceBase">
+    <defName>ArchotechMechaniteCore</defName>
+    <label>mechanite disassembler core</label>
+    <description>A self-contained mechanite factory designed to produce disassembler mechanites.</description>
+    <graphicData>
+      <texPath>Things/Item/Special/MechaniteDisassemblerCore</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <resourceReadoutPriority>Middle</resourceReadoutPriority>
+    <soundInteract>Metal_Drop</soundInteract>
+    <soundDrop>Metal_Drop</soundDrop>
+    <stackLimit>1</stackLimit>
+    <useHitPoints>true</useHitPoints>
+    <statBases>
+      <MarketValue>4000</MarketValue>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Mass>2</Mass>
+      <Flammability>0.2</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Items</li>
+    </thingCategories>
+    <drawGUIOverlay>false</drawGUIOverlay>
+    <tradeability>Sellable</tradeability>
+    <techLevel>Archotech</techLevel>
+  </ThingDef>
+  
+  <ThingDef ParentName="ResourceBase">
+    <defName>ArchotechPsychicCore</defName>
+    <label>psychic flayer core</label>
+    <description>A large psychic effector capable of disrupting the minds of distant foes. Can be used to construct a spinal weapon.</description>
+    <graphicData>
+      <texPath>Things/Item/Special/PsychicFlayerCore</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <resourceReadoutPriority>Middle</resourceReadoutPriority>
+    <soundInteract>Metal_Drop</soundInteract>
+    <soundDrop>Metal_Drop</soundDrop>
+    <stackLimit>1</stackLimit>
+    <useHitPoints>true</useHitPoints>
+    <statBases>
+      <MarketValue>4000</MarketValue>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Mass>2</Mass>
+      <Flammability>0.2</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Items</li>
+    </thingCategories>
+    <drawGUIOverlay>false</drawGUIOverlay>
+    <tradeability>Sellable</tradeability>
+    <techLevel>Archotech</techLevel>
+  </ThingDef>
+  
+  <ThingDef ParentName="ResourceBase">
+    <defName>ArchotechExoticParticles</defName>
+    <label>exotic particles</label>
+    <description>Particles whose behavior defies conventionally-understood physics, safely contained. Can be used to construct a wide range of devices.</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/ExoticParticles</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <resourceReadoutPriority>Middle</resourceReadoutPriority>
+    <soundInteract>Metal_Drop</soundInteract>
+    <soundDrop>Metal_Drop</soundDrop>
+    <stackLimit>75</stackLimit>
+    <useHitPoints>true</useHitPoints>
+    <statBases>
+      <MarketValue>100</MarketValue>
+      <MaxHitPoints>100</MaxHitPoints>
+      <Mass>2</Mass>
+      <Flammability>0.2</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Manufactured</li>
+    </thingCategories>
+    <tradeability>Sellable</tradeability>
+    <techLevel>Archotech</techLevel>
+  </ThingDef>
+</Defs>

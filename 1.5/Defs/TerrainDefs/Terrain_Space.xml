@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<TerrainDef>
+		<defName>EmptySpace</defName>
+		<label>vacuum</label>
+		<texturePath>Terrain/Surfaces/Vacuum</texturePath>
+		<edgeType>Hard</edgeType>
+		<renderPrecedence>20</renderPrecedence>
+		<pathCost>50</pathCost>
+		<filthAcceptanceMask>
+			<li>None</li>
+		</filthAcceptanceMask>
+		<fertility>0</fertility>
+		<avoidWander>true</avoidWander>
+		<changeable>false</changeable>
+		<holdSnow>false</holdSnow>
+		<affordances>
+			<li>Light</li>
+			<li>Medium</li>
+			<li>Heavy</li>
+		</affordances>
+		<tags>
+			<li>Space</li>
+		</tags>
+		<extinguishesFire>true</extinguishesFire>
+	</TerrainDef>
+	<TerrainDef Name="ShipFloorBase" Abstract="True">
+		<layerable>true</layerable>
+		<renderPrecedence>70</renderPrecedence>
+		<affordances>
+			<li>Light</li>
+			<li>Medium</li>
+			<li>Heavy</li>
+		</affordances>
+		<tags>
+			<li>Ship</li>
+		</tags>
+		<edgeType>Hard</edgeType>
+		<fertility>0</fertility>
+		<pollutionShaderType MayRequire="Ludeon.RimWorld.Biotech">TerrainFadeRoughLinearBurn</pollutionShaderType>
+		<pollutionOverlayTexturePath>Terrain/Surfaces/PollutionFloorSmooth</pollutionOverlayTexturePath>
+		<pollutionColor>(1, 1, 1, 0.8)</pollutionColor>
+		<pollutionOverlayScale>(0.75, 0.75)</pollutionOverlayScale>
+	</TerrainDef>
+	<TerrainDef ParentName="ShipFloorBase">
+		<defName>FakeFloorInsideShip</defName>
+		<label>ship</label>
+		<texturePath>Terrain/Surfaces/TileHull</texturePath>
+		<statBases>
+			<Cleanliness>0.2</Cleanliness>
+			<Beauty>0</Beauty>
+		</statBases>
+	</TerrainDef>
+	<TerrainDef ParentName="ShipFloorBase">
+		<defName>FakeFloorInsideShipMech</defName>
+		<label>mechanoid ship</label>
+		<texturePath>Terrain/Surfaces/TileHullMech</texturePath>
+		<statBases>
+			<Cleanliness>0.2</Cleanliness>
+			<Beauty>0</Beauty>
+		</statBases>
+	</TerrainDef>
+	<TerrainDef ParentName="ShipFloorBase">
+		<defName>FakeFloorInsideShipArchotech</defName>
+		<label>archotech ship</label>
+		<texturePath>Terrain/Surfaces/TileHullArchotech</texturePath>
+		<statBases>
+			<Cleanliness>0.2</Cleanliness>
+			<Beauty>2</Beauty>
+		</statBases>
+		<tags>
+			<li>Ship</li>
+			<li>FineFloor</li>
+		</tags>
+	</TerrainDef>
+	<TerrainDef ParentName="ShipFloorBase">
+		<defName>ShipWreckageTerrain</defName>
+		<label>wreckage</label>
+		<texturePath>Terrain/Surfaces/TileWreckage</texturePath>
+		<pathCost>3</pathCost>
+		<statBases>
+			<Beauty>-2</Beauty>
+			<Cleanliness>-1</Cleanliness>
+		</statBases>
+		<fertility>0</fertility>
+		<changeable>false</changeable>
+	</TerrainDef>
+	<TerrainDef ParentName="ShipFloorBase">
+		<defName>FakeFloorInsideShipFoam</defName>
+		<label>hullfoam</label>
+		<texturePath>Terrain/Surfaces/TileHullFoam</texturePath>
+		<edgeType>Hard</edgeType>
+		<pathCost>1</pathCost>
+		<statBases>
+			<Cleanliness>0</Cleanliness>
+			<Beauty>0</Beauty>
+		</statBases>
+	</TerrainDef>
+	<TerrainDef>
+		<defName>SoilShip</defName>
+		<label>artificial soil substrate</label>
+		<description>Synthetic soil laced with catalysts and micro-organisms, theoretically self-sustaining even aboard a starship.</description>
+		<layerable>true</layerable>
+		<texturePath>Terrain/Surfaces/Light_Tech_Soil</texturePath>
+		<edgeType>Hard</edgeType>
+		<renderPrecedence>340</renderPrecedence>
+		<pathCost>2</pathCost>
+		<statBases>
+			<Beauty>-1</Beauty>
+			<Cleanliness>-1</Cleanliness>
+		</statBases>
+		<tags>
+			<li>Ship</li>
+		</tags>
+		<affordances>
+			<li>Light</li>
+			<li>Medium</li>
+			<li>Heavy</li>
+			<li>GrowSoil</li>
+			<li>Diggable</li>
+		</affordances>
+		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
+		<generatedFilth>Filth_Dirt</generatedFilth>
+		<fertility>1.0</fertility>
+		<takeFootprints>True</takeFootprints>
+		<tools>
+			<li>
+				<label>dirt</label>
+				<capacities>
+					<li>KickMaterialInEyes</li>
+				</capacities>
+				<hediff>DirtInEyes</hediff>
+				<cooldownTime>1.5</cooldownTime>
+			</li>
+		</tools>
+		<filthAcceptanceMask>
+			<li>Unnatural</li>
+		</filthAcceptanceMask>
+		<costList>
+			<WoodLog>1</WoodLog>
+			<Neutroamine>1</Neutroamine>
+		</costList>
+		<researchPrerequisites>
+			<li>ShipBasics</li>
+		</researchPrerequisites>
+		<designationCategory>Floors</designationCategory>
+	</TerrainDef>
+</Defs>

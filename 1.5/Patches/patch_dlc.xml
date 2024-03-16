@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Royalty</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs</xpath>
+					<value>
+						<!-- pawns -->
+						<PawnKindDef>
+							<defName>Empire_Space_Laborer</defName>
+							<label>imperial laborer</label>
+							<race>Human</race>
+							<defaultFactionType>Empire</defaultFactionType>
+							<maxGenerationAge>50</maxGenerationAge>
+							<combatPower>30</combatPower>
+							<backstoryFiltersOverride>
+								<li>
+									<categories>
+										<li>ImperialCommon</li>
+									</categories>
+								</li>
+							</backstoryFiltersOverride>
+							<styleItemTags>
+								<li>
+									<tag>Soldier</tag>
+									<baseWeight>1</baseWeight>
+									<weightFactor>1</weightFactor>
+								</li>
+							</styleItemTags>
+							<backstoryCryptosleepCommonality>0.08</backstoryCryptosleepCommonality>
+							<forceNormalGearQuality>true</forceNormalGearQuality>
+							<isFighter>false</isFighter>
+							<requiredWorkTags>
+								<!-- Must be capable of labor, as this pawn kind is used in laborer quests. -->
+								<li>ManualDumb</li>
+								<li>ManualSkilled</li>
+								<li>Cleaning</li>
+								<li>Hauling</li>
+								<li>Mining</li>
+								<li>Firefighting</li>
+							</requiredWorkTags>
+							<apparelTags>
+								<li>IndustrialBasic</li>
+							</apparelTags>
+							<apparelMoney>750~1500</apparelMoney>
+							<gearHealthRange>1~1</gearHealthRange>
+							<apparelRequired>
+								<li>Apparel_SpaceSuitHelmet</li>
+								<li>Apparel_SpaceSuitBody</li>
+							</apparelRequired>
+							<techHediffsMoney>50~800</techHediffsMoney>
+							<techHediffsTags>
+								<li>Poor</li>
+								<li>Simple</li>
+							</techHediffsTags>
+							<techHediffsChance>0.08</techHediffsChance>
+							<apparelDisallowTags>
+								<li>Western</li>
+							</apparelDisallowTags>
+							<disallowedTraits>
+								<li>Nudist</li>
+							</disallowedTraits>
+							<initialWillRange>1~3</initialWillRange>
+							<initialResistanceRange>6~10</initialResistanceRange>
+						</PawnKindDef>
+						<PawnKindDef ParentName="ImperialFighterBase">
+							<defName>Empire_Fighter_Marine_Space</defName>
+							<label>space marine</label>
+							<combatPower>100</combatPower>
+							<weaponMoney>1550~2700</weaponMoney>
+							<weaponTags>
+								<li>IndustrialGunAdvanced</li>
+								<li>SpacerGun</li>
+								<li>SniperRifle</li>
+							</weaponTags>
+							<apparelMoney>6000~9000</apparelMoney>
+							<apparelColor>(75,75,75)</apparelColor>
+							<apparelRequired>
+								<li>Apparel_PowerArmorHelmet</li>
+								<li>Apparel_PowerArmor</li>
+							</apparelRequired>
+							<techHediffsTags>
+								<li>ImplantEmpireCommon</li>
+							</techHediffsTags>
+							<skills>
+								<li>
+									<skill>Shooting</skill>
+									<range>6~10</range>
+								</li>
+							</skills>
+							<disallowedTraits>
+								<li>Brawler</li>
+							</disallowedTraits>
+							<initialWillRange>2~4</initialWillRange>
+							<initialResistanceRange>15~24</initialResistanceRange>
+						</PawnKindDef>
+						<PawnKindDef ParentName="CataphractBase">
+							<defName>Empire_Fighter_Cataphract_Space</defName>
+							<label>space cataphract</label>
+							<royalTitleChance>0.1</royalTitleChance>
+							<titleSelectOne>
+								<li>Freeholder</li>
+								<li>Yeoman</li>
+							</titleSelectOne>
+							<combatPower>150</combatPower>
+							<weaponTags>
+								<li>GunHeavy</li>
+								<li>SpacerGun</li>
+							</weaponTags>
+							<apparelColor>(250,250,250)</apparelColor>
+							<apparelRequired>
+								<li>Apparel_ArmorHelmetCataphract</li>
+								<li>Apparel_ArmorCataphract</li>
+							</apparelRequired>
+							<specificApparelRequirements Inherit="False">
+								<li>
+									<bodyPartGroup>Torso</bodyPartGroup>
+									<apparelLayer>OnSkin</apparelLayer>
+									<stuff>Synthread</stuff>
+								</li>
+								<li>
+									<bodyPartGroup>Legs</bodyPartGroup>
+									<apparelLayer>OnSkin</apparelLayer>
+									<stuff>Synthread</stuff>
+								</li>
+							</specificApparelRequirements>
+							<techHediffsTags>
+								<li>Advanced</li>
+								<li>ImplantEmpireCommon</li>
+							</techHediffsTags>
+							<techHediffsRequired>
+								<li>ArmorskinGland</li>
+							</techHediffsRequired>
+							<skills>
+								<li>
+									<skill>Shooting</skill>
+									<range>8~12</range>
+								</li>
+							</skills>
+							<disallowedTraits>
+								<li>Brawler</li>
+							</disallowedTraits>
+							<initialWillRange>4~6</initialWillRange>
+							<initialResistanceRange>17~26</initialResistanceRange>
+						</PawnKindDef>
+						<!-- navy -->
+						<SpaceNavyDef ParentName="SpaceNavy">
+							<defName>Empire_SpaceNavy</defName>
+							<label>Royal Space Navy</label>
+							<factionDefs>
+								<li>Empire</li>
+							</factionDefs>
+							<bountyHunts>true</bountyHunts>
+							<colorPrimary>RGBA(0.624, 0.314, 0.314, 1.000)</colorPrimary>
+							<colorSecondary>RGBA(0.588, 0.612, 0.612, 1.000)</colorSecondary>
+							<marineDef>Empire_Fighter_Marine_Space</marineDef>
+							<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
+							<enemyShipDefs>
+								<li>EmpireBattleship</li>
+								<li>EmpireBomber</li>
+								<li>EmpireCorvette</li>
+								<li>EmpireCruiser</li>
+								<li>EmpireDestroyer</li>
+								<li>EmpireFighter</li>
+							</enemyShipDefs>
+						</SpaceNavyDef>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/EnemyShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
+					<value>
+						<navyExclusive>true</navyExclusive>
+					</value>
+				</li>
+
+				<!-- apparels -->
+				<!-- EVA description -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"][not(comps)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"][not(comps)]</xpath>
+						<value>
+							<comps />
+						</value>
+					</match>
+				</li>
+
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+						<value>
+							<li>
+								<compClass>SaveOurShip2.Comp_EVA</compClass>
+							</li>
+						</value>
+					</match>
+				</li>
+
+				<!-- EVA stats -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase" or defName="Apparel_ArmorLocust"][not(equippedStatOffsets)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase" or defName="Apparel_ArmorLocust"][not(equippedStatOffsets)]</xpath>
+						<value>
+							<equippedStatOffsets />
+						</value>
+					</match>
+				</li>
+
+				<!-- Armor DecompressionResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+						<value>
+							<DecompressionResistance>0.75</DecompressionResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Helmets DecompressionResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetCataphractBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetCataphractBase"]/equippedStatOffsets[not(DecompressionResistance)]</xpath>
+						<value>
+							<DecompressionResistance>0.25</DecompressionResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Helmets HypoxiaResistance -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetCataphractBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorHelmetCataphractBase"]/equippedStatOffsets[not(HypoxiaResistance)]</xpath>
+						<value>
+							<HypoxiaResistance>1</HypoxiaResistance>
+						</value>
+					</match>
+				</li>
+
+				<!-- Locust Armor VacuumSpeedMultiplier -->
+				<li Class="PatchOperationConditional">
+					<xpath>Defs/ThingDef[defName="Apparel_ArmorLocust"]/equippedStatOffsets[not(VacuumSpeedMultiplier)]</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>Defs/ThingDef[defName="Apparel_ArmorLocust"]/equippedStatOffsets[not(VacuumSpeedMultiplier)]</xpath>
+						<value>
+							<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
+						</value>
+					</match>
+				</li>
+
+				<li Class="PatchOperationReplace">
+					<xpath>Defs/ThingDef[@Name="ApparelArmorCataphractBase"]/statBases/Insulation_Cold</xpath>
+					<value>
+						<Insulation_Cold>100</Insulation_Cold>
+					</value>
+				</li>
+
+				<!-- traders -->
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+					<value>
+						<li Class="StockGenerator_SingleDef">
+							<thingDef>ShipTorpedo_HighExplosive</thingDef>
+							<countRange>5~10</countRange>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+					<value>
+						<li Class="StockGenerator_SingleDef">
+							<thingDef>ShipTorpedo_EMP</thingDef>
+							<countRange>3~6</countRange>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/TraderKindDef[defName="Orbital_Empire" or defName="Empire_Caravan_TraderGeneral"]/stockGenerators</xpath>
+					<value>
+						<li Class="StockGenerator_SingleDef">
+							<thingDef>ShipTorpedo_Antimatter</thingDef>
+							<countRange>1~2</countRange>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Biotech</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<!-- mech buildable -->
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName = "Ship_BeamMech_Unpowered" or defName = "Ship_BeamMech" or defName="ShipAirlockMech" or defName="ShipHullTileMech" or defName="ShipInside_SolarGeneratorMech" or defName="ShipInside_PassiveVentMechanoid"]</xpath>
+					<value>
+						<designationCategory>Ship</designationCategory>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[@Name="ShipCornerMech" or defName="Ship_BeamMech_Unpowered" or defName="Ship_BeamMech" or defName="ShipAirlockMech" or defName="ShipHullTileMech"]</xpath>
+					<value>
+						<researchPrerequisites>
+							<li>ShipBasics</li>
+							<li>UltraMechtech</li>
+						</researchPrerequisites>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="ShipInside_SolarGeneratorMech" or defName="ShipInside_PassiveVentMechanoid"]/researchPrerequisites</xpath>
+					<value>
+						<li>ShipBasics</li>
+						<li>UltraMechtech</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/SpaceNavyDef[defName="Pirate_SpaceNavy"]/factionDefs</xpath>
+					<value>
+						<li>PirateYttakin</li>
+						<li>PirateWaster</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

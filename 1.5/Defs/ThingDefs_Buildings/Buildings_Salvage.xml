@@ -49,6 +49,7 @@
 			<blueprintGraphicData>
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
+			<supportsWallAttachments>true</supportsWallAttachments>
 		</building>
 		<costList>
 			<Steel>8</Steel>

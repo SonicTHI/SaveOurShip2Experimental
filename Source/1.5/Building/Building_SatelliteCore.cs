@@ -112,11 +112,13 @@ namespace RimWorld
 
         public void DispenseTargeters()
         {
-            List<ThingDef> targeters = new List<ThingDef>();
-            targeters.Add(ThingDefOf.OrbitalTargeterBombardment);
-            targeters.Add(ThingDefOf.OrbitalTargeterPowerBeam);
-            targeters.Add(ThingDef.Named("TornadoGenerator"));
-            targeters.Add(ThingDef.Named("WeatherCancelDevice"));
+            List<ThingDef> targeters = new List<ThingDef>
+            {
+                ThingDef.Named("OrbitalTargeterBombardment"),
+                ThingDef.Named("OrbitalTargeterPowerBeam"),
+                ThingDef.Named("TornadoGenerator"),
+                ThingDef.Named("WeatherCancelDevice")
+            };
             int numTargeters = Rand.RangeInclusive(2, 3);
             for(int i=0;i<numTargeters;i++)
             {

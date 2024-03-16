@@ -1,20 +1,19 @@
-﻿namespace SaveOurShip2
-{
-    using RimWorld;
-    using Verse;
+﻿using RimWorld;
+using Verse;
 
+namespace SaveOurShip2
+{
     public class Verb_SpaceBubblePop : Verb
     {
-
         protected override bool TryCastShot()
         {
             Pop(ReloadableCompSource);
             return true;
         }
 
-        public static void Pop(CompReloadable comp)
+        public static void Pop(CompApparelReloadable comp)
         {
-            if (comp == null || !comp.CanBeUsed)
+            if (comp == null || !comp.CanBeUsed(out string reason))
             {
                 return;
             }

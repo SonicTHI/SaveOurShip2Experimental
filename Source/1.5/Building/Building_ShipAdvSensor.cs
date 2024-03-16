@@ -115,7 +115,7 @@ namespace RimWorld
         {
             if (observedMap != null && observedMap.Map !=null && !observedMap.Map.mapPawns.AnyColonistSpawned && !observedMap.Map.listerBuildings.allBuildingsColonist.Any() && observedMap.Faction==Faction.OfPlayer)
             {
-                Current.Game.DeinitAndRemoveMap_NewTemp(observedMap.Map, false);
+                Current.Game.DeinitAndRemoveMap(observedMap.Map, false);
                 Find.World.worldObjects.Remove(observedMap);
             }
         }

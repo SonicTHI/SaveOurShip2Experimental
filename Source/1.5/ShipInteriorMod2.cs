@@ -98,9 +98,9 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public const string SOS2EXPversion = "V99";
-        public const int SOS2ReqCurrentMinor = 4;
-        public const int SOS2ReqCurrentBuild = 3704;
+        public const string SOS2EXPversion = "V100";
+        public const int SOS2ReqCurrentMinor = 5;
+        public const int SOS2ReqCurrentBuild = 4035;
 
         public const float altitudeNominal = 1000f; //nominal altitude for ship map background render
         public const float altitudeLand = 130f; //min altitude for ship map background render
@@ -439,8 +439,9 @@ namespace SaveOurShip2
         public static Map GeneratePlayerShipMap(IntVec3 size)
 		{
 			WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.ShipOrbiting);
-			orbiter.SetNominalPos();
-            orbiter.SetFaction(Faction.OfPlayer);
+			orbiter.Radius = 150;
+			orbiter.Theta = -3;
+			orbiter.SetFaction(Faction.OfPlayer);
 			orbiter.Tile = FindWorldTilePlayer();
 			Find.WorldObjects.Add(orbiter);
 			Map map = MapGenerator.GenerateMap(size, orbiter, orbiter.MapGeneratorDef);
@@ -1072,7 +1073,7 @@ namespace SaveOurShip2
 
 					if (def.defName.Equals("CasketFilled"))
 					{
-						Thing thing = ThingMaker.MakeThing(ThingDefOf.CryptosleepCasket);
+						Thing thing = ThingMaker.MakeThing(ThingDef.Named("CryptosleepCasket"));
 						thing.SetFactionDirect(fac);
 						Pawn sleeper = PawnGenerator.GeneratePawn(new PawnGenerationRequest(PawnKindDefOf.Slave, Faction.OfAncients, forceGenerateNewPawn: true, certainlyBeenInCryptosleep: true));
 						((Building_CryptosleepCasket)thing).TryAcceptThing(sleeper);
@@ -1410,7 +1411,7 @@ namespace SaveOurShip2
 					}
 				}
 			}
-			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlag.Things | MapMeshFlag.FogOfWar);
+			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.FogOfWar);
 			if (Current.ProgramState == ProgramState.Playing)
 				map.mapDrawer.RegenerateEverythingNow();
             map.GetComponent<ShipHeatMapComp>().RecacheMap();
@@ -2135,7 +2136,8 @@ namespace SaveOurShip2
                 }
                 foreach (Section sec in sourceSec)
                 {
-                    sec.RegenerateLayers(MapMeshFlag.Zone);
+                    //sec.RegenerateLayers(MapMeshFlagDefOf.Zone);
+                    sec.RegenerateDirtyLayers();
                 }
                 List<Section> targetSec = new List<Section>();
                 foreach (IntVec3 pos in targetArea)
@@ -2146,7 +2148,8 @@ namespace SaveOurShip2
                 }
                 foreach (Section sec in targetSec)
                 {
-                    sec.RegenerateLayers(MapMeshFlag.Zone);
+                    //sec.RegenerateLayers(MapMeshFlagDefOf.Zone);
+                    sec.RegenerateDirtyLayers();
                 }
             }
             if (devMode)
@@ -2197,7 +2200,7 @@ namespace SaveOurShip2
             if (!targetMapIsSpace && !sourceMap.spawnedThings.Any((Thing t) => (t is Pawn || (t is Building_ShipBridge b && b.mannableComp == null)) && !t.Destroyed))
             {
                 WorldObject oldParent = sourceMap.Parent;
-                Current.Game.DeinitAndRemoveMap_NewTemp(sourceMap, false);
+                Current.Game.DeinitAndRemoveMap(sourceMap, false);
                 Find.World.worldObjects.Remove(oldParent);
             }
 
@@ -2314,15 +2317,13 @@ namespace SaveOurShip2
 					}
 					else if (t is Pawn p)
                     {
-                        if (p.jobs != null)
+						if (p.jobs != null)
 						{
 							p.jobs.ClearQueuedJobs();
 							p.jobs.EndCurrentJob(JobCondition.Incompletable);
 						}
 						if (ModsConfig.RoyaltyActive && p.royalty != null && p.royalty.HasAnyTitleIn(Faction.OfEmpire))
                             p.royalty.SetTitle(Faction.OfEmpire, null, false);
-
-                        p.needs.mood.thoughts.memories = new MemoryThoughtHandler(p);
                     }
 					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zones.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
 					{
@@ -2586,8 +2587,9 @@ namespace SaveOurShip2
 				}
 				foreach (Section sec in sourceSec)
 				{
-					sec.RegenerateLayers(MapMeshFlag.Zone);
-				}
+					//sec.RegenerateLayers(MapMeshFlagDefOf.Zone);
+                    sec.RegenerateDirtyLayers();
+                }
 				List<Section> targetSec = new List<Section>();
 				foreach (IntVec3 pos in area)
 				{
@@ -2597,8 +2599,9 @@ namespace SaveOurShip2
 				}
 				foreach (Section sec in targetSec)
 				{
-					sec.RegenerateLayers(MapMeshFlag.Zone);
-				}
+					//sec.RegenerateLayers(MapMeshFlagDefOf.Zone);
+                    sec.RegenerateDirtyLayers();
+                }
 			}
 			map.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
         }

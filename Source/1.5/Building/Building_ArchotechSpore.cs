@@ -50,18 +50,19 @@ namespace RimWorld
 
         public int NumConnectedPillars => (int)this.GetStatValue(pillars);
 
-        public override void Draw()
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            base.Draw();
+            base.DrawAt(drawLoc, flip);
             if (Consciousness == null)
                 return;
+
             Color eyeColor = Color.red;
             if (Mood < 1f)
                 eyeColor = new Color(1f, Mood, 0);
             else
-                eyeColor = new Color(2f - Mood, 2f-Mood, Mood - 1f);
+                eyeColor = new Color(2f - Mood, 2f - Mood, Mood - 1f);
             eyeColor.a = Mathf.Cos(Mathf.PI * (float)Find.TickManager.TicksGame / 256f);
-            eyeGraphic.GetColoredVersion(ShaderDatabase.MetaOverlay, eyeColor, eyeColor).Draw(new Vector3(this.DrawPos.x, this.DrawPos.y + 1f, this.DrawPos.z), this.Rotation, this);
+            eyeGraphic.GetColoredVersion(ShaderDatabase.MetaOverlay, eyeColor, eyeColor).Draw(new Vector3(drawLoc.x, drawLoc.y + 1f, drawLoc.z), Rotation, this);
         }
 
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
@@ -148,7 +149,7 @@ namespace RimWorld
                 DiaNode nodeKeepFaith;
                 if (Consciousness.Ideo.memes.Contains(ResourceBank.MemeDefOf.Structure_Archist))
                     nodeKeepFaith = new DiaNode(TranslatorFormattedStringExtensions.Translate("ArchotechIdeoCertaintyArchist", Consciousness.Name.ToStringShort, Consciousness.Ideo.name));
-                else if (Consciousness.Ideo.memes.Contains(MemeDefOf.Structure_Ideological))
+                else if (Consciousness.Ideo.memes.Contains(DefDatabase<MemeDef>.GetNamed("Structure_Ideological")))
                     nodeKeepFaith = new DiaNode(TranslatorFormattedStringExtensions.Translate("ArchotechIdeoCertaintyEthical", Consciousness.Name.ToStringShort, Consciousness.Ideo.name));
                 else if (Consciousness.Ideo.memes.Contains(DefDatabase<MemeDef>.GetNamed("Structure_Animist")))
                     nodeKeepFaith = new DiaNode(TranslatorFormattedStringExtensions.Translate("ArchotechIdeoCertaintySpirits", Consciousness.Name.ToStringShort, Consciousness.Ideo.name));
@@ -1057,7 +1058,7 @@ namespace RimWorld
             //Log.Message(builder.ToString());
 
             ShipInteriorMod2.WorldComp.SoSWin = true;
-            GameVictoryUtility.ShowCredits(builder.ToString());
+            GameVictoryUtility.ShowCredits(builder.ToString(), null);
         }
     }
 }

@@ -110,11 +110,11 @@ namespace RimWorld
             return output;
         }
 
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            drawLoc = drawLoc + drawOffset;
-            drawWreckage = this.wreckage;
-            drawMinVector = this.Position;
+            drawLoc += drawOffset;
+            drawWreckage = wreckage;
+            drawMinVector = Position;
             if(!ForceLoadedGraphic)
             {
                 ShaderTypeDef cutout = graphicWall.shaderType;
@@ -146,9 +146,9 @@ namespace RimWorld
                 for(int z=0;z<wreckage.GetLength(1);z++)
                 {
                     if(wreckage[x,z]==1)
-                        ((Graphic_Linked_Fake)graphicWall.Graphic).Draw(drawLoc + new Vector3(x, 0, z), this.Rotation, this);
+                        ((Graphic_Linked_Fake)graphicWall.Graphic).Draw(drawLoc + new Vector3(x, 0, z), Rotation, this);
                     else if (wreckage[x, z] == 2)
-                        graphicFloor.Graphic.Draw(drawLoc + new Vector3(x, 0, z), this.Rotation, this);
+                        graphicFloor.Graphic.Draw(drawLoc + new Vector3(x, 0, z), Rotation, this);
                 }
             }
         }

@@ -3,7 +3,7 @@ using Verse;
 
 namespace RimWorld
 {
-    public class Dialog_LoadShipDef : Dialog_Rename
+    public class Dialog_LoadShipDef : Dialog_RenameShip
     {
         private string ship = "shipdeftoload";
         private Map Map;

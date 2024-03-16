@@ -7,7 +7,6 @@ using SaveOurShip2;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse.AI.Group;
-using Verse.Noise;
 
 namespace RimWorld
 {
@@ -77,8 +76,8 @@ namespace RimWorld
             }
             cachedNets = list;
 
-            base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Buildings);
-            base.map.mapDrawer.WholeMapChanged(MapMeshFlag.Things);
+            base.map.mapDrawer.WholeMapChanged(MapMeshFlagDefOf.Buildings);
+            base.map.mapDrawer.WholeMapChanged(MapMeshFlagDefOf.Things);
             heatGridDirty = false;
             loaded = true;
         }
@@ -1343,6 +1342,7 @@ namespace RimWorld
                     {
                         Altitude = ShipInteriorMod2.altitudeNominal;
                         Heading = 0;
+                        Log.Message("" + mapParent.DrawPos);
                         MapFullStop();
                         Map spacehome = ShipInteriorMod2.FindPlayerShipMap();
                         if (spacehome == null) //spacehome is gone, make new
@@ -1370,7 +1370,6 @@ namespace RimWorld
                         }
                         else //arriving on spacehome
                         {
-                            ((WorldObjectOrbitingShip)map.Parent).SetNominalPos();
                             ShipMapState = ShipMapState.nominal;
                             Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"), TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
                         }

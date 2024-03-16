@@ -28,8 +28,8 @@ namespace RimWorld
 			this.parent.Destroy (DestroyMode.Vanish);
 			Pawn transformed = myPawn (this.parent, myPos, fuelAmount);
 			transformed.SpawnSetup (myMap, false);
-			if(transformed.TryGetComp<CompShuttleCosmetics>()!=null)
-				CompShuttleCosmetics.ChangeShipGraphics(transformed, transformed.TryGetComp<CompShuttleCosmetics>().Props);
+			/*if(transformed.TryGetComp<CompShuttleCosmetics>()!=null)
+				CompShuttleCosmetics.ChangeShipGraphics(transformed, transformed.TryGetComp<CompShuttleCosmetics>().Props);*/
 		}
 
 		public static Pawn myPawn(Thing meAsABuilding, IntVec3 myPos, int fuelAmount)
@@ -45,7 +45,7 @@ namespace RimWorld
             float healthPercent = (float)meAsABuilding.HitPoints / (float)meAsABuilding.MaxHitPoints;
             if (healthPercent < 0.99f)
             {
-                Hediff injury = HediffMaker.MakeHediff(HediffDefOf.Scratch, transformed, transformed.RaceProps.body.corePart);
+                Hediff injury = HediffMaker.MakeHediff(HediffDef.Named("Scratch"), transformed, transformed.RaceProps.body.corePart);
                 injury.Severity = transformed.RaceProps.body.corePart.def.GetMaxHealth(transformed) * 0.375f * (1 - healthPercent);
                 transformed.health.AddHediff(injury);
             }
@@ -79,8 +79,8 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-			if (parent.TryGetComp<CompShuttleCosmetics>() != null)
-				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);
+			/*if (parent.TryGetComp<CompShuttleCosmetics>() != null)
+				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);*/
 		}
     }
 }

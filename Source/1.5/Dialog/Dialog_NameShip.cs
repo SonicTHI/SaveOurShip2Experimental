@@ -7,7 +7,7 @@ using RimWorld;
 
 namespace SaveOurShip2
 {
-    public class Dialog_NameShip : Dialog_Rename
+    public class Dialog_NameShip : Dialog_RenameShip
     {
         private SoShipCache ship;
 

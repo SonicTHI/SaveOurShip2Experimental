@@ -15,7 +15,7 @@ namespace RimWorld.Planet
             MapParent mapParent = (MapParent)this.parent;
             if (mapParent.HasMap)
             {
-                List<Pawn> allPawnsSpawned = mapParent.Map.mapPawns.AllPawnsSpawned;
+                List<Pawn> allPawnsSpawned = mapParent.Map.mapPawns.AllPawnsSpawned.ToList();
                 bool flag = mapParent.Map.mapPawns.FreeColonistsSpawnedOrInPlayerEjectablePodsCount != 0;
                 bool flag2 = false;
                 for (int i = 0; i < allPawnsSpawned.Count; i++)
@@ -52,7 +52,7 @@ namespace RimWorld.Planet
                     Find.WorldObjects.Remove(this.parent);
                     if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechPillarC"))
                     {
-                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("StarTotemLostLabel"), TranslatorFormattedStringExtensions.Translate("StarTotemLost"), LetterDefOf.NegativeEvent, null);
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("StarTotemLostLabel"), TranslatorFormattedStringExtensions.Translate("StarTotemLost"), LetterDefOf.NegativeEvent);
                         ShipInteriorMod2.GenerateSite("TribalPillarSite");
                     }
                 }

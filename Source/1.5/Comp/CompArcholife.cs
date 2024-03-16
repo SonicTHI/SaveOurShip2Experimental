@@ -192,8 +192,7 @@ namespace RimWorld
 				yield return gizmo_EnergyShieldStatus;
 			}
 		}
-
-		public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
+        public override void PostPreApplyDamage(ref DamageInfo dinfo, out bool absorbed)
         {
 			if (ShieldState != 0)
 			{
@@ -248,7 +247,7 @@ namespace RimWorld
 
 		private void Break()
 		{
-			SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
+			SoundDef.Named("EnergyShield_Broken").PlayOneShot(new TargetInfo(parent.Position, parent.Map));
 			FleckMaker.Static(parent.TrueCenter(), parent.Map, FleckDefOf.ExplosionFlash, 12f);
 			for (int i = 0; i < 6; i++)
 			{

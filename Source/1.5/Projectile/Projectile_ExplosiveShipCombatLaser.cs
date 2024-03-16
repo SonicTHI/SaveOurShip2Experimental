@@ -51,7 +51,7 @@ namespace RimWorld
         public bool large = false;
         public bool tiny = false;
 
-        public override void Draw()
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             origin.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);
             destination.y = Altitudes.AltitudeFor(AltitudeLayer.MetaOverlays);

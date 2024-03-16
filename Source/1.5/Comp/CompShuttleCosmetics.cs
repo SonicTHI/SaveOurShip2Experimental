@@ -32,7 +32,7 @@ namespace RimWorld
 			Scribe_Values.Look<int>(ref whichVersion, "version");
         }
 
-        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+        /*public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             Command_Action setVersion = new Command_Action
             {
@@ -69,7 +69,7 @@ namespace RimWorld
                 parent.graphicInt=graphics[parent.def.defName][whichVersion];
                 parent.DirtyMapMesh(parent.Map);
             }
-        }
+        }*/
     }
 
     public class FloatMenuWithCallback : FloatMenu

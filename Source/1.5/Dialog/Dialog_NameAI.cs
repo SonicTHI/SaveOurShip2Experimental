@@ -7,7 +7,7 @@ using RimWorld;
 
 namespace SaveOurShip2
 {
-    public class Dialog_NameAI : Dialog_Rename
+    public class Dialog_NameAI : Dialog_RenameShip
     {
         private CompBuildingConsciousness AI;
 

@@ -116,7 +116,7 @@
 			<MaxHitPoints>1000</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>The outer structural elements of a ship's hull. Includes conduits for power, life-support gases, and coolant. Integrated lighting system can be toggled at will if the Advanced Lighting research project is completed.</description>
+		<description>The outer structural elements of a ship's hull. Includes conduits for power, life-support gases, and coolant.</description>
 		<designationCategory>Ship</designationCategory>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>

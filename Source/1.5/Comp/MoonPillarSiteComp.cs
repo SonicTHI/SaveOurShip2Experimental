@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace RimWorld.Planet
 {
-    [StaticConstructorOnStartup]
     public class MoonPillarSiteComp : EscapeShipComp
     {
         public override void CompTick()
@@ -17,7 +16,7 @@ namespace RimWorld.Planet
             MapParent mapParent = (MapParent)this.parent;
             if (mapParent.HasMap)
             {
-                List<Pawn> allPawnsSpawned = mapParent.Map.mapPawns.AllPawnsSpawned;
+                List<Pawn> allPawnsSpawned = mapParent.Map.mapPawns.AllPawnsSpawned.ToList();
                 bool flag = mapParent.Map.mapPawns.FreeColonistsSpawnedOrInPlayerEjectablePodsCount != 0;
                 bool flag2 = false;
                 for (int i = 0; i < allPawnsSpawned.Count; i++)
@@ -54,7 +53,7 @@ namespace RimWorld.Planet
                     Find.WorldObjects.Remove(this.parent);
                     if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechPillarB"))
                     {
-                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("MoonPillarLostLabel"), TranslatorFormattedStringExtensions.Translate("MoonPillarLost"), LetterDefOf.NegativeEvent, null);
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("MoonPillarLostLabel"), TranslatorFormattedStringExtensions.Translate("MoonPillarLost"), LetterDefOf.NegativeEvent);
                         ShipInteriorMod2.GenerateSite("MoonPillarSite");
                     }
                 }

@@ -112,7 +112,7 @@ namespace RimWorld
                     AddHeatToNetwork(myNet.StorageCapacity - myNet.StorageUsed);
                 breakComp.DoBreakdown();
                 GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);
-                SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent));
+                SoundDef.Named("EnergyShield_Broken").PlayOneShot(new TargetInfo(parent));
 				if (parent.Faction != Faction.OfPlayer)
                     Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatShieldBrokenEnemy"), parent, MessageTypeDefOf.PositiveEvent);
                 else

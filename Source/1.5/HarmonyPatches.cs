@@ -808,7 +808,7 @@ namespace SaveOurShip2
 
 	//biome lighting
     [HarmonyPatch(typeof(SkyManager), "SkyManagerUpdate")]
-    public class FixLightingColors
+    public static class FixLightingColors
     {
         public static void Postfix()
         {
@@ -819,8 +819,7 @@ namespace SaveOurShip2
     }
 
     [HarmonyPatch(typeof(Section), MethodType.Constructor, typeof(IntVec3), typeof(Map))]
-    [StaticConstructorOnStartup]
-    public class SectionConstructorPatch
+    public static class SectionConstructorPatch
     {
         private static Type SunShadowsType;
         private static Type TerrainType;
@@ -845,7 +844,7 @@ namespace SaveOurShip2
     }
 
     [HarmonyPatch(typeof(SectionLayer_Terrain), nameof(SectionLayer_Terrain.Regenerate))]
-    public class SectionRegenerateHelper
+    public static class SectionRegenerateHelper
     {
         public static void Postfix(SectionLayer __instance, Section ___section)
         {
@@ -856,7 +855,7 @@ namespace SaveOurShip2
     }
 
     [HarmonyPatch(typeof(MapInterface), "Notify_SwitchedMap")]
-    public class MapChangeHelper
+    public static class MapChangeHelper
     {
         public static bool MapIsSpace;
 
@@ -870,7 +869,7 @@ namespace SaveOurShip2
     }
 
     [HarmonyPatch(typeof(Game), "LoadGame")]
-    public class GameLoadHelper
+    public static class GameLoadHelper
     {
         public static void Postfix()
         {
@@ -881,7 +880,7 @@ namespace SaveOurShip2
     }
 
     [HarmonyPatch(typeof(Game), "FinalizeInit")]
-    public class FinalizeInitHelper
+    public static class FinalizeInitHelper
     {
         public static void Postfix()
         {
@@ -894,7 +893,7 @@ namespace SaveOurShip2
     }
 
     [HarmonyPatch(typeof(Game), "UpdatePlay")]
-    public class SectionThreadManager
+    public static class SectionThreadManager
     {
         public static CameraDriver Driver;
         public static Camera GameCamera;
@@ -964,7 +963,7 @@ namespace SaveOurShip2
         }
     }
 
-    public class MeshRecalculateHelper //contains everything related to recalculating planet meshes
+    public static class MeshRecalculateHelper //contains everything related to recalculating planet meshes
     {
         public static List<Task> Tasks = new List<Task>();
         public static List<SectionLayer> LayersToDraw = new List<SectionLayer>();
@@ -1048,7 +1047,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(MapDeiniter), "Deinit_NewTemp")]
+	[HarmonyPatch(typeof(MapDeiniter), "Deinit")]
 	public static class RemoveSpaceMap
 	{
 		public static void Postfix()
@@ -1151,7 +1150,35 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent")]
+    [HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(Thing), typeof(bool) })]
+    public static class NoFogSpamInSpaceThing
+    {
+        public static bool Prefix(Thing thing, ref bool sendLetters, Map ___map, out bool __state)
+        {
+            __state = false;
+            if (___map != null && ___map.IsSpace())
+            {
+                sendLetters = false;
+            }
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(IntVec3), typeof(bool) })]
+    public static class NoFogSpamInSpaceVec
+    {
+        public static bool Prefix(IntVec3 c, ref bool sendLetters, Map ___map, out bool __state)
+        {
+            __state = false;
+            if (___map != null && ___map.IsSpace())
+            {
+                sendLetters = false;
+            }
+            return true;
+        }
+    }
+
+    /*[HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent")]
 	public static class NoFogSpamInSpace
 	{
 		public static bool Prefix(Map ___map, out bool __state)
@@ -1199,9 +1226,9 @@ namespace SaveOurShip2
 				}
 			}
 		}
-	}
+	}*/
 
-	[HarmonyPatch(typeof(RoyalTitlePermitWorker), "AidDisabled")]
+    [HarmonyPatch(typeof(RoyalTitlePermitWorker), "AidDisabled")]
 	public static class RoyalTitlePermitWorkerInSpace
 	{
 		public static void Postfix(Map map, ref bool __result)
@@ -1261,7 +1288,7 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(TimedDetectionRaids), "CompTick")]
-	static class NoScanRaids //prevents raids on scanned sites
+    public static class NoScanRaids //prevents raids on scanned sites
 	{
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
 		{
@@ -1505,7 +1532,7 @@ namespace SaveOurShip2
 	}
 
 	//ship
-	[HarmonyPatch(typeof(ShipUtility), "ShipBuildingsAttachedTo")]
+	[HarmonyPatch(typeof(ShipUtility), "ShipBuildingsAttachedTo")] //disable original
 	public static class FindAllTheShipParts
 	{
         public static bool Prefix()
@@ -1602,7 +1629,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(ref bool __result, GameConditionManager __instance, GameConditionDef def)
 		{
-			if (def == GameConditionDefOf.SolarFlare && __instance.ownerMap != null &&
+			if (def == GameConditionDef.Named("SolarFlare") && __instance.ownerMap != null &&
 				__instance.ownerMap.IsSpace())
 				__result = false;
 		}
@@ -1701,7 +1728,7 @@ namespace SaveOurShip2
 						return true;
 					//Log.Message(String.Format("Overriding roof at {0}. Set shipRoofDef instead of {1}", cellIndex, def.defName));
 					___roofGrid[cellIndex] = ResourceBank.RoofDefOf.RoofShip;
-					___map.glowGrid.MarkGlowGridDirty(c);
+					___map.glowGrid.DirtyCache(c);
 					Region validRegionAt_NoRebuild = ___map.regionGrid.GetValidRegionAt_NoRebuild(c);
 					if (validRegionAt_NoRebuild != null)
 					{
@@ -1711,7 +1738,7 @@ namespace SaveOurShip2
 					{
 						___drawerInt.SetDirty();
 					}
-					___map.mapDrawer.MapMeshDirty(c, MapMeshFlag.Roofs);
+					___map.mapDrawer.MapMeshDirty(c, MapMeshFlagDefOf.Roofs);
 					return false;
 				}
 			}
@@ -2463,7 +2490,7 @@ namespace SaveOurShip2
 		{
 			if (__instance.Map != null && __instance.Spawned)
 				__instance.Map.mapDrawer.MapMeshDirty(__instance.Position,
-					MapMeshFlag.Buildings | MapMeshFlag.Things);
+                    MapMeshFlagDefOf.Buildings | MapMeshFlagDefOf.Things);
 		}
 	}
 
@@ -2474,7 +2501,7 @@ namespace SaveOurShip2
 		{
 			if (__instance.Map != null && __instance.Spawned)
 				__instance.Map.mapDrawer.MapMeshDirty(__instance.Position,
-					MapMeshFlag.Buildings | MapMeshFlag.Things);
+					MapMeshFlagDefOf.Buildings | MapMeshFlagDefOf.Things);
 		}
 	}
 
@@ -2622,8 +2649,8 @@ namespace SaveOurShip2
 							PawnUtility.RecoverFromUnwalkablePositionOrKill(thing.Position, thing.Map);
 							if (thing.Faction != Faction.OfPlayer && playerMapComp != null && playerMapComp.ShipLord != null)
 								playerMapComp.ShipLord.AddPawn((Pawn)thing);
-							if (thing.TryGetComp<CompShuttleCosmetics>() != null)
-								CompShuttleCosmetics.ChangeShipGraphics((Pawn)thing, ((Pawn)thing).TryGetComp<CompShuttleCosmetics>().Props);
+							/*if (thing.TryGetComp<CompShuttleCosmetics>() != null)
+								CompShuttleCosmetics.ChangeShipGraphics((Pawn)thing, ((Pawn)thing).TryGetComp<CompShuttleCosmetics>().Props);*/
 						});
 					}
 					else if (myShuttle != null)
@@ -3372,7 +3399,7 @@ namespace SaveOurShip2
 			return true;
 		}
 	}
-
+    /*14disabled
     [HarmonyPatch(typeof(PawnGraphicSet), "SetAllGraphicsDirty")]
     public static class PreserveCosmetics
     {
@@ -3382,7 +3409,7 @@ namespace SaveOurShip2
             if (cosmetics != null)
                 CompArcholifeCosmetics.ChangeAnimalGraphics(__instance.pawn, cosmetics.Props, cosmetics);
         }
-    }
+    }*/
 
     [HarmonyPatch(typeof(ComplexThreatWorker_SleepingInsects), "GetPawnKindsForPoints")]
     public static class NoArchoSpiderSpawnInComplexes
@@ -3408,7 +3435,7 @@ namespace SaveOurShip2
 				if (__instance.Corpse != null)
 					__instance.Corpse.Destroy();
 				if (!__instance.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Destroyed)
-					ResurrectionUtility.Resurrect(__instance);
+					ResurrectionUtility.TryResurrect(__instance);
 			}
 		}
 	}
@@ -3844,7 +3871,7 @@ namespace SaveOurShip2
 							flammableList.Add(list[i]);
 							if (__instance.parent == null && __instance.fireSize > 0.4f && list[i].def.category == ThingCategory.Pawn && Rand.Chance(FireUtility.ChanceToAttachFireCumulative(list[i], 150f)))
 							{
-								list[i].TryAttachFire(__instance.fireSize * 0.2f);
+								list[i].TryAttachFire(__instance.fireSize * 0.2f, null);
 							}
 						}
 					}
@@ -4684,7 +4711,7 @@ namespace SaveOurShip2
 	}
 
     [HarmonyPatch(typeof(MapPawns), "DeRegisterPawn")]
-	public class MapPawnRegisterPatch //PsiTech "patch"
+	public static class MapPawnRegisterPatch //PsiTech "patch"
 	{
 		public static bool Prefix(Pawn p)
 		{

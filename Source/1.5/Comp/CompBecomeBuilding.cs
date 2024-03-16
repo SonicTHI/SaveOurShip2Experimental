@@ -134,8 +134,8 @@ namespace RimWorld
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-			if (parent.TryGetComp<CompShuttleCosmetics>() != null)
-				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);
+			/*if (parent.TryGetComp<CompShuttleCosmetics>() != null)
+				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);*/
 			Current.Game.GetComponent<EnvironmentCachingUtility>().shuttleCache.Add(parent);
         }
 

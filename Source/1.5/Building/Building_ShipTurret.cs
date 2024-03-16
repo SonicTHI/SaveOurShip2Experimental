@@ -235,7 +235,7 @@ namespace RimWorld
                 {
                     ResetForcedTarget();
                 }
-                if (Active && !stunner.Stunned)
+                if (Active && !IsStunned)
                 {
                     GunCompEq.verbTracker.VerbsTick();
                     if (AttackVerb.state != VerbState.Bursting)
@@ -274,7 +274,7 @@ namespace RimWorld
                 {
                     ResetForcedTarget();
                 }
-                if (Active && !stunner.Stunned)
+                if (Active && !IsStunned)
                 {
                     GunCompEq.verbTracker.VerbsTick();
                     if (AttackVerb.state != VerbState.Bursting)
@@ -711,11 +711,10 @@ namespace RimWorld
             }
             return stringBuilder.ToString().TrimEndNewlines();
         }
-
-        public override void Draw()
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            top.DrawTurret(Vector3.zero,0);
-            base.Draw();
+            top.DrawTurret(Vector3.zero, Vector3.zero, 0);
+            base.DrawAt(drawLoc, flip);
         }
         public override void DrawExtraSelectionOverlays()
         {

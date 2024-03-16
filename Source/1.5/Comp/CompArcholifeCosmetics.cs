@@ -30,7 +30,7 @@ namespace RimWorld
             base.PostExposeData();
             Scribe_Values.Look<int>(ref whichVersion, "version");
         }
-
+        /*15disable
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             Command_Action setVersion = new Command_Action
@@ -65,6 +65,6 @@ namespace RimWorld
                 drawSize = pawn.Drawer.renderer.graphics.nakedGraphic.drawSize;
             pawn.Drawer.renderer.graphics.nakedGraphic = graphics[parent.def.defName][cosmetics.whichVersion];
             pawn.Drawer.renderer.graphics.nakedGraphic.drawSize = drawSize;
-        }
+        }*/
     }
 }

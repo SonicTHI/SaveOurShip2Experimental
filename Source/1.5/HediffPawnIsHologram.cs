@@ -44,7 +44,7 @@ namespace RimWorld
         public void HealMissingPart(BodyPartRecord part)
         {
             HealthUtility.Cure(part, pawn);
-            Hediff_Injury wound = HediffMaker.MakeHediff(HediffDefOf.Bruise, pawn, part) as Hediff_Injury;
+            Hediff_Injury wound = HediffMaker.MakeHediff(HediffDef.Named("Bruise"), pawn, part) as Hediff_Injury;
             wound.Severity = part.def.GetMaxHealth(pawn) - 1;
             pawn.health.AddHediff(wound, part);
         }

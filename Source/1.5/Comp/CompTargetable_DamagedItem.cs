@@ -27,5 +27,42 @@ namespace RimWorld
 		{
 			yield return targetChosenByPlayer;
 		}
-	}
+
+        public bool BaseTargetValidator(Thing t)
+        {
+            Pawn pawn = t as Pawn;
+            if (pawn != null)
+            {
+                if (this.Props.psychicSensitiveTargetsOnly && pawn.GetStatValue(StatDefOf.PsychicSensitivity, true, -1) <= 0f)
+                {
+                    return false;
+                }
+                if (this.Props.ignoreQuestLodgerPawns && pawn.IsQuestLodger())
+                {
+                    return false;
+                }
+                if (this.Props.ignorePlayerFactionPawns && pawn.Faction == Faction.OfPlayer)
+                {
+                    return false;
+                }
+            }
+            if (this.Props.fleshCorpsesOnly)
+            {
+                Corpse corpse = t as Corpse;
+                if (corpse != null && !corpse.InnerPawn.RaceProps.IsFlesh)
+                {
+                    return false;
+                }
+            }
+            if (this.Props.nonDessicatedCorpsesOnly)
+            {
+                Corpse corpse2 = t as Corpse;
+                if (corpse2 != null && corpse2.GetRotStage() == RotStage.Dessicated)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 }

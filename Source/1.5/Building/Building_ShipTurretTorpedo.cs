@@ -24,10 +24,10 @@ namespace RimWorld
         int timesFired = 0;
         static Vector3[] TubePos = { new Vector3(-1, 0, -1.5f), new Vector3(1, 0, -1.5f), new Vector3(-1, 0, 0), new Vector3(1, 0, 0), new Vector3(-1, 0, 1.5f), new Vector3(1, 0, 1.5f) };
         static Vector3[] TubePosTwo = { new Vector3(-1, 0, 0), new Vector3(1, 0, 0) };
-		
-        public override void Draw()
+
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            base.Draw();
+            base.DrawAt(drawLoc, flip);
             float d = 0.4f * -3.5f *Mathf.Clamp01(ticksSinceOpen / TicksToOpenNow);
             for (int i = 0; i < 2; i++)
             {

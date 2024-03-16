@@ -128,7 +128,7 @@
 			<li>
 				<key>Q</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>WallLamp</shapeOrDef>
 					<color>RGBA(1.000, 0.000, 0.000, 1.000)</color>
 				</value>
 			</li>

@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace RimWorld.Planet
 {
-    [StaticConstructorOnStartup]
     public class ImpactSiteComp : EscapeShipComp
     {
         public override void CompTick()
@@ -17,7 +16,7 @@ namespace RimWorld.Planet
             MapParent mapParent = (MapParent)this.parent;
             if (mapParent.HasMap)
             {
-                List<Pawn> allPawnsSpawned = mapParent.Map.mapPawns.AllPawnsSpawned;
+                List<Pawn> allPawnsSpawned = mapParent.Map.mapPawns.AllPawnsSpawned.ToList();
                 bool flag = mapParent.Map.mapPawns.FreeColonistsSpawnedOrInPlayerEjectablePodsCount != 0;
                 bool flag2 = false;
                 for (int i = 0; i < allPawnsSpawned.Count; i++)
@@ -51,7 +50,7 @@ namespace RimWorld.Planet
                 }
                 if (flag2 && !flag && !flag3)
                 {
-                    Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ImpactSiteLostLabel"), TranslatorFormattedStringExtensions.Translate("ImpactSiteLost"), LetterDefOf.NegativeEvent, null);
+                    Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ImpactSiteLostLabel"), TranslatorFormattedStringExtensions.Translate("ImpactSiteLost"), LetterDefOf.NegativeEvent);
                     Find.WorldObjects.Remove(this.parent);
                     ShipInteriorMod2.GenerateSite("ShipEngineImpactSite");
                 }

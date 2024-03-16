@@ -117,7 +117,7 @@
 			</li>
 			<!-- misc -->
 			<li Class="PatchOperationAdd">
-				<xpath>Defs/ThingDef[defName="HiTechResearchBench"]/comps/li[3]/linkableFacilities</xpath>
+				<xpath>Defs/ThingDef[defName="HiTechResearchBench"]/comps/li[4]/linkableFacilities</xpath>
 				<value>
 					<li>ArchotechUplink</li>
 				</value>

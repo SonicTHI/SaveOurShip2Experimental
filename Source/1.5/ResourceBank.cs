@@ -71,7 +71,6 @@ namespace SaveOurShip2
 		public static class ThingDefOf
         {
             public static ThingDef Apparel_SpaceSurvivalBelt;
-            public static ThingDef Apparel_SpaceSurvivalBeltDummy;
             public static ThingDef MechaniteFire;
 			public static ThingDef ShipArchotechSpore;
             public static ThingDef ShipArchotechPillarB;

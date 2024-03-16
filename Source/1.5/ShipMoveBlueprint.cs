@@ -18,7 +18,7 @@ namespace RimWorld
             this.def = ResourceBank.ThingDefOf.ShipMoveBlueprint;
         }
 
-        public override void DrawAt(Vector3 drawLoc, bool flip = false)
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             this.shipSketch.DrawGhost(drawLoc.ToIntVec3(), Sketch.SpawnPosType.Unchanged, false, null);
         }

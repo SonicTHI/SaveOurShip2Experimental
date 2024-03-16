@@ -359,7 +359,7 @@ namespace RimWorld
             {
                 Find.GameEnder.CheckOrUpdateGameOver();
             }
-            Current.Game.DeinitAndRemoveMap_NewTemp(Map, false);
+            Current.Game.DeinitAndRemoveMap(Map, false);
             Destroy();
             //base.Abandon();
         }

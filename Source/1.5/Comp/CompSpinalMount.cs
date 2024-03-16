@@ -53,7 +53,7 @@ namespace RimWorld
                     amp.TryGetComp<CompSpinalMount>().SetColor(color);
             }
             parent.DrawColor = color;
-            parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlag.Buildings | MapMeshFlag.Things);
+            parent.Map.mapDrawer.MapMeshDirty(parent.Position, MapMeshFlagDefOf.Buildings | MapMeshFlagDefOf.Things);
         }
     }
 }

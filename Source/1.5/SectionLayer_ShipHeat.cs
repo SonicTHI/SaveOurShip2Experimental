@@ -11,7 +11,7 @@ namespace RimWorld
         public SectionLayer_ShipHeat(Section section) : base(section)
         {
             base.requireAddToMapMesh = false;
-            base.relevantChangeTypes = (MapMeshFlag)4;
+            base.relevantChangeTypes = MapMeshFlagDefOf.Buildings;
         }
 
         public override void DrawLayer()

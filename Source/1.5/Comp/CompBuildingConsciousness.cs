@@ -163,7 +163,7 @@ namespace RimWorld
             Consciousness.story.HairColor = HologramColor;
             Consciousness.story.skinColorOverride = HologramColor;
             if (graphicsDirty)
-                Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
+                Consciousness.Drawer.renderer.SetAllGraphicsDirty();
             HologramDestroyed(false);
             Consciousness.ageTracker.RecalculateLifeStageIndex();
         }
@@ -289,7 +289,7 @@ namespace RimWorld
                                 HologramColor = colors[colorNames.FirstIndexOf(colorname => colorname == name)];
                                 Consciousness.story.HairColor = HologramColor;
                                 Consciousness.story.skinColorOverride = HologramColor;
-                                Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
+                                Consciousness.Drawer.renderer.SetAllGraphicsDirty();
                                 PortraitsCache.SetDirty(Consciousness);
                             }));
                         }
@@ -427,9 +427,10 @@ namespace RimWorld
         public void SpawnHologram()
         {
             GenPlace.TryPlaceThing(Consciousness, parent.Position, parent.Map, ThingPlaceMode.Near);
-            Consciousness.Drawer.renderer.graphics.ResolveAllGraphics();
+            //Consciousness.Drawer.renderer.graphics.ResolveAllGraphics();
+            Consciousness.Drawer.renderer.EnsureGraphicsInitialized();
             if (Consciousness.Dead)
-                ResurrectionUtility.Resurrect(Consciousness);
+                ResurrectionUtility.TryResurrect(Consciousness);
             SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
             FleckMaker.Static(parent.Position, parent.Map, FleckDefOf.PsycastAreaEffect, 5f);
             Consciousness.ageTracker.ResetAgeReversalDemand(Pawn_AgeTracker.AgeReversalReason.ViaTreatment);
@@ -468,7 +469,7 @@ namespace RimWorld
                 pawn = ((Corpse)newConsc).InnerPawn;
                 List<Apparel> pawnApparel = pawn.apparel.WornApparel.ListFullCopy();
                 pawn.Strip();
-                ResurrectionUtility.Resurrect(pawn);
+                ResurrectionUtility.TryResurrect(pawn);
                 Consciousness = pawn;
                 SetupConsciousness(overrideApparel == null ? pawnApparel : overrideApparel, graphicsDirty);
             }
@@ -524,7 +525,7 @@ namespace RimWorld
             HologramColor = new Color(HologramColor.r, HologramColor.g, HologramColor.b, 1);
             Consciousness.story.HairColor = HologramColor;
             Consciousness.story.skinColorOverride = null;
-            Consciousness.Drawer.renderer.graphics.SetAllGraphicsDirty();
+            Consciousness.Drawer.renderer.SetAllGraphicsDirty();
             Consciousness.ageTracker.RecalculateLifeStageIndex();
             Consciousness.DeSpawn();
             Consciousness.SpawnSetup(parent.Map, false);

@@ -45,9 +45,9 @@ namespace RimWorld
             }
         }
 
-        public override void Draw()
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
-            base.Draw();
+            base.DrawAt(drawLoc, flip);
             if (iAmClosed)
                 overlayGraphic.Draw(DrawPos+new Vector3(0, 6, 0), Rot4.South, this);
         }

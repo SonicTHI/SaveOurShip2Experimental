@@ -457,10 +457,10 @@
 		<thingSetMakerTags>
 		</thingSetMakerTags>
 		<comps>
-			<li Class="CompProperties_Reloadable">
+			<!--li Class="CompProperties_Reloadable">
 				<maxCharges>1</maxCharges>
 				<destroyOnEmpty>true</destroyOnEmpty>
-			</li>
+			</li-->
 		</comps>
 		<verbs>
 			<li>
@@ -505,7 +505,7 @@
 		</apparel>
 	</ThingDef>
 
-	<ThingDef ParentName="ApparelBase">
+	<!--ThingDef ParentName="ApparelBase">
 		<defName>Apparel_SpaceSurvivalBeltDummy</defName>
 		<label>survival belt (activated)</label>
 		<description>Deprecated - do not use.</description>
@@ -534,5 +534,5 @@
 				<li>Belt</li>
 			</layers>
 		</apparel>
-	</ThingDef>
+	</ThingDef-->
 </Defs>

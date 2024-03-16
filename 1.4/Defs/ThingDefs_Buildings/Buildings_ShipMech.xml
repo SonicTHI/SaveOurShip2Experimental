@@ -93,7 +93,7 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>The outer structural elements of a mechanoid ship's hull. Includes conduits for power and coolant. Integrated lighting system can be toggled at will if the Advanced Lighting research project is completed.</description>
+		<description>The outer structural elements of a mechanoid ship's hull. Includes conduits for power and coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
 			<li Class="CompProperties_SoShipPart">

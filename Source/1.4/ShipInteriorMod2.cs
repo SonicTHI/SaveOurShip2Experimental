@@ -2314,13 +2314,15 @@ namespace SaveOurShip2
 					}
 					else if (t is Pawn p)
                     {
-						if (p.jobs != null)
+                        if (p.jobs != null)
 						{
 							p.jobs.ClearQueuedJobs();
 							p.jobs.EndCurrentJob(JobCondition.Incompletable);
 						}
 						if (ModsConfig.RoyaltyActive && p.royalty != null && p.royalty.HasAnyTitleIn(Faction.OfEmpire))
                             p.royalty.SetTitle(Faction.OfEmpire, null, false);
+
+                        p.needs.mood.thoughts.memories = new MemoryThoughtHandler(p);
                     }
 					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zones.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
 					{

@@ -2,12 +2,12 @@
 
 namespace RimWorld.Planet
 {
-    public class WorldObjectCompProperties_InsectPillarSite : WorldObjectCompProperties
-    {
+	public class WorldObjectCompProperties_InsectPillarSite : WorldObjectCompProperties
+	{
 
-        public WorldObjectCompProperties_InsectPillarSite()
-        {
-            this.compClass = typeof(InsectPillarSiteComp);
-        }
-    }
+		public WorldObjectCompProperties_InsectPillarSite()
+		{
+			this.compClass = typeof(InsectPillarSiteComp);
+		}
+	}
 }

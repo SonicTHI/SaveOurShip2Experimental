@@ -22,8 +22,8 @@ namespace RimWorld
 							hasPlating = true;
 						}
 						if (b.TryGetComp<CompShipSalvageBay>() != null)
-                            return false;
-                    }
+							return false;
+					}
 				}
 				if (!hasPlating)
 					return new AcceptanceReport(TranslatorFormattedStringExtensions.Translate("MustPlaceOnShipHull"));

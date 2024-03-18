@@ -7,7 +7,7 @@ using Verse.AI;
 
 namespace RimWorld
 {
-    public class JobDriver_LoadShipBuilding : JobDriver
+	public class JobDriver_LoadShipBuilding : JobDriver
 	{
 		private const TargetIndex RefuelableInd = TargetIndex.A;
 		private const TargetIndex FuelInd = TargetIndex.B;

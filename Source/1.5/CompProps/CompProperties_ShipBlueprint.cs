@@ -7,12 +7,12 @@ using Verse;
 
 namespace RimWorld
 {
-    public class CompProperties_ShipBlueprint : CompProperties
-    {
-        public EnemyShipDef shipDef;
-        public CompProperties_ShipBlueprint()
-        {
-            this.compClass = typeof(CompShipBlueprint);
-        }
-    }
+	public class CompProperties_ShipBlueprint : CompProperties
+	{
+		public EnemyShipDef shipDef;
+		public CompProperties_ShipBlueprint()
+		{
+			this.compClass = typeof(CompShipBlueprint);
+		}
+	}
 }

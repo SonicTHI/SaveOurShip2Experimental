@@ -7,12 +7,12 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompExplosivePlant : CompExplosive
-    {
-        public override void CompTick()
-        {
-            if (Find.TickManager.TicksGame % 2000 == 0)
-                parent.TickLong();
-        }
-    }
+	class CompExplosivePlant : CompExplosive
+	{
+		public override void CompTick()
+		{
+			if (Find.TickManager.TicksGame % 2000 == 0)
+				parent.TickLong();
+		}
+	}
 }

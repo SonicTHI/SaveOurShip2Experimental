@@ -6,8 +6,8 @@ using Verse;
 
 namespace RimWorld
 {
-    class PlaceWorker_NotOnBuilding : PlaceWorker
-    {
+	class PlaceWorker_NotOnBuilding : PlaceWorker
+	{
 		public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{
 			CellRect occupiedRect = GenAdj.OccupiedRect(loc, rot, def.Size);

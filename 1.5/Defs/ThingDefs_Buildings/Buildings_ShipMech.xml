@@ -133,59 +133,6 @@
 		</costList>
 		<designationHotKey>Misc1</designationHotKey>
 	</ThingDef>
-	
-	<!--ThingDef ParentName="BuildingBase">
-		<defName>Ship_Beam_Light_Mech</defName>
-		<label>ship light</label>
-		<thingClass>Building</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-		</graphicData>
-		<statBases>
-			<Flammability>0</Flammability>
-		</statBases>
-		<building>
-			<isEdifice>false</isEdifice>
-			<shipPart>true</shipPart>
-		</building>
-		<rotatable>false</rotatable>
-		<destroyable>false</destroyable>
-		<useHitPoints>false</useHitPoints>
-		<selectable>false</selectable>
-		<neverMultiSelect>true</neverMultiSelect>
-		<description>Integrated lighting attached to a ship's hull.</description>
-		<altitudeLayer>BuildingOnTop</altitudeLayer>
-		<comps>
-			<li Class="CompProperties_ShipLight">
-				<lightGraphic>
-					<texPath>Things/Building/Ship/ShipWallLightMech</texPath>
-					<graphicClass>Graphic_Multi</graphicClass>
-					<drawSize>1</drawSize>
-					<shaderType>Cutout</shaderType>
-				</lightGraphic>
-				<sunLightGraphic>
-					<texPath>Things/Building/Ship/ShipSunLight</texPath>
-					<graphicClass>Graphic_Multi</graphicClass>
-					<drawSize>1</drawSize>
-					<shaderType>Cutout</shaderType>
-				</sunLightGraphic>
-				<lightRadius>14</lightRadius>
-				<overlightRadius>14</overlightRadius>
-			</li>
-			<li Class="CompProperties_Power">
-				<compClass>CompSoSPowerTrader</compClass>
-				<basePowerConsumption>15</basePowerConsumption>
-			</li>
-		    <li Class="CompProperties_Schedule">
-			  <compClass>CompSoSSchedule</compClass>
-			  <startTime>0.25</startTime>
-			  <endTime>0.8</endTime>
-			  <offMessage>Off for plant resting period</offMessage>
-		    </li>
-		</comps>
-		<tickerType>Rare</tickerType>
-	</ThingDef-->
 	<!-- corners -->
 	<ThingDef ParentName="ShipCornerBase" Name="ShipCornerMech" Abstract="True">
 		<designatorDropdown>Ship_Beams_Mech</designatorDropdown>
@@ -619,7 +566,7 @@
 		<fillPercent>0.0</fillPercent>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 	</ThingDef>
-	<!-- obsolete -->
+	<!-- obsolete >
 	<ThingDef ParentName="BuildingShipHullBase">
 		<defName>ShipInside_PassiveCoolerMechanoid</defName>
 		<label>mechanoid ship radiator</label>
@@ -668,7 +615,7 @@
 			<li>PlaceWorker_Radiator</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<!--comps>
+		<comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>150</basePowerConsumption>
@@ -693,7 +640,7 @@
 			</li>
 			<li Class="CompProperties_ShipHeat">
 			</li>
-		</comps-->
+		</comps>
 		<designationHotKey>Misc2</designationHotKey>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<building>
@@ -701,5 +648,5 @@
 				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
 			</blueprintGraphicData>
 		</building>
-	</ThingDef>
+	</ThingDef-->
 </Defs>

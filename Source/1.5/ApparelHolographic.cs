@@ -8,16 +8,16 @@ using Verse;
 
 namespace RimWorld
 {
-    class ApparelHolographic : Apparel
-    {
-        public ThingDef apparelToMimic;
+	class ApparelHolographic : Apparel
+	{
+		public ThingDef apparelToMimic;
 
-        public override void ExposeData()
-        {
-            base.ExposeData();
-            Scribe_Defs.Look<ThingDef>(ref apparelToMimic, "apparelToMimic");
-        }
+		public override void ExposeData()
+		{
+			base.ExposeData();
+			Scribe_Defs.Look<ThingDef>(ref apparelToMimic, "apparelToMimic");
+		}
 
-        public override Color DrawColor => (Wearer != null ? Wearer.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramColor : base.DrawColor);
-    }
+		public override Color DrawColor => (Wearer != null ? Wearer.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.TryGetComp<CompBuildingConsciousness>().HologramColor : base.DrawColor);
+	}
 }

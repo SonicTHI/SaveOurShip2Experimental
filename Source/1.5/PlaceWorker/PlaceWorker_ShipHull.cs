@@ -14,19 +14,19 @@ namespace RimWorld
 			{
 				if (vec.Fogged(map) || map.roofGrid.RoofAt(loc) == RoofDefOf.RoofRockThick)
 					return false;
-                foreach (Thing t in vec.GetThingList(map))
-                {
-                    if (t is Building b)
-                    {
-                        if (b is Building_SteamGeyser || (b.TryGetComp<CompSoShipPart>()?.Props.isHardpoint ?? false))
-                            return false;
-                    }
-                    else if (t is Blueprint_Build) //td no idea why this cant be checked for def.shipPart, etc.
-                    {
-                        return false;
-                    }
-                }
-            }
+				foreach (Thing t in vec.GetThingList(map))
+				{
+					if (t is Building b)
+					{
+						if (b is Building_SteamGeyser || (b.TryGetComp<CompSoShipPart>()?.Props.isHardpoint ?? false))
+							return false;
+					}
+					else if (t is Blueprint_Build) //td no idea why this cant be checked for def.shipPart, etc.
+					{
+						return false;
+					}
+				}
+			}
 			return true;
 			/*
 			Room room = loc.GetRoom(map);

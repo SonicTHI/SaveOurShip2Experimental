@@ -8,11 +8,11 @@ using Verse;
 
 namespace RimWorld
 {
-    class ThoughtWorker_IsArchotechSpore : ThoughtWorker
+	class ThoughtWorker_IsArchotechSpore : ThoughtWorker
 	{
 		protected override ThoughtState CurrentSocialStateInternal(Pawn p, Pawn other)
 		{
 			return other.health.hediffSet.GetFirstHediffOfDef(ResourceBank.HediffDefOf.SoSHologramArchotech)!=null;
 		}
-    }
+	}
 }

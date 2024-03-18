@@ -8,8 +8,8 @@ using Verse;
 
 namespace RimWorld
 {
-    class MechaniteFire : Fire
-    {
+	class MechaniteFire : Fire
+	{
 		int lastDamageTick = Find.TickManager.TicksGame;
 
 		public override string Label
@@ -59,11 +59,11 @@ namespace RimWorld
 			}
 		}
 
-        public override void Tick()
-        {
-            base.Tick();
+		public override void Tick()
+		{
+			base.Tick();
 			if (Find.TickManager.TicksGame > lastDamageTick + 600)
 				Destroy();
-        }
-    }
+		}
+	}
 }

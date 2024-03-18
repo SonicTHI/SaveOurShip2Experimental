@@ -9,8 +9,8 @@ using Verse.AI;
 
 namespace RimWorld
 {
-    class JobDriver_Holodeck : JobDriver_WatchTelevision
-    {
+	class JobDriver_Holodeck : JobDriver_WatchTelevision
+	{
 
 		protected override IEnumerable<Toil> MakeNewToils()
 		{
@@ -19,9 +19,9 @@ namespace RimWorld
 			getToHolodeck.AddFinishAction(delegate
 			{
 				if(TargetA.Thing.TryGetComp<CompHolodeck>().CurSkill==null||(pawn.skills.skills.Where(rec=>rec.def==TargetA.Thing.TryGetComp<CompHolodeck>().CurSkill).FirstOrDefault().TotallyDisabled))
-                {
+				{
 					TargetA.Thing.TryGetComp<CompHolodeck>().StartHolodeck(pawn);
-                }
+				}
 			});
 			yield return getToHolodeck;
 			Toil watch = new Toil();
@@ -39,9 +39,9 @@ namespace RimWorld
 				if(pawn.Map.reservationManager.ReservedBy(TargetA,pawn))
 					pawn.Map.reservationManager.Release(TargetA, pawn, job);
 				if (!pawn.Map.reservationManager.AllReservedThings().Contains(TargetA.Thing))
-                {
+				{
 					TargetA.Thing.TryGetComp<CompHolodeck>().StopHolodeck();
-                }
+				}
 			});
 			watch.defaultCompleteMode = ToilCompleteMode.Delay;
 			watch.defaultDuration = job.def.joyDuration;
@@ -62,20 +62,20 @@ namespace RimWorld
 			if (TargetThingA == null)
 				return;
 			if(pawn.HashOffsetTicks() % 69 == 0)
-            {
+			{
 				IntVec3 newCell = new IntVec3(Rand.RangeInclusive(-3, 3), 0, Rand.RangeInclusive(-3, 3));
 				IntVec3 dist = pawn.Position + newCell - TargetLocA;
 				dist.x = Math.Abs(dist.x);
 				dist.z = Math.Abs(dist.z);
 				if(TargetA.Thing.def.building!=null && dist.x<=TargetA.Thing.def.building.watchBuildingStandRectWidth/2 && dist.z<=TargetA.Thing.def.building.watchBuildingStandRectWidth/2)
-                {
+				{
 					if (RegionAndRoomQuery.RoomAt(pawn.Position+newCell,pawn.Map)==TargetA.Thing.GetRoom() && pawn.CanReach(pawn.Position + newCell, PathEndMode.OnCell, Danger.None))
 					{
 						pawn.pather.StartPath(pawn.Position + newCell, PathEndMode.OnCell);
 						pawn.rotationTracker.FaceCell(pawn.Position + newCell);
 					}
 				}
-            }
+			}
 			if (pawn.needs != null && pawn.needs.comfort != null)
 			{
 				pawn.needs.comfort.ComfortUsed(0.5f);
@@ -85,5 +85,5 @@ namespace RimWorld
 				pawn.skills.GetSkill(deck.CurSkill).Learn(job.def.joyXpPerTick*TargetThingA.GetStatValue(StatDefOf.JoyGainFactor));
 			JoyUtility.JoyTickCheckEnd(pawn, JoyTickFullJoyAction.EndJob, 1f, (Building)TargetThingA);
 		}
-    }
+	}
 }

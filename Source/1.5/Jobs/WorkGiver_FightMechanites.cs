@@ -9,7 +9,7 @@ using Verse.AI;
 
 namespace RimWorld
 {
-    class WorkGiver_FightMechanites : WorkGiver_Scanner
+	class WorkGiver_FightMechanites : WorkGiver_Scanner
 	{
 		private const int NearbyPawnRadius = 15;
 

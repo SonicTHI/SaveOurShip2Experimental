@@ -7,13 +7,13 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompProperties_ArchoHullConversion : CompProperties
-    {
-        public SimpleCurve radiusPerDayCurve;
+	class CompProperties_ArchoHullConversion : CompProperties
+	{
+		public SimpleCurve radiusPerDayCurve;
 
-        public CompProperties_ArchoHullConversion()
-        {
-            compClass = typeof(CompArchoHullConversion);
-        }
-    }
+		public CompProperties_ArchoHullConversion()
+		{
+			compClass = typeof(CompArchoHullConversion);
+		}
+	}
 }

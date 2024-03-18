@@ -12,10 +12,10 @@ namespace RimWorld
 		public bool takeOff = false;
 		public bool energy = false;
 		public bool reactionless = false;
-        public SoundDef soundWorking;
-        public SoundDef soundStart;
-        public SoundDef soundEnd;
-        public CompProperties_EngineTrail()
+		public SoundDef soundWorking;
+		public SoundDef soundStart;
+		public SoundDef soundEnd;
+		public CompProperties_EngineTrail()
 		{
 			this.compClass = typeof(CompEngineTrail);
 		}

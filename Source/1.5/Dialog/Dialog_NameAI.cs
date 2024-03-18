@@ -7,24 +7,24 @@ using RimWorld;
 
 namespace SaveOurShip2
 {
-    public class Dialog_NameAI : Dialog_RenameShip
-    {
-        private CompBuildingConsciousness AI;
+	public class Dialog_NameAI : Dialog_RenameShip
+	{
+		private CompBuildingConsciousness AI;
 
-        public Dialog_NameAI(CompBuildingConsciousness AI)
-        {
-            this.AI = AI;
-            curName = AI.AIName;
-        }
+		public Dialog_NameAI(CompBuildingConsciousness AI)
+		{
+			this.AI = AI;
+			curName = AI.AIName;
+		}
 
-        protected override void SetName(string name)
-        {
-            if (name == AI.AIName || string.IsNullOrEmpty(name))
-                return;
+		protected override void SetName(string name)
+		{
+			if (name == AI.AIName || string.IsNullOrEmpty(name))
+				return;
 
-            AI.AIName = name;
-            if (AI.Consciousness != null)
-                AI.Consciousness.Name = new NameTriple("", name, "");
-        }
-    }
+			AI.AIName = name;
+			if (AI.Consciousness != null)
+				AI.Consciousness.Name = new NameTriple("", name, "");
+		}
+	}
 }

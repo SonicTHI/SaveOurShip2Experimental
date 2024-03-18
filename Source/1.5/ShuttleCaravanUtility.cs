@@ -18,8 +18,8 @@ namespace SaveOurShip2
 			foreach (Pawn p in shuttles) {
 				foreach (Thing t in CaravanInventoryUtility.AllInventoryItems(van)) {
 					if (p.TryGetComp<CompRefuelable> ().Props.fuelFilter.Allows (t.def)) {
-                        List<Thing> theFuels = new List<Thing>();
-                        theFuels.Add(t);
+						List<Thing> theFuels = new List<Thing>();
+						theFuels.Add(t);
 						p.TryGetComp<CompRefuelable> ().Refuel(theFuels);
 						if (p.TryGetComp<CompRefuelable> ().FuelPercentOfMax >= 1)
 							break;
@@ -28,43 +28,43 @@ namespace SaveOurShip2
 			}
 		}
 
-        public static void ActivateMe(Caravan van, List<MinifiedThing> shuttles)
-        {
-            List<MinifiedThing> toRemove = new List<MinifiedThing>();
-            foreach(MinifiedThing p in shuttles)
-            {
-                if (p.InnerThing.TryGetComp<CompRefuelable>() != null)
-                {
-                    foreach (Thing t in CaravanInventoryUtility.AllInventoryItems(van))
-                    {
-                        if (p.InnerThing.TryGetComp<CompRefuelable>().Props.fuelFilter.Allows(t.def))
-                        {
-                            List<Thing> theFuels = new List<Thing>();
-                            theFuels.Add(t);
-                            p.InnerThing.TryGetComp<CompRefuelable>().Refuel(theFuels);
-                            if (p.InnerThing.TryGetComp<CompRefuelable>().FuelPercentOfMax >= 1)
-                                break;
-                        }
-                    }
-                    Pawn pawn = CompBecomePawn.myPawn(p.InnerThing, IntVec3.Zero, (int)p.InnerThing.TryGetComp<CompRefuelable>().Fuel);
-                    Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.KeepForever);
+		public static void ActivateMe(Caravan van, List<MinifiedThing> shuttles)
+		{
+			List<MinifiedThing> toRemove = new List<MinifiedThing>();
+			foreach(MinifiedThing p in shuttles)
+			{
+				if (p.InnerThing.TryGetComp<CompRefuelable>() != null)
+				{
+					foreach (Thing t in CaravanInventoryUtility.AllInventoryItems(van))
+					{
+						if (p.InnerThing.TryGetComp<CompRefuelable>().Props.fuelFilter.Allows(t.def))
+						{
+							List<Thing> theFuels = new List<Thing>();
+							theFuels.Add(t);
+							p.InnerThing.TryGetComp<CompRefuelable>().Refuel(theFuels);
+							if (p.InnerThing.TryGetComp<CompRefuelable>().FuelPercentOfMax >= 1)
+								break;
+						}
+					}
+					Pawn pawn = CompBecomePawn.myPawn(p.InnerThing, IntVec3.Zero, (int)p.InnerThing.TryGetComp<CompRefuelable>().Fuel);
+					Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.KeepForever);
 					pawn.SetFactionDirect(Faction.OfPlayer);
-                    van.AddPawn(pawn, true);
-                }
-                else
-                {
-                    Log.Message("But archotech shuttles aren't supposed to be out yet!"); 
+					van.AddPawn(pawn, true);
+				}
+				else
+				{
+					Log.Message("But archotech shuttles aren't supposed to be out yet!"); 
 					Pawn pawn = CompBecomePawn.myPawn(p.InnerThing, IntVec3.Zero, 0);
 					pawn.SetFactionDirect(Faction.OfPlayer);
 					van.AddPawn(pawn, true);
-                }
-                toRemove.Add(p);
-            }
-            foreach(MinifiedThing p in toRemove)
-            {
-                p.ParentHolder.GetDirectlyHeldThings().Remove(p);
-            }
-        }
+				}
+				toRemove.Add(p);
+			}
+			foreach(MinifiedThing p in toRemove)
+			{
+				p.ParentHolder.GetDirectlyHeldThings().Remove(p);
+			}
+		}
 
 		public static void LaunchMe(Caravan van, float MaxLaunchDistance, bool allFullyFueled)
 		{
@@ -82,15 +82,15 @@ namespace SaveOurShip2
 					{
 						return null;
 					}
-                    if (target.WorldObject != null && (target.WorldObject is SpaceSite || target.WorldObject is MoonBase))
-                    {
-                        return TranslatorFormattedStringExtensions.Translate("MustLaunchFromOrbit");
-                    }
+					if (target.WorldObject != null && (target.WorldObject is SpaceSite || target.WorldObject is MoonBase))
+					{
+						return TranslatorFormattedStringExtensions.Translate("MustLaunchFromOrbit");
+					}
 					int num = Find.WorldGrid.TraversalDistanceBetween(tile, target.Tile);
 					if (num <= MaxLaunchDistance || (target.WorldObject != null && target.WorldObject.def == ResourceBank.WorldObjectDefOf.ShipOrbiting))
 					{
-                        if(allFullyFueled)
-                            myMaxLaunchDistance = 42069;
+						if(allFullyFueled)
+							myMaxLaunchDistance = 42069;
 						return null;
 					}
 					return TranslatorFormattedStringExtensions.Translate("TransportPodNotEnoughFuel");
@@ -113,27 +113,27 @@ namespace SaveOurShip2
 					}), MessageTypeDefOf.RejectInput);
 				return false;
 			}
-            bool flag;
-            MapParent mapParent = target.WorldObject as MapParent;
+			bool flag;
+			MapParent mapParent = target.WorldObject as MapParent;
 			if (mapParent != null && mapParent.HasMap)
 			{
-                if (mapParent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
-                {
-                    if (myMaxLaunchDistance < 42069)
-                    {
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToOrbit"), MessageTypeDefOf.RejectInput);
-                        return false;
-                    }
-                    IntVec3 shuttleBayPos = CompShuttleLaunchable.FirstShuttleBayOpen(mapParent.Map, myVan.pawns.InnerListForReading.Where(pawn=>pawn.TryGetComp<CompBecomeBuilding>()!=null).FirstOrDefault().TryGetComp<CompBecomeBuilding>().Props.buildingDef);
-                    if (shuttleBayPos == IntVec3.Zero)
-                    {
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("NeedOpenShuttleBay"), MessageTypeDefOf.RejectInput);
-                        return false;
-                    }
-                    TryLaunch(mapParent, new TransportPodsArrivalAction_LandInSpecificCell(mapParent, shuttleBayPos), myVan, true);
-                    return true;
-                }
-                Map map = mapParent.Map;
+				if (mapParent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
+				{
+					if (myMaxLaunchDistance < 42069)
+					{
+						Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleMustBeFueledToOrbit"), MessageTypeDefOf.RejectInput);
+						return false;
+					}
+					IntVec3 shuttleBayPos = CompShuttleLaunchable.FirstShuttleBayOpen(mapParent.Map, myVan.pawns.InnerListForReading.Where(pawn=>pawn.TryGetComp<CompBecomeBuilding>()!=null).FirstOrDefault().TryGetComp<CompBecomeBuilding>().Props.buildingDef);
+					if (shuttleBayPos == IntVec3.Zero)
+					{
+						Messages.Message(TranslatorFormattedStringExtensions.Translate("NeedOpenShuttleBay"), MessageTypeDefOf.RejectInput);
+						return false;
+					}
+					TryLaunch(mapParent, new TransportPodsArrivalAction_LandInSpecificCell(mapParent, shuttleBayPos), myVan, true);
+					return true;
+				}
+				Map map = mapParent.Map;
 				CameraJumper.TryHideWorld ();
 				Current.Game.CurrentMap = map;
 				Targeter arg_13B_0 = Find.Targeter;
@@ -159,44 +159,44 @@ namespace SaveOurShip2
 							//CameraJumper.TryHideWorld();
 						}, MenuOptionPriority.Default, null, null, 0f, null, null));
 				}
-                if (settlement != null && settlement.Attackable)
-                {
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("AttackAndDropAtEdge",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            TryLaunch(target, new TransportPodsArrivalAction_AttackSettlement(settlement, PawnsArrivalModeDefOf.EdgeDrop), myVan, false);
-                            //CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("AttackAndDropInCenter",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            TryLaunch(target, new TransportPodsArrivalAction_AttackSettlement(settlement, PawnsArrivalModeDefOf.CenterDrop), myVan, false);
-                            //CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
-                }
-                else if (mapParent is Site)
-                {
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("DropAtEdge",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            TryLaunch(target, new TransportPodsArrivalAction_VisitSite((Site)mapParent, PawnsArrivalModeDefOf.EdgeDrop), myVan, false);
-                            //CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
-                    list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("DropInCenter",new NamedArgument[]
-                        {
-                            target.WorldObject.Label
-                        }), delegate
-                        {
-                            TryLaunch(target, new TransportPodsArrivalAction_VisitSite((Site)mapParent, PawnsArrivalModeDefOf.CenterDrop), myVan, false);
-                            //CameraJumper.TryHideWorld();
-                        }, MenuOptionPriority.Default, null, null, 0f, null, null));
-                }
+				if (settlement != null && settlement.Attackable)
+				{
+					list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("AttackAndDropAtEdge",new NamedArgument[]
+						{
+							target.WorldObject.Label
+						}), delegate
+						{
+							TryLaunch(target, new TransportPodsArrivalAction_AttackSettlement(settlement, PawnsArrivalModeDefOf.EdgeDrop), myVan, false);
+							//CameraJumper.TryHideWorld();
+						}, MenuOptionPriority.Default, null, null, 0f, null, null));
+					list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("AttackAndDropInCenter",new NamedArgument[]
+						{
+							target.WorldObject.Label
+						}), delegate
+						{
+							TryLaunch(target, new TransportPodsArrivalAction_AttackSettlement(settlement, PawnsArrivalModeDefOf.CenterDrop), myVan, false);
+							//CameraJumper.TryHideWorld();
+						}, MenuOptionPriority.Default, null, null, 0f, null, null));
+				}
+				else if (mapParent is Site)
+				{
+					list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("DropAtEdge",new NamedArgument[]
+						{
+							target.WorldObject.Label
+						}), delegate
+						{
+							TryLaunch(target, new TransportPodsArrivalAction_VisitSite((Site)mapParent, PawnsArrivalModeDefOf.EdgeDrop), myVan, false);
+							//CameraJumper.TryHideWorld();
+						}, MenuOptionPriority.Default, null, null, 0f, null, null));
+					list.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("DropInCenter",new NamedArgument[]
+						{
+							target.WorldObject.Label
+						}), delegate
+						{
+							TryLaunch(target, new TransportPodsArrivalAction_VisitSite((Site)mapParent, PawnsArrivalModeDefOf.CenterDrop), myVan, false);
+							//CameraJumper.TryHideWorld();
+						}, MenuOptionPriority.Default, null, null, 0f, null, null));
+				}
 				if (list.Any<FloatMenuOption>())
 				{
 					Find.WorldTargeter.closeWorldTabWhenFinished = false;
@@ -235,9 +235,9 @@ namespace SaveOurShip2
 			ActiveDropPodInfo loadPod = null;
 			foreach (Pawn p in van.pawns) {
 				if (p.TryGetComp<CompBecomeBuilding> () != null) {
-                    float amount = p.TryGetComp<CompRefuelable>().Fuel-1;
-                    if(!spaceship)
-                        amount = p.TryGetComp<CompBecomeBuilding> ().Props.fuelPerTile * num;
+					float amount = p.TryGetComp<CompRefuelable>().Fuel-1;
+					if(!spaceship)
+						amount = p.TryGetComp<CompBecomeBuilding> ().Props.fuelPerTile * num;
 					p.TryGetComp<CompRefuelable> ().ConsumeFuel (amount);
 					ActiveDropPodInfo thePod = new ActiveDropPodInfo ();
 					if (!gotStuff) {
@@ -245,7 +245,7 @@ namespace SaveOurShip2
 						gotStuff = true;
 						loadPod = thePod;
 					}
-                    p.SetFaction(Faction.OfPlayer);
+					p.SetFaction(Faction.OfPlayer);
 					travelingTransportPods.AddPod (thePod, true);
 				}
 			}

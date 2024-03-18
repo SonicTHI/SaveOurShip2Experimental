@@ -11,24 +11,24 @@ using Verse;
 namespace RimWorld
 {
 	class CompArchoHullConversion : ThingComp
-    {
-        public bool OptimizeMatter = true;
-        private int ticksToConversion;
-        private int age;
-        public float AgeDays => (float)age / 60000f;
+	{
+		public bool OptimizeMatter = true;
+		private int ticksToConversion;
+		private int age;
+		public float AgeDays => (float)age / 60000f;
 
-        public ShipHeatMapComp mapComp;
-        ResearchProjectDef OptimizationProject = ResearchProjectDef.Named("ArchotechHullConversion");
-        Dictionary<ThingDef, ThingDef> Conversions = new Dictionary<ThingDef, ThingDef>();
-        protected CompProperties_ArchoHullConversion Props => (CompProperties_ArchoHullConversion)props;
-        public float CurrentRadius => Props.radiusPerDayCurve.Evaluate(AgeDays);
+		public ShipHeatMapComp mapComp;
+		ResearchProjectDef OptimizationProject = ResearchProjectDef.Named("ArchotechHullConversion");
+		Dictionary<ThingDef, ThingDef> Conversions = new Dictionary<ThingDef, ThingDef>();
+		protected CompProperties_ArchoHullConversion Props => (CompProperties_ArchoHullConversion)props;
+		public float CurrentRadius => Props.radiusPerDayCurve.Evaluate(AgeDays);
 
-        public override void PostExposeData()
+		public override void PostExposeData()
 		{
 			Scribe_Values.Look(ref age, "age", 0);
 			Scribe_Values.Look(ref ticksToConversion, "ticksToConversion", 0);
 			Scribe_Values.Look(ref OptimizeMatter, "optimize", true);
-        }
+		}
 
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
@@ -57,8 +57,8 @@ namespace RimWorld
 			Conversions.Add(ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("ShipInside_PassiveVentArchotech"));
 			Conversions.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockArchotech"));
 			Conversions.Add(ThingDef.Named("ShipHullTileMech"), ThingDef.Named("ShipHullTileArchotech"));
-            mapComp = parent?.Map?.GetComponent<ShipHeatMapComp>();
-        }
+			mapComp = parent?.Map?.GetComponent<ShipHeatMapComp>();
+		}
 
 		public override void CompTick()
 		{
@@ -84,15 +84,15 @@ namespace RimWorld
 					ticksToConversion = 1;
 					num3 = GenMath.RoundRandom(1f / num2);
 				}
-                for (int i = 0; i < num3; i++)
+				for (int i = 0; i < num3; i++)
 				{
 					ConvertHullTile(currentRadius);
-                }
-            }
+				}
+			}
 		}
 
 		private bool ConvertHullTile(float radius)
-        {
+		{
 			IntVec3 c = parent.Position + (Rand.InsideUnitCircleVec3 * radius).ToIntVec3();
 			if (!c.InBounds(parent.Map) || mapComp.ShipIndexOnVec(parent.Position) != mapComp.ShipIndexOnVec(c))
 			{
@@ -101,17 +101,17 @@ namespace RimWorld
 			List<Thing> toDestroy = new List<Thing>();
 			List<Thing> toSpawn = new List<Thing>();
 			foreach(Thing t in c.GetThingList(parent.Map))
-            {
+			{
 				if (Conversions.ContainsKey(t.def))
-                {
+				{
 					Thing replacement = ThingMaker.MakeThing(Conversions[t.def]);
 					replacement.Rotation = t.Rotation;
 					replacement.Position = t.Position;
 					replacement.SetFaction(Faction.OfPlayer);
 					toDestroy.Add(t);
 					toSpawn.Add(replacement);
-                }
-            }
+				}
+			}
 			if (toDestroy.Count > 0)
 			{
 				TerrainDef terrain = parent.Map.terrainGrid.TerrainAt(c);
@@ -127,13 +127,13 @@ namespace RimWorld
 				}
 				if (terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipMech && terrain!= ResourceBank.TerrainDefOf.ShipWreckageTerrain && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam)
 					parent.Map.terrainGrid.SetTerrain(c, terrain);
-                return true;
-            }
-            return false;
-        }
+				return true;
+			}
+			return false;
+		}
 
-        public override IEnumerable<Gizmo> CompGetGizmosExtra()
-        {
+		public override IEnumerable<Gizmo> CompGetGizmosExtra()
+		{
 			List<Gizmo> newList = new List<Gizmo>();
 			newList.AddRange(base.CompGetGizmosExtra());
 			if (OptimizationProject.IsFinished)
@@ -151,6 +151,6 @@ namespace RimWorld
 				});
 			}
 			return newList;
-        }
-    }
+		}
+	}
 }

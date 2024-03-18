@@ -6,7 +6,7 @@ using Verse;
 
 namespace RimWorld.QuestGen
 {
-    class QuestNode_ArchotechSpawn : QuestNode
+	class QuestNode_ArchotechSpawn : QuestNode
 	{
 		[NoTranslate]
 		public SlateRef<string> inSignal;
@@ -29,7 +29,7 @@ namespace RimWorld.QuestGen
 				dropPods.inSignal = (QuestGenUtility.HardcodedSignalWithQuestID(inSignal.GetValue(slate)) ?? QuestGen.slate.Get<string>("inSignal"));
 				
 				dropPods.mapParent = QuestGen.slate.Get<Map>("map").Parent;
-                dropPods.items.AddRange(contents.GetValue(slate));
+				dropPods.items.AddRange(contents.GetValue(slate));
 
 				QuestGen.quest.AddPart(dropPods);
 			}

@@ -8,15 +8,15 @@ using Verse;
 
 namespace RimWorld
 {
-    //dep
-    /*class CompProperties_HologramGlower : CompProperties
-    {
-        public Color glowColor;
-        public float glowRadius;
+	//dep
+	/*class CompProperties_HologramGlower : CompProperties
+	{
+		public Color glowColor;
+		public float glowRadius;
 
-        public CompProperties_HologramGlower()
-        {
-            this.compClass = typeof(CompHologramGlower);
-        }
-    }*/
+		public CompProperties_HologramGlower()
+		{
+			this.compClass = typeof(CompHologramGlower);
+		}
+	}*/
 }

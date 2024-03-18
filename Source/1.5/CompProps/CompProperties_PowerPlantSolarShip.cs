@@ -7,13 +7,13 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompProperties_PowerPlantSolarShip : CompProperties_Power
-    {
-        public float bonusPower;
+	class CompProperties_PowerPlantSolarShip : CompProperties_Power
+	{
+		public float bonusPower;
 
-        public CompProperties_PowerPlantSolarShip()
-        {
-            this.compClass = typeof(CompPowerPlantSolarShip);
-        }
-    }
+		public CompProperties_PowerPlantSolarShip()
+		{
+			this.compClass = typeof(CompPowerPlantSolarShip);
+		}
+	}
 }

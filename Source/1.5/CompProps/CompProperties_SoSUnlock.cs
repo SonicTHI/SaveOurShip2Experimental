@@ -5,7 +5,7 @@ namespace RimWorld
 {
 	public class CompProperties_SoSUnlock : CompProperties
 	{
-        public string unlock;
+		public string unlock;
 
 		public CompProperties_SoSUnlock()
 		{

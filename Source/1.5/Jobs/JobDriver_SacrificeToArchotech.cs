@@ -10,8 +10,8 @@ using Verse.Sound;
 
 namespace RimWorld
 {
-    public class JobDriver_SacrificeToArchotech : JobDriver
-    {
+	public class JobDriver_SacrificeToArchotech : JobDriver
+	{
 		private const TargetIndex TakeeIndex = TargetIndex.A;
 
 		private const TargetIndex BedIndex = TargetIndex.B;

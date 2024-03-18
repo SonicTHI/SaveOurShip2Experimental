@@ -6,12 +6,12 @@ using Verse;
 
 namespace RimWorld
 {
-    public class CompProperties_BlackBoxAI : CompProperties
-    {
+	public class CompProperties_BlackBoxAI : CompProperties
+	{
 
-        public CompProperties_BlackBoxAI()
-        {
-            this.compClass = typeof(CompBlackBoxAI);
-        }
-    }
+		public CompProperties_BlackBoxAI()
+		{
+			this.compClass = typeof(CompBlackBoxAI);
+		}
+	}
 }

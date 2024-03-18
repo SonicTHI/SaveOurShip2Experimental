@@ -6,14 +6,14 @@ using Verse;
 
 namespace RimWorld
 {
-    public class CompProperties_ChangeableProjectilePlural : CompProperties
-    {
-        public int maxTorpedoes;
-        public int tubes;
+	public class CompProperties_ChangeableProjectilePlural : CompProperties
+	{
+		public int maxTorpedoes;
+		public int tubes;
 
-        public CompProperties_ChangeableProjectilePlural()
-        {
-            compClass = typeof(CompChangeableProjectilePlural);
-        }
-    }
+		public CompProperties_ChangeableProjectilePlural()
+		{
+			compClass = typeof(CompChangeableProjectilePlural);
+		}
+	}
 }

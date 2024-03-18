@@ -10,12 +10,12 @@ using Verse.Sound;
 
 namespace RimWorld
 {
-    //Deprecated feature of holograms
-    /*class CompHologramRelay : ThingComp
-    {
-        public override void PostSpawnSetup(bool respawningAfterLoad)
-        {
-            parent.Destroy();
-        }
-    }*/
+	//Deprecated feature of holograms
+	/*class CompHologramRelay : ThingComp
+	{
+		public override void PostSpawnSetup(bool respawningAfterLoad)
+		{
+			parent.Destroy();
+		}
+	}*/
 }

@@ -20,7 +20,7 @@ namespace RimWorld
 				GenSpawn.Spawn(obj, base.Position, map, Rot4.North);
 			}
 			else
-            {
+			{
 				fire.fireSize += 0.2f;
 				if (fire.fireSize > 1.75f)
 					fire.fireSize = 1.75f;

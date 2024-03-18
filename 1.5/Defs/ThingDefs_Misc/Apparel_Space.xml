@@ -457,10 +457,14 @@
 		<thingSetMakerTags>
 		</thingSetMakerTags>
 		<comps>
-			<!--li Class="CompProperties_Reloadable">
+			<li Class="CompProperties_ApparelReloadable">
 				<maxCharges>1</maxCharges>
 				<destroyOnEmpty>true</destroyOnEmpty>
-			</li-->
+				<!--soundReload>Standard_Reload</soundReload>
+				<hotKey>Misc4</hotKey>
+				<chargeNoun>shield</chargeNoun>
+				<displayGizmoWhileUndrafted>false</displayGizmoWhileUndrafted-->
+			</li>
 		</comps>
 		<verbs>
 			<li>

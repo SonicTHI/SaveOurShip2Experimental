@@ -6,11 +6,11 @@ using Verse;
 
 namespace RimWorld
 {
-    public class HediffCompProperties_OnlyInSpace : HediffCompProperties
-    {
-        public HediffCompProperties_OnlyInSpace()
-        {
-            compClass = typeof(HediffCompOnlyInSpace);
-        }
-    }
+	public class HediffCompProperties_OnlyInSpace : HediffCompProperties
+	{
+		public HediffCompProperties_OnlyInSpace()
+		{
+			compClass = typeof(HediffCompOnlyInSpace);
+		}
+	}
 }

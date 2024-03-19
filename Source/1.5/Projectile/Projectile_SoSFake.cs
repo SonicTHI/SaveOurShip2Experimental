@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace RimWorld
 {
-    class Projectile_SoSFake : Bullet
-    {
+	class Projectile_SoSFake : Bullet
+	{
 
-    }
+	}
 }

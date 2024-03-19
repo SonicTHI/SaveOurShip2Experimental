@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace RimWorld
@@ -14,7 +13,7 @@ namespace RimWorld
 
 		public CompProperties_ArcholifeCosmetics()
 		{
-			this.compClass = typeof(CompArcholifeCosmetics);
+			compClass = typeof(CompArcholifeCosmetics);
 		}
 
 		public override void ResolveReferences(ThingDef parentDef)

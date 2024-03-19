@@ -1,7 +1,7 @@
 ﻿<Defs>
 	<ThingDef ParentName="BaseWeapon" Name="BaseShipArtilleryWeapon" Abstract="True">
 		<destroyOnDrop>True</destroyOnDrop>
-		<drawerType>MapMeshAndRealTime</drawerType>
+		<drawerType>RealtimeOnly</drawerType>
 		<canGenerateDefaultDesignator>false</canGenerateDefaultDesignator>
 		<tradeability>None</tradeability>
 		<useHitPoints>false</useHitPoints>
@@ -568,6 +568,11 @@
 		<designatorDropdown>ShipTurrets_AC</designatorDropdown>
 		<description>A starship turret that rapidly accelerates uranium slugs. Requires ammunition, but costs zero energy and very little heat to fire. Only useful at close range. Can be set to intercept torpedoes rather than firing at the enemy ship.\n\nMust be connected to a pilot/tactical console or AI core via the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -746,6 +751,11 @@
 			<drawSize>(3,3)</drawSize>
 		</graphicData>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -901,6 +911,11 @@
 			<drawSize>(5,5)</drawSize>
 		</graphicData>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -1059,6 +1074,11 @@
 			<texPath>Things/Building/Ship/HardpointRed</texPath>
 		</graphicData>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -1239,6 +1259,11 @@
 			<drawSize>(3,3)</drawSize>
 		</graphicData>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -1356,6 +1381,11 @@
 			<texPath>Things/Building/Ship/HardpointGreen</texPath>
 		</graphicData>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -1522,6 +1552,11 @@
 			<drawSize>(3,3)</drawSize>
 		</graphicData>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -1657,6 +1692,11 @@
 		<designatorDropdown>ShipTurrets_Kinetic</designatorDropdown>
 		<description>A starship turret that accelerates metal slugs to relativistic speeds. Can hit targets at long range. Capable of ship ground defense.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a pilot/tactical console or AI core via the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -1811,6 +1851,11 @@
 		<designatorDropdown>ShipTurrets_Kinetic</designatorDropdown>
 		<description>A large turret that accelerates metal slugs to relativistic speeds. Capable of inaccurate fire at very long range.\n\nCan be safely placed in rooms as it sticks out on top of the ship.\nMust be connected to a pilot/tactical console or AI core via the heat network.\nRequires sufficient stored power and heat capacity to function.</description>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -2069,6 +2114,11 @@
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_SoShipPart">
 				<hermetic>true</hermetic>
 			</li>
@@ -2173,6 +2223,11 @@
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_SoShipPart">
 				<hermetic>true</hermetic>
 			</li>
@@ -2297,6 +2352,11 @@
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_SoShipPart">
 				<hermetic>true</hermetic>
 			</li>
@@ -2475,6 +2535,11 @@
 		</graphicData>
 		<size>(3,3)</size>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -2512,6 +2577,11 @@
 		</graphicData>
 		<size>(6,3)</size>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
@@ -2549,6 +2619,11 @@
 		</graphicData>
 		<size>(6,6)</size>
 		<comps>
+			<li Class="CompProperties_Stunnable">
+				<affectedDamageDefs>
+					<li>EMP</li>
+				</affectedDamageDefs>
+			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>

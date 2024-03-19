@@ -7,12 +7,12 @@ using SaveOurShip2;
 
 namespace RimWorld.Planet
 {
-    /// <summary>
-    /// Adds a countdown to set ShipMapState.burnUpSet. Once set shipWO removes map when possibe.
-    /// </summary>
-    public class TimedForcedExitShip : WorldObjectComp
+	/// <summary>
+	/// Adds a countdown to set ShipMapState.burnUpSet. Once set shipWO removes map when possibe.
+	/// </summary>
+	public class TimedForcedExitShip : WorldObjectComp
 	{
-        public int ticksLeftToForceExitAndRemoveMap = -1;
+		public int ticksLeftToForceExitAndRemoveMap = -1;
 		public bool ForceExitAndRemoveMapCountdownActive
 		{
 			get
@@ -90,7 +90,7 @@ namespace RimWorld.Planet
 		{
 			if (mapParent.Map.IsSpace())
 			{
-                mapParent.Map.GetComponent<ShipHeatMapComp>().ShipMapState = ShipMapState.burnUpSet;
+				mapParent.Map.GetComponent<ShipHeatMapComp>().ShipMapState = ShipMapState.burnUpSet;
 			}
 		}
 	}

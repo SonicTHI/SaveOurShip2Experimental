@@ -7,18 +7,18 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompHologramRemover : ThingComp
-    {
-        public override void PostSpawnSetup(bool respawningAfterLoad)
-        {
-            if (parent is Pawn p)
-            {
-                p.kindDef = PawnKindDefOf.Colonist;
-                p.def = ThingDefOf.Human;
-                p.ageTracker.RecalculateLifeStageIndex();
-            }
-            else
-                parent.Destroy();
-        }
-    }
+	class CompHologramRemover : ThingComp
+	{
+		public override void PostSpawnSetup(bool respawningAfterLoad)
+		{
+			if (parent is Pawn p)
+			{
+				p.kindDef = PawnKindDefOf.Colonist;
+				p.def = ThingDefOf.Human;
+				p.ageTracker.RecalculateLifeStageIndex();
+			}
+			else
+				parent.Destroy();
+		}
+	}
 }

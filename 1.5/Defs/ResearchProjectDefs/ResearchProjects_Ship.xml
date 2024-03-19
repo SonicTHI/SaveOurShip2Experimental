@@ -13,7 +13,18 @@
 		<researchViewY>2.90</researchViewY>
 		<discoveredLetterTitle>About: Launching the ship</discoveredLetterTitle>
 		<discoveredLetterText>Escaping from this planet - it would be freedom at last, and maybe a return home.\n\nBut before you can even consider interstellar spaceflight, you'll need to reach orbit. The minimum requirements for a spaceworthy craft are a rocket engine, a ship bridge and basic sensors. To survive in space, your colonists will also need either a life-support system or EVA suits.\n\nThe amount of chemfuel required to launch a ship into orbit depends on its size. Larger ships may need multiple engines.</discoveredLetterText>
-		<discoveredLetterMinDifficulty>1</discoveredLetterMinDifficulty>
+		<discoveredLetterDisabledWhen>
+			<bigThreatsDisabled>true</bigThreatsDisabled>
+		</discoveredLetterDisabledWhen>
+		<generalRules>
+			<rulesStrings>
+				<li>subject->starship structural engineering</li>
+				<li>subject_story->recruited starship engineers for a glitterworld fleet</li>
+				<li>subject_story->was a structural designer in an urbworld skyripper district</li>
+				<li>subject_story->harvested shipwrecks in the debris belt of a deadworld</li>
+				<li>subject_gerund->constructing starship structures</li>
+			</rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipReactor</defName>
@@ -212,7 +223,6 @@
 		<researchViewX>5</researchViewX>
 		<researchViewY>0</researchViewY>
 	</ResearchProjectDef>
-
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipCapacitor</defName>
 		<label>capacitor arrays</label>

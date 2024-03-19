@@ -126,6 +126,10 @@
 	<ShipInsideHeatWithPowerDesc>Use power for heating when not enough heat is present in the network.</ShipInsideHeatWithPowerDesc>
 	<SoSPurgeHeat>Emergency heat purge</SoSPurgeHeat>
 	<SoSPurgeHeatDesc>Eject molten silver into space to rapidly lower your ship's stored heat.\n\nThis will cause your shields to drop!</SoSPurgeHeatDesc>
+	<ShipHeatPurge>Vent coolant</ShipHeatPurge>
+	<ShipHeatPurgeDesc>Begin venting coolant from heatsinks. All shields, weapons, and cloaks on this heat network will shut down, and heatsinks will vent heat five times as quickly.\n\nThis process depletes coolant and reduces the overall capacity of the heat network, and cannot be canceled once it has begun. Outside of combat, depleted capacity will slowly recover.</ShipHeatPurgeDesc>
+	<ShipHeatPurgeVenting>Already venting</ShipHeatPurgeVenting>
+	<ShipHeatPurgeNotEnough>Not enough heat in network for purge</ShipHeatPurgeNotEnough>
 	<!-- turret -->
 	<MessageTurretWontFireBecauseNotInShipCombat>Warning: Turret will not fire because you are not in ship combat.</MessageTurretWontFireBecauseNotInShipCombat>
 	<CommandExtractShipTorpedo>Extract torpedoes</CommandExtractShipTorpedo>
@@ -137,7 +141,6 @@
 	<CommandShipTorpedoAllowedDesc>Toggle to prevent or allow firing of this type of torpedo.</CommandShipTorpedoAllowedDesc>
 	<ShipCombatPodDestroyedPlayer>Your shuttle was destroyed by enemy point defense!</ShipCombatPodDestroyedPlayer>
 	<ShipCombatPodDestroyedEnemy>Enemy shuttle was destroyed by your point defense!</ShipCombatPodDestroyedEnemy>
-	
 	<!-- scan -->
 	<ShipInsidescanRegion>Scan</ShipInsidescanRegion>
 	<ShipInsidescanRegionDesc>Reveal an area on the planet's surface.</ShipInsidescanRegionDesc>
@@ -233,30 +236,12 @@
 	<ArchotechNoGiftsUnlocked>No gifts unlocked by research</ArchotechNoGiftsUnlocked>
 	<ArchotechSporeEvolve>Initiate archotech evolution</ArchotechSporeEvolve>
 	<ArchotechSporeEvolveDesc>Evolve your archotech spore into a true archotech, and usher in a new age for this world.\n\nThis will end the game!</ArchotechSporeEvolveDesc>
+	<ArcholifeChangeSkin>Change animal appearance</ArcholifeChangeSkin>
+	<ArcholifeChangeSkinDesc>This creature seems able to change shape at will, but only between a few discrete forms.</ArcholifeChangeSkinDesc>
 	<!-- obsolete -->
 	<SalvageShip>Salvage enemy ship</SalvageShip>
 	<SalvageShipCancel>Abandon enemy ship</SalvageShipCancel>
 	<SalvageShipCancelDesc>Leave the enemy ship behind without salvaging it. Do not do this if any of your crew are still aboard.</SalvageShipCancelDesc>
-	<SoSEmergencyJTFar>Emergency boost (long range)</SoSEmergencyJTFar>
-	<SoSEmergencyJTFarDesc>Use your Johnson-Tanaka drive to immediately reach long range. This costs {0}Wd of energy and will require repairs to the drive.</SoSEmergencyJTFarDesc>
-	<SoSEmergencyJTNear>Emergency boost (close range)</SoSEmergencyJTNear>
-	<SoSEmergencyJTNearDesc>Use your Johnson-Tanaka drive to immediately reach close range. This costs {0}Wd of energy and will require repairs to the drive.</SoSEmergencyJTNearDesc>
-	
-	<ArcholifeChangeSkin>Change animal appearance</ArcholifeChangeSkin>
-	<ArcholifeChangeSkinDesc>This creature seems able to change shape at will, but only between a few discrete forms.</ArcholifeChangeSkinDesc>
-	<ShipWallLight>Toggle lighting</ShipWallLight>
-	<ShipWallLightDesc>Toggle this ship part's integrated lighting system</ShipWallLightDesc>
-	<ShipWallLightRotate>Rotate lighting</ShipWallLightRotate>
-	<ShipWallLightRotateDesc>Rotate this ship part's integrated lighting system</ShipWallLightRotateDesc>
-	<ShipWallLightSun>Sun Mode</ShipWallLightSun>
-	<ShipWallLightSunDesc>Toggle a special high-power lighting mode designed for hydroponics bays</ShipWallLightSunDesc>
-	<ShipWallLightColor>Lighting color</ShipWallLightColor>
-	<ShipWallLightColorDesc>Select a color for this ship part's lighting</ShipWallLightColorDesc>
 	<ShipWallLightDisco>Disco Mode</ShipWallLightDisco>
 	<ShipWallLightDiscoDesc>Set this light to cycle through the color spectrum</ShipWallLightDiscoDesc>
-	<ShipWallLightAdjacency>No adjacent rooms</ShipWallLightAdjacency>
-	<ShipHeatPurge>Vent coolant</ShipHeatPurge>
-	<ShipHeatPurgeDesc>Begin venting coolant from heatsinks. All shields, weapons, and cloaks on this heat network will shut down, and heatsinks will vent heat five times as quickly.\n\nThis process depletes coolant and reduces the overall capacity of the heat network, and cannot be canceled once it has begun. Outside of combat, depleted capacity will slowly recover.</ShipHeatPurgeDesc>
-	<ShipHeatPurgeVenting>Already venting</ShipHeatPurgeVenting>
-	<ShipHeatPurgeNotEnough>Not enough heat in network for purge</ShipHeatPurgeNotEnough>
 </LanguageData>

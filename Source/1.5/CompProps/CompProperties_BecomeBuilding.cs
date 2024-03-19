@@ -7,7 +7,7 @@ namespace RimWorld
 	{
 		public ThingDef buildingDef;
 		public float fuelPerTile;
-        public ThingDef skyfaller;
+		public ThingDef skyfaller;
 
 		public CompProperties_BecomeBuilding ()
 		{

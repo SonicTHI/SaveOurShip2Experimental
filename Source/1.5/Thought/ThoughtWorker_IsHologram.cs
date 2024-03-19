@@ -8,13 +8,13 @@ using Verse;
 
 namespace RimWorld
 {
-    class ThoughtWorker_IsHologram : ThoughtWorker
-    {
-        protected override ThoughtState CurrentStateInternal(Pawn p)
-        {
-            if (ShipInteriorMod2.IsHologram(p))
-                return ThoughtState.ActiveDefault;
-            return false;
-        }
-    }
+	class ThoughtWorker_IsHologram : ThoughtWorker
+	{
+		protected override ThoughtState CurrentStateInternal(Pawn p)
+		{
+			if (ShipInteriorMod2.IsHologram(p))
+				return ThoughtState.ActiveDefault;
+			return false;
+		}
+	}
 }

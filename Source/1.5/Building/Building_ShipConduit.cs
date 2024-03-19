@@ -6,8 +6,8 @@ using Verse;
 
 namespace RimWorld
 {
-    class Building_ShipConduit : Building
-    {
-        public override Graphic Graphic => CompShipHeat.ShipHeatGraphic;
-    }
+	class Building_ShipConduit : Building
+	{
+		public override Graphic Graphic => CompShipHeat.ShipHeatGraphic;
+	}
 }

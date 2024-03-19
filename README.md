@@ -2,7 +2,9 @@
 
 **[Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131) is an unofficial expansion for RimWorld. Build space ships that you can live on and launch them into space. Once there continue your story of survival overcoming new challenges and reaping new rewards.**
 
-**SOS2 EXPERIMENTAL** (SOS2EXP) is the stable and maintained version of SOS2 for RimWorld 1.4. It includes over two years worth of bugfixes, performance optimizations, mechanics changes and some new features that might need more testing. An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit). Only use it with SOS2EXP.
+**SOS2 EXPERIMENTAL** (SOS2EXP) is the stable and maintained version of SOS2 for RimWorld 1.5 and 1.4. It includes over two years worth of bugfixes, performance optimizations, mechanics changes and some new features that might need more testing. An updated version of the Creation kit is also [available](https://github.com/SonicTHI/SaveOurShip2CreationKit).
+
+**THE 1.5 VERSION IS STIL IN BETA AND ITS FORWARD COMPATIBILITY IS NOT GUARANTEED!**
 
 **While this version is officially endorsed, it is not maintained by RHX media and you use it at your own risk.** The original creators occasionally still contribute to this project but neither they or anyone else (**except yourself**) is responsible for your pawns, saves, PC, etc.
 ___

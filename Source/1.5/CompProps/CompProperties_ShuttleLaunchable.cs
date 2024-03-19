@@ -6,7 +6,7 @@ namespace RimWorld
 	public class CompProperties_ShuttleLaunchable : CompProperties
 	{
 		public float fuelPerTile;
-        public ThingDef skyfaller;
+		public ThingDef skyfaller;
 
 		public CompProperties_ShuttleLaunchable()
 		{

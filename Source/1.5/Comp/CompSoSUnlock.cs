@@ -7,6 +7,6 @@ namespace RimWorld
 {
 	public class CompSoSUnlock : ThingComp
 	{
-        
-    }
+		
+	}
 }

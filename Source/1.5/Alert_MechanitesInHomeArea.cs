@@ -8,7 +8,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class Alert_MechanitesInHomeArea : Alert_Critical
+	class Alert_MechanitesInHomeArea : Alert_Critical
 	{
 		private Fire FireInHomeArea
 		{

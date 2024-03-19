@@ -1,13 +1,13 @@
 
 namespace SaveOurShip2
 {
-    using Verse;
+	using Verse;
 
-    public class Comp_EVA : ThingComp
-    {
-        public override string GetDescriptionPart()
-        {
-            return "SOS.EVACapable".Translate();
-        }
-    }
+	public class Comp_EVA : ThingComp
+	{
+		public override string GetDescriptionPart()
+		{
+			return "SOS.EVACapable".Translate();
+		}
+	}
 }

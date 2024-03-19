@@ -14,63 +14,63 @@ namespace RimWorld
 	{
 		Color currentColor = new Color(0.5f, 0.5f, 0.5f);
 
-        public override void CompTick()
-        {
-            base.CompTick();
-            if (parent.IsHashIntervalTick(60))
-            {
-                Pawn myPawn = parent as Pawn;
-                if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore")) //no archo before spore
-                {
-                    myPawn.Destroy(DestroyMode.Vanish);
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSuddenDeath"), parent, MessageTypeDefOf.NeutralEvent);
-                    return;
-                }
-                if (myPawn.needs.food.CurLevel < myPawn.needs.food.MaxLevel)
-                    myPawn.needs.food.CurLevel += 0.01f;
+		public override void CompTick()
+		{
+			base.CompTick();
+			if (parent.IsHashIntervalTick(60))
+			{
+				Pawn myPawn = parent as Pawn;
+				if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore")) //no archo before spore
+				{
+					myPawn.Destroy(DestroyMode.Vanish);
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSuddenDeath"), parent, MessageTypeDefOf.NeutralEvent);
+					return;
+				}
+				if (myPawn.needs.food.CurLevel < myPawn.needs.food.MaxLevel)
+					myPawn.needs.food.CurLevel += 0.01f;
 
-                if (parent.IsHashIntervalTick(600)) //no archo without spore, purr
-                {
+				if (parent.IsHashIntervalTick(600)) //no archo without spore, purr
+				{
 					if (parent.Faction == Faction.OfPlayer && ModSettings_SoS.archoRemove)
-                    {
-                        bool hasSpore = false;
-                        foreach (Map m in Find.Maps)
-                        {
-                            if (m.listerBuildings.allBuildingsColonist.Any(b => b.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
-                            {
-                                hasSpore = true;
-                                break;
-                            }
-                        }
-                        if (!hasSpore)
-                        {
-                            myPawn.Kill(new DamageInfo(DamageDefOf.Deterioration, 100f));
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSporeDeath", parent), parent, MessageTypeDefOf.NegativeEvent);
-                            return;
-                        }
-                    }
+					{
+						bool hasSpore = false;
+						foreach (Map m in Find.Maps)
+						{
+							if (m.listerBuildings.allBuildingsColonist.Any(b => b.def == ResourceBank.ThingDefOf.ShipArchotechSpore))
+							{
+								hasSpore = true;
+								break;
+							}
+						}
+						if (!hasSpore)
+						{
+							myPawn.Kill(new DamageInfo(DamageDefOf.Deterioration, 100f));
+							Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSporeDeath", parent), parent, MessageTypeDefOf.NegativeEvent);
+							return;
+						}
+					}
 
-                    if (parent.Spawned && ((CompProperties_Archolife)props).purr)
-                    {
-                        foreach (Pawn p in parent.Map.mapPawns.FreeColonistsAndPrisonersSpawned)
-                        {
-                            if (p.Position.DistanceTo(parent.Position) < 15)
-                                p.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDef.Named("PsychicPurr"));
-                        }
-                    }
-                }
-                if (parent.IsHashIntervalTick(60000))
-                {
-                    if (myPawn.health.hediffSet.hediffs.Where((Hediff hd) => hd.IsPermanent() || hd.def.chronic || hd is Hediff_MissingPart).TryRandomElement(out Hediff result))
-                    {
-                        HealthUtility.Cure(result);
-                        if (PawnUtility.ShouldSendNotificationAbout(myPawn))
-                        {
-                            Messages.Message("MessagePermanentWoundHealed".Translate(parent.LabelCap, myPawn.LabelShort, result.Label, myPawn.Named("PAWN")), myPawn, MessageTypeDefOf.PositiveEvent);
-                        }
-                    }
-                }
-            }
+					if (parent.Spawned && ((CompProperties_Archolife)props).purr)
+					{
+						foreach (Pawn p in parent.Map.mapPawns.FreeColonistsAndPrisonersSpawned)
+						{
+							if (p.Position.DistanceTo(parent.Position) < 15)
+								p.needs?.mood?.thoughts?.memories?.TryGainMemory(ThoughtDef.Named("PsychicPurr"));
+						}
+					}
+				}
+				if (parent.IsHashIntervalTick(60000))
+				{
+					if (myPawn.health.hediffSet.hediffs.Where((Hediff hd) => hd.IsPermanent() || hd.def.chronic || hd is Hediff_MissingPart).TryRandomElement(out Hediff result))
+					{
+						HealthUtility.Cure(result);
+						if (PawnUtility.ShouldSendNotificationAbout(myPawn))
+						{
+							Messages.Message("MessagePermanentWoundHealed".Translate(parent.LabelCap, myPawn.LabelShort, result.Label, myPawn.Named("PAWN")), myPawn, MessageTypeDefOf.PositiveEvent);
+						}
+					}
+				}
+			}
 
 			if (ShieldState == ShieldState.Resetting)
 			{
@@ -92,7 +92,7 @@ namespace RimWorld
 			//Disabled for now - was rapidly filling up the material pool.
 			/*
 			if(((CompProperties_Archolife)props).scintillate)
-            {
+			{
 				currentColor = new Color(currentColor.r + Rand.Range(-0.1f, 0.1f), currentColor.g + Rand.Range(-0.1f, 0.1f), currentColor.b + Rand.Range(-0.1f, 0.1f));
 				((Pawn)parent).Drawer.renderer.graphics.nakedGraphic=((Pawn)parent).Drawer.renderer.graphics.nakedGraphic.GetColoredVersion(ShaderDatabase.CutoutComplex,currentColor,Color.white);
 				typeof(PawnGraphicSet).GetField("cachedMatsBodyBaseHash", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(((Pawn)parent).Drawer.renderer.graphics, -69);
@@ -164,22 +164,22 @@ namespace RimWorld
 					return true;
 				}
 				if(wearer.playerSettings!=null && wearer.playerSettings.RespectedMaster != null && wearer.playerSettings.followDrafted && wearer.playerSettings.RespectedMaster.Drafted)
-                {
+				{
 					return true;
-                }
+				}
 				return false;
 			}
 		}
 
-        public override void PostExposeData()
-        {
-            base.PostExposeData();
+		public override void PostExposeData()
+		{
+			base.PostExposeData();
 			Scribe_Values.Look(ref energy, "energy", 0f);
 			Scribe_Values.Look(ref ticksToReset, "ticksToReset", -1);
 			Scribe_Values.Look(ref lastKeepDisplayTick, "lastKeepDisplayTick", 0);
 		}
 
-        public override IEnumerable<Gizmo> CompGetGizmosExtra()
+		public override IEnumerable<Gizmo> CompGetGizmosExtra()
 		{
 			foreach (Gizmo wornGizmo in base.CompGetGizmosExtra())
 			{
@@ -192,9 +192,8 @@ namespace RimWorld
 				yield return gizmo_EnergyShieldStatus;
 			}
 		}
-
-		public override void PostPreApplyDamage(DamageInfo dinfo, out bool absorbed)
-        {
+		public override void PostPreApplyDamage(ref DamageInfo dinfo, out bool absorbed)
+		{
 			if (ShieldState != 0)
 			{
 				absorbed = false;
@@ -248,7 +247,7 @@ namespace RimWorld
 
 		private void Break()
 		{
-			SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent.Position, parent.Map));
+			SoundDef.Named("EnergyShield_Broken").PlayOneShot(new TargetInfo(parent.Position, parent.Map));
 			FleckMaker.Static(parent.TrueCenter(), parent.Map, FleckDefOf.ExplosionFlash, 12f);
 			for (int i = 0; i < 6; i++)
 			{
@@ -269,9 +268,9 @@ namespace RimWorld
 			energy = EnergyOnReset;
 		}
 
-        public override void PostDraw()
-        {
-            base.PostDraw();
+		public override void PostDraw()
+		{
+			base.PostDraw();
 			if (ShieldState == ShieldState.Active && ShouldDisplay)
 			{
 				float num = Mathf.Lerp(1.2f, 1.55f, energy);
@@ -291,5 +290,5 @@ namespace RimWorld
 				Graphics.DrawMesh(MeshPool.plane10, matrix, BubbleMat, 0);
 			}
 		}
-    }
+	}
 }

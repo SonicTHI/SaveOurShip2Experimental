@@ -7,20 +7,20 @@ using Verse;
 
 namespace RimWorld
 {
-    public class CompProperties_BuildingConsciousness : CompProperties
-    {
-        public bool canMergeHuman=false;
-        public bool mustBeDead=false;
-        public bool canMergeAI=false;
-        public bool healOnMerge=false;
-        public HediffDef holoHediff;
-        public ThingDef holoWeapon;
-        public ThingDef holoWeaponMelee;
-        public ThingDef holoShield;
+	public class CompProperties_BuildingConsciousness : CompProperties
+	{
+		public bool canMergeHuman=false;
+		public bool mustBeDead=false;
+		public bool canMergeAI=false;
+		public bool healOnMerge=false;
+		public HediffDef holoHediff;
+		public ThingDef holoWeapon;
+		public ThingDef holoWeaponMelee;
+		public ThingDef holoShield;
 
-        public CompProperties_BuildingConsciousness()
-        {
-            this.compClass = typeof(CompBuildingConsciousness);
-        }
-    }
+		public CompProperties_BuildingConsciousness()
+		{
+			this.compClass = typeof(CompBuildingConsciousness);
+		}
+	}
 }

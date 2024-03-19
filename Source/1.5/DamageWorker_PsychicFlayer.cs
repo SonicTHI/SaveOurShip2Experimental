@@ -7,8 +7,8 @@ using Verse;
 
 namespace RimWorld
 {
-    class DamageWorker_PsychicFlayer : DamageWorker
-    {
+	class DamageWorker_PsychicFlayer : DamageWorker
+	{
 		public override DamageResult Apply(DamageInfo dinfo, Thing victim)
 		{
 			DamageResult damageResult = base.Apply(dinfo, victim);
@@ -21,7 +21,7 @@ namespace RimWorld
 				pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.ConsciousnessSource).TryRandomElement(out result);
 				pawn.health.AddHediff(hediff, result);
 				if(Rand.Value < 0.1f)
-                {
+				{
 					BodyPartRecord brain = pawn.health.hediffSet.GetBrain();
 					if (brain != null)
 					{
@@ -33,19 +33,19 @@ namespace RimWorld
 			return damageResult;
 		}
 
-        public override IEnumerable<IntVec3> ExplosionCellsToHit(IntVec3 center, Map map, float radius, IntVec3? needLOSToCell1 = null, IntVec3? needLOSToCell2 = null, FloatRange? affectedAngle = null)
-        {
+		public override IEnumerable<IntVec3> ExplosionCellsToHit(IntVec3 center, Map map, float radius, IntVec3? needLOSToCell1 = null, IntVec3? needLOSToCell2 = null, FloatRange? affectedAngle = null)
+		{
 			List<IntVec3> cells = new List<IntVec3>();
 			float sqrRad = radius * radius;
-            for(int x = -(int)radius;x<=(int)radius;x++)
-            {
+			for(int x = -(int)radius;x<=(int)radius;x++)
+			{
 				for(int z = -(int)radius;z<=(int)radius;z++)
-                {
+				{
 					if (x * x + z * z <= sqrRad)
 						cells.Add(new IntVec3(x, 0, z) + center);
-                }
-            }
+				}
+			}
 			return cells;
-        }
-    }
+		}
+	}
 }

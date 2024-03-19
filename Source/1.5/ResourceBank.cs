@@ -69,71 +69,70 @@ namespace SaveOurShip2
 
 		[DefOf]
 		public static class ThingDefOf
-        {
-            public static ThingDef Apparel_SpaceSurvivalBelt;
-            public static ThingDef Apparel_SpaceSurvivalBeltDummy;
-            public static ThingDef MechaniteFire;
+		{
+			public static ThingDef Apparel_SpaceSurvivalBelt;
+			public static ThingDef MechaniteFire;
 			public static ThingDef ShipArchotechSpore;
-            public static ThingDef ShipArchotechPillarB;
-            public static ThingDef ShipArchotechPillarC;
-            public static ThingDef ShipArchotechPillarD;
-            public static ThingDef Ship_Beam;
+			public static ThingDef ShipArchotechPillarB;
+			public static ThingDef ShipArchotechPillarC;
+			public static ThingDef ShipArchotechPillarD;
+			public static ThingDef Ship_Beam;
 			public static ThingDef Ship_Beam_Wrecked;
-            public static ThingDef Ship_BeamMech;
-            public static ThingDef Ship_BeamArchotech;
-            public static ThingDef HullFoamWall;
-            public static ThingDef ShipAirlockWrecked;
+			public static ThingDef Ship_BeamMech;
+			public static ThingDef Ship_BeamArchotech;
+			public static ThingDef HullFoamWall;
+			public static ThingDef ShipAirlockWrecked;
 			public static ThingDef ShipHullTileWrecked;
 			public static ThingDef ShipHullTile;
 			public static ThingDef ShipHullTileMech;
 			public static ThingDef ShipHullTileArchotech;
 			public static ThingDef ShipHullfoamTile;
-            public static ThingDef ShipAirlock;
-            public static ThingDef ShipAirlockBeamWall;
-            public static ThingDef ShipAirlockBeamTile;
-            public static ThingDef ShipInside_SolarGenerator;
-            public static ThingDef Ship_SensorClusterAdv;
-            public static ThingDef ShipSpinalAmplifier;
-            public static ThingDef ShipSpinalBarrelPsychic;
-            public static ThingDef ShipTorpedo_HighExplosive;
+			public static ThingDef ShipAirlock;
+			public static ThingDef ShipAirlockBeamWall;
+			public static ThingDef ShipAirlockBeamTile;
+			public static ThingDef ShipInside_SolarGenerator;
+			public static ThingDef Ship_SensorClusterAdv;
+			public static ThingDef ShipSpinalAmplifier;
+			public static ThingDef ShipSpinalBarrelPsychic;
+			public static ThingDef ShipTorpedo_HighExplosive;
 			public static ThingDef ShipTorpedo_EMP;
 			public static ThingDef ShipTorpedo_Antimatter;
-            public static ThingDef Ship_Engine;
-            public static ThingDef Ship_Engine_Large;
-            public static ThingDef Ship_Engine_Interplanetary;
-            public static ThingDef Ship_Engine_Interplanetary_Large;
-            public static ThingDef Ship_FakeBeam;
-            public static ThingDef ShuttleFuelPods;
-            public static ThingDef ShipShuttleBay;
+			public static ThingDef Ship_Engine;
+			public static ThingDef Ship_Engine_Large;
+			public static ThingDef Ship_Engine_Interplanetary;
+			public static ThingDef Ship_Engine_Interplanetary_Large;
+			public static ThingDef Ship_FakeBeam;
+			public static ThingDef ShuttleFuelPods;
+			public static ThingDef ShipShuttleBay;
 			public static ThingDef ShipShuttleBayLarge;
-            public static ThingDef ShipConsoleScience;
-            public static ThingDef Cryptonest;
-            public static ThingDef CrittersleepCasket;
-            public static ThingDef CrittersleepCasketLarge;
-            public static ThingDef Ship_CryptosleepCasket;
-            public static ThingDef PersonalShuttle;
-            public static ThingDef SoS2DummyObject;
+			public static ThingDef ShipConsoleScience;
+			public static ThingDef Cryptonest;
+			public static ThingDef CrittersleepCasket;
+			public static ThingDef CrittersleepCasketLarge;
+			public static ThingDef Ship_CryptosleepCasket;
+			public static ThingDef PersonalShuttle;
+			public static ThingDef SoS2DummyObject;
 			public static ThingDef Mote_HeatsinkPurge;
-            public static ThingDef Proj_ShipDebrisA;
-            public static ThingDef Proj_ShipDebrisB;
-            public static ThingDef Proj_ShipDebrisC;
-            public static ThingDef Proj_ShipDebrisD;
-            public static ThingDef Proj_ShipRockA;
-            public static ThingDef Proj_ShipRockB;
-            public static ThingDef Proj_ShipRockC;
-            public static ThingDef Bullet_Fake_Laser;
-            public static ThingDef Bullet_Ground_Laser;
-            public static ThingDef Bullet_Fake_Psychic;
-            public static ThingDef ShipCombatLaserMote;
-            public static ThingDef ArchotechExoticParticles;
-            public static ThingDef DetachedShipPart;
-            public static ThingDef ShipMoveBlueprint;
-            //vanilla defs
-            public static ThingDef Turret_Autocannon;
-            public static ThingDef Turret_Sniper;
-            public static ThingDef MechSerumResurrector;
-            public static ThingDef Mote_Bubble;
-        }
+			public static ThingDef Proj_ShipDebrisA;
+			public static ThingDef Proj_ShipDebrisB;
+			public static ThingDef Proj_ShipDebrisC;
+			public static ThingDef Proj_ShipDebrisD;
+			public static ThingDef Proj_ShipRockA;
+			public static ThingDef Proj_ShipRockB;
+			public static ThingDef Proj_ShipRockC;
+			public static ThingDef Bullet_Fake_Laser;
+			public static ThingDef Bullet_Ground_Laser;
+			public static ThingDef Bullet_Fake_Psychic;
+			public static ThingDef ShipCombatLaserMote;
+			public static ThingDef ArchotechExoticParticles;
+			public static ThingDef DetachedShipPart;
+			public static ThingDef ShipMoveBlueprint;
+			//vanilla defs
+			public static ThingDef Turret_Autocannon;
+			public static ThingDef Turret_Sniper;
+			public static ThingDef MechSerumResurrector;
+			public static ThingDef Mote_Bubble;
+		}
 
 		[DefOf]
 		public static class TerrainDefOf
@@ -150,7 +149,7 @@ namespace SaveOurShip2
 		public static class RoofDefOf
 		{
 			public static RoofDef RoofShip;
-        }
+		}
 
 		[DefOf]
 		public static class HediffDefOf
@@ -167,23 +166,23 @@ namespace SaveOurShip2
 		{
 			[MayRequireIdeology]
 			public static MemeDef Structure_Archist;
-        }
+		}
 
-        [DefOf]
-        public static class JobDefOf
-        {
-            public static JobDef FleeVacuum;
-            public static JobDef BreachAirlock;
-            public static JobDef DefendBreacher;
-        }
+		[DefOf]
+		public static class JobDefOf
+		{
+			public static JobDef FleeVacuum;
+			public static JobDef BreachAirlock;
+			public static JobDef DefendBreacher;
+		}
 
-        [DefOf]
-        public static class DutyDefOf
-        {
-            public static DutyDef SoSAssaultShip;
-        }
+		[DefOf]
+		public static class DutyDefOf
+		{
+			public static DutyDef SoSAssaultShip;
+		}
 
-        [DefOf]
+		[DefOf]
 		public static class BiomeDefOf
 		{
 			public static BiomeDef OuterSpaceBiome;
@@ -200,14 +199,14 @@ namespace SaveOurShip2
 		{
 			public static ResearchProjectDef ArchotechPillarA;
 			public static ResearchProjectDef ArchotechPillarB;
-            public static ResearchProjectDef ArchotechPillarC;
-            public static ResearchProjectDef ArchotechPillarD;
-            public static ResearchProjectDef ArchotechPsychicField;
-            public static ResearchProjectDef ArchotechPsychicManipulation;
-            public static ResearchProjectDef ArchotechPsylink;
-            public static ResearchProjectDef ArchotechBroadManipulation;
-            public static ResearchProjectDef ArchotechExotics;
-        }
+			public static ResearchProjectDef ArchotechPillarC;
+			public static ResearchProjectDef ArchotechPillarD;
+			public static ResearchProjectDef ArchotechPsychicField;
+			public static ResearchProjectDef ArchotechPsychicManipulation;
+			public static ResearchProjectDef ArchotechPsylink;
+			public static ResearchProjectDef ArchotechBroadManipulation;
+			public static ResearchProjectDef ArchotechExotics;
+		}
 
 		[DefOf]
 		public static class BackstoryDefOf
@@ -219,39 +218,39 @@ namespace SaveOurShip2
 		public static class WeatherDefOf
 		{
 			public static WeatherDef OuterSpaceWeather;
-        }
+		}
 
-        [DefOf]
-        public static class GameConditionDefOf
-        {
-            public static GameConditionDef SpaceDebris;
-        }
+		[DefOf]
+		public static class GameConditionDefOf
+		{
+			public static GameConditionDef SpaceDebris;
+		}
 
-        [DefOf]
+		[DefOf]
 		public static class SoundDefOf
-        {
+		{
 			public static SoundDef ShipPurgeHiss;
-            public static SoundDef ShipEngineFuel;
-        }
+			public static SoundDef ShipEngineFuel;
+		}
 
-        [DefOf]
-        public static class WorldObjectDefOf
-        {
-            public static WorldObjectDef ShipOrbiting; //player ship map
-            public static WorldObjectDef ShipEnemy;
-            public static WorldObjectDef WreckSpace;
-            public static WorldObjectDef SiteSpace;
-            public static WorldObjectDef MoonPillarSite;
-        }
+		[DefOf]
+		public static class WorldObjectDefOf
+		{
+			public static WorldObjectDef ShipOrbiting; //player ship map
+			public static WorldObjectDef ShipEnemy;
+			public static WorldObjectDef WreckSpace;
+			public static WorldObjectDef SiteSpace;
+			public static WorldObjectDef MoonPillarSite;
+		}
 
-        [DefOf]
-        public static class StatDefOf
-        {
-            public static StatDef DecompressionResistance;
-            public static StatDef DecompressionResistanceOffset;
-            public static StatDef HypoxiaResistance;
-            public static StatDef HypoxiaResistanceOffset;
-            public static StatDef VacuumSpeedMultiplier;
-        }
-    }
+		[DefOf]
+		public static class StatDefOf
+		{
+			public static StatDef DecompressionResistance;
+			public static StatDef DecompressionResistanceOffset;
+			public static StatDef HypoxiaResistance;
+			public static StatDef HypoxiaResistanceOffset;
+			public static StatDef VacuumSpeedMultiplier;
+		}
+	}
 }

@@ -6,12 +6,12 @@ using Verse;
 
 namespace RimWorld
 {
-    public class CompProperties_DamagedReactor : CompProperties
-    {
+	public class CompProperties_DamagedReactor : CompProperties
+	{
 
-        public CompProperties_DamagedReactor()
-        {
-            this.compClass = typeof(CompDamagedReactor);
-        }
-    }
+		public CompProperties_DamagedReactor()
+		{
+			this.compClass = typeof(CompDamagedReactor);
+		}
+	}
 }

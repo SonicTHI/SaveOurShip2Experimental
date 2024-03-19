@@ -7,22 +7,22 @@ using RimWorld;
 
 namespace SaveOurShip2
 {
-    public class Dialog_NameShip : Dialog_Rename
-    {
-        private SoShipCache ship;
+	public class Dialog_NameShip : Dialog_RenameShip
+	{
+		private SoShipCache ship;
 
-        public Dialog_NameShip(SoShipCache s)
-        {
-            ship = s;
-            curName = s.Name;
-        }
+		public Dialog_NameShip(SoShipCache s)
+		{
+			ship = s;
+			curName = s.Name;
+		}
 
-        protected override void SetName(string name)
-        {
-            if (name == ship.Name || string.IsNullOrEmpty(name))
-                return;
+		protected override void SetName(string name)
+		{
+			if (name == ship.Name || string.IsNullOrEmpty(name))
+				return;
 
-            ship.Name = name;
-        }
-    }
+			ship.Name = name;
+		}
+	}
 }

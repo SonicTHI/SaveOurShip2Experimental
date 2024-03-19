@@ -10,9 +10,9 @@ namespace RimWorld
 	[StaticConstructorOnStartup]
 	public class CompBecomeBuilding : ThingComp
 	{
-        private static readonly Texture2D TransformCommandTex = ContentFinder<Texture2D>.Get("UI/Hover_Off_Icon");
+		private static readonly Texture2D TransformCommandTex = ContentFinder<Texture2D>.Get("UI/Hover_Off_Icon");
 
-        public CompProperties_BecomeBuilding Props
+		public CompProperties_BecomeBuilding Props
 		{
 			get
 			{
@@ -21,19 +21,19 @@ namespace RimWorld
 		}
 
 		public void transform()
-        {
-            IntVec3 myPos = this.parent.Position;
-            Map myMap = this.parent.Map;
+		{
+			IntVec3 myPos = this.parent.Position;
+			Map myMap = this.parent.Map;
 			if (myMap != null && myPos.CloseToEdge(myMap, (Props.buildingDef.size.x + 1) / 2))
 				return;
 			Building transformed = (Building)ThingMaker.MakeThing(Props.buildingDef);
-            transformed.Position = myPos;
-            transformed.SetFaction(parent.Faction);
-            if (this.parent.TryGetComp<CompRefuelable>() != null)
-            {
-                int fuelAmount = Mathf.CeilToInt(this.parent.GetComp<CompRefuelable>().Fuel);
-                this.parent.GetComp<CompRefuelable>().ConsumeFuel(fuelAmount);
-                transformed.GetComp<CompRefuelable>().Refuel(fuelAmount);
+			transformed.Position = myPos;
+			transformed.SetFaction(parent.Faction);
+			if (this.parent.TryGetComp<CompRefuelable>() != null)
+			{
+				int fuelAmount = Mathf.CeilToInt(this.parent.GetComp<CompRefuelable>().Fuel);
+				this.parent.GetComp<CompRefuelable>().ConsumeFuel(fuelAmount);
+				transformed.GetComp<CompRefuelable>().Refuel(fuelAmount);
 			}
 			if (this.parent.TryGetComp<CompShuttleCosmetics>() != null && transformed.TryGetComp<CompShuttleCosmetics>() != null)
 			{
@@ -42,27 +42,27 @@ namespace RimWorld
 
 			}
 			if (this.parent.ParentHolder != null && !(this.parent.ParentHolder is Map))
-            {
-                if (this.parent.ParentHolder is ActiveDropPodInfo)
-                {
-                    ((ActiveDropPodInfo)this.parent.ParentHolder).GetDirectlyHeldThings().TryAdd(MinifyUtility.MakeMinified(transformed));
-                    ((ActiveDropPodInfo)this.parent.ParentHolder).GetDirectlyHeldThings().Remove(this.parent);
-                }
-                else if(this.parent.ParentHolder is Caravan)
-                {
-                    ((Caravan)this.parent.ParentHolder).RemovePawn((Pawn)this.parent);
-                    ((Caravan)this.parent.ParentHolder).AddPawnOrItem(MinifyUtility.MakeMinified(transformed),true);
-                }
-            }
-            else if(this.parent.Spawned)
-            {
-                ((Pawn)this.parent).inventory.DropAllNearPawn(this.parent.Position, false, true);
-                transformed.SpawnSetup(myMap, false);
-            }
-            transformed.HitPoints = (int)(transformed.MaxHitPoints * ((Pawn)this.parent).health.summaryHealth.SummaryHealthPercent);
+			{
+				if (this.parent.ParentHolder is ActiveDropPodInfo)
+				{
+					((ActiveDropPodInfo)this.parent.ParentHolder).GetDirectlyHeldThings().TryAdd(MinifyUtility.MakeMinified(transformed));
+					((ActiveDropPodInfo)this.parent.ParentHolder).GetDirectlyHeldThings().Remove(this.parent);
+				}
+				else if(this.parent.ParentHolder is Caravan)
+				{
+					((Caravan)this.parent.ParentHolder).RemovePawn((Pawn)this.parent);
+					((Caravan)this.parent.ParentHolder).AddPawnOrItem(MinifyUtility.MakeMinified(transformed),true);
+				}
+			}
+			else if(this.parent.Spawned)
+			{
+				((Pawn)this.parent).inventory.DropAllNearPawn(this.parent.Position, false, true);
+				transformed.SpawnSetup(myMap, false);
+			}
+			transformed.HitPoints = (int)(transformed.MaxHitPoints * ((Pawn)this.parent).health.summaryHealth.SummaryHealthPercent);
 			if(!this.parent.Destroyed)
-	            this.parent.Destroy(DestroyMode.Vanish);
-        }
+				this.parent.Destroy(DestroyMode.Vanish);
+		}
 
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()
 		{
@@ -131,18 +131,18 @@ namespace RimWorld
 			}
 		}
 
-        public override void PostSpawnSetup(bool respawningAfterLoad)
-        {
-            base.PostSpawnSetup(respawningAfterLoad);
-			if (parent.TryGetComp<CompShuttleCosmetics>() != null)
-				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);
+		public override void PostSpawnSetup(bool respawningAfterLoad)
+		{
+			base.PostSpawnSetup(respawningAfterLoad);
+			/*if (parent.TryGetComp<CompShuttleCosmetics>() != null)
+				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);*/
 			Current.Game.GetComponent<EnvironmentCachingUtility>().shuttleCache.Add(parent);
-        }
+		}
 
 		public override void PostDeSpawn(Map map)
 		{
 			Current.Game.GetComponent<EnvironmentCachingUtility>().shuttleCache.Remove(parent);
 		}
-    }
+	}
 }
 

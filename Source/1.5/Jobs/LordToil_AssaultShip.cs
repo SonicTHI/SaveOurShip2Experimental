@@ -9,7 +9,7 @@ using SaveOurShip2;
 
 namespace RimWorld
 {
-    class LordToil_AssaultShip : LordToil
+	class LordToil_AssaultShip : LordToil
 	{
 		private bool attackDownedIfStarving;
 		private bool canPickUpOpportunisticWeapons;

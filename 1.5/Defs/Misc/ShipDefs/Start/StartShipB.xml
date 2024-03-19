@@ -325,7 +325,7 @@
 			<li>
 				<key>p</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>WallLamp</shapeOrDef>
 				</value>
 			</li>
 			<li>

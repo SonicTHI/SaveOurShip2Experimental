@@ -374,13 +374,13 @@
 			<li>
 				<key>x</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>WallLamp</shapeOrDef>
 				</value>
 			</li>
 			<li>
 				<key>y</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
+					<shapeOrDef>WallSunLampSoS</shapeOrDef>
 				</value>
 			</li>
 			<li>

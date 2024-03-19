@@ -61,7 +61,7 @@
 			<li>
 				<key>F</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallSunLight</shapeOrDef>
+					<shapeOrDef>WallSunLampSoS</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -157,7 +157,7 @@
 			<li>
 				<key>U</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>WallLamp</shapeOrDef>
 				</value>
 			</li>
 			<li>

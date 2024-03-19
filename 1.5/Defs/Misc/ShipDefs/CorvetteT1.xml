@@ -315,7 +315,7 @@
 			<li>
 				<key>o</key>
 				<value>
-					<shapeOrDef>Lighting_MURWallLight</shapeOrDef>
+					<shapeOrDef>WallLamp</shapeOrDef>
 				</value>
 			</li>
 		</symbolTable>

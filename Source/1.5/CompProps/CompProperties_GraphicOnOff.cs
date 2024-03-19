@@ -6,12 +6,12 @@ using Verse;
 
 namespace RimWorld
 {
-    public class CompProperties_GraphicOnOff : CompProperties
-    {
+	public class CompProperties_GraphicOnOff : CompProperties
+	{
 
-        public CompProperties_GraphicOnOff()
-        {
-            this.compClass = typeof(CompGraphicOnOff);
-        }
-    }
+		public CompProperties_GraphicOnOff()
+		{
+			this.compClass = typeof(CompGraphicOnOff);
+		}
+	}
 }

@@ -11,23 +11,23 @@ using Verse.Noise;
 
 namespace RimWorld
 {
-    class GenStep_InsectPillarCaves : GenStep_Caves
-    {
-        public override void Generate(Map map, GenStepParams parms)
-        {
-            List<IntVec3> cells = map.AllCells.ToList();
-            foreach(IntVec3 cell in cells)
-            {
-                MapGenerator.Caves[cell] = 1;
-            }
-            List<Thing> things;
-            foreach(IntVec3 cell in cells.Where(c => c.DistanceToEdge(map) < 2))
-            {
-                things = cell.GetThingList(map).ListFullCopy();
-                foreach (Thing thing in things)
-                    thing.Destroy();
-                MapGenerator.Caves[cell] = 0;
-            }
+	class GenStep_InsectPillarCaves : GenStep_Caves
+	{
+		public override void Generate(Map map, GenStepParams parms)
+		{
+			List<IntVec3> cells = map.AllCells.ToList();
+			foreach(IntVec3 cell in cells)
+			{
+				MapGenerator.Caves[cell] = 1;
+			}
+			List<Thing> things;
+			foreach(IntVec3 cell in cells.Where(c => c.DistanceToEdge(map) < 2))
+			{
+				things = cell.GetThingList(map).ListFullCopy();
+				foreach (Thing thing in things)
+					thing.Destroy();
+				MapGenerator.Caves[cell] = 0;
+			}
 			for (int i = 0; i < 5; i++)
 			{
 				Dig(new IntVec3(0, 0, Rand.Range(5, map.Size.z - 5)), 90, 20 , cells, map, false);
@@ -53,10 +53,10 @@ namespace RimWorld
 			} while (!foundPillarSpot);
 
 			foreach(Pawn p in map.mapPawns.AllPawnsSpawned.Where(p=>p.Faction!=Faction.OfPlayer))
-            {
+			{
 				p.needs.food.CurLevel = 0.1f;
-            }
-        }
+			}
+		}
 
 		private new void Dig(IntVec3 start, float dir, float width, List<IntVec3> group, Map map, bool closed, HashSet<IntVec3> visited = null)
 		{
@@ -101,7 +101,7 @@ namespace RimWorld
 			}
 			List<Thing> things;
 			foreach(IntVec3 cell in visited)
-            {
+			{
 				if (cell.InBounds(map))
 				{
 					things = cell.GetThingList(map).ListFullCopy();
@@ -109,9 +109,9 @@ namespace RimWorld
 						if(thing.def.mineable)
 							thing.Destroy(DestroyMode.Vanish);
 				}
-            }
+			}
 			foreach(IntVec3 cell in visited)
-            {
+			{
 				if (cell.InBounds(map) && Rand.Chance(0.001f))
 				{
 					Hive hive = (Hive)GenSpawn.Spawn(ThingDefOf.Hive, cell, map);

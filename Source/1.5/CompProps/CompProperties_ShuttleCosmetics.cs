@@ -20,12 +20,12 @@ namespace RimWorld
 			this.compClass = typeof(CompShuttleCosmetics);
 		}
 
-        public override void ResolveReferences(ThingDef parentDef)
-        {
-            base.ResolveReferences(parentDef);
+		public override void ResolveReferences(ThingDef parentDef)
+		{
+			base.ResolveReferences(parentDef);
 
 			if(!CompShuttleCosmetics.GraphicsToResolve.ContainsKey(parentDef))
 				CompShuttleCosmetics.GraphicsToResolve.Add(parentDef,this);
 		}
-    }
+	}
 }

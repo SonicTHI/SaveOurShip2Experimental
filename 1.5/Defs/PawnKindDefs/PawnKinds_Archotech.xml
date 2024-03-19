@@ -457,7 +457,9 @@
 		</statBases>
 		<race>
 			<body>QuadrupedAnimalWithPaws</body>
-			<deathActionWorkerClass>DeathActionWorker_BigExplosion</deathActionWorkerClass>
+			<deathAction>
+				<workerClass>DeathActionWorker_BigExplosion</workerClass>
+			</deathAction>
 			<baseBodySize>0.2</baseBodySize>
 			<baseHealthScale>4</baseHealthScale>
 			<foodType>OmnivoreRoughAnimal</foodType>
@@ -800,7 +802,9 @@
 		<race>
 			<trainability>Advanced</trainability>
 			<body>QuadrupedAnimalWithHoovesAndHump</body>
-			<deathActionWorkerClass>DeathActionWorker_AntigrainExplosion</deathActionWorkerClass>
+			<deathAction>
+				<workerClass>DeathActionWorker_AntigrainExplosion</workerClass>
+			</deathAction>
 			<executionRange>6</executionRange>
 			<herdAnimal>true</herdAnimal>
 			<baseBodySize>1.5</baseBodySize>

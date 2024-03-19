@@ -7,15 +7,15 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompProperties_Archolife : CompProperties
-    {
-        public float shield;
-        public bool purr = false;
-        public bool scintillate = false;
+	class CompProperties_Archolife : CompProperties
+	{
+		public float shield;
+		public bool purr = false;
+		public bool scintillate = false;
 
-        public CompProperties_Archolife()
-        {
-            this.compClass = typeof(CompArcholife);
-        }
-    }
+		public CompProperties_Archolife()
+		{
+			this.compClass = typeof(CompArcholife);
+		}
+	}
 }

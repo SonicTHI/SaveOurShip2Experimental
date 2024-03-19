@@ -1919,8 +1919,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	//15disabled
-	/*[HarmonyPatch(typeof(Building_MechGestator), "EjectContentsAndRemovePawns")]
+	[HarmonyPatch(typeof(Building_MechGestator), "EjectContents")]
 	public static class DisableForMoveGestator
 	{
 		public static bool Prefix()
@@ -1929,7 +1928,7 @@ namespace SaveOurShip2
 				return false;
 			return true;
 		}
-	}*/
+	}
 
 	[HarmonyPatch(typeof(CompWasteProducer), "ProduceWaste")]
 	public static class DisableForMoveWaste

@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V100b0";
+		public const string SOS2EXPversion = "V100b1";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4035;
 
@@ -744,8 +744,6 @@ namespace SaveOurShip2
 					isMechs = true;
 			}
 
-			Dictionary<IntVec3, Tuple<int,ColorInt,bool>> spawnLights = new Dictionary<IntVec3, Tuple<int, ColorInt, bool>>();
-
 			int size = shipDef.sizeX * shipDef.sizeZ;
 			List<Building> wreckDestroy = new List<Building>();
 			List<Pawn> pawnsOnShip = new List<Pawn>();
@@ -859,10 +857,6 @@ namespace SaveOurShip2
 						GenSpawn.Spawn(pawn, adjPos, map);
 						pawnsOnShip.Add(pawn);
 					}
-					else if (shape.shapeOrDef == "SoSLightEnabler")
-					{
-						spawnLights.Add(adjPos, new Tuple<int, ColorInt, bool> (shape.rot.AsInt, ColorIntUtility.AsColorInt(shape.color != Color.clear ? shape.color : Color.white), shape.alt));
-					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
 						bool isWrecked = false;
@@ -912,8 +906,19 @@ namespace SaveOurShip2
 						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 						//post spawn
 						thing.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
-						var colorcomp = thing.TryGetComp<CompColorable>();
-						if (colorcomp != null)
+                        var glowerComp = thing.TryGetComp<CompGlower>();
+                        var colorComp = thing.TryGetComp<CompColorable>();
+                        if (glowerComp != null) //color glow of lights
+                        {
+                            if (shape.color != Color.clear)
+							{
+                                Color.RGBToHSV(shape.color, out var H, out var S, out var _);
+                                ColorInt glowColor = glowerComp.GlowColor;
+                                glowColor.SetHueSaturation(H, S);
+                                glowerComp.GlowColor = glowColor;
+                            }
+                        }
+                        else if (colorComp != null)
 						{
 							if (shape.color != Color.clear)
 								thing.SetColor(shape.color);
@@ -921,7 +926,7 @@ namespace SaveOurShip2
 						if (thing is Building b)
 						{
 							var partComp = thing.TryGetComp<CompSoShipPart>();
-							if (rePaint && colorcomp != null) //color unpainted navy ships
+							if (rePaint && colorComp != null) //color unpainted navy ships
 							{
 								if (partComp?.Props.isHull ?? false)
 									thing.SetColor(navyDef.colorPrimary);
@@ -2330,7 +2335,9 @@ namespace SaveOurShip2
 						}
 						if (ModsConfig.RoyaltyActive && p.royalty != null && p.royalty.HasAnyTitleIn(Faction.OfEmpire))
 							p.royalty.SetTitle(Faction.OfEmpire, null, false);
-					}
+
+                        p.needs.mood.thoughts.memories = new MemoryThoughtHandler(p);
+                    }
 					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zones.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
 					{
 						zones.Add(t.Map.zoneManager.ZoneAt(t.Position));

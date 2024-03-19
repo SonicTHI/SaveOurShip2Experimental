@@ -673,7 +673,7 @@ namespace RimWorld
 				DetermineInitialRange();
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Enemy range at start: " + Range);
 
-			callSlowTick = true;
+			//callSlowTick = true;
 		}
 		public Map SpawnEnemyShipMap(PassingShip passingShip, Faction faction, bool fleet, bool bounty)
 		{

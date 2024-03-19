@@ -62,7 +62,7 @@ namespace RimWorld
 				cosmetics.whichVersion = FloatMenuWithCallback.whichOptionWasChosen;
 			Pawn pawn = (Pawn)parent;
 			Vector2 drawSize;
-			/*15disable
+			/*15disabled
 			if (pawn.Drawer.renderer.graphics.nakedGraphic==null)
 				drawSize = pawn.ageTracker.CurKindLifeStage.bodyGraphicData.Graphic.drawSize;
 			else

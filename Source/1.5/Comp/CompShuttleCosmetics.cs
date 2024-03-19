@@ -59,7 +59,7 @@ namespace RimWorld
 			if(triggeredByChange)
 				parent.GetComp<CompShuttleCosmetics>().whichVersion = FloatMenuWithCallback.whichOptionWasChosen;
 			int whichVersion = parent.GetComp<CompShuttleCosmetics>().whichVersion;
-			/*15disable
+			/*15disabled
 			if (parent is Pawn pawn)
 			{
 				pawn.Drawer.renderer.graphics.nakedGraphic = graphicsHover[parent.def.defName][whichVersion];

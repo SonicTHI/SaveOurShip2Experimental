@@ -806,7 +806,28 @@ namespace SaveOurShip2
 		}
 	}
 
-	//biome lighting
+    [HarmonyPatch(typeof(AmbientSoundManager), "AltitudeWindSoundCreated", MethodType.Getter)]
+    public static class NoWindInSpace
+    {
+        public static void Postfix(ref bool __result)
+        {
+            if (Find.CurrentMap.IsSpace())
+            {
+                var manager = Find.SoundRoot.sustainerManager;
+                foreach (var sus in manager.allSustainers)
+                {
+                    if (sus.def == SoundDefOf.Ambient_AltitudeWind)
+                    {
+                        sus.End();
+                        break;
+                    }
+                }
+                __result = true;
+            }
+        }
+    }
+
+    //biome lighting
     [HarmonyPatch(typeof(SkyManager), "SkyManagerUpdate")]
     public class FixLightingColors
     {

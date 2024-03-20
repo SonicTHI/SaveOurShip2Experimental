@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Verse;
 using SaveOurShip2;
 
@@ -10,7 +9,7 @@ namespace RimWorld
 {
 	public class CompShipLifeSupport : ThingComp
 	{
-		public bool active = true;
+		public bool active = false;
 		CompPowerTrader powerComp;
 		CompFlickable flickComp;
 		public override void PostSpawnSetup(bool respawningAfterLoad)

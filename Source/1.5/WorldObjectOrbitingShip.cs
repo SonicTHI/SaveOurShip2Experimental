@@ -94,16 +94,18 @@ namespace RimWorld
 		}
 		void OrbitSet() //recalc on change only
 		{
-			/*if (drawPos == Vector3.zero)
-			{
-				drawPos = NominalPos;
-			}*/
 			Vector3 v = Vector3.SlerpUnclamped(vecEquator * radius, vecEquator * radius * -1, theta * -1);
 			drawPos = new Vector3(v.x, phi, v.z); //td not correct
 		}
+        public override void SpawnSetup()
+        {
+			if (drawPos == Vector3.zero)
+                OrbitSet();
 
+            base.SpawnSetup();
+        }
 
-		public override void Tick()
+        public override void Tick()
 		{
 			base.Tick();
 			//move ship to next pos if player owned, on raretick, if nominal, not durring shuttle use

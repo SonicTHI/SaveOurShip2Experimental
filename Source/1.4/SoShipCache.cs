@@ -291,7 +291,7 @@ namespace SaveOurShip2
         {
             if (!HasMannedBridge())
             {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailPilot"), Core, MessageTypeDefOf.NeutralEvent);
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPilot"), Core, MessageTypeDefOf.NeutralEvent);
                 return false;
             }
             if (!HasRCSAndFuel(fuelPercentNeeded, atmospheric))
@@ -320,13 +320,13 @@ namespace SaveOurShip2
             Log.Message("Mass: " + MassActual + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
             if (atmospheric && ((1000 < fuelNeeded && RCSs.Count * 2000 < fuelNeeded) || Engines.Any(e => e.Props.reactionless))) //2k weight/RCS to move
             {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
                 return false;
             }
             fuelNeeded *= fuelPercentNeeded;
             if (FuelNeeded(atmospheric) < fuelNeeded)
             {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFailFuel", fuelNeeded), Core, MessageTypeDefOf.NeutralEvent);
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailFuel", fuelNeeded), Core, MessageTypeDefOf.NeutralEvent);
                 return false;
             }
             return true;
@@ -722,7 +722,7 @@ namespace SaveOurShip2
                         Shields.Add(shield);
                 }
                 else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)
-                    ThreatRaw += 5;
+                    ThreatRaw += 10;
                 Mass += b.def.Size.x * b.def.Size.z * 3;
             }
         }
@@ -825,7 +825,7 @@ namespace SaveOurShip2
                         Shields.Remove(shield);
                 }
                 else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)
-                    ThreatRaw -= 5;
+                    ThreatRaw -= 10;
                 Mass -= b.def.Size.x * b.def.Size.z * 3;
             }
         }
@@ -973,7 +973,10 @@ namespace SaveOurShip2
             HashSet<IntVec3> cellsAttached = new HashSet<IntVec3> { first }; //cells that were checked and are attached
             foreach (IntVec3 setStartCell in startCells)
             {
-                if (mapComp.MapShipCells[setStartCell]?.Item2 < LastSafePath)
+                if (!mapComp.MapShipCells.ContainsKey(setStartCell)) //cell might have been removed already
+                    continue;
+
+                if (mapComp.MapShipCells[setStartCell].Item2 < LastSafePath)
                 {
                     cellsAttached.Add(setStartCell);
                 }

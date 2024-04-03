@@ -173,9 +173,9 @@ namespace RimWorld
                         pod.innerContainer.ClearAndDestroyContents();
                         pods.Remove(pod);
                         if (player)
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatPodDestroyedPlayer"), null, MessageTypeDefOf.NegativeEvent);
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CombatPodDestroyedPlayer"), null, MessageTypeDefOf.NegativeEvent);
                         else
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatPodDestroyedEnemy"), null, MessageTypeDefOf.PositiveEvent);
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CombatPodDestroyedEnemy"), null, MessageTypeDefOf.PositiveEvent);
                     }
                 }
             }

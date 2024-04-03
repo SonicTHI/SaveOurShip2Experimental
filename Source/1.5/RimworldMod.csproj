@@ -94,6 +94,7 @@
     <Compile Include="ApparelHolographic.cs" />
     <Compile Include="ArchotechGiftDef.cs" />
     <Compile Include="Dialog\Dialog_RenameShip.cs" />
+    <Compile Include="Jobs\JobGiver_AIHackBridge.cs" />
     <Compile Include="Obsolete\CompProperties_SoShipLight.cs" />
     <Compile Include="Obsolete\CompSoShipLight.cs" />
     <Compile Include="Extensions\PawnExtensions.cs" />
@@ -143,7 +144,7 @@
     <Compile Include="Comp\CompRCSThruster.cs" />
     <Compile Include="CompProps\CompProperties_ShipLifeSupport.cs" />
     <Compile Include="CompProps\CompProperties_SalvageBay.cs" />
-    <Compile Include="Comp\CompAICrewmate.cs" />
+    <Compile Include="Obsolete\CompAICrewmate.cs" />
     <Compile Include="Comp\CompArchoHullConversion.cs" />
     <Compile Include="Comp\CompArcholifeCosmetics.cs" />
     <Compile Include="Comp\CompBecomeBuilding.cs" />
@@ -184,7 +185,7 @@
     <Compile Include="CompProps\CompProperties_LongRangeMineralScannerSpaceAI.cs" />
     <Compile Include="CompProps\CompProperties_LongRangeMineralScannerSpace.cs" />
     <Compile Include="CompProps\CompProperties_Overlay.cs" />
-    <Compile Include="CompProps\CompProperties_AICrewmate.cs" />
+    <Compile Include="Obsolete\CompProperties_AICrewmate.cs" />
     <Compile Include="CompProps\CompProperties_HullFoamDistributor.cs" />
     <Compile Include="CompProps\CompProperties_PowerPlantSolarShip.cs" />
     <Compile Include="CompProps\CompProperties_ShuttleCosmetics.cs" />
@@ -264,9 +265,9 @@
     <Compile Include="Graphic\Graphic_SingleOnOffEmpty.cs" />
     <Compile Include="Graphic\Graphic_SingleOnOff.cs" />
     <Compile Include="Comp\HediffCompOnlyInSpace.cs" />
-    <Compile Include="CompProps\HediffCompProperties_GiveSubPart.cs" />
+    <Compile Include="Obsolete\HediffCompProperties_GiveSubPart.cs" />
     <Compile Include="CompProps\HediffCompProperties_OnlyInSpace.cs" />
-    <Compile Include="Comp\HediffComp_GiveSubPart.cs" />
+    <Compile Include="Obsolete\HediffComp_GiveSubPart.cs" />
     <Compile Include="HediffPawnIsHologram.cs" />
     <Compile Include="Obsolete\Hediff_AddedPartNoRemoveSubparts.cs" />
     <Compile Include="Comp\InsectPillarSiteComp.cs" />

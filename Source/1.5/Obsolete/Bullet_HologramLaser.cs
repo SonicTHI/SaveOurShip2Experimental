@@ -14,7 +14,7 @@ namespace RimWorld
 		protected override void Impact(Thing hitThing, bool blockedByShield = false)
 		{
 			base.Impact(hitThing);
-			ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
+			ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipCombatLaserMote);
 			obj.origin = this.origin;
 			if (hitThing != null)
 				obj.destination = hitThing.DrawPos;

@@ -47,7 +47,7 @@ namespace RimWorld
 				}
 				if (!space)
 				{
-					Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageNoSpace"), MessageTypeDefOf.NeutralEvent);
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageNoSpace"), MessageTypeDefOf.NeutralEvent);
 					return;
 				}
 				List<Thing> things = new List<Thing>();
@@ -87,7 +87,7 @@ namespace RimWorld
 				int bMax = mapComp.MaxSalvageWeightOnMap();
 				if (bCount > bMax)
 				{
-					Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", bCount, bMax), MessageTypeDefOf.NeutralEvent);
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageCount", bCount, bMax), MessageTypeDefOf.NeutralEvent);
 				}
 				else
 				{
@@ -107,7 +107,7 @@ namespace RimWorld
 					Log.Message("SOS2: ".Colorize(Color.cyan) + " fuel/req: " + fuel +"/"+req);
 					if (fuel > req)
 					{
-						Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeConfirm", targetMap.Parent.Label, req), delegate
+						Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablizeConfirm", targetMap.Parent.Label, req), delegate
 						{
 							foreach (CompEngineTrail engine in engines)
 							{
@@ -123,7 +123,7 @@ namespace RimWorld
 					}
 					else
 					{
-						Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeFuel", req), MessageTypeDefOf.NeutralEvent);
+						Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablizeFuel", req), MessageTypeDefOf.NeutralEvent);
 					}
 				}
 			}

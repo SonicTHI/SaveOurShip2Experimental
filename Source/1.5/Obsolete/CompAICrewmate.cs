@@ -6,7 +6,7 @@ using Verse;
 
 namespace RimWorld
 {
-	class CompAICrewmate : ThingComp
+	/*class CompAICrewmate : ThingComp
 	{
 		Pawn myPawn
 		{
@@ -49,5 +49,5 @@ namespace RimWorld
 		{
 			//TODO
 		}
-	}
+	}*/
 }

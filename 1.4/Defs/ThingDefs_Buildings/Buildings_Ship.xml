@@ -2158,9 +2158,13 @@
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 	</ThingDef>
+	<DesignatorDropdownGroupDef>
+		<defName>Ship_SalvageBays</defName>
+	</DesignatorDropdownGroupDef>
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipSalvageBay</defName>
 		<label>salvage bay</label>
+		<designatorDropdown>Ship_SalvageBays</designatorDropdown>
 		<graphicData>
 			<texPath>Things/Building/Ship/SalvageBay</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2209,6 +2213,7 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipSalvageBayNano</defName>
 		<label>glittertech salvage bay</label>
+		<designatorDropdown>Ship_SalvageBays</designatorDropdown>
 		<graphicData>
 			<texPath>Things/Building/Ship/SalvageBayNano</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2956,6 +2961,54 @@
 		<constructEffect>ConstructMetal</constructEffect>
 		<designationHotKey>Misc1</designationHotKey>
 		<fillPercent>0.0</fillPercent>
+		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
+	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>ShipAirlockBeamWallInert</defName>
+		<label>airlock wall</label>
+		<description>An airtight extended airlock wall.</description>
+		<thingClass>Building</thingClass>
+		<category>Building</category>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+		</graphicData>
+		<statBases>
+			<MaxHitPoints>50</MaxHitPoints>
+			<Flammability>0.0</Flammability>
+		</statBases>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<altitudeLayer>Building</altitudeLayer>
+		<passability>Impassable</passability>
+		<blockWind>true</blockWind>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>1</fillPercent>
+		<coversFloor>true</coversFloor>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
+		<tickerType>Never</tickerType>
+		<rotatable>false</rotatable>
+		<selectable>true</selectable>
+		<neverMultiSelect>true</neverMultiSelect>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<holdsRoof>true</holdsRoof>
+		<staticSunShadowHeight>1.0</staticSunShadowHeight>
+		<blockLight>true</blockLight>
+		<canOverlapZones>false</canOverlapZones>
+		<fertility>0</fertility>
+		<building>
+			<isInert>true</isInert>
+			<ai_chillDestination>false</ai_chillDestination>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<comps>
+			<li Class="CompProperties_SoShipPart">
+				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_SoShipDocking">
+			</li>
+		</comps>
 		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
 	</ThingDef>
 	<!-- blueprints -->

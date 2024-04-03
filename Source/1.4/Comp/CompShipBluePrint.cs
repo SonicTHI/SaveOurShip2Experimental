@@ -26,8 +26,8 @@ namespace RimWorld
                 {
                     SpawnShipDefBlueprint(Props.shipDef, this.parent.Position, this.parent.Map, 1);
                 },
-                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipBlueprintPlace1"),
-                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipBlueprintPlace1Desc"),
+                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.BlueprintPlace1"),
+                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.BlueprintPlace1Desc"),
                 icon = ContentFinder<Texture2D>.Get("Things/Building/Ship/HullPlate")
             };
             Command_Action place2 = new Command_Action
@@ -37,8 +37,8 @@ namespace RimWorld
                 {
                     SpawnShipDefBlueprint(Props.shipDef, this.parent.Position, this.parent.Map, 2);
                 },
-                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipBlueprintPlace2"),
-                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipBlueprintPlace2Desc"),
+                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.BlueprintPlace2"),
+                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.BlueprintPlace2Desc"),
                 icon = ContentFinder<Texture2D>.Get("Things/Building/Ship/ShipBeamModular_east")
             };
             Command_Action place3 = new Command_Action
@@ -48,15 +48,15 @@ namespace RimWorld
                 {
                     SpawnShipDefBlueprint(Props.shipDef, this.parent.Position, this.parent.Map, 3);
                 },
-                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipBlueprintPlace3"),
-                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipBlueprintPlace3Desc"),
+                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.BlueprintPlace3"),
+                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.BlueprintPlace3Desc"),
                 icon = ContentFinder<Texture2D>.Get("Things/Building/Ship/Ship_Bridge_Mini_south")
             };
             if (!ResearchProjectDef.Named("ShipBasics").IsFinished)
             {
-                place1.Disable(TranslatorFormattedStringExtensions.Translate("ShipBlueprintDisabled"));
-                place2.Disable(TranslatorFormattedStringExtensions.Translate("ShipBlueprintDisabled"));
-                place3.Disable(TranslatorFormattedStringExtensions.Translate("ShipBlueprintDisabled"));
+                place1.Disable(TranslatorFormattedStringExtensions.Translate("SoS.BlueprintDisabled"));
+                place2.Disable(TranslatorFormattedStringExtensions.Translate("SoS.BlueprintDisabled"));
+                place3.Disable(TranslatorFormattedStringExtensions.Translate("SoS.BlueprintDisabled"));
             }
             yield return place1;
             yield return place2;
@@ -119,7 +119,7 @@ namespace RimWorld
                 RoofDef roof = map.roofGrid.RoofAt(v);
                 if (!v.InBounds(map) || v.InNoBuildEdgeArea(map) || (roof != null && roof.isThickRoof) || !v.GetTerrain(map).affordances.Contains(TerrainAffordanceDefOf.Heavy) || v.Fogged(map) || v.GetThingList(map).Any(t => t is Building b && b.Faction != Faction.OfPlayer))
                 {
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipBlueprintFailed"), parent, MessageTypeDefOf.NegativeEvent);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.BlueprintFailed"), parent, MessageTypeDefOf.NegativeEvent);
                     return;
                 }
             }

@@ -46,7 +46,7 @@ namespace RimWorld
                 float bCountF = ship.BuildingCount * 2.5f;
                 if (bCountF > bMax) //moving this ship with another ship //td compare size, check bays and fuel
                 {
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
                     return;
                 }
                 ship.CreateShipSketch(sourceMap, rotb);
@@ -113,7 +113,7 @@ namespace RimWorld
             float bCountF = bCount * 2.5f;
             if (salvage && bCountF > bMax)
             {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipSalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
                 cachedParts.Clear();
                 positions.Clear();
                 return;

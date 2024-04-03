@@ -437,14 +437,14 @@ namespace RimWorld
 							Find.WindowStack.Add(menu);
 						}
 					},
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechCommandSoothe"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandSootheDesc", fieldCostSoothe),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechSoothe"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechSootheDesc", fieldCostSoothe),
 					icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandSoothe")
 				};
 				if (fieldStrength < fieldCostSoothe)
 				{
 					GenerateSoothe.disabled = true;
-					GenerateSoothe.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNotEnoughFieldStrength");
+					GenerateSoothe.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechFieldStrengthLow");
 				}
 				giz.Add(GenerateSoothe);
 				Command_Action shockABrain = new Command_Action
@@ -466,14 +466,14 @@ namespace RimWorld
 							Find.WindowStack.Add(menu);
 						}
 					},
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechCommandShock"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandShockDesc", fieldCostShock),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechShock"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechShockDesc", fieldCostShock),
 					icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandShock")
 				};
 				if (fieldStrength < fieldCostShock)
 				{
 					shockABrain.disabled = true;
-					shockABrain.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNotEnoughFieldStrength");
+					shockABrain.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechFieldStrengthLow");
 				}
 				giz.Add(shockABrain);
 				Command_Action insaneInTheBrain = new Command_Action
@@ -495,14 +495,14 @@ namespace RimWorld
 							Find.WindowStack.Add(menu);
 						}
 					},
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechCommandInsanity"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandInsanityDesc", fieldCostInsanity),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechInsanity"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechInsanityDesc", fieldCostInsanity),
 					icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandInsanity")
 				};
 				if (fieldStrength < fieldCostInsanity)
 				{
 					insaneInTheBrain.disabled = true;
-					insaneInTheBrain.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNotEnoughFieldStrength");
+					insaneInTheBrain.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechFieldStrengthLow");
 				}
 				giz.Add(insaneInTheBrain);
 			}
@@ -535,14 +535,14 @@ namespace RimWorld
 							Find.WindowStack.Add(menu);
 						}
 					},
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechCommandPsylink"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechCommandPsylinkDesc", fieldCostPsylink),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechPsylink"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechPsylinkDesc", fieldCostPsylink),
 					icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandPsylink")
 				};
 				if (fieldStrength < fieldCostPsylink)
 				{
 					formPsylink.disabled = true;
-					formPsylink.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNotEnoughFieldStrength");
+					formPsylink.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechFieldStrengthLow");
 				}
 				giz.Add(formPsylink);
 			}
@@ -567,8 +567,8 @@ namespace RimWorld
 						{
 							GiftParticles = !GiftParticles;
 						},
-						defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechSporeGiftParticles"),
-						defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechSporeGiftParticlesDesc"),
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechGiftParticles"),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechGiftParticlesDesc"),
 						icon = ContentFinder<Texture2D>.Get("UI/ExoticParticles"),
 						isActive = () => GiftParticles
 					};
@@ -581,18 +581,18 @@ namespace RimWorld
 						MakeGift(5);
 						Consciousness.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named("ArchotechSporeGiftDemanded"));
 					},
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechDemandGift"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechDemandGiftDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechDemandGift"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechDemandGiftDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/Buttons/GiftMode")
 				};
 				if (!anyGiftsUnlocked)
 				{
 					demandGift.disabled = true;
-					demandGift.disabledReason = TranslatorFormattedStringExtensions.Translate("ArchotechNoGiftsUnlocked");
+					demandGift.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechNoGiftsUnlocked");
 				}
 				giz.Add(demandGift);*/
 			}
-			
+
 			if (NumConnectedPillars>=4)
 			{
 				Command_Action winGame = new Command_Action
@@ -676,8 +676,8 @@ namespace RimWorld
 						dialog_NodeTree.closeOnCancel = true;
 						Find.WindowStack.Add(dialog_NodeTree);
 					},
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechSporeEvolve"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechSporeEvolveDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechEvolve"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechEvolveDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/Glitterworld_end_icon")
 				};
 				giz.Add(winGame);

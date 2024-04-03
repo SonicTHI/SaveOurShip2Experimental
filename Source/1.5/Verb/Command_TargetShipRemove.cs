@@ -42,7 +42,7 @@ namespace RimWorld
 				if (!positions.Any())
 					return;
 			}
-			Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ShipSalvageAbandonConfirm"), delegate
+			Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("SoS.SalvageAbandonConfirm"), delegate
 			{
 				ShipInteriorMod2.RemoveShipOrArea(targetMap, index, positions);
 			}));

@@ -36,8 +36,8 @@ namespace RimWorld
 						sourceMap = parent.Map,
 						targetMap = map,
 						icon = ContentFinder<Texture2D>.Get("UI/SalvageShip"),
-						defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageCommand", map.Parent.Label),
-						defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageCommandDesc", map.Parent.Label)
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SalvageCommand", map.Parent.Label),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageCommandDesc", map.Parent.Label)
 					};
 					if (Props.beam && (parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? false))
 					{
@@ -47,13 +47,13 @@ namespace RimWorld
 							sourceMap = parent.Map,
 							targetMap = map,
 							mode = SelectShipMapMode.scoop,
-							defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageBeam", map.Parent.Label),
-							defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageBeamDesc", map.Parent.Label),
+							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SalvageBeam", map.Parent.Label),
+							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageBeamDesc", map.Parent.Label),
 							icon = ContentFinder<Texture2D>.Get("UI/SalvageBeam")
 						};
 						if (mapComp.ShipMapState != ShipMapState.nominal)
 						{
-							beam.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+							beam.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 						}
 						yield return beam;
 					}
@@ -63,14 +63,14 @@ namespace RimWorld
 						sourceMap = parent.Map,
 						targetMap = map,
 						mode = SelectShipMapMode.stabilize,
-						defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipSalvageStablize", map.Parent.Label),
-						defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipSalvageStablizeDesc", map.Parent.Label),
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablize", map.Parent.Label),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablizeDesc", map.Parent.Label),
 						icon = ContentFinder<Texture2D>.Get("UI/StabilizeShip")
 					};
 					if (mapComp.ShipMapState != ShipMapState.nominal)
 					{
-						retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
-						stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
+						retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
+						stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 					}
 					yield return retrieveShipEnemy;
 					yield return stablizeShipEnemy;
@@ -82,8 +82,8 @@ namespace RimWorld
 					sourceMap = this.parent.Map,
 					targetMap = this.parent.Map,
 					icon = ContentFinder<Texture2D>.Get("UI/SalvageMove"),
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckCommand"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckCommandDesc")
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveWreckCommand"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveWreckCommandDesc")
 				};
 				Command_TargetWreck moveWreckFlip = new Command_TargetWreck
 				{
@@ -93,8 +93,8 @@ namespace RimWorld
 					targetMap = this.parent.Map,
 					rotb = 2,
 					icon = ContentFinder<Texture2D>.Get("UI/SalvageMoveFlip"),
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckFlipCommand"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckFlipCommandDesc")
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveWreckFlipCommand"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveWreckFlipCommandDesc")
 				};
 				Command_TargetWreck moveWreckRot = new Command_TargetWreck
 				{
@@ -104,8 +104,8 @@ namespace RimWorld
 					targetMap = this.parent.Map,
 					rotb = 1,
 					icon = ContentFinder<Texture2D>.Get("UI/SalvageMoveRot"),
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckRotCommand"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipMoveWreckRotCommandDesc")
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveWreckRotCommand"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveWreckRotCommandDesc")
 				};
 				Command_Action claim = new Command_Action
 				{
@@ -113,8 +113,8 @@ namespace RimWorld
 					{
 						Claim();
 					},
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommand"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksCommandDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksCommand"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksCommandDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/SalvageClaim")
 				};
 				Command_TargetShipRemove removeTargetWreck = new Command_TargetShipRemove
@@ -123,17 +123,17 @@ namespace RimWorld
 					groupable = false,
 					targetMap = this.parent.Map,
 					position = this.parent.Position,
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommand"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRemoveWrecksCommandDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecksCommand"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecksCommandDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")
 				};
 				if (mapComp.ShipMapState != ShipMapState.nominal || GenHostility.AnyHostileActiveThreatToPlayer(parent.Map))
 				{
-					moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
-					moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
-					moveWreckRot.Disable(TranslatorFormattedStringExtensions.Translate("ShipSalvageDisabled"));
-					claim.Disable(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksDisabled"));
-					removeTargetWreck.Disable(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksDisabled"));
+					moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
+					moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
+					moveWreckRot.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
+					claim.Disable(TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksDisabled"));
+					removeTargetWreck.Disable(TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksDisabled"));
 				}
 				yield return moveWreck;
 				yield return moveWreckFlip;
@@ -163,7 +163,7 @@ namespace RimWorld
 						s.settings.filter.SetDisallowAll();
 					b.SetFaction(Faction.OfPlayer);
 				}
-				Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipClaimWrecksSuccess", buildings.Count), parent, MessageTypeDefOf.PositiveEvent);
+				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksSuccess", buildings.Count), parent, MessageTypeDefOf.PositiveEvent);
 			}
 			//remove floating tiles
 			foreach (Thing t in things)
@@ -178,7 +178,7 @@ namespace RimWorld
 		public override string CompInspectStringExtra()
 		{
 			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.Append("ShipSalvageBase".Translate());
+			stringBuilder.Append("SoS.SalvageBase".Translate());
 			return stringBuilder.ToString();
 			//return base.CompInspectStringExtra();
 		}

@@ -187,8 +187,8 @@ namespace RimWorld
                 {
                     yield return new Command_Action
                     {
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideAbandonHome"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideAbandonHomeDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.AbandonHome"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.AbandonHomeDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/ShipAbandon_Icon", true),
                         action = delegate
                         {
@@ -205,7 +205,7 @@ namespace RimWorld
                                 int initialTile = (int)Traverse.Create(obj).Field("initialTile").GetValue();
                                 if (initialTile == this.Tile || obj.destinationTile == this.Tile)
                                 {
-                                    Messages.Message(TranslatorFormattedStringExtensions.Translate("CommandScuttleShipPods"), this, MessageTypeDefOf.NeutralEvent);
+                                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.ScuttleShipPods"), this, MessageTypeDefOf.NeutralEvent);
                                     return;
                                 }
                             }
@@ -247,8 +247,8 @@ namespace RimWorld
                             {
                                 orbitalMove = -1;
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveWest"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveWestDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveWest"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveWestDesc"),
                             hotKey = KeyBindingDefOf.Misc2,
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_On_slow", true)
                         };
@@ -258,8 +258,8 @@ namespace RimWorld
                             {
                                 orbitalMove = 0;
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveStop"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveStopDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveStop"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveStopDesc"),
                             hotKey = KeyBindingDefOf.Misc1,
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Stop", true)
                         };
@@ -269,8 +269,8 @@ namespace RimWorld
                             {
                                 orbitalMove = 1;
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveEast"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveEastDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveEast"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveEastDesc"),
                             hotKey = KeyBindingDefOf.Misc3,
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_On_slow_rev", true)
                         };
@@ -315,8 +315,8 @@ namespace RimWorld
                         {
                             mapComp.ShipMapState = ShipMapState.burnUpSet;
                         },
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLeaveGraveyard"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideLeaveGraveyardDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.LeaveGraveyard"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.LeaveGraveyardDesc"),
                         hotKey = KeyBindingDefOf.Misc5,
                         icon = ContentFinder<Texture2D>.Get("UI/ShipAbandon_Icon", true)
                     };

@@ -57,7 +57,7 @@ namespace RimWorld
                     }
                     if (turnedOff)
                     {
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCloakBroken"), this, MessageTypeDefOf.NegativeEvent);
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CloakBroken"), this, MessageTypeDefOf.NegativeEvent);
                     }
                 }
             }

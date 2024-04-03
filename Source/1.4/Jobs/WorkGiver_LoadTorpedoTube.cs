@@ -31,7 +31,7 @@ namespace RimWorld
             }
             if (building_Tube.torpComp.FullyLoaded)
             {
-                JobFailReason.Is(Translator.Translate("shipTubeFullyLoaded"), (string)null);
+                JobFailReason.Is(TranslatorFormattedStringExtensions.Translate("SoS.TorpedoFullyLoaded"), (string)null);
                 return false;
             }
             if (FireUtility.IsBurning(t))
@@ -40,7 +40,7 @@ namespace RimWorld
             }
             if (FindAmmo(pawn, building_Tube) == null)
             {
-                JobFailReason.Is(Translator.Translate("shipNoTorpedoes"), (string)null);
+                JobFailReason.Is(TranslatorFormattedStringExtensions.Translate("SoS.TorpedoNone"), (string)null);
                 return false;
             }
             return true;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -13,7 +14,7 @@ namespace RimWorld
 		{
 			CompShipHeat heat = base.Launcher.TryGetComp<CompShipHeat>();
 			base.Impact(hitThing);
-			ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
+			ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipCombatLaserMote);
 			obj.origin = this.origin;
 			if (hitThing != null)
 				obj.destination = hitThing.DrawPos;

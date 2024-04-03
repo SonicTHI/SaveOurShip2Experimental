@@ -23,7 +23,7 @@ namespace RimWorld
 					engineprev = mapComp.ShipsOnMapNew.Values.First(s => s.Engines.Any()).Engines.First();
 			}
 			if (engineprev != null && engineprev.parent.Rotation != rot)
-				return AcceptanceReport.WasRejected;
+				return (AcceptanceReport)TranslatorFormattedStringExtensions.Translate("SoS.EnginePlaceRotation");
 			return AcceptanceReport.WasAccepted;
 		}
 		public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, Color ghostCol, Thing thing = null)

@@ -7,7 +7,7 @@ using Verse;
 
 namespace RimWorld
 {
-	public class HediffCompProperties_GiveSubPart : HediffCompProperties
+	/*public class HediffCompProperties_GiveSubPart : HediffCompProperties
 	{
 		public HediffDef hediffDef;
 		public BodyPartDef whereToInstall;
@@ -16,5 +16,5 @@ namespace RimWorld
 		{
 			compClass = typeof(HediffComp_GiveSubPart);
 		}
-	}
+	}*/
 }

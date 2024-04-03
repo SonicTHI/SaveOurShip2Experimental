@@ -32,10 +32,10 @@ namespace RimWorld
 		}
 
 		public Alert_ArchotechSporeMoodLow()
-		{
-			defaultLabel = "ArchotechSporeMoodLow".Translate();
-			defaultExplanation = ModsConfig.RoyaltyActive ? "ArchotechSporeMoodLowDesc".Translate() : "ArchotechSporeMoodLowDescNoRoyalty".Translate();
-		}
+        {
+            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLow");
+            defaultExplanation = ModsConfig.RoyaltyActive ? TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLowDesc") : TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLowNoRoyDesc");
+        }
 
 		public override AlertReport GetReport()
 		{

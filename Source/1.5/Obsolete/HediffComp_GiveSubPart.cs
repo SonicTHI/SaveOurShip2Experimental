@@ -7,7 +7,7 @@ using Verse;
 
 namespace RimWorld
 {
-	class HediffComp_GiveSubPart : HediffComp
+	/*class HediffComp_GiveSubPart : HediffComp
 	{
 		private HediffCompProperties_GiveSubPart Props => (HediffCompProperties_GiveSubPart)props;
 
@@ -23,5 +23,5 @@ namespace RimWorld
 			}
 			parent.pawn.health.AddHediff(Props.hediffDef, parent.pawn.RaceProps.body.GetPartsWithDef(Props.whereToInstall).FirstOrDefault());
 		}
-	}
+	}*/
 }

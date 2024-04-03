@@ -98,12 +98,12 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
         }
-        public const string SOS2EXPversion = "V99f2";
+        public const string SOS2EXPversion = "V99f3";
         public const int SOS2ReqCurrentMinor = 4;
         public const int SOS2ReqCurrentBuild = 3704;
 
         public const float altitudeNominal = 1000f; //nominal altitude for ship map background render
-        public const float altitudeLand = 130f; //min altitude for ship map background render
+        public const float altitudeLand = 110f; //min altitude for ship map background render
         public const float crittersleepBodySize = 0.7f;
 
         public static bool loadedGraphics = false;
@@ -131,7 +131,8 @@ namespace SaveOurShip2
         public static RoofDef[] compatibleAirtightRoofs; // Additional array of compatible RoofDefs from other mods.
 		public static TerrainDef[] rockTerrains; // Contains terrain types that are considered a "rock".
 		public static string[] allowedQuests;
-		public static List<ThingDef> randomPlants;
+        public static string[] allowedToObserve;
+        public static List<ThingDef> randomPlants;
 		public static Dictionary<ThingDef, ThingDef> wreckDictionary;
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -157,6 +158,7 @@ namespace SaveOurShip2
             options.Label("SoS.Settings.OffsetUIy".Translate(), -1f, "SoS.Settings.OffsetUIy.Desc".Translate());
             string bufferY = offsetUIy.ToString();
             options.TextFieldNumeric<int>(ref offsetUIy, ref bufferY, int.MinValue, int.MaxValue);
+            options.Gap();
             options.Gap();
             options.Label("SoS.Settings.Misc".Translate());
             options.GapLine();
@@ -283,6 +285,14 @@ namespace SaveOurShip2
 				"VFEA_OpportunitySite_SealedVault",
 				"VFEM_OpportunitySite_LootedVault"
 			};
+            allowedToObserve = new string[]
+            {
+				"Settlement",
+				"MoonPillarSite",
+				"TribalPillarSite",
+				"ShipEngineImpactSite",
+				"EscapeShip"
+            };
             //shuttle, archolife cosmetics
             if (!loadedGraphics)
             {
@@ -1663,10 +1673,11 @@ namespace SaveOurShip2
             mapPar.originDrawPos = originMap.Parent.DrawPos;
             mapPar.targetDrawPos = mapPar.NominalPos;
             mapComp.Heading = 1;
-            mapComp.Altitude = altitudeLand - 20; //startup altitude
+            mapComp.Altitude = altitudeLand; //startup altitude
             mapComp.Takeoff = true;
 
-			//vars2
+            //vars2
+            mapComp.BurnTimer = Find.TickManager.TicksGame;
             mapComp.PrevMap = originMap;
             mapComp.PrevTile = originMap.Tile;
             mapComp.EnginesOn = true;
@@ -1819,6 +1830,10 @@ namespace SaveOurShip2
                                 toSave.AddRange(transportComp.innerContainer.ToList());
                                 transportComp.CancelLoad();
                             }
+                            else if (b is Building_NutrientPasteDispenser n)
+                            {
+                                n.cachedAdjCellsCardinal = null;
+                            }
                         }
                     }
                     else if (t is Pawn p)
@@ -1827,13 +1842,13 @@ namespace SaveOurShip2
                         if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
                         {
                             //do not allow kidnapping other fac pawns/animals
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipLaunchFailPawns", p.Name.ToStringShort), null, MessageTypeDefOf.NegativeEvent);
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.LaunchFailPawns", p.Name.ToStringShort), null, MessageTypeDefOf.NegativeEvent);
                             return;
                         }
                         /*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
                         {
 							Log.Message("Pawn holding thing: " + p.holdingOwner);
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipMoveFailPawns", p.holdingOwner.Owner.ToString()), null, MessageTypeDefOf.NegativeEvent);
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPawns", p.holdingOwner.Owner.ToString()), null, MessageTypeDefOf.NegativeEvent);
                             return;
                         }*/
                     }
@@ -1877,13 +1892,20 @@ namespace SaveOurShip2
                     targetMap.areaManager.Home[adjustedPos] = true;
                 }
             }
-            if (!targetMapIsSpace) //clear ground map of all floors (would be beter to store it and load it on takeoff)
+            if (!targetMapIsSpace)
             {
+                foreach (IntVec3 pos in targetArea) //check since placeworker ignores this
+                {
+                    if (pos.Fogged(targetMap))
+					{
+						return;
+					}
+                }
                 foreach (IntVec3 pos in targetArea)
                 {
                     targetMap.terrainGrid.RemoveTopLayer(pos, false);
                 }
-                if (clearArea)
+                if (clearArea) //clear ground map of all floors (would be beter to store it and load it on takeoff)
                 {
                     foreach (IntVec3 pos in targetArea)
                     {
@@ -1902,6 +1924,13 @@ namespace SaveOurShip2
                 {
                     foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, new IntVec2(1, 1)).Where(v => !targetArea.Contains(v) && targetMapComp.MapShipCells.ContainsKey(v)))
                     {
+                        var adjShip = targetMapComp.ShipsOnMapNew[targetMapComp.ShipIndexOnVec(vec)];
+                        //if non fac ship near, abort
+                        if (adjShip.Faction != ship.Faction)
+                        {
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailFaction"), null, MessageTypeDefOf.NegativeEvent);
+                            return;
+                        }
                         shipIndexes.Add(targetMapComp.MapShipCells[vec].Item1);
                     }
                 }
@@ -1955,9 +1984,9 @@ namespace SaveOurShip2
                     {
                         fuelNeeded *= 0.1f;
                         if (fuelNeeded > fuelStored)
-                        {
                             weBeCrashing = fuelStored / fuelNeeded;
-                        }
+                        else if (!ship.CanMove())
+                            weBeCrashing = 1f;
                     }
                 }
                 else //to space 50% initial

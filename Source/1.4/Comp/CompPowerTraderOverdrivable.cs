@@ -109,28 +109,28 @@ namespace RimWorld
             {
                 Command_Toggle command_Toggle = new Command_Toggle();
                 command_Toggle.icon = CommandTex1;
-                command_Toggle.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipReactorOverdrive");
-                command_Toggle.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipReactorOverdriveDesc");
-                command_Toggle.isActive = (() => overdriveSetting == 1);
-                command_Toggle.toggleAction = delegate
-                {
-                    FlickOverdrive(1);
-                };
-                yield return command_Toggle;
-                Command_Toggle command_Toggle2 = new Command_Toggle();
-                command_Toggle2.icon = CommandTex2;
-                command_Toggle2.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipReactorOverdrive2");
-                command_Toggle2.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipReactorOverdrive2Desc");
-                command_Toggle2.isActive = (() => overdriveSetting == 2);
-                command_Toggle2.toggleAction = delegate
-                {
-                    FlickOverdrive(2);
-                };
-                yield return command_Toggle2;
-                Command_Toggle command_Toggle3 = new Command_Toggle();
-                command_Toggle3.icon = CommandTex3;
-                command_Toggle3.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipReactorOverdrive3");
-                command_Toggle3.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipReactorOverdrive3Desc");
+				command_Toggle.defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ReactorOverdrive");
+				command_Toggle.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ReactorOverdriveDesc");
+				command_Toggle.isActive = (() => overdriveSetting == 1);
+				command_Toggle.toggleAction = delegate
+				{
+					FlickOverdrive(1);
+				};
+				yield return command_Toggle;
+				Command_Toggle command_Toggle2 = new Command_Toggle();
+				command_Toggle2.icon = CommandTex2;
+				command_Toggle2.defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ReactorOverdrive2");
+				command_Toggle2.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ReactorOverdrive2Desc");
+				command_Toggle2.isActive = (() => overdriveSetting == 2);
+				command_Toggle2.toggleAction = delegate
+				{
+					FlickOverdrive(2);
+				};
+				yield return command_Toggle2;
+				Command_Toggle command_Toggle3 = new Command_Toggle();
+				command_Toggle3.icon = CommandTex3;
+				command_Toggle3.defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ReactorOverdrive3");
+				command_Toggle3.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ReactorOverdrive3Desc");
                 command_Toggle3.isActive = (() => overdriveSetting == 3);
                 command_Toggle3.toggleAction = delegate
                 {

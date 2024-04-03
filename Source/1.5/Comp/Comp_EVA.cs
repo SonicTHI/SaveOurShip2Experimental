@@ -7,7 +7,7 @@ namespace SaveOurShip2
 	{
 		public override string GetDescriptionPart()
 		{
-			return "SOS.EVACapable".Translate();
+			return "SoS.EVACapable".Translate();
 		}
 	}
 }

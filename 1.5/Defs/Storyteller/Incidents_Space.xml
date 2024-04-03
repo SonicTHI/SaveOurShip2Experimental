@@ -8,7 +8,7 @@
 			<li>Map_SpaceHome</li>
 		</targetTags>
 		<workerClass>IncidentWorker_ShipCombat</workerClass>
-		<baseChance>1</baseChance>
+		<baseChance>2</baseChance>
 		<category>ThreatBig</category>
 		<pointsScaleable>true</pointsScaleable>
 		<tale>ShipCombat</tale>
@@ -38,8 +38,8 @@
 		<letterLabel>Space debris</letterLabel>
 		<letterText>Ship has entered a debris field. Engage engines to evade or brace for impact!</letterText>
 		<letterDef>ThreatSmall</letterDef>
-		<baseChance>0.4</baseChance>
-		<minRefireDays>30</minRefireDays>
+		<baseChance>0.5</baseChance>
+		<minRefireDays>25</minRefireDays>
 		<disabledWhen>
     </disabledWhen>
 		<durationDays>0.075~0.1</durationDays>
@@ -54,8 +54,8 @@
 			<li>Map_SpaceHome</li>
 		</targetTags>
 		<workerClass>IncidentWorker_SpacePod</workerClass>
-		<baseChance>0.4</baseChance>
-		<minRefireDays>30</minRefireDays>
+		<baseChance>1</baseChance>
+		<minRefireDays>20</minRefireDays>
 		<letterLabel>Transport pod found</letterLabel>
 		<letterText>A transport pod has been discovered nearby. Do you want to recover it with your salvage bay?</letterText>
 		<letterDef>AcceptSpacePod</letterDef>

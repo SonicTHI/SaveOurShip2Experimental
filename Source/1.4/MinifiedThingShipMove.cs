@@ -81,11 +81,12 @@ namespace RimWorld
                         {
                             mapPar.targetDrawPos = ShipInteriorMod2.FindPlayerShipMap().Parent.DrawPos;
                             mapComp.Heading = 1;
-                            mapComp.Altitude = ShipInteriorMod2.altitudeLand - 20; //startup altitude
+                            mapComp.Altitude = ShipInteriorMod2.altitudeLand; //startup altitude
                             mapComp.Takeoff = true;
                         }
 
                         //vars2
+                        mapComp.BurnTimer = Find.TickManager.TicksGame;
                         mapComp.PrevMap = originMap;
                         mapComp.PrevTile = originMap.Tile;
                         mapComp.EnginesOn = true;
@@ -110,11 +111,6 @@ namespace RimWorld
                 return;
             }
             Graphic.Draw(drawLoc, Rot4.South, this, 0f);
-        }
-
-        public override string GetInspectString()
-        {
-            return TranslatorFormattedStringExtensions.Translate("ShipMoveDesc");
         }
     }
 }

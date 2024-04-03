@@ -26,7 +26,7 @@ namespace RimWorld
                     }
 				}
 				if (!hasPlating)
-					return new AcceptanceReport(TranslatorFormattedStringExtensions.Translate("MustPlaceOnShipHull"));
+					return new AcceptanceReport(TranslatorFormattedStringExtensions.Translate("SoS.PlaceOnShipHull"));
 			}
 			return true;
 		}

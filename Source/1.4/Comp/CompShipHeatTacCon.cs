@@ -44,8 +44,8 @@ namespace RimWorld
                             h.parent.TryGetComp<CompFlickable>().SwitchIsOn = !anyCloakOn;
                         }
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleCloak"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleCloakDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ToggleCloak"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ToggleCloakDesc"),
                     isActive = () => anyCloakOn
                 };
                 if (anyCloakOn)
@@ -66,8 +66,8 @@ namespace RimWorld
                             b.flickComp.SwitchIsOn = !anyShieldOn;
                         }
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleShields"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleShieldsDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ToggleShields"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ToggleShieldsDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/Shield_On"),
                     isActive = () => anyShieldOn
                 };
@@ -103,8 +103,8 @@ namespace RimWorld
                         Find.Selector.Select(h.parent);
                     }
                 },
-                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideSelectWeapons"),
-                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideSelectWeaponsDesc"),
+                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SelectWeapons"),
+                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SelectWeaponsDesc"),
                 icon = ContentFinder<Texture2D>.Get("UI/Select_All_Weapons_Icon")
             };
             yield return selectWeapons;
@@ -137,8 +137,8 @@ namespace RimWorld
                         ((Building_ShipTurret)h.parent).ResetForcedTarget();
                     }
                 },
-                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideHoldFire"),
-                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideHoldFireDesc"),
+                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.HoldFire"),
+                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.HoldFireDesc"),
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/HoldFire")
             };
             yield return ceaseFire;
@@ -176,8 +176,8 @@ namespace RimWorld
                             Find.Selector.Select(h.parent);
                         }
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideSelectWeapons"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideSelectWeaponsDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SelectWeapons"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SelectWeaponsDesc"),
                     icon = ((ThingDef)def).uiIcon
                 };
                 yield return select;

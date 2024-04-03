@@ -33,8 +33,8 @@ namespace RimWorld
 			{
 				giz.Add(new Command_Action
 				{
-					defaultLabel = "SoSScanMap".Translate(),
-					defaultDesc = "SoSScanMapDesc".Translate(),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ScanMap"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ScanMapDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/ScanMap", true),
 					action = delegate
 					{
@@ -46,8 +46,8 @@ namespace RimWorld
 				{
 					giz.Add(new Command_Action
 					{
-						defaultLabel = "SoSStopScanMap".Translate(),
-						defaultDesc = "SoSStopScanMapDesc".Translate(observedMap),
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ScanMapStop"),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ScanMapStopDesc", observedMap),
 						icon = ContentFinder<Texture2D>.Get("UI/StopScanMap", true),
 						action = delegate
 						{
@@ -63,7 +63,7 @@ namespace RimWorld
 		private bool ChoseWorldTarget(GlobalTargetInfo target)
 		{
 			PossiblyDisposeOfObservedMap();
-			if (target.WorldObject != null && target.WorldObject is MapParent p && (p.def.defName.Contains("Settlement") || p.def.defName.Contains("MoonPillarSite") || p.def.defName.Contains("TribalPillarSite") || p.def.defName.Contains("ShipEngineImpactSite")))
+			if (target.WorldObject != null && target.WorldObject is MapParent p && ShipInteriorMod2.allowedToObserve.Contains(p.def.defName))
 			{
 				observedMap = (MapParent)target.WorldObject;
 				LongEventHandler.QueueLongEvent(delegate

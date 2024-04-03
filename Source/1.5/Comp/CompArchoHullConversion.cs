@@ -145,8 +145,8 @@ namespace RimWorld
 						OptimizeMatter = !OptimizeMatter;
 					},
 					isActive = () => OptimizeMatter,
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("ArchotechOptimizeMatter"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("ArchotechOptimizeMatterDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechOptimizeMatter"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechOptimizeMatterDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/ArchotechCommandOptimize")
 				});
 			}

@@ -138,20 +138,26 @@ namespace RimWorld
 						map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
 				}
 			}
+
+			HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
 			foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
 			{
 				if (!mapComp.MapShipCells.ContainsKey(vec))
 				{
 					mapComp.MapShipCells.Add(vec, new Tuple<int, int>(-1, -1));
 				}
+				else
+				{
+					cellsToMerge.Add(vec);
+				}
 			}
-			if (mapComp.CacheOff) //on load - cache is off
+			if (mapComp.CacheOff) //on mapinit - cache is off
 			{
+				cellsToMerge.Clear();
 				return;
 			}
 			//plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this
 			//plating or shipPart with different or no shipIndex: merge connected to this ship
-			HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
 			foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(parent))
 			{
 				if (!mapComp.MapShipCells.ContainsKey(vec))

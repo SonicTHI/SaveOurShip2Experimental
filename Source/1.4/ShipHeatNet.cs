@@ -20,14 +20,14 @@ namespace RimWorld
         public HashSet<Building_ShipBridge> TacCons = new HashSet<Building_ShipBridge>();
         public HashSet<Building_ShipBridge> PilCons = new HashSet<Building_ShipBridge>();
         public int GridID;
-        public float StorageCapacity //usable capacity
+        public float StorageCapacity //usable capacity (minus depletion)
         { 
             get
             {
                 return StorageCapacityRaw * (1 - DepletionRatio);
             }
         }
-        public float StorageCapacityRaw //total capacity
+        public float StorageCapacityRaw //max capacity
         {
             get;
             private set;
@@ -39,30 +39,9 @@ namespace RimWorld
 
         private bool ratioDirty = true; //if we add/rem heat, etc
         private bool depletionDirty = true; //Depletion has been added/removed
-        private float ratioInNetwork = 0;
         private float depletionRatio = 0;
-        public float RatioInNetworkRaw
-        {
-            get
-            {
-                if (ratioDirty)
-                {
-                    if (float.IsNaN(StorageUsed))
-                    {
-                        Log.Warning("NaN prevented in RatioInNetwork!");
-                        StorageUsed = 0;
-                    }
-                    if (StorageCapacityRaw <= 0)
-                    {
-                        ratioDirty = false;
-                        return StorageCapacityRaw = 0;
-                    }
-                    ratioInNetwork = Mathf.Clamp(StorageUsed / StorageCapacityRaw, 0, 1);
-                    ratioDirty = false;
-                }
-                return ratioInNetwork;
-            }
-        }
+        private float ratioInNetwork = 0; //ratio in usable capacity
+        public float RatioInNetworkRaw = 0; //ratio from max
         public float RatioInNetwork
         {
             get
@@ -80,6 +59,7 @@ namespace RimWorld
                         return StorageCapacityRaw = 0;
                     }
                     ratioInNetwork = Mathf.Clamp(StorageUsed / StorageCapacity, 0, 1);
+                    RatioInNetworkRaw = Mathf.Clamp(StorageUsed / StorageCapacityRaw, 0, 1);
                     ratioDirty = false;
                 }
                 return ratioInNetwork;

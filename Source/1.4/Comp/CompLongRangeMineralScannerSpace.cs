@@ -253,8 +253,8 @@ namespace RimWorld
                     {
                         scanSites = !scanSites;
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleScanSites"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleScanSitesDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ToggleScanSites"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ToggleScanSitesDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/shipChunk", true),
                     isActive = () => scanSites
                 };
@@ -265,8 +265,8 @@ namespace RimWorld
                     {
                         scanShips = !scanShips;
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleScanShips"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleScanShipsDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ToggleScanShips"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ToggleScanShipsDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/Map_Icon_Enemy", true),
                     isActive = () => scanShips
                 };

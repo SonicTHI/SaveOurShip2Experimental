@@ -23,7 +23,7 @@ namespace RimWorld
                 if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore")) //no archo before spore
                 {
                     myPawn.Destroy(DestroyMode.Vanish);
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSuddenDeath"), parent, MessageTypeDefOf.NeutralEvent);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.ArchoAnimalSuddenDeath"), parent, MessageTypeDefOf.NeutralEvent);
                     return;
                 }
                 if (myPawn.needs.food.CurLevel < myPawn.needs.food.MaxLevel)
@@ -45,7 +45,8 @@ namespace RimWorld
                         if (!hasSpore)
                         {
                             myPawn.Kill(new DamageInfo(DamageDefOf.Deterioration, 100f));
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("ArchoAnimalSporeDeath", parent), parent, MessageTypeDefOf.NegativeEvent);
+                            if (Messages.liveMessages.Count == 0)
+                                Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.ArchoAnimalSporeDeath", parent), parent, MessageTypeDefOf.NegativeEvent);
                             return;
                         }
                     }

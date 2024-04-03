@@ -43,7 +43,7 @@ namespace RimWorld
 				}
 			};
 			if (this.NotReadyToLaunch)
-				launch.Disable(TranslatorFormattedStringExtensions.Translate("CommandLaunchCryptoNotLoaded"));
+				launch.Disable(TranslatorFormattedStringExtensions.Translate("SoS.LaunchCryptoNotLoaded"));
 			if (!this.parent.Map.IsSpace())
 				launch.Disable();
 			yield return launch;

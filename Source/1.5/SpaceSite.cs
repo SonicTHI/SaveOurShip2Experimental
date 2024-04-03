@@ -69,7 +69,7 @@ namespace RimWorld.Planet
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.Append(base.GetInspectString());
 			stringBuilder.AppendLine();
-			stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SpaceSiteFuelCost",this.fuelCost));
+			stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.SpaceSiteFuelCost", this.fuelCost));
 			return stringBuilder.ToString();
 		}
 	}

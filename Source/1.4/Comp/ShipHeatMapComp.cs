@@ -49,8 +49,8 @@ namespace RimWorld
             {
                 return;
             }
-            //temp save heat to sinks
             //Log.Message("Recaching all heatnets");
+            //temp save heat to sinks
             foreach (ShipHeatNet net in cachedNets)
             {
                 foreach (CompShipHeatSink sink in net.Sinks)
@@ -705,20 +705,17 @@ namespace RimWorld
             }
             else //using player ship combat rating
             {
-                CR = MapThreat();
-                if (!fleet || passingShip == null)
-                    CR *= 0.9f;
-                if (!Prefs.DevMode && CR > 30)
-                {
-                    int daysPassed = GenDate.DaysPassedSinceSettle;
-                    if (daysPassed < 30) //reduce difficulty early on
-                        CR *= 0.6f;
-                    else if (daysPassed < 60)
-                        CR *= 0.8f;
-                }
-                CR *= Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.1f, 5f);
+                CR = MapThreat() * Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.1f, 5f);
                 if (CR < 30) //minimum rating
                     CR = 30;
+                else if (!Prefs.DevMode) //reduce difficulty early or at low rating
+                {
+                    int daysPassed = GenDate.DaysPassedSinceSettle;
+                    if (daysPassed < 30)
+                        CR *= 0.6f;
+                    else if (daysPassed < 60 || (CR < 500 && (!fleet || passingShip == null)))
+                        CR *= 0.8f;
+                }
                 if (CR > 100 && !fleet)
                 {
                     if (CR > 2500 && (float)ModSettings_SoS.fleetChance < 0.8f) //past this more fleets due to high CR
@@ -782,9 +779,9 @@ namespace RimWorld
                             shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<EnemyShipDef>.AllDefs.ToList(), CR, false, false);
                     }
                     if (shipDef != null)
-                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.CombatStart"), TranslatorFormattedStringExtensions.Translate("SoS.CombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
                     else
-                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipCombatStart"), TranslatorFormattedStringExtensions.Translate("ShipCombatFleetDesc"), LetterDefOf.ThreatBig);
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.CombatStart"), TranslatorFormattedStringExtensions.Translate("SoS.CombatFleetDesc"), LetterDefOf.ThreatBig);
                 }
             }
             if (passingShip != null)
@@ -1183,7 +1180,7 @@ namespace RimWorld
                             if (!warnedAboutRetreat)
                             {
                                 Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI retreating:".Colorize(Color.red) + ", totalThreat:" + totalThreat + ", TargetMapComp.totalThreat:" + TargetMapComp.totalThreat + ", powerRemaining:" + powerRemaining + ", powerCapacity:" + powerCapacity + ", BuildingsCount:" + BuildingsCount + ", BuildingCountAtStart:" + BuildingCountAtStart);
-                                Messages.Message("EnemyShipRetreating".Translate(), MessageTypeDefOf.ThreatBig);
+                                Messages.Message("SoS.EnemyShipRetreating".Translate(), MessageTypeDefOf.ThreatBig);
                                 warnedAboutRetreat = true;
                             }
                         }
@@ -1241,7 +1238,7 @@ namespace RimWorld
                         }
                         if (warnedAboutAdrift == 0)
                         {
-                            Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipAdrift"), map.Parent, MessageTypeDefOf.NegativeEvent);
+                            Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.EnemyShipAdrift"), map.Parent, MessageTypeDefOf.NegativeEvent);
                             warnedAboutAdrift = Find.TickManager.TicksGame + Rand.RangeInclusive(60000, 180000);
                         }
                         else if (Find.TickManager.TicksGame > warnedAboutAdrift)
@@ -1342,8 +1339,8 @@ namespace RimWorld
                     if (Altitude >= ShipInteriorMod2.altitudeNominal) //orbit reached
                     {
                         Altitude = ShipInteriorMod2.altitudeNominal;
-                        Heading = 0;
                         MapFullStop();
+                        BurnTimer = 0;
                         Map spacehome = ShipInteriorMod2.FindPlayerShipMap();
                         if (spacehome == null) //spacehome is gone, make new
                         {
@@ -1375,10 +1372,11 @@ namespace RimWorld
                             Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"), TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
                         }
                     }
-                    else if (Heading < 1 && Altitude <= ShipInteriorMod2.altitudeLand && Altitude > ShipInteriorMod2.altitudeLand - 15) //ground reached, not in startup altitude
+                    else if (Altitude <= ShipInteriorMod2.altitudeLand && (Heading < 1 || !EnginesOn && BurnTimer > Find.TickManager.TicksGame + 300)) //ground reached or fail to start engines in time - land/crash
                     {
                         Altitude = ShipInteriorMod2.altitudeLand;
-                        Heading = 0;
+                        MapFullStop();
+                        BurnTimer = 0;
                         int targetTile = -1;
 
                         if (Takeoff) //fell from space
@@ -1415,11 +1413,11 @@ namespace RimWorld
                             }
                             else //td ship gone, pawns spawn like vanilla on random nearby map via pods
                             {
-                                //ShipMapState = ShipMapState.burnUpSet;
+                                ShipMapState = ShipMapState.burnUpSet;
                             }
                         }
                     }
-                    else if (EnginesOn && Heading < 0 && Altitude == ShipInteriorMod2.altitudeNominal - 50) //end first burn down
+                    else if (EnginesOn && Heading < 0 && Altitude < ShipInteriorMod2.altitudeNominal - 50) //end first burn down
                     {
                         Log.Message("first burn done");
                         MapFullStop();
@@ -1438,15 +1436,7 @@ namespace RimWorld
                             MapFullStop();
                         }
                     }
-                    foreach (IntVec3 v in map.AllCells.Except(MapShipCells.Keys)) //kill anything off ship
-                    {
-                        foreach (Thing t in v.GetThingList(map))
-                        {
-                            if (t is Pawn p)
-                                p.Kill(new DamageInfo(DamageDefOf.Crush, 10000));
-                            t.Destroy();
-                        }
-                    }
+                    KillAllOffShip();
                 }
 
                 if (Find.TickManager.TicksGame % 6000 == 0) //very slow checks - decomp, bounty
@@ -1506,6 +1496,28 @@ namespace RimWorld
                         MapFullStop();
                     }
                 }
+            }
+        }
+        public void KillAllOffShip()
+        {
+            List<Pawn> pawns = new List<Pawn>();
+            List<Thing> things = new List<Thing>();
+            foreach (IntVec3 v in map.AllCells.Except(MapShipCells.Keys)) //kill anything off ship
+            {
+                foreach (Thing t in v.GetThingList(map))
+                {
+                    if (t is Pawn p)
+                        pawns.Add(p);
+                    things.Add(t);
+                }
+            }
+            foreach (Thing t in things)
+            {
+                t.Destroy();
+            }
+            foreach (Pawn p in pawns)
+            {
+                p.Kill(new DamageInfo(DamageDefOf.Crush, 10000));
             }
         }
         public bool AnyShipCanMove() //any non stuck ship has a working and fueled engine and is aligned
@@ -1631,7 +1643,10 @@ namespace RimWorld
             var tgtMapComp = OriginMapComp.TargetMapComp;
             tgtMapComp.HasShipMapAI = false;
             tgtMapComp.ShipMapState = ShipMapState.isGraveyard;
-            OriginMapComp.ShipMapState = ShipMapState.nominal;
+            if (OriginMapComp.map == ShipInteriorMod2.FindPlayerShipMap())
+                OriginMapComp.ShipMapState = ShipMapState.nominal;
+            else
+                OriginMapComp.ShipMapState = ShipMapState.isGraveyard;
             OriginMapComp.ShipBuildingsOff();
             OriginMapComp.ShipGraveyard?.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000) - burnTimeElapsed);
             tgtMapComp.ShipGraveyard?.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000) - burnTimeElapsed);
@@ -1640,7 +1655,7 @@ namespace RimWorld
                 if (fled) //target fled, remove target
                 {
                     tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("EnemyShipRetreated"), MessageTypeDefOf.ThreatBig);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.EnemyShipRetreated"), MessageTypeDefOf.ThreatBig);
                 }
                 else //target lost
                 {
@@ -1652,21 +1667,32 @@ namespace RimWorld
             }
             else
             {
-                if (!fled) //origin lost
+                if (OriginMapComp.ShipMapState == ShipMapState.isGraveyard) //origingrave battle
                 {
-                    ShipCombatOriginMap.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000));
-                    //Find.GameEnder.CheckOrUpdateGameOver();
-                }
-                //origin fled or lost: if origin has grave with a ship, grave starts combat with target
-                if (OriginMapComp.ShipGraveyard != null && OriginMapComp.GraveComp.MapRootListAll.Any() && !OriginMapComp.attackedTradeship)
-                {
-                    OriginMapComp.GraveComp.LastAttackTick = Find.TickManager.TicksGame;
-                    OriginMapComp.GraveComp.NextTargetMap = OriginMapComp.ShipCombatTargetMap;
-                }
-                else //origin fled or lost with no graveyard, remove target
-                {
-                    //td instead launch boarders to origin
+                    if (!fled) //origingrave lost
+                    {
+                        OriginMapComp.ShipMapState = ShipMapState.burnUpSet;
+                    }
                     tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
+                }
+                else //normal battle
+                {
+                    if (!fled) //origin lost
+                    {
+                        ShipCombatOriginMap.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000));
+                        //Find.GameEnder.CheckOrUpdateGameOver();
+                    }
+                    //origin fled or lost: if origin has grave with a ship, grave starts combat with target
+                    if (OriginMapComp.ShipGraveyard != null && OriginMapComp.GraveComp.MapRootListAll.Any() && !OriginMapComp.attackedTradeship)
+                    {
+                        OriginMapComp.GraveComp.LastAttackTick = Find.TickManager.TicksGame;
+                        OriginMapComp.GraveComp.NextTargetMap = OriginMapComp.ShipCombatTargetMap;
+                    }
+                    else //origin fled or lost with no graveyard, remove target
+                    {
+                        //td instead launch boarders to origin
+                        tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
+                    }
                 }
             }
 

@@ -51,7 +51,7 @@ namespace RimWorld
             {
                 if ((!parleyed && roll < 5) || (parleyed && roll < 2)) //betrayal
                 {
-                    Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksBetray"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksBetrayDesc"), LetterDefOf.ThreatBig);
+                    Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PirateAttacksBetray"), TranslatorFormattedStringExtensions.Translate("SoS.PirateAttacksBetrayDesc"), LetterDefOf.ThreatBig);
                     mapComp.StartShipEncounter(this);
                     return;
                 }
@@ -62,7 +62,7 @@ namespace RimWorld
                 {
                     if (roll < 3) //pirates want more
                     {
-                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksPay"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksPayDesc"), LetterDefOf.ThreatBig);
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PirateAttacksPay"), TranslatorFormattedStringExtensions.Translate("SoS.PirateAttacksPayDesc"), LetterDefOf.ThreatBig);
                         mapComp.StartShipEncounter(this);
                         return;
                     }
@@ -71,7 +71,7 @@ namespace RimWorld
                 {
                     if (roll < 10)
                     {
-                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksWait"), TranslatorFormattedStringExtensions.Translate("ShipPirateAttacksWaitDesc"), LetterDefOf.ThreatBig);
+                        Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PirateAttacksWait"), TranslatorFormattedStringExtensions.Translate("SoS.PirateAttacksWaitDesc"), LetterDefOf.ThreatBig);
                         mapComp.StartShipEncounter(this);
                         return;
                     }

@@ -7,7 +7,7 @@ using Verse;
 
 namespace RimWorld
 {
-	class CompHologramRemover : ThingComp
+	/*class CompHologramRemover : ThingComp
 	{
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
@@ -20,5 +20,5 @@ namespace RimWorld
 			else
 				parent.Destroy();
 		}
-	}
+	}*/
 }

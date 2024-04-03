@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
+using SaveOurShip2;
 
 namespace RimWorld
 {
@@ -11,7 +12,7 @@ namespace RimWorld
     {
         protected override void Impact(Thing hitThing, bool blockedByShield = false)
         {
-                ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
+                ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipCombatLaserMote);
                 obj.origin = this.origin;
                 obj.destination = this.intendedTarget.Cell.ToVector3();
                 obj.color = Color.green;

@@ -96,8 +96,8 @@ namespace RimWorld
                 {
                     heatWithPower = !heatWithPower;
                 },
-                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideHeatWithPower"),
-                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideHeatWithPowerDesc"),
+                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.HeatWithPower"),
+                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.HeatWithPowerDesc"),
                 isActive = () => heatWithPower
             };
             toggleHeatWithPower.icon = ContentFinder<Texture2D>.Get("Things/Building/Misc/TempControl/Heater");

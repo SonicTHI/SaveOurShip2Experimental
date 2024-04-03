@@ -54,7 +54,7 @@ namespace RimWorld.Planet
 		{
 			if (ForceExitAndRemoveMapCountdownActive)
 			{
-				return "ShipForceExitAndRemoveMapCountdown".Translate(ForceExitAndRemoveMapCountdownTimeLeftString) + ".";
+				return TranslatorFormattedStringExtensions.Translate("SoS.ForceExitAndRemoveMapCountdown", ForceExitAndRemoveMapCountdownTimeLeftString);
 			}
 			return null;
 		}

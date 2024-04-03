@@ -49,10 +49,10 @@ namespace RimWorld
 				if (!loc2.InBounds(map))
 					return false;
 				if (i<4 && loc2.Impassable(map))
-					return TranslatorFormattedStringExtensions.Translate("ShipUnfoldBlocked");
+					return TranslatorFormattedStringExtensions.Translate("SoS.UnfoldBlocked");
 				Building b = loc2.GetFirstBuilding(Find.CurrentMap);
 				if (b !=null && (b.def == ResourceBank.ThingDefOf.ShipInside_SolarGenerator) && b.Rotation == rot.Opposite)
-					return TranslatorFormattedStringExtensions.Translate("ShipUnfoldBlocked");
+					return TranslatorFormattedStringExtensions.Translate("SoS.UnfoldBlocked");
 			}
 			return true;
 		}

@@ -33,17 +33,17 @@ namespace RimWorld
             List<FloatMenuOption> options = new List<FloatMenuOption>();
             foreach (FloatMenuOption op in base.GetFloatMenuOptions(pawn))
                 options.Add(op);
-            if (this.Map != null && this.Map.Parent != null && this.Map.Parent.def == ResourceBank.WorldObjectDefOf.SiteSpace) //To prevent cheesing the starship bow quest
+            if (Map != null && Map.Parent != null && Map.Parent.def == ResourceBank.WorldObjectDefOf.SiteSpace) //To prevent cheesing the starship bow quest
                 return options;
-            if (this.Faction != Faction.OfPlayer)
+            if (Faction != Faction.OfPlayer)
             {
                 if (!hacked && !failed && !pawn.skills.GetSkill(SkillDefOf.Intellectual).TotallyDisabled && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) > 0)
                 {
-                    options.Add(new FloatMenuOption("Hack", delegate { Job hackAirlock = new Job(DefDatabase<JobDef>.GetNamed("HackAirlock"), this); pawn.jobs.TryTakeOrderedJob(hackAirlock); }));
+                    options.Add(new FloatMenuOption("Hack", delegate { Job hackAirlock = new Job(ResourceBank.JobDefOf.HackAirlock, this); pawn.jobs.TryTakeOrderedJob(hackAirlock); }));
                 }
                 if (!hacked && !pawn.skills.GetSkill(SkillDefOf.Construction).TotallyDisabled && pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) > 0)
                 {
-                    options.Add(new FloatMenuOption("Breach", delegate { Job breachAirlock = new Job(DefDatabase<JobDef>.GetNamed("BreachAirlock"), this); pawn.jobs.TryTakeOrderedJob(breachAirlock); }));
+                    options.Add(new FloatMenuOption("Breach", delegate { Job breachAirlock = new Job(ResourceBank.JobDefOf.BreachAirlock, this); pawn.jobs.TryTakeOrderedJob(breachAirlock); }));
                 }
             }
             return options;
@@ -53,34 +53,34 @@ namespace RimWorld
         {
             if (Rand.Chance(0.045f * pawn.skills.GetSkill(SkillDefOf.Intellectual).levelInt + 0.05f))
             {
-                this.hacked = true;
+                hacked = true;
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(200);
-                this.SetFaction(Faction.OfAncients);
-                this.DoorOpen();
-                this.def.building.soundDoorOpenManual.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
+                SetFaction(Faction.OfAncients);
+                DoorOpen();
+                def.building.soundDoorOpenManual.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
                 if (pawn.Faction == Faction.OfPlayer)
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockHacked"), this, MessageTypeDefOf.PositiveEvent);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.AirlockHacked"), this, MessageTypeDefOf.PositiveEvent);
             }
             else
             {
-                this.failed = true;
+                failed = true;
                 pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(100);
                 if (pawn.Faction == Faction.OfPlayer)
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockHackFailed"), this, MessageTypeDefOf.NegativeEvent);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.AirlockHackFailed"), this, MessageTypeDefOf.NegativeEvent);
             }
         }
         //breached - will open and stay open
         public void BreachMe(Pawn pawn)
         {
-            this.hacked = true;
+            hacked = true;
             if (!pawn.RaceProps.IsMechanoid)
                 pawn.skills.GetSkill(SkillDefOf.Construction).Learn(200);
-            this.DoorOpen();
+            DoorOpen();
             Traverse.Create(this).Field("holdOpenInt").SetValue(true);
-            this.def.building.soundDoorOpenManual.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
+            def.building.soundDoorOpenManual.PlayOneShot(new TargetInfo(base.Position, base.Map, false));
             if (pawn.Faction == Faction.OfPlayer)
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipAirlockBreached"), this, MessageTypeDefOf.PositiveEvent);
-            this.TakeDamage(new DamageInfo(DamageDefOf.Cut, 200));
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.AirlockBreached"), this, MessageTypeDefOf.PositiveEvent);
+            TakeDamage(new DamageInfo(DamageDefOf.Cut, 200));
         }
         public override bool PawnCanOpen(Pawn p)
         {
@@ -206,8 +206,8 @@ namespace RimWorld
                             DeSpawnDock();
                         }
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleDock"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleDockDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ToggleDock"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ToggleDockDesc"),
                     isActive = () => docked
                 };
                 if (docked)
@@ -329,7 +329,10 @@ namespace RimWorld
                 }
 
                 Thing thing;
-                thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
+                if (dockedTo != null && (dockedTo?.Faction.HostileTo(Faction) ?? false))
+                    thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWallInert);
+                else
+                    thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, First.Position + offset, Map);
                 thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);
@@ -339,7 +342,10 @@ namespace RimWorld
                 thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);
 
-                thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
+                if (dockedTo != null && (dockedTo?.Faction.HostileTo(Faction) ?? false))
+                    thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWallInert);
+                else
+                    thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
                 GenSpawn.Spawn(thing, Second.Position + offset, Map);
                 thing.TryGetComp<CompSoShipDocking>().dockParent = this;
                 extenders.Add(thing as Building);

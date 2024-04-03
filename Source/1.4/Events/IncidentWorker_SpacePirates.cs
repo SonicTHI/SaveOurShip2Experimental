@@ -55,11 +55,11 @@ namespace RimWorld
             int bounty = ShipInteriorMod2.WorldComp.PlayerFactionBounty;
             if (CommsConsoleUtility.PlayerHasPoweredCommsConsole(map)) //notify
             {
-                string text = TranslatorFormattedStringExtensions.Translate("ShipPirateHail");
+                string text = TranslatorFormattedStringExtensions.Translate("SoS.PirateHail");
                 if (bounty > 50)
-                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateHailPirate");
+                    text += TranslatorFormattedStringExtensions.Translate("SoS.PirateHailPirate");
                 else
-                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateHailNormal");
+                    text += TranslatorFormattedStringExtensions.Translate("SoS.PirateHailNormal");
 
                 SendStandardLetter(def.letterLabel, text, def.letterDef, parms, new TargetInfo(map.listerBuildings.AllBuildingsColonistOfClass<Building_CommsConsole>().First().Position, map, false), Array.Empty<NamedArgument>());
             }

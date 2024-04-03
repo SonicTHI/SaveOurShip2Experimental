@@ -48,9 +48,9 @@ namespace RimWorld
                             StartPurge();
                     },
                     isActive = delegate { return purging; },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoSPurgeHeat"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoSPurgeHeatDesc"),
-                    icon = ContentFinder<UnityEngine.Texture2D>.Get("UI/HeatPurge")
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.PurgeHeat"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.PurgeHeatDesc"),
+                    icon = ContentFinder<Texture2D>.Get("UI/HeatPurge")
                 };
                 giz.Add(purge);
             }

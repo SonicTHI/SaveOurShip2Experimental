@@ -219,7 +219,7 @@ namespace SaveOurShip2
             }
             if (Mouse.IsOver(rect))
             {
-                string iconTooltipText = TranslatorFormattedStringExtensions.Translate("ShipCombatTooltip");
+                string iconTooltipText = TranslatorFormattedStringExtensions.Translate("SoS.CombatTooltip");
                 if (!iconTooltipText.NullOrEmpty())
                 {
                     TooltipHandler.TipRegion(rect, iconTooltipText);
@@ -370,18 +370,18 @@ namespace SaveOurShip2
 					string detectionCountdownTimeLeftString = timecomp.ForceExitAndRemoveMapCountdownTimeLeftString;
 					string text;
                     if (timecomp.ticksLeftToForceExitAndRemoveMap < 5000)
-                        text = "ShipBurnUpCountdown".Translate(detectionCountdownTimeLeftString).Colorize(Color.red);
+                        text = "SoS.BurnUpCountdown".Translate(detectionCountdownTimeLeftString).Colorize(Color.red);
                     else if (timecomp.ticksLeftToForceExitAndRemoveMap < 30000)
-                        text = "ShipBurnUpCountdown".Translate(detectionCountdownTimeLeftString).Colorize(Color.yellow);
+                        text = "SoS.BurnUpCountdown".Translate(detectionCountdownTimeLeftString).Colorize(Color.yellow);
                     else
-                        text = "ShipBurnUpCountdown".Translate(detectionCountdownTimeLeftString);
+                        text = "SoS.BurnUpCountdown".Translate(detectionCountdownTimeLeftString);
                     float x = Text.CalcSize(text).x;
 					Rect rect2 = new Rect(rect.xMax - x, rect.y, x, rect.height);
 					if (Mouse.IsOver(rect2))
 					{
 						Widgets.DrawHighlight(rect2);
 					}
-					TooltipHandler.TipRegionByKey(rect2, "ShipBurnUpCountdownTip", detectionCountdownTimeLeftString);
+					TooltipHandler.TipRegionByKey(rect2, "SoS.BurnUpCountdownTip", detectionCountdownTimeLeftString);
 					Widgets.Label(rect2, text);
 					Text.Anchor = TextAnchor.UpperLeft;
 					baseY -= 26f;
@@ -806,6 +806,7 @@ namespace SaveOurShip2
 		}
 	}
 
+    //audio
     [HarmonyPatch(typeof(AmbientSoundManager), "AltitudeWindSoundCreated", MethodType.Getter)]
     public static class NoWindInSpace
     {
@@ -823,6 +824,18 @@ namespace SaveOurShip2
                     }
                 }
                 __result = true;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(DangerWatcher), "CalculateDangerRating")]
+    public static class TransitIsDanger
+    {
+        public static void Postfix(ref StoryDanger __result, DangerWatcher __instance)
+        {
+            if (__result != StoryDanger.High && __instance.map.IsSpace() && __instance.map.GetComponent<ShipHeatMapComp>().ShipMapState == ShipMapState.inTransit)
+            {
+                __result = StoryDanger.High;
             }
         }
     }
@@ -1362,20 +1375,20 @@ namespace SaveOurShip2
             {
 				bool pirate =  bounty > 50;
                 int demand = mapComp.MapShipCells.Count; //td better calc?
-                string text = TranslatorFormattedStringExtensions.Translate("ShipPirateTalk");
+                string text = TranslatorFormattedStringExtensions.Translate("SoS.PirateTalk");
                 if (pirate)
-                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateTalkPirate");
+                    text += TranslatorFormattedStringExtensions.Translate("SoS.PirateTalkPirate");
                 else if (pirateShip.parleyed)
-                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateTalkParley");
+                    text += TranslatorFormattedStringExtensions.Translate("SoS.PirateTalkParley");
                 else if (pirateShip.paidOff)
-                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateTalkPaid");
+                    text += TranslatorFormattedStringExtensions.Translate("SoS.PirateTalkPaid");
                 else
-                    text += TranslatorFormattedStringExtensions.Translate("ShipPirateTalkNormal", demand);
+                    text += TranslatorFormattedStringExtensions.Translate("SoS.PirateTalkNormal", demand);
 
                 diaNode = new DiaNode(text);
                 if (pirate || pirateShip.parleyed) //pirate/parleyed, normal trade
                 {
-                    DiaOption diaOption3 = new DiaOption(TranslatorFormattedStringExtensions.Translate("ShipPirateTrade"));
+                    DiaOption diaOption3 = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.PirateTrade"));
                     diaOption3.action = delegate
                     {
                         Find.WindowStack.Add(new Dialog_Trade(negotiator, __instance, false));
@@ -1389,7 +1402,7 @@ namespace SaveOurShip2
                 else if (!pirateShip.paidOff) //not a pirate, not paidOff
                 {
                     //parley: fail - immediate attack
-                    DiaOption diaOption = new DiaOption(TranslatorFormattedStringExtensions.Translate("ShipPirateParley"));
+                    DiaOption diaOption = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.PirateParley"));
                     diaOption.action = delegate
                     {
 						int check = bounty + Rand.RangeInclusive(1, 10) + skill;
@@ -1397,18 +1410,18 @@ namespace SaveOurShip2
                         Log.Message("parley roll DC20: " + check);
 						if (!pirateShip.parleyed)
                         {
-                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateParleyFail"), TranslatorFormattedStringExtensions.Translate("ShipPirateParleyFailDesc"), LetterDefOf.ThreatBig);
+                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PirateParleyFail"), TranslatorFormattedStringExtensions.Translate("SoS.PirateParleyFailDesc"), LetterDefOf.ThreatBig);
                             mapComp.StartShipEncounter(pirateShip);
                         }
 						else
                         {
-                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipPirateParleyWin"), TranslatorFormattedStringExtensions.Translate("ShipPirateParleyWinDesc"), LetterDefOf.PositiveEvent);
+                            Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PirateParleyWin"), TranslatorFormattedStringExtensions.Translate("SoS.PirateParleyWinDesc"), LetterDefOf.PositiveEvent);
                         }
                     };
                     diaOption.resolveTree = true;
                     diaNode.options.Add(diaOption);
                     //accept demand - trade window
-                    DiaOption diaOption2 = new DiaOption(TranslatorFormattedStringExtensions.Translate("ShipPirateDemand"));
+                    DiaOption diaOption2 = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.PirateDemand"));
                     diaOption2.action = delegate
                     {
                         TradeUtility.LaunchThingsOfType(ThingDefOf.Silver, demand, __instance.Map, pirateShip);
@@ -1423,17 +1436,17 @@ namespace SaveOurShip2
                     diaNode.options.Add(diaOption2);
                     if (AmountSendableSilver(__instance.Map) < demand)
                     {
-                        diaOption2.Disable(TranslatorFormattedStringExtensions.Translate("ShipPirateDemandFail", demand));
+                        diaOption2.Disable(TranslatorFormattedStringExtensions.Translate("SoS.PirateDemandFail", demand));
                     }
                 }
 			}
             //normal trader
             else
             {
-                diaNode = new DiaNode("TradeShipComms".Translate() + __instance.TraderName);
+                diaNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("SoS.TradeComms") + __instance.TraderName);
 
                 //trade normally if no bounty or low bounty with social check
-                DiaOption diaOption = new DiaOption("TradeShipTradeWith".Translate());
+                DiaOption diaOption = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.TradeTradeWith"));
                 diaOption.action = delegate
                 {
                     Find.WindowStack.Add(new Dialog_Trade(negotiator, __instance, false));
@@ -1446,7 +1459,7 @@ namespace SaveOurShip2
 
                 if (skill * 2 < bounty)
                 {
-                    diaOption.Disable("TradeShipTradeDecline".Translate(__instance.TraderName));
+                    diaOption.Disable(TranslatorFormattedStringExtensions.Translate("SoS.TradeTradeDecline", __instance.TraderName));
                 }
 
                 //if in space add pirate option
@@ -1455,7 +1468,7 @@ namespace SaveOurShip2
                     Building bridge = mapComp.MapRootListAll.FirstOrDefault();
                     if (bridge != null)
                     {
-                        DiaOption diaOption2 = new DiaOption("TradeShipPirate".Translate());
+                        DiaOption diaOption2 = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.PirateTradeDemand"));
                         diaOption2.action = delegate
                         {
                             if (Rand.Chance(0.025f * skill + mapComp.MapThreat() / 400 - bounty / 40))
@@ -1470,15 +1483,15 @@ namespace SaveOurShip2
                                 bounty += 1;
                                 if (__instance.Faction == Faction.OfEmpire)
                                     Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -25, false, true, HistoryEventDefOf.AttackedCaravan, null);
-                                DiaNode diaNode2 = new DiaNode(__instance.TraderName + "TradeShipTryingToFlee".Translate());
-                                DiaOption diaOption21 = new DiaOption("TradeShipAttack".Translate());
+                                DiaNode diaNode2 = new DiaNode(__instance.TraderName + TranslatorFormattedStringExtensions.Translate("SoS.TradeTryingToFlee"));
+                                DiaOption diaOption21 = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.TradeAttack"));
                                 diaOption21.action = delegate
                                 {
                                     mapComp.StartShipEncounter(__instance);
                                 };
                                 diaOption21.resolveTree = true;
                                 diaNode2.options.Add(diaOption21);
-                                DiaOption diaOption22 = new DiaOption("TradeShipFlee".Translate());
+                                DiaOption diaOption22 = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.TradeFlee"));
                                 diaOption22.action = delegate
                                 {
                                     __instance.Depart();
@@ -1496,7 +1509,7 @@ namespace SaveOurShip2
                 //pay bounty, gray if not enough money
                 if (bounty > 1)
                 {
-                    DiaOption diaOption3 = new DiaOption("TradeShipPayBounty".Translate(2500 * bounty));
+                    DiaOption diaOption3 = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.TradePayBounty", 2500 * bounty));
                     diaOption3.action = delegate
                     {
                         TradeUtility.LaunchThingsOfType(ThingDefOf.Silver, 2500 * bounty, __instance.Map, null);
@@ -1507,7 +1520,7 @@ namespace SaveOurShip2
                     diaNode.options.Add(diaOption3);
                     if (AmountSendableSilver(__instance.Map) < 2500 * bounty)
                     {
-                        diaOption3.Disable("NotEnoughForBounty".Translate(2500 * bounty));
+                        diaOption3.Disable(TranslatorFormattedStringExtensions.Translate("SoS.NotEnoughForBounty", 2500 * bounty));
                     }
                 }
             }
@@ -1590,11 +1603,11 @@ namespace SaveOurShip2
 			if (ship.Engines.NullOrEmpty())
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_Engine.label);
 			if (ship.FuelNeeded(true) < ship.MassActual)
-				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreFuel", ship.FuelNeeded(true), ship.MassActual));
+				newResult.Add(TranslatorFormattedStringExtensions.Translate("SoS.NeedsMoreFuel", ship.FuelNeeded(true), ship.MassActual));
 			if (ship.Sensors.NullOrEmpty())
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
 			if (!ship.HasMannedBridge())
-				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportNeedPilot"));
+				newResult.Add(TranslatorFormattedStringExtensions.Translate("SoS.ReportNeedPilot"));
 
 			__result = newResult;
 		}
@@ -3550,9 +3563,9 @@ namespace SaveOurShip2
 	public static class AICoreIsMechanitor //AI cores control mechanoids
 	{
 		public static void Postfix(Pawn pawn, ref bool __result)
-		{
-			if (pawn.health.hediffSet.HasHediff(HediffDef.Named("SoSHologramMachine")) || pawn.health.hediffSet.HasHediff(HediffDef.Named("SoSHologramArchotech")))
-				__result = true;
+        {
+            if (pawn.health.hediffSet.HasHediff(ResourceBank.HediffDefOf.SoSHologramMachine) || pawn.health.hediffSet.HasHediff(ResourceBank.HediffDefOf.SoSHologramArchotech))
+                __result = true;
 		}
 	}
 	
@@ -3626,7 +3639,7 @@ namespace SaveOurShip2
 					if (!first)
 					{
 						first = true;
-						Widgets.LabelCacheHeight(ref rect, TranslatorFormattedStringExtensions.Translate("ArchoGift") + ":");
+						Widgets.LabelCacheHeight(ref rect, TranslatorFormattedStringExtensions.Translate("SoS.ArchoGift") + ":");
 						rect.yMin += 24f;
 					}
 					Widgets.HyperlinkWithIcon(hyperlink: new Dialog_InfoCard.Hyperlink(def.thing), rect: new Rect(rect.x, rect.yMin, rect.width, 24f));
@@ -3744,8 +3757,8 @@ namespace SaveOurShip2
 						}
 					}
 				}
-				DiaOption increase = new DiaOption(TranslatorFormattedStringExtensions.Translate("ArchotechGoodwillPlus", 10));
-				DiaOption decrease = new DiaOption(TranslatorFormattedStringExtensions.Translate("ArchotechGoodwillMinus", 10));
+				DiaOption increase = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.ArchotechGoodwillPlus", 10));
+				DiaOption decrease = new DiaOption(TranslatorFormattedStringExtensions.Translate("SoS.ArchotechGoodwillMinus", 10));
 				increase.action = delegate
 				{
 					faction.TryAffectGoodwillWith(Faction.OfPlayer, 10, canSendMessage: false);
@@ -3755,8 +3768,8 @@ namespace SaveOurShip2
 				if (spore == null || spore.fieldStrength < 10)
 				{
 					increase.disabled = true;
-					increase.disabledReason = "Insufficient psychic field strength";
-				}
+					increase.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechFieldStrengthLow");
+                }
 				decrease.action = delegate
 				{
 					faction.TryAffectGoodwillWith(Faction.OfPlayer, -10, canSendMessage: false);
@@ -3766,8 +3779,8 @@ namespace SaveOurShip2
 				if (spore == null || spore.fieldStrength < 10)
 				{
 					decrease.disabled = true;
-					decrease.disabledReason = "Insufficient psychic field strength";
-				}
+					decrease.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechFieldStrengthLow");
+                }
 				if (spore != null)
 				{
 					__result.options.Add(increase);

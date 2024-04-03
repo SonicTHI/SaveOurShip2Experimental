@@ -35,7 +35,7 @@ namespace RimWorld
                     }
                     if(lastWarnedTick < Find.TickManager.TicksGame && p.Faction==Faction.OfPlayer)
                     {
-                        Messages.Message(TranslatorFormattedStringExtensions.Translate("SoSDamagedReactorHurtsPawn",p), p, MessageTypeDefOf.ThreatSmall, false);
+                        Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.DamagedReactorHurtsPawn",p), p, MessageTypeDefOf.ThreatSmall, false);
                         lastWarnedTick = Find.TickManager.TicksGame + 60;
                     }
                 }

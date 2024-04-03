@@ -58,34 +58,34 @@ namespace RimWorld
                 return "";
             StringBuilder stringBuilder = new StringBuilder();
             //stringBuilder.Append(base.CompInspectStringExtra());
-            stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("UnfoldStatus"));
+            stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.UnfoldStatus"));
            
             if(Mathf.Approximately(extension, Target))
             {
                 if (Mathf.Approximately(extension, 0.0f))
                 {
-                    stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("UnfoldRetracted"));
+                    stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.UnfoldRetracted"));
                 }
                 else
                 {
-                    stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("UnfoldExtended"));
+                    stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.UnfoldExtended"));
                 }
             }
             else
             {
                 if(extension < Target)
                 {
-                    stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("UnfoldExtending"));
+                    stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.UnfoldExtending"));
                 }
                 else if(extension > Target)
                 {
                     if(Mathf.Approximately(timeTillRetract, 0.0f))
                     {
-                        stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("UnfoldRetracting"));
+                        stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.UnfoldRetracting"));
                     }
                     else
                     {
-                        stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("UnfoldExtended"));
+                        stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.UnfoldExtended"));
                     }
                 }
             }

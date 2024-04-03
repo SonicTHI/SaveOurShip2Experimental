@@ -680,7 +680,7 @@
 			<Flammability>0</Flammability>
 		</statBases>
 		<tickerType>Normal</tickerType>
-		<description>An advanced combat thruster capable of tremendous bursts of speed. Consumes exotic particles as fuel. Not suitable for atmospheric use.\n\nThrust: 9000\nFuel use: 1 exotic particle/s</description>
+		<description>An advanced combat thruster capable of tremendous bursts of speed. Consumes exotic particles as fuel. Not suitable for atmospheric use.\n\nThrust: 6000\nFuel use: 1 exotic particle/s</description>
 		<size>(3,3)</size>
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
@@ -710,7 +710,7 @@
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
 			<li Class="CompProperties_EngineTrail">
-				<thrust>18</thrust>
+				<thrust>12</thrust>
 				<fuelUse>1</fuelUse>
 			</li>
 		</comps>

@@ -222,14 +222,14 @@ namespace RimWorld
                             {
                                 SpawnHologram();
                             },
-                            defaultLabel = "SoSSpawnHologram".Translate(),
-                            defaultDesc = "SoSSpawnHologramDesc".Translate(),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologram"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologramDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
                         };
                         if (Find.TickManager.TicksGame < this.HologramRespawnTick)
                         {
                             spawn.disabled = true;
-                            spawn.disabledReason = "SoSSpawnHologramDelay".Translate(GenDate.ToStringTicksToPeriod(this.HologramRespawnTick-Find.TickManager.TicksGame));
+                            spawn.disabledReason = "SoS.SpawnHologramDelay".Translate(GenDate.ToStringTicksToPeriod(this.HologramRespawnTick-Find.TickManager.TicksGame));
                             if (DebugSettings.godMode)
                             {
                                 Command_Action spawn2 = new Command_Action
@@ -239,7 +239,7 @@ namespace RimWorld
                                         SpawnHologram();
                                     },
                                     defaultLabel = "Dev: Spawn formgel immediately",
-                                    defaultDesc = "SoSSpawnHologramDesc".Translate()
+                                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologramDesc")
                                 };
                                 gizmos.Add(spawn2);
                             }
@@ -254,8 +254,8 @@ namespace RimWorld
                             {
                                 HologramDestroyed(true);
                             },
-                            defaultLabel = "SoSDespawnHologram".Translate(),
-                            defaultDesc = "SoSDespawnHologramDesc".Translate(),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.DespawnHologram"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.DespawnHologramDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/DespawnHologram", true)
                         });
                     }
@@ -269,8 +269,8 @@ namespace RimWorld
                             GenerateAIPawn();
                             SpawnHologram();
                         },
-                        defaultLabel = "SoSSpawnHologram".Translate(),
-                        defaultDesc = "SoSSpawnHologramDesc".Translate(),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologram"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologramDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
                     });
                 }
@@ -296,8 +296,8 @@ namespace RimWorld
                         if (options.Count > 0)
                             Find.WindowStack.Add(new FloatMenu(options));
                     },
-                    defaultLabel = "SoSHologramColor".Translate(),
-                    defaultDesc = "SoSHologramColorDesc".Translate(),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.HologramColor"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.HologramColorDesc"),
                     icon = ContentFinder<Texture2D>.Get("RoughAlphaAdd", true)
                 });
             }
@@ -310,8 +310,8 @@ namespace RimWorld
                     {
                         Find.WindowStack.Add(new Dialog_NameAI(this));
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideRenameAI"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideRenameAIDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.RenameAI"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RenameAIDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/Commands/RenameZone")
                 });
             }
@@ -354,8 +354,8 @@ namespace RimWorld
                         if (options.Count > 0)
                             Find.WindowStack.Add(new FloatMenu(options));
                     },
-                    defaultLabel = WhichPawn == null ? TranslatorFormattedStringExtensions.Translate("ShipInsideInstallConsciousness") : TranslatorFormattedStringExtensions.Translate("ShipInsideInstallConsciousnessThisOne", WhichPawn),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideInstallConsciousnessDesc"),
+                    defaultLabel = WhichPawn == null ? TranslatorFormattedStringExtensions.Translate("SoS.InstallConsciousness") : TranslatorFormattedStringExtensions.Translate("SoS.InstallConsciousnessThisOne", WhichPawn),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.InstallConsciousnessDesc"),
                     icon = Props.healOnMerge ? ContentFinder<Texture2D>.Get("UI/ArchoTechUpload") : ContentFinder<Texture2D>.Get("UI/InstallBrain")
                 };
                 installBrain.disabled = true;
@@ -377,7 +377,7 @@ namespace RimWorld
                     }
                 }
                 if (installBrain.disabled)
-                    installBrain.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideNoBrains");
+                    installBrain.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.NoBrains");
                 gizmos.Add(installBrain);
             }
             if (Props.canMergeAI && Consciousness == null)
@@ -388,13 +388,13 @@ namespace RimWorld
                     {
                         WhichPawn = parent.Map.listerThings.ThingsOfDef(ThingDefOf.AIPersonaCore).FirstOrDefault();
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideInstallCore"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideInstallCoreDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.InstallCore"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.InstallCoreDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/ArchoTechUpload_Persona")
                 };
                 installCore.disabled = parent.Map.listerThings.ThingsOfDef(ThingDefOf.AIPersonaCore).FirstOrDefault() == null;
                 if (installCore.disabled)
-                    installCore.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideNoCores");
+                    installCore.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.NoCores");
                 gizmos.Add(installCore);
             }
             if (Props.mustBeDead && Consciousness != null)
@@ -408,8 +408,8 @@ namespace RimWorld
                         else
                             RezPlz = null;
                     },
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideResurrectBrain"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideResurrectBrainDesc"),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ResurrectBrain"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ResurrectBrainDesc"),
                     icon = ContentFinder<Texture2D>.Get("Things/Item/Special/MechSerumResurrector"),
                     isActive = delegate
                     {
@@ -418,7 +418,7 @@ namespace RimWorld
                 };
                 resurrect.disabled = parent.Map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.MechSerumResurrector).FirstOrDefault() == null;
                 if (resurrect.disabled)
-                    resurrect.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideNoResurrector");
+                    resurrect.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.NoResurrector");
                 gizmos.Add(resurrect);
             }
             return gizmos;

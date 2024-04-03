@@ -70,7 +70,7 @@ namespace RimWorld
             SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
             if (mapComp.ShipMapState != ShipMapState.inCombat)
             {
-                Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecauseNotInShipCombat"), null, MessageTypeDefOf.RejectInput, historical: false);
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.TurretNotInShipCombat"), null, MessageTypeDefOf.RejectInput, historical: false);
                 return;
             }
             CameraJumper.TryJump(mapComp.ShipCombatTargetMap.Center, mapComp.ShipCombatTargetMap);

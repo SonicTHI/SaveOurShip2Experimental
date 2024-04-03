@@ -85,11 +85,11 @@ namespace RimWorld
             if (playerJTPower == 0)
                 result.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ResourceBank.ThingDefOf.Ship_Engine_Interplanetary.label);
             else if (playerJTPower < Ship.MassActual)
-                result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMoreJTEngines"));
+                result.Add(TranslatorFormattedStringExtensions.Translate("SoS.NeedsMoreJTEngines"));
             if (PowerComp.PowerNet?.CurrentStoredEnergy() < Ship.MassActual)
-                result.Add(TranslatorFormattedStringExtensions.Translate("ShipNeedsMorePower", Ship.MassActual));
+                result.Add(TranslatorFormattedStringExtensions.Translate("SoS.NeedsMorePower", Ship.MassActual));
             if (!mapComp.IsPlayerShipMap)
-                result.Add(TranslatorFormattedStringExtensions.Translate("ShipOnEnemyMap")); //td desc from non stable map
+                result.Add(TranslatorFormattedStringExtensions.Translate("SoS.OnUnstableMap")); //td desc from non stable map
             if (ShipCountdown.CountingDown)
                 result.Add("ShipAlreadyCountingDown".Translate());
             return result;
@@ -140,8 +140,8 @@ namespace RimWorld
                     },
                     hotKey = KeyBindingDefOf.Misc1,
                     icon = ContentFinder<Texture2D>.Get("UI/Commands/RenameZone"),
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideRename"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideRenameDesc")
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Rename"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RenameDesc")
                 };
                 if (ShipCountdown.CountingDown)
                 {
@@ -157,28 +157,28 @@ namespace RimWorld
                         foreach (CompPowerBattery bat in GetComp<CompPower>().PowerNet.batteryComps)
                             capacity += bat.Props.storedEnergyMax;
                         StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipName", Ship.Name));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsNotoriety", ShipInteriorMod2.WorldComp.PlayerFactionBounty));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipName", Ship.Name));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsNotoriety", ShipInteriorMod2.WorldComp.PlayerFactionBounty));
                         stringBuilder.AppendLine();
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMass", Ship.MassActual));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipMass", Ship.MassActual));
                         //stringBuilder.AppendLine("bcount" + Ship.BuildingCount);
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipMaxTakeoff", Ship.MaxTakeoff));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipEnergy", PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity, (heatComp.myNet.Depletion > 0) ? (" ("+ heatComp.myNet.StorageCapacityRaw + " maximum)") : ""));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipMaxTakeoff", Ship.MaxTakeoff));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipEnergy", PowerComp.PowerNet.CurrentStoredEnergy(), capacity));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipHeat", heatComp.myNet.StorageUsed, heatComp.myNet.StorageCapacity, (heatComp.myNet.Depletion > 0) ? (" ("+ heatComp.myNet.StorageCapacityRaw + " maximum)") : ""));
                         stringBuilder.AppendLine();
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatRating", Ship.Threat));
-                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipStatsShipCombatThrust", Ship.ThrustRatio.ToString("F3")));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipCombatRating", Ship.Threat));
+                        stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipCombatThrust", Ship.ThrustRatio.ToString("F3")));
                         stringBuilder.AppendLine();
                         stringBuilder.AppendLine();
                         if (Map.IsSpace())
                         {
                             if (!fail.Any<string>())
                             {
-                                stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipReportInterReady"));
+                                stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.ReportInterReady"));
                             }
                             else
                             {
-                                stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipReportInterNotReady"));
+                                stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.ReportInterNotReady"));
                                 foreach (string current in fail)
                                 {
                                     stringBuilder.AppendLine();
@@ -191,8 +191,8 @@ namespace RimWorld
                     },
                     hotKey = KeyBindingDefOf.Misc4,
                     icon = ContentFinder<Texture2D>.Get("UI/Commands/LaunchReport", true),
-                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideShipInfo"),
-                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideShipInfoDesc")
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ShipInfo"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ShipInfoDesc")
                 };
                 yield return showReport;
             }
@@ -229,14 +229,14 @@ namespace RimWorld
                                 return null;
                             });
                         },
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandScuttleShip"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandScuttleShipDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ScuttleShip"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ScuttleShipDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/Scuttle_Icon")
                     };
                     if (Ship.Pods.Where(pod => pod.parent is Building_CryptosleepCasket c && c.GetDirectlyHeldThings().Any()).Count() == 0)
                     {
                         abandon.disabled = true;
-                        abandon.disabledReason = TranslatorFormattedStringExtensions.Translate("ShipInsideNoLoadedPods");
+                        abandon.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.NoLoadedPods");
                     }
                     yield return abandon;
                 }
@@ -252,8 +252,8 @@ namespace RimWorld
                                 ((Building_ShipCloakingDevice)h.parent).flickComp.SwitchIsOn = !anyCloakOn;
                             }
                         },
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleCloak"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleCloakDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ToggleCloak"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ToggleCloakDesc"),
                         isActive = () => anyCloakOn
                     };
                     if (anyCloakOn)
@@ -274,8 +274,8 @@ namespace RimWorld
 								b.flickComp.SwitchIsOn = !anyShieldOn;
 							}
 						},
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleShields"),
-						defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleShieldsDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ToggleShields"),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ToggleShieldsDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/Shield_On"),
                         isActive = () => anyShieldOn
 					};
@@ -289,11 +289,11 @@ namespace RimWorld
                         {
                             heatNet.StartVent();
                         },
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipHeatPurge"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.HeatPurge"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.HeatPurgeDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/ActiveVent"),
                         disabled = heatNet.venting || heatNet.RatioInNetworkRaw < 0.1f,
-                        disabledReason = heatNet.venting ? TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeVenting") : TranslatorFormattedStringExtensions.Translate("ShipHeatPurgeNotEnough")
+                        disabledReason = heatNet.venting ? TranslatorFormattedStringExtensions.Translate("SoS.HeatPurgeVenting") : TranslatorFormattedStringExtensions.Translate("SoS.HeatPurgeNotEnough")
                     };
                     yield return vent;
                 }
@@ -309,14 +309,14 @@ namespace RimWorld
                             else
                                 mapComp.EndBattle(Map, true);
                         },
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatEscape"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatEscapeDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CombatEscape"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CombatEscapeDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/Escape_Icon")
                     };
                     if (mapComp.Range < 395)
                     {
                         escape.disabled = true;
-                        escape.disabledReason = TranslatorFormattedStringExtensions.Translate("NotAtMaxShipRange");
+                        escape.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.NotAtMaxRange");
                     }
                     yield return escape;
                     Command_Action withdraw = new Command_Action
@@ -324,19 +324,19 @@ namespace RimWorld
                         groupable = false,
                         action = delegate
                         {
-                            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmWithdrawShipCombat"), delegate
+                            Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("SoS.CombatConfirmWithdraw"), delegate
                             {
                                 mapComp.ShipsToMove.Add(shipIndex);
                             }));
                         },
                         icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Withdraw"),
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShip"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShipDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawShip"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawShipDesc"),
                     };
                     if (mapComp.ShipsOnMapNew.Count(s => !s.Value.IsWreck) <= 1)
                     {
                         withdraw.disabled = true;
-                        withdraw.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawShipLast");
+                        withdraw.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawShipLast");
                     }
                     yield return withdraw;
                     //wrecks
@@ -351,7 +351,7 @@ namespace RimWorld
                             groupable = false,
                             action = delegate
                             {
-                                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmWithdrawWrecksCombat"), delegate
+                                Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("SoS.WithdrawWrecksConfirm"), delegate
                                 {
                                     foreach (var ship in shipStuck)
                                     {
@@ -360,8 +360,8 @@ namespace RimWorld
                                 }));
                             },
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_WithdrawWrecks"),
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandWithdrawWrecks"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandWithdrawWrecksDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawWrecks"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawWrecksDesc"),
                         };
                         yield return withdrawWrecks;
                     }
@@ -376,15 +376,15 @@ namespace RimWorld
                                 mapComp.Maintain = false;
                                 mapComp.callSlowTick = true;
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatRetreat"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatRetreatDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CombatRetreat"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CombatRetreatDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Retreat")
                         };
                         yield return retreat;
                         if (wrecksOnMap)
                         {
                             retreat.Disable();
-                            retreat.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawMoveWrecks");
+                            retreat.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
                         }
                     }
                     if (mapComp.Maintain == false)
@@ -397,15 +397,15 @@ namespace RimWorld
                                 mapComp.RangeToKeep = mapComp.OriginMapComp.Range;
                                 mapComp.callSlowTick = true;
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatMaintain"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatMaintainDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CombatMaintain"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CombatMaintainDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Maintain")
                         };
                         yield return maintain;
                         if (wrecksOnMap)
                         {
                             maintain.Disable();
-                            maintain.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawMoveWrecks");
+                            maintain.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
                         }
                     }
                     if (mapComp.Maintain == true || mapComp.Heading != 0)
@@ -418,15 +418,15 @@ namespace RimWorld
                                 mapComp.Maintain = false;
                                 mapComp.callSlowTick = true;
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatStop"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatStopDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CombatStop"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CombatStopDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Stop")
                         };
                         yield return stop;
                         if (wrecksOnMap)
                         {
                             stop.Disable();
-                            stop.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawMoveWrecks");
+                            stop.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
                         }
                     }
                     if (mapComp.Maintain == true || mapComp.Heading != 1)
@@ -439,15 +439,15 @@ namespace RimWorld
                                 mapComp.Maintain = false;
                                 mapComp.callSlowTick = true;
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipCombatAdvance"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipCombatAdvanceDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CombatAdvance"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CombatAdvanceDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_Advance")
                         };
                         yield return advance;
                         if (wrecksOnMap)
                         {
                             advance.Disable();
-                            advance.disabledReason = TranslatorFormattedStringExtensions.Translate("CommandWithdrawMoveWrecks");
+                            advance.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
                         }
                     }
                     if (heatNet.Turrets.Any())
@@ -463,8 +463,8 @@ namespace RimWorld
                                     Find.Selector.Select(h.parent);
                                 }
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideSelectWeapons"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideSelectWeaponsDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SelectWeapons"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SelectWeaponsDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Select_All_Weapons_Icon")
                         };
                         yield return selectWeapons;
@@ -497,7 +497,6 @@ namespace RimWorld
                             if (anyEngineOn)
                             {
                                 mapComp.MapFullStop();
-                                mapComp.Heading = 0;
                             }
                             else
                             {
@@ -505,8 +504,8 @@ namespace RimWorld
                                 mapComp.Heading = 1;
                             }
                         },
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEngines"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideToggleEnginesDesc"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ToggleEngines"),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ToggleEnginesDesc"),
                         icon = ContentFinder<Texture2D>.Get("UI/Commands/LaunchShip"),
                         isActive = () => anyEngineOn
                     };
@@ -525,8 +524,8 @@ namespace RimWorld
                             {
                                 ShipInteriorMod2.SpaceTravelWarning(delegate { ShipInteriorMod2.SaveShipFlag = true; ShipCountdown.InitiateCountdown(this); });
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipPlanetLeave"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipPlanetLeaveDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.PlanetLeave"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.PlanetLeaveDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Glitterworld_end_icon", true)
                         };
 
@@ -556,8 +555,8 @@ namespace RimWorld
                             {
                                 Ship.CreateShipSketchIfFuelPct(0.01f, Map);
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMove"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Move"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Land_Ship")
                         };
                         //flip
@@ -568,8 +567,8 @@ namespace RimWorld
                             {
                                 Ship.CreateShipSketchIfFuelPct(0.01f, Map, 2);
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFlip"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveFlipDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveFlip"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveFlipDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Flip_Ship")
                         };
                         //CCW rot
@@ -580,8 +579,8 @@ namespace RimWorld
                             {
                                 Ship.CreateShipSketchIfFuelPct(0.01f, Map, 1);
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRot"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveRot"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveRotDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Rotate_Ship")
                         };
                         if (ShipCountdown.CountingDown)
@@ -594,7 +593,7 @@ namespace RimWorld
                         {
                             moveShipRot.Disable();
                             StringBuilder sb = new StringBuilder();
-                            sb.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipInsideMoveRotNo"));
+                            sb.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.MoveRotNo"));
                             // Limiting the list of non-rotatable objects.
                             int maxCount = 5;
                             int addedLines = 0;
@@ -635,8 +634,8 @@ namespace RimWorld
                                     mapComp.MoveToMap = m;
                                     Ship.CreateShipSketchIfFuelPct(0.1f, m, 0, true);
                                 },
-                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand") + " (" + m.Parent.Label + ")",
-                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideLandDesc") + m.Parent.Label,
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Land") + " (" + m.Parent.Label + ")",
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.LandDesc") + m.Parent.Label,
                                 icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon")
                             };
                             if (ShipCountdown.CountingDown)
@@ -657,8 +656,8 @@ namespace RimWorld
                                     }
                                     Ship.BuildingsDestroyed.Clear();
                                 },
-                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipRebuild"),
-                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipRebuildDesc"),
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Rebuild"),
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RebuildDesc"),
                                 icon = ContentFinder<Texture2D>.Get("UI/RebuildShip", true)
                             };
                             yield return rebuildShip;
@@ -680,8 +679,8 @@ namespace RimWorld
                                     mapComp.StartShipEncounter(station);
                                 },
                                 icon = ContentFinder<Texture2D>.Get("UI/ArchotechStation_Icon_Quest"),
-                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarA"),
-                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarADesc")
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.QuestPillarA"),
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.QuestPillarADesc")
                             };
                             yield return goGetThatPillarA;
                         }
@@ -704,8 +703,8 @@ namespace RimWorld
                                     MapParent site = (MapParent)ShipInteriorMod2.GenerateSite("MoonPillarSite");
                                 },
                                 icon = ContentFinder<Texture2D>.Get("UI/Moon_Icon_Quest"),
-                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarB"),
-                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipQuestPillarBDesc")
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.QuestPillarB"),
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.QuestPillarBDesc")
                             };
                             yield return goGetThatPillarB;
                         }
@@ -830,8 +829,8 @@ namespace RimWorld
                                 {
                                     ShipInteriorMod2.MoveShip(this, mapComp.MoveToMap, IntVec3.Zero);
                                 },
-                                defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand"),
-                                defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideLandDesc"),
+                                defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Land"),
+                                defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.LandDesc"),
                                 icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon")
                             };
                             if (!ShipInteriorMod2.CanShipLandOnMap(Ship, mapComp.MoveToMap)) //area clear allow direct landing, else prompt
@@ -844,8 +843,8 @@ namespace RimWorld
                                     {
                                         Ship.CreateShipSketchIfFuelPct(0.1f, mapComp.MoveToMap, 0, false);
                                     },
-                                    defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideLand"),
-                                    defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideLandDesc"),
+                                    defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Land"),
+                                    defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.LandDesc"),
                                     icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon")
                                 };
                                 yield return divertShip;
@@ -868,14 +867,14 @@ namespace RimWorld
                                 }
                                 Ship.CreateShipSketchIfFuelPct(0.01f, mapComp.GraveOrigin);
                             },
-                            defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShip"),
-                            defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideCaptureShipDesc"),
+                            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CaptureShip"),
+                            defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CaptureShipDesc"),
                             icon = ContentFinder<Texture2D>.Get("UI/Capture_Ship_Icon")
                         };
                         if (mapComp.ShipFaction == Faction.OfPlayer)
                         {
-                            returnShip.defaultLabel = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShip");
-                            returnShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("ShipInsideReturnShipDesc");
+                            returnShip.defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ReturnShip");
+                            returnShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ReturnShipDesc");
                             returnShip.icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon");
                         }
                         if (ShipCountdown.CountingDown || mapComp.IsGraveOriginInCombat)
@@ -903,8 +902,8 @@ namespace RimWorld
                         }
                     },
                     hotKey = KeyBindingDefOf.Misc1,
-                    defaultLabel = "CommandShipLaunch".Translate(),
-                    defaultDesc = "CommandShipLaunchDesc".Translate(),
+                    defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandShipLaunch"),
+                    defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandShipLaunchDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/Commands/LaunchShip", true)
                 };
                 if (!CanLaunchNow)
@@ -988,7 +987,7 @@ namespace RimWorld
             if (countdownComp != null && mapComp.ShipMapState != ShipMapState.isGraveyard && countdownComp.ForceExitAndRemoveMapCountdownActive)
             {
                 countdownComp.ResetForceExitAndRemoveMapCountdown();
-                Messages.Message("ShipBurnupPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
+                Messages.Message("SoS.BurnUpPlayerPrevented", this, MessageTypeDefOf.PositiveEvent);
             }
         }
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
@@ -1005,7 +1004,7 @@ namespace RimWorld
                 if (countdownComp != null && !countdownComp.ForceExitAndRemoveMapCountdownActive)
                 {
                     countdownComp.StartForceExitAndRemoveMapCountdown();
-                    Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ShipBurnupPlayer"), TranslatorFormattedStringExtensions.Translate("ShipBurnupPlayerDesc", countdownComp.ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.ThreatBig);
+                    Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.BurnUpPlayer"), TranslatorFormattedStringExtensions.Translate("SoS.BurnUpPlayerDesc", countdownComp.ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.ThreatBig);
                 }
             }
             base.DeSpawn(mode);
@@ -1085,30 +1084,28 @@ namespace RimWorld
             }
             pawn?.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
 
-            mapComp.ShipsOnMapNew[shipIndex].Capture(Faction.OfPlayer);
+            Ship.Capture(pawn.Faction);
             if (mapComp.ShipMapState == ShipMapState.inCombat)
             {
                 mapComp.ShipsToMove.Add(ShipIndex);
             }
-            else
-            {
-				Ship.Capture(Faction.OfPlayer);
-            }
         }
         private void Failure(Pawn pawn)
         {
-            Messages.Message("Hack failed", null, MessageTypeDefOf.CautionInput);
+            if (pawn.Faction == Faction.OfPlayer)
+                Messages.Message("Hack failed", null, MessageTypeDefOf.CautionInput);
         }
         private void CriticalFailure(Pawn pawn)
         {
-            Messages.Message("Hack failed", null, MessageTypeDefOf.CautionInput);
+            if (pawn.Faction == Faction.OfPlayer)
+                Messages.Message("Hack failed", null, MessageTypeDefOf.CautionInput);
         }
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn selPawn)
         {
             List<FloatMenuOption> options = new List<FloatMenuOption>();
             if (Faction != Faction.OfPlayer)
-                options.Add(new FloatMenuOption("Hack", delegate { Job capture = new Job(DefDatabase<JobDef>.GetNamed("HackEnemyShip"), this); selPawn.jobs.TryTakeOrderedJob(capture); }));
-            else if (this.AllComps != null)
+                options.Add(new FloatMenuOption("Hack", delegate { Job capture = new Job(ResourceBank.JobDefOf.HackEnemyShip, this); selPawn.jobs.TryTakeOrderedJob(capture); }));
+            else if (AllComps != null)
             {
                 for (int i = 0; i < AllComps.Count; i++)
                 {
@@ -1122,10 +1119,10 @@ namespace RimWorld
         }
         public void PawnsAbandonWarning()
         {
-            DiaNode theNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("ShipCombatAbandonPawns"));
+            DiaNode theNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("SoS.CombatAbandonPawns"));
             DiaOption accept = new DiaOption("Accept");
             accept.resolveTree = true;
-            accept.action = delegate { mapComp.EndBattle(this.Map, true); };
+            accept.action = delegate { mapComp.EndBattle(Map, true); };
             theNode.options.Add(accept);
 
             DiaOption cancel = new DiaOption("Cancel");

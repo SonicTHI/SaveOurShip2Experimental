@@ -150,7 +150,7 @@ namespace RimWorld
 			}
 			if (PointDefenseMode)
 			{
-				Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageTurretWontFireBecausePointDefense", def.label), this, MessageTypeDefOf.RejectInput, historical: false);
+				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.TurretInPointDefense", def.label), this, MessageTypeDefOf.RejectInput, historical: false);
 				return;
 			}
 			if (GroundDefenseMode)
@@ -495,7 +495,7 @@ namespace RimWorld
 			if (powerComp != null && heatComp != null && powerComp.PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + AmplifierDamageBonus))
 			{
 				if (!PointDefenseMode && PlayerControlled)
-					Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToPower",Label), this, MessageTypeDefOf.CautionInput);
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CannotFireDueToPower", Label), this, MessageTypeDefOf.CautionInput);
 				shipTarget = LocalTargetInfo.Invalid;
 				ResetCurrentTarget();
 				return;
@@ -504,7 +504,7 @@ namespace RimWorld
 			if (heatComp.Props.heatPerPulse > 0 && !heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus) * 3))
 			{
 				if (!PointDefenseMode && PlayerControlled)
-					Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToHeat", Label), this, MessageTypeDefOf.CautionInput);
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CannotFireDueToHeat", Label), this, MessageTypeDefOf.CautionInput);
 				shipTarget = LocalTargetInfo.Invalid;
 				ResetCurrentTarget();
 				return;
@@ -515,7 +515,7 @@ namespace RimWorld
 				if (fuelComp.Fuel <= 0)
 				{
 					if (!PointDefenseMode && PlayerControlled)
-						Messages.Message(TranslatorFormattedStringExtensions.Translate("CannotFireDueToAmmo", Label), this, MessageTypeDefOf.CautionInput);
+						Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CannotFireDueToAmmo", Label), this, MessageTypeDefOf.CautionInput);
 					shipTarget = LocalTargetInfo.Invalid;
 					ResetCurrentTarget();
 					return;
@@ -677,9 +677,9 @@ namespace RimWorld
 			if (spinalComp != null)
 			{
 				if (AmplifierCount != -1)
-					stringBuilder.AppendLine("ShipAmplifierCount".Translate(AmplifierCount));
+					stringBuilder.AppendLine("SoS.AmplifierCount".Translate(AmplifierCount));
 				else
-					stringBuilder.AppendLine("ShipSpinalCapNotFound".Translate());
+					stringBuilder.AppendLine("SoS.SpinalCapNotFound".Translate());
 			}
 			if (torpComp != null)
 			{
@@ -706,7 +706,7 @@ namespace RimWorld
 				}
 				else
 				{
-					stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("ShipTorpedoNotLoaded"));
+					stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.TorpedoNotLoaded"));
 				}
 			}
 			return stringBuilder.ToString().TrimEndNewlines();
@@ -845,8 +845,8 @@ namespace RimWorld
 				{
 					Command_Action command_Action = new Command_Action
 					{
-						defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandExtractShipTorpedo"),
-						defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandExtractShipTorpedoDesc"),
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.TurretExtractTorpedo"),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.TurretExtractTorpedoDesc"),
 						icon = torpComp.LoadedShells[0].uiIcon,
 						iconAngle = torpComp.LoadedShells[0].uiIconAngle,
 						iconOffset = torpComp.LoadedShells[0].uiIconOffset,
@@ -869,7 +869,7 @@ namespace RimWorld
 					Command_Toggle command_Toggle = new Command_Toggle
 					{
 						defaultLabel = torp.label,
-						defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandShipTorpedoAllowedDesc"),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.TorpedoAllowedDesc"),
 						icon = torp.uiIcon,
 						iconAngle = torp.uiIconAngle,
 						iconOffset = torp.uiIconOffset,
@@ -895,8 +895,8 @@ namespace RimWorld
 			{
 				Command_Toggle command_Toggle = new Command_Toggle
 				{
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandShipPointDefense"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandShipPointDefenseDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.TurretPointDefense"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.TurretPointDefenseDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/PointDefenseMode"),
 					toggleAction = delegate
 					{
@@ -914,8 +914,8 @@ namespace RimWorld
 			{
 				Command_Toggle command_Toggle = new Command_Toggle
 				{
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandShipOptimalRange"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandShipOptimalRangeDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.TurretOptimalRange"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.TurretOptimalRangeDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/OptimalRangeMode"),
 					toggleAction = delegate
 					{

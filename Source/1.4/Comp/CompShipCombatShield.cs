@@ -69,7 +69,7 @@ namespace RimWorld
                 }
                 stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("ShutDown"));
             }
-			stringBuilder.Append("ShipInsideRadius".Translate() + radius + "/" + radiusSet);
+			stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.ShieldRadius", radius, radiusSet));
             return stringBuilder.ToString();
         }
 
@@ -97,7 +97,7 @@ namespace RimWorld
             float heatGenerated = CalcHeatGenerated(proj);
             if (proj is Projectile_ExplosiveShipCombatLaser || proj is Projectile_ExplosiveShipCombatPsychic)
             {
-                ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ThingDef.Named("ShipCombatLaserMote"));
+                ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipCombatLaserMote);
                 obj.origin = proj.origin;
                 obj.destination = proj.DrawPos;
                 obj.color = proj.Launcher.TryGetComp<CompShipHeat>().Props.laserColor;
@@ -114,9 +114,9 @@ namespace RimWorld
                 GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);
                 SoundDefOf.EnergyShield_Broken.PlayOneShot(new TargetInfo(parent));
 				if (parent.Faction != Faction.OfPlayer)
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatShieldBrokenEnemy"), parent, MessageTypeDefOf.PositiveEvent);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CombatShieldBrokenEnemy"), parent, MessageTypeDefOf.PositiveEvent);
                 else
-                    Messages.Message(TranslatorFormattedStringExtensions.Translate("ShipCombatShieldBroken"), parent, MessageTypeDefOf.NegativeEvent);
+                    Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CombatShieldBroken"), parent, MessageTypeDefOf.NegativeEvent);
             }
             if (powerComp != null && powerComp.PowerNet.CurrentStoredEnergy() > heatGenerated / 20)
             {
@@ -200,10 +200,10 @@ namespace RimWorld
             {
                 action = delegate ()
                 {
-                    this.ChangeShieldSize(-10f);
+                    ChangeShieldSize(-10f);
                 },
                 defaultLabel = "- 10",
-                defaultDesc = "CommandDecShieldRadius".Translate(),
+                defaultDesc = "SoS.DecShieldRadius".Translate(),
                 hotKey = KeyBindingDefOf.Misc5,
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/TempLower", true)
             };
@@ -211,10 +211,10 @@ namespace RimWorld
             {
                 action = delegate ()
                 {
-                    this.ChangeShieldSize(-1f);
+                    ChangeShieldSize(-1f);
                 },
                 defaultLabel = "- 1",
-                defaultDesc = "CommandDecShieldRadius".Translate(),
+                defaultDesc = "SoS.DecShieldRadius".Translate(),
                 hotKey = KeyBindingDefOf.Misc4,
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/TempLower", true)
             };
@@ -226,8 +226,8 @@ namespace RimWorld
                     powerComp.PowerOutput = -1500;
                     SoundDefOf.Tick_Tiny.PlayOneShotOnCamera(null);
                 },
-                defaultLabel = "CommandResetShieldRadius".Translate(),
-                defaultDesc = "CommandResetShieldRadiusDesc".Translate(),
+                defaultLabel = "SoS.ResetShieldRadius".Translate(),
+                defaultDesc = "SoS.ResetShieldRadiusDesc".Translate(),
                 hotKey = KeyBindingDefOf.Misc1,
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/TempReset", true)
             };
@@ -235,10 +235,10 @@ namespace RimWorld
             {
                 action = delegate ()
                 {
-                    this.ChangeShieldSize(1f);
+                    ChangeShieldSize(1f);
                 },
                 defaultLabel = "+ 1",
-                defaultDesc = "CommandIncShieldRadius".Translate(),
+                defaultDesc = "SoS.IncShieldRadius".Translate(),
                 hotKey = KeyBindingDefOf.Misc2,
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/TempRaise", true)
             };
@@ -246,14 +246,13 @@ namespace RimWorld
             {
                 action = delegate ()
                 {
-                    this.ChangeShieldSize(10f);
+                    ChangeShieldSize(10f);
                 },
                 defaultLabel = "+ 10",
-                defaultDesc = "CommandIncShieldRadius".Translate(),
+                defaultDesc = "SoS.IncShieldRadius".Translate(),
                 hotKey = KeyBindingDefOf.Misc3,
                 icon = ContentFinder<Texture2D>.Get("UI/Commands/TempRaise", true)
-            };
-            yield break;
+            }; yield break;
         }
         public void ChangeShieldSize(float radius)
         {

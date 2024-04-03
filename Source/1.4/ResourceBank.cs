@@ -90,6 +90,7 @@ namespace SaveOurShip2
 			public static ThingDef ShipHullfoamTile;
             public static ThingDef ShipAirlock;
             public static ThingDef ShipAirlockBeamWall;
+            public static ThingDef ShipAirlockBeamWallInert;
             public static ThingDef ShipAirlockBeamTile;
             public static ThingDef ShipInside_SolarGenerator;
             public static ThingDef Ship_SensorClusterAdv;
@@ -159,7 +160,8 @@ namespace SaveOurShip2
 			public static HediffDef SoSArchotechLung;
 			public static HediffDef SoSArchotechSkin;
 			public static HediffDef SpaceBeltBubbleHediff;
-			public static HediffDef SoSHologramArchotech;
+            public static HediffDef SoSHologramMachine;
+            public static HediffDef SoSHologramArchotech;
 		}
 
 		[DefOf]
@@ -173,6 +175,8 @@ namespace SaveOurShip2
         public static class JobDefOf
         {
             public static JobDef FleeVacuum;
+            public static JobDef HackEnemyShip;
+            public static JobDef HackAirlock;
             public static JobDef BreachAirlock;
             public static JobDef DefendBreacher;
         }
@@ -180,6 +184,7 @@ namespace SaveOurShip2
         [DefOf]
         public static class DutyDefOf
         {
+            public static DutyDef SoSDefendShip;
             public static DutyDef SoSAssaultShip;
         }
 

@@ -85,6 +85,7 @@
 	<SoS.SalvageBridge>Can not move intact ships with the salvage bay, capture or destroy the bridge.</SoS.SalvageBridge>
 	<SoS.SalvageCount>Not enough salvage bays. {0}/{1}</SoS.SalvageCount>
 	<SoS.SalvageNoSpace>Not enough space on salvage bay.</SoS.SalvageNoSpace>
+	<SoS.SalvageEnemiesPresent>Use salvage bay to claim after all enemies have been defeated.</SoS.SalvageEnemiesPresent>
 	<SoS.ClaimWrecksCommand>Claim wrecks</SoS.ClaimWrecksCommand>
 	<SoS.ClaimWrecksCommandDesc>Claim all wrecks on this map</SoS.ClaimWrecksCommandDesc>
 	<SoS.ClaimWrecksSuccess>Claimed {0} buildings!</SoS.ClaimWrecksSuccess>

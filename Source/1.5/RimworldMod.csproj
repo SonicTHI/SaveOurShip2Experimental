@@ -104,7 +104,7 @@
     <Compile Include="Ships\PirateShip.cs" />
     <Compile Include="Ships\AttackableShip.cs" />
     <Compile Include="Building\Building_ArchotechPillar.cs" />
-    <Compile Include="Building\Building_Radiator.cs" />
+    <Compile Include="Obsolete\Building_Radiator.cs" />
     <Compile Include="Building\Building_SatelliteCore.cs" />
     <Compile Include="Building\Building_ArchotechSpore.cs" />
     <Compile Include="Building\Building_ShipAdvSensor.cs" />

@@ -1752,7 +1752,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(Building), "DeSpawn")] //for comp calls and weight, after despawn, before base.despawn
+	[HarmonyPatch(typeof(Building), "DeSpawn")] //for comp calls and weight, before base.despawn
 	public static class DoPreDeSpawn
 	{
 		//can we have predespawn at home? no, we have despawn at home, despawn at home: postdespawn
@@ -1760,12 +1760,13 @@ namespace SaveOurShip2
 		public static bool PreDeSpawn(Building __instance, DestroyMode mode)
 		{
 			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
-				return true;
 			var shipComp = __instance.TryGetComp<CompSoShipPart>();
 			if (shipComp != null) //predespawn for ship parts
 				shipComp.PreDeSpawn(mode);
-			else if (!mapComp.ShipsOnMapNew.NullOrEmpty()) //rems normal building weight/count to ship
+            if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
+                return true;
+
+            else if (!mapComp.ShipsOnMapNew.NullOrEmpty()) //rems normal building weight/count to ship
 			{
 				foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
 				{
@@ -2040,7 +2041,7 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch]
-	public class PatchCharger
+	public class ReversePatchBuilding
 	{
 		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
 		[HarmonyPatch(typeof(Building), "DeSpawn")]
@@ -2055,20 +2056,10 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 			{
-				PatchCharger.Snapshot(__instance, mode);
+				ReversePatchBuilding.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
-		}
-	}
-
-	[HarmonyPatch]
-	public class PatchGrower
-	{
-		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
-		[HarmonyPatch(typeof(Building), "DeSpawn")]
-		public static void Snapshot(object instance, DestroyMode mode)
-		{
 		}
 	}
 	[HarmonyPatch(typeof(Building_PlantGrower), "DeSpawn")]
@@ -2078,20 +2069,33 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 			{
-				PatchGrower.Snapshot(__instance, mode);
+                ReversePatchBuilding.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
 		}
 	}
+    [HarmonyPatch(typeof(Building_Bookcase), "DeSpawn")]
+    public static class DisableForMoveBookCase
+    {
+        public static bool Prefix(Building_Bookcase __instance, DestroyMode mode)
+        {
+            if (ShipInteriorMod2.AirlockBugFlag)
+            {
+                ReversePatchBuilding.Snapshot(__instance, mode);
+                return false;
+            }
+            return true;
+        }
+    }
 
-	[HarmonyPatch(typeof(Designator_Deconstruct), "CanDesignateThing")]
+    [HarmonyPatch(typeof(Designator_Deconstruct), "CanDesignateThing")]
 	public static class ChangeReason
 	{
 		public static void Postfix(ref AcceptanceReport __result, Thing t)
 		{
 			if (!__result.Accepted && t.Map.IsSpace() && __result.Reason.Equals("MessageMustDesignateDeconstructibleMechCluster".Translate()))
-				__result = new AcceptanceReport("Use salvage bay to claim after all enemies have been defeated.");
+				__result = new AcceptanceReport("SoS.SalvageEnemiesPresent".Translate());
 		}
 	}
 
@@ -4396,7 +4400,7 @@ namespace SaveOurShip2
 				{
 					if (map.IsSpace() && map.spawnedThings.Where(t => t.def == ThingDefOf.Ship_ComputerCore && t.Faction == Faction.OfPlayer).Any())
 					{
-						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
+						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoS.PsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
 						AttackableShip ship = new AttackableShip();
 						ship.attackableShip = DefDatabase<EnemyShipDef>.GetNamed("MechPsychicAmp");
 						ship.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");

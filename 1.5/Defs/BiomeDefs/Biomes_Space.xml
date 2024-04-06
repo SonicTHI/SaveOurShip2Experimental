@@ -15,6 +15,7 @@
 		<canBuildBase>false</canBuildBase>
 		<texture>World/Biomes/space</texture>
 		<forageability>0</forageability>
+		<isExtremeBiome>true</isExtremeBiome>
 		<soundsAmbient />
 		<diseaseMtbDays>99999</diseaseMtbDays>
 		<diseases/>

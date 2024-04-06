@@ -156,8 +156,8 @@
 								<li>Empire</li>
 							</factionDefs>
 							<bountyHunts>true</bountyHunts>
-							<colorPrimary>RGBA(0.624, 0.314, 0.314, 1.000)</colorPrimary>
-							<colorSecondary>RGBA(0.588, 0.612, 0.612, 1.000)</colorSecondary>
+							<colorPrimary>Structure_Red</colorPrimary>
+							<colorSecondary>Structure_GrayLight</colorSecondary>
 							<marineDef>Empire_Fighter_Marine_Space</marineDef>
 							<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
 							<enemyShipDefs>

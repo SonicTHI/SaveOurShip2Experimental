@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
     <SpaceNavyDef Abstract="True" Name="SpaceNavy">
-        <factionDefs>
-		</factionDefs>
-		<colorPrimary>RGBA(0, 0, 0, 0)</colorPrimary>
-		<colorSecondary>RGBA(0, 0, 0, 0)</colorSecondary>
+        <factionDefs></factionDefs>
+		<colorPrimary></colorPrimary>
+		<colorSecondary></colorSecondary>
 		<bountyHunts>false</bountyHunts>
 		<pirates>false</pirates>
 		<canOperateAfterFactionDefeated>true</canOperateAfterFactionDefeated>
         <crewDef>SpaceCrew</crewDef>
         <marineDef>SpaceCrewMarine</marineDef>
         <marineHeavyDef>SpaceCrewMarineHeavy</marineHeavyDef>
-        <enemyShipDefs>
-        </enemyShipDefs>
+        <enemyShipDefs></enemyShipDefs>
     </SpaceNavyDef>
     <SpaceNavyDef ParentName="SpaceNavy">
         <defName>Pirate_SpaceNavy</defName>
@@ -20,8 +18,8 @@
         <factionDefs>
             <li>Pirate</li>
 		</factionDefs>
-		<colorPrimary>RGBA(0.196, 0.196, 0.196, 1.000)</colorPrimary>
-		<colorSecondary>RGBA(0.624, 0.314, 0.314, 1.000)</colorSecondary>
+		<colorPrimary>Structure_Black</colorPrimary>
+		<colorSecondary>Structure_Red</colorSecondary>
 		<pirates>true</pirates>
         <enemyShipDefs>
             <li>PirateMiningRig</li>

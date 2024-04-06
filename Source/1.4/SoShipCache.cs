@@ -91,7 +91,7 @@ namespace SaveOurShip2
         public float[] ActualThreatPerSegment()
         {
             ThreatCurrent = 0;
-            float[] actualThreatPerSegment = ThreatPerSegment;
+            float[] actualThreatPerSegment = (float[])ThreatPerSegment.Clone();
             foreach (var turret in Turrets)
             {
                 int threat = turret.heatComp.Props.threat;

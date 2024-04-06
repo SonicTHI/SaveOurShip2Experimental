@@ -10,8 +10,8 @@ namespace RimWorld
 	{
 		public List<FactionDef> factionDefs = new List<FactionDef>();
 		public List<EnemyShipDef> enemyShipDefs = new List<EnemyShipDef>();
-		public Color colorPrimary;
-		public Color colorSecondary;
+		public string colorPrimary;
+		public string colorSecondary;
 		public bool canOperateAfterFactionDefeated = true;
 		public bool bountyHunts;
 		public bool pirates;

@@ -3,7 +3,7 @@ using Verse;
 using SaveOurShip2;
 
 namespace RimWorld
-{
+{/*
 	public class Building_Radiator : Building_TempControl
 	{
 		//private const float HeatOutputMultiplier = 1.25f;
@@ -87,7 +87,7 @@ namespace RimWorld
 				{
 					unfoldComp.Target = 0.0f;
 				}
-			}*/
+			}*
 		}
-	}
+	}*/
 }

@@ -182,7 +182,18 @@ namespace RimWorld
 			if (ShipInteriorMod2.AirlockBugFlag) //disable on moveship, detach destruction
 				return;
 
-			int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
+            //destroy attached lights if not decon
+            if (mode != DestroyMode.Deconstruct)
+            {
+                foreach (Thing t in GenConstruct.GetAttachedBuildings(parent))
+				{
+					t.Destroy(DestroyMode.Vanish);
+                }
+            }
+			if (mapComp.CacheOff)
+                return;
+
+            int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
 			if (shipIndex == -1)
 				return;
 

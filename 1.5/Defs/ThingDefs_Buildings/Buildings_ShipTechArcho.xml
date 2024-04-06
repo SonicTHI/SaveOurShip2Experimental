@@ -108,11 +108,6 @@
 				<archotech>true</archotech>
 				<roof>true</roof>
 			</li>
-			<!--li Class="CompProperties_SoShipLight">
-				<light>Ship_Beam_Light_Archo</light>
-				<lightPower>5</lightPower>
-				<sunLightPower>1000</sunLightPower>
-			</li-->
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1702,94 +1697,4 @@
 			</categories>
 		</fixedIngredientFilter>
 	</RecipeDef>
-	<!-- obsolete >
-	<ThingDef ParentName="BuildingShipHullBase">
-		<defName>ShipInside_PassiveCoolerArchotech</defName>
-		<label>archotech ship radiator</label>
-		<description>Vents heat into the void at a physically-implausible rate, rapidly cooling a ship's interior. Also provides a small amount of heat capacity to weapons and shields. Cannot vent heat while shields or cloaking devices are active.</description>
-		<thingClass>Building_Radiator</thingClass>
-		<drawerType>MapMeshAndRealTime</drawerType>
-		<category>Building</category>
-		<graphicData>
-			<texPath>Things/Building/Linked/ShipBeam/ShipBeam_Archotech_Atlas</texPath>
-			<graphicClass>Graphic_Single</graphicClass>
-			<linkType>Basic</linkType>
-			<linkFlags>
-				<li>Wall</li>
-				<li>Rock</li>
-			</linkFlags>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-				<edgeTop>Damage/Edge</edgeTop>
-				<edgeBot>Damage/Edge</edgeBot>
-				<edgeLeft>Damage/Edge</edgeLeft>
-				<edgeRight>Damage/Edge</edgeRight>
-			</damageData>
-		</graphicData>
-		<uiIconPath>Things/Building/Ship/BeamRadiatorArchotechUI</uiIconPath>
-		<size>(1,1)</size>
-		<rotatable>true</rotatable>
-		<tickerType>Normal</tickerType>
-		<statBases>
-			<WorkToBuild>8000</WorkToBuild>
-			<MaxHitPoints>1200</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<selectable>true</selectable>
-		<costList>
-			<Steel>100</Steel>
-			<Plasteel>25</Plasteel>
-			<Uranium>25</Uranium>
-			<Gold>25</Gold>
-			<ComponentSpacer>2</ComponentSpacer>
-		</costList>
-		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
-		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
-		<placeWorkers>
-			<li>PlaceWorker_Radiator</li>
-		</placeWorkers>
-		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
-		<comps>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>150</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_TempControl">
-				<energyPerSecond>-42</energyPerSecond>
-			</li>
-			<li Class="CompProperties_Unfold">
-				<extendRate>0.005</extendRate>
-				<retractRate>0.0025</retractRate>
-				<retractTime>750</retractTime>
-				<extendDirection>(0,0,-1)</extendDirection>
-				<startOffset>0.5</startOffset>
-				<length>3.0</length>
-				<graphicPath>Things/Building/Ship/ArchotechRadiator</graphicPath>
-			</li>
-			<li Class="CompProperties_Overlay">
-				<graphicPath>Things/Building/Ship/RadiatorVent</graphicPath>
-				<size>(1,1,1)</size>
-			</li>
-			<li Class="CompProperties_ShipHeat">
-			</li>
-			<li Class="CompProperties_SoSUnlock">
-				<unlock>ArchotechUplink</unlock>
-			</li>
-			<li>
-				<compClass>CompColorable</compClass>
-			</li>
-		</comps>
-		<designationHotKey>Misc2</designationHotKey>
-		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
-		<building>
-			<blueprintGraphicData>
-				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
-			</blueprintGraphicData>
-		</building>
-	</ThingDef-->
 </Defs>

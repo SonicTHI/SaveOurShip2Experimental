@@ -486,7 +486,7 @@ namespace RimWorld
                     yield return endTarget;
                 }*/
                 //engine burn
-                else if (mapComp.ShipMapState == ShipMapState.inTransit || mapComp.ShipMapState == ShipMapState.inEvent)
+                else if (Ship.CanFire() && (mapComp.ShipMapState == ShipMapState.inTransit || mapComp.ShipMapState == ShipMapState.inEvent))
                 {
                     List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove()).ToList();
                     bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
@@ -1079,12 +1079,16 @@ namespace RimWorld
         {
             if (ShipName == "Psychic Amplifier")
             {
-                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCaptured"), TranslatorFormattedStringExtensions.Translate("SoSPsychicAmplifierCapturedDesc"), LetterDefOf.PositiveEvent);
+                Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PsychicAmplifierCaptured"), TranslatorFormattedStringExtensions.Translate("SoS.PsychicAmplifierCapturedDesc"), LetterDefOf.PositiveEvent);
                 ShipInteriorMod2.WorldComp.Unlocks.Add("ArchotechSpore");
             }
             pawn?.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
 
-            Ship.Capture(pawn.Faction);
+            if (pawn == null)
+                Ship.Capture(Faction.OfPlayer);
+            else
+                Ship.Capture(pawn.Faction);
+
             if (mapComp.ShipMapState == ShipMapState.inCombat)
             {
                 mapComp.ShipsToMove.Add(ShipIndex);

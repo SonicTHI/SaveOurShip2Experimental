@@ -125,20 +125,12 @@
 				<hermetic>true</hermetic>
 				<roof>true</roof>
 			</li>
-			<!--li Class="CompProperties_SoShipLight">
-				<light>Ship_Beam_Light</light>
-				<lightPower>15</lightPower>
-				<sunLightPower>2500</sunLightPower>
-			</li-->
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
-			</li>
-			<li>
-				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
 		<rotatable>false</rotatable>
@@ -189,9 +181,6 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<hermetic>true</hermetic>
-			</li>
-			<li>
-				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
 		<building>
@@ -3113,7 +3102,7 @@
 		</comps>
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
-		<defName>ShipBPCorvetteTorp</defName>
+		<defName>ShipBPCorvetteTorpedo</defName>
 		<label>ship blueprint (torpedo corvette)</label>
 		<description>Class: Corvette\nA heavily armed torpedo corvette.\n\nMass: 3731\nSize: 60 x 36\nT/W ratio: 1.853\nCombat rating: 313\n\nWeapons: \n6x laser turret\n2x large plasma turret\n2x torpedo launcher (2)\n\nRequired resources: \nsteel: 21001\nplasteel: 6070\nadvanced component: 275\ncomponent: 651\nuranium: 325\nsilver: 900\ngold: 20\n\nRequired research: \nstarflight basics, ship navigation, laser turrets, cruiser armaments, air conditioning, microelectronics, capacitor arrays, electricity, escape pods, tube television, rocket propulsion, heatsinks, hospital bed, ship shields, ship life support, vitals monitor, basic ship sensors, ship fission reactor, ship torpedoes, firefoam, purge ports, advanced ship sensors, salvage bay, machining</description>
 		<statBases>
@@ -3121,7 +3110,7 @@
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
-				<shipDef>BPCorvetteTorp</shipDef>
+				<shipDef>BPCorvetteTorpedo</shipDef>
 			</li>
 		</comps>
 	</ThingDef>
@@ -3165,7 +3154,7 @@
 		</comps>
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
-		<defName>ShipBPTachinante</defName>
+		<defName>ShipBPCorvetteMartian</defName>
 		<label>ship blueprint (ancient martian corvette)</label>
 		<description>Class: Ancient martian corvette\nAn ancient design that stood the test of time.\n\nMass: 2459\nSize: 59 x 22\nT/W ratio: 1.737\nCombat rating: 136\n\nWeapons: \n6x cannon turret\n1x torpedo launcher (2)\n\nRequired resources: \nsteel: 12505\nplasteel: 3607\nadvanced component: 144\ngold: 20\ncomponent: 397\nuranium: 300\nsilver: 100\n\nRequired research: \nstarflight basics, ship navigation, basic ship sensors, ship cannons, microelectronics, air conditioning, hydroponics, rocket propulsion, ship fission reactor, heatsinks, capacitor arrays, electricity, machining, salvage bay, advanced ship sensors, flatscreen television, ship torpedoes, hospital bed, vitals monitor, ship life support</description>
 		<statBases>
@@ -3173,7 +3162,7 @@
 		</statBases>
 		<comps>
 			<li Class="CompProperties_ShipBlueprint">
-				<shipDef>BPTachinante</shipDef>
+				<shipDef>BPCorvetteMartian</shipDef>
 			</li>
 		</comps>
 	</ThingDef>
@@ -3310,5 +3299,4 @@
 		</building>
 		<rotatable>false</rotatable>
 	</ThingDef>
-	<!-- obsolete -->
 </Defs>

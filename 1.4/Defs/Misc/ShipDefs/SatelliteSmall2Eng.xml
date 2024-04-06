@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<EnemyShipDef>
-		<defName>SmallSatellite1Eng2</defName>
+		<defName>SatelliteSmall2Eng</defName>
 		<saveSysVer>2</saveSysVer>
 		<offsetX>120</offsetX>
 		<offsetZ>115</offsetZ>

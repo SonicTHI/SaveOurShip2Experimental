@@ -8,7 +8,7 @@
 		<sizeX>14</sizeX>
 		<sizeZ>12</sizeZ>
 		<label>Imperial Gladius fighter</label>
-		<combatPoints>27</combatPoints>
+		<combatPoints>28</combatPoints>
 		<customPaintjob>True</customPaintjob>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
@@ -27,14 +27,14 @@
 				<key>@</key>
 				<value>
 					<shapeOrDef>Ship_Beam_Unpowered</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
 				<key>A</key>
 				<value>
 					<shapeOrDef>Ship_Beam</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
@@ -53,29 +53,28 @@
 				<key>D</key>
 				<value>
 					<shapeOrDef>Ship_Corner_OneOneFlip</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
 				<key>E</key>
 				<value>
 					<shapeOrDef>Ship_Corner_OneOne</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
 				<key>F</key>
 				<value>
 					<shapeOrDef>ShipAirlock</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
 				<key>G</key>
 				<value>
 					<shapeOrDef>Armchair</shapeOrDef>
-					<stuff>Synthread</stuff>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<stuff>Cloth</stuff>
 				</value>
 			</li>
 			<li>
@@ -94,14 +93,14 @@
 				<key>J</key>
 				<value>
 					<shapeOrDef>Ship_Corner_OneTwo</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
 				<key>K</key>
 				<value>
 					<shapeOrDef>Ship_Corner_OneTwoFlip</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
@@ -115,21 +114,21 @@
 				<key>M</key>
 				<value>
 					<shapeOrDef>ShipHeatsink</shapeOrDef>
-					<color>RGBA(0.588, 0.612, 0.612, 1.000)</color>
+					<colorDef>Structure_GrayLight</colorDef>
 				</value>
 			</li>
 			<li>
 				<key>N</key>
 				<value>
 					<shapeOrDef>Ship_Corner_OneThree</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
 				<key>O</key>
 				<value>
 					<shapeOrDef>Ship_Corner_OneThreeFlip</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
@@ -142,7 +141,7 @@
 				<key>Q</key>
 				<value>
 					<shapeOrDef>ShipInside_PassiveVent</shapeOrDef>
-					<color>RGBA(0.624, 0.314, 0.314, 1.000)</color>
+					<colorDef>Structure_Red</colorDef>
 				</value>
 			</li>
 			<li>
@@ -179,10 +178,16 @@
 			<li>
 				<key>W</key>
 				<value>
+					<shapeOrDef>FirefoamPopper</shapeOrDef>
+				</value>
+			</li>
+			<li>
+				<key>X</key>
+				<value>
 					<shapeOrDef>MetalTile</shapeOrDef>
 				</value>
 			</li>
 		</symbolTable>
-		<bigString>5,7,0,?|4,7,0,?|9,12,0,@|10,12,0,@|9,0,0,@|10,0,0,@|0,7,0,@|1,7,0,@|0,5,0,@|1,5,0,@|2,4,0,A|3,4,0,A|5,4,0,A|6,4,0,A|7,4,0,A|11,4,0,A|2,8,0,A|3,8,0,A|4,8,0,A|5,8,0,A|6,8,0,A|7,8,0,A|8,8,0,A|11,8,0,A|8,9,0,A|11,9,0,A|11,3,0,A|8,3,0,A|0,6,0,@|1,6,0,B|2,5,0,B|2,6,0,B|2,7,0,B|3,6,0,B|4,5,0,B|4,6,0,B|5,5,0,B|5,6,0,B|5,7,0,B|9,5,0,B|9,6,0,B|9,7,0,B|10,7,0,B|11,5,0,B|11,6,0,B|11,7,0,B|9,4,0,B|9,8,0,B|10,4,0,B|10,8,0,B|9,10,0,B|9,11,0,B|10,10,0,B|10,11,0,B|9,1,0,B|9,2,0,B|10,1,0,B|10,2,0,B|1,6,0,C|11,2,3,A|11,10,3,A|13,4,0,@|13,8,0,@|12,4,0,A|12,8,0,A|14,8,1,D|14,4,1,E|4,4,0,F|3,6,3,G|3,5,0,B|3,7,0,B|4,7,0,B|10,5,0,B|8,5,0,B|8,7,0,B|3,7,0,H|3,5,3,G|4,6,0,I|5,5,0,I|1,4,3,J|0,8,1,K|13,9,1,K|14,3,3,J|3,3,3,J|2,9,1,K|11,12,2,K|11,1,2,J|5,7,2,L|9,1,0,M|9,10,0,M|6,3,3,N|8,11,0,N|8,1,0,O|6,9,1,O|13,6,3,P|6,5,0,B|6,6,0,B|6,7,0,B|7,5,0,B|7,6,0,B|7,7,0,B|6,7,0,A|6,5,1,F|8,4,0,Q|6,6,3,Q|9,3,0,B|10,3,0,B|9,9,0,B|10,9,0,B|9,3,0,R|9,8,0,R|8,6,0,B|10,6,0,B|10,6,0,S|7,6,0,T|7,7,1,U|7,4,0,V|4,8,2,V|2,5,0,W|3,5,0,W|4,5,0,W|5,5,0,W|2,6,0,W|3,6,0,W|4,6,0,W|5,6,0,W|2,7,0,W|3,7,0,W|4,7,0,W|5,7,0,W</bigString>
+		<bigString>5,7,0,?|4,7,0,?|9,12,0,@|10,12,0,@|9,0,0,@|10,0,0,@|0,7,0,@|1,7,0,@|0,5,0,@|1,5,0,@|2,4,0,A|3,4,0,A|5,4,0,A|6,4,0,A|7,4,0,A|11,4,0,A|2,8,0,A|3,8,0,A|4,8,0,A|5,8,0,A|6,8,0,A|7,8,0,A|8,8,0,A|11,8,0,A|8,9,0,A|11,9,0,A|11,3,0,A|8,3,0,A|0,6,0,@|1,6,0,B|2,5,0,B|2,6,0,B|2,7,0,B|3,6,0,B|4,5,0,B|4,6,0,B|5,5,0,B|5,6,0,B|5,7,0,B|9,5,0,B|9,6,0,B|9,7,0,B|10,7,0,B|11,5,0,B|11,6,0,B|11,7,0,B|9,4,0,B|9,8,0,B|10,4,0,B|10,8,0,B|9,10,0,B|9,11,0,B|10,10,0,B|10,11,0,B|9,1,0,B|9,2,0,B|10,1,0,B|10,2,0,B|1,6,0,C|11,2,0,A|11,10,0,A|13,4,0,@|13,8,0,@|12,4,0,A|12,8,0,A|14,8,1,D|14,4,1,E|4,4,0,F|3,6,3,G|3,5,0,B|3,7,0,B|4,7,0,B|10,5,0,B|8,5,0,B|8,7,0,B|3,7,0,H|3,5,3,G|4,6,0,I|5,5,0,I|1,4,3,J|0,8,1,K|13,9,1,K|14,3,3,J|3,3,3,J|2,9,1,K|11,12,2,K|11,1,2,J|5,7,2,L|9,1,0,M|9,10,0,M|6,3,3,N|8,11,0,N|8,1,0,O|6,9,1,O|13,6,3,P|6,5,0,B|6,6,0,B|6,7,0,B|7,5,0,B|7,6,0,B|7,7,0,B|6,7,0,A|6,5,1,F|8,4,0,Q|6,6,3,Q|9,3,0,B|10,3,0,B|9,9,0,B|10,9,0,B|9,3,0,R|9,8,0,R|8,6,0,B|10,6,0,B|10,6,0,S|7,6,0,T|7,7,1,U|7,5,2,V|4,7,0,V|8,6,0,W|2,5,0,X|3,5,0,X|4,5,0,X|5,5,0,X|2,6,0,X|3,6,0,X|4,6,0,X|5,6,0,X|2,7,0,X|3,7,0,X|4,7,0,X|5,7,0,X</bigString>
 	</EnemyShipDef>
 </Defs>

@@ -147,9 +147,9 @@ namespace RimWorld
 				if (tradeShip)
 				{
 					if (worker != null)
-						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTraderScan"), TranslatorFormattedStringExtensions.Translate("SoSTraderScanDesc", worker), LetterDefOf.PositiveEvent);
+						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.TraderScan"), TranslatorFormattedStringExtensions.Translate("SoS.TraderScanDesc", worker), LetterDefOf.PositiveEvent);
 					else
-						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTraderScan"), TranslatorFormattedStringExtensions.Translate("SoSTraderScanDesc", "its AI"), LetterDefOf.PositiveEvent);
+						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.TraderScan"), TranslatorFormattedStringExtensions.Translate("SoS.TraderScanDesc", "its AI"), LetterDefOf.PositiveEvent);
 				}
 			}
 			else if (chance == 7) //premade sites, very low chance
@@ -178,9 +178,9 @@ namespace RimWorld
 				Log.Message("SOS2: ".Colorize(Color.cyan) + "Found ship with def: " + ship.derelictShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
 				parent.Map.passingShipManager.AddShip(ship);
 				if (worker != null)
-					Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
+					Find.LetterStack.ReceiveLetter("SoS.DerelictScan".Translate(), "SoS.DerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
 				else
-					Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
+					Find.LetterStack.ReceiveLetter("SoS.DerelictScan".Translate(), "SoS.DerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
 			}
 			else if (chance > 7 && chance < 12) //ship wreck
 			{
@@ -209,9 +209,9 @@ namespace RimWorld
 				Log.Message("SOS2: ".Colorize(Color.cyan) + "Found ship with def: " + ship.derelictShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
 				parent.Map.passingShipManager.AddShip(ship);
 				if (worker != null)
-					Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
+					Find.LetterStack.ReceiveLetter("SoS.DerelictScan".Translate(), "SoS.DerelictScanDesc".Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
 				else
-					Find.LetterStack.ReceiveLetter("SoSDerelictScan".Translate(), "SoSDerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
+					Find.LetterStack.ReceiveLetter("SoS.DerelictScan".Translate(), "SoS.DerelictScanDesc".Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
 			}
 			else //random ship
 			{
@@ -236,9 +236,9 @@ namespace RimWorld
 				Log.Message("SOS2: ".Colorize(Color.cyan) + "Found ship with def: " + ship.attackableShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
 				parent.Map.passingShipManager.AddShip(ship);
 				if (worker != null)
-					Find.LetterStack.ReceiveLetter("SoSEnemyScan".Translate(), "SoSEnemyScanDesc".Translate(worker, ship.attackableShip), LetterDefOf.PositiveEvent);
+					Find.LetterStack.ReceiveLetter("SoS.EnemyScan".Translate(), "SoS.EnemyScanDesc".Translate(worker, ship.attackableShip), LetterDefOf.PositiveEvent);
 				else
-					Find.LetterStack.ReceiveLetter("SoSEnemyScan".Translate(), "SoSEnemyScanDesc".Translate("its AI", ship.attackableShip), LetterDefOf.PositiveEvent);
+					Find.LetterStack.ReceiveLetter("SoS.EnemyScan".Translate(), "SoS.EnemyScanDesc".Translate("its AI", ship.attackableShip), LetterDefOf.PositiveEvent);
 			}
 		}
 

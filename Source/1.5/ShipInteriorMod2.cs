@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V100b3";
+		public const string SOS2EXPversion = "V100b4";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4035;
 
@@ -818,7 +818,7 @@ namespace SaveOurShip2
 			}
 			//color navy ships without custom paint
 			bool rePaint = false; 
-			if (navyDef != null && !shipDef.customPaintjob && navyDef.colorPrimary != Color.clear)
+			if (navyDef != null && !shipDef.customPaintjob)
 				rePaint = true;
 			//turrets randomized per ship
 			int randomSmall = Rand.RangeInclusive(0, 2);
@@ -916,32 +916,37 @@ namespace SaveOurShip2
 						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 						//post spawn
 						thing.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
-						var colorComp = thing.TryGetComp<CompColorable>();
-						var glowerComp = thing.TryGetComp<CompGlower>();
-						if (glowerComp != null) //color glow of lights
-						{
-							if (shape.color != Color.clear)
-							{
-								Color.RGBToHSV(shape.color, out var H, out var S, out var _);
-								ColorInt glowColor = glowerComp.GlowColor;
-								glowColor.SetHueSaturation(H, S);
-								glowerComp.GlowColor = glowColor;
-							}
-						}
-						else if (colorComp != null)
-						{
-							if (shape.color != Color.clear)
-								thing.SetColor(shape.color);
-						}
 						if (thing is Building b)
-						{
-							var partComp = thing.TryGetComp<CompSoShipPart>();
+                        {
+                            var colorComp = thing.TryGetComp<CompColorable>();
+                            var glowerComp = thing.TryGetComp<CompGlower>();
+                            if (glowerComp != null) //color glow of lights
+                            {
+                                if (shape.color != Color.clear)
+                                {
+                                    Color.RGBToHSV(shape.color, out var H, out var S, out var _);
+                                    ColorInt glowColor = glowerComp.GlowColor;
+                                    glowColor.SetHueSaturation(H, S);
+                                    glowerComp.GlowColor = glowColor;
+                                }
+                            }
+                            else if (shape.colorDef != null)
+                            {
+                                b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(shape.colorDef);
+                                //b.ChangePaint(DefDatabase<ColorDef>.GetNamedSilentFail(shape.colorDef));
+                            }
+                            /*else if (colorComp != null)
+                            {
+                                if (shape.color != Color.clear)
+                                    thing.SetColor(shape.color);
+                            }*/
+                            var partComp = thing.TryGetComp<CompSoShipPart>();
 							if (rePaint && colorComp != null) //color unpainted navy ships
 							{
 								if (partComp?.Props.isHull ?? false)
-									thing.SetColor(navyDef.colorPrimary);
+                                    b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(navyDef.colorPrimary);
 								else if (def.defName.StartsWith("Ship_Corner"))
-									thing.SetColor(navyDef.colorSecondary);
+                                    b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(navyDef.colorSecondary);
 							}
 							if (wreckLevel > 1 && !isWrecked)
 								wreckDestroy.Add(b);
@@ -1018,7 +1023,20 @@ namespace SaveOurShip2
 							{
 								planters.Add(b);
 							}
-							else if (b is Building_ShipBridge shipBridge)
+							else if (b is Building_Bookcase c) //stock shelves
+							{
+								int maxBooks = 1;
+                                if (wreckLevel < 2)
+                                    maxBooks = c.MaximumBooks;
+                                else if (wreckLevel == 2)
+                                    maxBooks = c.MaximumBooks / 2;
+                                for (int i = 0; i < Rand.RangeInclusive(0, maxBooks); i++)
+                                {
+                                    Book item = BookUtility.MakeBook(ThingDefOf.TextBook, ArtGenerationContext.Outsider);
+                                    c.innerContainer.TryAdd(item, true);
+                                }
+                            }
+                            else if (b is Building_ShipBridge shipBridge)
 								shipBridge.ShipName = shipDef.label;
 							else
 							{
@@ -1392,7 +1410,7 @@ namespace SaveOurShip2
 					r.Temperature = 21;
 				}
 			}*/
-			foreach (Room r in map.regionGrid.allRooms)
+			foreach (Room r in map.regionGrid.allRooms.Where(r => !r.TouchesMapEdge))
 				r.Temperature = 21;
 
 			foreach (Thing t in planters)
@@ -1412,9 +1430,9 @@ namespace SaveOurShip2
 					}
 				}
 			}
-			map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.FogOfWar);
-			if (Current.ProgramState == ProgramState.Playing)
-				map.mapDrawer.RegenerateEverythingNow();
+			//map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.FogOfWar);
+			//if (Current.ProgramState == ProgramState.Playing)
+			//	map.mapDrawer.RegenerateEverythingNow();
 			map.GetComponent<ShipHeatMapComp>().RecacheMap();
 		}
 		public static List<IntVec3> FindCellOnOuterHull(Map map, int max, CellRect shipArea)

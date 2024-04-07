@@ -164,6 +164,7 @@
 			<li Class="CompProperties_SoShipPart">
 				<isPlating>true</isPlating>
 				<wreckage>true</wreckage>
+				<roof>true</roof>
 			</li>
 		</comps>
 		<placeWorkers>

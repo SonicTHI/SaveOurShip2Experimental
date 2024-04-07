@@ -132,6 +132,9 @@
 			<li Class="CompProperties_ShipHeat">
 				<compClass>CompShipHeat</compClass>
 			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
 		</comps>
 		<rotatable>false</rotatable>
 		<building>
@@ -181,6 +184,9 @@
 		<comps>
 			<li Class="CompProperties_SoShipPart">
 				<hermetic>true</hermetic>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
 		<building>

@@ -44,7 +44,6 @@ namespace RimWorld
 				spawnCell = new IntVec3(0, 0, map.Size.z / 2);
 			}
 			map.gameConditionManager.RegisterCondition(gameCondition_SpaceDebris);
-			map.GetComponent<ShipHeatMapComp>().ShipMapState = ShipMapState.inEvent;
 			if (gameCondition_SpaceDebris.asteroids)
 				base.SendStandardLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSpaceAsteroids"), TranslatorFormattedStringExtensions.Translate("LetterSpaceAsteroids"), def.letterDef, parms, new TargetInfo(spawnCell, map, false), Array.Empty<NamedArgument>());
 			else

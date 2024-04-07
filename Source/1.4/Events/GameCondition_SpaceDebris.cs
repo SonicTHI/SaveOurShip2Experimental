@@ -34,6 +34,7 @@ namespace RimWorld
         }
         public override void Init()
         {
+            SingleMap.GetComponent<ShipHeatMapComp>().ShipMapState = ShipMapState.inEvent;
             this.nextLaunchProjTicks = Find.TickManager.TicksGame + this.initialStrikeDelay.RandomInRange;
             //interval
             TicksBetweenStrikes = new IntRange(60, 200);

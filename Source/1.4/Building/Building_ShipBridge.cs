@@ -297,6 +297,14 @@ namespace RimWorld
                     };
                     yield return vent;
                 }
+                bool wrecksOnMap = false;
+                List<SoShipCache> shipStuck = new List<SoShipCache>();
+                if (mapComp.ShipsOnMapNew.Count > 1)
+                {
+                    shipStuck = mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()).ToList();
+                    if (shipStuck.Any())
+                        wrecksOnMap = true;
+                }
                 //incombat
                 if (mapComp.ShipMapState == ShipMapState.inCombat)
                 {
@@ -340,12 +348,8 @@ namespace RimWorld
                     }
                     yield return withdraw;
                     //wrecks
-                    List<SoShipCache> shipStuck = new List<SoShipCache>(mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()));
-
-                    bool wrecksOnMap = false;
-                    if (mapComp.ShipsOnMapNew.Count > 1 && shipStuck.Any())
+                    if (wrecksOnMap)
                     {
-                        wrecksOnMap = true;
                         Command_Action withdrawWrecks = new Command_Action
                         {
                             groupable = false,
@@ -486,7 +490,7 @@ namespace RimWorld
                     yield return endTarget;
                 }*/
                 //engine burn
-                else if (Ship.CanFire() && (mapComp.ShipMapState == ShipMapState.inTransit || mapComp.ShipMapState == ShipMapState.inEvent))
+                else if (mapComp.ShipMapState == ShipMapState.inTransit || mapComp.ShipMapState == ShipMapState.inEvent)
                 {
                     List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove()).ToList();
                     bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
@@ -510,6 +514,11 @@ namespace RimWorld
                         isActive = () => anyEngineOn
                     };
                     yield return toggleEngines;
+                    if (wrecksOnMap || !Ship.CanFire())
+                    {
+                        toggleEngines.Disable();
+                        //toggleEngines.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
+                    }
                 }
                 //not incombat or in event
                 else

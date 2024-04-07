@@ -33,8 +33,9 @@ namespace RimWorld
 			Scribe_Values.Look<bool>(ref this.asteroids, "asteroids", false, false);
 		}
 		public override void Init()
-		{
-			this.nextLaunchProjTicks = Find.TickManager.TicksGame + this.initialStrikeDelay.RandomInRange;
+        {
+            SingleMap.GetComponent<ShipHeatMapComp>().ShipMapState = ShipMapState.inEvent;
+            this.nextLaunchProjTicks = Find.TickManager.TicksGame + this.initialStrikeDelay.RandomInRange;
 			//interval
 			TicksBetweenStrikes = new IntRange(60, 200);
 			//debris or rocks - light, fast / mixed / slow, large

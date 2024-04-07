@@ -133,8 +133,11 @@ namespace RimWorld
 					moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 					moveWreckRot.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 					claim.Disable(TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksDisabled"));
-					removeTargetWreck.Disable(TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksDisabled"));
 				}
+				if (mapComp.ShipMapState == ShipMapState.burnUpSet)
+                {
+                    removeTargetWreck.Disable(TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksDisabled"));
+                }
 				yield return moveWreck;
 				yield return moveWreckFlip;
 				yield return moveWreckRot;

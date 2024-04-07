@@ -1476,11 +1476,11 @@ namespace RimWorld
 					NextTargetMap = null;
 					return;
 				}
-				var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
-				if (cond != null)
-				{
-					//reduce durration per engine vs mass
-					if (AnyShipCanMove() && EnginesOn) //can we move and should we move
+				if (ShipMapState == ShipMapState.inEvent)
+                {
+                    var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
+                    //reduce durration per engine vs mass
+                    if (AnyShipCanMove() && EnginesOn) //can we move and should we move
 					{
 						MapEnginesOn();
 						MapEnginePower *= 40000f;
@@ -1561,7 +1561,8 @@ namespace RimWorld
 		}
 		public void MapFullStop()
 		{
-			MapEnginePower = 0;
+            EnginesOn = false;
+            MapEnginePower = 0;
 			Heading = 0;
 			foreach (SoShipCache ship in ShipsOnMapNew.Values)
 			{

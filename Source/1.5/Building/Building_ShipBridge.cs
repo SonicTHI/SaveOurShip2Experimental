@@ -296,9 +296,17 @@ namespace RimWorld
 						disabledReason = heatNet.venting ? TranslatorFormattedStringExtensions.Translate("SoS.HeatPurgeVenting") : TranslatorFormattedStringExtensions.Translate("SoS.HeatPurgeNotEnough")
 					};
 					yield return vent;
-				}
-				//incombat
-				if (mapComp.ShipMapState == ShipMapState.inCombat)
+                }
+                bool wrecksOnMap = false;
+                List<SoShipCache> shipStuck = new List<SoShipCache>();
+                if (mapComp.ShipsOnMapNew.Count > 1)
+                {
+                    shipStuck = mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()).ToList();
+					if (shipStuck.Any())
+                        wrecksOnMap = true;
+                }
+                //incombat
+                if (mapComp.ShipMapState == ShipMapState.inCombat)
 				{
 					Command_Action escape = new Command_Action
 					{
@@ -340,12 +348,8 @@ namespace RimWorld
 					}
 					yield return withdraw;
 					//wrecks
-					List<SoShipCache> shipStuck = new List<SoShipCache>(mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()));
-
-					bool wrecksOnMap = false;
-					if (mapComp.ShipsOnMapNew.Count > 1 && shipStuck.Any())
+					if (wrecksOnMap)
 					{
-						wrecksOnMap = true;
 						Command_Action withdrawWrecks = new Command_Action
 						{
 							groupable = false,
@@ -486,7 +490,7 @@ namespace RimWorld
 					yield return endTarget;
 				}*/
 				//engine burn
-				else if (Ship.CanFire() && (mapComp.ShipMapState == ShipMapState.inTransit || mapComp.ShipMapState == ShipMapState.inEvent))
+				else if (mapComp.ShipMapState == ShipMapState.inTransit || mapComp.ShipMapState == ShipMapState.inEvent)
 				{
 					List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove()).ToList();
 					bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
@@ -510,7 +514,12 @@ namespace RimWorld
 						isActive = () => anyEngineOn
 					};
 					yield return toggleEngines;
-				}
+                    if (wrecksOnMap || !Ship.CanFire())
+                    {
+                        toggleEngines.Disable();
+                        //toggleEngines.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
+                    }
+                }
 				//not incombat or in event
 				else
 				{
@@ -916,35 +925,6 @@ namespace RimWorld
 				}
 				yield return launch;
 			}
-			/*if (Prefs.DevMode)
-			{
-				Command_Action spawnAIPawn = new Command_Action
-				{
-					action = delegate
-					{
-						PawnGenerationRequest req = new PawnGenerationRequest(PawnKindDef.Named("SoSHologram"), Faction.OfPlayer, PawnGenerationContext.NonPlayer, 0, true, true, false, false, false, false, 0);
-						Pawn p = PawnGenerator.GeneratePawn(req);
-						p.story.childhood = ShipInteriorMod2.hologramBackstory;
-						p.story.hairColor = new Color(0, 0.5f, 1, 0.6f);
-						p.Name = new NameTriple("Charlon", "Charlon", "Whitestone");
-						p.Position = this.Position;
-						p.relations = new Pawn_RelationsTracker(p);
-						p.interactions = new Pawn_InteractionsTracker(p);
-						while (p.story.traits.allTraits.Count() > 0)
-						{
-							p.story.traits.allTraits.RemoveLast();
-						}
-						while (p.story.traits.allTraits.Count() < 3)
-						{
-							p.story.traits.GainTrait(new Trait(DefDatabase<TraitDef>.AllDefs.Where(t => t.exclusionTags.Contains("AITrait")).RandomElement()));
-						}
-						p.SpawnSetup(this.Map, false);
-					},
-					defaultLabel = "Dev: Spawn AI pawn"
-				};
-				yield return spawnAIPawn;
-			}*/
-			//TODO add "solar system" option
 		}
 		private bool ChoseWorldTarget(GlobalTargetInfo target)
 		{

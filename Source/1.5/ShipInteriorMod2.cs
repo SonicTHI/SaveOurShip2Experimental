@@ -98,9 +98,9 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V100b4";
+		public const string SOS2EXPversion = "V100b5";
 		public const int SOS2ReqCurrentMinor = 5;
-		public const int SOS2ReqCurrentBuild = 4035;
+		public const int SOS2ReqCurrentBuild = 4052;
 
 		public const float altitudeNominal = 1000f; //nominal altitude for ship map background render
 		public const float altitudeLand = 110f; //min altitude for ship map background render

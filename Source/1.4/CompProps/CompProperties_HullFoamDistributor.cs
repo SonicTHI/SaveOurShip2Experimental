@@ -6,11 +6,11 @@ using Verse;
 
 namespace RimWorld
 {
-    public class CompProperties_HullFoamDistributor : CompProperties
-    {
-        public CompProperties_HullFoamDistributor()
-        {
-            compClass = typeof(CompHullFoamDistributor);
-        }
-    }
+	public class CompProperties_HullFoamDistributor : CompProperties
+	{
+		public CompProperties_HullFoamDistributor()
+		{
+			compClass = typeof(CompHullFoamDistributor);
+		}
+	}
 }

@@ -9,7 +9,7 @@
 		<sizeZ>40</sizeZ>
 		<label>Interstellar Cargo Ship</label>
 		<combatPoints>442</combatPoints>
-		<cargoValue>0</cargoValue>
+		<cargoValue>100</cargoValue>
 		<neverAttacks>True</neverAttacks>
 		<tradeShip>True</tradeShip>
 		<customPaintjob>True</customPaintjob>

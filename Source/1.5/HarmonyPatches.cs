@@ -46,6 +46,7 @@ namespace SaveOurShip2
 				if (mapComp.MapShipCells.NullOrEmpty())
 					return;
 
+				DrawShips.Highlight = -1;
 				foreach (int i in mapComp.ShipsOnMapNew.Keys)
 				{
 					var ship = mapComp.ShipsOnMapNew[i];
@@ -57,7 +58,6 @@ namespace SaveOurShip2
 					Rect rect2 = new Rect(20, debugY, 100, 35);
 					Widgets.DrawMenuSection(rect2);
 					Widgets.Label(rect2.ContractedBy(7), str);
-					DrawShips.Highlight = -1;
 					if (Mouse.IsOver(rect2))
 					{
 						string str2 = "";
@@ -1759,24 +1759,28 @@ namespace SaveOurShip2
 		[HarmonyPrefix]
 		public static bool PreDeSpawn(Building __instance, DestroyMode mode)
 		{
-			var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
 			var shipComp = __instance.TryGetComp<CompSoShipPart>();
 			if (shipComp != null) //predespawn for ship parts
-				shipComp.PreDeSpawn(mode);
-            if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
-                return true;
-
-            else if (!mapComp.ShipsOnMapNew.NullOrEmpty()) //rems normal building weight/count to ship
 			{
-				foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
+				shipComp.PreDeSpawn(mode);
+			}
+			else //rems normal building weight/count to ship
+			{
+				var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
+				if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
+					return true;
+				if (!mapComp.ShipsOnMapNew.NullOrEmpty())
 				{
-					int shipIndex = mapComp.ShipIndexOnVec(vec);
-					if (shipIndex != -1)
+					foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
 					{
-						var ship = mapComp.ShipsOnMapNew[mapComp.MapShipCells[vec].Item1];
-						if (ship.Buildings.Contains(__instance))
+						int shipIndex = mapComp.ShipIndexOnVec(vec);
+						if (shipIndex != -1)
 						{
-							ship.RemoveFromCache(__instance, mode);
+							var ship = mapComp.ShipsOnMapNew[mapComp.MapShipCells[vec].Item1];
+							if (ship.Buildings.Contains(__instance))
+							{
+								ship.RemoveFromCache(__instance, mode);
+							}
 						}
 					}
 				}
@@ -2069,27 +2073,27 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 			{
-                ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuilding.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
 		}
 	}
-    [HarmonyPatch(typeof(Building_Bookcase), "DeSpawn")]
-    public static class DisableForMoveBookCase
-    {
-        public static bool Prefix(Building_Bookcase __instance, DestroyMode mode)
-        {
-            if (ShipInteriorMod2.AirlockBugFlag)
-            {
-                ReversePatchBuilding.Snapshot(__instance, mode);
-                return false;
-            }
-            return true;
-        }
-    }
+	[HarmonyPatch(typeof(Building_Bookcase), "DeSpawn")]
+	public static class DisableForMoveBookCase
+	{
+		public static bool Prefix(Building_Bookcase __instance, DestroyMode mode)
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				ReversePatchBuilding.Snapshot(__instance, mode);
+				return false;
+			}
+			return true;
+		}
+	}
 
-    [HarmonyPatch(typeof(Designator_Deconstruct), "CanDesignateThing")]
+	[HarmonyPatch(typeof(Designator_Deconstruct), "CanDesignateThing")]
 	public static class ChangeReason
 	{
 		public static void Postfix(ref AcceptanceReport __result, Thing t)
@@ -2960,7 +2964,7 @@ namespace SaveOurShip2
 			{
 				return false;
 			}
-			if (__instance.Map.GetComponent<ShipHeatMapComp>().ShipMapState == ShipMapState.inCombat && __instance.def.defName.Equals("ShuttleIncomingPersonal"))
+			if (__instance.Map.IsSpace() && (__instance.def.defName.Equals("ShuttleIncomingPersonal") || __instance.def == ThingDefOf.DropPodIncoming)) //dont breach roof with small pods in space
 			{
 				return false;
 			}

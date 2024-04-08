@@ -8,7 +8,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class Alert_ArchotechSporeMoodLow : Alert_Critical
+	class Alert_ArchotechSporeMoodLow : Alert_Critical
 	{
 		private Building_ArchotechSpore SadSpore
 		{
@@ -22,9 +22,9 @@ namespace RimWorld
 					{
 						Building_ArchotechSpore spore = list[j] as Building_ArchotechSpore;
 						if(spore!=null && spore.Mood < 0.5f)
-                        {
+						{
 							return spore;
-                        }
+						}
 					}
 				}
 				return null;
@@ -32,10 +32,10 @@ namespace RimWorld
 		}
 
 		public Alert_ArchotechSporeMoodLow()
-        {
-            defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLow");
-            defaultExplanation = ModsConfig.RoyaltyActive ? TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLowDesc") : TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLowNoRoyDesc");
-        }
+		{
+			defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLow");
+			defaultExplanation = ModsConfig.RoyaltyActive ? TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLowDesc") : TranslatorFormattedStringExtensions.Translate("SoS.ArchotechMoodLowNoRoyDesc");
+		}
 
 		public override AlertReport GetReport()
 		{

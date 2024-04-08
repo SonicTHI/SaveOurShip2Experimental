@@ -7,8 +7,8 @@ using Verse;
 
 namespace RimWorld
 {
-    class DamageWorker_Mechanite : DamageWorker_AddInjury
-    {
+	class DamageWorker_Mechanite : DamageWorker_AddInjury
+	{
 		public override void ExplosionAffectCell(Explosion explosion, IntVec3 c, List<Thing> damagedThings, List<Thing> ignoredThings, bool canThrowMotes)
 		{
 			base.ExplosionAffectCell(explosion, c, damagedThings, ignoredThings, canThrowMotes);

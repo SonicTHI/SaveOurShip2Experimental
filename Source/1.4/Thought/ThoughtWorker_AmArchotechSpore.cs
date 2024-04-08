@@ -8,7 +8,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class ThoughtWorker_AmArchotechSpore : ThoughtWorker
+	class ThoughtWorker_AmArchotechSpore : ThoughtWorker
 	{
 		protected override ThoughtState CurrentStateInternal(Pawn p)
 		{

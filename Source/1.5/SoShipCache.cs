@@ -92,12 +92,10 @@ namespace SaveOurShip2
 		{
 			ThreatCurrent = 0;
 			float[] actualThreatPerSegment = (float[])ThreatPerSegment.Clone();
-            foreach (var turret in Turrets)
+			foreach (var turret in Turrets)
 			{
 				int threat = turret.heatComp.Props.threat;
-				var torp = turret.TryGetComp<CompChangeableProjectilePlural>();
-				var fuel = turret.TryGetComp<CompRefuelable>();
-				if (!turret.Active || turret.SpinalHasNoAmps || (torp != null && !torp.Loaded) || (fuel != null && fuel.Fuel == 0f)) //turrets that cant fire due to ammo
+				if (!turret.CanFire)
 				{
 					if (turret.heatComp.Props.maxRange > 150) //long
 					{
@@ -669,7 +667,7 @@ namespace SaveOurShip2
 					{
 						if (b.TryGetComp<CompCryptoLaunchable>() != null)
 							Pods.Add(b.GetComp<CompCryptoLaunchable>());
-						else if (b is Building_ShipBridge bridge)
+						else if (b is Building_ShipBridge bridge && bridge.terminate == false)
 						{
 							Bridges.Add(bridge);
 							if (b.TryGetComp<CompBuildingConsciousness>() != null)
@@ -848,7 +846,9 @@ namespace SaveOurShip2
 				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Replaced primary bridge.");
 
 				Core = BestCoreReplacer(bridges);
+				ResetCorePath();
 				RebuildCorePath();
+				MaxInvalidCorePath();
 				return true;
 			}
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Has 0 cores remaining.");
@@ -856,12 +856,6 @@ namespace SaveOurShip2
 			ResetCorePath();
 			if (mapComp.ShipMapState == ShipMapState.inCombat) //turn into wreck but do not float it
 				LastBridgeDied = true;
-
-			if (BridgeKillVec != IntVec3.Invalid)
-			{
-				Area.Remove(BridgeKillVec);
-				mapComp.MapShipCells.Remove(BridgeKillVec);
-			}
 
 			if (mapComp.ShipMapState == ShipMapState.inCombat) //if last ship end combat else move to grave
 			{
@@ -892,6 +886,14 @@ namespace SaveOurShip2
 			foreach (IntVec3 vec in Area)
 			{
 				mapComp.MapShipCells[vec] = new Tuple<int, int>(Index, -1);
+			}
+		}
+		public void MaxInvalidCorePath()
+		{
+			foreach (IntVec3 vec in Area)
+			{
+				if (mapComp.MapShipCells[vec].Item2 == -1)
+					mapComp.MapShipCells[vec] = new Tuple<int, int>(Index, int.MaxValue);
 			}
 		}
 		public void RebuildCorePath() //run before combat if PathDirty and in combat after bridge replaced
@@ -971,7 +973,7 @@ namespace SaveOurShip2
 				}
 			}
 			//log
-			/*startCells?.Remove(first);
+			/*
 			string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + (LastSafePath - 1) + " or to cell: " + first + " with " + startCells.Count + " cells: ";
 			foreach (IntVec3 vec in startCells)
 				str2 += vec;
@@ -986,10 +988,10 @@ namespace SaveOurShip2
 				if (!mapComp.MapShipCells.ContainsKey(setStartCell)) //cell might have been removed already
 					continue;
 
-                if (mapComp.MapShipCells[setStartCell].Item2 < LastSafePath)
+				/*if (mapComp.MapShipCells[setStartCell].Item2 < LastSafePath)
 				{
 					cellsAttached.Add(setStartCell);
-				}
+				}*/
 				if (cellsAttached.Contains(setStartCell)) //skip already checked cells
 				{
 					continue;
@@ -1006,7 +1008,7 @@ namespace SaveOurShip2
 						foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(current, Rot4.North, IntVec2.One).Where(v => Area.Contains(v) && !areaDestroyed.Contains(v))) //skip non ship, destroyed tiles
 						{
 							//if part with lower corePath found or next to an already attached and checked this set is attached
-							if (cellsAttached.Contains(v) || mapComp.MapShipCells[v].Item2 < LastSafePath)
+							if (cellsAttached.Contains(v) || mapComp.MapShipCells[v].Item2 == 0)//LastSafePath)
 							{
 								cellsAttached.AddRange(cellsDoneInSet);
 								detach = false;
@@ -1028,10 +1030,6 @@ namespace SaveOurShip2
 
 					Detach(cellsDoneInSet);
 				}
-				else
-				{
-
-				}
 			}
 		}
 		public void Detach(HashSet<IntVec3> detachArea) //if bridge found detach as new ship else as wreck
@@ -1047,7 +1045,7 @@ namespace SaveOurShip2
 				{
 					if (t is Building b)
 					{
-						if (b is Building_ShipBridge bridge)
+						if (b is Building_ShipBridge bridge && bridge.terminate == false)
 							newCore = bridge;
 						RemoveFromCache(b, mode);
 					}

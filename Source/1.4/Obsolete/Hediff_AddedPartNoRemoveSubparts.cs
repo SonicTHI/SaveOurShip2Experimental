@@ -7,8 +7,8 @@ using Verse;
 
 namespace RimWorld
 {
-    //dep tongue nonsense
-    /*public class Hediff_AddedPartNoRemoveSubparts : Hediff_Implant
+	//dep tongue nonsense
+	/*public class Hediff_AddedPartNoRemoveSubparts : Hediff_Implant
 	{
 		public override string TipStringExtra
 		{

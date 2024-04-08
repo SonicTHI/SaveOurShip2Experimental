@@ -6,9 +6,9 @@ using Verse;
 
 namespace RimWorld
 {
-    public class EnemyShipPartDef : Def
-    {
-        public int randomTurretPoints;
-        public List<ThingDef> things;
-    }
+	public class EnemyShipPartDef : Def
+	{
+		public int randomTurretPoints;
+		public List<ThingDef> things;
+	}
 }

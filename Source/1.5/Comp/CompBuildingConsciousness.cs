@@ -269,8 +269,8 @@ namespace RimWorld
 							GenerateAIPawn();
 							SpawnHologram();
 						},
-                        defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologram"),
-                        defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologramDesc"),
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologram"),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SpawnHologramDesc"),
 						icon = ContentFinder<Texture2D>.Get("UI/SpawnHologram", true)
 					});
 				}

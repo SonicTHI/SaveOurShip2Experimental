@@ -9,23 +9,23 @@ using Verse.AI.Group;
 
 namespace RimWorld
 {
-    class LordToil_DefendShip : LordToil
-    {
-        public IntVec3 baseCenter;
+	class LordToil_DefendShip : LordToil
+	{
+		public IntVec3 baseCenter;
 
-	    public override IntVec3 FlagLoc => baseCenter;
+		public override IntVec3 FlagLoc => baseCenter;
 
-	    public LordToil_DefendShip(IntVec3 baseCenter)
-	    {
-		    this.baseCenter = baseCenter;
-	    }
+		public LordToil_DefendShip(IntVec3 baseCenter)
+		{
+			this.baseCenter = baseCenter;
+		}
 
-	    public override void UpdateAllDuties()
-	    {
-		    for (int i = 0; i < lord.ownedPawns.Count; i++)
-		    {
-			    lord.ownedPawns[i].mindState.duty = new PawnDuty(ResourceBank.DutyDefOf.SoSDefendShip, baseCenter);
-		    }
-	    }
-    }
+		public override void UpdateAllDuties()
+		{
+			for (int i = 0; i < lord.ownedPawns.Count; i++)
+			{
+				lord.ownedPawns[i].mindState.duty = new PawnDuty(ResourceBank.DutyDefOf.SoSDefendShip, baseCenter);
+			}
+		}
+	}
 }

@@ -9,7 +9,7 @@ using Verse.AI;
 
 namespace RimWorld
 {
-    public class WorkGiver_Warden_SacrificeToArchotech : WorkGiver_Warden
+	public class WorkGiver_Warden_SacrificeToArchotech : WorkGiver_Warden
 	{
 		private static string IncapableOfViolenceLowerTrans;
 
@@ -33,18 +33,18 @@ namespace RimWorld
 			List<Thing> spores = pawn.Map.listerThings.ThingsOfDef(ResourceBank.ThingDefOf.ShipArchotechSpore);
 			if (spores.NullOrEmpty())
 				return null;
-            Thing spore = null;
-            foreach (Thing thing in spores)
+			Thing spore = null;
+			foreach (Thing thing in spores)
 			{
 				if (pawn.CanReserve(thing))
 				{
 					spore = thing;
 					break;
 				}
-            }
-            if (spore == null)
-                return null;
-            if (pawn.WorkTagIsDisabled(WorkTags.Violent))
+			}
+			if (spore == null)
+				return null;
+			if (pawn.WorkTagIsDisabled(WorkTags.Violent))
 			{
 				JobFailReason.Is(IncapableOfViolenceLowerTrans);
 				return null;

@@ -710,15 +710,15 @@ namespace RimWorld
 				else //reduce difficulty early or at low rating
 				{
 					int daysPassed = GenDate.DaysPassedSinceSettle;
-                    if (Prefs.DevMode)
-                        CR *= 0.9f;
-                    else if (daysPassed < 30)
+					if (Prefs.DevMode)
+						CR *= 0.9f;
+					else if (daysPassed < 30)
 						CR *= 0.6f;
 					else if (daysPassed < 60 || (CR < 500 && (!fleet || passingShip == null)))
 						CR *= 0.8f;
 					else
-                        CR *= 0.9f;
-                }
+						CR *= 0.9f;
+				}
 				if (CR > 100 && !fleet)
 				{
 					if (CR > 2500 && (float)ModSettings_SoS.fleetChance < 0.8f) //past this more fleets due to high CR
@@ -1477,10 +1477,10 @@ namespace RimWorld
 					return;
 				}
 				if (ShipMapState == ShipMapState.inEvent)
-                {
-                    var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
-                    //reduce durration per engine vs mass
-                    if (AnyShipCanMove() && EnginesOn) //can we move and should we move
+				{
+					var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
+					//reduce durration per engine vs mass
+					if (AnyShipCanMove() && EnginesOn) //can we move and should we move
 					{
 						MapEnginesOn();
 						MapEnginePower *= 40000f;
@@ -1561,8 +1561,8 @@ namespace RimWorld
 		}
 		public void MapFullStop()
 		{
-            EnginesOn = false;
-            MapEnginePower = 0;
+			EnginesOn = false;
+			MapEnginePower = 0;
 			Heading = 0;
 			foreach (SoShipCache ship in ShipsOnMapNew.Values)
 			{
@@ -1570,34 +1570,34 @@ namespace RimWorld
 			}
 		}
 		public void RemoveShipFromBattle(int shipIndex) //only call this on mapcomp tick!
-        {
-            Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
-            SoShipCache ship = ShipsOnMapNew[shipIndex];
-            if (ShipsOnMapNew.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMapNew.Values.Count(s => !s.IsWreck) == 1 && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
-            {
-                EndBattle(map, false);
-                return;
-            }
-            Building core = ship.Core;
-            ship.LastBridgeDied = false;
-            //ship.AreaDestroyed.Clear();
-            if (core == null)
-            {
-                core = ShipsOnMapNew[shipIndex].Parts.FirstOrDefault();
-            }
-            if (core != null)
-            {
-                Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " Removing with: " + core);
-                if (ShipGraveyard == null)
-                    SpawnGraveyard();
-                ShipInteriorMod2.MoveShip(core, ShipGraveyard, IntVec3.Zero);
-            }
-            Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ships remaining: " + ShipsOnMapNew.Count);
-            foreach (SoShipCache s in ShipsOnMapNew.Values)
-            {
-                Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + s.Index + ", area: " + s.Area.Count + ", bldgs: " + s.BuildingCount + ", cores: " + s.Bridges.Count);
-            }
-        }
+		{
+			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
+			SoShipCache ship = ShipsOnMapNew[shipIndex];
+			if (ShipsOnMapNew.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMapNew.Values.Count(s => !s.IsWreck) == 1 && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
+			{
+				EndBattle(map, false);
+				return;
+			}
+			Building core = ship.Core;
+			ship.LastBridgeDied = false;
+			//ship.AreaDestroyed.Clear();
+			if (core == null)
+			{
+				core = ShipsOnMapNew[shipIndex].Parts.FirstOrDefault();
+			}
+			if (core != null)
+			{
+				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " Removing with: " + core);
+				if (ShipGraveyard == null)
+					SpawnGraveyard();
+				ShipInteriorMod2.MoveShip(core, ShipGraveyard, IntVec3.Zero);
+			}
+			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ships remaining: " + ShipsOnMapNew.Count);
+			foreach (SoShipCache s in ShipsOnMapNew.Values)
+			{
+				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + s.Index + ", area: " + s.Area.Count + ", bldgs: " + s.BuildingCount + ", cores: " + s.Bridges.Count);
+			}
+		}
 		public void SpawnGraveyard() //if not present, create a graveyard
 		{
 			//Log.Message("SOS2: ".Colorize(Color.cyan) + map + " SpawnGraveyard");

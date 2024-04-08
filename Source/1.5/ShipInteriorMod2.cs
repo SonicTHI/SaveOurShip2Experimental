@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V100b5";
+		public const string SOS2EXPversion = "V100b6";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4052;
 
@@ -917,36 +917,36 @@ namespace SaveOurShip2
 						//post spawn
 						thing.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
 						if (thing is Building b)
-                        {
-                            var colorComp = thing.TryGetComp<CompColorable>();
-                            var glowerComp = thing.TryGetComp<CompGlower>();
-                            if (glowerComp != null) //color glow of lights
-                            {
-                                if (shape.color != Color.clear)
-                                {
-                                    Color.RGBToHSV(shape.color, out var H, out var S, out var _);
-                                    ColorInt glowColor = glowerComp.GlowColor;
-                                    glowColor.SetHueSaturation(H, S);
-                                    glowerComp.GlowColor = glowColor;
-                                }
-                            }
-                            else if (shape.colorDef != null)
-                            {
-                                b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(shape.colorDef);
-                                //b.ChangePaint(DefDatabase<ColorDef>.GetNamedSilentFail(shape.colorDef));
-                            }
-                            /*else if (colorComp != null)
-                            {
-                                if (shape.color != Color.clear)
-                                    thing.SetColor(shape.color);
-                            }*/
-                            var partComp = thing.TryGetComp<CompSoShipPart>();
+						{
+							var colorComp = thing.TryGetComp<CompColorable>();
+							var glowerComp = thing.TryGetComp<CompGlower>();
+							if (glowerComp != null) //color glow of lights
+							{
+								if (shape.color != Color.clear)
+								{
+									Color.RGBToHSV(shape.color, out var H, out var S, out var _);
+									ColorInt glowColor = glowerComp.GlowColor;
+									glowColor.SetHueSaturation(H, S);
+									glowerComp.GlowColor = glowColor;
+								}
+							}
+							else if (shape.colorDef != null)
+							{
+								b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(shape.colorDef);
+								//b.ChangePaint(DefDatabase<ColorDef>.GetNamedSilentFail(shape.colorDef));
+							}
+							/*else if (colorComp != null)
+							{
+								if (shape.color != Color.clear)
+									thing.SetColor(shape.color);
+							}*/
+							var partComp = thing.TryGetComp<CompSoShipPart>();
 							if (rePaint && colorComp != null) //color unpainted navy ships
 							{
 								if (partComp?.Props.isHull ?? false)
-                                    b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(navyDef.colorPrimary);
+									b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(navyDef.colorPrimary);
 								else if (def.defName.StartsWith("Ship_Corner"))
-                                    b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(navyDef.colorSecondary);
+									b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(navyDef.colorSecondary);
 							}
 							if (wreckLevel > 1 && !isWrecked)
 								wreckDestroy.Add(b);
@@ -1026,17 +1026,17 @@ namespace SaveOurShip2
 							else if (b is Building_Bookcase c) //stock shelves
 							{
 								int maxBooks = 1;
-                                if (wreckLevel < 2)
-                                    maxBooks = c.MaximumBooks;
-                                else if (wreckLevel == 2)
-                                    maxBooks = c.MaximumBooks / 2;
-                                for (int i = 0; i < Rand.RangeInclusive(0, maxBooks); i++)
-                                {
-                                    Book item = BookUtility.MakeBook(ThingDefOf.TextBook, ArtGenerationContext.Outsider);
-                                    c.innerContainer.TryAdd(item, true);
-                                }
-                            }
-                            else if (b is Building_ShipBridge shipBridge)
+								if (wreckLevel < 2)
+									maxBooks = c.MaximumBooks;
+								else if (wreckLevel == 2)
+									maxBooks = c.MaximumBooks / 2;
+								for (int i = 0; i < Rand.RangeInclusive(0, maxBooks); i++)
+								{
+									Book item = BookUtility.MakeBook(ThingDefOf.TextBook, ArtGenerationContext.Outsider);
+									c.innerContainer.TryAdd(item, true);
+								}
+							}
+							else if (b is Building_ShipBridge shipBridge)
 								shipBridge.ShipName = shipDef.label;
 							else
 							{
@@ -1077,8 +1077,7 @@ namespace SaveOurShip2
 							map.terrainGrid.SetTerrain(pos, terrain);
 						if (wreckLevel < 3 && terrain.fertility > 0 && pos.GetEdifice(map) == null)
 						{
-							Plant plant = ThingMaker.MakeThing(randomPlants.RandomElement()) as Plant;
-							if (plant != null)
+							if (ThingMaker.MakeThing(randomPlants.RandomElement()) is Plant plant)
 							{
 								plant.Growth = Rand.Range(0.5f, 1f); ;
 								plant.Position = pos;
@@ -1094,19 +1093,18 @@ namespace SaveOurShip2
 			}
 			//generate SOS2 shapedefs
 			int randomTurretPoints = shipDef.randomTurretPoints;
-			partsToGenerate.Shuffle();
 			foreach (ShipShape shape in partsToGenerate)
 			{
 				try
 				{
 					IntVec3 adjPos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
-					EnemyShipPartDef def = DefDatabase<EnemyShipPartDef>.GetNamed(shape.shapeOrDef);
-					if (randomTurretPoints >= def.randomTurretPoints)
-						randomTurretPoints -= def.randomTurretPoints;
+					EnemyShipPartDef partDef = DefDatabase<EnemyShipPartDef>.GetNamed(shape.shapeOrDef);
+					if (randomTurretPoints >= partDef.randomTurretPoints)
+						randomTurretPoints -= partDef.randomTurretPoints;
 					else
-						def = DefDatabase<EnemyShipPartDef>.GetNamed("Cargo");
+						partDef = DefDatabase<EnemyShipPartDef>.GetNamed("Cargo");
 
-					if (def.defName.Equals("CasketFilled"))
+					if (partDef.defName.Equals("CasketFilled"))
 					{
 						Thing thing = ThingMaker.MakeThing(ThingDef.Named("CryptosleepCasket"));
 						thing.SetFactionDirect(fac);
@@ -1114,14 +1112,14 @@ namespace SaveOurShip2
 						((Building_CryptosleepCasket)thing).TryAcceptThing(sleeper);
 						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 					}
-					else if (def.defName.Length > 8 && def.defName.Substring(def.defName.Length - 8) == "_SPAWNER")
+					else if (partDef.defName.Length > 8 && partDef.defName.Substring(partDef.defName.Length - 8) == "_SPAWNER")
 					{
 						Thing thing;
-						PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(def.defName.Substring(0, def.defName.Length - 8));
+						PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(partDef.defName.Substring(0, partDef.defName.Length - 8));
 						if (kind != null)
 							thing = PawnGenerator.GeneratePawn(kind);
 						else
-							thing = ThingMaker.MakeThing(ThingDef.Named(def.defName.Substring(0, def.defName.Length - 8)));
+							thing = ThingMaker.MakeThing(ThingDef.Named(partDef.defName.Substring(0, partDef.defName.Length - 8)));
 						if (thing is Pawn p)
 						{
 							SoShipPawnGen(p);
@@ -1134,23 +1132,23 @@ namespace SaveOurShip2
 							thing.SetFactionDirect(fac);
 						GenSpawn.Spawn(thing, adjPos, map);
 					}
-					else if (!def.defName.Equals("Cargo")) //everything else
+					else if (!partDef.defName.Equals("Cargo")) //everything else
 					{
-						ThingDef thingy;
-						if (def.defName.Equals("ShipPartTurretSmall"))
-							thingy = def.things[randomSmall];
-						else if (def.defName.Equals("ShipPartTurretLarge"))
-							thingy = def.things[randomLarge];
-						else if (def.defName.Equals("ShipPartTurretSpinal"))
-							thingy = def.things[randomSpinal];
+						ThingDef def;
+						if (partDef.defName.Equals("ShipPartTurretSmall"))
+							def = partDef.things[randomSmall];
+						else if (partDef.defName.Equals("ShipPartTurretLarge"))
+							def = partDef.things[randomLarge];
+						else if (partDef.defName.Equals("ShipPartTurretSpinal"))
+							def = partDef.things[randomSpinal];
 						else
-							thingy = def.things.RandomElement();
+							def = partDef.things.RandomElement();
 						Thing thing;
-						PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(thingy.defName);
+						PawnKindDef kind = DefDatabase<PawnKindDef>.GetNamedSilentFail(def.defName);
 						if (kind != null)
 							thing = PawnGenerator.GeneratePawn(kind);
 						else
-							thing = ThingMaker.MakeThing(thingy);
+							thing = ThingMaker.MakeThing(def);
 						if (thing.def.CanHaveFaction)
 						{
 							if (thing is Pawn p)
@@ -1164,11 +1162,12 @@ namespace SaveOurShip2
 							else
 								thing.SetFactionDirect(fac);
 						}
-						if (thing is Building_ShipTurret turret)
-							turret.burstCooldownTicksLeft = 300;
-						if (thing.TryGetComp<CompColorable>() != null)
-							thing.TryGetComp<CompColorable>().SetColor(shape.color);
 						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
+						if (thing is Building_ShipTurret turret)
+						{
+							turret.burstCooldownTicksLeft = 300;
+							turret.TryGetComp<CompPowerTrader>().PowerOn = true;
+						}
 					}
 					else //cargo
 					{
@@ -2020,10 +2019,10 @@ namespace SaveOurShip2
 					{
 						fuelNeeded *= 0.1f;
 						if (fuelNeeded > fuelStored)
-                            weBeCrashing = fuelStored / fuelNeeded;
-                        else if (!ship.CanMove())
-                            weBeCrashing = 1f;
-                    }
+							weBeCrashing = fuelStored / fuelNeeded;
+						else if (!ship.CanMove())
+							weBeCrashing = 1f;
+					}
 				}
 				else //to space 50% initial
 				{

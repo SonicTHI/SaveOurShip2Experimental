@@ -41,20 +41,37 @@ namespace RimWorld
 		public override LocalTargetInfo CurrentTarget => currentTargetInt;
 		public override Verb AttackVerb => GunCompEq.PrimaryVerb;
 		public override bool IsEverThreat => Faction == Faction.OfPlayer && !Map.IsSpace(); //prevent player pawns auto attacking
-		public bool Active
+		public bool Active //needs power, heat and bridge on net
 		{
 			get
 			{
 				//if (SpinalHasNoAmps) //td req recheck system when parts placed by player, AI skip
 				//	return false;
-				//needs power, heat and bridge on net
-				if (Spawned && heatComp.myNet != null && !heatComp.myNet.venting && (powerComp == null || powerComp.PowerOn) && (heatComp.myNet.PilCons.Any() || heatComp.myNet.AICores.Any() || heatComp.myNet.TacCons.Any()))
+
+				if (Spawned && heatComp != null && heatComp.myNet != null && !heatComp.myNet.venting && (powerComp == null || powerComp.PowerOn) && (heatComp.myNet.PilCons.Any() || heatComp.myNet.AICores.Any() || heatComp.myNet.TacCons.Any()))
 				{
 					return true;
 				}
 				return false;
 			}
 		}
+		public bool CanFire //can turret actually fire
+		{
+			get
+			{
+				if (!Active || (torpComp != null && !torpComp.Loaded) || (fuelComp != null && fuelComp.Fuel == 0f))
+					return false;
+				if (Faction != Faction.OfPlayer && SpinalHasNoAmps)
+					return false;
+				if ((powerComp != null && powerComp.PowerNet.CurrentStoredEnergy() < EnergyToFire) || (heatComp.Props.heatPerPulse > 0 && heatComp.myNet.StorageCapacity < HeatToFire))
+					return false;
+				return true;
+			}
+		}
+		public float EnergyToFire => heatComp.Props.energyToFire * (1 + AmplifierDamageBonus);
+		public float HeatToFire => heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus) * 3;
+		public bool SpinalHasNoAmps => spinalComp != null && AmplifierCount == -1; //td req recheck system when parts placed by player
+
 		public bool PlayerControlled => Faction == Faction.OfPlayer;
 		private bool CanExtractTorpedo
 		{
@@ -200,20 +217,7 @@ namespace RimWorld
 			}
 			return false;
 		}
-		private bool WarmingUp
-		{
-			get
-			{
-				return burstWarmupTicksLeft > 0;
-			}
-		}
-		public bool SpinalHasNoAmps
-		{
-			get
-			{
-				return spinalComp != null && AmplifierCount == -1;
-			}
-		}
+		private bool WarmingUp => burstWarmupTicksLeft > 0;
 		public override void Tick()
 		{
 			base.Tick();
@@ -492,7 +496,7 @@ namespace RimWorld
 				}
 			}
 			//check if we have power to fire
-			if (powerComp != null && heatComp != null && powerComp.PowerNet.CurrentStoredEnergy() < heatComp.Props.energyToFire * (1 + AmplifierDamageBonus))
+			if (powerComp != null && powerComp.PowerNet.CurrentStoredEnergy() < EnergyToFire)
 			{
 				if (!PointDefenseMode && PlayerControlled)
 					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CannotFireDueToPower", Label), this, MessageTypeDefOf.CautionInput);
@@ -501,7 +505,7 @@ namespace RimWorld
 				return;
 			}
 			//if we do not have enough heatcap, vent heat to room/fail to fire in vacuum
-			if (heatComp.Props.heatPerPulse > 0 && !heatComp.AddHeatToNetwork(heatComp.Props.heatPerPulse * (1 + AmplifierDamageBonus) * 3))
+			if (heatComp.Props.heatPerPulse > 0 && !heatComp.AddHeatToNetwork(HeatToFire))
 			{
 				if (!PointDefenseMode && PlayerControlled)
 					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CannotFireDueToHeat", Label), this, MessageTypeDefOf.CautionInput);
@@ -525,13 +529,10 @@ namespace RimWorld
 			//draw the same percentage from each cap: needed*current/currenttotal
 			foreach (CompPowerBattery bat in powerComp.PowerNet.batteryComps)
 			{
-				bat.DrawPower(Mathf.Min(heatComp.Props.energyToFire * (1 + AmplifierDamageBonus) * bat.StoredEnergy / powerComp.PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
+				bat.DrawPower(Mathf.Min(EnergyToFire * bat.StoredEnergy / powerComp.PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
 			}
 			//sfx
-			if (heatComp.Props.singleFireSound != null)
-			{
-				heatComp.Props.singleFireSound.PlayOneShot(this);
-			}
+			heatComp.Props.singleFireSound?.PlayOneShot(this);
 			//cast
 			if (GroundDefenseMode)
 			{

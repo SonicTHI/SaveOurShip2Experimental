@@ -182,18 +182,18 @@ namespace RimWorld
 			if (ShipInteriorMod2.AirlockBugFlag) //disable on moveship, detach destruction
 				return;
 
-            //destroy attached lights if not decon
-            if (mode != DestroyMode.Deconstruct)
-            {
-                foreach (Thing t in GenConstruct.GetAttachedBuildings(parent))
+			//destroy attached lights if not decon
+			if (mode != DestroyMode.Deconstruct)
+			{
+				foreach (Thing t in GenConstruct.GetAttachedBuildings(parent))
 				{
 					t.Destroy(DestroyMode.Vanish);
-                }
-            }
+				}
+			}
 			if (mapComp.CacheOff)
-                return;
+				return;
 
-            int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
+			int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
 			if (shipIndex == -1)
 				return;
 
@@ -231,45 +231,25 @@ namespace RimWorld
 						}
 						else
 						{
+							if (b is Building_ShipBridge br)
+								br.terminate = true;
 							buildings.Add(b);
 						}
 					}
 				}
 				if (!partExists) //no shippart remains, remove from area
 				{
-					//if bridge died already, this tile will as well
-					//td this is not 100% foolproof - bridge could be repaired or tile bellow removed by player
+					//int path = mapComp.MapShipCells[vec].Item2;
+					//if (ship.LastSafePath > path)
+					//	ship.LastSafePath = path;
+					ship.Area.Remove(vec);
+					mapComp.MapShipCells.Remove(vec);
+					areaDestroyed.Add(vec);
 					if (mapComp.MapShipCells[vec].Item2 == 0) //tile under bridge was hit before bridge
 					{
-						if (ship.Bridges.Count > 1) //replace bridge
-						{
-							Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " PreDeSpawn: Plating under main core died, replacing.");
-							ship.Area.Remove(vec);
-							mapComp.MapShipCells.Remove(vec);
-							ship.ReplaceCore();
-							//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
-						}
-						else //if last bridge, ship will wreck once bridge does
-						{
-							Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " PreDeSpawn: Plating under last core died.");
-							ship.BridgeKillVec = vec;
-						}
-					}
-					else
-					{
-						ship.Area.Remove(vec);
-						int path = mapComp.MapShipCells[vec].Item2;
-						if (ship.LastSafePath > path)
-							ship.LastSafePath = path;
-						mapComp.MapShipCells.Remove(vec);
-						areaDestroyed.Add(vec);
+						ship.ReplaceCore();
 					}
 				}
-			}
-			if (!ship.LastBridgeDied)
-			{
-				if (areaDestroyed.Any())
-					ship.CheckForDetach(areaDestroyed);
 			}
 			foreach (Building b in buildings) //remove other buildings that are no longer supported by this ship
 			{
@@ -287,6 +267,8 @@ namespace RimWorld
 					ship.RemoveFromCache(b, mode);
 				}
 			}
+			if (areaDestroyed.Any())
+				ship.CheckForDetach(areaDestroyed);
 		}
 		public override void PostDeSpawn(Map map) //proper parts only
 		{

@@ -7,7 +7,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompTargetable_DamagedItem : CompTargetable
+	class CompTargetable_DamagedItem : CompTargetable
 	{
 		protected override bool PlayerChoosesTarget => true;
 

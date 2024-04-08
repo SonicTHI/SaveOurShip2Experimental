@@ -2,12 +2,12 @@
 
 namespace RimWorld.Planet
 {
-    public class WorldObjectCompProperties_TribalPillarSite : WorldObjectCompProperties
-    {
+	public class WorldObjectCompProperties_TribalPillarSite : WorldObjectCompProperties
+	{
 
-        public WorldObjectCompProperties_TribalPillarSite()
-        {
-            this.compClass = typeof(TribalPillarSiteComp);
-        }
-    }
+		public WorldObjectCompProperties_TribalPillarSite()
+		{
+			this.compClass = typeof(TribalPillarSiteComp);
+		}
+	}
 }

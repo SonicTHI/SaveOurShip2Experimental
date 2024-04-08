@@ -6,11 +6,11 @@ using Verse;
 
 namespace RimWorld
 {
-    public class CompProperties_ShipLifeSupport : CompProperties
-    {
-        public CompProperties_ShipLifeSupport()
-        {
-            compClass = typeof(CompShipLifeSupport);
-        }
-    }
+	public class CompProperties_ShipLifeSupport : CompProperties
+	{
+		public CompProperties_ShipLifeSupport()
+		{
+			compClass = typeof(CompShipLifeSupport);
+		}
+	}
 }

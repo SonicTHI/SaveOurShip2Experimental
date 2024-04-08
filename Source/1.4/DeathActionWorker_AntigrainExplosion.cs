@@ -7,8 +7,8 @@ using Verse;
 
 namespace RimWorld
 {
-    class DeathActionWorker_AntigrainExplosion : DeathActionWorker
-    {
+	class DeathActionWorker_AntigrainExplosion : DeathActionWorker
+	{
 		public override RulePackDef DeathRules => RulePackDefOf.Transition_DiedExplosive;
 
 		public override bool DangerousInMelee => true;

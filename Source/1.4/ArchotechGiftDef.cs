@@ -7,14 +7,14 @@ using Verse;
 
 namespace RimWorld
 {
-    public class ArchotechGiftDef : Def, ILoadReferenceable
-    {
-        public ResearchProjectDef research;
-        public ThingDef thing;
+	public class ArchotechGiftDef : Def, ILoadReferenceable
+	{
+		public ResearchProjectDef research;
+		public ThingDef thing;
 
-        public string GetUniqueLoadID()
-        {
-            return "ArchoGift_" + defName;
-        }
-    }
+		public string GetUniqueLoadID()
+		{
+			return "ArchoGift_" + defName;
+		}
+	}
 }

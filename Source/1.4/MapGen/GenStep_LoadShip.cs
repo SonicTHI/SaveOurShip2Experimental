@@ -10,9 +10,9 @@ namespace RimWorld
 {
 	public class GenStep_LoadShip : GenStep
 	{
-        public override int SeedPart => 42069;
+		public override int SeedPart => 42069;
 
-        public override void Generate(Map map, GenStepParams parms)
+		public override void Generate(Map map, GenStepParams parms)
 		{
 			string shipFolder = Path.Combine (GenFilePaths.SaveDataFolderPath, "Ships");
 			string shipFile = Path.Combine (shipFolder, Faction.OfPlayer.Name + ".rwship");

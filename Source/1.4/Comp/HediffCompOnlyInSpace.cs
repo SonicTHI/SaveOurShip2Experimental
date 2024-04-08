@@ -6,12 +6,12 @@ using Verse;
 
 namespace RimWorld
 {
-    class HediffCompOnlyInSpace : HediffComp
-    {
-        public override void CompPostTick(ref float severityAdjustment)
-        {
-            if (parent.pawn.Spawned && parent.pawn.Map.IsSpace())
-                parent.pawn.health.RemoveHediff(parent);
-        }
-    }
+	class HediffCompOnlyInSpace : HediffComp
+	{
+		public override void CompPostTick(ref float severityAdjustment)
+		{
+			if (parent.pawn.Spawned && parent.pawn.Map.IsSpace())
+				parent.pawn.health.RemoveHediff(parent);
+		}
+	}
 }

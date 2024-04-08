@@ -24,42 +24,42 @@ namespace RimWorld
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
 		public EnemyShipDef enemyShipDef;
-        public bool damageStart;
+		public bool damageStart;
 		public ShipStartFlags startType;
-        public override bool CanCoexistWith(ScenPart other) //not working in menu
-        {
-            return !(other is ScenPart_AfterlifeVault || other is ScenPart_LoadShip);
-        }
-        public override void ExposeData()
+		public override bool CanCoexistWith(ScenPart other) //not working in menu
+		{
+			return !(other is ScenPart_AfterlifeVault || other is ScenPart_LoadShip);
+		}
+		public override void ExposeData()
 		{
 			base.ExposeData();
 			Scribe_Defs.Look<EnemyShipDef>(ref enemyShipDef, "enemyShipDef");
-            Scribe_Values.Look<bool>(ref damageStart, "damageStart");
-            Scribe_Values.Look<ShipStartFlags>(ref startType, "startType");
-        }
+			Scribe_Values.Look<bool>(ref damageStart, "damageStart");
+			Scribe_Values.Look<ShipStartFlags>(ref startType, "startType");
+		}
 		public override void DoEditInterface(Listing_ScenEdit listing)
 		{
-            Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 3f);
+			Rect scenPartRect = listing.GetScenPartRect(this, ScenPart.RowHeight * 3f);
 			Rect rect1 = new Rect(scenPartRect.x, scenPartRect.y, scenPartRect.width, scenPartRect.height / 3f);
 			Rect rect2 = new Rect(scenPartRect.x, scenPartRect.y + scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
 			Rect rect3 = new Rect(scenPartRect.x, scenPartRect.y + 2 * scenPartRect.height / 3f, scenPartRect.width, scenPartRect.height / 3f);
 			//selection 1
 			if (Widgets.ButtonText(rect1, "Start on: " + startType.ToString(), true, true, true))
 			{
-                List<FloatMenuOption> toggleType = new List<FloatMenuOption>
-                {
-                    new FloatMenuOption("Start on: ship", delegate ()
+				List<FloatMenuOption> toggleType = new List<FloatMenuOption>
+				{
+					new FloatMenuOption("Start on: ship", delegate ()
 					{
 						startType = ShipStartFlags.Ship;
 						enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
 					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0),
-                    new FloatMenuOption("Start on: station", delegate ()
-                    {
-                        startType = ShipStartFlags.Station;
-                        enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
-                    }, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0)
-                };
-                Find.WindowStack.Add(new FloatMenu(toggleType));
+					new FloatMenuOption("Start on: station", delegate ()
+					{
+						startType = ShipStartFlags.Station;
+						enemyShipDef = DefDatabase<EnemyShipDef>.GetNamed("0");
+					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0)
+				};
+				Find.WindowStack.Add(new FloatMenu(toggleType));
 
 			}
 			//selection 2
@@ -70,8 +70,8 @@ namespace RimWorld
 				{
 					EnemyShipDef localTd = localTd2;
 					list.Add(new FloatMenuOption(localTd.label + " (" + localTd.defName + ")", delegate ()
-                    {
-                        enemyShipDef = localTd;
+					{
+						enemyShipDef = localTd;
 					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
 				}
 				Find.WindowStack.Add(new FloatMenu(list));
@@ -116,7 +116,7 @@ namespace RimWorld
 		//ship selection end
 
 		public void DoEarlyInit() //Scenario.GetFirstConfigPage call via patch 
-        {
+		{
 			ShipInteriorMod2.StartShipFlag = true;
 		}
 
@@ -126,7 +126,7 @@ namespace RimWorld
 			IntVec3 size = Find.World.info.initialMapSize;
 			if (size.x < 250 || size.z < 250)
 				size = new IntVec3(250, 0, 250);
-            Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, size, ResourceBank.WorldObjectDefOf.ShipOrbiting);
+			Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, size, ResourceBank.WorldObjectDefOf.ShipOrbiting);
 			((WorldObjectOrbitingShip)spaceMap.Parent).Radius = 150;
 			((WorldObjectOrbitingShip)spaceMap.Parent).Theta = 2.75f;
 			Current.ProgramState = ProgramState.MapInitializing;
@@ -168,25 +168,25 @@ namespace RimWorld
 			spaceMap.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
 			foreach (Room r in spaceMap.regionGrid.allRooms)
 				r.Temperature = 21;
-            try //do post game start?
-            {
-                if (scen.startType == ShipStartFlags.Ship) //defog and homezone ships
-                {
-                    spaceMap.fogGrid.ClearAllFog();
-                    foreach (Building b in spaceMap.listerThings.AllThings.Where(t => t is Building))
-                    {
-                        foreach (IntVec3 v in b.OccupiedRect())
-                        {
-                            spaceMap.areaManager.Home[v] = true;
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Warning(e.Message + "\n" + e.StackTrace);
-            }
-            AccessExtensions.Utility.RecacheSpaceMaps();
+			try //do post game start?
+			{
+				if (scen.startType == ShipStartFlags.Ship) //defog and homezone ships
+				{
+					spaceMap.fogGrid.ClearAllFog();
+					foreach (Building b in spaceMap.listerThings.AllThings.Where(t => t is Building))
+					{
+						foreach (IntVec3 v in b.OccupiedRect())
+						{
+							spaceMap.areaManager.Home[v] = true;
+						}
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Warning(e.Message + "\n" + e.StackTrace);
+			}
+			AccessExtensions.Utility.RecacheSpaceMaps();
 			return spaceMap;
 		}
 		public override void PostGameStart() //spawn pawns, things
@@ -196,8 +196,8 @@ namespace RimWorld
 			List<List<Thing>> list = new List<List<Thing>>();
 			foreach (Pawn startingAndOptionalPawn in Find.GameInitData.startingAndOptionalPawns)
 			{
-                List<Thing> list2 = new List<Thing>{ startingAndOptionalPawn };
-                list.Add(list2);
+				List<Thing> list2 = new List<Thing>{ startingAndOptionalPawn };
+				list.Add(list2);
 			}
 			List<Thing> list3 = new List<Thing>();
 			foreach (ScenPart allPart in Find.Scenario.AllParts)
@@ -256,8 +256,8 @@ namespace RimWorld
 				spawners.Add(b);
 			}
 			if (spawncells.Any())
-            {
-                return spawncells;
+			{
+				return spawncells;
 			}
 			//backups
 			List<IntVec3> salvBayCells = new List<IntVec3>();
@@ -286,5 +286,5 @@ namespace RimWorld
 			spawncells.Add(spaceMap.Center);
 			return spawncells;
 		}
-    }
+	}
 }

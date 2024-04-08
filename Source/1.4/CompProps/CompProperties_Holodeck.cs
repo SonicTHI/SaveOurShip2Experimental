@@ -7,11 +7,11 @@ using Verse;
 
 namespace RimWorld
 {
-    class CompProperties_Holodeck : CompProperties
-    {
-        public CompProperties_Holodeck()
-        {
-            compClass = typeof(CompHolodeck);
-        }
-    }
+	class CompProperties_Holodeck : CompProperties
+	{
+		public CompProperties_Holodeck()
+		{
+			compClass = typeof(CompHolodeck);
+		}
+	}
 }

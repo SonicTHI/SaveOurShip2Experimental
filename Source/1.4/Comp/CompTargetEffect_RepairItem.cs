@@ -8,7 +8,7 @@ using Verse.AI;
 
 namespace RimWorld
 {
-    class CompTargetEffect_RepairItem : CompTargetEffect
+	class CompTargetEffect_RepairItem : CompTargetEffect
 	{
 		public override void DoEffectOn(Pawn user, Thing target)
 		{

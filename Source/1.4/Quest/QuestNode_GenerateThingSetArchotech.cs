@@ -7,14 +7,14 @@ using Verse;
 
 namespace RimWorld.QuestGen
 {
-    class QuestNode_GenerateThingSetArchotech : QuestNode
-    {
+	class QuestNode_GenerateThingSetArchotech : QuestNode
+	{
 		public SlateRef<FloatRange?> totalMarketValueRange;
 
 		public SlateRef<QualityGenerator?> qualityGenerator;
 
 		protected override void RunInt()
-        {
+		{
 			Slate slate = QuestGen.slate;
 			ThingSetMakerParams parms = default(ThingSetMakerParams);
 			parms.totalMarketValueRange = totalMarketValueRange.GetValue(slate);
@@ -70,9 +70,9 @@ namespace RimWorld.QuestGen
 			choice.quest = QuestGen.quest;
 		}
 
-        protected override bool TestRunInt(Slate slate)
-        {
-            return true;
-        }
-    }
+		protected override bool TestRunInt(Slate slate)
+		{
+			return true;
+		}
+	}
 }

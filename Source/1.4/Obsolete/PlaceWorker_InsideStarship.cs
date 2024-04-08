@@ -4,8 +4,8 @@ using Verse;
 
 namespace RimWorld
 {
-    //dep
-    /*public class PlaceWorker_InsideStarship : PlaceWorker
+	//dep
+	/*public class PlaceWorker_InsideStarship : PlaceWorker
 	{
 		public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 center, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)
 		{

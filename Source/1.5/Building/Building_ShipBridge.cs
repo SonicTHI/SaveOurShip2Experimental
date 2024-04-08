@@ -56,6 +56,7 @@ namespace RimWorld
 		public int power = 0;
 		public int powerCap = 0;
 		public float powerRat = 0;
+		public bool terminate = false; //locks bridge to cache functions and force kills it
 		private bool CanLaunchNow
 		{
 			get
@@ -296,17 +297,17 @@ namespace RimWorld
 						disabledReason = heatNet.venting ? TranslatorFormattedStringExtensions.Translate("SoS.HeatPurgeVenting") : TranslatorFormattedStringExtensions.Translate("SoS.HeatPurgeNotEnough")
 					};
 					yield return vent;
-                }
-                bool wrecksOnMap = false;
-                List<SoShipCache> shipStuck = new List<SoShipCache>();
-                if (mapComp.ShipsOnMapNew.Count > 1)
-                {
-                    shipStuck = mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()).ToList();
+				}
+				bool wrecksOnMap = false;
+				List<SoShipCache> shipStuck = new List<SoShipCache>();
+				if (mapComp.ShipsOnMapNew.Count > 1)
+				{
+					shipStuck = mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()).ToList();
 					if (shipStuck.Any())
-                        wrecksOnMap = true;
-                }
-                //incombat
-                if (mapComp.ShipMapState == ShipMapState.inCombat)
+						wrecksOnMap = true;
+				}
+				//incombat
+				if (mapComp.ShipMapState == ShipMapState.inCombat)
 				{
 					Command_Action escape = new Command_Action
 					{
@@ -514,12 +515,12 @@ namespace RimWorld
 						isActive = () => anyEngineOn
 					};
 					yield return toggleEngines;
-                    if (wrecksOnMap || !Ship.CanFire())
-                    {
-                        toggleEngines.Disable();
-                        //toggleEngines.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
-                    }
-                }
+					if (wrecksOnMap || !Ship.CanFire())
+					{
+						toggleEngines.Disable();
+						//toggleEngines.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
+					}
+				}
 				//not incombat or in event
 				else
 				{
@@ -992,6 +993,11 @@ namespace RimWorld
 		public override void Tick()
 		{
 			base.Tick();
+			if (terminate)
+			{
+				Destroy(DestroyMode.KillFinalize);
+				return;
+			}
 			if (selected && !Find.Selector.IsSelected(this))
 				selected = false;
 			//td rem this?
@@ -1065,11 +1071,11 @@ namespace RimWorld
 			pawn?.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
 
 			if (pawn == null)
-                Ship.Capture(Faction.OfPlayer);
-            else
-                Ship.Capture(pawn.Faction);
+				Ship.Capture(Faction.OfPlayer);
+			else
+				Ship.Capture(pawn.Faction);
 
-            if (mapComp.ShipMapState == ShipMapState.inCombat)
+			if (mapComp.ShipMapState == ShipMapState.inCombat)
 			{
 				mapComp.ShipsToMove.Add(ShipIndex);
 			}

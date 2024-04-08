@@ -8,7 +8,7 @@ using Verse;
 
 namespace RimWorld
 {
-    class Thought_IsArchotechSpore : Thought_SituationalSocial
+	class Thought_IsArchotechSpore : Thought_SituationalSocial
 	{
 		public override float OpinionOffset()
 		{

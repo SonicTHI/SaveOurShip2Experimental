@@ -8,7 +8,7 @@ using Verse.AI;
 
 namespace RimWorld
 {
-    class JobDriver_RepairItemWithGel : JobDriver
+	class JobDriver_RepairItemWithGel : JobDriver
 	{
 		private const TargetIndex CorpseInd = TargetIndex.A;
 

@@ -12,16 +12,16 @@ namespace RimWorld
 	{
 		public string shapeOrDef; //Looks for an EnemyShipPartDef. If none, it looks for a ThingDef.
 		public string stuff;
-        public int x;
+		public int x;
 		public int z;
 		public int width;
 		public int height;
 		public Rot4 rot;
 		public bool alt; //alternate mode, for sun lights, etc.
 		public float radius;
-        public Color color;
-        public string colorDef;
-        public string faction; //faction override
+		public Color color;
+		public string colorDef;
+		public string faction; //faction override
 
 		public override int GetHashCode()
 		{
@@ -49,9 +49,9 @@ namespace RimWorld
 			//Scribe_Values.Look<Rot4>(ref rot, "rot");
 			Scribe_Values.Look<bool>(ref alt, "alt");
 			Scribe_Values.Look<float>(ref radius, "radius");
-            Scribe_Values.Look<Color>(ref color, "color");
-            Scribe_Values.Look<string>(ref colorDef, "colorDef");
-        }
+			Scribe_Values.Look<Color>(ref color, "color");
+			Scribe_Values.Look<string>(ref colorDef, "colorDef");
+		}
 	}
 	public struct OffsetShip : IExposable
 	{
@@ -198,8 +198,8 @@ namespace RimWorld
 				shape.shapeOrDef = symbol.shapeOrDef;
 				shape.stuff = symbol.stuff;
 				shape.width = symbol.width;
-                shape.color = symbol.color;
-                shape.colorDef = symbol.colorDef;
+				shape.color = symbol.color;
+				shape.colorDef = symbol.colorDef;
 				parts.Add(shape);
 			}
 		}

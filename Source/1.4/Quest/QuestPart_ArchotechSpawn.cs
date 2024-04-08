@@ -26,12 +26,12 @@ namespace RimWorld
 				IntVec3 intVec = map.spawnedThings.Where(t=>t.def == ResourceBank.ThingDefOf.ShipArchotechSpore).FirstOrDefault().Position;
 
 				foreach(Thing t in Things)
-                {
+				{
 					Thing thingy = t;
 					if (t.def.Minifiable)
 						thingy = t.TryMakeMinified();
 					GenPlace.TryPlaceThing(thingy, intVec, map, ThingPlaceMode.Near);
-                }
+				}
 				((List<Thing>)typeof(QuestPart_DropPods).GetField("items", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(this)).Clear();
 			}
 			if (!outSignalResult.NullOrEmpty())

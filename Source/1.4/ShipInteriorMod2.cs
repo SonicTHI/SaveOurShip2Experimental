@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V99f7";
+		public const string SOS2EXPversion = "V99f8";
 		public const int SOS2ReqCurrentMinor = 4;
 		public const int SOS2ReqCurrentBuild = 3704;
 
@@ -1200,6 +1200,7 @@ namespace SaveOurShip2
 			//4: planetside wreck - no invaders
 			if (wreckLevel > 0)
 			{
+				var mapComp = map.GetComponent<ShipHeatMapComp>();
 				bool madeLines = false;
 				int holeNum = 0;
 				//split
@@ -1230,13 +1231,40 @@ namespace SaveOurShip2
 							toKill.Add(b);
 					}
 				}
-				foreach (Building b in toKill.Where(t => !t.Destroyed))
+				foreach (Building btd in toKill.Where(t => !t.Destroyed))
 				{
+					var shipPartComp = btd.TryGetComp<CompSoShipPart>();
+					if (shipPartComp != null) //cleanup area //td this should be done on the comp or not spawned at all
+					{
+						foreach (IntVec3 vec in shipPartComp.cellsUnder) //check if other floor or hull on any vec
+						{
+							bool partExists = false;
+							foreach (Thing t in vec.GetThingList(shipPartComp.parent.Map))
+							{
+								if (t is Building b && b != shipPartComp.parent)
+								{
+									if (b.def.building.shipPart)
+									{
+										partExists = true;
+									}
+									else
+									{
+										if (b is Building_ShipBridge br)
+											br.terminate = true;
+									}
+								}
+							}
+							if (!partExists) //no shippart remains, remove from area
+							{
+								mapComp.MapShipCells.Remove(vec);
+							}
+						}
+					}
 					if (wreckLevel == 4)
-						GenExplosion.DoExplosion(b.Position, map, Rand.Range(1.9f, 4.9f), DamageDefOf.Flame, null);
-					var refuelComp = b.TryGetComp<CompRefuelable>();
+						GenExplosion.DoExplosion(btd.Position, map, Rand.Range(1.9f, 4.9f), DamageDefOf.Flame, null);
+					var refuelComp = btd.TryGetComp<CompRefuelable>();
 					refuelComp?.ConsumeFuel(refuelComp.Fuel);
-					b.Destroy();
+					btd.Destroy();
 				}
 				//td remove floor, roof?
 
@@ -1262,7 +1290,6 @@ namespace SaveOurShip2
 					SpaceNavyDef navy = ValidRandomNavy(Faction.OfPlayer);
 					if (navy != null)
 					{
-						var mapComp = map.GetComponent<ShipHeatMapComp>();
 						if (mapComp.InvaderLord == null) //spawn only one invader lord
 						{
 							invaderFac = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
@@ -2134,29 +2161,6 @@ namespace SaveOurShip2
 				targetMap.zoneManager.RebuildZoneGrid();
 				sourceMap.zoneManager.RebuildZoneGrid();
 
-				//regen affected map layers
-				List<Section> sourceSec = new List<Section>();
-				foreach (IntVec3 pos in sourceArea)
-				{
-					var sec = sourceMap.mapDrawer.SectionAt(pos);
-					if (!sourceSec.Contains(sec))
-						sourceSec.Add(sec);
-				}
-				foreach (Section sec in sourceSec)
-				{
-					sec.RegenerateLayers(MapMeshFlag.Zone);
-				}
-				List<Section> targetSec = new List<Section>();
-				foreach (IntVec3 pos in targetArea)
-				{
-					var sec = targetMap.mapDrawer.SectionAt(pos);
-					if (!targetSec.Contains(sec))
-						targetSec.Add(sec);
-				}
-				foreach (Section sec in targetSec)
-				{
-					sec.RegenerateLayers(MapMeshFlag.Zone);
-				}
 			}
 			if (devMode)
 				watch.Record("moveZones");
@@ -2190,6 +2194,7 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in fogToCopy)
 			{
 				targetMap.fogGrid.fogGrid[targetMap.cellIndices.CellToIndex(pos)] = true;
+				targetMap.mapDrawer.MapMeshDirty(pos, MapMeshFlag.FogOfWar);// | MapMeshFlag.Things);
 			}
 			//move roofs
 			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
@@ -2247,6 +2252,31 @@ namespace SaveOurShip2
 			//heat
 			targetMap.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
 
+			//regen affected map layers
+			List<Section> sourceSec = new List<Section>();
+			foreach (IntVec3 pos in sourceArea)
+			{
+				var sec = sourceMap.mapDrawer.SectionAt(pos);
+				if (!sourceSec.Contains(sec))
+					sourceSec.Add(sec);
+			}
+			foreach (Section sec in sourceSec)
+			{
+				sec.RegenerateLayers(MapMeshFlag.FogOfWar);
+				sec.RegenerateLayers(MapMeshFlag.Zone);
+			}
+			List<Section> targetSec = new List<Section>();
+			foreach (IntVec3 pos in targetArea)
+			{
+				var sec = targetMap.mapDrawer.SectionAt(pos);
+				if (!targetSec.Contains(sec))
+					targetSec.Add(sec);
+			}
+			foreach (Section sec in targetSec)
+			{
+				sec.RegenerateLayers(MapMeshFlag.FogOfWar);
+				sec.RegenerateLayers(MapMeshFlag.Zone);
+			}
 			if (devMode)
 			{
 				watch.Record("finalize");

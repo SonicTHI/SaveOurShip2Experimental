@@ -49,7 +49,7 @@ namespace RimWorld
 		bool isArchoTile;
 		bool isFoamTile; //no gfx for foam roof
 
-		HashSet<IntVec3> cellsUnder;
+		public HashSet<IntVec3> cellsUnder;
 		public bool FoamFill = false;
 		Map map;
 		public ShipHeatMapComp mapComp;
@@ -273,7 +273,7 @@ namespace RimWorld
 			if (areaDestroyed.Any())
 				ship.CheckForDetach(areaDestroyed);
 		}
-		public override void PostDeSpawn(Map map) //proper parts only
+		public override void PostDeSpawn(Map map) //proper parts only - terrain, roof removal, foam replacers
 		{
 			base.PostDeSpawn(map);
 			if (!Props.AnyPart)

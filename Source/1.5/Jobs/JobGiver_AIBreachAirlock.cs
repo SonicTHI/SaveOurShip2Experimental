@@ -39,7 +39,7 @@ namespace RimWorld
 			{
 				if (t.Faction != pawn.Faction && pawn.CanReserve(t))
 				{
-					if (t is Building_ShipAirlock a && !a.Open)
+					if (t is Building_ShipAirlock a && !a.Open && !a.PawnCanOpen(pawn))
 					{
 						//if door leads to same room, skip
 						if (a.Rotation.FacingCell.GetRoom(a.Map) == a.Rotation.Opposite.FacingCell.GetRoom(a.Map))

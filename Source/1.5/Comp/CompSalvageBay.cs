@@ -149,7 +149,7 @@ namespace RimWorld
 		{
 			List<Building> buildings = new List<Building>();
 			List<Thing> things = new List<Thing>();
-			foreach (Thing t in this.parent.Map.listerThings.AllThings)
+			foreach (Thing t in parent.Map.listerThings.AllThings)
 			{
 				if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
 				{
@@ -173,6 +173,7 @@ namespace RimWorld
 			{
 				t.Destroy();
 			}
+			parent.Map.fogGrid.ClearAllFog();
 		}
 		public override void CompTickRare()
 		{

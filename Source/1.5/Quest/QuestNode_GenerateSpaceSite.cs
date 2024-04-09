@@ -37,7 +37,7 @@ namespace RimWorld.QuestGen
 			SpaceSite site = (SpaceSite)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.SiteSpace);
 			site.SetFaction(null);
 			site.Tile = tile.GetValue(slate);
-			SitePartDef core = DefDatabase<SitePartDef>.AllDefs.Where(def => def.tags != null && def.tags.Contains("SpaceCore") && ((!ShipInteriorMod2.WorldComp.Unlocks.Contains("BlackBoxShipDefeated") && Find.QuestManager.QuestsListForReading.Where(q=>(q.State!=QuestState.EndedFailed&&q.State!=QuestState.EndedOfferExpired&&q.State!=QuestState.EndedUnknownOutcome)&&(q.name.Equals(TranslatorFormattedStringExtensions.Translate("LetterLabelFoundOrbitalSite"))||q.name.Equals("Orbital Site Found")||q.name.Equals("Starship Bow"))).EnumerableNullOrEmpty()) || !def.tags.Contains("SpaceBlackBox"))).RandomElement();
+			SitePartDef core = DefDatabase<SitePartDef>.AllDefs.Where(def => def.tags != null && def.tags.Contains("SpaceCore") && ((!ShipInteriorMod2.WorldComp.Unlocks.Contains("BlackBoxShipDefeated") && Find.QuestManager.QuestsListForReading.Where(q=>(q.State!=QuestState.EndedFailed&&q.State!=QuestState.EndedOfferExpired&&q.State!=QuestState.EndedUnknownOutcome)&&(q.name.Equals(TranslatorFormattedStringExtensions.Translate("SoS.FoundOrbitalSite"))||q.name.Equals("Orbital Site Found")||q.name.Equals("Starship Bow"))).EnumerableNullOrEmpty()) || !def.tags.Contains("SpaceBlackBox"))).RandomElement();
 			site.AddPart(new SitePart(site,core,new SitePartParams()));
 			site.customLabel = core.label;
 			site.desiredThreatPoints = site.ActualThreatPoints;
@@ -137,28 +137,30 @@ namespace RimWorld.QuestGen
 					}
 				}
 
-				List<Rule> listBlackBox = new List<Rule>();
-				listBlackBox.Add(new Rule_String("questName", TranslatorFormattedStringExtensions.Translate("LetterLabelFoundOrbitalSite")));
+				List<Rule> listBlackBox = new List<Rule>
+				{
+					new Rule_String("questName", TranslatorFormattedStringExtensions.Translate("SoS.FoundOrbitalSite"))
+				};
 				if (Find.Scenario.AllParts.Any(part=>part.def.defName.Equals("SoSDerelict") || part.def.defName.Equals("SoSDungeon")))
 				{
 					if (worker.GetValue(slate) != null)
-						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("LetterFoundOrbitalSiteSpecialSpace", worker.GetValue(slate).LabelShort, slate.Get<int>("fuelCost"))));
+						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("SoS.FoundSiteSpecialSpace", worker.GetValue(slate).LabelShort, slate.Get<int>("fuelCost"))));
 					else
-						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("LetterFoundOrbitalSiteSpecialSpace", "its AI", slate.Get<int>("fuelCost"))));
+						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("SoS.FoundSiteSpecialSpace", "its AI", slate.Get<int>("fuelCost"))));
 				}
 				else if (Faction.OfPlayer.def == FactionDefOf.PlayerTribe)
 				{
 					if (worker.GetValue(slate) != null)
-						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("LetterFoundOrbitalSiteSpecialTribal",worker.GetValue(slate).LabelShort, slate.Get<int>("fuelCost"))));
+						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("SoS.FoundSiteSpecialTribal",worker.GetValue(slate).LabelShort, slate.Get<int>("fuelCost"))));
 					else
-						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("LetterFoundOrbitalSiteSpecialTribal","its AI", slate.Get<int>("fuelCost"))));
+						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("SoS.FoundSiteSpecialTribal","its AI", slate.Get<int>("fuelCost"))));
 				}
 				else
 				{
 					if (worker.GetValue(slate) != null)
-						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("LetterFoundOrbitalSiteSpecial",worker.GetValue(slate).LabelShort, slate.Get<int>("fuelCost"))));
+						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("SoS.FoundSiteSpecial",worker.GetValue(slate).LabelShort, slate.Get<int>("fuelCost"))));
 					else
-						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("LetterFoundOrbitalSiteSpecial","its AI", slate.Get<int>("fuelCost"))));
+						listBlackBox.Add(new Rule_String("questDescription", TranslatorFormattedStringExtensions.Translate("SoS.FoundSiteSpecial","its AI", slate.Get<int>("fuelCost"))));
 				}
 				ShipInteriorMod2.WorldComp.Unlocks.Add("BlackBoxShipSpawned");
 				QuestGen.AddQuestDescriptionRules(listBlackBox);

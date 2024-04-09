@@ -45,7 +45,7 @@ namespace RimWorld
 			}
 			map.gameConditionManager.RegisterCondition(gameCondition_SpaceDebris);
 			if (gameCondition_SpaceDebris.asteroids)
-				base.SendStandardLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSpaceAsteroids"), TranslatorFormattedStringExtensions.Translate("LetterSpaceAsteroids"), def.letterDef, parms, new TargetInfo(spawnCell, map, false), Array.Empty<NamedArgument>());
+				base.SendStandardLetter(TranslatorFormattedStringExtensions.Translate("SoS.SpaceAsteroids"), TranslatorFormattedStringExtensions.Translate("SoS.SpaceAsteroidsDesc"), def.letterDef, parms, new TargetInfo(spawnCell, map, false), Array.Empty<NamedArgument>());
 			else
 				base.SendStandardLetter(def.letterLabel, def.letterText, def.letterDef, parms, new TargetInfo(spawnCell, map, false), Array.Empty<NamedArgument>());
 			//ResourceBank.GameConditionDefOf.SpaceDebris.letterText

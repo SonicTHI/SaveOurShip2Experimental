@@ -34,7 +34,7 @@ namespace RimWorld
 			{
 				if (Rand.Chance(0.4f) || hacked)
 				{
-					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSatelliteMechAttackBase"), TranslatorFormattedStringExtensions.Translate("LetterSatelliteMechAttackBase"), LetterDefOf.ThreatBig, LookTargets.Invalid);
+					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteMechAttackBase"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteMechAttackBaseDesc"), LetterDefOf.ThreatBig, LookTargets.Invalid);
 					SpawnMechInvasionAtShip();
 				}
 				else if(Rand.Chance(0.95f))
@@ -65,7 +65,7 @@ namespace RimWorld
 			if (Rand.Chance(0.05f * pawn.skills.GetSkill(SkillDefOf.Intellectual).levelInt - extraFailChance))
 			{
 				this.hacked = true;
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSatelliteHackSuccess"), TranslatorFormattedStringExtensions.Translate("LetterSatelliteHackSuccess",pawn.LabelShort), LetterDefOf.PositiveEvent, this);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteHackSuccess"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteHackSuccessDesc", pawn.LabelShort), LetterDefOf.PositiveEvent, this);
 				if (!mechanoidsSummoned && Rand.Chance(0.25f))
 					SpawnMechInvasionHere();
 				pawn.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
@@ -73,12 +73,12 @@ namespace RimWorld
 			}
 			else if (Rand.Chance(0.05f * (20 - pawn.skills.GetSkill(SkillDefOf.Intellectual).levelInt)))
 			{
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSatelliteHackFailCritical"), TranslatorFormattedStringExtensions.Translate("LetterSatelliteHackFailCritical",pawn.LabelShort), LetterDefOf.ThreatBig, this);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteHackFailCritical"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteHackFailCriticalDesc", pawn.LabelShort), LetterDefOf.ThreatBig, this);
 				SpawnMechInvasionAtShip();
 			}
 			else
 			{
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSatelliteHackFail"), TranslatorFormattedStringExtensions.Translate("LetterSatelliteHackFail",pawn.LabelShort), LetterDefOf.NegativeEvent, this);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteHackFail"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteHackFailDesc", pawn.LabelShort), LetterDefOf.NegativeEvent, this);
 				extraFailChance += 0.1f;
 				if (!mechanoidsSummoned && Rand.Chance(0.4f))
 					SpawnMechInvasionHere();
@@ -90,20 +90,20 @@ namespace RimWorld
 			if(Rand.Chance(0.05f * pawn.skills.GetSkill(SkillDefOf.Construction).levelInt - extraFailChance))
 			{
 				this.repaired = true;
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSatelliteRepairSuccess"), TranslatorFormattedStringExtensions.Translate("LetterSatelliteRepairSuccess",pawn.LabelShort), LetterDefOf.PositiveEvent, this);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteRepairSuccess"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteRepairSuccessDesc", pawn.LabelShort), LetterDefOf.PositiveEvent, this);
 				if (!mechanoidsSummoned && Rand.Chance(0.25f))
 					SpawnMechInvasionHere();
 				pawn.skills.GetSkill(SkillDefOf.Construction).Learn(2000);
 			}
 			else if(Rand.Chance(0.05f * (20-pawn.skills.GetSkill(SkillDefOf.Construction).levelInt)))
 			{
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSatelliteRepairFailCritical"), TranslatorFormattedStringExtensions.Translate("LetterSatelliteRepairFailCritical",pawn.LabelShort), LetterDefOf.ThreatSmall, this);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteRepairFailCritical"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteRepairFailCriticalDesc", pawn.LabelShort), LetterDefOf.ThreatSmall, this);
 				GenExplosion.DoExplosion(this.Position, this.Map, 20, DamageDefOf.Bomb, this, 80);
 				this.Kill();
 			}
 			else
 			{
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSatelliteRepairFail"), TranslatorFormattedStringExtensions.Translate("LetterSatelliteRepairFail",pawn.LabelShort), LetterDefOf.NegativeEvent, this);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteRepairFail"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteRepairFailDesc", pawn.LabelShort), LetterDefOf.NegativeEvent, this);
 				extraFailChance += 0.1f;
 				if (!mechanoidsSummoned && Rand.Chance(0.4f))
 					SpawnMechInvasionHere();
@@ -145,7 +145,7 @@ namespace RimWorld
 		public void SpawnMechInvasionHere()
 		{
 			mechanoidsSummoned = true;
-			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSatelliteMechAttack"), TranslatorFormattedStringExtensions.Translate("LetterSatelliteMechAttack"), LetterDefOf.ThreatSmall, LookTargets.Invalid);
+			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteMechAttack"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteMechAttackDesc"), LetterDefOf.ThreatSmall, LookTargets.Invalid);
 		}
 
 		public override void TickRare()

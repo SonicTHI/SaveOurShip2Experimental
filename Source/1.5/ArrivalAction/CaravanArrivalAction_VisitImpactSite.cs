@@ -81,7 +81,7 @@ namespace RimWorld.Planet
 			if (flag)
 			{
 				Find.TickManager.Notify_GeneratedPotentiallyHostileMap();
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ImpactSiteFoundLabel"), TranslatorFormattedStringExtensions.Translate("ImpactSiteFound"), LetterDefOf.PositiveEvent, new GlobalTargetInfo(this.target.Map.Center, this.target.Map, false), null, null);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.ImpactSiteFound"), TranslatorFormattedStringExtensions.Translate("SoS.ImpactSiteFoundDesc"), LetterDefOf.PositiveEvent, new GlobalTargetInfo(this.target.Map.Center, this.target.Map, false), null, null);
 			}
 			else
 			{

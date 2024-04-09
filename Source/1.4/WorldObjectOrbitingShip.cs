@@ -419,10 +419,10 @@ namespace RimWorld
 				}
 				if (toKill.Any(p => p.Faction == Faction.OfPlayer))
 				{
-					string letterString = TranslatorFormattedStringExtensions.Translate("LetterPawnsLostReEntry") + "\n\n";
+					string letterString = TranslatorFormattedStringExtensions.Translate("SoS.PawnsLostReEntry") + "\n\n";
 					foreach (Pawn deadPawn in toKill.Where(p => p.Faction == Faction.OfPlayer))
 						letterString += deadPawn.LabelShort + "\n";
-					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelPawnsLostReEntry"), letterString,
+					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PawnsLostReEntryDesc"), letterString,
 						LetterDefOf.NegativeEvent);
 				}
 

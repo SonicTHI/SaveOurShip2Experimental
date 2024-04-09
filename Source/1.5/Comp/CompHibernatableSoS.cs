@@ -79,11 +79,11 @@ namespace RimWorld
 		{
 			if (this.State == HibernatableStateDefOf.Hibernating)
 			{
-				return TranslatorFormattedStringExtensions.Translate("SoSHibernatableHibernating");
+				return TranslatorFormattedStringExtensions.Translate("SoS.HibernatableHibernating");
 			}
 			if (this.State == HibernatableStateDefOf.Starting)
 			{
-				return string.Format("{0}: {1}", TranslatorFormattedStringExtensions.Translate("SoSHibernatableStartingUp"), (this.endStartupTick - Find.TickManager.TicksGame).ToStringTicksToPeriod());
+				return string.Format("{0}: {1}", TranslatorFormattedStringExtensions.Translate("SoS.HibernatableStartingUp"), (this.endStartupTick - Find.TickManager.TicksGame).ToStringTicksToPeriod());
 			}
 			return null;
 		}
@@ -94,8 +94,7 @@ namespace RimWorld
 			{
 				this.State = HibernatableStateDefOf.Running;
 				this.endStartupTick = 0;
-				string text = TranslatorFormattedStringExtensions.Translate("LetterSoSHibernateCompleteStandalone");
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelSoSHibernateComplete"), text, LetterDefOf.PositiveEvent, new GlobalTargetInfo(this.parent), null, null);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.HibernateComplete"), TranslatorFormattedStringExtensions.Translate("SoS.HibernateCompleteDesc"), LetterDefOf.PositiveEvent, new GlobalTargetInfo(this.parent), null, null);
 			}
 		}
 
@@ -116,7 +115,7 @@ namespace RimWorld
 				Command_Action discharge = new Command_Action();
 				discharge.action = delegate
 					{
-						string text = "SoSHibernateWarningStandalone";
+						string text = "SoS.HibernateWarningStandalone";
 						DiaNode diaNode = new DiaNode(text.Translate());
 						DiaOption diaOption = new DiaOption(TranslatorFormattedStringExtensions.Translate("Confirm"));
 						diaOption.action = delegate
@@ -130,8 +129,8 @@ namespace RimWorld
 						diaNode.options.Add(diaOption2);
 						Find.WindowStack.Add(new Dialog_NodeTree(diaNode, true, false, null));
 					};
-				discharge.defaultLabel = TranslatorFormattedStringExtensions.Translate("SoSCommandShipStartup");
-				discharge.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoSCommandShipStartupDesc");
+				discharge.defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CommandShipStartup");
+				discharge.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CommandShipStartupDesc");
 				discharge.hotKey = KeyBindingDefOf.Misc1;
 				discharge.icon = ContentFinder<Texture2D>.Get("UI/Commands/DesirePower", true);
 				gizmos.Add(discharge);
@@ -158,7 +157,7 @@ namespace RimWorld
 			if(!doneSafely)
 			{
 				GenExplosion.DoExplosion(this.explosionPos, previousMap, 15, DamageDefOf.Bomb, null);
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ImpactSiteLostLabel"), TranslatorFormattedStringExtensions.Translate("ImpactSiteLost"), LetterDefOf.NegativeEvent);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.ImpactSiteLost"), TranslatorFormattedStringExtensions.Translate("SoS.ImpactSiteLostDesc"), LetterDefOf.NegativeEvent);
 				ShipInteriorMod2.GenerateSite("ShipEngineImpactSite");
 			}
 		}

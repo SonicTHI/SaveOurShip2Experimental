@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V100b6";
+		public const string SOS2EXPversion = "V100b7";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4052;
 
@@ -1573,7 +1573,10 @@ namespace SaveOurShip2
 			{
 				List<IntVec3> newCircle = CircleBorder(xCenter, zCenter, reducedRadius);
 				foreach (IntVec3 vec in newCircle)
-					interior.Add(vec);
+				{
+					if (!border.Contains(vec))
+						interior.Add(vec);
+				}
 				reducedRadius--;
 			}
 			interior.Add(new IntVec3(xCenter, 0, zCenter));
@@ -1737,6 +1740,7 @@ namespace SaveOurShip2
 			List<Thing> toDestroy = new List<Thing>();
 			List<Zone> zonesToCopy = new List<Zone>();
 			List<Room> roomsToTemp = new List<Room>();
+			List<IntVec3> fogToCopy = new List<IntVec3>();
 			List<Tuple<IntVec3, float>> posTemp = new List<Tuple<IntVec3, float>>();
 			List<Tuple<IntVec3, TerrainDef>> terrainToCopy = new List<Tuple<IntVec3, TerrainDef>>();
 			List<Tuple<IntVec3, RoofDef>> roofToCopy = new List<Tuple<IntVec3, RoofDef>>();
@@ -1914,7 +1918,10 @@ namespace SaveOurShip2
 					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(adjustedPos, sourceTerrain));
 					sourceMap.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
 				}
-
+				if (pos.Fogged(sourceMap))
+				{
+					fogToCopy.Add(adjustedPos);
+				}
 				RoofDef sourceRoof = sourceMap.roofGrid.RoofAt(pos);
 				if (IsRoofDefAirtight(sourceRoof))
 				{
@@ -2225,7 +2232,11 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveRoof");
-
+			//move fog
+			foreach (IntVec3 pos in fogToCopy)
+			{
+				targetMap.fogGrid.fogGrid[targetMap.cellIndices.CellToIndex(pos)] = true;
+			}
 			//restore temp in ship
 			foreach (Tuple<IntVec3, float> t in posTemp)
 			{
@@ -2481,7 +2492,7 @@ namespace SaveOurShip2
 
 			Log.Message("Saved ship with building " + core);
 
-			GameVictoryUtility.ShowCredits(GameVictoryUtility.MakeEndCredits("GameOverShipPlanetLeaveIntro".Translate(), "GameOverShipPlanetLeaveEnding".Translate(), stringBuilder.ToString(), "GameOverColonistsEscaped", null), null, false, 5f);
+			GameVictoryUtility.ShowCredits(GameVictoryUtility.MakeEndCredits("SoS.GameOverPlanetLeaveIntro".Translate(), "SoS.GameOverPlanetLeaveEnding".Translate(), stringBuilder.ToString(), "GameOverColonistsEscaped", null), null, false, 5f);
 
 			RemoveShipOrArea(map, core.ShipIndex);
 		}
@@ -2509,7 +2520,7 @@ namespace SaveOurShip2
 		public static void SpaceTravelWarning(Action action)
 		{
 			DiaNode theNode;
-			theNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("ShipAbandonColoniesWarning"));
+			theNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("SoS.AbandonColoniesWarning"));
 
 			DiaOption accept = new DiaOption("Accept");
 			accept.resolveTree = true;

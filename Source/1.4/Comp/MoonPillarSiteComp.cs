@@ -54,7 +54,7 @@ namespace RimWorld.Planet
 					Find.WorldObjects.Remove(this.parent);
 					if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechPillarB"))
 					{
-						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("MoonPillarLostLabel"), TranslatorFormattedStringExtensions.Translate("MoonPillarLost"), LetterDefOf.NegativeEvent, null);
+						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.MoonPillarLostLabel"), TranslatorFormattedStringExtensions.Translate("SoS.MoonPillarLost"), LetterDefOf.NegativeEvent, null);
 						ShipInteriorMod2.GenerateSite("MoonPillarSite");
 					}
 				}

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
@@ -23,7 +22,7 @@ namespace RimWorld
 			if (!PsychicDroneStarted && Find.TickManager.TicksGame % 666 == 0)
 			{
 				PsychicDroneStarted = true;
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelBlackBoxMissionPsychic"), TranslatorFormattedStringExtensions.Translate("LetterBlackBoxMissionPsychic"), LetterDefOf.NegativeEvent);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.BlackBoxMissionPsychic"), TranslatorFormattedStringExtensions.Translate("SoS.BlackBoxMissionPsychicDesc"), LetterDefOf.NegativeEvent);
 				SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(this.parent.Map);
 				parent.GetComp<CompCauseGameCondition_PsychicEmanation>().droneLevel = PsychicDroneLevel.BadExtreme;
 			}
@@ -34,7 +33,7 @@ namespace RimWorld
 					if (p.IsColonist && p.GetRoom() != null && p.GetRoom() == RegionAndRoomQuery.RoomAt(new IntVec3(this.parent.Position.x-4, 0, this.parent.Position.z), this.parent.Map))
 					{
 						GreetedColonists = true;
-						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelBlackBoxMissionAIChamber"), TranslatorFormattedStringExtensions.Translate("LetterBlackBoxMissionAIChamber"), LetterDefOf.NeutralEvent);
+						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.BlackBoxMissionAIChamber"), TranslatorFormattedStringExtensions.Translate("SoS.BlackBoxMissionAIChamberDesc"),  LetterDefOf.NeutralEvent);
 					}
 				}
 			}
@@ -45,7 +44,7 @@ namespace RimWorld
 			base.PostDestroy(mode, previousMap);
 			if(mode != DestroyMode.Vanish)
 			{
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelAIDestroyed"), TranslatorFormattedStringExtensions.Translate("LetterAIDestroyed"), LetterDefOf.PositiveEvent);
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.AIDestroyed"), TranslatorFormattedStringExtensions.Translate("SoS.AIDestroyedDesc"), LetterDefOf.PositiveEvent);
 				SpawnCrashSite();
 			}
 		}
@@ -86,7 +85,7 @@ namespace RimWorld
 
 		private void Success(Pawn pawn)
 		{
-			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelAIPersuadeSuccess"), TranslatorFormattedStringExtensions.Translate("LetterAIPersuadeSuccess",pawn.LabelShort), LetterDefOf.PositiveEvent);
+			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.AIPersuadeSuccess"), TranslatorFormattedStringExtensions.Translate("SoS.AIPersuadeSuccessDesc", pawn.LabelShort), LetterDefOf.PositiveEvent);
 			SpawnCrashSite();
 			GenPlace.TryPlaceThing(ThingMaker.MakeThing(ThingDefOf.AIPersonaCore), this.parent.Position, this.parent.Map, ThingPlaceMode.Near);
 			pawn.skills.GetSkill(SkillDefOf.Social).Learn(6000);
@@ -95,14 +94,14 @@ namespace RimWorld
 
 		private void Failure(Pawn pawn)
 		{
-			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelAIPersuadeFailure"), TranslatorFormattedStringExtensions.Translate("LetterAIPersuadeFailure",pawn.LabelShort), LetterDefOf.NegativeEvent);
+			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.AIPersuadeFailure"), TranslatorFormattedStringExtensions.Translate("SoS.AIPersuadeFailureDesc", pawn.LabelShort), LetterDefOf.NegativeEvent);
 			pawn.skills.GetSkill(SkillDefOf.Social).Learn(4000);
 			this.AlreadyFailedPersuasion = true;
 		}
 
 		private void CriticalFailure(Pawn pawn)
 		{
-			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelAIPersuadeFailureCritical"), TranslatorFormattedStringExtensions.Translate("LetterAIPersuadeFailureCritical",pawn.LabelShort), LetterDefOf.NegativeEvent);
+			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.AIPersuadeFailureCritical"), TranslatorFormattedStringExtensions.Translate("SoS.AIPersuadeFailureCriticalDesc", pawn.LabelShort), LetterDefOf.NegativeEvent);
 			pawn.skills.GetSkill(SkillDefOf.Social).Learn(2000);
 			pawn.health.AddHediff(HediffDefOf.Dementia, pawn.RaceProps.body.GetPartsWithTag(BodyPartTagDefOf.ConsciousnessSource).First());
 			this.AlreadyFailedPersuasion = true;

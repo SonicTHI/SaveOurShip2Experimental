@@ -25,7 +25,7 @@ namespace RimWorld
 
 		void SendStupidPlayerLetter()
 		{
-			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("ArchotechLostPillar"), TranslatorFormattedStringExtensions.Translate("ArchotechLostPillarDesc"), LetterDefOf.NegativeEvent);
+			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.ArchotechLostPillar"), TranslatorFormattedStringExtensions.Translate("SoS.ArchotechLostPillarDesc"), LetterDefOf.NegativeEvent);
 			UnlockThis();
 		}
 

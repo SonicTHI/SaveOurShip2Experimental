@@ -231,10 +231,13 @@ namespace RimWorld
 					//int path = mapComp.MapShipCells[vec].Item2;
 					//if (ship.LastSafePath > path)
 					//	ship.LastSafePath = path;
+					bool replaceCore = false;
+					if (mapComp.MapShipCells[vec].Item2 == 0)
+						replaceCore = true;
 					ship.Area.Remove(vec);
 					mapComp.MapShipCells.Remove(vec);
 					areaDestroyed.Add(vec);
-					if (mapComp.MapShipCells[vec].Item2 == 0) //tile under bridge was hit before bridge
+					if (replaceCore) //tile under bridge was hit before bridge
 					{
 						ship.ReplaceCore();
 					}

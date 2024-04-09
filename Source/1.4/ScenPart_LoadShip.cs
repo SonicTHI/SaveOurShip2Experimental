@@ -472,7 +472,7 @@ namespace RimWorld
 			{
 				Log.Warning(e.Message + "\n" + e.StackTrace);
 			}
-			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoSTimePassedLabel"), TranslatorFormattedStringExtensions.Translate("SoSTimePassed", traveltime), LetterDefOf.NeutralEvent);
+			Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.TimePassed"), TranslatorFormattedStringExtensions.Translate("SoS.TimePassedDesc", traveltime), LetterDefOf.NeutralEvent);
 		}
 	}
 }

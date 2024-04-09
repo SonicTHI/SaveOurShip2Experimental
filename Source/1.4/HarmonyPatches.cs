@@ -1953,7 +1953,7 @@ namespace SaveOurShip2
 		{
 			if (__state)
 			{
-				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelShortCircuit"), TranslatorFormattedStringExtensions.Translate("LetterLabelShortCircuitShipDesc"),
+				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelShortCircuit"), TranslatorFormattedStringExtensions.Translate("SoS.LetterLabelShortCircuitDesc"),
 					LetterDefOf.NegativeEvent, new TargetInfo(culprit.Position, culprit.Map, false), null);
 			}
 		}

@@ -173,6 +173,7 @@ namespace RimWorld
 			{
 				t.Destroy();
 			}
+			parent.Map.fogGrid.ClearAllFog();
 		}
 		public override void CompTickRare()
 		{

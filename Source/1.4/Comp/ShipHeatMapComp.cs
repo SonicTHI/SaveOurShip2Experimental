@@ -1364,7 +1364,7 @@ namespace RimWorld
 							else //blocked
 							{
 								//td message ready to move
-								Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"), TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
+								Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchieved"), TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchievedDesc"), LetterDefOf.PositiveEvent);
 							}
 							ShipMapState = ShipMapState.isGraveyard;
 							map.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(10000);
@@ -1373,7 +1373,7 @@ namespace RimWorld
 						{
 							((WorldObjectOrbitingShip)map.Parent).SetNominalPos();
 							ShipMapState = ShipMapState.nominal;
-							Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("LetterLabelOrbitAchieved"), TranslatorFormattedStringExtensions.Translate("LetterOrbitAchieved"), LetterDefOf.PositiveEvent);
+							Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchieved"), TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchievedDesc"), LetterDefOf.PositiveEvent);
 						}
 					}
 					else if (Altitude <= ShipInteriorMod2.altitudeLand && (Heading < 1 || !EnginesOn && BurnTimer > Find.TickManager.TicksGame + 300)) //ground reached or fail to start engines in time - land/crash
@@ -1665,7 +1665,7 @@ namespace RimWorld
 					if (OriginMapComp.attackedTradeship)
 						ShipInteriorMod2.WorldComp.PlayerFactionBounty += 15;
 					tgtMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000) - burnTimeElapsed);
-					Find.LetterStack.ReceiveLetter("WinShipBattle".Translate(), "WinShipBattleDesc".Translate(tgtMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
+					Find.LetterStack.ReceiveLetter("SoS.WinShipBattle".Translate(), "SoS.WinShipBattleDesc".Translate(tgtMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
 				}
 			}
 			else

@@ -52,7 +52,7 @@ namespace RimWorld.Planet
 					Find.WorldObjects.Remove(this.parent);
 					if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechPillarC"))
 					{
-						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("StarTotemLostLabel"), TranslatorFormattedStringExtensions.Translate("StarTotemLost"), LetterDefOf.NegativeEvent);
+						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.StarTotemLostLabel"), TranslatorFormattedStringExtensions.Translate("SoS.StarTotemLost"), LetterDefOf.NegativeEvent);
 						ShipInteriorMod2.GenerateSite("TribalPillarSite");
 					}
 				}

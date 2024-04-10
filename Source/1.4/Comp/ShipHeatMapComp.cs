@@ -1695,6 +1695,12 @@ namespace RimWorld
 					{
 						//td instead launch boarders to origin
 						tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
+
+						//remove all wrecks from map, leave pawns
+						foreach (int shipIndex in OriginMapComp.GraveComp.ShipsOnMapNew.Keys)
+						{
+							ShipInteriorMod2.RemoveShipOrArea(OriginMapComp.ShipGraveyard, shipIndex, null, false);
+						}
 					}
 				}
 			}

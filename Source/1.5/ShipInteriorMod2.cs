@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V100b8";
+		public const string SOS2EXPversion = "V100b9";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4052;
 
@@ -451,8 +451,7 @@ namespace SaveOurShip2
 		public static Map GeneratePlayerShipMap(IntVec3 size)
 		{
 			WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.ShipOrbiting);
-			orbiter.Radius = 150;
-			orbiter.Theta = -3;
+			orbiter.SetNominalPos();
 			orbiter.SetFaction(Faction.OfPlayer);
 			orbiter.Tile = FindWorldTilePlayer();
 			Find.WorldObjects.Add(orbiter);
@@ -2225,6 +2224,12 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveTerrain");
+			//move fog
+			foreach (IntVec3 pos in fogToCopy)
+			{
+				targetMap.fogGrid.fogGrid[targetMap.cellIndices.CellToIndex(pos)] = true;
+				targetMap.mapDrawer.MapMeshDirty(pos, (ulong)MapMeshFlagDefOf.FogOfWar);// | (ulong)MapMeshFlagDefOf.Things);
+			}
 
 			//move roofs
 			foreach (Tuple<IntVec3, RoofDef> tup in roofToCopy)
@@ -2233,12 +2238,7 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveRoof");
-			//move fog
-			foreach (IntVec3 pos in fogToCopy)
-			{
-				targetMap.fogGrid.fogGrid[targetMap.cellIndices.CellToIndex(pos)] = true;
-				targetMap.mapDrawer.MapMeshDirty(pos, (ulong)MapMeshFlagDefOf.FogOfWar);// | (ulong)MapMeshFlagDefOf.Things);
-			}
+			
 			//restore temp in ship
 			foreach (Tuple<IntVec3, float> t in posTemp)
 			{
@@ -2581,7 +2581,7 @@ namespace SaveOurShip2
 				}
 			}
 		}
-		public static void RemoveShipOrArea(Map map, int index = -1, HashSet<IntVec3> area = null)
+		public static void RemoveShipOrArea(Map map, int index = -1, HashSet<IntVec3> area = null, bool killPawns = true)
 		{
 			var mapComp = map.GetComponent<ShipHeatMapComp>();
 			if (index != -1)
@@ -2600,7 +2600,15 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in area)
 			{
 				mapComp.MapShipCells.Remove(pos);
-				things.AddRange(pos.GetThingList(map));
+				foreach (Thing t in pos.GetThingList(map))
+				{
+					if (!things.Contains(t))
+					{
+						if (t is Pawn && !killPawns)
+							continue;
+						things.Add(t);
+					}
+				}
 				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))
 				{
 					zones.Add(map.zoneManager.ZoneAt(pos));
@@ -2662,7 +2670,6 @@ namespace SaveOurShip2
 				}
 				foreach (Section sec in sourceSec)
 				{
-					//sec.RegenerateLayers(MapMeshFlagDefOf.Zone);
 					sec.RegenerateDirtyLayers();
 				}
 				List<Section> targetSec = new List<Section>();
@@ -2674,7 +2681,6 @@ namespace SaveOurShip2
 				}
 				foreach (Section sec in targetSec)
 				{
-					//sec.RegenerateLayers(MapMeshFlagDefOf.Zone);
 					sec.RegenerateDirtyLayers();
 				}
 			}

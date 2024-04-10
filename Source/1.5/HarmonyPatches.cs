@@ -63,7 +63,7 @@ namespace SaveOurShip2
 						string str2 = "";
 						if (!ship.IsWreck)
 							str2 += "Name: " + ship.Core.ShipName +"\n";
-						str2 += "Map: " + ship.Map + "\nFaction: " + ship.Faction + "\nParts: " + ship.Parts.Count + "\nBuildings: " + ship.Buildings.Count + "\nMass: " + ship.MassActual + "\nArea: " + ship.Area.Count + "\nBridges: " + ship.Bridges.Count + "\nCore: " + ship.Core + "\nPath max: " + ship.LastSafePath;
+						str2 += "Map: " + ship.Map + "\nFaction: " + ship.Faction + "\nParts: " + ship.Parts.Count + "\nBuildings: " + ship.Buildings.Count + "\nMass: " + ship.MassActual + "\nArea: " + ship.Area.Count + "\nCores: " + ship.Bridges.Count + "\nCore: " + ship.Core + "\nPath max: " + ship.LastSafePath;
 						TooltipHandler.TipRegion(rect2, str2);
 						DrawShips.Highlight = ship.Index;
 					}

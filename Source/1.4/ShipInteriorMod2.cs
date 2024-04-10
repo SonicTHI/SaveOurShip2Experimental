@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V99f8";
+		public const string SOS2EXPversion = "V99f9";
 		public const int SOS2ReqCurrentMinor = 4;
 		public const int SOS2ReqCurrentBuild = 3704;
 
@@ -1130,12 +1130,12 @@ namespace SaveOurShip2
 							else
 								thing.SetFactionDirect(fac);
 						}
+						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 						if (thing is Building_ShipTurret turret)
 						{
 							turret.burstCooldownTicksLeft = 300;
 							turret.TryGetComp<CompPowerTrader>().PowerOn = true;
 						}
-						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 					}
 					else //cargo
 					{
@@ -2160,7 +2160,6 @@ namespace SaveOurShip2
 				}
 				targetMap.zoneManager.RebuildZoneGrid();
 				sourceMap.zoneManager.RebuildZoneGrid();
-
 			}
 			if (devMode)
 				watch.Record("moveZones");
@@ -2548,7 +2547,7 @@ namespace SaveOurShip2
 				}
 			}
 		}
-		public static void RemoveShipOrArea(Map map, int index = -1, HashSet<IntVec3> area = null)
+		public static void RemoveShipOrArea(Map map, int index = -1, HashSet<IntVec3> area = null, bool killPawns = true)
 		{
 			var mapComp = map.GetComponent<ShipHeatMapComp>();
 			if (index != -1)
@@ -2567,7 +2566,15 @@ namespace SaveOurShip2
 			foreach (IntVec3 pos in area)
 			{
 				mapComp.MapShipCells.Remove(pos);
-				things.AddRange(pos.GetThingList(map));
+				foreach (Thing t in pos.GetThingList(map))
+				{
+					if (!things.Contains(t))
+					{
+						if (t is Pawn && !killPawns)
+							continue;
+						things.Add(t);
+					}
+				}
 				if (map.zoneManager.ZoneAt(pos) != null && !zones.Contains(map.zoneManager.ZoneAt(pos)))
 				{
 					zones.Add(map.zoneManager.ZoneAt(pos));

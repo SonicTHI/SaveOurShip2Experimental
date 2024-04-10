@@ -981,8 +981,7 @@ namespace SaveOurShip2
 			str2 = "";*/
 			//log
 
-			//HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
-			HashSet<IntVec3> cellsAttached = new HashSet<IntVec3> { first }; //cells that were checked and are attached
+			HashSet<IntVec3> cellsDone = new HashSet<IntVec3> { first }; //cells that were checked
 			foreach (IntVec3 setStartCell in startCells)
 			{
 				if (!mapComp.MapShipCells.ContainsKey(setStartCell)) //cell might have been removed already
@@ -992,7 +991,7 @@ namespace SaveOurShip2
 				{
 					cellsAttached.Add(setStartCell);
 				}*/
-				if (cellsAttached.Contains(setStartCell)) //skip already checked cells
+				if (cellsDone.Contains(setStartCell)) //skip already checked cells
 				{
 					continue;
 				}
@@ -1008,9 +1007,8 @@ namespace SaveOurShip2
 						foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(current, Rot4.North, IntVec2.One).Where(v => Area.Contains(v) && !areaDestroyed.Contains(v))) //skip non ship, destroyed tiles
 						{
 							//if part with lower corePath found or next to an already attached and checked this set is attached
-							if (cellsAttached.Contains(v) || mapComp.MapShipCells[v].Item2 == 0)//LastSafePath)
+							if (cellsDone.Contains(v) || mapComp.MapShipCells[v].Item2 == 0)//LastSafePath)
 							{
-								cellsAttached.AddRange(cellsDoneInSet);
 								detach = false;
 								break;
 							}
@@ -1020,6 +1018,7 @@ namespace SaveOurShip2
 					if (!detach)
 						break;
 				}
+				cellsDone.AddRange(cellsDoneInSet);
 				if (detach)
 				{
 					//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;

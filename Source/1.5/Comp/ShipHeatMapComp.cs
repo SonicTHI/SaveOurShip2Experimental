@@ -1686,20 +1686,23 @@ namespace RimWorld
 						//Find.GameEnder.CheckOrUpdateGameOver();
 					}
 					//origin fled or lost: if origin has grave with a ship, grave starts combat with target
-					if (OriginMapComp.ShipGraveyard != null && OriginMapComp.GraveComp.MapRootListAll.Any() && !OriginMapComp.attackedTradeship)
+					if (OriginMapComp.ShipGraveyard != null)
 					{
-						OriginMapComp.GraveComp.LastAttackTick = Find.TickManager.TicksGame;
-						OriginMapComp.GraveComp.NextTargetMap = OriginMapComp.ShipCombatTargetMap;
-					}
-					else //origin fled or lost with no graveyard, remove target
-					{
-						//td instead launch boarders to origin
-						tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
-
-						//remove all wrecks from map, leave pawns
-						foreach (int shipIndex in OriginMapComp.GraveComp.ShipsOnMapNew.Keys)
+						if (OriginMapComp.GraveComp.MapRootListAll.Any() && !OriginMapComp.attackedTradeship)
 						{
-							ShipInteriorMod2.RemoveShipOrArea(OriginMapComp.ShipGraveyard, shipIndex, null, false);
+							OriginMapComp.GraveComp.LastAttackTick = Find.TickManager.TicksGame;
+							OriginMapComp.GraveComp.NextTargetMap = OriginMapComp.ShipCombatTargetMap;
+						}
+						else //origin fled or lost with no graveyard, remove target
+						{
+							//td instead launch boarders to origin
+							tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
+
+							//remove all wrecks from map, leave pawns
+							foreach (int shipIndex in OriginMapComp.GraveComp.ShipsOnMapNew.Keys)
+							{
+								ShipInteriorMod2.RemoveShipOrArea(OriginMapComp.ShipGraveyard, shipIndex, null, false);
+							}
 						}
 					}
 				}

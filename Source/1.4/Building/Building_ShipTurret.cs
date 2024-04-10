@@ -47,7 +47,6 @@ namespace RimWorld
 			{
 				//if (SpinalHasNoAmps) //td req recheck system when parts placed by player, AI skip
 				//	return false;
-				
 				if (Spawned && heatComp != null && heatComp.myNet != null && !heatComp.myNet.venting && (powerComp == null || powerComp.PowerOn) && (heatComp.myNet.PilCons.Any() || heatComp.myNet.AICores.Any() || heatComp.myNet.TacCons.Any()))
 				{
 					return true;
@@ -55,11 +54,13 @@ namespace RimWorld
 				return false;
 			}
 		}
-		public bool CanFire //can turret actually fire
+		public bool IsThreat //is turret a threat
 		{
 			get
 			{
-				if (!Active || (torpComp != null && !torpComp.Loaded) || (fuelComp != null && fuelComp.Fuel == 0f))
+				if (!(Spawned && heatComp != null && heatComp.myNet != null && (powerComp == null || powerComp.PowerOn) && (heatComp.myNet.PilCons.Any() || heatComp.myNet.AICores.Any() || heatComp.myNet.TacCons.Any())))
+					return false;
+				if ((torpComp != null && !torpComp.Loaded) || (fuelComp != null && fuelComp.Fuel == 0f))
 					return false;
 				if (Faction != Faction.OfPlayer && SpinalHasNoAmps)
 					return false;
@@ -532,10 +533,7 @@ namespace RimWorld
 				bat.DrawPower(Mathf.Min(EnergyToFire * bat.StoredEnergy / powerComp.PowerNet.CurrentStoredEnergy(), bat.StoredEnergy));
 			}
 			//sfx
-			if (heatComp.Props.singleFireSound != null)
-			{
-				heatComp.Props.singleFireSound.PlayOneShot(this);
-			}
+			heatComp.Props.singleFireSound?.PlayOneShot(this);
 			//cast
 			if (GroundDefenseMode)
 			{

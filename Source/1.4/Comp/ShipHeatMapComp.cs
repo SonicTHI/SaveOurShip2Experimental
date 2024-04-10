@@ -7,7 +7,6 @@ using SaveOurShip2;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse.AI.Group;
-using Verse.Noise;
 
 namespace RimWorld
 {
@@ -829,6 +828,7 @@ namespace RimWorld
 			newMapComp.ShipFaction = faction;
 			if (wreckLevel != 3)
 				newMapComp.ShipLord = LordMaker.MakeNewLord(faction, new LordJob_DefendShip(faction, newMap.Center), newMap);
+
 			if (fleet) //spawn fleet - not for passingShips other than trade yet
 			{
 				ShipInteriorMod2.GenerateFleet(CR, newMap, passingShip, faction, newMapComp.ShipLord, out cores, shieldsActive, false, wreckLevel, navyDef: navyDef);
@@ -1686,20 +1686,23 @@ namespace RimWorld
 						//Find.GameEnder.CheckOrUpdateGameOver();
 					}
 					//origin fled or lost: if origin has grave with a ship, grave starts combat with target
-					if (OriginMapComp.ShipGraveyard != null && OriginMapComp.GraveComp.MapRootListAll.Any() && !OriginMapComp.attackedTradeship)
+					if (OriginMapComp.ShipGraveyard != null)
 					{
-						OriginMapComp.GraveComp.LastAttackTick = Find.TickManager.TicksGame;
-						OriginMapComp.GraveComp.NextTargetMap = OriginMapComp.ShipCombatTargetMap;
-					}
-					else //origin fled or lost with no graveyard, remove target
-					{
-						//td instead launch boarders to origin
-						tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
-
-						//remove all wrecks from map, leave pawns
-						foreach (int shipIndex in OriginMapComp.GraveComp.ShipsOnMapNew.Keys)
+						if (OriginMapComp.GraveComp.MapRootListAll.Any() && !OriginMapComp.attackedTradeship)
 						{
-							ShipInteriorMod2.RemoveShipOrArea(OriginMapComp.ShipGraveyard, shipIndex, null, false);
+							OriginMapComp.GraveComp.LastAttackTick = Find.TickManager.TicksGame;
+							OriginMapComp.GraveComp.NextTargetMap = OriginMapComp.ShipCombatTargetMap;
+						}
+						else //origin fled or lost with no graveyard, remove target
+						{
+							//td instead launch boarders to origin
+							tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
+
+							//remove all wrecks from map, leave pawns
+							foreach (int shipIndex in OriginMapComp.GraveComp.ShipsOnMapNew.Keys)
+							{
+								ShipInteriorMod2.RemoveShipOrArea(OriginMapComp.ShipGraveyard, shipIndex, null, false);
+							}
 						}
 					}
 				}

@@ -228,11 +228,11 @@ namespace RimWorld
 				}
 				if (!partExists) //no shippart remains, remove from area
 				{
-					//int path = mapComp.MapShipCells[vec].Item2;
-					//if (ship.LastSafePath > path)
-					//	ship.LastSafePath = path;
+					int path = mapComp.MapShipCells[vec].Item2;
+					if (ship.LastSafePath > path)
+						ship.LastSafePath = path;
 					bool replaceCore = false;
-					if (mapComp.MapShipCells[vec].Item2 == 0)
+					if (path == 0)
 						replaceCore = true;
 					ship.Area.Remove(vec);
 					mapComp.MapShipCells.Remove(vec);

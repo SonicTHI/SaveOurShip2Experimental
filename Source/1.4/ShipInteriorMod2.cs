@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V99f9";
+		public const string SOS2EXPversion = "V99f10";
 		public const int SOS2ReqCurrentMinor = 4;
 		public const int SOS2ReqCurrentBuild = 3704;
 

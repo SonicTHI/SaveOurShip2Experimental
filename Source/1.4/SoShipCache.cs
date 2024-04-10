@@ -95,7 +95,7 @@ namespace SaveOurShip2
 			foreach (var turret in Turrets)
 			{
 				int threat = turret.heatComp.Props.threat;
-				if (!turret.CanFire)
+				if (!turret.IsThreat)
 				{
 					if (turret.heatComp.Props.maxRange > 150) //long
 					{
@@ -954,7 +954,7 @@ namespace SaveOurShip2
 			//now it gets complicated and slower
 			//start cells can be any amount and arrangement
 			//find cells around
-			//for each try to path back to LastSafePath - 1 or lowest index cell, if not possible detach each set separately
+			//for each try to path back to lowest index cell, 0 or LastSafePath - 1, if not possible detach each set separately
 
 			int pathTo = int.MaxValue; //lowest path in startCells
 			IntVec3 first = IntVec3.Invalid; //path to this cell
@@ -973,12 +973,12 @@ namespace SaveOurShip2
 				}
 			}
 			//log
-			/*
+			
 			string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + (LastSafePath - 1) + " or to cell: " + first + " with " + startCells.Count + " cells: ";
 			foreach (IntVec3 vec in startCells)
 				str2 += vec;
 			Log.Warning(str2);
-			str2 = "";*/
+			str2 = "";
 			//log
 
 			HashSet<IntVec3> cellsDone = new HashSet<IntVec3> { first }; //cells that were checked
@@ -987,10 +987,11 @@ namespace SaveOurShip2
 				if (!mapComp.MapShipCells.ContainsKey(setStartCell)) //cell might have been removed already
 					continue;
 
-				/*if (mapComp.MapShipCells[setStartCell].Item2 < LastSafePath)
+				if (mapComp.MapShipCells[setStartCell].Item2 < LastSafePath) //cell is safe if below LastSafePath
 				{
-					cellsAttached.Add(setStartCell);
-				}*/
+					cellsDone.Add(setStartCell);
+					continue;
+				}
 				if (cellsDone.Contains(setStartCell)) //skip already checked cells
 				{
 					continue;
@@ -1007,7 +1008,7 @@ namespace SaveOurShip2
 						foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(current, Rot4.North, IntVec2.One).Where(v => Area.Contains(v) && !areaDestroyed.Contains(v))) //skip non ship, destroyed tiles
 						{
 							//if part with lower corePath found or next to an already attached and checked this set is attached
-							if (cellsDone.Contains(v) || mapComp.MapShipCells[v].Item2 == 0)//LastSafePath)
+							if (cellsDone.Contains(v) || mapComp.MapShipCells[v].Item2 < LastSafePath)
 							{
 								detach = false;
 								break;

@@ -19,13 +19,12 @@ namespace RimWorld
 		public Rot4 rot;
 		public bool alt; //alternate mode, for sun lights, etc.
 		public float radius;
-		public Color color;
 		public string colorDef;
 		public string faction; //faction override
 
 		public override int GetHashCode()
 		{
-			return (shapeOrDef +","+ stuff + "," + width+","+height+","+alt+","+radius+","+color + "," + colorDef).GetHashCode();
+			return (shapeOrDef +","+ stuff + "," + width+","+height+","+alt+","+radius+"," + colorDef).GetHashCode();
 		}
 
 		public override bool Equals(object obj)
@@ -33,7 +32,7 @@ namespace RimWorld
 			if (!(obj is ShipShape))
 				return false;
 			ShipShape otherShape = (ShipShape)obj;
-			return otherShape.shapeOrDef == shapeOrDef && otherShape.stuff == stuff && otherShape.width == width && otherShape.height == height && otherShape.alt == alt && otherShape.radius == radius && otherShape.color == color && otherShape.colorDef == colorDef;
+			return otherShape.shapeOrDef == shapeOrDef && otherShape.stuff == stuff && otherShape.width == width && otherShape.height == height && otherShape.alt == alt && otherShape.radius == radius && otherShape.colorDef == colorDef;
 
 		}
 
@@ -49,7 +48,6 @@ namespace RimWorld
 			//Scribe_Values.Look<Rot4>(ref rot, "rot");
 			Scribe_Values.Look<bool>(ref alt, "alt");
 			Scribe_Values.Look<float>(ref radius, "radius");
-			Scribe_Values.Look<Color>(ref color, "color");
 			Scribe_Values.Look<string>(ref colorDef, "colorDef");
 		}
 	}
@@ -198,7 +196,6 @@ namespace RimWorld
 				shape.shapeOrDef = symbol.shapeOrDef;
 				shape.stuff = symbol.stuff;
 				shape.width = symbol.width;
-				shape.color = symbol.color;
 				shape.colorDef = symbol.colorDef;
 				parts.Add(shape);
 			}

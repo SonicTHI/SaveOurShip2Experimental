@@ -12,6 +12,7 @@ namespace RimWorld
 		public List<EnemyShipDef> enemyShipDefs = new List<EnemyShipDef>();
 		public string colorPrimary;
 		public string colorSecondary;
+		public string colorLighting;
 		public bool canOperateAfterFactionDefeated = true;
 		public bool bountyHunts;
 		public bool pirates;

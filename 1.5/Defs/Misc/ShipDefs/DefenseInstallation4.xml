@@ -160,7 +160,7 @@
 				<key>V</key>
 				<value>
 					<shapeOrDef>WallLamp</shapeOrDef>
-					<color>RGBA(0.839, 0.000, 0.000, 0.000)</color>
+					<colorDef>#d60000</colorDef>
 				</value>
 			</li>
 		</symbolTable>

@@ -141,7 +141,7 @@
 				<key>S</key>
 				<value>
 					<shapeOrDef>WallLamp</shapeOrDef>
-					<color>RGBA(0.000, 0.839, 0.000, 0.000)</color>
+					<colorDef>#00d600</colorDef>
 				</value>
 			</li>
 		</symbolTable>

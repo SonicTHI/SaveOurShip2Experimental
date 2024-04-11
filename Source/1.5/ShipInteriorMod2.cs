@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V100b10";
+		public const string SOS2EXPversion = "V100b11";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4052;
 
@@ -919,14 +919,18 @@ namespace SaveOurShip2
 						{
 							var colorComp = thing.TryGetComp<CompColorable>();
 							var glowerComp = thing.TryGetComp<CompGlower>();
-							if (glowerComp != null) //color glow of lights
+							if (glowerComp != null && glowerComp.Props.colorPickerEnabled) //color glow of lights
 							{
-								if (shape.color != Color.clear)
+								if (shape.colorDef == null)
 								{
-									Color.RGBToHSV(shape.color, out var H, out var S, out var _);
-									ColorInt glowColor = glowerComp.GlowColor;
-									glowColor.SetHueSaturation(H, S);
-									glowerComp.GlowColor = glowColor;
+									if (rePaint)
+										glowerComp.GlowColor = new ColorInt(GenColor.FromHex(navyDef.colorLighting));
+									else
+										glowerComp.GlowColor = new ColorInt(255,255,255);
+								}
+								else
+								{
+									glowerComp.GlowColor = new ColorInt(GenColor.FromHex(shape.colorDef));
 								}
 							}
 							else if (shape.colorDef != null)
@@ -1882,7 +1886,24 @@ namespace SaveOurShip2
 					{
 						if (b is Building_SteamGeyser)
 							continue;
-						if (b is Building_ShipAirlock a && a.docked)
+						if (b.def.building.supportsWallAttachments) //add external wall lights
+						{
+							for (int i = 0; i < 4; i++)
+							{
+								IntVec3 c = t.Position + GenAdj.CardinalDirections[i];
+								if (ship.Area.Contains(c))
+									continue;
+								foreach (Thing l in c.GetThingList(sourceMap))
+								{
+									ThingDef l2 = GenConstruct.BuiltDefOf(l.def) as ThingDef;
+									if ((l2?.building) != null && l2.building.isAttachment && GenMath.PositiveMod(l.Rotation.AsInt - 2, 4) == i)
+									{
+										toSave.Add(l);
+									}
+								}
+							}
+						}
+						else if (b is Building_ShipAirlock a && a.docked)
 						{
 							a.DeSpawnDock();
 						}
@@ -2316,7 +2337,6 @@ namespace SaveOurShip2
 				Log.Message("SOS2: ".Colorize(Color.cyan) + sourceMap + " Ship move complete, timings:\n".Colorize(Color.green) + watch.MakeReport());
 			}
 		}
-
 		public static void AddPawnToLord(Map map, Pawn p)
 		{
 			if (!p.HostileTo(Faction.OfPlayer) || p.Dead)

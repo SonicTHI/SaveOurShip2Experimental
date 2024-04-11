@@ -1980,6 +1980,23 @@ namespace SaveOurShip2
 		}
 	}
 
+	[HarmonyPatch(typeof(GenConstruct), "GetAttachedBuildings")] //prevent minification on ship move from despawning (wall lights)
+	public static class DisableForMoveMinify
+	{
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return false;
+			return true;
+		}
+		public static List<Thing> Postfix(List<Thing> __result)
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+				return new List<Thing>();
+			return __result;
+		}
+	}
+
 	/*[HarmonyPatch(typeof(CompBiosculpterPod), "EjectContents")] disabled due to move respawn issues
 	public static class DisableForMoveSculpt
 	{

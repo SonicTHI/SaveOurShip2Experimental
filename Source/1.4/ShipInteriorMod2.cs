@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V99f10";
+		public const string SOS2EXPversion = "V99f12";
 		public const int SOS2ReqCurrentMinor = 4;
 		public const int SOS2ReqCurrentBuild = 3704;
 
@@ -134,6 +134,7 @@ namespace SaveOurShip2
 		public static string[] allowedToObserve;
 		public static List<ThingDef> randomPlants;
 		public static Dictionary<ThingDef, ThingDef> wreckDictionary;
+		public static Dictionary<ThingDef, ThingDef> archoConversions;
 
 		public override void DoSettingsWindowContents(Rect inRect)
 		{
@@ -237,6 +238,33 @@ namespace SaveOurShip2
 				{ThingDef.Named("ShipAirlockMech"), ResourceBank.ThingDefOf.ShipAirlockWrecked},
 				{ThingDef.Named("ShipAirlockArchotech"), ResourceBank.ThingDefOf.ShipAirlockWrecked},
 				{ThingDef.Named("ShipAirlockBeam"), ResourceBank.ThingDefOf.Ship_Beam_Wrecked}
+			};
+			archoConversions = new Dictionary<ThingDef, ThingDef>()
+			{
+				{ThingDef.Named("Ship_Beam_Unpowered"), ThingDef.Named("Ship_BeamArchotech_Unpowered")},
+				{ResourceBank.ThingDefOf.Ship_Beam, ResourceBank.ThingDefOf.Ship_BeamArchotech},
+				{ThingDef.Named("Ship_Corner_OneOne"), ThingDef.Named("Ship_Corner_Archo_OneOne")},
+				{ThingDef.Named("Ship_Corner_OneOneFlip"), ThingDef.Named("Ship_Corner_Archo_OneOneFlip")},
+				{ThingDef.Named("Ship_Corner_OneTwo"), ThingDef.Named("Ship_Corner_Archo_OneTwo")},
+				{ThingDef.Named("Ship_Corner_OneTwoFlip"), ThingDef.Named("Ship_Corner_Archo_OneTwoFlip")},
+				{ThingDef.Named("Ship_Corner_OneThree"), ThingDef.Named("Ship_Corner_Archo_OneThree")},
+				{ThingDef.Named("Ship_Corner_OneThreeFlip"), ThingDef.Named("Ship_Corner_Archo_OneThreeFlip")},
+				{ThingDef.Named("ShipInside_SolarGenerator"), ThingDef.Named("ShipInside_SolarGeneratorArchotech")},
+				{ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("ShipInside_PassiveVentArchotech")},
+				{ResourceBank.ThingDefOf.ShipAirlock, ThingDef.Named("ShipAirlockArchotech")},
+				{ResourceBank.ThingDefOf.ShipHullTile, ResourceBank.ThingDefOf.ShipHullTileArchotech},
+				{ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_BeamArchotech_Unpowered")},
+				{ResourceBank.ThingDefOf.Ship_BeamMech, ResourceBank.ThingDefOf.Ship_BeamArchotech},
+				{ThingDef.Named("Ship_Corner_OneOne_Mech"), ThingDef.Named("Ship_Corner_Archo_OneOne")},
+				{ThingDef.Named("Ship_Corner_OneOne_MechFlip"), ThingDef.Named("Ship_Corner_Archo_OneOneFlip")},
+				{ThingDef.Named("Ship_Corner_OneTwo_Mech"), ThingDef.Named("Ship_Corner_Archo_OneTwo")},
+				{ThingDef.Named("Ship_Corner_OneTwoFlip_Mech"), ThingDef.Named("Ship_Corner_Archo_OneTwoFlip")},
+				{ThingDef.Named("Ship_Corner_OneThree_Mech"), ThingDef.Named("Ship_Corner_Archo_OneThree")},
+				{ThingDef.Named("Ship_Corner_OneThreeFlip_Mech"), ThingDef.Named("Ship_Corner_Archo_OneThreeFlip")},
+				{ThingDef.Named("ShipInside_SolarGeneratorMech"), ThingDef.Named("ShipInside_SolarGeneratorArchotech")},
+				{ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("ShipInside_PassiveVentArchotech")},
+				{ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockArchotech")},
+				{ResourceBank.ThingDefOf.ShipHullTileMech, ResourceBank.ThingDefOf.ShipHullTileArchotech}
 			};
 
 			var compatibleRoofs = new List<RoofDef>();
@@ -1233,33 +1261,6 @@ namespace SaveOurShip2
 				}
 				foreach (Building btd in toKill.Where(t => !t.Destroyed))
 				{
-					var shipPartComp = btd.TryGetComp<CompSoShipPart>();
-					if (shipPartComp != null) //cleanup area //td this should be done on the comp or not spawned at all
-					{
-						foreach (IntVec3 vec in shipPartComp.cellsUnder) //check if other floor or hull on any vec
-						{
-							bool partExists = false;
-							foreach (Thing t in vec.GetThingList(shipPartComp.parent.Map))
-							{
-								if (t is Building b && b != shipPartComp.parent)
-								{
-									if (b.def.building.shipPart)
-									{
-										partExists = true;
-									}
-									else
-									{
-										if (b is Building_ShipBridge br)
-											br.terminate = true;
-									}
-								}
-							}
-							if (!partExists) //no shippart remains, remove from area
-							{
-								mapComp.MapShipCells.Remove(vec);
-							}
-						}
-					}
 					if (wreckLevel == 4)
 						GenExplosion.DoExplosion(btd.Position, map, Rand.Range(1.9f, 4.9f), DamageDefOf.Flame, null);
 					var refuelComp = btd.TryGetComp<CompRefuelable>();
@@ -1511,7 +1512,6 @@ namespace SaveOurShip2
 			foreach (IntVec3 v in area)
 			{
 				map.roofGrid.SetRoof(v, null);
-				map.GetComponent<ShipHeatMapComp>().MapShipCells.Remove(v);
 			}
 			foreach (Building b in toReplace)
 			{
@@ -2282,7 +2282,6 @@ namespace SaveOurShip2
 				Log.Message("SOS2: ".Colorize(Color.cyan) + sourceMap + " Ship move complete, timings:\n".Colorize(Color.green) + watch.MakeReport());
 			}
 		}
-
 		public static void AddPawnToLord(Map map, Pawn p)
 		{
 			if (!p.HostileTo(Faction.OfPlayer) || p.Dead)

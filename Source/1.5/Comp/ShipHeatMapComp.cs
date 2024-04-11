@@ -925,6 +925,7 @@ namespace RimWorld
 			if (!map.IsSpace())
 				return;
 
+			int tick = Find.TickManager.TicksGame;
 			if (ShipMapState == ShipMapState.inCombat)
 			{
 				foreach (int index in ShipsToMove)
@@ -1025,7 +1026,7 @@ namespace RimWorld
 				{
 					Altitude -= 0.2f;
 				}
-				if (Find.TickManager.TicksGame % 2 == 0 && ShipInteriorMod2.WorldComp.renderedThatAlready == true)
+				if (tick % 2 == 0 && ShipInteriorMod2.WorldComp.renderedThatAlready == true)
 					ShipInteriorMod2.WorldComp.renderedThatAlready = false;
 				//move WO
 				//max 1000 = 150, min 130 = 100
@@ -1041,16 +1042,16 @@ namespace RimWorld
 			}
 			if (callSlowTick) //origin only: call both slow ticks
 			{
-				SlowTick();
-				TargetMapComp.SlowTick();
+				SlowTick(tick);
+				TargetMapComp.SlowTick(tick);
 				callSlowTick = false;
 			}
-			else if (Find.TickManager.TicksGame % 60 == 0)
+			else if (tick % 60 == 0)
 			{
-				SlowTick();
+				SlowTick(tick);
 			}
 		}
-		public void SlowTick()
+		public void SlowTick(int tick)
 		{
 			if (ShipMapState == ShipMapState.inCombat)
 			{
@@ -1116,7 +1117,7 @@ namespace RimWorld
 				//Log.Message("SOS2: ".Colorize(Color.cyan) + map + " threat CSML: " + threatPerSegment[0] + " " + threatPerSegment[1] + " " + threatPerSegment[2] + " " + threatPerSegment[3] + " ");
 
 				//shipAI distance, boarding
-				if (HasShipMapAI)
+				if (HasShipMapAI && tick > BattleStartTick + 60)
 				{
 					if (ShipsOnMapNew.Count > 1) //fleet AI evals ships in fleet and rem bad ships
 					{
@@ -1177,7 +1178,7 @@ namespace RimWorld
 					{
 						//True, totalThreat:1, TargetMapComp.totalThreat:1, TurretNum:0
 						//retreat
-						if (Retreating || totalThreat / (TargetMapComp.totalThreat * 0.9f * Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.3f, 3f)) < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || Find.TickManager.TicksGame > BattleStartTick + 90000)
+						if (Retreating || totalThreat / (TargetMapComp.totalThreat * 0.9f * Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.3f, 3f)) < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || tick > BattleStartTick + 90000)
 						{
 							Heading = -1;
 							Retreating = true;
@@ -1234,7 +1235,7 @@ namespace RimWorld
 					{
 						Heading = 0;
 						Retreating = false;
-						if ((threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1) || Find.TickManager.TicksGame > BattleStartTick + 120000)
+						if ((threatPerSegment[0] == 1 && threatPerSegment[1] == 1 && threatPerSegment[2] == 1 && threatPerSegment[3] == 1) || tick > BattleStartTick + 120000)
 						{
 							//no turrets to fight with - exit
 							EndBattle(map, false);
@@ -1243,16 +1244,16 @@ namespace RimWorld
 						if (warnedAboutAdrift == 0)
 						{
 							Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.EnemyShipAdrift"), map.Parent, MessageTypeDefOf.NegativeEvent);
-							warnedAboutAdrift = Find.TickManager.TicksGame + Rand.RangeInclusive(60000, 180000);
+							warnedAboutAdrift = tick + Rand.RangeInclusive(60000, 180000);
 						}
-						else if (Find.TickManager.TicksGame > warnedAboutAdrift)
+						else if (tick > warnedAboutAdrift)
 						{
-							EndBattle(map, false, warnedAboutAdrift - Find.TickManager.TicksGame);
+							EndBattle(map, false, warnedAboutAdrift - tick);
 							return;
 						}
 					}
 					//AI boarding code
-					if ((hasAnyPartDetached || Find.TickManager.TicksGame > BattleStartTick + 5000) && !startedBoarderLoad && !Retreating)
+					if ((hasAnyPartDetached || tick > BattleStartTick + 5000) && !startedBoarderLoad && !Retreating)
 					{
 						foreach (SoShipCache ship in ShipsOnMapNew.Values)
 						{
@@ -1376,7 +1377,7 @@ namespace RimWorld
 							Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchieved"), TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchievedDesc"), LetterDefOf.PositiveEvent);
 						}
 					}
-					else if (Altitude <= ShipInteriorMod2.altitudeLand && (Heading < 1 || !EnginesOn && BurnTimer > Find.TickManager.TicksGame + 300)) //ground reached or fail to start engines in time - land/crash
+					else if (Altitude <= ShipInteriorMod2.altitudeLand && (Heading < 1 || !EnginesOn && BurnTimer > tick + 300)) //ground reached or fail to start engines in time - land/crash
 					{
 						Altitude = ShipInteriorMod2.altitudeLand;
 						MapFullStop();
@@ -1443,7 +1444,7 @@ namespace RimWorld
 					KillAllOffShip();
 				}
 
-				if (Find.TickManager.TicksGame % 6000 == 0) //very slow checks - decomp, bounty
+				if (tick % 6000 == 0) //very slow checks - decomp, bounty
 				{
 					foreach (SoShipCache ship in ShipsOnMapNew.Values) //decompresson
 					{
@@ -1460,9 +1461,9 @@ namespace RimWorld
 					}
 					if (IsPlayerShipMap) //bounty event
 					{
-						if (ShipInteriorMod2.WorldComp.PlayerFactionBounty > 20 && Find.TickManager.TicksGame - LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(ShipInteriorMod2.WorldComp.PlayerFactionBounty), 60000f))
+						if (ShipInteriorMod2.WorldComp.PlayerFactionBounty > 20 && tick - LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(ShipInteriorMod2.WorldComp.PlayerFactionBounty), 60000f))
 						{
-							LastBountyRaidTick = Find.TickManager.TicksGame;
+							LastBountyRaidTick = tick;
 							Building_ShipBridge bridge = MapRootListAll.FirstOrDefault();
 							if (bridge == null)
 								return;
@@ -1471,7 +1472,7 @@ namespace RimWorld
 					}
 				}
 				//trigger combat with next target
-				if (NextTargetMap != null && Find.TickManager.TicksGame > LastAttackTick + 600)
+				if (NextTargetMap != null && tick > LastAttackTick + 600)
 				{
 					StartShipEncounter(null, NextTargetMap);
 					NextTargetMap = null;

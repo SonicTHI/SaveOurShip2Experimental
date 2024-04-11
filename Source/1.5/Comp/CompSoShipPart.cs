@@ -51,6 +51,7 @@ namespace RimWorld
 
 		public HashSet<IntVec3> cellsUnder;
 		public bool FoamFill = false;
+		public bool ArchoConvert = false;
 		Map map;
 		public ShipHeatMapComp mapComp;
 		Faction fac;
@@ -190,32 +191,7 @@ namespace RimWorld
 					t.Destroy(DestroyMode.Vanish);
 				}
 			}
-			if (mapComp.CacheOff)
-				return;
 
-			int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
-			if (shipIndex == -1)
-				return;
-
-			var ship = mapComp.ShipsOnMapNew[shipIndex];
-			if (!parent.def.building.shipPart)
-			{
-				ship.RemoveFromCache(parent as Building, mode);
-				return;
-			}
-			else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && parent.def.Size == IntVec2.One && (Props.Hull && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map) || (Props.Plating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
-			{
-				//replace part with foam, no detach checks
-				foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))
-				{
-					ship.RemoveFromCache(parent as Building, mode);
-					dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
-					FoamFill = true;
-					return;
-				}
-			}
-
-			ship.RemoveFromCache(parent as Building, mode);
 			List<IntVec3> areaDestroyed = new List<IntVec3>();
 			HashSet<Building> buildings = new HashSet<Building>();
 			foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec
@@ -239,19 +215,52 @@ namespace RimWorld
 				}
 				if (!partExists) //no shippart remains, remove from area
 				{
-					int path = mapComp.MapShipCells[vec].Item2;
-					if (ship.LastSafePath > path)
-						ship.LastSafePath = path;
-					bool replaceCore = false;
-					if (path == 0)
-						replaceCore = true;
-					ship.Area.Remove(vec);
-					mapComp.MapShipCells.Remove(vec);
 					areaDestroyed.Add(vec);
-					if (replaceCore) //tile under bridge was hit before bridge
-					{
-						ship.ReplaceCore();
-					}
+				}
+			}
+
+			if (mapComp.CacheOff)
+			{
+				foreach (IntVec3 vec in areaDestroyed)
+				{
+					mapComp.MapShipCells.Remove(vec);
+				}
+				return;
+			}
+
+			int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
+			if (shipIndex == -1)
+				return;
+
+			var ship = mapComp.ShipsOnMapNew[shipIndex];
+			ship.RemoveFromCache(parent as Building, mode);
+			if (!parent.def.building.shipPart || ArchoConvert)
+			{
+				return;
+			}
+			else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && parent.def.Size == IntVec2.One && (Props.Hull && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map) || (Props.Plating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
+			{
+				//replace part with foam, no detach checks
+				foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))
+				{
+					dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
+					FoamFill = true;
+					return;
+				}
+			}
+			foreach (IntVec3 vec in areaDestroyed)
+			{
+				int path = mapComp.MapShipCells[vec].Item2;
+				if (ship.LastSafePath > path)
+					ship.LastSafePath = path;
+				bool replaceCore = false;
+				if (path == 0)
+					replaceCore = true;
+				ship.Area.Remove(vec);
+				mapComp.MapShipCells.Remove(vec);
+				if (replaceCore) //tile under bridge was hit before bridge
+				{
+					ship.ReplaceCore();
 				}
 			}
 			foreach (Building b in buildings) //remove other buildings that are no longer supported by this ship
@@ -322,6 +331,16 @@ namespace RimWorld
 
 				replacer.SetFaction(fac);
 				GenPlace.TryPlaceThing(replacer, cellsUnder.First(), map, ThingPlaceMode.Direct);
+			}
+			else if (ArchoConvert)
+			{
+				Thing replacer = ThingMaker.MakeThing(ShipInteriorMod2.archoConversions[parent.def]);
+				replacer.Rotation = parent.Rotation;
+				replacer.Position = parent.Position;
+				replacer.SetFaction(fac);
+
+				replacer.SpawnSetup(parent.Map, false);
+				FleckMaker.ThrowSmoke(replacer.DrawPos, parent.Map, 2);
 			}
 		}
 		public override void PostDraw()

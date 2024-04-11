@@ -92,12 +92,9 @@ namespace RimWorld
 					launchDirect.icon = CompShuttleLaunchable.LaunchCommandTex;
 					launchDirect.action = delegate
 					{
-						if (this.AnyInGroupHasAnythingLeftToLoad)
+						if (AnyInGroupHasAnythingLeftToLoad)
 						{
-							Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmSendNotCompletelyLoadedPods", new NamedArgument[]
-								{
-								this.FirstThingLeftToLoadInGroup.LabelCapNoCount
-								}), new Action(this.EnemyShipDestination), false, null));
+							Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmSendNotCompletelyLoadedPods".Translate(FirstThingLeftToLoadInGroup.LabelCapNoCount, FirstThingLeftToLoadInGroup), StartChoosingDestination));
 						}
 						else
 						{

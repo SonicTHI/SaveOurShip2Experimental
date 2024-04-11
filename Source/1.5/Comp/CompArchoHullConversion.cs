@@ -19,7 +19,6 @@ namespace RimWorld
 
 		public ShipHeatMapComp mapComp;
 		ResearchProjectDef OptimizationProject = ResearchProjectDef.Named("ArchotechHullConversion");
-		Dictionary<ThingDef, ThingDef> Conversions = new Dictionary<ThingDef, ThingDef>();
 		protected CompProperties_ArchoHullConversion Props => (CompProperties_ArchoHullConversion)props;
 		public float CurrentRadius => Props.radiusPerDayCurve.Evaluate(AgeDays);
 
@@ -33,30 +32,6 @@ namespace RimWorld
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostPostMake();
-			Conversions.Add(ThingDef.Named("Ship_Beam_Unpowered"), ThingDef.Named("Ship_BeamArchotech_Unpowered"));
-			Conversions.Add(ThingDef.Named("Ship_Beam"), ThingDef.Named("Ship_BeamArchotech"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne"), ThingDef.Named("Ship_Corner_Archo_OneOne"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneOneFlip"), ThingDef.Named("Ship_Corner_Archo_OneOneFlip"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwo"), ThingDef.Named("Ship_Corner_Archo_OneTwo"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwoFlip"), ThingDef.Named("Ship_Corner_Archo_OneTwoFlip"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneThree"), ThingDef.Named("Ship_Corner_Archo_OneThree"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneThreeFlip"),ThingDef.Named("Ship_Corner_Archo_OneThreeFlip"));
-			Conversions.Add(ThingDef.Named("ShipInside_SolarGenerator"), ThingDef.Named("ShipInside_SolarGeneratorArchotech"));
-			Conversions.Add(ThingDef.Named("ShipInside_PassiveVent"), ThingDef.Named("ShipInside_PassiveVentArchotech"));
-			Conversions.Add(ThingDef.Named("ShipAirlock"), ThingDef.Named("ShipAirlockArchotech"));
-			Conversions.Add(ThingDef.Named("ShipHullTile"), ThingDef.Named("ShipHullTileArchotech"));
-			Conversions.Add(ThingDef.Named("Ship_BeamMech_Unpowered"), ThingDef.Named("Ship_BeamArchotech_Unpowered"));
-			Conversions.Add(ThingDef.Named("Ship_BeamMech"), ThingDef.Named("Ship_BeamArchotech"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne_Mech"), ThingDef.Named("Ship_Corner_Archo_OneOne"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneOne_MechFlip"), ThingDef.Named("Ship_Corner_Archo_OneOneFlip"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwo_Mech"), ThingDef.Named("Ship_Corner_Archo_OneTwo"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneTwoFlip_Mech"), ThingDef.Named("Ship_Corner_Archo_OneTwoFlip"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneThree_Mech"), ThingDef.Named("Ship_Corner_Archo_OneThree"));
-			Conversions.Add(ThingDef.Named("Ship_Corner_OneThreeFlip_Mech"), ThingDef.Named("Ship_Corner_Archo_OneThreeFlip"));
-			Conversions.Add(ThingDef.Named("ShipInside_SolarGeneratorMech"), ThingDef.Named("ShipInside_SolarGeneratorArchotech"));
-			Conversions.Add(ThingDef.Named("ShipInside_PassiveVentMechanoid"), ThingDef.Named("ShipInside_PassiveVentArchotech"));
-			Conversions.Add(ThingDef.Named("ShipAirlockMech"), ThingDef.Named("ShipAirlockArchotech"));
-			Conversions.Add(ThingDef.Named("ShipHullTileMech"), ThingDef.Named("ShipHullTileArchotech"));
 			mapComp = parent?.Map?.GetComponent<ShipHeatMapComp>();
 		}
 
@@ -91,45 +66,39 @@ namespace RimWorld
 			}
 		}
 
-		private bool ConvertHullTile(float radius)
+		private void ConvertHullTile(float radius)
 		{
 			IntVec3 c = parent.Position + (Rand.InsideUnitCircleVec3 * radius).ToIntVec3();
 			if (!c.InBounds(parent.Map) || mapComp.ShipIndexOnVec(parent.Position) != mapComp.ShipIndexOnVec(c))
 			{
-				return false;
+				return;
 			}
-			List<Thing> toDestroy = new List<Thing>();
-			List<Thing> toSpawn = new List<Thing>();
-			foreach(Thing t in c.GetThingList(parent.Map))
+			//List<Thing> toDestroy = new List<Thing>();
+			//List<Thing> toSpawn = new List<Thing>();
+			List<Thing> toConvert = new List<Thing>();
+			foreach (Thing t in c.GetThingList(parent.Map))
 			{
-				if (Conversions.ContainsKey(t.def))
+				if (ShipInteriorMod2.archoConversions.ContainsKey(t.def))
 				{
-					Thing replacement = ThingMaker.MakeThing(Conversions[t.def]);
-					replacement.Rotation = t.Rotation;
-					replacement.Position = t.Position;
-					replacement.SetFaction(Faction.OfPlayer);
-					toDestroy.Add(t);
-					toSpawn.Add(replacement);
+					t.TryGetComp<CompSoShipPart>().ArchoConvert = true;
+					toConvert.Add(t);
 				}
 			}
-			if (toDestroy.Count > 0)
+			if (toConvert.Count > 0)
+			{
+				foreach (Thing t in toConvert)
+				{
+					t.Destroy();
+				}
+			}
+			/*if (toDestroy.Count > 0)
 			{
 				TerrainDef terrain = parent.Map.terrainGrid.TerrainAt(c);
 				parent.Map.terrainGrid.RemoveTopLayer(c, false);
-				ShipInteriorMod2.AirlockBugFlag = true; //prevent wall light destruction
-				foreach (Thing t in toDestroy)
-					t.Destroy();
-				ShipInteriorMod2.AirlockBugFlag = false;
-				foreach (Thing replacement in toSpawn)
-				{
-					replacement.SpawnSetup(parent.Map, false);
-					FleckMaker.ThrowSmoke(replacement.DrawPos, parent.Map, 2);
-				}
+
 				if (terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipMech && terrain!= ResourceBank.TerrainDefOf.ShipWreckageTerrain && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam)
 					parent.Map.terrainGrid.SetTerrain(c, terrain);
-				return true;
-			}
-			return false;
+			}*/
 		}
 
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()

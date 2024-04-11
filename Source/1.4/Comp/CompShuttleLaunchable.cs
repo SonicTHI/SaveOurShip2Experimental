@@ -62,12 +62,9 @@ namespace RimWorld
 				launch.icon = CompShuttleLaunchable.LaunchCommandTex;
 				launch.action = delegate
 				{
-					if (this.AnyInGroupHasAnythingLeftToLoad)
+					if (AnyInGroupHasAnythingLeftToLoad)
 					{
-						Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("ConfirmSendNotCompletelyLoadedPods",new NamedArgument[]
-							{
-								this.FirstThingLeftToLoadInGroup.LabelCapNoCount
-							}), new Action(this.StartChoosingDestination), false, null));
+						Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmSendNotCompletelyLoadedPods".Translate(FirstThingLeftToLoadInGroup.LabelCapNoCount, FirstThingLeftToLoadInGroup), StartChoosingDestination));
 					}
 					else
 					{

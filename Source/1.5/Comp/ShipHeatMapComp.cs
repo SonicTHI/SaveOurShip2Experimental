@@ -1329,137 +1329,146 @@ namespace RimWorld
 					}
 				}
 			}
-			else //OOC - events
+			else if (ShipMapState == ShipMapState.inTransit)
 			{
-				if (ShipMapState == ShipMapState.inTransit)
+				/*
+				 * transit system:
+				 * on ground, no spacehome: move to new spacehome and transit to orbit (ShipInteriorMod2)
+				 * on ground, spacehome exists: placeworker on spacehome via (MinifiedThingShipMove), spawn and move to transit map, at destination attempt auto move to placeworker, if fail warn
+				 * in orbit on spacehome, only ship: transit spacehome to ground via (MinifiedThingShipMove), at destination attempt auto move to placeworker, if fail make new map and land on it
+				 * in orbit on spacehome with other ships: move to transit map via (MinifiedThingShipMove) and transit to ground, at destination attempt auto move to placeworker, if fail make new map and land on it
+				 all vars are stored in this except WO drawPos (current, target, origin)
+				*/
+				if (Altitude >= ShipInteriorMod2.altitudeNominal) //orbit reached
 				{
-					/*
-					 * transit system:
-					 * on ground, no spacehome: move to new spacehome and transit to orbit (ShipInteriorMod2)
-					 * on ground, spacehome exists: placeworker on spacehome via (MinifiedThingShipMove), spawn and move to transit map, at destination attempt auto move to placeworker, if fail warn
-					 * in orbit on spacehome, only ship: transit spacehome to ground via (MinifiedThingShipMove), at destination attempt auto move to placeworker, if fail make new map and land on it
-					 * in orbit on spacehome with other ships: move to transit map via (MinifiedThingShipMove) and transit to ground, at destination attempt auto move to placeworker, if fail make new map and land on it
-					 all vars are stored in this except WO drawPos (current, target, origin)
-					*/
-					if (Altitude >= ShipInteriorMod2.altitudeNominal) //orbit reached
+					Altitude = ShipInteriorMod2.altitudeNominal;
+					MapFullStop();
+					BurnTimer = 0;
+					Map spacehome = ShipInteriorMod2.FindPlayerShipMap();
+					if (spacehome == null) //spacehome is gone, make new
 					{
-						Altitude = ShipInteriorMod2.altitudeNominal;
-						MapFullStop();
-						BurnTimer = 0;
-						Map spacehome = ShipInteriorMod2.FindPlayerShipMap();
-						if (spacehome == null) //spacehome is gone, make new
-						{
-							spacehome = ShipInteriorMod2.GeneratePlayerShipMap(map.Size);
-						}
-						if (map != spacehome) //arriving from temp map
-						{
-							if (ShipInteriorMod2.CanShipLandOnMap(map, MoveToMap)) //landing area clear
-							{
-								ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, MoveToMap, MoveToVec);
-								if (MapShipCells.NullOrEmpty() && !map.PlayerPawnsForStoryteller.Any())
-								{
-									ShipMapState = ShipMapState.burnUpSet; //remove transit map if clear
-									return;
-								}
-							}
-							else //blocked
-							{
-								//td message ready to move
-								Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchieved"), TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchievedDesc"), LetterDefOf.PositiveEvent);
-							}
-							ShipMapState = ShipMapState.isGraveyard;
-							map.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(10000);
-						}
-						else //arriving on spacehome
-						{
-							((WorldObjectOrbitingShip)map.Parent).SetNominalPos();
-							ShipMapState = ShipMapState.nominal;
-							Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchieved"), TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchievedDesc"), LetterDefOf.PositiveEvent);
-						}
+						spacehome = ShipInteriorMod2.GeneratePlayerShipMap(map.Size);
 					}
-					else if (Altitude <= ShipInteriorMod2.altitudeLand && (Heading < 1 || !EnginesOn && BurnTimer > tick + 300)) //ground reached or fail to start engines in time - land/crash
+					if (map != spacehome) //arriving from temp map
 					{
-						Altitude = ShipInteriorMod2.altitudeLand;
-						MapFullStop();
-						BurnTimer = 0;
-						int targetTile = -1;
-
-						if (Takeoff) //fell from space
-						{
-							if (PrevMap == null) //takeoff map was closed
-								MoveToTile = PrevTile;
-							else
-								MoveToMap = PrevMap;
-						}
-
-						if (MoveToMap != null && ShipInteriorMod2.CanShipLandOnMap(map, MoveToMap)) //ground map exists and has room
+						if (ShipInteriorMod2.CanShipLandOnMap(map, MoveToMap)) //landing area clear
 						{
 							ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, MoveToMap, MoveToVec);
+							if (MapShipCells.NullOrEmpty() && !map.PlayerPawnsForStoryteller.Any())
+							{
+								ShipMapState = ShipMapState.burnUpSet; //remove transit map if clear
+								return;
+							}
 						}
-						else //moveto map was closed or no room
+						else //blocked
 						{
-							targetTile = MoveToTile;
-							int tile = -1;
-							List<int> tiles = ShipInteriorMod2.PossibleShipLandingTiles(targetTile, 2, 5);
-							if (!tiles.NullOrEmpty())
-								tile = tiles.RandomElement();
-							else
-							{
-								tiles = ShipInteriorMod2.PossibleShipLandingTiles(targetTile, 5, 20);
-								if (!tiles.NullOrEmpty())
-									tile = tiles.RandomElement();
-							}
-							if (tile != -1)
-							{
-								SettleUtility.AddNewHome(tile, Faction.OfPlayer); //td change this to landed ship
-								var newMapPar = GetOrGenerateMapUtility.GetOrGenerateMap(tile, map.Size, null).Parent;
-								((Settlement)newMapPar).Name = "Landed ship";
-								ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, newMapPar.Map, IntVec3.Zero, clearArea: true);
-							}
-							else //td ship gone, pawns spawn like vanilla on random nearby map via pods
-							{
-								ShipMapState = ShipMapState.burnUpSet;
-							}
+							//td message ready to move
+							Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchieved"), TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchievedDesc"), LetterDefOf.PositiveEvent);
 						}
+						ShipMapState = ShipMapState.isGraveyard;
+						map.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(10000);
 					}
-					else if (EnginesOn && Heading < 0 && Altitude < ShipInteriorMod2.altitudeNominal - 50) //end first burn down
+					else //arriving on spacehome
 					{
-						Log.Message("first burn done");
-						MapFullStop();
+						((WorldObjectOrbitingShip)map.Parent).SetNominalPos();
+						ShipMapState = ShipMapState.nominal;
+						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchieved"), TranslatorFormattedStringExtensions.Translate("SoS.OrbitAchievedDesc"), LetterDefOf.PositiveEvent);
+					}
+				}
+				else if (Altitude <= ShipInteriorMod2.altitudeLand && (Heading < 1 || !EnginesOn && BurnTimer > tick + 300)) //ground reached or fail to start engines in time - land/crash
+				{
+					Altitude = ShipInteriorMod2.altitudeLand;
+					MapFullStop();
+					BurnTimer = 0;
+					int targetTile = -1;
+
+					if (Takeoff) //fell from space
+					{
+						if (PrevMap == null) //takeoff map was closed
+							MoveToTile = PrevTile;
+						else
+							MoveToMap = PrevMap;
 					}
 
-					if (Heading > 0) //consume fuel, if not enough engine power, lose altitude
+					if (MoveToMap != null && ShipInteriorMod2.CanShipLandOnMap(map, MoveToMap)) //ground map exists and has room
 					{
-						//reduce durration per engine vs mass
-						if (AnyShipCanMove() && EnginesOn) //can we move and should we move
-						{
-							MapEnginesOn();
-							MapEnginePower *= 400f;
-						}
+						ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, MoveToMap, MoveToVec);
+					}
+					else //moveto map was closed or no room
+					{
+						targetTile = MoveToTile;
+						int tile = -1;
+						List<int> tiles = ShipInteriorMod2.PossibleShipLandingTiles(targetTile, 2, 5);
+						if (!tiles.NullOrEmpty())
+							tile = tiles.RandomElement();
 						else
 						{
-							MapFullStop();
+							tiles = ShipInteriorMod2.PossibleShipLandingTiles(targetTile, 5, 20);
+							if (!tiles.NullOrEmpty())
+								tile = tiles.RandomElement();
+						}
+						if (tile != -1)
+						{
+							SettleUtility.AddNewHome(tile, Faction.OfPlayer); //td change this to landed ship
+							var newMapPar = GetOrGenerateMapUtility.GetOrGenerateMap(tile, map.Size, null).Parent;
+							((Settlement)newMapPar).Name = "Landed ship";
+							ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, newMapPar.Map, IntVec3.Zero, clearArea: true);
+						}
+						else //td ship gone, pawns spawn like vanilla on random nearby map via pods
+						{
+							ShipMapState = ShipMapState.burnUpSet;
 						}
 					}
-					KillAllOffShip();
+				}
+				else if (EnginesOn && Heading < 0 && Altitude < ShipInteriorMod2.altitudeNominal - 50) //end first burn down
+				{
+					Log.Message("first burn done");
+					MapFullStop();
 				}
 
-				if (tick % 6000 == 0) //very slow checks - decomp, bounty
+				if (Heading > 0) //consume fuel, if not enough engine power, lose altitude
 				{
-					foreach (SoShipCache ship in ShipsOnMapNew.Values) //decompresson
+					//reduce durration per engine vs mass
+					if (AnyShipCanMove() && EnginesOn) //can we move and should we move
 					{
-						List<Building> buildings = new List<Building>();
-						foreach (Building b in ship.OuterNonShipWalls())
-						{
-							if (Rand.Chance(0.5f))
-								buildings.Add(b);
-						}
-						foreach (Building b in buildings)
-						{
-							b.Destroy(DestroyMode.KillFinalize);
-						}
+						MapEnginesOn();
+						MapEnginePower *= 400f;
 					}
-					if (IsPlayerShipMap) //bounty event
+					else
+					{
+						MapFullStop();
+					}
+				}
+				KillAllOffShip();
+			}
+			else if (ShipMapState == ShipMapState.inEvent)
+			{
+				var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
+				//reduce durration per engine vs mass
+				if (AnyShipCanMove() && EnginesOn) //can we move and should we move
+				{
+					MapEnginesOn();
+					MapEnginePower *= 40000f;
+					if (BurnTimer > cond.TicksLeft)
+					{
+						cond.End();
+					}
+					else
+					{
+						BurnTimer += (int)MapEnginePower;
+						//Log.Message("ticks remain " + map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris).TicksLeft);
+					}
+				}
+				else
+				{
+					MapFullStop();
+				}
+			}
+			else
+			{
+				if (tick % 6000 == 0) //bounty hunters
+				{
+					if (IsPlayerShipMap)
 					{
 						if (ShipInteriorMod2.WorldComp.PlayerFactionBounty > 20 && tick - LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(ShipInteriorMod2.WorldComp.PlayerFactionBounty), 60000f))
 						{
@@ -1478,27 +1487,31 @@ namespace RimWorld
 					NextTargetMap = null;
 					return;
 				}
-				if (ShipMapState == ShipMapState.inEvent)
+			}
+			if (tick % 6000 == 0) //decomp
+			{
+				foreach (SoShipCache ship in ShipsOnMapNew.Values) //decompresson
 				{
-					var cond = map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris);
-					//reduce durration per engine vs mass
-					if (AnyShipCanMove() && EnginesOn) //can we move and should we move
+					List<Building> buildings = new List<Building>();
+					foreach (Building b in ship.OuterNonShipWalls())
 					{
-						MapEnginesOn();
-						MapEnginePower *= 40000f;
-						if (BurnTimer > cond.TicksLeft)
-						{
-							cond.End();
-						}
-						else
-						{
-							BurnTimer += (int)MapEnginePower;
-							//Log.Message("ticks remain " + map.gameConditionManager.ActiveConditions.FirstOrDefault(c => c is GameCondition_SpaceDebris).TicksLeft);
-						}
+						if (Rand.Chance(0.5f))
+							buildings.Add(b);
 					}
-					else
+					foreach (Building b in buildings)
 					{
-						MapFullStop();
+						b.Destroy(DestroyMode.KillFinalize);
+					}
+				}
+			}
+			if (tick % 300 == 0 && MapEnginePower != 0)
+			{
+				foreach (SoShipCache ship in ShipsOnMapNew.Values)
+				{
+					foreach (CompRCSThruster rcs in ship.RCSs)
+					{
+						if (rcs.active && Rand.Chance(0.3f)) //td need better fx, not affected by wind
+							FleckMaker.ThrowHeatGlow(rcs.ventTo, rcs.parent.Map, 1f);
 					}
 				}
 			}

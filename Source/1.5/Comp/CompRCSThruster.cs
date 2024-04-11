@@ -13,14 +13,16 @@ namespace RimWorld
 		{
 			get { return props as CompProperties_RCSThruster; }
 		}
-		public bool active = false;
+		public bool active => powerComp != null && powerComp.PowerOn;
 		public ShipHeatMapComp mapComp;
 		public CompPowerTrader powerComp;
+		public IntVec3 ventTo;
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
 			powerComp = parent.TryGetComp<CompPowerTrader>();
 			mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
+			ventTo = (parent.Position + IntVec3.South.RotatedBy(parent.Rotation));//.ToVector3();
 		}
 		public override void PostDeSpawn(Map map)
 		{

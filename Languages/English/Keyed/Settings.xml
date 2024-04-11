@@ -20,7 +20,7 @@
 	<SoS.Settings.ArchoRemove>Remove archo animals</SoS.Settings.ArchoRemove>
 	<SoS.Settings.ArchoRemove.Desc>Removes archo animals if they are spawned into the game before the required building is built. Default: on</SoS.Settings.ArchoRemove.Desc>
 	<SoS.Settings.Debug>Debug mode</SoS.Settings.Debug>
-	<SoS.Settings.Debug.Desc>Will draw ship area and list all ships/wrecks on map on screen with mouse over for details. Default: off</SoS.Settings.Debug.Desc>
+	<SoS.Settings.Debug.Desc>Will draw ship area and list all ships/wrecks on map on screen with mouse over for details and add more info to the log. Default: off</SoS.Settings.Debug.Desc>
 	
 	<!--SoS.Settings.UseVacuumPathfinding>Use vacuum pathfinding</SoS.Settings.UseVacuumPathfinding>
 	<SoS.Settings.UseVacuumPathfinding.Desc>If checked, pawns without EVA gear will attempt to avoid vacuum areas. This can break compatibility with other mods which alter pathfinding. Restart the game after changing this setting.</SoS.Settings.UseVacuumPathfinding.Desc-->

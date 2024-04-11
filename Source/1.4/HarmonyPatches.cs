@@ -39,9 +39,9 @@ namespace SaveOurShip2
 
 				var mapComp = currentMap.GetComponent<ShipHeatMapComp>();
 				float debugY = 350f;
-				Rect rect1 = new Rect(20, debugY, 250, 35);
+				Rect rect1 = new Rect(20, debugY, 280, 35);
 				Widgets.DrawMenuSection(rect1);
-				Widgets.Label(rect1.ContractedBy(7), "SOS2 " + ShipInteriorMod2.SOS2EXPversion + " | Ships: " + mapComp.ShipsOnMapNew?.Count + " | Cells: " + mapComp.MapShipCells?.Count);
+				Widgets.Label(rect1.ContractedBy(7), "SOS2 " + ShipInteriorMod2.SOS2EXPversion + " | Ships: " + mapComp.ShipsOnMapNew?.Count + " | Cells: " + mapComp.MapShipCells.Keys.Count);
 
 				if (mapComp.MapShipCells.NullOrEmpty())
 					return;

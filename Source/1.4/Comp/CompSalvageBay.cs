@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using SaveOurShip2;
+using RimWorld.Planet;
 
 namespace RimWorld
 {
@@ -32,18 +33,13 @@ namespace RimWorld
 			}
 			if ((parent.Faction != Faction.OfPlayer || !mapComp.IsPlayerShipMap) && !(Prefs.DevMode && ShipInteriorMod2.HasSoS2CK))
 				yield break;
-
-			foreach (Map map in Find.Maps.Where(m => m.GetComponent<ShipHeatMapComp>().ShipMapState == ShipMapState.isGraveyard))
+			
+			foreach (Map map in Find.Maps)
 			{
-				Command_TargetWreck retrieveShipEnemy = new Command_TargetWreck
-				{
-					salvageBay = (Building)parent,
-					sourceMap = parent.Map,
-					targetMap = map,
-					icon = ContentFinder<Texture2D>.Get("UI/SalvageShip"),
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SalvageCommand", map.Parent.Label),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageCommandDesc", map.Parent.Label)
-				};
+				var mapComp = map.GetComponent<ShipHeatMapComp>();
+				if (mapComp.ShipMapState != ShipMapState.isGraveyard)
+					continue;
+
 				if (Props.beam && (parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? false))
 				{
 					Command_SelectShipMap beam = new Command_SelectShipMap
@@ -62,23 +58,41 @@ namespace RimWorld
 					}
 					yield return beam;
 				}
-				Command_SelectShipMap stablizeShipEnemy = new Command_SelectShipMap
+				if (mapComp.MapShipCells.Any())
 				{
-					salvageBay = (Building)parent,
-					sourceMap = parent.Map,
-					targetMap = map,
-					mode = SelectShipMapMode.stabilize,
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablize", map.Parent.Label),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablizeDesc", map.Parent.Label),
-					icon = ContentFinder<Texture2D>.Get("UI/StabilizeShip")
-				};
-				if (mapComp.ShipMapState != ShipMapState.nominal)
-				{
-					retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
-					stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
+					Command_TargetWreck retrieveShipEnemy = new Command_TargetWreck
+					{
+						salvageBay = (Building)parent,
+						sourceMap = parent.Map,
+						targetMap = map,
+						icon = ContentFinder<Texture2D>.Get("UI/SalvageShip"),
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SalvageCommand", map.Parent.Label),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageCommandDesc", map.Parent.Label)
+					};
+					if (mapComp.ShipMapState != ShipMapState.nominal)
+					{
+						retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
+					}
+					yield return retrieveShipEnemy;
 				}
-				yield return retrieveShipEnemy;
-				yield return stablizeShipEnemy;
+				if (!map.Parent.GetComponent<TimedForcedExitShip>().stabilized)
+				{
+					Command_SelectShipMap stablizeShipEnemy = new Command_SelectShipMap
+					{
+						salvageBay = (Building)parent,
+						sourceMap = parent.Map,
+						targetMap = map,
+						mode = SelectShipMapMode.stabilize,
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablize", map.Parent.Label),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablizeDesc", map.Parent.Label),
+						icon = ContentFinder<Texture2D>.Get("UI/StabilizeShip")
+					};
+					if (mapComp.ShipMapState != ShipMapState.nominal)
+					{
+						stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
+					}
+					yield return stablizeShipEnemy;
+				}
 			}
 			Command_TargetWreck moveWreck = new Command_TargetWreck
 			{

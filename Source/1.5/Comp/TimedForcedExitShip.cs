@@ -13,6 +13,7 @@ namespace RimWorld.Planet
 	public class TimedForcedExitShip : WorldObjectComp
 	{
 		public int ticksLeftToForceExitAndRemoveMap = -1;
+		public bool stabilized = false;
 		public bool ForceExitAndRemoveMapCountdownActive
 		{
 			get
@@ -34,6 +35,7 @@ namespace RimWorld.Planet
 		public override void PostExposeData()
 		{
 			base.PostExposeData();
+			Scribe_Values.Look<bool>(ref stabilized, "stabilized", false, false);
 			Scribe_Values.Look<int>(ref ticksLeftToForceExitAndRemoveMap, "ticksLeftToForceExitAndRemoveMapShip", -1, false);
 		}
 		public void ResetForceExitAndRemoveMapCountdown()

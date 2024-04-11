@@ -116,7 +116,8 @@ namespace RimWorld
 									consume *= 0.5f;
 								engine.refuelComp.ConsumeFuel(Mathf.Min(consume, engine.refuelComp.Fuel));
 							}
-							targetMap.Parent.GetComponent<TimedForcedExitShip>().ticksLeftToForceExitAndRemoveMap += 60000;
+							var woComp = targetMap.Parent.GetComponent<TimedForcedExitShip>();
+							woComp.ticksLeftToForceExitAndRemoveMap += 60000;
 							float adj = Rand.Range(0.025f, 0.075f);
 							((WorldObjectOrbitingShip)targetMap.Parent).Theta = ((WorldObjectOrbitingShip)sourceMap.Parent).Theta + adj;
 						}));

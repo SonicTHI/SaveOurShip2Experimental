@@ -206,7 +206,7 @@ namespace SaveOurShip2
 		public HashSet<int> DockedTo() //other ships docked to this
 		{
 			HashSet<int> dockedTo = new HashSet<int>();
-			foreach (Building_ShipAirlock b in mapComp.Docked)
+			foreach (Building_ShipAirlock b in mapComp.Docked.Where(d => d.dockedTo != null))
 			{
 				int i = mapComp.ShipIndexOnVec(b.Position);
 				int i2 = mapComp.ShipIndexOnVec(b.dockedTo.Position);
@@ -972,14 +972,14 @@ namespace SaveOurShip2
 					}
 				}
 			}
-			//log
-			
-			string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + (LastSafePath - 1) + " or to cell: " + first + " with " + startCells.Count + " cells: ";
-			foreach (IntVec3 vec in startCells)
-				str2 += vec;
-			Log.Warning(str2);
-			str2 = "";
-			//log
+			if (ModSettings_SoS.debugMode)
+			{
+				string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + (LastSafePath - 1) + " or to cell: " + first + " with " + startCells.Count + " cells: ";
+				foreach (IntVec3 vec in startCells)
+					str2 += vec;
+				Log.Warning(str2);
+				str2 = "";
+			}
 
 			HashSet<IntVec3> cellsDone = new HashSet<IntVec3> { first }; //cells that were checked
 			foreach (IntVec3 setStartCell in startCells)
@@ -1022,12 +1022,14 @@ namespace SaveOurShip2
 				cellsDone.AddRange(cellsDoneInSet);
 				if (detach)
 				{
-					//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
-					string str = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Could not path to: " + (LastSafePath - 1) + " Detaching " + cellsDoneInSet.Count + " cells: ";
-					foreach (IntVec3 vec in cellsDoneInSet)
-						str += vec;
-					Log.Warning(str);
-
+					if (ModSettings_SoS.debugMode)
+					{
+						string str = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Could not path to: " + (LastSafePath - 1) + " Detaching " + cellsDoneInSet.Count + " cells: ";
+						foreach (IntVec3 vec in cellsDoneInSet)
+							str += vec;
+						Log.Warning(str);
+						//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+					}
 					Detach(cellsDoneInSet);
 				}
 			}
@@ -1074,12 +1076,13 @@ namespace SaveOurShip2
 				}
 				newCore = (Building)detachArea.First().GetThingList(Map).First(t => t.TryGetComp<CompSoShipPart>() != null);
 			}
-			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach new ship/wreck with: " + newCore);
+			if (ModSettings_SoS.debugMode)
+				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach new ship/wreck with: " + newCore);
 			if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
 			{
-				//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
 				int newKey = mapComp.ShipsOnMapNew.Keys.Max() + 1000;
 				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach error, shipID " + newCore.thingIDNumber + " already exits! Using fallback index: " + newKey + ", pausing game. Recheck ship area with infestation overlay. If not correct - save and reload!");
+				//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
 				newCore.thingIDNumber = newKey;
 			}
 			//make new ship

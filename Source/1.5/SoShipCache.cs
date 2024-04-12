@@ -954,7 +954,7 @@ namespace SaveOurShip2
 			//now it gets complicated and slower
 			//start cells can be any amount and arrangement
 			//find cells around
-			//for each try to path back to lowest index cell, 0 or LastSafePath - 1, if not possible detach each set separately
+			//for each try to path back to 0 or LastSafePath - 1, if not possible detach each set separately
 
 			int pathTo = int.MaxValue; //lowest path in startCells
 			IntVec3 first = IntVec3.Invalid; //path to this cell
@@ -974,14 +974,14 @@ namespace SaveOurShip2
 			}
 			if (ModSettings_SoS.debugMode)
 			{
-				string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + (LastSafePath - 1) + " or to cell: " + first + " with " + startCells.Count + " cells: ";
+				string str2 = "SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " CheckForDetach: Pathing to path: " + (LastSafePath - 1) + " with " + startCells.Count + " cells: ";
 				foreach (IntVec3 vec in startCells)
 					str2 += vec;
 				Log.Warning(str2);
 				str2 = "";
 			}
 
-			HashSet<IntVec3> cellsDone = new HashSet<IntVec3> { first }; //cells that were checked
+			HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
 			foreach (IntVec3 setStartCell in startCells)
 			{
 				if (!mapComp.MapShipCells.ContainsKey(setStartCell)) //cell might have been removed already

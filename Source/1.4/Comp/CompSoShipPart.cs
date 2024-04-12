@@ -135,8 +135,10 @@ namespace RimWorld
 				foreach (IntVec3 pos in cellsUnder) //set roof
 				{
 					var oldRoof = map.roofGrid.RoofAt(pos);
-					if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof))
+					if (!ShipInteriorMod2.IsRoofDefAirtight(oldRoof) && Props.hermetic)
 						map.roofGrid.SetRoof(pos, ResourceBank.RoofDefOf.RoofShip);
+					else
+						map.roofGrid.SetRoof(pos, RoofDefOf.RoofConstructed);
 				}
 			}
 

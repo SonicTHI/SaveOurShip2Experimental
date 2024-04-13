@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	//dep
 	/*class CompProperties_HologramRelay : CompProperties

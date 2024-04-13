@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using Verse;
 using UnityEngine;
 using System.Linq;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class SpaceNavyDef : Def
 	{
 		public List<FactionDef> factionDefs = new List<FactionDef>();
-		public List<EnemyShipDef> enemyShipDefs = new List<EnemyShipDef>();
+		public List<SpaceShipDef> spaceShipDefs = new List<SpaceShipDef>();
 		public string colorPrimary;
 		public string colorSecondary;
 		public string colorLighting;

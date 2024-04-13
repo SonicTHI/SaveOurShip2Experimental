@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,9 @@ using System.Text;
 using Verse;
 using Verse.AI.Group;
 
-namespace RimWorld.BaseGen
+using RimWorld.BaseGen;
+
+namespace SaveOurShip2
 {
 	class SymbolResolver_BlackBoxMission : SymbolResolver
 	{

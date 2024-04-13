@@ -38,7 +38,7 @@
 		<description>The outer structural elements of a mechanoid ship's hull. Does not include conduits for power or coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<mechanoid>true</mechanoid>
@@ -96,7 +96,7 @@
 		<description>The outer structural elements of a mechanoid ship's hull. Includes conduits for power and coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<mechanoid>true</mechanoid>
@@ -106,8 +106,8 @@
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
@@ -133,7 +133,7 @@
 		<designatorDropdown>Ship_Beams_Mech</designatorDropdown>
 		<description>Angled armor for a ship's outer hull.</description>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
 			<li>
@@ -284,19 +284,19 @@
 			</blueprintGraphicData>
 		</building>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<mechanoid>true</mechanoid>
 				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_PowerPlantSolarShip">
-				<compClass>CompPowerPlantSolarShip</compClass>
+			<li Class="SaveOurShip2.CompProps_PowerPlantSolarShip">
+				<compClass>SaveOurShip2.CompPowerPlantSolarShip</compClass>
 				<basePowerConsumption>-1</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 				<bonusPower>1.25</bonusPower>
 			</li>
-			<li Class="CompProperties_Unfold">
+			<li Class="SaveOurShip2.CompProps_Unfold">
 				<extendRate>0.005</extendRate>
 				<retractRate>0.0025</retractRate>
 				<retractTime>750</retractTime>
@@ -305,15 +305,15 @@
 				<length>3.0</length>
 				<graphicPath>Things/Building/Ship/SolarExpand_Mechanoid</graphicPath>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_SolarShip</li>
+			<li>SaveOurShip2.PlaceWorker_SolarShip</li>
 		</placeWorkers>
 		<designationHotKey>Misc5</designationHotKey>
 		<researchPrerequisites>
@@ -327,7 +327,7 @@
 		<label>mechanoid ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
 		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.\n\nCan also heat rooms with electricity.</description>
-		<thingClass>Building_ShipVent</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipVent</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
 		<graphicData>
@@ -367,11 +367,11 @@
 		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
 		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
 		<placeWorkers>
-			<li>PlaceWorker_ShipVent</li>
+			<li>SaveOurShip2.PlaceWorker_ShipVent</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<mechanoid>true</mechanoid>
@@ -386,12 +386,12 @@
 			<li Class="CompProperties_TempControl">
 				<energyPerSecond>-64</energyPerSecond>
 			</li>
-			<li Class="CompProperties_Overlay">
+			<li Class="SaveOurShip2.CompProps_Overlay">
 				<graphicPath>Things/Building/Ship/Ship_Vent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
@@ -414,7 +414,7 @@
 		<designatorDropdown>Ship_Airlocks</designatorDropdown>
 		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
 		<category>Building</category>
-		<thingClass>Building_ShipAirlock</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipAirlock</thingClass>
 		<altitudeLayer>DoorMoveable</altitudeLayer>
 		<fillPercent>1</fillPercent>
 		<useHitPoints>true</useHitPoints>
@@ -434,7 +434,7 @@
 			<Plasteel>25</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
@@ -447,13 +447,13 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
-			<li Class="CompProperties_Unfold">
+			<li Class="SaveOurShip2.CompProps_Unfold">
 				<extendRate>0.005</extendRate>
 				<retractRate>0.005</retractRate>
 				<retractTime>240</retractTime>
@@ -467,7 +467,7 @@
 		</comps>
 		<designationHotKey>Misc2</designationHotKey>
 		<placeWorkers>
-			<li>PlaceWorker_ShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipHull</li>
 		</placeWorkers>
 		<statBases>
 			<WorkToBuild>1200</WorkToBuild>
@@ -538,7 +538,7 @@
 			<Plasteel>1</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
 				<mechanoid>true</mechanoid>
@@ -549,7 +549,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipPlating</li>
+			<li>SaveOurShip2.PlaceWorker_ShipPlating</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>

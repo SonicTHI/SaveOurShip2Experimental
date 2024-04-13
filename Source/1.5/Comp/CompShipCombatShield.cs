@@ -5,9 +5,9 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompShipCombatShield : CompShipHeat
@@ -33,13 +33,13 @@ namespace RimWorld
 			flickComp = parent.TryGetComp<CompFlickable>();
 			powerComp = parent.TryGetComp<CompPowerTrader>();
 			breakComp = parent.TryGetComp<CompBreakdownable>();
-			parent.Map.GetComponent<ShipHeatMapComp>().Shields.Add(this);
+			parent.Map.GetComponent<ShipMapComp>().Shields.Add(this);
 			if (radiusSet == -1)
 				radiusSet = radius = Props.shieldDefault;
 		}
 		public override void PostDeSpawn(Map map)
 		{
-			map.GetComponent<ShipHeatMapComp>().Shields.Remove(this);
+			map.GetComponent<ShipMapComp>().Shields.Remove(this);
 			base.PostDeSpawn(map);
 		}
 		public override void CompTick()
@@ -80,7 +80,7 @@ namespace RimWorld
 			{ThingDef.Named("Bullet_Torpedo_Antimatter"), 0.33f},
 		};
 
-		public virtual float CalcHeatGenerated(Projectile_ExplosiveShipCombat proj)
+		public virtual float CalcHeatGenerated(Projectile_ExplosiveShip proj)
 		{
 			float heatGenerated = proj.DamageAmount * HeatDamageMult * Props.heatMultiplier;
 			heatGenerated *= ProjectileToMult.TryGetValue(proj.def, 1f);
@@ -89,13 +89,13 @@ namespace RimWorld
 			return heatGenerated;
 		}
 
-		public void HitShield(Projectile_ExplosiveShipCombat proj)
+		public void HitShield(Projectile_ExplosiveShip proj)
 		{
 			lastInterceptAngle = proj.DrawPos.AngleToFlat(parent.TrueCenter());
 			lastIntercepted = Find.TickManager.TicksGame;
 
 			float heatGenerated = CalcHeatGenerated(proj);
-			if (proj is Projectile_ExplosiveShipCombatLaser || proj is Projectile_ExplosiveShipCombatPsychic)
+			if (proj is Projectile_ExplosiveShipLaser || proj is Projectile_ExplosiveShipPsychic)
 			{
 				ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipCombatLaserMote);
 				obj.origin = proj.origin;

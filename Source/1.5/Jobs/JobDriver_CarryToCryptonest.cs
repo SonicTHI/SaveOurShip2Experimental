@@ -5,7 +5,7 @@ using Verse;
 using Verse.AI;
 using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class JobDriver_CarryToCryptonest : JobDriver
 	{

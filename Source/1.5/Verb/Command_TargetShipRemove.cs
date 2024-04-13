@@ -1,5 +1,5 @@
 ﻿using RimWorld;
-using SaveOurShip2;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Command_TargetShipRemove : Command
 	{
@@ -32,7 +32,7 @@ namespace RimWorld
 			if (c == IntVec3.Invalid || IntVec3.Zero.GetTerrain(targetMap) != ResourceBank.TerrainDefOf.EmptySpace) //moon
 				return;
 
-			var mapComp = targetMap.GetComponent<ShipHeatMapComp>();
+			var mapComp = targetMap.GetComponent<ShipMapComp>();
 			int index = mapComp.ShipIndexOnVec(c);
 			HashSet<IntVec3> positions = null;
 			if (index == -1) //rock
@@ -60,7 +60,7 @@ namespace RimWorld
 				if (current.GetThingList(targetMap).Any(t => t is Building b && b.def.building.isNaturalRock) || ShipInteriorMod2.IsRock(current.GetTerrain(targetMap)))
 				{
 					cellsFound.Add(current);
-					cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && targetMap.GetComponent<ShipHeatMapComp>().ShipIndexOnVec(v) == -1));
+					cellsTodo.AddRange(GenAdj.CellsAdjacentCardinal(current, Rot4.North, new IntVec2(1, 1)).Where(v => !cellsDone.Contains(v) && targetMap.GetComponent<ShipMapComp>().ShipIndexOnVec(v) == -1));
 				}
 			}
 			return cellsFound;

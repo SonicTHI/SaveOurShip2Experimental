@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
+using RimWorld;
+using RimWorld.Planet;
 
-using SaveOurShip2;
-
-namespace RimWorld.Planet
+namespace SaveOurShip2
 {
 	/// <summary>
 	/// Adds a countdown to set ShipMapState.burnUpSet. Once set shipWO removes map when possibe.
@@ -92,7 +92,7 @@ namespace RimWorld.Planet
 		{
 			if (mapParent.Map.IsSpace())
 			{
-				mapParent.Map.GetComponent<ShipHeatMapComp>().ShipMapState = ShipMapState.burnUpSet;
+				mapParent.Map.GetComponent<ShipMapComp>().ShipMapState = ShipMapState.burnUpSet;
 			}
 		}
 	}

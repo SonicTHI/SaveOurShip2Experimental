@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class PirateShip : TradeShip
 	{
@@ -44,7 +44,7 @@ namespace RimWorld
 		}
 		public override void Depart()
 		{
-			var mapComp = Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = Map.GetComponent<ShipMapComp>();
 			int bounty = ShipInteriorMod2.WorldComp.PlayerFactionBounty;
 			int roll = Rand.RangeInclusive(1, 10);
 			if (bounty > 50) //player is pirate

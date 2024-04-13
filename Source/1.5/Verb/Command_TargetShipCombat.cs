@@ -5,8 +5,9 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Command_TargetShipCombat : Command
 	{
@@ -65,7 +66,7 @@ namespace RimWorld
 
 		public override void ProcessInput(Event ev)
 		{
-			var mapComp = turrets.FirstOrDefault().Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = turrets.FirstOrDefault().Map.GetComponent<ShipMapComp>();
 			base.ProcessInput(ev);
 			SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
 			if (mapComp.ShipMapState != ShipMapState.inCombat)

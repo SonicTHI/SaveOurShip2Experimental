@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 using RimWorld.Planet;
 using System.Security.Policy;
 using Verse.Noise;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class MinifiedThingShipMove : MinifiedThing
 	{
@@ -33,12 +33,12 @@ namespace RimWorld
 					{
 						//ShipInteriorMod2.LaunchShip counterpart
 						bool originIsSpace = originMap.IsSpace();
-						var mapComp = originMap.GetComponent<ShipHeatMapComp>();
-						var ship = mapComp.ShipsOnMapNew[((Building_ShipBridge)shipRoot).ShipIndex];
+						var mapComp = originMap.GetComponent<ShipMapComp>();
+						var ship = mapComp.ShipsOnMap[((Building_ShipBridge)shipRoot).ShipIndex];
 						IntVec3 adj = IntVec3.Zero;
 						WorldObjectOrbitingShip mapPar; //origin might not be WOS
 						
-						if (!originIsSpace || (originIsSpace && (mapComp.ShipsOnMapNew.Count > 1 || originMap.mapPawns.AllPawns.Any(p => !mapComp.MapShipCells.ContainsKey(p.Position))))) //to either with temp map
+						if (!originIsSpace || (originIsSpace && (mapComp.ShipsOnMap.Count > 1 || originMap.mapPawns.AllPawns.Any(p => !mapComp.MapShipCells.ContainsKey(p.Position))))) //to either with temp map
 						{
 							//spawn new WO and map
 							WorldObjectOrbitingShip transit = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.WreckSpace);
@@ -48,7 +48,7 @@ namespace RimWorld
 							Find.WorldObjects.Add(transit);
 							Map newMap = MapGenerator.GenerateMap(originMap.Size, transit, transit.MapGeneratorDef);
 							newMap.fogGrid.ClearAllFog();
-							mapComp = newMap.GetComponent<ShipHeatMapComp>();
+							mapComp = newMap.GetComponent<ShipMapComp>();
 							mapPar = transit;
 
 							//set vecs //td

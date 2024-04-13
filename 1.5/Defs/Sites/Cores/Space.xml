@@ -17,7 +17,7 @@
     <defName>SpaceValuableAsteroids</defName>
     <linkWithSite>SpaceValuableAsteroids</linkWithSite>
     <order>420</order>
-    <genStep Class="GenStep_ValuableAsteroids">
+    <genStep Class="SaveOurShip2.GenStep_ValuableAsteroids">
     </genStep>
   </GenStepDef>
   
@@ -59,7 +59,7 @@
     <defName>SpaceHackableSatellite</defName>
     <linkWithSite>SpaceHackableSatellite</linkWithSite>
     <order>420</order>
-    <genStep Class="GenStep_HackableSatellite">
+    <genStep Class="SaveOurShip2.GenStep_HackableSatellite">
       <count>1</count>
       <nearMapCenter>true</nearMapCenter>
     </genStep>
@@ -106,7 +106,7 @@
     <defName>BlackBoxMission</defName>
     <linkWithSite>BlackBoxMission</linkWithSite>
     <order>420</order>
-    <genStep Class="GenStep_BlackBoxMission">
+    <genStep Class="SaveOurShip2.GenStep_BlackBoxMission">
     </genStep>
   </GenStepDef>
   
@@ -126,7 +126,7 @@
     <defName>SoSMayday</defName>
     <linkWithSite>SoSMayday</linkWithSite>
     <order>420</order>
-    <genStep Class="GenStep_DownedShip">
+    <genStep Class="SaveOurShip2.GenStep_DownedShip">
       <count>1</count>
       <nearMapCenter>true</nearMapCenter>
     </genStep>

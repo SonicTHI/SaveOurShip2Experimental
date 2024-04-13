@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Verse.AI.Group;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class LordJob_DefendShip : LordJob
 	{

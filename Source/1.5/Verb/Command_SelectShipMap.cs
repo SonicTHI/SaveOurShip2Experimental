@@ -6,9 +6,9 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using RimWorld.Planet;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	//mode
 	[Flags]
@@ -32,8 +32,8 @@ namespace RimWorld
 			base.ProcessInput(ev);
 			SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
 
-			var mapComp = sourceMap.GetComponent<ShipHeatMapComp>();
-			var tgtMapComp = targetMap.GetComponent<ShipHeatMapComp>();
+			var mapComp = sourceMap.GetComponent<ShipMapComp>();
+			var tgtMapComp = targetMap.GetComponent<ShipMapComp>();
 			if (mode == SelectShipMapMode.scoop) //scoop up any thing that is not a building and not on ship
 			{
 				bool space = false;
@@ -94,7 +94,7 @@ namespace RimWorld
 					float req = bCount;// * 2.5f;
 					float fuel = 0f;
 					List<CompEngineTrail> engines = new List<CompEngineTrail>();
-					foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values)
+					foreach (SpaceShipCache ship in mapComp.ShipsOnMap.Values)
 					{
 						foreach (CompEngineTrail engine in ship.Engines.Where(e => e.Props.fuelUse > 0))
 						{

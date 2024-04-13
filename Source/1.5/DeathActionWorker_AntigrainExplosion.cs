@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using Verse.AI.Group;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class DeathActionWorker_AntigrainExplosion : DeathActionWorker
 	{

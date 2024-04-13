@@ -145,7 +145,7 @@
     </plant>
 	<comps>
       <li Class="CompProperties_Explosive">
-		<compClass>CompExplosivePlant</compClass>
+		<compClass>SaveOurShip2.CompExplosivePlant</compClass>
         <explosiveRadius>3.9</explosiveRadius>
         <explosiveDamageType>Bomb</explosiveDamageType>
         <startWickHitPointsPercent>0.2</startWickHitPointsPercent>

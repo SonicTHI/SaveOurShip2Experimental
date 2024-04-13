@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using Verse.AI;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class JobGiver_RepairShields : ThinkNode
 	{
@@ -20,7 +20,7 @@ namespace RimWorld
 
 		public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
 		{
-			var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = pawn.Map.GetComponent<ShipMapComp>();
 			if (mapComp.Shields.NullOrEmpty() || !(pawn.RaceProps.Humanlike || pawn.RaceProps.IsMechanoid) || pawn.health.capacities.GetLevel(PawnCapacityDefOf.Manipulation) == 0)
 				return ThinkResult.NoJob;
 			if (pawn.RaceProps.IsMechanoid || !pawn.skills.GetSkill(SkillDefOf.Construction).TotallyDisabled)

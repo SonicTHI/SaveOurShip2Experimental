@@ -34,7 +34,7 @@
 		<description>The outer structural elements of a ship's hull that have been damaged beyond repair. No longer spaceworthy.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<wreckage>true</wreckage>
 			</li>
@@ -82,7 +82,7 @@
 			<Plasteel>12</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<isPlating>true</isPlating>
 				<wreckage>true</wreckage>
@@ -162,14 +162,14 @@
 			<Plasteel>1</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isPlating>true</isPlating>
 				<wreckage>true</wreckage>
 				<roof>true</roof>
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipHull</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>
@@ -236,7 +236,7 @@
 		<defName>Space_Satellite_Core</defName>
 		<label>satellite core</label>
 		<description>The core of an ancient communications nexus. Repairing this will take considerable skill, and once repaired, the system will also need to be hacked by a skilled researcher. Either step can result in the activation of defense systems.\n\nThe spoils of victory are great, however - this satellite could be used as a backdoor into ancient orbital bombardment, solar energy collection, or weather-control arrays.\n\nAlternatively, you could simply deconstruct it, but this is virtually guaranteed to provoke defenses.</description>
-		<thingClass>Building_SatelliteCore</thingClass>
+		<thingClass>SaveOurShip2.Building_SatelliteCore</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/Satellite</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
@@ -335,7 +335,7 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Breakdownable"/>
-			<li Class="CompProperties_DamagedReactor"/>
+			<li Class="SaveOurShip2.CompProps_DamagedReactor"/>
 		</comps>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
@@ -379,7 +379,7 @@
 		<hasInteractionCell>true</hasInteractionCell>
 		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<comps>
-			<li Class="CompProperties_BlackBoxConsole"/>
+			<li Class="SaveOurShip2.CompProps_BlackBoxConsole"/>
 		</comps>
 		<building>
 			<claimable>false</claimable>
@@ -424,7 +424,7 @@
 		<hasInteractionCell>true</hasInteractionCell>
 		<terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
 		<comps>
-			<li Class="CompProperties_BlackBoxConsole"/>
+			<li Class="SaveOurShip2.CompProps_BlackBoxConsole"/>
 		</comps>
 		<building>
 			<claimable>false</claimable>
@@ -462,7 +462,7 @@
 				<droneLevelIncreaseInterval>-1</droneLevelIncreaseInterval>
 				<droneLevel>3</droneLevel>
 			</li>
-			<li Class="CompProperties_BlackBoxAI"/>
+			<li Class="SaveOurShip2.CompProps_BlackBoxAI"/>
 		</comps>
 		<placeWorkers>
 		</placeWorkers>
@@ -504,7 +504,7 @@
 		<description>An advanced reactionless engine capable of interplanetary and interstellar travel. Damaged by re-entry but still mostly functional.\n\nSafely opening the drive to reverse-engineer it will require a lengthy momentum discharge process, which is certain to attract raiders.</description>
 		<size>(3,3)</size>
 		<comps>
-			<li Class="CompProperties_HibernatableSoS">
+			<li Class="SaveOurShip2.CompProps_HibernatableShip">
 				<incidentTargetWhileStarting>Map_RaidBeacon</incidentTargetWhileStarting>
 			</li>
 		</comps>
@@ -601,7 +601,7 @@
 	<ThingDef ParentName="EtherealThingBase">
 		<defName>DetachedShipPart</defName>
 		<label>Detached Ship Part</label>
-		<thingClass>DetachedShipPart</thingClass>
+		<thingClass>SaveOurShip2.DetachedShipPart</thingClass>
 		<description>A destroyed portion of a spaceship.</description>
 		<altitudeLayer>Projectile</altitudeLayer>
 		<useSameGraphicForGhost>true</useSameGraphicForGhost>

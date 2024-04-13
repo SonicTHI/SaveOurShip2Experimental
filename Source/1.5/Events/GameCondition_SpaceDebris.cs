@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class GameCondition_SpaceDebris : GameCondition
@@ -34,7 +34,7 @@ namespace RimWorld
 		}
 		public override void Init()
 		{
-			SingleMap.GetComponent<ShipHeatMapComp>().ShipMapState = ShipMapState.inEvent;
+			SingleMap.GetComponent<ShipMapComp>().ShipMapState = ShipMapState.inEvent;
 			this.nextLaunchProjTicks = Find.TickManager.TicksGame + this.initialStrikeDelay.RandomInRange;
 			//interval
 			TicksBetweenStrikes = new IntRange(60, 200);
@@ -91,7 +91,7 @@ namespace RimWorld
 		}
 		public override void End()
 		{
-			var mapComp = SingleMap.GetComponent<ShipHeatMapComp>();
+			var mapComp = SingleMap.GetComponent<ShipMapComp>();
 			mapComp.ShipMapState = ShipMapState.nominal;
 			mapComp.BurnTimer = 0;
 			mapComp.MapFullStop();

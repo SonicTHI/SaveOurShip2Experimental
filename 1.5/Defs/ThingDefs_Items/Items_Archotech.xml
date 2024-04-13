@@ -5,7 +5,7 @@
     <defName>ArcholifePod</defName>
     <label>archolife pod</label>
     <description>A slurry of synthetic cells wrapped in a single-use incubator. Can be programmed (select a pawn and right-click) to "hatch" a radically redesigned version of an ordinary creature. Spawning an archothrumbo requires a stack of 10.</description>
-    <thingClass>Thing_ArcholifePod</thingClass>
+    <thingClass>SaveOurShip2.Thing_ArcholifePod</thingClass>
     <graphicData>
       <texPath>Things/Item/Special/ArcholifePod</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -54,10 +54,10 @@
         <useDuration>0</useDuration>
       </li>
       <li Class="CompProperties_Targetable">
-        <compClass>CompTargetable_DamagedItem</compClass>
+        <compClass>SaveOurShip2.CompTargetable_DamagedItem</compClass>
       </li>
       <li>
-        <compClass>CompTargetEffect_RepairItem</compClass>
+        <compClass>SaveOurShip2.CompTargetEffect_RepairItem</compClass>
       </li>
     </comps>
   </ThingDef>

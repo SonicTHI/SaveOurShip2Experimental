@@ -3,7 +3,7 @@
   <WorkGiverDef>
     <defName>ScanSpace</defName>
     <label>scan for orbital sites</label>
-    <giverClass>WorkGiver_OperateScannerSpace</giverClass>
+    <giverClass>SaveOurShip2.WorkGiver_OperateScannerSpace</giverClass>
     <workType>Research</workType>
     <priorityInType>69</priorityInType>
     <verb>scan</verb>
@@ -16,7 +16,7 @@
   <WorkGiverDef>
     <defName>LoadTorpedoTube</defName>
     <label>load torpedo</label>
-    <giverClass>WorkGiver_LoadTorpedoTube</giverClass>
+    <giverClass>SaveOurShip2.WorkGiver_LoadTorpedoTube</giverClass>
     <workType>Hauling</workType>
     <verb>load</verb>
     <gerund>loading</gerund>
@@ -29,7 +29,7 @@
   <WorkGiverDef>
     <defName>FightMechanites</defName>
     <label>fight mechanites</label>
-    <giverClass>WorkGiver_FightMechanites</giverClass>
+    <giverClass>SaveOurShip2.WorkGiver_FightMechanites</giverClass>
     <workType>Firefighter</workType>
     <emergency>true</emergency>
     <verb>scraping</verb>
@@ -42,7 +42,7 @@
   <WorkGiverDef>
     <defName>DoArchotechSacrifice</defName>
     <label>sacrifice prisoners</label>
-    <giverClass>WorkGiver_Warden_SacrificeToArchotech</giverClass>
+    <giverClass>SaveOurShip2.WorkGiver_Warden_SacrificeToArchotech</giverClass>
     <workType>Warden</workType>
     <verb>sacrifice</verb>
     <gerund>sacrificing</gerund>
@@ -72,7 +72,7 @@
   <WorkGiverDef>
     <defName>InstallConsciousness</defName>
     <label>install consciousness</label>
-    <giverClass>WorkGiver_InstallConsciousness</giverClass>
+    <giverClass>SaveOurShip2.WorkGiver_InstallConsciousness</giverClass>
     <workType>BasicWorker</workType>
     <verb>install</verb>
     <gerund>installing</gerund>

@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompEngineTrail : ThingComp
@@ -22,9 +22,9 @@ namespace RimWorld
 		private static Vector3[] offsetE = { new Vector3(0, 0, -9.2f), new Vector3(-9.2f, 0, 0), new Vector3(0, 0, 9.2f), new Vector3(9.2f, 0, 0) };
 		public static IntVec2[] killOffset = { new IntVec2(0, -6), new IntVec2(-6, 0), new IntVec2(0, 4), new IntVec2(4, 0) };
 		public static IntVec2[] killOffsetL = { new IntVec2(0, -13), new IntVec2(-13, 0), new IntVec2(0, 7), new IntVec2(7, 0) };
-		public virtual CompProperties_EngineTrail Props
+		public virtual CompProps_EngineTrail Props
 		{
-			get { return props as CompProperties_EngineTrail; }
+			get { return props as CompProps_EngineTrail; }
 		}
 		public virtual int Thrust
 		{
@@ -37,7 +37,7 @@ namespace RimWorld
 		public bool active = false;
 		int size;
 		public HashSet<IntVec3> ExhaustArea = new HashSet<IntVec3>();
-		public ShipHeatMapComp mapComp;
+		public ShipMapComp mapComp;
 		public CompFlickable flickComp;
 		public CompRefuelable refuelComp;
 		public CompPowerTrader powerComp;
@@ -132,7 +132,7 @@ namespace RimWorld
 			flickComp = parent.TryGetComp<CompFlickable>();
 			refuelComp = parent.TryGetComp<CompRefuelable>();
 			powerComp = parent.TryGetComp<CompPowerTrader>();
-			mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
+			mapComp = parent.Map.GetComponent<ShipMapComp>();
 			size = parent.def.size.x;
 			if (Props.reactionless)
 				return;
@@ -153,8 +153,8 @@ namespace RimWorld
 		}
 		public override void PostDeSpawn(Map map)
 		{
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.ShipsOnMapNew.Values.Any(s => !s.IsWreck && s.Engines.Any()))
+			var mapComp = map.GetComponent<ShipMapComp>();
+			if (mapComp.ShipsOnMap.Values.Any(s => !s.IsWreck && s.Engines.Any()))
 				mapComp.EngineRot = -1;
 			Off();
 			//sustainer = null;

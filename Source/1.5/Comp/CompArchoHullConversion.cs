@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using UnityEngine;
 using Verse;
 
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class CompArchoHullConversion : ThingComp
 	{
@@ -17,9 +17,9 @@ namespace RimWorld
 		private int age;
 		public float AgeDays => (float)age / 60000f;
 
-		public ShipHeatMapComp mapComp;
+		public ShipMapComp mapComp;
 		ResearchProjectDef OptimizationProject = ResearchProjectDef.Named("ArchotechHullConversion");
-		protected CompProperties_ArchoHullConversion Props => (CompProperties_ArchoHullConversion)props;
+		protected CompProps_ArchoHullConversion Props => (CompProps_ArchoHullConversion)props;
 		public float CurrentRadius => Props.radiusPerDayCurve.Evaluate(AgeDays);
 
 		public override void PostExposeData()
@@ -32,12 +32,12 @@ namespace RimWorld
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostPostMake();
-			mapComp = parent?.Map?.GetComponent<ShipHeatMapComp>();
+			mapComp = parent?.Map?.GetComponent<ShipMapComp>();
 		}
 
 		public override void CompTick()
 		{
-			if (!OptimizeMatter || !parent.Spawned || !OptimizationProject.IsFinished || parent.Map.IsSpace() && parent.Map.GetComponent<ShipHeatMapComp>().ShipMapState != ShipMapState.nominal || parent.Map.mapPawns.AllPawns.Where(p => p.HostileTo(Faction.OfPlayer)).Any())
+			if (!OptimizeMatter || !parent.Spawned || !OptimizationProject.IsFinished || parent.Map.IsSpace() && parent.Map.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.nominal || parent.Map.mapPawns.AllPawns.Where(p => p.HostileTo(Faction.OfPlayer)).Any())
 			{
 				return;
 			}
@@ -80,7 +80,7 @@ namespace RimWorld
 			{
 				if (ShipInteriorMod2.archoConversions.ContainsKey(t.def))
 				{
-					t.TryGetComp<CompSoShipPart>().ArchoConvert = true;
+					t.TryGetComp<CompShipCachePart>().ArchoConvert = true;
 					toConvert.Add(t);
 				}
 			}

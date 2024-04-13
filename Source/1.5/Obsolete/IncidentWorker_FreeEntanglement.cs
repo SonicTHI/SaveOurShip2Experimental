@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	//dep
 	/*class IncidentWorker_FreeEntanglement : IncidentWorker

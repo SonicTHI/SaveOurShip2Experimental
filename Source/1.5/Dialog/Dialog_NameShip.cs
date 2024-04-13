@@ -9,9 +9,9 @@ namespace SaveOurShip2
 {
 	public class Dialog_NameShip : Dialog_RenameShip
 	{
-		private SoShipCache ship;
+		private SpaceShipCache ship;
 
-		public Dialog_NameShip(SoShipCache s)
+		public Dialog_NameShip(SpaceShipCache s)
 		{
 			ship = s;
 			curName = s.Name;

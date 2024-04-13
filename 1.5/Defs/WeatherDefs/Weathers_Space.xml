@@ -35,7 +35,7 @@
 	<eventMakers>
       <li>
         <averageInterval>120</averageInterval>
-        <eventClass>WeatherEvent_VacuumDamage</eventClass>
+        <eventClass>SaveOurShip2.WeatherEvent_VacuumDamage</eventClass>
       </li>
     </eventMakers>
   </WeatherDef>

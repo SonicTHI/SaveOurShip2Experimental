@@ -7,7 +7,7 @@ namespace SaveOurShip2
 
 	public class HediffComp_Bubble : HediffComp
 	{
-		public HediffCompProperties_Bubble Props => (HediffCompProperties_Bubble)props;
+		public HediffCompProps_Bubble Props => (HediffCompProps_Bubble)props;
 		public Mote mote;
 
 		public override void CompPostTick(ref float severityAdjustment)

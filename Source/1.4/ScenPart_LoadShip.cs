@@ -431,7 +431,7 @@ namespace RimWorld
 			}
 			return null;
 		}
-		public override void PostGameStart() //post load cleaup, open player crypto, sickness
+		public override void PostGameStart() //post load cleanup, open player crypto, sickness
 		{
 			Map map = Find.CurrentMap;
 			map.GetComponent<ShipHeatMapComp>().RecacheMap();

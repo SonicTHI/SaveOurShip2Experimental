@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using Verse.AI;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class JobDriver_RepairItemWithGel : JobDriver
 	{

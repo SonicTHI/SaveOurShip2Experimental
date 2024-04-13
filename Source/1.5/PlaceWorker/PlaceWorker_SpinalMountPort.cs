@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class PlaceWorker_SpinalMountPort : PlaceWorker

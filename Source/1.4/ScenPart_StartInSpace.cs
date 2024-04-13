@@ -122,13 +122,11 @@ namespace RimWorld
 
 		public static Map GenerateShipSpaceMap() //MapGenerator.GenerateMap override via patch
 		{
-			int newTile = ShipInteriorMod2.FindWorldTilePlayer();
 			IntVec3 size = Find.World.info.initialMapSize;
 			if (size.x < 250 || size.z < 250)
 				size = new IntVec3(250, 0, 250);
-			Map spaceMap = GetOrGenerateMapUtility.GetOrGenerateMap(newTile, size, ResourceBank.WorldObjectDefOf.ShipOrbiting);
-			((WorldObjectOrbitingShip)spaceMap.Parent).Radius = 150;
-			((WorldObjectOrbitingShip)spaceMap.Parent).Theta = 2.75f;
+
+			Map spaceMap = ShipInteriorMod2.GeneratePlayerShipMap(size);
 			Current.ProgramState = ProgramState.MapInitializing;
 
 			ScenPart_StartInSpace scen = (ScenPart_StartInSpace)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_StartInSpace);

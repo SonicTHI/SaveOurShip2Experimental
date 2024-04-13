@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class CompSpinalMount : ThingComp
 	{
 
-		public CompProperties_SpinalMount Props
+		public CompProps_SpinalMount Props
 		{
 			get
 			{
-				return (CompProperties_SpinalMount)props;
+				return (CompProps_SpinalMount)props;
 			}
 		}
 

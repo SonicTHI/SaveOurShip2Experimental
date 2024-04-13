@@ -206,11 +206,11 @@
 			</li>
 		</tools>
 		<comps>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>1</shield>
 				<purr>true</purr>
 			</li>
-			<li Class="CompProperties_ArcholifeCosmetics">
+			<li Class="SaveOurShip2.CompProps_ArcholifeCosmetics">
 				<graphics>
 					<li>
 						<texPath>Things/Pawn/Animal/Archocat</texPath>
@@ -386,7 +386,7 @@
 			</li>
 		</tools>
 		<comps>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>2</shield>
 			</li>
 		</comps>
@@ -549,7 +549,7 @@
 			</li>
 		</tools>
 		<comps>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>0.5</shield>
 			</li>
 		</comps>
@@ -707,7 +707,7 @@
 				<shearIntervalDays>12</shearIntervalDays>
 				<woolAmount>50</woolAmount>
 			</li>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>1</shield>
 			</li>
 		</comps>
@@ -803,7 +803,7 @@
 			<trainability>Advanced</trainability>
 			<body>QuadrupedAnimalWithHoovesAndHump</body>
 			<deathAction>
-				<workerClass>DeathActionWorker_AntigrainExplosion</workerClass>
+				<workerClass>SaveOurShip2.DeathActionWorker_AntigrainExplosion</workerClass>
 			</deathAction>
 			<executionRange>6</executionRange>
 			<herdAnimal>true</herdAnimal>
@@ -897,7 +897,7 @@
 				<milkAmount>1</milkAmount>
 				<milkFemaleOnly>false</milkFemaleOnly>
 			</li>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>1</shield>
 			</li>
 		</comps>
@@ -1096,7 +1096,7 @@
 			</li>
 		</tools>
 		<comps>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>4</shield>
 				<scintillate>true</scintillate>
 			</li>
@@ -1241,7 +1241,7 @@
 				<eggProgressUnfertilizedMax>0.5</eggProgressUnfertilizedMax>
 				<eggCountRange>1~3</eggCountRange>
 			</li>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>1.5</shield>
 			</li>
 			<li Class="CompProperties_Shearable">
@@ -1437,7 +1437,7 @@
 			</li>
 		</tools>
 		<comps>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>2</shield>
 			</li>
 		</comps>
@@ -1600,7 +1600,7 @@
 				<eggLayIntervalDays>2</eggLayIntervalDays>
 				<eggCountRange>1</eggCountRange>
 			</li>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>2</shield>
 			</li>
 		</comps>
@@ -1785,7 +1785,7 @@
 			</li>
 		</tools>
 		<comps>
-			<li Class="CompProperties_Archolife">
+			<li Class="SaveOurShip2.CompProps_Archolife">
 				<shield>2</shield>
 			</li>
 		</comps>

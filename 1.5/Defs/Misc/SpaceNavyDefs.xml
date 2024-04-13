@@ -10,7 +10,7 @@
         <crewDef>SpaceCrew</crewDef>
         <marineDef>SpaceCrewMarine</marineDef>
         <marineHeavyDef>SpaceCrewMarineHeavy</marineHeavyDef>
-        <enemyShipDefs></enemyShipDefs>
+        <spaceShipDefs></spaceShipDefs>
     </SpaceNavyDef>
     <SpaceNavyDef ParentName="SpaceNavy">
         <defName>Pirate_SpaceNavy</defName>
@@ -21,7 +21,7 @@
 		<colorPrimary>Structure_Black</colorPrimary>
 		<colorSecondary>Structure_Red</colorSecondary>
 		<pirates>true</pirates>
-        <enemyShipDefs>
+        <spaceShipDefs>
             <li>PirateMiningRig</li>
             <li>PirateISCS</li>
             <li>DestroyerT1</li>
@@ -32,7 +32,7 @@
             <li>BomberHeavy</li>
             <li>FighterMedium</li>
             <li>CruiserCrab</li>
-        </enemyShipDefs>
+        </spaceShipDefs>
     </SpaceNavyDef>
     <SpaceNavyDef ParentName="SpaceNavy">
         <defName>Mechanoid_SpaceNavy</defName>
@@ -43,7 +43,7 @@
         <crewDef>Mech_Pikeman</crewDef>
         <marineDef>Mech_Scyther</marineDef>
         <marineHeavyDef>Mech_Lancer</marineHeavyDef>
-        <enemyShipDefs>
+        <spaceShipDefs>
             <li>MechPsychicAmp</li>
             <li>MechSphere</li>
             <li>MechSphereArcho</li>
@@ -54,7 +54,7 @@
             <li>MechSphereSmall</li>
             <li>MechanoidMoonBase</li>
             <li>ContainerMech</li>
-        </enemyShipDefs>
+        </spaceShipDefs>
     </SpaceNavyDef>
     <SpaceNavyDef ParentName="SpaceNavy">
         <defName>Insect_SpaceNavy</defName>
@@ -65,7 +65,7 @@
         <crewDef>Astromite</crewDef>
         <marineDef>Stellapede</marineDef>
         <marineHeavyDef>Cosmopillar</marineHeavyDef>
-        <enemyShipDefs>
-        </enemyShipDefs>
+        <spaceShipDefs>
+        </spaceShipDefs>
     </SpaceNavyDef>
 </Defs>

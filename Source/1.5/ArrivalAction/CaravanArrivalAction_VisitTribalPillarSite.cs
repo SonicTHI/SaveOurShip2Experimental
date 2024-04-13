@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Verse;
+using RimWorld;
+using RimWorld.Planet;
 
-namespace RimWorld.Planet
+namespace SaveOurShip2
 {
 	public class CaravanArrivalAction_VisitTribalPillarSite : CaravanArrivalAction
 	{

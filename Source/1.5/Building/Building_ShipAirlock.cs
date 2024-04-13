@@ -7,17 +7,17 @@ using Verse.AI;
 using Verse.AI.Group;
 using Verse.Sound;
 using HarmonyLib;
-using SaveOurShip2;
+using RimWorld;
 using UnityEngine;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Building_ShipAirlock : Building_Door
 	{
 		List<Building> extenders = new List<Building>();
 
-		public ShipHeatMapComp mapComp;
-		public UnfoldComponent unfoldComp;
+		public ShipMapComp mapComp;
+		public CompUnfold unfoldComp;
 		public bool hacked = false;
 		public bool failed = false;
 		public bool docked = false;
@@ -150,8 +150,8 @@ namespace RimWorld
 		public override void SpawnSetup(Map map, bool respawningAfterLoad)
 		{
 			base.SpawnSetup(map, respawningAfterLoad);
-			mapComp = this.Map.GetComponent<ShipHeatMapComp>();
-			unfoldComp = this.TryGetComp<UnfoldComponent>();
+			mapComp = this.Map.GetComponent<ShipMapComp>();
+			unfoldComp = this.TryGetComp<CompUnfold>();
 		}
 
 		//docking - doors dont have proper rot
@@ -227,18 +227,18 @@ namespace RimWorld
 			for (int i = 0; i < 2; i++) //find first extender, check opposite for other, same rot, not facing airlock
 			{
 				IntVec3 v = Position + GenAdj.CardinalDirections[i];
-				Thing first = v.GetFirstThingWithComp<CompSoShipDocking>(Map);
+				Thing first = v.GetFirstThingWithComp<CompDockExtender>(Map);
 				if (first == null)
 					continue;
-				var firstComp = first.TryGetComp<CompSoShipDocking>();
+				var firstComp = first.TryGetComp<CompDockExtender>();
 				if (firstComp.Props.extender)
 				{
 					if (i == first.Rotation.AsByte || i == first.Rotation.AsByte + 2) //cant face same or opp cardinal
 						break;
-					Thing second = (Position + GenAdj.CardinalDirections[i + 2]).GetFirstThingWithComp<CompSoShipDocking>(Map);
+					Thing second = (Position + GenAdj.CardinalDirections[i + 2]).GetFirstThingWithComp<CompDockExtender>(Map);
 					if (second != null)
 					{
-						var secondComp = second.TryGetComp<CompSoShipDocking>();
+						var secondComp = second.TryGetComp<CompDockExtender>();
 						if (secondComp.Props.extender && first.Rotation == second.Rotation)
 						{
 							First = first as Building;
@@ -297,11 +297,11 @@ namespace RimWorld
 				{
 					foreach (Thing t in (First.Position + offset).GetThingList(Map))
 					{
-						if (t.TryGetComp<CompSoShipPart>() != null) //connect to ship part //td check if edifice?
+						if (t.TryGetComp<CompShipCachePart>() != null) //connect to ship part //td check if edifice?
 						{
 							foreach (Thing t2 in (Second.Position + offset).GetThingList(Map))
 							{
-								if (t2.TryGetComp<CompSoShipPart>() != null)
+								if (t2.TryGetComp<CompShipCachePart>() != null)
 								{
 									dockedTo = t as Building;
 									mapComp.Docked.Add(this);
@@ -310,11 +310,11 @@ namespace RimWorld
 							}
 							break;
 						}
-						else if (t.TryGetComp<CompSoShipDocking>() != null) //to extender //td check for cheese
+						else if (t.TryGetComp<CompDockExtender>() != null) //to extender //td check for cheese
 						{
 							foreach (Thing t2 in (Second.Position + offset).GetThingList(Map))
 							{
-								var c2 = t2.TryGetComp<CompSoShipDocking>();
+								var c2 = t2.TryGetComp<CompDockExtender>();
 								if (c2 != null)
 								{
 									dockedTo = c2.dockParent;
@@ -334,12 +334,12 @@ namespace RimWorld
 				else
 					thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
 				GenSpawn.Spawn(thing, First.Position + offset, Map);
-				thing.TryGetComp<CompSoShipDocking>().dockParent = this;
+				thing.TryGetComp<CompDockExtender>().dockParent = this;
 				extenders.Add(thing as Building);
 
 				thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamTile);
 				GenSpawn.Spawn(thing, Position + offset, Map);
-				thing.TryGetComp<CompSoShipDocking>().dockParent = this;
+				thing.TryGetComp<CompDockExtender>().dockParent = this;
 				extenders.Add(thing as Building);
 
 				if (dockedTo != null && (dockedTo?.Faction.HostileTo(Faction) ?? false))
@@ -347,7 +347,7 @@ namespace RimWorld
 				else
 					thing = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipAirlockBeamWall);
 				GenSpawn.Spawn(thing, Second.Position + offset, Map);
-				thing.TryGetComp<CompSoShipDocking>().dockParent = this;
+				thing.TryGetComp<CompDockExtender>().dockParent = this;
 				extenders.Add(thing as Building);
 			}
 			//set temp
@@ -380,7 +380,7 @@ namespace RimWorld
 				{
 					if (!force)
 					{
-						var comp = building.TryGetComp<CompSoShipDocking>();
+						var comp = building.TryGetComp<CompDockExtender>();
 						if (comp != null)
 							comp.removedByDock = true;
 					}

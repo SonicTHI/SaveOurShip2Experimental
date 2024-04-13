@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
+using RimWorld.Planet;
 
-namespace RimWorld.Planet
+namespace SaveOurShip2
 {
 	public class TransportPodsArrivalAction_ShipAssault : TransportPodsArrivalAction
 	{
@@ -63,14 +64,14 @@ namespace RimWorld.Planet
 			//prioritize active non wreck ships
 			List<IntVec3> targetCells = new List<IntVec3>();
 			List<IntVec3> validCells = new List<IntVec3>();
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values.Where(s => !s.IsWreck))
+			var mapComp = map.GetComponent<ShipMapComp>();
+			foreach (SpaceShipCache ship in mapComp.ShipsOnMap.Values.Where(s => !s.IsWreck))
 			{
 				validCells.AddRange(ship.OuterCells());
 			}
 			if (targetCells.NullOrEmpty())
 			{
-				foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values.Where(s => s.IsWreck))
+				foreach (SpaceShipCache ship in mapComp.ShipsOnMap.Values.Where(s => s.IsWreck))
 				{
 					validCells.AddRange(ship.OuterCells());
 				}
@@ -153,7 +154,7 @@ namespace RimWorld.Planet
 		{
 			//targets outer cells, then finds rooms near, a room search that finds outer rooms would be better
 			Room outdoors = new IntVec3(0, 0, 0).GetRoom(map);
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			var mapComp = map.GetComponent<ShipMapComp>();
 			List<IntVec3> targetCells = new List<IntVec3>();
 			List<IntVec3> validCells = new List<IntVec3>();
 			if (num == 0)

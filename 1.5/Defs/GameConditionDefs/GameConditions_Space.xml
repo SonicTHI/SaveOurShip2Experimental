@@ -2,7 +2,7 @@
 <Defs>
   <GameConditionDef>
     <defName>SpaceDebris</defName>
-    <conditionClass>GameCondition_SpaceDebris</conditionClass>
+    <conditionClass>SaveOurShip2.GameCondition_SpaceDebris</conditionClass>
     <label>space debris</label>
     <description>A space debris field.</description>
     <endMessage>Ship has cleared the debris field.</endMessage>

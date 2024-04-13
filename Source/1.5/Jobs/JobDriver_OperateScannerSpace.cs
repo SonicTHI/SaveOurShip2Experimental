@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using Verse;
 using Verse.AI;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class JobDriver_OperateScannerSpace : JobDriver
 	{
@@ -13,7 +14,7 @@ namespace RimWorld
 		}
 		protected override IEnumerable<Toil> MakeNewToils()
 		{
-			CompLongRangeMineralScannerSpace scannerComp = this.job.targetA.Thing.TryGetComp<CompLongRangeMineralScannerSpace>();
+			CompShipScanner scannerComp = this.job.targetA.Thing.TryGetComp<CompShipScanner>();
 			if (TargetA != LocalTargetInfo.Invalid)
 				this.FailOnDespawnedNullOrForbidden(TargetIndex.A);
 			this.FailOnBurningImmobile(TargetIndex.A);

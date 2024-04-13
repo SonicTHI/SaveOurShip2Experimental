@@ -1,7 +1,8 @@
-﻿using RimWorld.Planet;
+﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class BiomeWorker_OuterSpace : BiomeWorker
 	{

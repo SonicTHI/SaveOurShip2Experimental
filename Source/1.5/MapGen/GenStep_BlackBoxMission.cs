@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class GenStep_BlackBoxMission : GenStep
 	{
@@ -23,9 +24,9 @@ namespace RimWorld
 			ResolveParams resolveParams = default(ResolveParams);
 			resolveParams.rect = new CellRect(12, map.Size.z / 3, 1, 1);
 			resolveParams.faction = Faction.OfAncientsHostile;
-			BaseGen.BaseGen.globalSettings.map = map;
-			BaseGen.BaseGen.symbolStack.Push("ship_blackboxmission", resolveParams);
-			BaseGen.BaseGen.Generate();
+			BaseGen.globalSettings.map = map;
+			BaseGen.symbolStack.Push("ship_blackboxmission", resolveParams);
+			BaseGen.Generate();
 		}
 	}
 }

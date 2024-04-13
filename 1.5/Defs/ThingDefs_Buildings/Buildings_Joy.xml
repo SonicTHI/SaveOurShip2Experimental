@@ -8,7 +8,7 @@
 	<drawerType>MapMeshAndRealTime</drawerType>
     <graphicData>
       <texPath>Things/Building/Ship/BasicHolodeck</texPath>
-      <graphicClass>Graphic_SingleOnOff</graphicClass>
+      <graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
       <shadowData>
         <volume>(0.6, 0.6, 0.1)</volume>
         <offset>(0, 0, 0.2)</offset>
@@ -60,7 +60,7 @@
         <basePowerConsumption>450</basePowerConsumption>
       </li>
       <li Class="CompProperties_Flickable"/>
-      <li Class="CompProperties_Holodeck"/>
+      <li Class="SaveOurShip2.CompProps_Holodeck"/>
       <li Class="CompProperties_Glower">
         <glowRadius>6</glowRadius>
         <glowColor>(217,217,208,0)</glowColor>
@@ -79,7 +79,7 @@
 	<drawerType>MapMeshAndRealTime</drawerType>
     <graphicData>
       <texPath>Things/Building/Ship/Holodeck</texPath>
-      <graphicClass>Graphic_SingleOnOff</graphicClass>
+      <graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
       <shadowData>
         <volume>(0.6, 0.6, 0.1)</volume>
         <offset>(0, 0, 0.2)</offset>
@@ -131,7 +131,7 @@
         <basePowerConsumption>800</basePowerConsumption>
       </li>
       <li Class="CompProperties_Flickable"/>
-      <li Class="CompProperties_Holodeck"/>
+      <li Class="SaveOurShip2.CompProps_Holodeck"/>
       <li Class="CompProperties_Glower">
         <glowRadius>8</glowRadius>
         <glowColor>(217,217,208,0)</glowColor>
@@ -150,7 +150,7 @@
 	<drawerType>MapMeshAndRealTime</drawerType>
     <graphicData>
       <texPath>Things/Building/Ship/SapientHolodeck</texPath>
-      <graphicClass>Graphic_SingleOnOff</graphicClass>
+      <graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
       <shadowData>
         <volume>(0.6, 0.6, 0.1)</volume>
         <offset>(0, 0, 0.2)</offset>
@@ -199,7 +199,7 @@
         <basePowerConsumption>1000</basePowerConsumption>
       </li>
       <li Class="CompProperties_Flickable"/>
-      <li Class="CompProperties_Holodeck"/>
+      <li Class="SaveOurShip2.CompProps_Holodeck"/>
       <li Class="CompProperties_Glower">
         <glowRadius>10</glowRadius>
         <glowColor>(217,217,208,0)</glowColor>

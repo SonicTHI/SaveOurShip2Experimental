@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class SectionLayer_ShipHeat : SectionLayer_Things
 	{
@@ -19,8 +20,8 @@ namespace RimWorld
 			Designator_Build val = Find.DesignatorManager.SelectedDesignator as Designator_Build;
 			if (val != null)
 			{
-				ThingDef val2 = ((Designator_Place)val).PlacingDef as ThingDef;
-				if (val2 != null && val2.comps.OfType<CompProperties_ShipHeat>().Any())
+				ThingDef val2 = val.PlacingDef as ThingDef;
+				if (val2 != null && val2.comps.OfType<CompProps_ShipHeat>().Any())
 				{
 					base.DrawLayer();
 				}
@@ -30,9 +31,9 @@ namespace RimWorld
 		protected override void TakePrintFrom(Thing t)
 		{
 			Building val = t as Building;
-			if (val != null && ((ThingWithComps)val).TryGetComp<CompShipHeat>()!=null)
+			if (val != null && val.TryGetComp<CompShipHeat>()!=null)
 			{
-				((ThingWithComps)val).TryGetComp<CompShipHeat>().PrintForGrid(this);
+				val.TryGetComp<CompShipHeat>().PrintForGrid(this);
 			}
 		}
 	}

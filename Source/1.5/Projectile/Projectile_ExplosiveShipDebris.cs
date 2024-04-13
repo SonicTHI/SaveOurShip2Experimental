@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 using Verse.Noise;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
-	public class Projectile_ExplosiveShipDebris : Projectile_ExplosiveShipCombat
+	public class Projectile_ExplosiveShipDebris : Projectile_ExplosiveShip
 	{
 		//public Vector2 drawSize;
 		public int index;

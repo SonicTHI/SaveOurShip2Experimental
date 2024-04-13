@@ -21,7 +21,7 @@
           <value>$value</value>
           <storeAs>itemPodsTotalMarketValueRange</storeAs>
         </li>
-        <li Class="QuestNode_GenerateThingSetArchotech">
+        <li Class="SaveOurShip2.QuestNode_GenerateThingSetArchotech">
           <totalMarketValueRange>$itemPodsTotalMarketValueRange</totalMarketValueRange>
           <qualityGenerator>Reward</qualityGenerator>
         </li>

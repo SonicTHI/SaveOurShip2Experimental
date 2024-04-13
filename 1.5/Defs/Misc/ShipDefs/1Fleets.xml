@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<!-- fleet example, fixed fleets can be made like this
-	<EnemyShipDef>
+	<SpaceShipDef>
 		<defName>FleetDestroyerEscort</defName>
 		<saveSysVer>2</saveSysVer>
 		<label>Destroyer with escorts</label>
@@ -24,6 +24,6 @@
 			</li>
 		</ships>
 		<parts />
-	</EnemyShipDef>
+	</SpaceShipDef>
 	-->
 </Defs>

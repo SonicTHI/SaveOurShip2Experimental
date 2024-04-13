@@ -1,8 +1,8 @@
 ﻿using System;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class PlaceWorker_ShipHull : PlaceWorker
 	{
@@ -18,7 +18,7 @@ namespace RimWorld
 				{
 					if (t is Building b)
 					{
-						if (b is Building_SteamGeyser || (b.TryGetComp<CompSoShipPart>()?.Props.isHardpoint ?? false))
+						if (b is Building_SteamGeyser || (b.TryGetComp<CompShipCachePart>()?.Props.isHardpoint ?? false))
 							return false;
 					}
 					else if (t is Blueprint_Build) //td no idea why this cant be checked for def.shipPart, etc.

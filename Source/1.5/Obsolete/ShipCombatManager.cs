@@ -1,5 +1,5 @@
 using RimWorld.Planet;
-using SaveOurShip2;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +9,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI.Group;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	//dep old SCM salvage
 	/*[StaticConstructorOnStartup]

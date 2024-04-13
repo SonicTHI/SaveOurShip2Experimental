@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class PlaceWorker_ShipBlueprint : PlaceWorker
 	{
 		public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot, Color ghostCol, Thing thing = null)
 		{
 			Map map = Find.CurrentMap;
-			var comp = def.GetCompProperties<CompProperties_ShipBlueprint>();
+			var comp = def.GetCompProperties<CompProps_ShipBlueprint>();
 			if (comp == null)
 				return;
 			List<IntVec3> postitions = new List<IntVec3>();
@@ -67,7 +67,7 @@ namespace RimWorld
 			}*/
 			return true;
 		}
-		public List<IntVec3> GenerateBlueprintSketch(EnemyShipDef shipDef)
+		public List<IntVec3> GenerateBlueprintSketch(SpaceShipDef shipDef)
 		{
 			HashSet<IntVec3> positions = new HashSet<IntVec3>();
 			foreach (ShipShape shape in shipDef.parts)

@@ -6,9 +6,9 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using RimWorld.QuestGen;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class Building_ArchotechSpore : Building_ShipBridge

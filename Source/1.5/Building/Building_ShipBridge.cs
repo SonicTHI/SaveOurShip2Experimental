@@ -5,11 +5,11 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using RimWorld.Planet;
-using SaveOurShip2;
+using RimWorld;
 using System.Text;
 using Verse.AI;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Building_ShipBridge : Building
 	{
@@ -28,15 +28,15 @@ namespace RimWorld
 				}
 				if (mapComp == null)
 					return;
-				if (mapComp.ShipsOnMapNew.ContainsKey(shipIndex))
+				if (mapComp.ShipsOnMap.ContainsKey(shipIndex))
 				{
-					Ship = mapComp.ShipsOnMapNew[shipIndex];
+					Ship = mapComp.ShipsOnMap[shipIndex];
 				}
 				else
 					Log.Error("SOS2: ship index not found: " + shipIndex);
 			}
 		}
-		public SoShipCache Ship
+		public SpaceShipCache Ship
 		{
 			private set; get;
 		}
@@ -45,7 +45,7 @@ namespace RimWorld
 		bool selected = false;
 		List<string> fail;
 
-		public ShipHeatMapComp mapComp;
+		public ShipMapComp mapComp;
 		public CompShipHeat heatComp;
 		public CompPowerTrader powerComp;
 		public CompMannable mannableComp;
@@ -299,10 +299,10 @@ namespace RimWorld
 					yield return vent;
 				}
 				bool wrecksOnMap = false;
-				List<SoShipCache> shipStuck = new List<SoShipCache>();
-				if (mapComp.ShipsOnMapNew.Count > 1)
+				List<SpaceShipCache> shipStuck = new List<SpaceShipCache>();
+				if (mapComp.ShipsOnMap.Count > 1)
 				{
-					shipStuck = mapComp.ShipsOnMapNew.Values.Where(s => s.IsStuckAndNotAssisted()).ToList();
+					shipStuck = mapComp.ShipsOnMap.Values.Where(s => s.IsStuckAndNotAssisted()).ToList();
 					if (shipStuck.Any())
 						wrecksOnMap = true;
 				}
@@ -342,7 +342,7 @@ namespace RimWorld
 						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawShip"),
 						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawShipDesc"),
 					};
-					if (mapComp.ShipsOnMapNew.Count(s => !s.Value.IsWreck) <= 1)
+					if (mapComp.ShipsOnMap.Count(s => !s.Value.IsWreck) <= 1)
 					{
 						withdraw.disabled = true;
 						withdraw.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawShipLast");
@@ -493,7 +493,7 @@ namespace RimWorld
 				//engine burn
 				else if (mapComp.ShipMapState == ShipMapState.inTransit || mapComp.ShipMapState == ShipMapState.inEvent)
 				{
-					List<SoShipCache> ships = mapComp.ShipsOnMapNew.Values.Where(s => s.CanMove()).ToList();
+					List<SpaceShipCache> ships = mapComp.ShipsOnMap.Values.Where(s => s.CanMove()).ToList();
 					bool anyEngineOn = ships.Any(s => s.Engines.Any(e => e.active));
 					Command_Toggle toggleEngines = new Command_Toggle
 					{
@@ -682,7 +682,7 @@ namespace RimWorld
 								{
 									AttackableShip station = new AttackableShip
 									{
-										attackableShip = DefDatabase<EnemyShipDef>.GetNamed("StationArchotechGarden"),
+										attackableShip = DefDatabase<SpaceShipDef>.GetNamed("StationArchotechGarden"),
 										spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
 										shipFaction = Faction.OfMechanoids
 									};
@@ -706,7 +706,7 @@ namespace RimWorld
 									AttackableShip attacker = new AttackableShip
 									{
 										spaceNavyDef = mechNavyDef,
-										attackableShip = ShipInteriorMod2.RandomValidShipFrom(mechNavyDef.enemyShipDefs, CR, false, true),
+										attackableShip = ShipInteriorMod2.RandomValidShipFrom(mechNavyDef.spaceShipDefs, CR, false, true),
 										shipFaction = Faction.OfMechanoids
 									};
 									mapComp.StartShipEncounter(attacker);
@@ -952,7 +952,7 @@ namespace RimWorld
 			heatComp = GetComp<CompShipHeat>();
 			powerComp = GetComp<CompPowerTrader>();
 			mannableComp = GetComp<CompMannable>();
-			mapComp = Map.GetComponent<ShipHeatMapComp>();
+			mapComp = Map.GetComponent<ShipMapComp>();
 			if (!mapComp.MapRootListAll.Contains(this))
 				mapComp.MapRootListAll.Add(this);
 			//Log.Message("Spawned: " + this + " to " + this.Map);

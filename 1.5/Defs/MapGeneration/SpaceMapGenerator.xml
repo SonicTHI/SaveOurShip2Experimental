@@ -13,7 +13,7 @@
   <GenStepDef>
     <defName>EmptySpaceTerrain</defName>
     <order>10</order>
-    <genStep Class="GenStep_EmptySpace"/>
+    <genStep Class="SaveOurShip2.GenStep_EmptySpace"/>
   </GenStepDef>
   
   <GenStepDef>
@@ -39,7 +39,7 @@
   <GenStepDef>
     <defName>ShipEngineImpactSite</defName>
     <order>420</order>
-    <genStep Class="GenStep_ShipEngineImpactSite">
+    <genStep Class="SaveOurShip2.GenStep_ShipEngineImpactSite">
       <count>1</count>
       <nearMapCenter>true</nearMapCenter>
     </genStep>
@@ -62,7 +62,7 @@
   <GenStepDef>
     <defName>MoonPillarSite</defName>
     <order>420</order>
-    <genStep Class="GenStep_MoonPillarSite">
+    <genStep Class="SaveOurShip2.GenStep_MoonPillarSite">
       <count>1</count>
       <nearMapCenter>true</nearMapCenter>
     </genStep>
@@ -79,7 +79,7 @@
   <GenStepDef>
     <defName>TribalPillarSite</defName>
     <order>420</order>
-    <genStep Class="GenStep_TribalPillarSite">
+    <genStep Class="SaveOurShip2.GenStep_TribalPillarSite">
       <count>1</count>
       <nearMapCenter>true</nearMapCenter>
     </genStep>
@@ -109,14 +109,14 @@
   <GenStepDef>
     <defName>EverythingIsRocks</defName>
     <order>419</order>
-    <genStep Class="GenStep_EverythingIsRocks">
+    <genStep Class="SaveOurShip2.GenStep_EverythingIsRocks">
     </genStep>
   </GenStepDef>
   
   <GenStepDef>
     <defName>InsectPillarCaves</defName>
     <order>420</order>
-    <genStep Class="GenStep_InsectPillarCaves">
+    <genStep Class="SaveOurShip2.GenStep_InsectPillarCaves">
     </genStep>
   </GenStepDef>
 

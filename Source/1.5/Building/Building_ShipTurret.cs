@@ -6,22 +6,22 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
-using SaveOurShip2;
+using RimWorld;
 using RimWorld.Planet;
 using HarmonyLib;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Building_ShipTurret : Building_Turret
 	{
 		public Thing gun;
 		protected TurretTop top;
-		public ShipHeatMapComp mapComp;
+		public ShipMapComp mapComp;
 		public CompPowerTrader powerComp;
 		public CompShipHeat heatComp;
 		public CompRefuelable fuelComp;
 		public CompSpinalMount spinalComp;
-		public CompChangeableProjectilePlural torpComp;
+		public CompChangeableProjectile torpComp;
 		protected CompInitiatable initiatableComp;
 		protected Effecter progressBarEffecter;
 		protected LocalTargetInfo currentTargetInt = LocalTargetInfo.Invalid;
@@ -101,13 +101,13 @@ namespace RimWorld
 		public override void SpawnSetup(Map map, bool respawningAfterLoad)
 		{
 			base.SpawnSetup(map, respawningAfterLoad);
-			mapComp = Map.GetComponent<ShipHeatMapComp>();
+			mapComp = Map.GetComponent<ShipMapComp>();
 			initiatableComp = GetComp<CompInitiatable>();
 			powerComp = this.TryGetComp<CompPowerTrader>();
 			heatComp = this.TryGetComp<CompShipHeat>();
 			fuelComp = this.TryGetComp<CompRefuelable>();
 			spinalComp = this.TryGetComp<CompSpinalMount>();
-			torpComp = gun.TryGetComp<CompChangeableProjectilePlural>();
+			torpComp = gun.TryGetComp<CompChangeableProjectile>();
 			if (!Map.IsSpace() && heatComp.Props.groundDefense)
 				GroundDefenseMode = true;
 			else
@@ -128,7 +128,7 @@ namespace RimWorld
 		{
 			Map map = Map;
 			base.Destroy(mode);
-			if (torpComp != null && !ShipInteriorMod2.AirlockBugFlag)
+			if (torpComp != null && !ShipInteriorMod2.MoveShipFlag)
 			{
 				foreach (ThingDef def in torpComp.LoadedShells)
 				{

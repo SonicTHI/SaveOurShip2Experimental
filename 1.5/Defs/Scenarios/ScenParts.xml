@@ -5,7 +5,7 @@
     <defName>StartInSpace</defName>
     <label>start in space</label>
     <category>Misc</category>
-    <scenPartClass>ScenPart_StartInSpace</scenPartClass>
+    <scenPartClass>SaveOurShip2.ScenPart_StartInSpace</scenPartClass>
     <maxUses>1</maxUses>
   </ScenPartDef>
   
@@ -13,14 +13,14 @@
     <defName>AfterlifeVault</defName>
     <label>start in afterlife vault</label>
     <category>Misc</category>
-    <scenPartClass>ScenPart_AfterlifeVault</scenPartClass>
+    <scenPartClass>SaveOurShip2.ScenPart_AfterlifeVault</scenPartClass>
     <maxUses>1</maxUses>
   </ScenPartDef>
   
   <ScenPartDef>
     <defName>LoadPreviousShip</defName>
     <label>load ship</label>
-    <scenPartClass>ScenPart_LoadShip</scenPartClass>
+    <scenPartClass>SaveOurShip2.ScenPart_LoadShip</scenPartClass>
     <category>StartingImportant</category>
     <selectionWeight>1.0</selectionWeight>
     <summaryPriority>999</summaryPriority>

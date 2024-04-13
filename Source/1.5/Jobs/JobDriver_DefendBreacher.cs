@@ -4,7 +4,7 @@ using System.Text;
 using Verse;
 using Verse.AI;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class JobDriver_DefendBreacher : JobDriver
 	{

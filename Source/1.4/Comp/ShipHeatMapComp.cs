@@ -399,17 +399,6 @@ namespace RimWorld
 				return shipsOnMapNew;
 			}
 		}
-		public List<SoShipCache> ShipsOnMap(bool allowWrecks = true)
-		{
-			List<SoShipCache> ships = new List<SoShipCache>();
-			foreach (SoShipCache ship in ShipsOnMapNew.Values)
-			{
-				if (!allowWrecks && ship.IsWreck)
-					continue;
-				ships.Add(ship);
-			}
-			return ships;
-		}
 		public void ResetCache()
 		{
 			foreach (IntVec3 vec in MapShipCells.Keys.ToList())
@@ -419,7 +408,7 @@ namespace RimWorld
 		}
 		public void RepathMap() //repath all ships, on start player and end all maps
 		{
-			foreach (SoShipCache ship in ShipsOnMap().Where(s => !s.IsWreck))
+			foreach (SoShipCache ship in ShipsOnMapNew.Values.Where(s => !s.IsWreck))
 			{
 				ship.RebuildCorePath();
 			}
@@ -1519,7 +1508,7 @@ namespace RimWorld
 		public void KillAllOffShip()
 		{
 			List<Pawn> pawns = new List<Pawn>();
-			List<Thing> things = new List<Thing>();
+			HashSet<Thing> things = new HashSet<Thing>();
 			foreach (IntVec3 v in map.AllCells.Except(MapShipCells.Keys)) //kill anything off ship
 			{
 				foreach (Thing t in v.GetThingList(map))
@@ -1682,7 +1671,7 @@ namespace RimWorld
 					Find.LetterStack.ReceiveLetter("SoS.WinShipBattle".Translate(), "SoS.WinShipBattleDesc".Translate(tgtMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
 				}
 			}
-			else
+			else //origin fled or lost
 			{
 				if (OriginMapComp.ShipMapState == ShipMapState.isGraveyard) //origingrave battle
 				{
@@ -1699,25 +1688,27 @@ namespace RimWorld
 						ShipCombatOriginMap.Parent.GetComponent<TimedForcedExitShip>()?.StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000));
 						//Find.GameEnder.CheckOrUpdateGameOver();
 					}
-					//origin fled or lost: if origin has grave with a ship, grave starts combat with target
 					if (OriginMapComp.ShipGraveyard != null)
 					{
+						//if origin has grave with a ship, grave starts combat with enemy
 						if (OriginMapComp.GraveComp.MapRootListAll.Any() && !OriginMapComp.attackedTradeship)
 						{
 							OriginMapComp.GraveComp.LastAttackTick = Find.TickManager.TicksGame;
 							OriginMapComp.GraveComp.NextTargetMap = OriginMapComp.ShipCombatTargetMap;
 						}
-						else //origin fled or lost with no graveyard, remove target
+						else //no ships in grave, enemy leaves, clean grave
 						{
-							//td instead launch boarders to origin
 							tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
-
 							//remove all wrecks from map, leave pawns
 							foreach (int shipIndex in OriginMapComp.GraveComp.ShipsOnMapNew.Keys)
 							{
 								ShipInteriorMod2.RemoveShipOrArea(OriginMapComp.ShipGraveyard, shipIndex, null, false);
 							}
 						}
+					}
+					else //no grave, enemy leaves
+					{
+						tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
 					}
 				}
 			}

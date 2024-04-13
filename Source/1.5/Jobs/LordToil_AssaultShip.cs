@@ -5,9 +5,9 @@ using System.Text;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class LordToil_AssaultShip : LordToil
 	{

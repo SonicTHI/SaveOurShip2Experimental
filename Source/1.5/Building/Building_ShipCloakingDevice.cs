@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Building_ShipCloakingDevice : Building
 	{
@@ -14,12 +14,12 @@ namespace RimWorld
 		public CompPowerTrader powerComp;
 		public CompShipHeatSource heatComp;
 		public CompFlickable flickComp;
-		public ShipHeatMapComp mapComp;
+		public ShipMapComp mapComp;
 
 		public override void SpawnSetup(Map map, bool respawningAfterLoad)
 		{
 			base.SpawnSetup(map, respawningAfterLoad);
-			mapComp = map.GetComponent<ShipHeatMapComp>();
+			mapComp = map.GetComponent<ShipMapComp>();
 			mapComp.Cloaks.Add(this);
 			powerComp = this.TryGetComp<CompPowerTrader>();
 			heatComp = this.TryGetComp<CompShipHeatSource>();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class Gizmo_EnergyShieldStatusArcholife : Gizmo
@@ -38,11 +38,11 @@ namespace RimWorld
 			Widgets.Label(rect3, "Shield");
 			Rect rect4 = rect2;
 			rect4.yMin = rect2.y + rect2.height / 2f;
-			float fillPercent = shield.Energy / ((CompProperties_Archolife)shield.props).shield;
+			float fillPercent = shield.Energy / ((CompProps_Archolife)shield.props).shield;
 			Widgets.FillableBar(rect4, fillPercent, FullShieldBarTex, EmptyShieldBarTex, doBorder: false);
 			Text.Font = GameFont.Small;
 			Text.Anchor = TextAnchor.MiddleCenter;
-			Widgets.Label(rect4, (shield.Energy * 100f).ToString("F0") + " / " + (((CompProperties_Archolife)shield.props).shield * 100f).ToString("F0"));
+			Widgets.Label(rect4, (shield.Energy * 100f).ToString("F0") + " / " + (((CompProps_Archolife)shield.props).shield * 100f).ToString("F0"));
 			Text.Anchor = TextAnchor.UpperLeft;
 			return new GizmoResult(GizmoState.Clear);
 		}

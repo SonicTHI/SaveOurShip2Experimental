@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V100b15";
+		public const string SOS2EXPversion = "V101";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4052;
 
@@ -107,21 +107,21 @@ namespace SaveOurShip2
 		public const float crittersleepBodySize = 0.7f;
 
 		public static bool loadedGraphics = false;
-		public static bool AirlockBugFlag = false; //set on ship move/remove
 		public static Map shipOriginMap = null; //used to check for shipmove map size problem in placeworker, reset after move
+		public static bool MoveShipFlag = false; //set on ship move/remove
 		public static bool SaveShipFlag = false; //used in patch to trigger ending scene
 		public static bool LoadShipFlag = false; //set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
 		public static bool StartShipFlag = false; //as above but for ScenPart_StartInSpace
 		public static bool HasSoS2CK = false;
 		public static bool ArchoIdeoFlag = false;
 
-		private static PastWorldUWO2 worldComp = null;
-		public static PastWorldUWO2 WorldComp
+		private static ShipWorldComp worldComp = null;
+		public static ShipWorldComp WorldComp
 		{
 			get
 			{
 				if (worldComp == null && Find.World != null)
-					worldComp = (PastWorldUWO2)Find.World.components.First(x => x is PastWorldUWO2);
+					worldComp = (ShipWorldComp)Find.World.components.First(x => x is ShipWorldComp);
 				return worldComp;
 			}
 		}
@@ -214,9 +214,9 @@ namespace SaveOurShip2
 			Log.Message("SOS2EXP " + SOS2EXPversion + " active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
-			foreach (EnemyShipDef ship in DefDatabase<EnemyShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
+			foreach (SpaceShipDef ship in DefDatabase<SpaceShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
 			{
-				Log.Error("SOS2: mod \"" + ship.modContentPack.Name + "\" contains EnemyShipDef: \"" + ship + "\" that can spawn as a random ship but is saved with an old version of CK!");
+				Log.Error("SOS2: mod \"" + ship.modContentPack.Name + "\" contains SpaceShipDef: \"" + ship + "\" that can spawn as a random ship but is saved with an old version of CK!");
 			}
 
 			wreckDictionary = new Dictionary<ThingDef, ThingDef>
@@ -483,8 +483,8 @@ namespace SaveOurShip2
 			orbiter.SetFaction(Faction.OfPlayer);
 			orbiter.Tile = FindWorldTilePlayer();
 			Find.WorldObjects.Add(orbiter);
-			Map map = MapGenerator.GenerateMap(size, orbiter, orbiter.MapGeneratorDef);
-			map.fogGrid.ClearAllFog();
+			Map map = MapGenerator.GenerateMap(size, orbiter, orbiter.MapGeneratorDef,null,null,false);
+			//map.fogGrid.ClearAllFog();
 			return map;
 		}
 		public static Map FindPlayerShipMap()
@@ -502,7 +502,7 @@ namespace SaveOurShip2
 		{
 			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
 			{
-				if (needsShips && navy.enemyShipDefs.NullOrEmpty())
+				if (needsShips && navy.spaceShipDefs.NullOrEmpty())
 					return false;
 				if (bountyHunts && !navy.bountyHunts)
 					return false;
@@ -521,18 +521,18 @@ namespace SaveOurShip2
 		{
 			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
 			{
-				if (!navy.bountyHunts || navy.enemyShipDefs.NullOrEmpty())
+				if (!navy.bountyHunts || navy.spaceShipDefs.NullOrEmpty())
 					return false;
 				if (Find.FactionManager.AllFactions.Any(f => navy.factionDefs.Contains(f.def) && !f.defeated || (f.defeated && navy.canOperateAfterFactionDefeated)))
 					return true;
 				return false;
 			}).RandomElement();
 		}
-		public static EnemyShipDef RandomValidShipFrom(List<EnemyShipDef> ships, float CR, bool tradeShip, bool allowNavyExc, bool randomFleet = false, int minZ = 0, int maxZ = 0)
+		public static SpaceShipDef RandomValidShipFrom(List<SpaceShipDef> ships, float CR, bool tradeShip, bool allowNavyExc, bool randomFleet = false, int minZ = 0, int maxZ = 0)
 		{
 			int rarity = Rand.RangeInclusive(1, 2);
 			Log.Message("Spawning ship from CR: " + CR + " tradeShip: " + tradeShip + " allowNavyExc: " + allowNavyExc + " randomFleet: " + randomFleet + " rarityLevel: " + rarity + " minZ: " + minZ + " maxZ: " + maxZ);
-			List<EnemyShipDef> check = new List<EnemyShipDef>();
+			List<SpaceShipDef> check = new List<SpaceShipDef>();
 			if (randomFleet)
 			{
 				check = ships.Where(def => ValidShipDef(def, 0.7f * CR, 1.1f * CR, tradeShip, allowNavyExc, randomFleet, rarity, minZ, maxZ)).ToList();
@@ -563,7 +563,7 @@ namespace SaveOurShip2
 				if (check.Any())
 					return check.RandomElement();
 				Log.Warning("SOS2: navy has no trade ships, choosing any random.");
-				return DefDatabase<EnemyShipDef>.AllDefs.Where(def => ValidShipDef(def, 0f, 100000f, tradeShip, false, randomFleet, 0, minZ, maxZ)).RandomElement();
+				return DefDatabase<SpaceShipDef>.AllDefs.Where(def => ValidShipDef(def, 0f, 100000f, tradeShip, false, randomFleet, 0, minZ, maxZ)).RandomElement();
 			}
 			else if (!allowNavyExc && !randomFleet)
 			{
@@ -575,7 +575,7 @@ namespace SaveOurShip2
 			}
 			return null;
 		}
-		public static bool ValidShipDef(EnemyShipDef def, float CRmin, float CRmax, bool tradeShip, bool allowNavyExc, bool randomFleet, int rarity = 0, int minZ = 0, int maxZ = 0)
+		public static bool ValidShipDef(SpaceShipDef def, float CRmin, float CRmax, bool tradeShip, bool allowNavyExc, bool randomFleet, int rarity = 0, int minZ = 0, int maxZ = 0)
 		{
 			if (rarity > 0 && def.rarityLevel > rarity)
 			{
@@ -599,9 +599,9 @@ namespace SaveOurShip2
 				return false;
 			return true;
 		}
-		public static void GenerateShip(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		public static void GenerateShip(SpaceShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			var mapComp = map.GetComponent<ShipMapComp>();
 			mapComp.CacheOff = true;
 			List<IntVec3> area = new List<IntVec3>();
 			List<Thing> planters = new List<Thing>();
@@ -621,13 +621,13 @@ namespace SaveOurShip2
 				for (int i = 0; i < shipDef.ships.Count; i++)
 				{
 					Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Spawning fleet ship nr." + i);
-					var genShip = DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship);
+					var genShip = DefDatabase<SpaceShipDef>.GetNamedSilentFail(shipDef.ships[i].ship);
 					if (genShip == null)
 					{
 						Log.Error("Fleet ship not found in database");
 						return;
 					}
-					GenerateShipDef(DefDatabase<EnemyShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out coresOut, out areaOut, out plantersOut, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
+					GenerateShipDef(DefDatabase<SpaceShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out coresOut, out areaOut, out plantersOut, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
 					cores.AddRange(coresOut);
 					area.AddRange(areaOut);
 					planters.AddRange(plantersOut);
@@ -640,16 +640,16 @@ namespace SaveOurShip2
 			//use player points to spawn ships of the same navy, fit z, random x
 			//main + twin, twin, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
 			//60-20-20,50-50,40-40-10-10
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			var mapComp = map.GetComponent<ShipMapComp>();
 			mapComp.CacheOff = true;
-			List<EnemyShipDef> ships;
+			List<SpaceShipDef> ships;
 			bool allowNavyExc = true;
 			if (navyDef != null)
-				ships = navyDef.enemyShipDefs;
+				ships = navyDef.spaceShipDefs;
 			else
 			{
 				allowNavyExc = false;
-				ships = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.navyExclusive).ToList();
+				ships = DefDatabase<SpaceShipDef>.AllDefs.Where(def => !def.navyExclusive).ToList();
 			}
 			bool tradeShip = passingShip is TradeShip;
 			List<IntVec3> area = new List<IntVec3>();
@@ -682,7 +682,7 @@ namespace SaveOurShip2
 			int offsetZup = (map.Size.z + marginZ) / 2;
 			int maxSizeZ; //max z to find a random def for
 			int minSizeZ = 20; //min z after margins to spawn a ship
-			EnemyShipDef shipDef = null;
+			SpaceShipDef shipDef = null;
 			int i = 1;
 			while (i < 8 && CR > 50)
 			{
@@ -761,7 +761,7 @@ namespace SaveOurShip2
 			}
 			PostGenerateShipDef(map, clearArea, area, planters);
 		}
-		public static void GenerateShipDef(EnemyShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, out List<Thing> planters, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		public static void GenerateShipDef(SpaceShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, out List<Thing> planters, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
 			cellsToFog = new List<IntVec3>();
 			planters = new List<Thing>();
@@ -871,7 +871,7 @@ namespace SaveOurShip2
 						GenSpawn.Spawn(pawn, adjPos, map);
 						pawnsOnShip.Add(pawn);
 					}
-					else if (DefDatabase<EnemyShipPartDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
+					else if (DefDatabase<SpaceShipPartDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
 						partsToGenerate.Add(shape);
 					}
@@ -971,7 +971,7 @@ namespace SaveOurShip2
 								if (shape.color != Color.clear)
 									thing.SetColor(shape.color);
 							}*/
-							var partComp = thing.TryGetComp<CompSoShipPart>();
+							var partComp = thing.TryGetComp<CompShipCachePart>();
 							if (rePaint && colorComp != null) //color unpainted navy ships
 							{
 								if (partComp?.Props.isHull ?? false)
@@ -1129,11 +1129,11 @@ namespace SaveOurShip2
 				try
 				{
 					IntVec3 adjPos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
-					EnemyShipPartDef partDef = DefDatabase<EnemyShipPartDef>.GetNamed(shape.shapeOrDef);
+					SpaceShipPartDef partDef = DefDatabase<SpaceShipPartDef>.GetNamed(shape.shapeOrDef);
 					if (randomTurretPoints >= partDef.randomTurretPoints)
 						randomTurretPoints -= partDef.randomTurretPoints;
 					else
-						partDef = DefDatabase<EnemyShipPartDef>.GetNamed("Cargo");
+						partDef = DefDatabase<SpaceShipPartDef>.GetNamed("Cargo");
 
 					if (partDef.defName.Equals("CasketFilled"))
 					{
@@ -1263,7 +1263,7 @@ namespace SaveOurShip2
 			//4: planetside wreck - no invaders
 			if (wreckLevel > 0)
 			{
-				var mapComp = map.GetComponent<ShipHeatMapComp>();
+				var mapComp = map.GetComponent<ShipMapComp>();
 				bool madeLines = false;
 				int holeNum = 0;
 				//split
@@ -1463,7 +1463,7 @@ namespace SaveOurShip2
 			//map.mapDrawer.MapMeshDirty(map.Center, MapMeshFlagDefOf.Things | MapMeshFlagDefOf.FogOfWar);
 			//if (Current.ProgramState == ProgramState.Playing)
 			//	map.mapDrawer.RegenerateEverythingNow();
-			map.GetComponent<ShipHeatMapComp>().RecacheMap();
+			map.GetComponent<ShipMapComp>().RecacheMap();
 		}
 		public static List<IntVec3> FindCellOnOuterHull(Map map, int max, CellRect shipArea)
 		{
@@ -1682,11 +1682,11 @@ namespace SaveOurShip2
 			if (targetMap == null)
 				return false;
 
-			var mapComp = sourceMap.GetComponent<ShipHeatMapComp>();
+			var mapComp = sourceMap.GetComponent<ShipMapComp>();
 			if (mapComp.ShipMapState == ShipMapState.inCombat)
 				return false;
 
-			foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values)
+			foreach (SpaceShipCache ship in mapComp.ShipsOnMap.Values)
 			{
 				foreach (IntVec3 v in ship.Area)
 				{
@@ -1708,8 +1708,8 @@ namespace SaveOurShip2
 			//MinifiedThingShipMove counterpart
 			Map originMap = core.Map;
 			IntVec3 size = originMap.Size;
-			var originMapComp = originMap.GetComponent<ShipHeatMapComp>();
-			var ship = originMapComp.ShipsOnMapNew[((Building_ShipBridge)core).ShipIndex];
+			var originMapComp = originMap.GetComponent<ShipMapComp>();
+			var ship = originMapComp.ShipsOnMap[((Building_ShipBridge)core).ShipIndex];
 
 			//spawn new WO and map
 			bool mapIsLarger = false;
@@ -1719,7 +1719,7 @@ namespace SaveOurShip2
 				mapIsLarger = true;
 			}
 			Map map = GeneratePlayerShipMap(size);
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			var mapComp = map.GetComponent<ShipMapComp>();
 
 			//set vecs
 			IntVec3 adj = IntVec3.Zero;
@@ -1791,12 +1791,12 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("prepare");
 
-			AirlockBugFlag = true;
+			MoveShipFlag = true;
 			shipOriginMap = null;
 			bool playerMove = core.Faction == Faction.OfPlayer;
 			Map sourceMap = core.Map;
 			bool sourceMapIsSpace = sourceMap.IsSpace();
-			var sourceMapComp = sourceMap.GetComponent<ShipHeatMapComp>();
+			var sourceMapComp = sourceMap.GetComponent<ShipMapComp>();
 			int shipIndex = sourceMapComp.ShipIndexOnVec(core.Position);
 			if (shipIndex == -1)
 			{
@@ -1808,7 +1808,7 @@ namespace SaveOurShip2
 				Log.Message("SOS2: ".Colorize(Color.cyan) + sourceMap + " Ship ".Colorize(Color.green) + shipIndex + " Moving ship to ".Colorize(Color.green) + targetMap + " with: ".Colorize(Color.green) + core);
 			}
 			HashSet<int> shipIndexes = new HashSet<int> { shipIndex };
-			var ship = sourceMapComp.ShipsOnMapNew[shipIndex];
+			var ship = sourceMapComp.ShipsOnMap[shipIndex];
 			HashSet<IntVec3> sourceArea = new HashSet<IntVec3>(ship.Area);
 			if (sourceMapComp.Docked.Any()) //undock all
 			{
@@ -1820,18 +1820,18 @@ namespace SaveOurShip2
 
 			bool targetMapIsSpace = targetMap.IsSpace();
 			float weBeCrashing = 0;
-			var targetMapComp = targetMap.GetComponent<ShipHeatMapComp>();
+			var targetMapComp = targetMap.GetComponent<ShipMapComp>();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
 
 			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
 			{
-				if (targetMapComp.ShipsOnMapNew.ContainsKey(shipIndex))
+				if (targetMapComp.ShipsOnMap.ContainsKey(shipIndex))
 				{
 					Log.Error("SOS2: ".Colorize(Color.cyan) + " Ship ".Colorize(Color.green) + shipIndex + " MoveShip abort, already on map: " + targetMap);
 					return;
 				}
-				targetMapComp.ShipsOnMapNew.Add(shipIndex, sourceMapComp.ShipsOnMapNew[shipIndex]);
-				ship = targetMapComp.ShipsOnMapNew[shipIndex];
+				targetMapComp.ShipsOnMap.Add(shipIndex, sourceMapComp.ShipsOnMap[shipIndex]);
+				ship = targetMapComp.ShipsOnMap[shipIndex];
 				ship.Map = targetMap;
 				if (adjustment != IntVec3.Zero && ship.BuildingsDestroyed.Any()) //cache: adjust destroyed
 				{
@@ -2013,7 +2013,7 @@ namespace SaveOurShip2
 				{
 					foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, new IntVec2(1, 1)).Where(v => !targetArea.Contains(v) && targetMapComp.MapShipCells.ContainsKey(v)))
 					{
-						var adjShip = targetMapComp.ShipsOnMapNew[targetMapComp.ShipIndexOnVec(vec)];
+						var adjShip = targetMapComp.ShipsOnMap[targetMapComp.ShipIndexOnVec(vec)];
 						//if non fac ship near, abort
 						if (adjShip.Faction != ship.Faction)
 						{
@@ -2183,7 +2183,7 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveThings");
-			AirlockBugFlag = false;
+			MoveShipFlag = false;
 			if (shipIndexes.Count > 1) //ship cache: adjacent ships found, merge in order: largest ship, ship, wreck
 			{
 				Log.Message("SOS2: ".Colorize(Color.cyan) + " ship move found adjacent ships in area, merging!");
@@ -2306,7 +2306,7 @@ namespace SaveOurShip2
 				ship.WeBeCrashing = weBeCrashing;
 
 			//heat
-			targetMap.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
+			targetMap.GetComponent<ShipMapComp>().heatGridDirty = true;
 
 			//regen affected map layers
 			List<Section> sourceSec = new List<Section>();
@@ -2343,7 +2343,7 @@ namespace SaveOurShip2
 				return;
 
 			p.GetLord()?.RemovePawn(p);
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			var mapComp = map.GetComponent<ShipMapComp>();
 			if (map == FindPlayerShipMap()) //if placed on player home, assault it
 			{
 				if (mapComp.InvaderLord == null)
@@ -2376,8 +2376,8 @@ namespace SaveOurShip2
 			List<Zone> zones = new List<Zone>();
 
 			Map map = core.Map;
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			var ship = mapComp.ShipsOnMapNew[core.ShipIndex];
+			var mapComp = map.GetComponent<ShipMapComp>();
+			var ship = mapComp.ShipsOnMap[core.ShipIndex];
 			HashSet<IntVec3> area = ship.Area;
 
 			HashSet<Ideo> ideosAboardShip = new HashSet<Ideo>();
@@ -2492,7 +2492,7 @@ namespace SaveOurShip2
 			foreach (GameComponent comp in Current.Game.components)
 			{
 				//Don't copy ours or vanilla components. We'll probably need a more general-purpose way to add more exceptions if other mods' components shouldn't be moved.
-				if (!(comp is EnvironmentCachingUtility || comp is GameComponent_Bossgroup || comp is GameComponent_DebugTools || comp is GameComponent_OnetimeNotification))
+				if (!(comp is ShipGameComp || comp is GameComponent_Bossgroup || comp is GameComponent_DebugTools || comp is GameComponent_OnetimeNotification))
 					components.Add(comp);
 			}
 
@@ -2544,8 +2544,8 @@ namespace SaveOurShip2
 		public static void SaveShipToFile(Building_ShipBridge core)
 		{
 			Map map = core.Map;
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			var ship = mapComp.ShipsOnMapNew[core.ShipIndex];
+			var mapComp = map.GetComponent<ShipMapComp>();
+			var ship = mapComp.ShipsOnMap[core.ShipIndex];
 			List<Pawn> toKill = new List<Pawn>();
 			foreach (Pawn p in ship.PawnsOnShip)
 			{
@@ -2603,10 +2603,10 @@ namespace SaveOurShip2
 		}
 		public static void RemoveShipOrArea(Map map, int index = -1, HashSet<IntVec3> area = null, bool killPawns = true)
 		{
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			var mapComp = map.GetComponent<ShipMapComp>();
 			if (index != -1)
 			{
-				var ship = mapComp.ShipsOnMapNew[index];
+				var ship = mapComp.ShipsOnMap[index];
 				area = ship.Area;
 				mapComp.RemoveShipFromCache(index);
 			}
@@ -2614,7 +2614,7 @@ namespace SaveOurShip2
 			{
 				return;
 			}
-			AirlockBugFlag = true;
+			MoveShipFlag = true;
 			List<Thing> things = new List<Thing>();
 			List<Zone> zones = new List<Zone>();
 			foreach (IntVec3 pos in area)
@@ -2657,7 +2657,7 @@ namespace SaveOurShip2
 				map.terrainGrid.SetTerrain(pos, ResourceBank.TerrainDefOf.EmptySpace);
 				map.roofGrid.SetRoof(pos, null);
 			}
-			AirlockBugFlag = false;
+			MoveShipFlag = false;
 
 			if (index != -1)
 			{
@@ -2704,7 +2704,7 @@ namespace SaveOurShip2
 					sec.RegenerateDirtyLayers();
 				}
 			}
-			map.GetComponent<ShipHeatMapComp>().heatGridDirty = true;
+			map.GetComponent<ShipMapComp>().heatGridDirty = true;
 		}
 		public static bool CompatibleWithShipLoad(ScenPart item)
 		{

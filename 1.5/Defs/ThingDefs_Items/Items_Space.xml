@@ -32,7 +32,7 @@
 				<useLabel>Activate</useLabel>
 			</li>
 			<li Class="CompProperties_UseEffect">
-				<compClass>CompUseEffect_WeatherCancel</compClass>
+				<compClass>SaveOurShip2.CompUseEffect_WeatherCancel</compClass>
 			</li>
 		</comps>
 		<thingCategories>

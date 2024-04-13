@@ -1,10 +1,10 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class ChoiceLetter_SpacePod : ChoiceLetter
 	{

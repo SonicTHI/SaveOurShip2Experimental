@@ -36,7 +36,7 @@
   
   <ThoughtDef>
     <defName>ArchotechSporeThought</defName>
-    <workerClass>ThoughtWorker_AmArchotechSpore</workerClass>
+    <workerClass>SaveOurShip2.ThoughtWorker_AmArchotechSpore</workerClass>
     <validWhileDespawned>true</validWhileDespawned>
     <stages>
       <li>
@@ -49,8 +49,8 @@
   
   <ThoughtDef>
     <defName>ArchotechSporeSocialThought</defName>
-    <thoughtClass>Thought_IsArchotechSpore</thoughtClass>
-    <workerClass>ThoughtWorker_IsArchotechSpore</workerClass>
+    <thoughtClass>SaveOurShip2.Thought_IsArchotechSpore</thoughtClass>
+    <workerClass>SaveOurShip2.ThoughtWorker_IsArchotechSpore</workerClass>
     <validWhileDespawned>true</validWhileDespawned>
     <stages>
       <li>

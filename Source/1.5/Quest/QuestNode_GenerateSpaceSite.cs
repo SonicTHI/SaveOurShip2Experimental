@@ -1,12 +1,13 @@
 ﻿using RimWorld.Planet;
-using SaveOurShip2;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.Grammar;
+using RimWorld.QuestGen;
 
-namespace RimWorld.QuestGen
+namespace SaveOurShip2
 {
 	public class QuestNode_GenerateSpaceSite : QuestNode
 	{

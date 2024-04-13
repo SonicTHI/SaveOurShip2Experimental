@@ -18,7 +18,7 @@
 			<ChunkSlagSteel>1</ChunkSlagSteel>
 		</killedLeavings>
 		<placeWorkers>
-			<li>PlaceWorker_ShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipHull</li>
 		</placeWorkers>
 	</ThingDef>
 	<!-- hull -->
@@ -59,7 +59,7 @@
 		<designationCategory>Ship</designationCategory>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
@@ -120,7 +120,7 @@
 		<designationCategory>Ship</designationCategory>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
@@ -129,8 +129,8 @@
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
@@ -182,7 +182,7 @@
 		<designatorDropdown>Ship_Beams</designatorDropdown>
 		<description>Angled armor for a ship's outer hull.</description>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
 			<li>
@@ -342,18 +342,18 @@
 			<paintable>true</paintable>
 		</building>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_PowerPlantSolarShip">
-				<compClass>CompPowerPlantSolarShip</compClass>
+			<li Class="SaveOurShip2.CompProps_PowerPlantSolarShip">
+				<compClass>SaveOurShip2.CompPowerPlantSolarShip</compClass>
 				<basePowerConsumption>-1</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 				<bonusPower>1</bonusPower>
 			</li>
-			<li Class="CompProperties_Unfold">
+			<li Class="SaveOurShip2.CompProps_Unfold">
 				<extendRate>0.005</extendRate>
 				<retractRate>0.0025</retractRate>
 				<retractTime>750</retractTime>
@@ -362,15 +362,15 @@
 				<length>3.0</length>
 				<graphicPath>Things/Building/Ship/SolarExpand</graphicPath>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_SolarShip</li>
+			<li>SaveOurShip2.PlaceWorker_SolarShip</li>
 		</placeWorkers>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc5</designationHotKey>
@@ -389,7 +389,7 @@
 		<label>ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
 		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.\n\nCan also heat rooms with electricity.</description>
-		<thingClass>Building_ShipVent</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipVent</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
 		<graphicData>
@@ -429,11 +429,11 @@
 		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
 		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
 		<placeWorkers>
-			<li>PlaceWorker_ShipVent</li>
+			<li>SaveOurShip2.PlaceWorker_ShipVent</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
@@ -447,12 +447,12 @@
 			<li Class="CompProperties_TempControl">
 				<energyPerSecond>-64</energyPerSecond>
 			</li>
-			<li Class="CompProperties_Overlay">
+			<li Class="SaveOurShip2.CompProps_Overlay">
 				<graphicPath>Things/Building/Ship/Ship_Vent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
@@ -482,7 +482,7 @@
 		<designatorDropdown>Ship_Airlocks</designatorDropdown>
 		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
 		<category>Building</category>
-		<thingClass>Building_ShipAirlock</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipAirlock</thingClass>
 		<designationCategory>Ship</designationCategory>
 		<altitudeLayer>DoorMoveable</altitudeLayer>
 		<fillPercent>1</fillPercent>
@@ -503,7 +503,7 @@
 			<Plasteel>25</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
@@ -515,13 +515,13 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
-			<li Class="CompProperties_Unfold">
+			<li Class="SaveOurShip2.CompProps_Unfold">
 				<extendRate>0.005</extendRate>
 				<retractRate>0.005</retractRate>
 				<retractTime>240</retractTime>
@@ -538,7 +538,7 @@
 			<li>ShipBasics</li>
 		</researchPrerequisites>
 		<placeWorkers>
-			<li>PlaceWorker_ShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipHull</li>
 		</placeWorkers>
 		<statBases>
 			<WorkToBuild>1200</WorkToBuild>
@@ -619,22 +619,22 @@
 			<paintable>true</paintable>
 		</building>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_SoShipDocking">
+			<li Class="SaveOurShip2.CompProps_DockExtender">
 				<extender>true</extender>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
-			<li Class="CompProperties_Overlay">
+			<li Class="SaveOurShip2.CompProps_Overlay">
 				<graphicPath>Things/Building/Ship/DockAttach</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
@@ -643,7 +643,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_SolarShip</li>
+			<li>SaveOurShip2.PlaceWorker_SolarShip</li>
 		</placeWorkers>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc5</designationHotKey>
@@ -694,14 +694,14 @@
 			<Plasteel>1</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
 				<roof>true</roof>
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipPlating</li>
+			<li>SaveOurShip2.PlaceWorker_ShipPlating</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>
@@ -745,7 +745,7 @@
 		</statBases>
 		<description>Support structure for attaching buildings and turrets to a ship's exterior. Anything built atop this will be considered part of the ship.\n\nIntegrated nano-composite armor reduces damage to turrets placed atop this hardpoint by half.</description>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHardpoint>true</isHardpoint>
 			</li>
 			<li>
@@ -753,7 +753,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipPlating</li>
+			<li>SaveOurShip2.PlaceWorker_ShipPlating</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
@@ -864,7 +864,7 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
@@ -888,7 +888,7 @@
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_EngineTrail">
+			<li Class="SaveOurShip2.CompProps_EngineTrail">
 				<!--graphicData>
 					<texPath>Things/Building/Ship/Ship_Engine_Trail_Single</texPath>
 					<graphicClass>Graphic_Multi</graphicClass>
@@ -902,7 +902,7 @@
 			<li Class="Rimefeller.CompProperties_Pipe" MayRequire="Dubwise.Rimefeller"/>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipEngine</li>
+			<li>SaveOurShip2.PlaceWorker_ShipEngine</li>
 		</placeWorkers>
 		<building>
 			<shipPart>true</shipPart>
@@ -939,7 +939,7 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
@@ -963,7 +963,7 @@
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_EngineTrail">
+			<li Class="SaveOurShip2.CompProps_EngineTrail">
 				<!--graphicData>
 					<texPath>Things/Building/Ship/Ship_Engine_Trail_Double</texPath>
 					<graphicClass>Graphic_Multi</graphicClass>
@@ -977,7 +977,7 @@
 			<li Class="Rimefeller.CompProperties_Pipe" MayRequire="Dubwise.Rimefeller"/>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipEngine</li>
+			<li>SaveOurShip2.PlaceWorker_ShipEngine</li>
 		</placeWorkers>
 		<building>
 			<shipPart>true</shipPart>
@@ -1016,7 +1016,7 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
@@ -1040,7 +1040,7 @@
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_EngineTrail">
+			<li Class="SaveOurShip2.CompProps_EngineTrail">
 				<!--graphicData>
 					<texPath>Things/Building/Ship/NuclearEngineTrail</texPath>
 					<graphicClass>Graphic_Multi</graphicClass>
@@ -1053,7 +1053,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipEngine</li>
+			<li>SaveOurShip2.PlaceWorker_ShipEngine</li>
 		</placeWorkers>
 		<building>
 			<shipPart>true</shipPart>
@@ -1091,8 +1091,8 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_RCSThruster"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
+			<li Class="SaveOurShip2.CompProps_RCSThruster"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -1140,7 +1140,7 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
@@ -1149,7 +1149,7 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_EngineTrail">
+			<li Class="SaveOurShip2.CompProps_EngineTrail">
 				<!--graphicData>
 					<texPath>Things/Building/Ship/Ship_Engine_Trail_Energy_Double</texPath>
 					<graphicClass>Graphic_Multi</graphicClass>
@@ -1160,7 +1160,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipEngine</li>
+			<li>SaveOurShip2.PlaceWorker_ShipEngine</li>
 		</placeWorkers>
 		<building>
 			<shipPart>true</shipPart>
@@ -1200,7 +1200,7 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
@@ -1209,7 +1209,7 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_EngineTrail">
+			<li Class="SaveOurShip2.CompProps_EngineTrail">
 				<!--graphicData>
 					<texPath>Things/Building/Ship/Ship_Engine_Trail_Energy_Large</texPath>
 					<graphicClass>Graphic_Multi</graphicClass>
@@ -1220,7 +1220,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipEngine</li>
+			<li>SaveOurShip2.PlaceWorker_ShipEngine</li>
 		</placeWorkers>
 		<building>
 			<shipPart>true</shipPart>
@@ -1243,7 +1243,7 @@
 		<defName>ShipPilotSeatMini</defName>
 		<label>pilot console</label>
 		<designatorDropdown>Ship_Bridges</designatorDropdown>
-		<thingClass>Building_ShipBridge</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipBridge</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/Ship_Bridge_Mini</texPath>
 			<graphicClass>Graphic_MultiOnOff</graphicClass>
@@ -1273,7 +1273,7 @@
 			<ComponentSpacer>1</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Mannable"/>
 			<li Class="CompProperties_Flickable"/>
@@ -1282,9 +1282,9 @@
 				<basePowerConsumption>50</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 		</comps>
 		<statBases>
@@ -1298,7 +1298,7 @@
 			<isSittable>true</isSittable>
 		</building>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<researchPrerequisites>
 			<li>ShipPilotSeat</li>
@@ -1308,7 +1308,7 @@
 		<defName>ShipConsoleTactical</defName>
 		<label>tactical console</label>
 		<designatorDropdown>Ship_Bridges</designatorDropdown>
-		<thingClass>Building_ShipBridge</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipBridge</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/Ship_Console_Tactical</texPath>
 			<graphicClass>Graphic_MultiOnOff</graphicClass>
@@ -1338,7 +1338,7 @@
 			<ComponentSpacer>1</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Mannable"/>
 			<li Class="CompProperties_Flickable"/>
@@ -1347,9 +1347,9 @@
 				<basePowerConsumption>50</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatTacCon</compClass>
+			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatTacCon</compClass>
 			</li>
 		</comps>
 		<statBases>
@@ -1363,7 +1363,7 @@
 			<isSittable>true</isSittable>
 		</building>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<researchPrerequisites>
 			<li>ShipPilotSeat</li>
@@ -1373,7 +1373,7 @@
 		<defName>ShipConsoleScience</defName>
 		<label>science console</label>
 		<designatorDropdown>Ship_Bridges</designatorDropdown>
-		<thingClass>Building_ShipAdvSensor</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipSensor</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/Ship_Console_Science</texPath>
 			<graphicClass>Graphic_MultiOnOff</graphicClass>
@@ -1403,18 +1403,18 @@
 			<ComponentSpacer>1</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_Mannable"/>
-			<li Class="CompProperties_LongRangeMineralScannerSpace"/>
+			<li Class="SaveOurShip2.CompProps_ShipScanner"/>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>50</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 		</comps>
 		<statBases>
@@ -1428,7 +1428,7 @@
 			<isSittable>true</isSittable>
 		</building>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<researchPrerequisites>
 			<li>ShipPilotSeat</li>
@@ -1438,7 +1438,7 @@
 	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_ComputerCore</defName>
 		<label>ship computer core</label>
-		<thingClass>Building_ShipBridge</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipBridge</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/ShipComputerCore</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
@@ -1457,24 +1457,24 @@
 		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_ShipPart"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>1000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_BuildingConsciousness">
+			<li Class="SaveOurShip2.CompProps_BuildingConsciousness">
 				<holoHediff>SoSHologramMachine</holoHediff>
 			</li>
 		</comps>
 		<rotatable>false</rotatable>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<costList>
 			<Steel>150</Steel>
@@ -1494,7 +1494,7 @@
 		<defName>Ship_SensorCluster</defName>
 		<label>basic sensors</label>
 		<designatorDropdown>Ship_Sensors</designatorDropdown>
-		<thingClass>Building_ShipAdvSensor</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipSensor</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/ShipSensorCluster</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
@@ -1513,7 +1513,7 @@
 		<size>(1,1)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>250</basePowerConsumption>
@@ -1529,7 +1529,7 @@
 			<ComponentSpacer>6</ComponentSpacer>
 		</costList>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<designationHotKey>Misc5</designationHotKey>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
@@ -1538,7 +1538,7 @@
 		<defName>Ship_SensorClusterAdv</defName>
 		<label>advanced sensors</label>
 		<designatorDropdown>Ship_Sensors</designatorDropdown>
-		<thingClass>Building_ShipAdvSensor</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipSensor</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/ShipSensorCluster</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
@@ -1557,8 +1557,8 @@
 		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_LongRangeMineralScannerSpaceAI"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
+			<li Class="SaveOurShip2.CompProps_ShipScannerAI"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>750</basePowerConsumption>
@@ -1573,7 +1573,7 @@
 			<ComponentSpacer>24</ComponentSpacer>
 		</costList>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<designationHotKey>Misc5</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
@@ -1589,7 +1589,7 @@
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/Life_Support</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
 			<drawSize>(3,3)</drawSize>
 		</graphicData>
 		<researchPrerequisites>
@@ -1612,18 +1612,18 @@
 		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>800</basePowerConsumption>
 				<transmitsPower>false</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_ShipLifeSupport"/>
-			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="SaveOurShip2.CompProps_LifeSupport"/>
+			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<costList>
 			<Steel>120</Steel>
@@ -1643,7 +1643,7 @@
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/Micro_LifeSupport</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
 			<drawSize>(1,1)</drawSize>
 		</graphicData>
 		<researchPrerequisites>
@@ -1666,18 +1666,18 @@
 		<size>(1,1)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>2400</basePowerConsumption>
 				<transmitsPower>false</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_ShipLifeSupport"/>
-			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="SaveOurShip2.CompProps_LifeSupport"/>
+			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<costList>
 			<Steel>40</Steel>
@@ -1698,7 +1698,7 @@
 		<defName>ShipCapacitorSmall</defName>
 		<label>ship capacitor</label>
 		<designatorDropdown>Ship_Capacitors</designatorDropdown>
-		<thingClass>Building_ShipCapacitor</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipCapacitor</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<thingCategories>
 			<li>BuildingsFurniture</li>
@@ -1761,7 +1761,7 @@
 		<defName>ShipCapacitor</defName>
 		<label>capacitor array</label>
 		<designatorDropdown>Ship_Capacitors</designatorDropdown>
-		<thingClass>Building_ShipCapacitor</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipCapacitor</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/Capacitor</texPath>
@@ -1864,13 +1864,13 @@
 		</costList>
 		<comps>
 			<li Class="CompProperties_Power">
-				<compClass>CompPowerTraderOverdrivable</compClass>
+				<compClass>SaveOurShip2.CompPowerTraderOverdrivable</compClass>
 				<basePowerConsumption>-10000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<compClass>CompRefuelableOverdrivable</compClass>
+				<compClass>SaveOurShip2.CompRefuelableOverdrivable</compClass>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
 				<initialConfigurableTargetFuelLevel>2500</initialConfigurableTargetFuelLevel>
 				<fuelConsumptionRate>10</fuelConsumptionRate>
@@ -1883,8 +1883,8 @@
 				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSource</compClass>
 				<heatPerSecond>10</heatPerSecond>
 			</li>
 			<li Class="CompProperties_Glower">
@@ -1901,7 +1901,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -1954,13 +1954,13 @@
 		</costList>
 		<comps>
 			<li Class="CompProperties_Power">
-				<compClass>CompPowerTraderOverdrivable</compClass>
+				<compClass>SaveOurShip2.CompPowerTraderOverdrivable</compClass>
 				<basePowerConsumption>-3000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<compClass>CompRefuelableOverdrivable</compClass>
+				<compClass>SaveOurShip2.CompRefuelableOverdrivable</compClass>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
 				<initialConfigurableTargetFuelLevel>500</initialConfigurableTargetFuelLevel>
 				<fuelConsumptionRate>3</fuelConsumptionRate>
@@ -1973,8 +1973,8 @@
 				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSource</compClass>
 				<heatPerSecond>3</heatPerSecond>
 			</li>
 			<li Class="CompProperties_Glower">
@@ -1991,7 +1991,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -2043,11 +2043,11 @@
 			<ComponentSpacer>6</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipBay</li>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
@@ -2092,11 +2092,11 @@
 			<ComponentSpacer>8</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipBay</li>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
@@ -2143,12 +2143,12 @@
 			<ComponentSpacer>6</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_SalvageBay"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
+			<li Class="SaveOurShip2.CompProps_SalvageBay"/>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipBay</li>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
@@ -2193,8 +2193,8 @@
 			<SoSEntanglementManifold>1</SoSEntanglementManifold>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
-			<li Class="CompProperties_SalvageBay">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
+			<li Class="SaveOurShip2.CompProps_SalvageBay">
 				<beam>true</beam>
 				<weight>10000</weight>
 			</li>
@@ -2204,8 +2204,8 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
-			<li>PlaceWorker_ShipBay</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
@@ -2214,10 +2214,10 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipCloakingDevice</defName>
 		<label>cloaking device</label>
-		<thingClass>Building_ShipCloakingDevice</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipCloakingDevice</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/CloakingDevice</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
 			<drawSize>(3,3)</drawSize>
 			<damageData>
 				<cornerTL>Damage/Corner</cornerTL>
@@ -2247,14 +2247,14 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_GraphicOnOff"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSource</compClass>
 				<heatPerSecond>1</heatPerSecond>
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<costList>
@@ -2310,7 +2310,7 @@
 		<hasInteractionCell>true</hasInteractionCell>
 		<interactionCellOffset>(1,0,0)</interactionCellOffset>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
@@ -2319,7 +2319,7 @@
 				<explosiveRadius>2.66</explosiveRadius>
 				<explosiveDamageType>Flame</explosiveDamageType>
 			</li>
-			<li Class="CompProperties_CryptoLaunchable"/>
+			<li Class="SaveOurShip2.CompProps_CryptoLaunchable"/>
 		</comps>
 		<defaultPlacingRot>South</defaultPlacingRot>
 		<building>
@@ -2338,7 +2338,7 @@
 	<ThingDef ParentName="BedBase">
 		<defName>SpaceCrib</defName>
 		<label>spacer crib</label>
-		<thingClass>Building_SpaceCrib</thingClass>
+		<thingClass>SaveOurShip2.Building_SpaceCrib</thingClass>
 		<designatorDropdown>Ship_Cryptos</designatorDropdown>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<description>A high-tech bed perfect for a sleepy baby. In the event of life support failure, a protective shell will close around the occupant, recycling oxygen and regulating temperature. It also functions as an escape pod if the ship is critically damaged.\n\nIt is not a cryptosleep casket and cannot keep its occupant alive during interstellar journeys.</description>
@@ -2348,12 +2348,12 @@
 					<li MayRequire="Ludeon.RimWorld.Ideology">SleepAccelerator</li>
 				</linkableFacilities>
 			</li>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_CryptoLaunchable"/>
+			<li Class="SaveOurShip2.CompProps_CryptoLaunchable"/>
 		</comps>
 		<graphicData>
 			<texPath>Things/Building/Ship/SpaceCrib_off</texPath>
@@ -2561,7 +2561,7 @@
 		<description>A tank of advanced mechanites capable of dismantling a deceased human body and constructing a formgel swarm which mimics the subject's original biological functions.\nThe subject's consciousness is transferred with perfect fidelity to an artificial neuro-psychic substrate which remains in the tank, remotely controlling its formgel via psychic entanglement. An afterlife casket can preserve only a single consciousness at a time.</description>
 		<graphicData>
 			<texPath>Things/Building/Ship/AvatarCasket</texPath>
-			<graphicClass>Graphic_SingleOnOffEmpty</graphicClass>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOffEmpty</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
 			<drawSize>(2.5,2.8)</drawSize>
 			<shadowData>
@@ -2601,12 +2601,12 @@
 				<explosiveDamageType>Flame</explosiveDamageType>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_BuildingConsciousness">
+			<li Class="SaveOurShip2.CompProps_BuildingConsciousness">
 				<holoHediff>SoSHologram</holoHediff>
 				<canMergeHuman>true</canMergeHuman>
 				<mustBeDead>true</mustBeDead>
 			</li>
-			<li Class="CompProperties_GraphicOnOff"/>
+			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
 			<li Class="CompProperties_Glower">
 				<glowRadius>8</glowRadius>
 				<glowColor>(255,255,255,0)</glowColor>
@@ -2652,7 +2652,7 @@
 		<size>(3,3)</size>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<basePowerConsumption>200</basePowerConsumption>
@@ -2670,11 +2670,11 @@
 				<autoRefuelPercent>0.9</autoRefuelPercent>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_HullFoamDistributor"/>
+			<li Class="SaveOurShip2.CompProps_HullFoamDistributor"/>
 		</comps>
 		<rotatable>false</rotatable>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<costList>
 			<Steel>80</Steel>
@@ -2738,7 +2738,7 @@
 			<HullFoam>1</HullFoam>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<foam>true</foam>
@@ -2784,7 +2784,7 @@
 			<HullFoam>1</HullFoam>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
 				<foam>true</foam>
@@ -2792,7 +2792,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_NotOnBuilding</li>
+			<li>SaveOurShip2.PlaceWorker_NotOnBuilding</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>
@@ -2846,17 +2846,17 @@
 			</blueprintGraphicData>
 		</building>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SoShipDocking">
+			<li Class="SaveOurShip2.CompProps_DockExtender">
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li Class="Rimefeller.CompProperties_Pipe" MayRequire="Dubwise.Rimefeller"/>
 		</comps>
@@ -2902,10 +2902,10 @@
 			</blueprintGraphicData>
 		</building>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SoShipDocking">
+			<li Class="SaveOurShip2.CompProps_DockExtender">
 			</li>
 		</comps>
 		<resourcesFractionWhenDeconstructed>0</resourcesFractionWhenDeconstructed>
@@ -2938,10 +2938,10 @@
 		</statBases>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SoShipDocking">
+			<li Class="SaveOurShip2.CompProps_DockExtender">
 				<isPlating>true</isPlating>
 			</li>
 		</comps>
@@ -3042,7 +3042,7 @@
 			<Flammability>1</Flammability>
 		</statBases>
 		<placeWorkers>
-			<li>PlaceWorker_ShipBlueprint</li>
+			<li>SaveOurShip2.PlaceWorker_ShipBlueprint</li>
 		</placeWorkers>
 		<thingCategories>
 			<li>ShipBlueprints</li>
@@ -3063,7 +3063,7 @@
 			<MarketValue>1000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPBomberHeavy</shipDef>
 			</li>
 		</comps>
@@ -3076,7 +3076,7 @@
 			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPCargoFirefly</shipDef>
 			</li>
 		</comps>
@@ -3089,7 +3089,7 @@
 			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPCorvette</shipDef>
 			</li>
 		</comps>
@@ -3102,7 +3102,7 @@
 			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPCorvetteGunship</shipDef>
 			</li>
 		</comps>
@@ -3115,7 +3115,7 @@
 			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPCorvetteTorpedo</shipDef>
 			</li>
 		</comps>
@@ -3128,7 +3128,7 @@
 			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPCorvetteWinged</shipDef>
 			</li>
 		</comps>
@@ -3141,7 +3141,7 @@
 			<MarketValue>3000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPFrigateArcher</shipDef>
 			</li>
 		</comps>
@@ -3154,7 +3154,7 @@
 			<MarketValue>3000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPFrigateWinged</shipDef>
 			</li>
 		</comps>
@@ -3167,7 +3167,7 @@
 			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPCorvetteMartian</shipDef>
 			</li>
 		</comps>
@@ -3180,7 +3180,7 @@
 			<MarketValue>1000</MarketValue>
 		</statBases>
 		<comps>
-			<li Class="CompProperties_ShipBlueprint">
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPTransportSmall</shipDef>
 			</li>
 		</comps>
@@ -3204,7 +3204,7 @@
 		<building>
 		</building>
 		<placeWorkers>
-			<li>PlaceWorker_MoveShip</li>
+			<li>SaveOurShip2.PlaceWorker_MoveShip</li>
 		</placeWorkers>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
@@ -3221,7 +3221,7 @@
 	<ThingDef>
 		<defName>MinifiedThingShipMove</defName>
 		<label>minified thing</label>
-		<thingClass>MinifiedThingShipMove</thingClass>
+		<thingClass>SaveOurShip2.MinifiedThingShipMove</thingClass>
 		<useHitPoints>true</useHitPoints>
 		<selectable>true</selectable>
 		<altitudeLayer>Item</altitudeLayer>

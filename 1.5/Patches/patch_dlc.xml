@@ -160,19 +160,19 @@
 							<colorSecondary>Structure_GrayLight</colorSecondary>
 							<marineDef>Empire_Fighter_Marine_Space</marineDef>
 							<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
-							<enemyShipDefs>
+							<spaceShipDefs>
 								<li>EmpireBattleship</li>
 								<li>EmpireBomber</li>
 								<li>EmpireCorvette</li>
 								<li>EmpireCruiser</li>
 								<li>EmpireDestroyer</li>
 								<li>EmpireFighter</li>
-							</enemyShipDefs>
+							</spaceShipDefs>
 						</SpaceNavyDef>
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-					<xpath>Defs/EnemyShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
+					<xpath>Defs/SpaceShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
 					<value>
 						<navyExclusive>true</navyExclusive>
 					</value>

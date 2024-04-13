@@ -4,7 +4,7 @@
 		<defName>OuterSpaceBiome</defName>
 		<label>outer space</label>
 		<description>It's... space.</description>
-		<workerClass>BiomeWorker_OuterSpace</workerClass>
+		<workerClass>SaveOurShip2.BiomeWorker_OuterSpace</workerClass>
 		<canAutoChoose>false</canAutoChoose>
 		<allowRoads>false</allowRoads>
 		<allowRivers>false</allowRivers>

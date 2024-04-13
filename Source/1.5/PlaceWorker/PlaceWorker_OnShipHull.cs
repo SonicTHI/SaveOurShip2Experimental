@@ -1,8 +1,8 @@
 ﻿using System;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class PlaceWorker_OnShipHull : PlaceWorker
 	{
@@ -16,7 +16,7 @@ namespace RimWorld
 				{
 					if (t is Building b && b.Faction == Faction.OfPlayer)
 					{
-						var shipPart = b.TryGetComp<CompSoShipPart>();
+						var shipPart = b.TryGetComp<CompShipCachePart>();
 						if (shipPart != null && (shipPart.Props.isPlating || (shipPart.Props.isHardpoint && def.defName.Contains("Turret"))))
 						{
 							hasPlating = true;

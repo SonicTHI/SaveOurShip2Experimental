@@ -185,6 +185,22 @@ namespace RimWorld
 			if (ShipInteriorMod2.AirlockBugFlag) //disable on moveship, detach destruction
 				return;
 
+			if (!parent.def.building.shipPart) //remove other parts
+			{
+				if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
+					return;
+				foreach (IntVec3 vec in cellsUnder) //if any part was on ship remove it from cache
+				{
+					int index = mapComp.ShipIndexOnVec(vec);
+					if (index != -1)
+					{
+						mapComp.ShipsOnMapNew[index].RemoveFromCache(parent as Building, mode);
+					}
+					return;
+				}
+				return;
+			}
+
 			List<IntVec3> areaDestroyed = new List<IntVec3>();
 			HashSet<Building> buildings = new HashSet<Building>();
 			foreach (IntVec3 vec in cellsUnder) //check if other floor or hull on any vec

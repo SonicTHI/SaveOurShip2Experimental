@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Command_TargetWreck : Command
 	{
@@ -37,12 +37,12 @@ namespace RimWorld
 		{
 			if (b == null)
 				return;
-			int bMax = sourceMap.GetComponent<ShipHeatMapComp>().MaxSalvageWeightOnMap();
-			var mapComp = b.Map.GetComponent<ShipHeatMapComp>();
+			int bMax = sourceMap.GetComponent<ShipMapComp>().MaxSalvageWeightOnMap();
+			var mapComp = b.Map.GetComponent<ShipMapComp>();
 			int shipIndex = mapComp.ShipIndexOnVec(b.Position);
 			if (shipIndex != -1)
 			{
-				var ship = mapComp.ShipsOnMapNew[shipIndex];
+				var ship = mapComp.ShipsOnMap[shipIndex];
 				float bCountF = ship.BuildingCount * 2.5f;
 				if (bCountF > bMax) //moving this ship with another ship //td compare size, check bays and fuel
 				{

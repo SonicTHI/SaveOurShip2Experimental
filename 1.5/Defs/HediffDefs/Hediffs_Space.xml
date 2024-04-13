@@ -137,7 +137,7 @@
 				<severityPerDay>-8</severityPerDay>
 				<showHoursToRecover>true</showHoursToRecover>
 			</li>
-			<li Class="SaveOurShip2.HediffCompProperties_Bubble" />
+			<li Class="SaveOurShip2.HediffCompProps_Bubble" />
 		</comps>
 		<label>survival bubble</label>
 		<stages>
@@ -173,7 +173,7 @@
         <severityPerDayNotImmune>0.5</severityPerDayNotImmune>
         <severityPerDayImmune>-2</severityPerDayImmune>
       </li>
-	  <li Class="HediffCompProperties_OnlyInSpace">
+	  <li Class="HediffCompProps_OnlyInSpace">
       </li>
     </comps>
     <stages>
@@ -264,7 +264,7 @@
 	<HediffDef>
 		<defName>SoSHologram</defName>
 		<label>formgel</label>
-		<hediffClass>HediffPawnIsHologram</hediffClass>
+		<hediffClass>SaveOurShip2.HediffPawnIsHologram</hediffClass>
 		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
 		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a human consciousness via psychic entanglement.
 \nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.
@@ -314,7 +314,7 @@
 	<HediffDef>
 		<defName>SoSHologramMachine</defName>
 		<label>persona formgel</label>
-		<hediffClass>HediffPawnIsHologram</hediffClass>
+		<hediffClass>SaveOurShip2.HediffPawnIsHologram</hediffClass>
 		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
 		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by a machine persona via psychic entanglement.
 \nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.
@@ -372,7 +372,7 @@
 	<HediffDef>
 		<defName>SoSHologramArchotech</defName>
 		<label>archotech formgel</label>
-		<hediffClass>HediffPawnIsHologram</hediffClass>
+		<hediffClass>SaveOurShip2.HediffPawnIsHologram</hediffClass>
 		<defaultLabelColor>(0, 0.33, 1)</defaultLabelColor>
 		<description>This entity is a formgel - a swarm of mechanites which mimic the shape and function of a biological human body - remotely controlled by an archotech spore via psychic entanglement.
 \nA formgel appears as a gelatinous version of the human body which served as its initial template. It rapidly repairs itself from damage but significant injury can force the swarm to decohere; this does not harm the mind controlling the formgel, but a replacement swarm takes time to breed. Formgels are capable of indefinite self-maintenance and require only small amounts of nutrition to replace mechanites lost to entropy.

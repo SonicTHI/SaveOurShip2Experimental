@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompPowerPlantSolarShip : CompPowerPlant
@@ -14,17 +14,17 @@ namespace RimWorld
 		private static readonly Material PowerPlantSolarBarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.15f, 0.15f, 0.15f), false);
 		private static float FullSunPower = 300;
 		private const float NightPower = 0.0f;
-		private CompProperties_PowerPlantSolarShip PropsSolar
+		private CompProps_PowerPlantSolarShip PropsSolar
 		{
-			get { return props as CompProperties_PowerPlantSolarShip; }
+			get { return props as CompProps_PowerPlantSolarShip; }
 		}
-		UnfoldComponent compUnfold;
+		CompUnfold compUnfold;
 		public List<IntVec3> unfoldTo;
 
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
-			compUnfold = parent.TryGetComp<UnfoldComponent>();
+			compUnfold = parent.TryGetComp<CompUnfold>();
 			IntVec3 v = IntVec3.South.RotatedBy(parent.Rotation);
 			unfoldTo = new List<IntVec3>
 			{

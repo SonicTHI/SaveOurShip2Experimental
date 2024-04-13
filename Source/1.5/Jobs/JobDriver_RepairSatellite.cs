@@ -6,7 +6,7 @@ using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class JobDriver_RepairSatellite : JobDriver
 	{

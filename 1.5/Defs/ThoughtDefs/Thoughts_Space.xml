@@ -3,7 +3,7 @@
 
   <ThoughtDef>
     <defName>SpaceThoughts</defName>
-    <workerClass>ThoughtWorker_SpaceThoughts</workerClass>
+    <workerClass>SaveOurShip2.ThoughtWorker_SpaceThoughts</workerClass>
     <stages>
       <li>
         <label>space!</label>
@@ -30,7 +30,7 @@
 
   <ThoughtDef>
     <defName>ProsthophileImmortal</defName>
-    <workerClass>ThoughtWorker_IsHologram</workerClass>
+    <workerClass>SaveOurShip2.ThoughtWorker_IsHologram</workerClass>
     <validWhileDespawned>true</validWhileDespawned>
     <requiredTraits>
       <li>Transhumanist</li>
@@ -46,7 +46,7 @@
   
   <ThoughtDef>
     <defName>ProsthophobeImmortal</defName>
-    <workerClass>ThoughtWorker_IsHologram</workerClass>
+    <workerClass>SaveOurShip2.ThoughtWorker_IsHologram</workerClass>
     <validWhileDespawned>true</validWhileDespawned>
     <requiredTraits>
       <li>BodyPurist</li>

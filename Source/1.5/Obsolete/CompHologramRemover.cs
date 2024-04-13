@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	/*class CompHologramRemover : ThingComp
 	{

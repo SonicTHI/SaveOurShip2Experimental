@@ -1,16 +1,16 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Linq;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class IncidentWorker_SpacePirates : IncidentWorker
 	{
 		protected override bool CanFireNowSub(IncidentParms parms)
 		{
 			Map map = (Map)parms.target;
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			var mapComp = map.GetComponent<ShipMapComp>();
 			if (mapComp.ShipMapState != ShipMapState.nominal || mapComp.NextTargetMap != null || ModSettings_SoS.frequencySoS == 0 || Find.TickManager.TicksGame < mapComp.LastAttackTick + 300000 / ModSettings_SoS.frequencySoS)
 				return false;
 
@@ -31,7 +31,7 @@ namespace RimWorld
 			int rarity = Rand.RangeInclusive(1, 2);
 			SpaceNavyDef navy = DefDatabase<SpaceNavyDef>.AllDefs.Where(n =>
 			{
-				if (n.enemyShipDefs.NullOrEmpty() || !n.pirates)
+				if (n.spaceShipDefs.NullOrEmpty() || !n.pirates)
 					return false;
 				//any faction that has same def as navy, defeat check
 				else if (Find.FactionManager.AllFactions.Any(f => n.factionDefs.Contains(f.def) && (!f.defeated || (f.defeated && n.canOperateAfterFactionDefeated))))
@@ -41,12 +41,12 @@ namespace RimWorld
 			if (navy != null)
 			{
 				ship.spaceNavyDef = navy;
-				//ship.attackableShip = navy.enemyShipDefs.Where(def => !def.neverRandom && !def.neverAttacks && def.rarityLevel <= rarity).RandomElement();
+				//ship.attackableShip = navy.spaceShipDefs.Where(def => !def.neverRandom && !def.neverAttacks && def.rarityLevel <= rarity).RandomElement();
 				ship.shipFaction = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
 			}
 			/*if (ship.attackableShip == null)
 			{
-				ship.attackableShip = DefDatabase<EnemyShipDef>.AllDefs.Where(def => !def.neverRandom && !def.neverAttacks && !def.navyExclusive && def.rarityLevel <= rarity).RandomElement();
+				ship.attackableShip = DefDatabase<SpaceShipDef>.AllDefs.Where(def => !def.neverRandom && !def.neverAttacks && !def.navyExclusive && def.rarityLevel <= rarity).RandomElement();
 				ship.shipFaction = Faction.OfAncientsHostile;
 			}*/
 			map.passingShipManager.AddShip(ship);
@@ -65,7 +65,7 @@ namespace RimWorld
 			}
 			else if (!(bounty > 50 && Rand.Bool)) //attack
 			{
-				var mapComp = map.GetComponent<ShipHeatMapComp>();
+				var mapComp = map.GetComponent<ShipMapComp>();
 				mapComp.StartShipEncounter(ship);
 			}
 			return true;

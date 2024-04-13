@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Verse;
 using Verse.AI;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class WorkGiver_FightMechanites : WorkGiver_Scanner
 	{

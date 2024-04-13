@@ -66,7 +66,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(4,4)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<!-- damage amount is the damage def default -->
@@ -81,7 +81,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Bullet_Torpedo_HighExplosive</defName>
 		<label>high-explosive torpedo</label>
-		<thingClass>Projectile_TorpedoShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipTorpedo</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTorpedoExplosive</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -137,7 +137,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(4,4)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>EMP</damageDef>
 			<!-- damage amount is the damage def default -->
@@ -152,7 +152,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Bullet_Torpedo_EMP</defName>
 		<label>EMP torpedo</label>
-		<thingClass>Projectile_TorpedoShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipTorpedo</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTorpedoEMP</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -209,7 +209,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(4,4)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>BombSuper</damageDef>
 			<!-- damage amount is the damage def default -->
@@ -224,7 +224,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Bullet_Torpedo_Antimatter</defName>
 		<label>antigrain torpedo</label>
-		<thingClass>Projectile_ExplosiveShipCombatAntigrain</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipAntigrain</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTorpedoAntimatter</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

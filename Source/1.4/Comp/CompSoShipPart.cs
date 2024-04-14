@@ -174,8 +174,7 @@ namespace RimWorld
 			}
 			else //else make new ship/wreck
 			{
-				mapComp.ShipsOnMapNew.Add(parent.thingIDNumber, new SoShipCache());
-				mapComp.ShipsOnMapNew[parent.thingIDNumber].RebuildCache(parent as Building);
+				ShipInteriorMod2.WorldComp.AddNewShip(mapComp.ShipsOnMapNew, parent as Building);
 			}
 		}
 

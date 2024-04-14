@@ -281,7 +281,7 @@ namespace SaveOurShip2
 	public static class DrawShips
 	{
 		public static int Highlight = -1;
-		public static List<Pair<IntVec3, float>> tmpCachedCellColors;
+		public static List<Pair<IntVec3, int>> tmpCachedCellColors;
 		public static void Postfix()
 		{
 			if (ModSettings_SoS.debugMode)
@@ -293,7 +293,7 @@ namespace SaveOurShip2
 
 				if (tmpCachedCellColors == null)
 				{
-					tmpCachedCellColors = new List<Pair<IntVec3, float>>();
+					tmpCachedCellColors = new List<Pair<IntVec3, int>>();
 				}
 				//if (Time.frameCount % 6 == 0)
 				{
@@ -302,12 +302,13 @@ namespace SaveOurShip2
 				var cells = mapComp.MapShipCells;
 				foreach (IntVec3 v in cells.Keys)
 				{
-					tmpCachedCellColors.Add(new Pair<IntVec3, float>(v, cells[v].Item1));
+					int n = cells[v].Item1 * 300 - cells[v].Item1 * 30 + cells[v].Item1 * 3;
+					tmpCachedCellColors.Add(new Pair<IntVec3, int>(v, n));
 				}
 				for (int m = 0; m < tmpCachedCellColors.Count; m++)
 				{
 					IntVec3 v = tmpCachedCellColors[m].First;
-					int sec = (int)tmpCachedCellColors[m].Second;
+					int sec = tmpCachedCellColors[m].Second;
 
 					if (sec == -1)
 					{
@@ -320,7 +321,7 @@ namespace SaveOurShip2
 						continue;
 					}
 
-					int index = (int)tmpCachedCellColors[m].Second % 1000;
+					int index = tmpCachedCellColors[m].Second % 1000;
 					float r = index / 1000f;
 					index %= 100;
 					float g = index / 100f;

@@ -570,7 +570,7 @@ namespace SaveOurShip2
 		public bool PathDirty = true; //unused //td
 		public int LastSafePath = -1; //in combat the lowest path -1 that sufered damage
 		public List<HashSet<IntVec3>> DetachedShipAreas = new List<HashSet<IntVec3>>();
-		public void RebuildCache(Building origin, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
+		public void RebuildCache(Building origin, int mergeToIndex, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
 		{
 			if (origin == null || origin.Destroyed)
 			{
@@ -578,7 +578,7 @@ namespace SaveOurShip2
 				return;
 			}
 			Map = origin.Map;
-			Index = origin.thingIDNumber;
+			Index = mergeToIndex;
 			int path = -1;
 			if (origin is Building_ShipBridge core)
 			{
@@ -1078,27 +1078,26 @@ namespace SaveOurShip2
 			}
 			if (ModSettings_SoS.debugMode)
 				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach new ship/wreck with: " + newCore);
-			if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
+			/*if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
 			{
 				int newKey = mapComp.ShipsOnMapNew.Keys.Max() + 1000;
 				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach error, shipID " + newCore.thingIDNumber + " already exits! Using fallback index: " + newKey + ", pausing game. Recheck ship area with infestation overlay. If not correct - save and reload!");
 				//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
 				newCore.thingIDNumber = newKey;
-			}
+			}*/
 			//make new ship
-			mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
-			mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore);
+			int mergeToIndex = ShipInteriorMod2.WorldComp.AddNewShip(mapComp.ShipsOnMapNew, newCore);
 			if (mapComp.ShipMapState == ShipMapState.inCombat)
 			{
 				if (mapComp.HasShipMapAI)
 					mapComp.hasAnyPartDetached = true;
-				mapComp.ShipsToMove.Add(newCore.thingIDNumber);
+				mapComp.ShipsToMove.Add(mergeToIndex);
 			}
 			//remove this ship if nothing remains
 			if (!Area.Any())
 			{
-				Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
-				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Area is empty!");
+				//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Area is empty!");
 				//mapComp.ShipsOnMapNew.Remove(Index);
 			}
 		}

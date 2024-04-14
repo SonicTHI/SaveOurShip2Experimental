@@ -652,6 +652,67 @@
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
 	</ThingDef>
+	<ThingDef ParentName="BuildingBase">
+		<defName>Ship_ForceField</defName>
+		<label>force field</label>
+		<designatorDropdown>Ship_Airlocks</designatorDropdown>
+		<thingClass>SaveOurShip2.Building_ShipForceField</thingClass>
+		<designationCategory>Ship</designationCategory>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
+		<graphicData>
+			<texPath>Things/Building/Linked/ShipBeam/ShipForceField_Atlas</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<linkType>Basic</linkType>
+			<linkFlags>
+				<li>Wall</li>
+				<li>Rock</li>
+			</linkFlags>
+		</graphicData>
+		<uiIconPath>Things/Building/Ship/ShipBeamModular_north</uiIconPath>
+		<statBases>
+			<WorkToBuild>10000</WorkToBuild>
+			<MaxHitPoints>250</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
+		<placingDraggableDimensions>1</placingDraggableDimensions>
+		<comps>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
+				<isHull>true</isHull>
+				<hermetic>true</hermetic>
+			</li>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTransmitter</compClass>
+				<transmitsPower>true</transmitsPower>
+				<basePowerConsumption>250</basePowerConsumption>
+			</li>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
+			</li>
+			<li>
+				<compClass>CompColorable</compClass>
+			</li>
+		</comps>
+		<rotatable>false</rotatable>
+		<building>
+			<shipPart>true</shipPart>
+			<blueprintGraphicData>
+				<texPath>Things/Building/Linked/Wall_Blueprint_Atlas</texPath>
+			</blueprintGraphicData>
+		</building>
+		<placeWorkers>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<costList>
+			<Steel>20</Steel>
+			<Plasteel>25</Plasteel>
+			<ComponentSpacer>3</ComponentSpacer>
+		</costList>
+		<researchPrerequisites>
+			<li>ShipBasics</li>
+		</researchPrerequisites>
+		<designationHotKey>Misc1</designationHotKey>
+	</ThingDef>
 	<!-- plating -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Hulls</defName>

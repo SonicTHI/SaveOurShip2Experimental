@@ -6,7 +6,6 @@ using System.Linq;
 
 namespace SaveOurShip2
 {
-	//SOS2 world comp, any global vars go here, legacy name is kept for backward compatibility
 	public class ShipWorldComp : WorldComponent
 	{
 		//private int ShipsHaveInsidesVersion;
@@ -23,6 +22,22 @@ namespace SaveOurShip2
 
 		}
 
+		private int nextShipId = 0;
+		private int newShipId
+		{
+			get
+			{
+				nextShipId++;
+				return nextShipId;
+			}
+		}
+		public int AddNewShip(Dictionary<int, SpaceShipCache> ShipsOnMap, Building core)
+		{
+			int mergeToIndex = ShipInteriorMod2.WorldComp.newShipId;
+			ShipsOnMap.Add(mergeToIndex, new SpaceShipCache());
+			ShipsOnMap[mergeToIndex].RebuildCache(core, mergeToIndex);
+			return mergeToIndex;
+		}
 		public override void FinalizeInit()
 		{
 			base.FinalizeInit();

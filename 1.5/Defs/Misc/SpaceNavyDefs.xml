@@ -4,6 +4,7 @@
         <factionDefs></factionDefs>
 		<colorPrimary></colorPrimary>
 		<colorSecondary></colorSecondary>
+		<colorLighting></colorLighting>
 		<bountyHunts>false</bountyHunts>
 		<pirates>false</pirates>
 		<canOperateAfterFactionDefeated>true</canOperateAfterFactionDefeated>

@@ -424,8 +424,7 @@ namespace SaveOurShip2
 			{
 				if (MapRootListAll[i].ShipIndex == -1) //skip any with valid index
 				{
-					ShipsOnMap.Add(MapRootListAll[i].thingIDNumber, new SpaceShipCache());
-					ShipsOnMap[MapRootListAll[i].thingIDNumber].RebuildCache(MapRootListAll[i]);
+					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, MapRootListAll[i]);
 				}
 			}
 			List<IntVec3> invalidCells = new List<IntVec3>(); //might happen with wrecks - temp solution
@@ -439,15 +438,12 @@ namespace SaveOurShip2
 						invalidCells.Add(vec);
 						continue;
 					}
-					int mergeToIndex = t.thingIDNumber;
-
-					ShipsOnMap.Add(mergeToIndex, new SpaceShipCache());
-					ShipsOnMap[mergeToIndex].RebuildCache(t as Building);
+					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, t as Building);
 				}
 			}
 			if (invalidCells.Any())
 			{
-				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Recaching found ".Colorize(Color.red) + invalidCells.Count + " invalid cells! FIXING.");
+				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Recaching found ".Colorize(Color.red) + invalidCells.Count + " invalid cells! FIXING.");
 				foreach (IntVec3 vec in invalidCells)
 				{
 					MapShipCells.Remove(vec);
@@ -489,8 +485,7 @@ namespace SaveOurShip2
 				ShipsOnMap.Remove(i);
 			}
 			//full rebuild
-			ShipsOnMap.Add(mergeToIndex, new SpaceShipCache());
-			ShipsOnMap[mergeToIndex].RebuildCache(origin);
+			ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, origin);
 		}
 		public void CheckAndMerge(HashSet<IntVec3> cellsToMerge) //faster, attaches as a tumor
 		{
@@ -1116,7 +1111,7 @@ namespace SaveOurShip2
 							{
 								var ship = ShipsOnMap[index];
 								//ship cant move and fleet fleeing or ship less than x of fleet threat
-								if (!ship.CanMove() && (Retreating || totalThreat * 0.2f > ship.ThreatCurrent))
+								if (!ship.CanMove() && (Retreating || totalThreat * 0.3f > ship.ThreatCurrent))
 								{
 									ShipsToMove.Add(index);
 								}

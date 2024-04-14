@@ -102,6 +102,7 @@
     <Compile Include="Building\Building_ArchotechPillar.cs" />
     <Compile Include="Building\Building_ArchotechSpore.cs" />
     <Compile Include="Building\Building_SatelliteCore.cs" />
+    <Compile Include="Building\Building_ShipForceField.cs" />
     <Compile Include="Building\Building_ShipSensor.cs" />
     <Compile Include="Building\Building_ShipAirlock.cs" />
     <Compile Include="Building\Building_ShipBridge.cs" />

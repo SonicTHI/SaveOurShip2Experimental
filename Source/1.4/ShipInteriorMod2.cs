@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V99f20";
+		public const string SOS2EXPversion = "V99f21";
 		public const int SOS2ReqCurrentMinor = 4;
 		public const int SOS2ReqCurrentBuild = 3704;
 
@@ -1786,11 +1786,11 @@ namespace SaveOurShip2
 
 			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
 			{
-				if (targetMapComp.ShipsOnMapNew.ContainsKey(shipIndex))
+				/*if (targetMapComp.ShipsOnMapNew.ContainsKey(shipIndex))
 				{
 					Log.Error("SOS2: ".Colorize(Color.cyan) + " Ship ".Colorize(Color.green) + shipIndex + " MoveShip abort, already on map: " + targetMap);
 					return;
-				}
+				}*/
 				targetMapComp.ShipsOnMapNew.Add(shipIndex, sourceMapComp.ShipsOnMapNew[shipIndex]);
 				ship = targetMapComp.ShipsOnMapNew[shipIndex];
 				ship.Map = targetMap;

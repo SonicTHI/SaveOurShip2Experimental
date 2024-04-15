@@ -1149,7 +1149,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(Thing), typeof(bool) })]
+	/*[HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(Thing), typeof(bool) })]
 	public static class NoFogSpamInSpaceThing
 	{
 		public static bool Prefix(Thing thing, ref bool sendLetters, Map ___map, out bool __state)
@@ -1175,7 +1175,7 @@ namespace SaveOurShip2
 			}
 			return true;
 		}
-	}
+	}*/
 
 	[HarmonyPatch(typeof(RoyalTitlePermitWorker), "AidDisabled")]
 	public static class RoyalTitlePermitWorkerInSpace

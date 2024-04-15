@@ -797,6 +797,8 @@ namespace SaveOurShip2
 
 			newMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy);
 
+			//newMap = ShipInteriorMod2.GeneratePocketSpaceMap(mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy, null, map);
+
 			var mp = (WorldObjectOrbitingShip)newMap.Parent;
 			mp.Radius = radius;
 			mp.Theta = theta;

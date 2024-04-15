@@ -98,9 +98,9 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f1";
+		public const string SOS2EXPversion = "V101f2";
 		public const int SOS2ReqCurrentMinor = 5;
-		public const int SOS2ReqCurrentBuild = 4052;
+		public const int SOS2ReqCurrentBuild = 4062;
 
 		public const float altitudeNominal = 1000f; //nominal altitude for ship map background render
 		public const float altitudeLand = 110f; //min altitude for ship map background render
@@ -486,6 +486,15 @@ namespace SaveOurShip2
 			Map map = MapGenerator.GenerateMap(size, orbiter, orbiter.MapGeneratorDef,null,null,false);
 			//map.fogGrid.ClearAllFog();
 			return map;
+		}
+		public static Map GeneratePocketSpaceMap(IntVec3 size, WorldObjectDef worldObjectDef, IEnumerable<GenStepWithParams> extraGenStepDefs = null, Map sourceMap = null) //not working correctly
+		{
+			PocketMapParent pocketMapParent = WorldObjectMaker.MakeWorldObject(worldObjectDef) as PocketMapParent;
+			if (sourceMap != null)
+				pocketMapParent.sourceMap = sourceMap;
+			Map result = MapGenerator.GenerateMap(size, pocketMapParent, worldObjectDef.mapGenerator, extraGenStepDefs, null, true);
+			Find.World.pocketMaps.Add(pocketMapParent);
+			return result;
 		}
 		public static Map FindPlayerShipMap()
 		{

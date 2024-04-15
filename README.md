@@ -6,7 +6,7 @@
 
 **While this version is officially endorsed, it is not maintained by RHX media and you use it at your own risk.** The original creators occasionally still contribute to this project but neither they or anyone else (**except yourself**) is responsible for your pawns, saves, PC, etc.
 
-**THE 1.5 VERSION IS STILL IN BETA AND ITS FORWARD COMPATIBILITY IS NOT GUARANTEED!**
+### **THE 1.5 VERSION IS STILL IN BETA AND WILL NOT BE FORWARD COMPATIBLE!**
 ___
 ### **[The project wiki](https://github.com/SonicTHI/SaveOurShip2Experimental/wiki) contains information on how to install, troubleshoot and utilize SOS2EXP!**
 ___

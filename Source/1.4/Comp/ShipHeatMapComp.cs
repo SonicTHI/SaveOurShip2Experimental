@@ -323,13 +323,13 @@ namespace RimWorld
 				if (engineRot == -1)
 				{
 					//engine that can fire on proper ship, any engine on non wreck, default left
-					List<SoShipCache> shipsEng = ShipsOnMapNew.Values.Where(s => s.CanFire()).ToList();
+					List<SoShipCache> shipsEng = ShipsOnMap.Values.Where(s => s.CanFire()).ToList();
 					if (shipsEng.Any())
 						engineRot = shipsEng.First().Rot;
-					else if (ShipsOnMapNew.Values.Any(s => !s.IsWreck && s.Engines.Any()))
-						engineRot = ShipsOnMapNew.Values.First(s => !s.IsWreck && s.Engines.Any()).Rot;
-					else if (ShipsOnMapNew.Values.Any(s => s.Engines.Any()))
-						engineRot = ShipsOnMapNew.Values.First(s => s.Engines.Any()).Rot;
+					else if (ShipsOnMap.Values.Any(s => !s.IsWreck && s.Engines.Any()))
+						engineRot = ShipsOnMap.Values.First(s => !s.IsWreck && s.Engines.Any()).Rot;
+					else if (ShipsOnMap.Values.Any(s => s.Engines.Any()))
+						engineRot = ShipsOnMap.Values.First(s => s.Engines.Any()).Rot;
 					else
 						engineRot = 3;
 					//Log.Message("SOS2: ".Colorize(Color.cyan) + map + " rot was -1, new rot: " + engineRot);
@@ -387,16 +387,16 @@ namespace RimWorld
 				return shipCells;
 			}
 		}
-		private Dictionary<int, SoShipCache> shipsOnMapNew;
-		public Dictionary<int, SoShipCache> ShipsOnMapNew //cache of ships (bridgeId, ship)
+		private Dictionary<int, SoShipCache> shipsOnMap;
+		public Dictionary<int, SoShipCache> ShipsOnMap //cache of ships (bridgeId, ship)
 		{
 			get
 			{
-				if (shipsOnMapNew == null)
+				if (shipsOnMap == null)
 				{
-					shipsOnMapNew = new Dictionary<int, SoShipCache>();
+					shipsOnMap = new Dictionary<int, SoShipCache>();
 				}
-				return shipsOnMapNew;
+				return shipsOnMap;
 			}
 		}
 		public void ResetCache()
@@ -408,7 +408,7 @@ namespace RimWorld
 		}
 		public void RepathMap() //repath all ships, on start player and end all maps
 		{
-			foreach (SoShipCache ship in ShipsOnMapNew.Values.Where(s => !s.IsWreck))
+			foreach (SoShipCache ship in ShipsOnMap.Values.Where(s => !s.IsWreck))
 			{
 				ship.RebuildCorePath();
 			}
@@ -419,12 +419,12 @@ namespace RimWorld
 			{
 				b.ShipIndex = -1;
 			}
-			ShipsOnMapNew.Clear();
+			ShipsOnMap.Clear();
 			for (int i = 0; i < MapRootListAll.Count; i++) //for each bridge make a ship, assign index
 			{
 				if (MapRootListAll[i].ShipIndex == -1) //skip any with valid index
 				{
-					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMapNew, MapRootListAll[i]);
+					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, MapRootListAll[i]);
 				}
 			}
 			List<IntVec3> invalidCells = new List<IntVec3>(); //might happen with wrecks - temp solution
@@ -438,7 +438,7 @@ namespace RimWorld
 						invalidCells.Add(vec);
 						continue;
 					}
-					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMapNew, t as Building);
+					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, t as Building);
 				}
 			}
 			if (invalidCells.Any())
@@ -450,7 +450,7 @@ namespace RimWorld
 				}
 			}
 			CacheOff = false;
-			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Recached,".Colorize(Color.green) + " Found ships: " + ShipsOnMapNew.Count);
+			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Recached,".Colorize(Color.green) + " Found ships: " + ShipsOnMap.Count);
 		}
 		public void CheckAndMerge(HashSet<int> indexes) //slower, finds best ship to merge to, removes all other ships
 		{
@@ -461,31 +461,31 @@ namespace RimWorld
 			foreach (int i in indexes) //find largest ship
 			{
 				ships.Add(i);
-				if (!ShipsOnMapNew[i].IsWreck && ShipsOnMapNew[i].Mass > mass)
+				if (!ShipsOnMap[i].IsWreck && ShipsOnMap[i].Mass > mass)
 				{
-					mass = ShipsOnMapNew[i].Mass;
-					mergeToIndex = ShipsOnMapNew[i].Index;
-					origin = ShipsOnMapNew[i].Core;
+					mass = ShipsOnMap[i].Mass;
+					mergeToIndex = ShipsOnMap[i].Index;
+					origin = ShipsOnMap[i].Core;
 				}
 			}
 			if (mergeToIndex == -1) //merging to wrecks only
 			{
 				foreach (int i in indexes)
 				{
-					if (ShipsOnMapNew[i].Mass > mass)
+					if (ShipsOnMap[i].Mass > mass)
 					{
-						mass = ShipsOnMapNew[i].Mass;
-						mergeToIndex = ShipsOnMapNew[i].Index;
-						origin = ShipsOnMapNew[i].Buildings.First();
+						mass = ShipsOnMap[i].Mass;
+						mergeToIndex = ShipsOnMap[i].Index;
+						origin = ShipsOnMap[i].Buildings.First();
 					}
 				}
 			}
 			foreach (int i in ships) //delete all ships
 			{
-				ShipsOnMapNew.Remove(i);
+				ShipsOnMap.Remove(i);
 			}
 			//full rebuild
-			ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMapNew, origin);
+			ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, origin);
 		}
 		public void CheckAndMerge(HashSet<IntVec3> cellsToMerge) //faster, attaches as a tumor
 		{
@@ -497,10 +497,10 @@ namespace RimWorld
 			{
 				int shipIndex = ShipIndexOnVec(vec);
 				ships.Add(shipIndex);
-				if (shipIndex != -1 && ShipsOnMapNew[shipIndex].Mass > mass)
+				if (shipIndex != -1 && ShipsOnMap[shipIndex].Mass > mass)
 				{
 					mergeTo = vec;
-					mass = ShipsOnMapNew[shipIndex].Mass;
+					mass = ShipsOnMap[shipIndex].Mass;
 				}
 			}
 			if (mergeTo == IntVec3.Invalid) //merging to wrecks only
@@ -508,10 +508,10 @@ namespace RimWorld
 				foreach (IntVec3 vec in cellsToMerge)
 				{
 					int shipIndex = ShipIndexOnVec(vec);
-					if (ShipsOnMapNew[shipIndex].Mass > mass)
+					if (ShipsOnMap[shipIndex].Mass > mass)
 					{
 						mergeTo = vec;
-						mass = ShipsOnMapNew[shipIndex].Mass;
+						mass = ShipsOnMap[shipIndex].Mass;
 					}
 				}
 			}
@@ -519,13 +519,13 @@ namespace RimWorld
 			ships.Remove(mergeToIndex);
 			foreach (int i in ships) //delete all ships except mergeto
 			{
-				ShipsOnMapNew.Remove(i);
+				ShipsOnMap.Remove(i);
 			}
 			AttachAll(mergeTo, mergeToIndex);
 		}
 		public void AttachAll(IntVec3 mergeTo, int mergeToIndex) //merge and build corePath if ship
 		{
-			SoShipCache ship = ShipsOnMapNew[mergeToIndex];
+			SoShipCache ship = ShipsOnMap[mergeToIndex];
 			int path = ship.IsWreck ? -1 : (MapShipCells[mergeTo].Item2 + 1);
 			HashSet<IntVec3> cellsTodo = new HashSet<IntVec3>();
 			HashSet<IntVec3> cellsDone = new HashSet<IntVec3>();
@@ -560,10 +560,10 @@ namespace RimWorld
 		}
 		public void RemoveShipFromCache(int index)
 		{
-			if (ShipsOnMapNew.ContainsKey(index))
+			if (ShipsOnMap.ContainsKey(index))
 			{
 				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + index + " Removed from cache.");
-				ShipsOnMapNew.Remove(index);
+				ShipsOnMap.Remove(index);
 			}
 		}
 		public int ShipIndexOnVec(IntVec3 vec) //return index if ship on cell, else return -1
@@ -586,7 +586,7 @@ namespace RimWorld
 		public bool VecHasLS(IntVec3 vec)
 		{
 			int shipIndex = ShipIndexOnVec(vec);
-			if ((shipIndex > 0 && ShipsOnMapNew[shipIndex].LifeSupports.Any(s => s.active)) || MapExtenderCells.Contains(vec))
+			if ((shipIndex > 0 && ShipsOnMap[shipIndex].LifeSupports.Any(s => s.active)) || MapExtenderCells.Contains(vec))
 				return true;
 			//LS if roofed room with thick rock roof and facing in vent that is attached to LS
 			if (vec.Roofed(map) && vec.GetRoof(map) == RoofDefOf.RoofRockThick)
@@ -601,7 +601,7 @@ namespace RimWorld
 						if (t is Building_ShipVent b)
 						{
 							shipIndex = ShipIndexOnVec(b.Position);
-							if (shipIndex > 0 && ShipsOnMapNew[shipIndex].LifeSupports.Any(s => s.active) && room.ContainsCell(b.ventTo))
+							if (shipIndex > 0 && ShipsOnMap[shipIndex].LifeSupports.Any(s => s.active) && room.ContainsCell(b.ventTo))
 								return true;
 						}
 					}
@@ -614,7 +614,7 @@ namespace RimWorld
 		public int MapThreat()
 		{
 			int threat = 0;
-			foreach (SoShipCache ship in ShipsOnMapNew.Values)
+			foreach (SoShipCache ship in ShipsOnMap.Values)
 			{
 				threat += ship.Threat;
 			}
@@ -654,7 +654,7 @@ namespace RimWorld
 			TargetMapComp.ResetCombatVars();
 
 			if (range == 0) //set range DL:1-9
-				DetermineInitialRange();
+				DetermineInitialRange(passingShip != null);
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Enemy range at start: " + Range);
 
 			//callSlowTick = true;
@@ -666,6 +666,7 @@ namespace RimWorld
 			EnemyShipDef shipDef = null;
 			SpaceNavyDef navyDef = null;
 			int wreckLevel = 0;
+			bool fakeWreck = false;
 			bool shieldsActive = true;
 			float CR = 0;
 			float radius = 150f;
@@ -683,8 +684,23 @@ namespace RimWorld
 				shipDef = derelictShip.derelictShip;
 				navyDef = derelictShip.spaceNavyDef;
 				faction = derelictShip.shipFaction;
-				wreckLevel = derelictShip.wreckLevel;
-				theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta + (0.05f + 0.002f * Rand.Range(0, 40)) * (Rand.Bool ? 1 : -1);
+				if (derelictShip.wreckLevel == 2 && Rand.Chance(0.2f)) //fake wreck chance
+				{
+					fakeWreck = true;
+					if (Rand.Bool)
+					{
+						wreckLevel = 0;
+					}
+					else
+					{
+						wreckLevel = 1;
+					}
+				}
+				else
+				{
+					wreckLevel = derelictShip.wreckLevel;
+					theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta + (0.05f + 0.002f * Rand.Range(0, 40)) * (Rand.Bool ? 1 : -1);
+				}
 			}
 			else //using player ship combat rating
 			{
@@ -804,10 +820,17 @@ namespace RimWorld
 			var newMapComp = newMap.GetComponent<ShipHeatMapComp>();
 			if (passingShip is DerelictShip d)
 			{
-				shieldsActive = false;
-				newMapComp.ShipMapState = ShipMapState.isGraveyard;
-				newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
-				Find.LetterStack.ReceiveLetter("SoS.EncounterStart".Translate(), "SoS.EncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
+				if (fakeWreck)
+				{
+					Find.LetterStack.ReceiveLetter("SoS.EncounterAmbush".Translate(), "SoS.EncounterAmbushDesc".Translate(d.derelictShip.label), LetterDefOf.ThreatBig);
+				}
+				else
+				{
+					shieldsActive = false;
+					newMapComp.ShipMapState = ShipMapState.isGraveyard;
+					newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
+					Find.LetterStack.ReceiveLetter("SoS.EncounterStart".Translate(), "SoS.EncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
+				}
 			}
 			newMapComp.ShipFaction = faction;
 			if (wreckLevel != 3)
@@ -837,9 +860,9 @@ namespace RimWorld
 		private void ResetCombatVars()
 		{
 			BuildingCountAtStart = 0;
-			foreach (int index in shipsOnMapNew.Keys) //combat start calcs per ship
+			foreach (int index in shipsOnMap.Keys) //combat start calcs per ship
 			{
-				var ship = shipsOnMapNew[index];
+				var ship = shipsOnMap[index];
 				//if (!ship.IsWreck)
 				ship.BuildingCountAtCombatStart = ship.BuildingCount;
 				BuildingCountAtStart += ship.BuildingCountAtCombatStart;
@@ -864,27 +887,24 @@ namespace RimWorld
 				RangeToKeep = Range;
 			}
 		}
-		private void DetermineInitialRange()
+		private void DetermineInitialRange(bool ambush)
 		{
-			byte detectionLevel = 7;
-			List<Building_ShipAdvSensor> Sensors = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == map).ToList();
-			List<Building_ShipAdvSensor> SensorsEnemy = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == ShipCombatTargetMap).ToList();
-			if (Sensors.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-			{
-				detectionLevel += 2;
-			}
-			else if (Sensors.Where(sensor => sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-				detectionLevel += 1;
+			//advsensors = further, active cloak = closer
+			//nominal should be 320-380
+			//ambush 180-280
+			byte detectionLevel = 0;
+			if (ambush)
+				detectionLevel -= 3;
 
+			List<Building_ShipAdvSensor> Sensors = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == map && s.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && s.TryGetComp<CompPowerTrader>().PowerOn).ToList();
+			if (Sensors.Any())
+				detectionLevel += 1;
 			if (Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
 				detectionLevel -= 2;
-			if (SensorsEnemy.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-				detectionLevel -= 2;
-			else if (SensorsEnemy.Any())
-				detectionLevel -= 1;
+
 			if (TargetMapComp.Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
 				detectionLevel -= 2;
-			Range = 180 + detectionLevel * 20 + Rand.Range(0, 40);
+			Range = 300 + detectionLevel * 20 + Rand.Range(0, 60);
 		}
 
 		//battle
@@ -892,7 +912,7 @@ namespace RimWorld
 		{
 			base.MapComponentTick();
 			List<SoShipCache> shipToRemove = new List<SoShipCache>();
-			foreach (SoShipCache ship in ShipsOnMapNew.Values)
+			foreach (SoShipCache ship in ShipsOnMap.Values)
 			{
 				ship.Tick();
 				if (!ship.Area.Any())
@@ -904,7 +924,7 @@ namespace RimWorld
 				{
 					RemoveShipFromCache(cache.Index);
 				}
-				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Removed " + shipToRemove.Count + " ships. Remaining: " + ShipsOnMapNew.Count);
+				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Removed " + shipToRemove.Count + " ships. Remaining: " + ShipsOnMap.Count);
 			}
 			if (!map.IsSpace())
 				return;
@@ -1078,7 +1098,7 @@ namespace RimWorld
 				BuildingsCount = 0;
 				float powerCapacity = 0;
 				float powerRemaining = 0;
-				foreach (SoShipCache ship in ShipsOnMapNew.Values)
+				foreach (SoShipCache ship in ShipsOnMap.Values)
 				{
 					if (HasShipMapAI && !ship.IsWreck && ship.Core.PowerComp.PowerNet != null) //shipAI purge
 					{
@@ -1103,13 +1123,13 @@ namespace RimWorld
 				//shipAI distance, boarding
 				if (HasShipMapAI && tick > BattleStartTick + 60)
 				{
-					if (ShipsOnMapNew.Count > 1) //fleet AI evals ships in fleet and rem bad ships
+					if (ShipsOnMap.Count > 1) //fleet AI evals ships in fleet and rem bad ships
 					{
 						if (anyShipCanMove)
 						{
-							foreach (int index in ShipsOnMapNew.Keys)
+							foreach (int index in ShipsOnMap.Keys)
 							{
-								var ship = ShipsOnMapNew[index];
+								var ship = ShipsOnMap[index];
 								//ship cant move and fleet fleeing or ship less than x of fleet threat
 								if (!ship.CanMove() && (Retreating || totalThreat * 0.3f > ship.ThreatCurrent))
 								{
@@ -1239,7 +1259,7 @@ namespace RimWorld
 					//AI boarding code
 					if ((hasAnyPartDetached || tick > BattleStartTick + 5000) && !startedBoarderLoad && !Retreating)
 					{
-						foreach (SoShipCache ship in ShipsOnMapNew.Values)
+						foreach (SoShipCache ship in ShipsOnMap.Values)
 						{
 							List<CompTransporter> transporters = new List<CompTransporter>();
 							float transporterMass = 0;
@@ -1337,7 +1357,7 @@ namespace RimWorld
 					{
 						if (ShipInteriorMod2.CanShipLandOnMap(map, MoveToMap)) //landing area clear
 						{
-							ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, MoveToMap, MoveToVec);
+							ShipInteriorMod2.MoveShip(ShipsOnMap.Values.First().Core, MoveToMap, MoveToVec);
 							if (MapShipCells.NullOrEmpty() && !map.PlayerPawnsForStoryteller.Any())
 							{
 								ShipMapState = ShipMapState.burnUpSet; //remove transit map if clear
@@ -1376,7 +1396,7 @@ namespace RimWorld
 
 					if (MoveToMap != null && ShipInteriorMod2.CanShipLandOnMap(map, MoveToMap)) //ground map exists and has room
 					{
-						ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, MoveToMap, MoveToVec);
+						ShipInteriorMod2.MoveShip(ShipsOnMap.Values.First().Core, MoveToMap, MoveToVec);
 					}
 					else //moveto map was closed or no room
 					{
@@ -1396,7 +1416,7 @@ namespace RimWorld
 							SettleUtility.AddNewHome(tile, Faction.OfPlayer); //td change this to landed ship
 							var newMapPar = GetOrGenerateMapUtility.GetOrGenerateMap(tile, map.Size, null).Parent;
 							((Settlement)newMapPar).Name = "Landed ship";
-							ShipInteriorMod2.MoveShip(ShipsOnMapNew.Values.First().Core, newMapPar.Map, IntVec3.Zero, clearArea: true);
+							ShipInteriorMod2.MoveShip(ShipsOnMap.Values.First().Core, newMapPar.Map, IntVec3.Zero, clearArea: true);
 						}
 						else //td ship gone, pawns spawn like vanilla on random nearby map via pods
 						{
@@ -1474,23 +1494,23 @@ namespace RimWorld
 			}
 			if (tick % 6000 == 0) //decomp
 			{
-				foreach (SoShipCache ship in ShipsOnMapNew.Values) //decompresson
+				List<Building> buildings = new List<Building>();
+				foreach (SoShipCache ship in ShipsOnMap.Values) //decompresson
 				{
-					List<Building> buildings = new List<Building>();
 					foreach (Building b in ship.OuterNonShipWalls())
 					{
 						if (Rand.Chance(0.5f))
 							buildings.Add(b);
 					}
-					foreach (Building b in buildings)
-					{
-						b.Destroy(DestroyMode.KillFinalize);
-					}
+				}
+				foreach (Building b in buildings)
+				{
+					b.Destroy(DestroyMode.KillFinalize);
 				}
 			}
 			if (tick % 300 == 0 && MapEnginePower != 0)
 			{
-				foreach (SoShipCache ship in ShipsOnMapNew.Values)
+				foreach (SoShipCache ship in ShipsOnMap.Values)
 				{
 					foreach (CompRCSThruster rcs in ship.RCSs)
 					{
@@ -1524,7 +1544,7 @@ namespace RimWorld
 		}
 		public bool AnyShipCanMove() //any non stuck ship has a working and fueled engine and is aligned
 		{
-			foreach (SoShipCache ship in ShipsOnMapNew.Values)
+			foreach (SoShipCache ship in ShipsOnMap.Values)
 			{
 				if (ship.CanMove())
 				{
@@ -1538,7 +1558,7 @@ namespace RimWorld
 			MapEnginePower = SlowestThrustToWeight();
 			//Log.Message("thrust " + MapEnginePower);
 			//Log.Message("SOS2: ".Colorize(Color.cyan) + map + " SlowestThrustOnMap: " + MapEnginePower);
-			foreach (SoShipCache ship in ShipsOnMapNew.Values.Where(s => s.Engines.Any()))
+			foreach (SoShipCache ship in ShipsOnMap.Values.Where(s => s.Engines.Any()))
 			{
 				ship.MoveAtThrustToWeight(MapEnginePower);
 			}
@@ -1546,7 +1566,7 @@ namespace RimWorld
 		public float SlowestThrustToWeight() //find worst t/w ship
 		{
 			float enginePower = float.MaxValue;
-			foreach (SoShipCache ship in ShipsOnMapNew.Values)
+			foreach (SoShipCache ship in ShipsOnMap.Values)
 			{
 				if (!ship.CanMove())
 					return 0;
@@ -1563,7 +1583,7 @@ namespace RimWorld
 			EnginesOn = false;
 			MapEnginePower = 0;
 			Heading = 0;
-			foreach (SoShipCache ship in ShipsOnMapNew.Values)
+			foreach (SoShipCache ship in ShipsOnMap.Values)
 			{
 				ship.EnginesOff();
 			}
@@ -1571,8 +1591,8 @@ namespace RimWorld
 		public void RemoveShipFromBattle(int shipIndex) //only call this on mapcomp tick!
 		{
 			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
-			SoShipCache ship = ShipsOnMapNew[shipIndex];
-			if (ShipsOnMapNew.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMapNew.Values.Count(s => !s.IsWreck) == 1 && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
+			SoShipCache ship = ShipsOnMap[shipIndex];
+			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
 			{
 				EndBattle(map, false);
 				return;
@@ -1582,7 +1602,7 @@ namespace RimWorld
 			//ship.AreaDestroyed.Clear();
 			if (core == null)
 			{
-				core = ShipsOnMapNew[shipIndex].Parts.FirstOrDefault();
+				core = ShipsOnMap[shipIndex].Parts.FirstOrDefault();
 			}
 			if (core != null)
 			{
@@ -1591,8 +1611,8 @@ namespace RimWorld
 					SpawnGraveyard();
 				ShipInteriorMod2.MoveShip(core, ShipGraveyard, IntVec3.Zero);
 			}
-			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ships remaining: " + ShipsOnMapNew.Count);
-			foreach (SoShipCache s in ShipsOnMapNew.Values)
+			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ships remaining: " + ShipsOnMap.Count);
+			foreach (SoShipCache s in ShipsOnMap.Values)
 			{
 				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + s.Index + ", area: " + s.Area.Count + ", bldgs: " + s.BuildingCount + ", cores: " + s.Bridges.Count);
 			}
@@ -1622,7 +1642,7 @@ namespace RimWorld
 			//td destroy all proj?
 			OriginMapComp.MapFullStop();
 			TargetMapComp.MapFullStop();
-			foreach (SoShipCache ship in OriginMapComp.TargetMapComp.ShipsOnMapNew.Values)
+			foreach (SoShipCache ship in OriginMapComp.TargetMapComp.ShipsOnMap.Values)
 			{
 				foreach (CompShipCombatShield s in ship.Shields)
 				{
@@ -1695,7 +1715,7 @@ namespace RimWorld
 						{
 							tgtMapComp.ShipMapState = ShipMapState.burnUpSet;
 							//remove all wrecks from map, leave pawns
-							foreach (int shipIndex in OriginMapComp.GraveComp.ShipsOnMapNew.Keys)
+							foreach (int shipIndex in OriginMapComp.GraveComp.ShipsOnMap.Keys)
 							{
 								ShipInteriorMod2.RemoveShipOrArea(OriginMapComp.ShipGraveyard, shipIndex, null, false);
 							}

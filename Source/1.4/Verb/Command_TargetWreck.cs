@@ -42,7 +42,7 @@ namespace RimWorld
 			int shipIndex = mapComp.ShipIndexOnVec(b.Position);
 			if (shipIndex != -1)
 			{
-				var ship = mapComp.ShipsOnMapNew[shipIndex];
+				var ship = mapComp.ShipsOnMap[shipIndex];
 				float bCountF = ship.BuildingCount * 2.5f;
 				if (bCountF > bMax) //moving this ship with another ship //td compare size, check bays and fuel
 				{

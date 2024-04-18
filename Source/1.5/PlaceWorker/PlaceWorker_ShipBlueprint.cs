@@ -16,21 +16,26 @@ namespace SaveOurShip2
 			var comp = def.GetCompProperties<CompProps_ShipBlueprint>();
 			if (comp == null)
 				return;
-			List<IntVec3> postitions = new List<IntVec3>();
+			List<IntVec3> areaAdj = new List<IntVec3>();
 			Color color = Color.cyan;
 			bool clear = true;
-			foreach (IntVec3 v in GenerateBlueprintSketch(comp.shipDef))
+			List<IntVec3> area = GenerateBlueprintSketch(comp.shipDef);
+			if (comp.flip)
+			{
+
+			}
+			foreach (IntVec3 v in area)
 			{
 				IntVec3 pos = new IntVec3(center.x + v.x + 1 ,0, center.z + v.z + 1);
 				if (!pos.InBounds(map))
 					return;
-				postitions.Add(pos);
+				areaAdj.Add(pos);
 				if (clear && !ShipInteriorMod2.CanPlaceShipOnVec(pos, map, true))
 					clear = false;
 			}
 			if (!clear)
 				color = Color.red;
-			GenDraw.DrawFieldEdges(postitions, color);
+			GenDraw.DrawFieldEdges(areaAdj, color);
 		}
 
 		public override AcceptanceReport AllowsPlacing(BuildableDef def, IntVec3 loc, Rot4 rot, Map map, Thing thingToIgnore = null, Thing thing = null)

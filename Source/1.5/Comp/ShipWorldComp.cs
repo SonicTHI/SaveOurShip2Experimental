@@ -16,6 +16,7 @@ namespace SaveOurShip2
 		public bool SoSWin = false;
 		public bool renderedThatAlready = false;
 		public List<Building_ShipSensor> Sensors = new List<Building_ShipSensor>();
+		public bool MoveShipFlag = false;
 
 		public ShipWorldComp(World world) : base(world)
 		{

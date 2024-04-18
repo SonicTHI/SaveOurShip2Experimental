@@ -160,7 +160,7 @@ namespace SaveOurShip2
 				{
 					foreach (int i in DockedTo())
 					{
-						var ship = mapComp.ShipsOnMapNew[i];
+						var ship = mapComp.ShipsOnMap[i];
 						if (ship.CanMove())
 							return false;
 					}
@@ -182,7 +182,7 @@ namespace SaveOurShip2
 			int c = MassSum;
 			foreach (int i in DockedTo())
 			{
-				var ship = mapComp.ShipsOnMapNew[i];
+				var ship = mapComp.ShipsOnMap[i];
 				p += ship.EnginePower();
 				c += ship.MassSum;
 			}
@@ -352,7 +352,7 @@ namespace SaveOurShip2
 		{
 			IntVec3 lowestCorner = LowestCorner(rotb, Map);
 			Sketch sketch = new Sketch();
-			IntVec3 rot = new IntVec3(0, 0, 0);
+			IntVec3 rot = IntVec3.Zero;
 			foreach (IntVec3 pos in Area)
 			{
 				if (rotb == 1)
@@ -419,7 +419,7 @@ namespace SaveOurShip2
 		}
 		public IntVec3 MaximumCorner()
 		{
-			IntVec3 maxCorner = new IntVec3(0, 0, 0);
+			IntVec3 maxCorner = IntVec3.Zero;
 			foreach (IntVec3 v in Area)
 			{
 				if (v.x > maxCorner.x)
@@ -432,7 +432,7 @@ namespace SaveOurShip2
 		public IntVec3 Size(out IntVec3 min)
 		{
 			min = new IntVec3(int.MaxValue, 0, int.MaxValue);
-			IntVec3 max = new IntVec3(0, 0, 0);
+			IntVec3 max = IntVec3.Zero;
 			foreach (IntVec3 v in Area)
 			{
 				if (v.x < min.x)
@@ -859,7 +859,7 @@ namespace SaveOurShip2
 
 			if (mapComp.ShipMapState == ShipMapState.inCombat) //if last ship end combat else move to grave
 			{
-				if (mapComp.ShipsOnMapNew.Values.Any(s => !s.IsWreck))
+				if (mapComp.ShipsOnMap.Values.Any(s => !s.IsWreck))
 					mapComp.ShipsToMove.Add(Index);
 				else
 					mapComp.EndBattle(Map, false);
@@ -981,7 +981,7 @@ namespace SaveOurShip2
 				str2 = "";
 			}
 
-			HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
+			HashSet<IntVec3> cellsDone = new HashSet<IntVec3> { first }; //cells that were checked
 			foreach (IntVec3 setStartCell in startCells)
 			{
 				if (!mapComp.MapShipCells.ContainsKey(setStartCell)) //cell might have been removed already
@@ -1070,7 +1070,7 @@ namespace SaveOurShip2
 					if (!Area.Any())
 					{
 						Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Area was empty, removing ship");
-						mapComp.ShipsOnMapNew.Remove(Index);
+						mapComp.ShipsOnMap.Remove(Index);
 					}
 					return;
 				}
@@ -1086,7 +1086,7 @@ namespace SaveOurShip2
 				newCore.thingIDNumber = newKey;
 			}*/
 			//make new ship
-			int mergeToIndex = ShipInteriorMod2.WorldComp.AddNewShip(mapComp.ShipsOnMapNew, newCore);
+			int mergeToIndex = ShipInteriorMod2.WorldComp.AddNewShip(mapComp.ShipsOnMap, newCore);
 			if (mapComp.ShipMapState == ShipMapState.inCombat)
 			{
 				if (mapComp.HasShipMapAI)

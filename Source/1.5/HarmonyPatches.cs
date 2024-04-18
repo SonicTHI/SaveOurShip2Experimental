@@ -2063,12 +2063,47 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch]
-	public class ReversePatchBuilding
+	public class ReversePatchBuildingSpawn
+	{
+		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+		[HarmonyPatch(typeof(Building), "SpawnSetup")]
+		public static void Snapshot(object instance, Map map, bool respawningAfterLoad)
+		{
+		}
+	}
+	[HarmonyPatch]
+	public class ReversePatchBuildingDespawn
 	{
 		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
 		[HarmonyPatch(typeof(Building), "DeSpawn")]
 		public static void Snapshot(object instance, DestroyMode mode)
 		{
+		}
+	}
+	[HarmonyPatch(typeof(Building_Bed), "SpawnSetup")]
+	public static class DisableForMoveBed
+	{
+		public static bool Prefix(Building_Bed __instance, Map map, bool respawningAfterLoad)
+		{
+			if (ShipInteriorMod2.MoveShipFlag)
+			{
+				ReversePatchBuildingSpawn.Snapshot(__instance, map, respawningAfterLoad);
+				return false;
+			}
+			return true;
+		}
+	}
+	[HarmonyPatch(typeof(Building_Bed), "DeSpawn")]
+	public static class DisableForMoveBedTwo
+	{
+		public static bool Prefix(Building_Bed __instance, DestroyMode mode)
+		{
+			if (ShipInteriorMod2.MoveShipFlag)
+			{
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
+				return false;
+			}
+			return true;
 		}
 	}
 	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
@@ -2078,7 +2113,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -2091,7 +2126,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -2104,7 +2139,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;

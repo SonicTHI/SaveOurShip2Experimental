@@ -979,7 +979,7 @@ namespace SaveOurShip2
 		{
 			if (mapComp.MapRootListAll.Contains(this))
 				mapComp.MapRootListAll.Remove(this);
-			if (Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty() && mapComp.IsPlayerShipMap && mapComp.ShipMapState != ShipMapState.inTransit) //last bridge on player map - deorbit warn
+			if (Map.IsSpace() && mapComp.MapRootListAll.NullOrEmpty() && mapComp.IsPlayerShipMap && mapComp.ShipMapState != ShipMapState.inTransit && !ShipInteriorMod2.MoveShipFlag) //last bridge on player map - deorbit warn
 			{
 				var countdownComp = Map.Parent.GetComponent<TimedForcedExitShip>();
 				if (countdownComp != null && !countdownComp.ForceExitAndRemoveMapCountdownActive)

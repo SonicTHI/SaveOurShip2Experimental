@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f2";
+		public const string SOS2EXPversion = "V101f3";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -107,13 +107,23 @@ namespace SaveOurShip2
 		public const float crittersleepBodySize = 0.7f;
 
 		public static bool loadedGraphics = false;
-		public static Map shipOriginMap = null; //used to check for shipmove map size problem in placeworker, reset after move
-		public static bool MoveShipFlag = false; //set on ship move/remove
-		public static bool SaveShipFlag = false; //used in patch to trigger ending scene
-		public static bool LoadShipFlag = false; //set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
-		public static bool StartShipFlag = false; //as above but for ScenPart_StartInSpace
 		public static bool HasSoS2CK = false;
-		public static bool ArchoIdeoFlag = false;
+		public static Map shipOriginMap = null; //used to check for shipmove map size problem in placeworker, reset after move
+		public static bool SaveShipFlag; //used in patch to trigger ending scene
+		public static bool LoadShipFlag; //set to true in ScenPart_LoadShip.PostWorldGenerate and false in the patch to MapGenerator.GenerateMap
+		public static bool StartShipFlag; //as above but for ScenPart_StartInSpace
+		public static bool ArchoIdeoFlag;
+		public static bool MoveShipFlag //set on ship move/remove
+		{
+			get
+			{
+				return WorldComp.MoveShipFlag;
+			}
+			set
+			{
+				WorldComp.MoveShipFlag = value;
+			}
+		}
 
 		private static ShipWorldComp worldComp = null;
 		public static ShipWorldComp WorldComp
@@ -1265,7 +1275,7 @@ namespace SaveOurShip2
 						t.SetFactionDirect(fac);
 				}
 			}
-			//wreck
+			//wrecklevel
 			//1 (light damage - starting ships): outer explo few
 			//2: outer explo more, destroy some buildings, some dead crew, chance for more invaders
 			//3: wreck all hull, outer explo lots, chance to split, destroy most buildings, most crew dead, chance for invaders
@@ -1786,7 +1796,6 @@ namespace SaveOurShip2
 			List<IntVec3> fireExplosions = new List<IntVec3>();
 			List<CompEngineTrail> nukeExplosions = new List<CompEngineTrail>();
 			List<Pawn> pawns = new List<Pawn>();
-			IntVec3 rot = IntVec3.Zero;
 			int rotb = 4 - rotNum;
 
 			// Transforms vector from initial position to final according to desired movement/rotation.
@@ -1834,11 +1843,6 @@ namespace SaveOurShip2
 
 			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
 			{
-				/*if (targetMapComp.ShipsOnMap.ContainsKey(shipIndex))
-				{
-					Log.Error("SOS2: ".Colorize(Color.cyan) + " Ship ".Colorize(Color.green) + shipIndex + " MoveShip abort, already on map: " + targetMap);
-					return;
-				}*/
 				targetMapComp.ShipsOnMap.Add(shipIndex, sourceMapComp.ShipsOnMap[shipIndex]);
 				ship = targetMapComp.ShipsOnMap[shipIndex];
 				ship.Map = targetMap;
@@ -2051,7 +2055,50 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("destroySource");
 
-			//move map - draw fuel
+			//move things - new
+			//despawn, error check if playermove
+			bool fail = false;
+			var reason = new StringBuilder();
+			foreach (Thing spawnThing in toSave.Where(t => !t.Destroyed))
+			{
+				try
+				{
+					if (spawnThing.Spawned)
+						spawnThing.DeSpawn();
+				}
+				catch (Exception e)
+				{
+					reason.AppendLine(spawnThing.def.label);
+					fail = true;
+					var sb = new StringBuilder();
+					sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
+					if (devMode)
+						sb.AppendLine(e.StackTrace);
+					Log.Warning(sb.ToString());
+				}
+			}
+			if (playerMove && fail) //if error abort, respawn all in same pos/map, warn
+			{
+				foreach (Thing spawnThing in toSave.Where(t => !t.Destroyed && !t.Spawned))
+				{
+					spawnThing.SpawnSetup(sourceMap, false);
+				}
+				Find.LetterStack.ReceiveLetter("SoS.MoveFail".Translate(), "SoS.MoveFailDesc".Translate(reason), LetterDefOf.NegativeEvent);
+				return;
+			}
+			else //spawn parts,build,thing in order
+			{
+				foreach (Thing spawnThing in toSave.Where(t => t is Building))
+				{
+					ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+				}
+				foreach (Thing spawnThing in toSave.Where(t => !(t is Building)))
+				{
+					ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+				}
+			}
+
+			//draw fuel, exhaust area actions
 			if (core is Building_ShipBridge && playerMove)
 			{
 				float fuelNeeded = ship.MassActual;
@@ -2110,7 +2157,8 @@ namespace SaveOurShip2
 					watch.Record("takeoffEngineEffects");
 			}
 
-			//move things
+			//move things - old
+			/*IntVec3 rot = IntVec3.Zero;
 			foreach (Thing spawnThing in toSave)
 			{
 				if (!spawnThing.Destroyed)
@@ -2189,7 +2237,8 @@ namespace SaveOurShip2
 						Log.Error(sb.ToString());
 					}
 				}
-			}
+			}*/
+
 			if (devMode)
 				watch.Record("moveThings");
 			MoveShipFlag = false;
@@ -2345,6 +2394,55 @@ namespace SaveOurShip2
 				watch.Record("finalize");
 				Log.Message("SOS2: ".Colorize(Color.cyan) + sourceMap + " Ship move complete, timings:\n".Colorize(Color.green) + watch.MakeReport());
 			}
+		}
+		private static void ReSpawnThingOnMap(Thing spawnThing, Map targetMap, IntVec3 adjustment, int rotb)
+		{
+			if (spawnThing.Destroyed)
+				return;
+
+			IntVec3 rot = IntVec3.Zero;
+			int adjz = 0;
+			int adjx = 0;
+			if (rotb == 3)
+			{
+				//CCW rot, breaks non rot, uneven things
+				if (spawnThing.def.rotatable)
+				{
+					spawnThing.Rotation = new Rot4(spawnThing.Rotation.AsByte + rotb);
+				}
+				else if (spawnThing.def.rotatable == false && spawnThing.def.size.x % 2 == 0)
+					adjx -= 1;
+				rot.x = targetMap.Size.x - spawnThing.Position.z + adjx;
+				rot.z = spawnThing.Position.x;
+				spawnThing.Position = rot + adjustment;
+			}
+			else if (rotb == 2)
+			{
+				//flip using 2x CCW rot
+				if (spawnThing.def.rotatable)
+				{
+					spawnThing.Rotation = new Rot4(spawnThing.Rotation.AsByte + rotb);
+				}
+				else if (spawnThing.def.rotatable == false && spawnThing.def.size.x % 2 == 0)
+					adjx -= 1;
+				if (spawnThing.def.rotatable == false && spawnThing.def.size.x != spawnThing.def.size.z)
+				{
+					if (spawnThing.def.size.z % 2 == 0) //5x2
+						adjz -= 1;
+					else //6x3,6x7
+						adjz += 1;
+				}
+				rot.x = targetMap.Size.x - spawnThing.Position.z + adjx;
+				rot.z = spawnThing.Position.x;
+				IntVec3 tempPos = rot;
+				rot.x = targetMap.Size.x - tempPos.z + adjx;
+				rot.z = tempPos.x + adjz;
+				spawnThing.Position = rot + adjustment;
+			}
+			else
+				spawnThing.Position += adjustment;
+
+			spawnThing.SpawnSetup(targetMap, false);
 		}
 		public static void AddPawnToLord(Map map, Pawn p)
 		{

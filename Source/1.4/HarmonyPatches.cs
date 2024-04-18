@@ -41,15 +41,15 @@ namespace SaveOurShip2
 				float debugY = 350f;
 				Rect rect1 = new Rect(20, debugY, 280, 35);
 				Widgets.DrawMenuSection(rect1);
-				Widgets.Label(rect1.ContractedBy(7), "SOS2 " + ShipInteriorMod2.SOS2EXPversion + " | Ships: " + mapComp.ShipsOnMapNew?.Count + " | Cells: " + mapComp.MapShipCells.Keys.Count);
+				Widgets.Label(rect1.ContractedBy(7), "SOS2 " + ShipInteriorMod2.SOS2EXPversion + " | Ships: " + mapComp.ShipsOnMap?.Count + " | Cells: " + mapComp.MapShipCells.Keys.Count);
 
 				if (mapComp.MapShipCells.NullOrEmpty())
 					return;
 
 				DrawShips.Highlight = -1;
-				foreach (int i in mapComp.ShipsOnMapNew.Keys)
+				foreach (int i in mapComp.ShipsOnMap.Keys)
 				{
-					var ship = mapComp.ShipsOnMapNew[i];
+					var ship = mapComp.ShipsOnMap[i];
 					string str = "wreck " + ship.Index;
 					if (!ship.IsWreck)
 						str = "ship " + ship.Index;
@@ -101,15 +101,15 @@ namespace SaveOurShip2
 					return;
 				}
 			}
-			if (playerMapComp.ShipsOnMapNew.NullOrEmpty() || playerMapComp.ShipsOnMapNew.All(sc => sc.Value?.IsWreck ?? true))
+			if (playerMapComp.ShipsOnMap.NullOrEmpty() || playerMapComp.ShipsOnMap.All(sc => sc.Value?.IsWreck ?? true))
 				return;
 
 			float screenHalf = (float)UI.screenWidth / 2 + ModSettings_SoS.offsetUIx - 200;
 			//player heat & energy bars
 			float baseY = __instance.Size.y + 40 + ModSettings_SoS.offsetUIy;
-			foreach (int i in playerMapComp.ShipsOnMapNew.Keys)
+			foreach (int i in playerMapComp.ShipsOnMap.Keys)
 			{
-				var bridge = playerMapComp.ShipsOnMapNew[i].Core;
+				var bridge = playerMapComp.ShipsOnMap[i].Core;
 				if (bridge == null)
 					continue;
 
@@ -129,9 +129,9 @@ namespace SaveOurShip2
 				return;
 			//enemy heat & energy bars
 			baseY = __instance.Size.y + 40 + ModSettings_SoS.offsetUIy;
-			foreach (int i in enemyMapComp.ShipsOnMapNew.Keys)
+			foreach (int i in enemyMapComp.ShipsOnMap.Keys)
 			{
-				var bridge = enemyMapComp.ShipsOnMapNew[i].Core;
+				var bridge = enemyMapComp.ShipsOnMap[i].Core;
 				if (bridge == null || bridge.powerComp?.PowerNet == null || bridge.heatComp.myNet == null)
 					continue;
 
@@ -1775,7 +1775,7 @@ namespace SaveOurShip2
 					int shipIndex = mapComp.ShipIndexOnVec(cell);
 					if (shipIndex == -1)
 						continue;
-					var ship = mapComp.ShipsOnMapNew[shipIndex];
+					var ship = mapComp.ShipsOnMap[shipIndex];
 					if (ship.FoamDistributors.Any())
 					{
 						foreach (CompHullFoamDistributor dist in ship.FoamDistributors)
@@ -1804,14 +1804,14 @@ namespace SaveOurShip2
 			if (respawningAfterLoad)
 				return;
 			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag || mapComp.ShipsOnMapNew.NullOrEmpty() || __instance.TryGetComp<CompSoShipPart>() != null)
+			if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag || mapComp.ShipsOnMap.NullOrEmpty() || __instance.TryGetComp<CompSoShipPart>() != null)
 				return;
 			foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance)) //if any part spawned on ship
 			{
 				int shipIndex = mapComp.ShipIndexOnVec(vec);
 				if (shipIndex != -1)
 				{
-					mapComp.ShipsOnMapNew[shipIndex].AddToCache(__instance);
+					mapComp.ShipsOnMap[shipIndex].AddToCache(__instance);
 					return;
 				}
 			}
@@ -1835,14 +1835,14 @@ namespace SaveOurShip2
 				var mapComp = __instance.Map.GetComponent<ShipHeatMapComp>();
 				if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
 					return true;
-				if (!mapComp.ShipsOnMapNew.NullOrEmpty())
+				if (!mapComp.ShipsOnMap.NullOrEmpty())
 				{
 					foreach (IntVec3 vec in GenAdj.CellsOccupiedBy(__instance))
 					{
 						int shipIndex = mapComp.ShipIndexOnVec(vec);
 						if (shipIndex != -1)
 						{
-							var ship = mapComp.ShipsOnMapNew[mapComp.MapShipCells[vec].Item1];
+							var ship = mapComp.ShipsOnMap[mapComp.MapShipCells[vec].Item1];
 							if (ship.Buildings.Contains(__instance))
 							{
 								ship.RemoveFromCache(__instance, mode);
@@ -2110,13 +2110,49 @@ namespace SaveOurShip2
 		}
 	}
 
+
 	[HarmonyPatch]
-	public class ReversePatchBuilding
+	public class ReversePatchBuildingSpawn
+	{
+		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+		[HarmonyPatch(typeof(Building), "SpawnSetup")]
+		public static void Snapshot(object instance, Map map, bool respawningAfterLoad)
+		{
+		}
+	}
+	[HarmonyPatch]
+	public class ReversePatchBuildingDespawn
 	{
 		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
 		[HarmonyPatch(typeof(Building), "DeSpawn")]
 		public static void Snapshot(object instance, DestroyMode mode)
 		{
+		}
+	}
+	[HarmonyPatch(typeof(Building_Bed), "SpawnSetup")]
+	public static class DisableForMoveBed
+	{
+		public static bool Prefix(Building_Bed __instance, Map map, bool respawningAfterLoad)
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				ReversePatchBuildingSpawn.Snapshot(__instance, map, respawningAfterLoad);
+				return false;
+			}
+			return true;
+		}
+	}
+	[HarmonyPatch(typeof(Building_Bed), "DeSpawn")]
+	public static class DisableForMoveBedTwo
+	{
+		public static bool Prefix(Building_Bed __instance, DestroyMode mode)
+		{
+			if (ShipInteriorMod2.AirlockBugFlag)
+			{
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
+				return false;
+			}
+			return true;
 		}
 	}
 	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
@@ -2126,7 +2162,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -2139,7 +2175,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.AirlockBugFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -4383,7 +4419,7 @@ namespace SaveOurShip2
 			Map map = (Map)parms.target;
 			if (map.IsSpace())
 				parms.raidArrivalMode = PawnsArrivalModeDefOf.CenterDrop;
-			else if (map.GetComponent<ShipHeatMapComp>().ShipsOnMapNew.Values.Any(s => s.Turrets.Any(t => t.heatComp.Props.groundDefense)))
+			else if (map.GetComponent<ShipHeatMapComp>().ShipsOnMap.Values.Any(s => s.Turrets.Any(t => t.heatComp.Props.groundDefense)))
 				parms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
 		}
 	}

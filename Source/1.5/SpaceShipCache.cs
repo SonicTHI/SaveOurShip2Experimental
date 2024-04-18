@@ -351,7 +351,7 @@ namespace SaveOurShip2
 		{
 			IntVec3 lowestCorner = LowestCorner(rotb, Map);
 			Sketch sketch = new Sketch();
-			IntVec3 rot = new IntVec3(0, 0, 0);
+			IntVec3 rot = IntVec3.Zero;
 			foreach (IntVec3 pos in Area)
 			{
 				if (rotb == 1)
@@ -418,7 +418,7 @@ namespace SaveOurShip2
 		}
 		public IntVec3 MaximumCorner()
 		{
-			IntVec3 maxCorner = new IntVec3(0, 0, 0);
+			IntVec3 maxCorner = IntVec3.Zero;
 			foreach (IntVec3 v in Area)
 			{
 				if (v.x > maxCorner.x)
@@ -431,7 +431,7 @@ namespace SaveOurShip2
 		public IntVec3 Size(out IntVec3 min)
 		{
 			min = new IntVec3(int.MaxValue, 0, int.MaxValue);
-			IntVec3 max = new IntVec3(0, 0, 0);
+			IntVec3 max = IntVec3.Zero;
 			foreach (IntVec3 v in Area)
 			{
 				if (v.x < min.x)

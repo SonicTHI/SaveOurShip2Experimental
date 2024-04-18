@@ -17,6 +17,7 @@ namespace SaveOurShip2
 		public bool SoSWin = false;
 		public bool renderedThatAlready = false;
 		public List<Building_ShipAdvSensor> Sensors = new List<Building_ShipAdvSensor>();
+		public bool MoveShipFlag = false;
 
 		public PastWorldUWO2(World world) : base(world)
 		{

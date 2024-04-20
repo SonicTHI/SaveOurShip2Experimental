@@ -668,6 +668,7 @@ namespace RimWorld
 			int wreckLevel = 0;
 			bool fakeWreck = false;
 			bool shieldsActive = true;
+			bool isDerelict = false;
 			float CR = 0;
 			float radius = 150f;
 			float theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta - 0.1f + 0.002f * Rand.Range(0, 20);
@@ -681,20 +682,17 @@ namespace RimWorld
 			}
 			else if (passingShip is DerelictShip derelictShip)
 			{
+				isDerelict = true;
 				shipDef = derelictShip.derelictShip;
 				navyDef = derelictShip.spaceNavyDef;
 				faction = derelictShip.shipFaction;
-				if (derelictShip.wreckLevel == 2 && Rand.Chance(0.2f)) //fake wreck chance
+				if (derelictShip.wreckLevel == 2 && (derelictShip.derelictShip.neverAttacks && Rand.Chance(0.05f) || Rand.Chance(0.2f))) //fake wreck chance
 				{
 					fakeWreck = true;
-					if (Rand.Bool)
-					{
+					if (Rand.Chance(0.1f))
 						wreckLevel = 0;
-					}
 					else
-					{
 						wreckLevel = 1;
-					}
 				}
 				else
 				{
@@ -790,7 +788,7 @@ namespace RimWorld
 			if (passingShip != null)
 			{
 				ShipCombatOriginMap.passingShipManager.RemoveShip(passingShip);
-				if (ModsConfig.IdeologyActive && !(passingShip is DerelictShip))
+				if (ModsConfig.IdeologyActive && !isDerelict)
 					IdeoUtility.Notify_PlayerRaidedSomeone(map.mapPawns.FreeColonists);
 			}
 			if (faction == null)
@@ -800,7 +798,7 @@ namespace RimWorld
 				else
 					faction = Faction.OfAncientsHostile;
 			}
-			if (faction.HasGoodwill && faction.AllyOrNeutralTo(Faction.OfPlayer))
+			if (!isDerelict && faction.HasGoodwill && faction.AllyOrNeutralTo(Faction.OfPlayer))
 				faction.TryAffectGoodwillWith(Faction.OfPlayer, -150);
 
 			//spawn map
@@ -892,7 +890,7 @@ namespace RimWorld
 			//advsensors = further, active cloak = closer
 			//nominal should be 320-380
 			//ambush 180-280
-			byte detectionLevel = 0;
+			int detectionLevel = 0;
 			if (ambush)
 				detectionLevel -= 3;
 
@@ -904,7 +902,7 @@ namespace RimWorld
 
 			if (TargetMapComp.Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
 				detectionLevel -= 2;
-			Range = 300 + detectionLevel * 20 + Rand.Range(0, 60);
+			Range = 300 + (detectionLevel * 20) + Rand.Range(0, 60);
 		}
 
 		//battle
@@ -1592,13 +1590,12 @@ namespace RimWorld
 		{
 			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
 			SoShipCache ship = ShipsOnMap[shipIndex];
-			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
+			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && !ship.IsWreck && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
 			{
 				EndBattle(map, false);
 				return;
 			}
 			Building core = ship.Core;
-			ship.LastBridgeDied = false;
 			//ship.AreaDestroyed.Clear();
 			if (core == null)
 			{

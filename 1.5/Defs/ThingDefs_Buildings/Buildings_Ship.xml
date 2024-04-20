@@ -682,7 +682,7 @@
 				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
-				<compClass>CompPowerTransmitter</compClass>
+				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
 				<basePowerConsumption>250</basePowerConsumption>
 			</li>
@@ -693,6 +693,7 @@
 				<compClass>CompColorable</compClass>
 			</li>
 		</comps>
+		<tickerType>Normal</tickerType>
 		<rotatable>false</rotatable>
 		<building>
 			<shipPart>true</shipPart>

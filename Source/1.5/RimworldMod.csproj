@@ -58,33 +58,33 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\RimWorld15\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\RimWorld15\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\RimWorld15\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\..\..\..\..\RimWorld15\RimWorldWin64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\..\..\RimWorld15\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextCoreModule">
-      <HintPath>..\..\..\..\..\RimWorld15\RimWorldWin64_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\..\..\..\RimWorld15\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -92,7 +92,7 @@
     <Compile Include="Alert_ArchotechSporeMoodLow.cs" />
     <Compile Include="Alert_MechanitesInHomeArea.cs" />
     <Compile Include="ApparelHolographic.cs" />
-    <Compile Include="ArchotechGiftDef.cs" />
+    <Compile Include="Def\ArchotechGiftDef.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitTribalPillarSite.cs" />
@@ -216,8 +216,8 @@
     <Compile Include="Dialog\Dialog_NameShip.cs" />
     <Compile Include="Dialog\Dialog_Pirate.cs" />
     <Compile Include="Dialog\Dialog_RenameShip.cs" />
-    <Compile Include="SpaceShipDef.cs" />
-    <Compile Include="SpaceShipPartDef.cs" />
+    <Compile Include="Def\SpaceShipDef.cs" />
+    <Compile Include="Def\SpaceShipPartDef.cs" />
     <Compile Include="Events\ChoiceLetter_SpacePod.cs" />
     <Compile Include="Events\GameCondition_SpaceDebris.cs" />
     <Compile Include="Events\IncidentWorker_ShipCombat.cs" />
@@ -415,7 +415,7 @@
     <Compile Include="Ships\PirateShip.cs" />
     <Compile Include="Obs-Shuttle\ShuttleCaravanUtility.cs" />
     <Compile Include="SpaceShipCache.cs" />
-    <Compile Include="SpaceNavyDef.cs" />
+    <Compile Include="Def\SpaceNavyDef.cs" />
     <Compile Include="WorldObject\SpaceSite.cs" />
     <Compile Include="ThingSetMaker_ArchotechGift.cs" />
     <Compile Include="Thing_ArcholifePod.cs" />

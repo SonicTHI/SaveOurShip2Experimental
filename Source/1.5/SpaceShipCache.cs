@@ -564,8 +564,6 @@ namespace SaveOurShip2
 			}
 		}
 		//cache
-		public IntVec3 BridgeKillVec = IntVec3.Invalid; //system is stupid but here we are
-		public bool LastBridgeDied = false; //as above, prevents checking for detach until ship is moved
 		public bool PathDirty = true; //unused //td
 		public int LastSafePath = -1; //in combat the lowest path -1 that sufered damage
 		public List<HashSet<IntVec3>> DetachedShipAreas = new List<HashSet<IntVec3>>();
@@ -853,9 +851,6 @@ namespace SaveOurShip2
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Has 0 cores remaining.");
 			Core = null;
 			ResetCorePath();
-			if (mapComp.ShipMapState == ShipMapState.inCombat) //turn into wreck but do not float it
-				LastBridgeDied = true;
-
 			if (mapComp.ShipMapState == ShipMapState.inCombat) //if last ship end combat else move to grave
 			{
 				if (mapComp.ShipsOnMap.Values.Any(s => !s.IsWreck))
@@ -955,20 +950,20 @@ namespace SaveOurShip2
 			//find cells around
 			//for each try to path back to 0 or LastSafePath - 1, if not possible detach each set separately
 
-			int pathTo = int.MaxValue; //lowest path in startCells
-			IntVec3 first = IntVec3.Invalid; //path to this cell
+			//int pathTo = int.MaxValue; //lowest path in startCells
+			//IntVec3 first = IntVec3.Invalid; //path to this cell
 			HashSet<IntVec3> startCells = new HashSet<IntVec3>(); //cells areaDestroyed
 			foreach (IntVec3 vec in areaDestroyed) //find first still attached cell around detach area
 			{
 				foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, IntVec2.One).Where(v => !areaDestroyed.Contains(v) && Area.Contains(v)))// && mapComp.MapShipCells[v].Item2 != 0))
 				{
 					startCells.Add(v);
-					int vecPath = mapComp.MapShipCells[v].Item2;
+					/*int vecPath = mapComp.MapShipCells[v].Item2;
 					if (vecPath < pathTo)
 					{
 						pathTo = vecPath;
 						first = v;
-					}
+					}*/
 				}
 			}
 			if (ModSettings_SoS.debugMode)
@@ -980,7 +975,7 @@ namespace SaveOurShip2
 				str2 = "";
 			}
 
-			HashSet<IntVec3> cellsDone = new HashSet<IntVec3> { first }; //cells that were checked
+			HashSet<IntVec3> cellsDone = new HashSet<IntVec3>(); //cells that were checked
 			foreach (IntVec3 setStartCell in startCells)
 			{
 				if (!mapComp.MapShipCells.ContainsKey(setStartCell)) //cell might have been removed already

@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f4";
+		public const string SOS2EXPversion = "V101f5";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -783,6 +783,7 @@ namespace SaveOurShip2
 		public static void GenerateShipDef(SpaceShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, out List<Thing> planters, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
 		{
 			cellsToFog = new List<IntVec3>();
+			//List<IntVec3> cellsNotToFog = new List<IntVec3>();
 			planters = new List<Thing>();
 			cores = new List<Building>();
 			bool unlockedJT = false;
@@ -964,7 +965,6 @@ namespace SaveOurShip2
 						thing.TryGetComp<CompQuality>()?.SetQuality(QualityUtility.GenerateQualityBaseGen(), ArtGenerationContext.Outsider);
 						if (thing is Building b)
 						{
-							var colorComp = thing.TryGetComp<CompColorable>();
 							var glowerComp = thing.TryGetComp<CompGlower>();
 							if (glowerComp != null && glowerComp.Props.colorPickerEnabled) //color glow of lights
 							{
@@ -987,14 +987,14 @@ namespace SaveOurShip2
 								b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(shape.colorDef);
 							}
 							var partComp = thing.TryGetComp<CompShipCachePart>();
-							if (rePaint && colorComp != null) //color unpainted navy ships
+							if (rePaint && def.building.shipPart && thing.TryGetComp<CompColorable>() != null) //color unpainted navy ships
 							{
 								if (partComp?.Props.isHull ?? false)
 									b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(navyDef.colorPrimary);
 								else if (def.defName.StartsWith("Ship_Corner"))
 									b.paintColorDef = DefDatabase<ColorDef>.GetNamedSilentFail(navyDef.colorSecondary);
 							}
-							if (wreckLevel > 1 && !wreckReplace)
+							if (wreckLevel > 2 && !wreckReplace)
 								wreckDestroy.Add(b);
 
 							if (thing.def.CanHaveFaction) //set faction
@@ -1012,14 +1012,6 @@ namespace SaveOurShip2
 									continue;
 								}
 								thing.SetFactionDirect(fac);
-							}
-							var batComp = b.TryGetComp<CompPowerBattery>();
-							if (batComp != null)
-							{
-								if (wreckLevel < 2)
-									batComp.AddEnergy(batComp.AmountCanAccept);
-								else if (wreckLevel == 2)
-									batComp.AddEnergy(batComp.AmountCanAccept * Rand.Gaussian(0.1f, 0.02f));
 							}
 							var refuelComp = b.TryGetComp<CompRefuelable>();
 							if (refuelComp != null)
@@ -1043,31 +1035,57 @@ namespace SaveOurShip2
 							{
 								b.SetStyleDef(fac.ideos.PrimaryIdeo.GetStyleFor(thing.def));
 							}
-							if (b is Building_Storage storage)
+							var heatComp = b.TryGetComp<CompShipHeat>();
+							if (heatComp != null)
 							{
-								storage.settings.Priority = StoragePriority.Low;
-							}
-							else if (b is Building_ShipTurret turret)
-							{
-								turret.burstCooldownTicksLeft = 300;
-								if (b is Building_ShipTurretTorpedo torp)
+								/*if (heatComp.Props.showOnRoof)
 								{
-									int num = torp.torpComp.Props.maxTorpedoes;
-									if (wreckLevel > 2)
-										num /= Rand.RangeInclusive(3, 7);
-
-									for (int i = 0; i < num; i++)
+									cellsNotToFog.AddRange(thing.OccupiedRect());
+								}*/
+								if (b is Building_ShipTurret turret)
+								{
+									turret.burstCooldownTicksLeft = 300;
+									if (b is Building_ShipTurretTorpedo torp)
 									{
-										if (size > 10000 && Rand.Chance(0.05f))
-											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_Antimatter, 1);
-										else if (size > 5000 && Rand.Chance(0.15f))
-											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_EMP, 1);
-										else if (size < 2500 && Rand.Chance(0.2f))
-											continue;
-										else
-											torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive, 1);
+										int num = torp.torpComp.Props.maxTorpedoes;
+										if (wreckLevel > 2)
+											num /= Rand.RangeInclusive(3, 7);
+
+										for (int i = 0; i < num; i++)
+										{
+											if (size > 10000 && Rand.Chance(0.05f))
+												torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_Antimatter, 1);
+											else if (size > 5000 && Rand.Chance(0.15f))
+												torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_EMP, 1);
+											else if (size < 2500 && Rand.Chance(0.2f))
+												continue;
+											else
+												torp.torpComp.LoadShell(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive, 1);
+										}
 									}
 								}
+								else if (b is Building_ShipBridge shipBridge)
+									shipBridge.ShipName = shipDef.label;
+								else
+								{
+									var shieldComp = b.TryGetComp<CompShipCombatShield>();
+									if (shieldComp != null)
+									{
+										shieldComp.radiusSet = 40;
+										shieldComp.radius = 40;
+										if (shape.radius != 0)
+										{
+											shieldComp.radiusSet = shape.radius;
+											shieldComp.radius = shape.radius;
+										}
+										if (shipActive)
+											b.TryGetComp<CompFlickable>().SwitchIsOn = true;
+									}
+								}
+							}
+							else if (b is Building_Storage storage)
+							{
+								storage.settings.Priority = StoragePriority.Low;
 							}
 							else if (b is Building_PlantGrower)
 							{
@@ -1086,22 +1104,15 @@ namespace SaveOurShip2
 									c.innerContainer.TryAdd(item, true);
 								}
 							}
-							else if (b is Building_ShipBridge shipBridge)
-								shipBridge.ShipName = shipDef.label;
 							else
 							{
-								var shieldComp = b.TryGetComp<CompShipCombatShield>();
-								if (shieldComp != null)
+								var batComp = b.TryGetComp<CompPowerBattery>();
+								if (batComp != null)
 								{
-									shieldComp.radiusSet = 40;
-									shieldComp.radius = 40;
-									if (shape.radius != 0)
-									{
-										shieldComp.radiusSet = shape.radius;
-										shieldComp.radius = shape.radius;
-									}
-									if (shipActive)
-										b.TryGetComp<CompFlickable>().SwitchIsOn = true;
+									if (wreckLevel < 2)
+										batComp.AddEnergy(batComp.AmountCanAccept);
+									else if (wreckLevel == 2)
+										batComp.AddEnergy(batComp.AmountCanAccept * Rand.Gaussian(0.1f, 0.02f));
 								}
 							}
 						}
@@ -1209,8 +1220,11 @@ namespace SaveOurShip2
 						GenSpawn.Spawn(thing, adjPos, map, shape.rot);
 						if (thing is Building_ShipTurret turret)
 						{
+							//cellsNotToFog.AddRange(thing.OccupiedRect());
 							turret.burstCooldownTicksLeft = 300;
 							turret.TryGetComp<CompPowerTrader>().PowerOn = true;
+							if (wreckLevel > 2)
+								wreckDestroy.Add(turret);
 						}
 					}
 					else //cargo
@@ -1229,6 +1243,8 @@ namespace SaveOurShip2
 					Log.Warning("SOS2: ".Colorize(Color.cyan) + map + "Ship shape was not generated properly: ".Colorize(Color.red) + shape.shapeOrDef + " at " + offset.x + shape.x + ", " + offset.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
 				}
 			}
+			/*cellsToFog.RemoveWhere(v => cellsNotToFog.Contains(v));
+			cellsNotToFog.Clear();*/
 			//cargo
 			if (cargoCells.Any() && wreckLevel < 3)
 			{
@@ -1862,6 +1878,7 @@ namespace SaveOurShip2
 			}
 			//Log.Message("Area: " + ship.Area.Count);
 
+			//HashSet<Zone> zonesToDestroy = new HashSet<Zone>();
 			foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
@@ -1878,6 +1895,7 @@ namespace SaveOurShip2
 				}
 				//add to target area and ship
 				targetArea.Add(adjustedPos);
+				//zonesToDestroy.Add(targetMap.zoneManager.ZoneAt(adjustedPos));
 				//clear LZ
 				foreach (Thing t in adjustedPos.GetThingList(targetMap))
 				{
@@ -1988,6 +2006,10 @@ namespace SaveOurShip2
 					targetMap.areaManager.Home[adjustedPos] = true;
 				}
 			}
+			/*foreach (Zone z in zonesToDestroy)
+			{
+				z.Delete();
+			}*/
 			if (!targetMapIsSpace)
 			{
 				foreach (IntVec3 pos in targetArea) //check since placeworker ignores this
@@ -2062,7 +2084,7 @@ namespace SaveOurShip2
 				}
 				catch (Exception e)
 				{
-					reason.AppendLine(spawnThing.def.label);
+					reason.AppendLine(e.Message);
 					fail = true;
 					var sb = new StringBuilder();
 					sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
@@ -2096,6 +2118,7 @@ namespace SaveOurShip2
 							ship.Area.Add(pos);
 						}
 					}
+					MoveShipFlag = false;
 					Find.LetterStack.ReceiveLetter("SoS.MoveFail".Translate(), "SoS.MoveFailDesc".Translate(reason), LetterDefOf.NegativeEvent);
 					return;
 				}
@@ -2198,89 +2221,6 @@ namespace SaveOurShip2
 				if (devMode)
 					watch.Record("takeoffEngineEffects");
 			}
-
-			//move things - old
-			/*IntVec3 rot = IntVec3.Zero;
-			foreach (Thing spawnThing in toSave)
-			{
-				if (!spawnThing.Destroyed)
-				{
-					try
-					{
-						if (spawnThing.Spawned)
-							spawnThing.DeSpawn();
-
-						int adjz = 0;
-						int adjx = 0;
-						if (rotb == 3)
-						{
-							//CCW rot, breaks non rot, uneven things
-							if (spawnThing.def.rotatable)
-							{
-								spawnThing.Rotation = new Rot4(spawnThing.Rotation.AsByte + rotb);
-							}
-							else if (spawnThing.def.rotatable == false && spawnThing.def.size.x % 2 == 0)
-								adjx -= 1;
-							rot.x = targetMap.Size.x - spawnThing.Position.z + adjx;
-							rot.z = spawnThing.Position.x;
-							spawnThing.Position = rot + adjustment;
-						}
-						else if (rotb == 2)
-						{
-							//flip using 2x CCW rot
-							if (spawnThing.def.rotatable)
-							{
-								spawnThing.Rotation = new Rot4(spawnThing.Rotation.AsByte + rotb);
-							}
-							else if (spawnThing.def.rotatable == false && spawnThing.def.size.x % 2 == 0)
-								adjx -= 1;
-							if (spawnThing.def.rotatable == false && spawnThing.def.size.x != spawnThing.def.size.z)
-							{
-								if (spawnThing.def.size.z % 2 == 0) //5x2
-									adjz -= 1;
-								else //6x3,6x7
-									adjz += 1;
-							}
-							rot.x = targetMap.Size.x - spawnThing.Position.z + adjx;
-							rot.z = spawnThing.Position.x;
-							IntVec3 tempPos = rot;
-							rot.x = targetMap.Size.x - tempPos.z + adjx;
-							rot.z = tempPos.x + adjz;
-							spawnThing.Position = rot + adjustment;
-						}
-						else
-							spawnThing.Position += adjustment;
-						try
-						{
-							if (!spawnThing.Destroyed)// && spawnThing.TryGetComp<CompShipLight>() == null)
-							{
-								spawnThing.SpawnSetup(targetMap, false);
-							}
-						}
-						catch (Exception e)
-						{
-							var sb = new StringBuilder();
-							sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
-							if (devMode)
-								sb.AppendLine(e.StackTrace);
-							Log.Warning(sb.ToString());
-						}
-
-						//post move
-						if (fac != null && spawnThing is Building && spawnThing.def.CanHaveFaction)
-							spawnThing.SetFaction(fac);
-					}
-					catch (Exception e)
-					{
-						var sb = new StringBuilder();
-						sb.AppendFormat("Error moving {0}: {1}\n", spawnThing.def.label, e.Message);
-						if (devMode)
-							sb.AppendLine(e.StackTrace);
-						Log.Error(sb.ToString());
-					}
-				}
-			}*/
-
 			if (devMode)
 				watch.Record("moveThings");
 			MoveShipFlag = false;

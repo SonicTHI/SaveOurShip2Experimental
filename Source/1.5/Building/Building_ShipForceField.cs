@@ -40,9 +40,15 @@ namespace SaveOurShip2
 			if (Find.TickManager.TicksGame % 60 == 0)
 			{
 				if (powerComp.PowerOn && activate)
+				{
+					powerComp.PowerOutput = powerComp.Props.basePowerConsumption * 10;
 					active = true;
+				}
 				else
+				{
+					powerComp.PowerOutput = powerComp.Props.basePowerConsumption;
 					active = false;
+				}
 			}
 		}
 		public override IEnumerable<Gizmo> GetGizmos()

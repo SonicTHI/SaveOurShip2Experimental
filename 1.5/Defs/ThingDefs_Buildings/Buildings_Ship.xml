@@ -684,7 +684,7 @@
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<transmitsPower>true</transmitsPower>
-				<basePowerConsumption>250</basePowerConsumption>
+				<basePowerConsumption>25</basePowerConsumption>
 			</li>
 			<li Class="SaveOurShip2.CompProps_ShipHeat">
 				<compClass>SaveOurShip2.CompShipHeat</compClass>

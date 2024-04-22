@@ -98,7 +98,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V99f25";
+		public const string SOS2EXPversion = "V99f26";
 		public const int SOS2ReqCurrentMinor = 4;
 		public const int SOS2ReqCurrentBuild = 3704;
 
@@ -1734,7 +1734,9 @@ namespace SaveOurShip2
 			{
 				devMode = true;
 			}
-			HashSet<Thing> toSave = new HashSet<Thing>();
+			HashSet<Thing> toMoveShipParts = new HashSet<Thing>();
+			HashSet<Thing> toMoveBuildings = new HashSet<Thing>();
+			HashSet<Thing> toMoveThings = new HashSet<Thing>();
 			List<Thing> toDestroy = new List<Thing>();
 			List<Zone> zonesToCopy = new List<Zone>();
 			List<Room> roomsToTemp = new List<Room>();
@@ -1864,7 +1866,7 @@ namespace SaveOurShip2
 							var transportComp = b.TryGetComp<CompTransporter>();
 							if (transportComp != null)
 							{
-								toSave.AddRange(transportComp.innerContainer.ToList());
+								toMoveThings.AddRange(transportComp.innerContainer.ToList());
 								transportComp.CancelLoad();
 							}
 							else if (b is Building_NutrientPasteDispenser n)
@@ -1872,30 +1874,39 @@ namespace SaveOurShip2
 								n.cachedAdjCellsCardinal = null;
 							}
 						}
+
+						var cacheComp = t.TryGetComp<CompSoShipPart>();
+						if (cacheComp != null && cacheComp.Props.AnyPart)
+							toMoveShipParts.Add(t);
+						else
+							toMoveBuildings.Add(t);
 					}
-					else if (t is Pawn p)
+					else
 					{
-						pawns.Add(p);
-						if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
+						if (t is Pawn p)
 						{
-							//do not allow kidnapping other fac pawns/animals
-							Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.LaunchFailPawns", p.Name.ToStringShort), null, MessageTypeDefOf.NegativeEvent);
-							return;
+							pawns.Add(p);
+							if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
+							{
+								//do not allow kidnapping other fac pawns/animals
+								Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.LaunchFailPawns", p.Name.ToStringShort), null, MessageTypeDefOf.NegativeEvent);
+								return;
+							}
+							/*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
+							{
+								Log.Message("Pawn holding thing: " + p.holdingOwner);
+								Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPawns", p.holdingOwner.Owner.ToString()), null, MessageTypeDefOf.NegativeEvent);
+								return;
+							}*/
 						}
-						/*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
-						{
-							Log.Message("Pawn holding thing: " + p.holdingOwner);
-							Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPawns", p.holdingOwner.Owner.ToString()), null, MessageTypeDefOf.NegativeEvent);
-							return;
-						}*/
+						toMoveThings.Add(t);
 					}
-					toSave.Add(t);
 				}
 				foreach (Pawn p in pawns) //drop carried things, add to move list
 				{
 					if (p.IsCarrying() && p.carryTracker.TryDropCarriedThing(p.Position, ThingPlaceMode.Direct, out Thing carriedt))
 					{
-						toSave.Add(carriedt);
+						toMoveThings.Add(carriedt);
 					}
 					//p.CurJob.Clear();
 				}
@@ -1994,10 +2005,7 @@ namespace SaveOurShip2
 				watch.Record("destroySource");
 
 			//move things - new
-			//despawn, error check if playermove
-			bool fail = false;
-			var reason = new StringBuilder();
-			foreach (Thing spawnThing in toSave.Where(t => !t.Destroyed && t.def.defName.StartsWith("Lighting_MURWall")))
+			foreach (Thing spawnThing in toMoveThings.Where(t => !t.Destroyed))
 			{
 				try
 				{
@@ -2006,20 +2014,6 @@ namespace SaveOurShip2
 				}
 				catch (Exception e)
 				{
-
-				}
-			}
-			foreach (Thing spawnThing in toSave.Where(t => !t.Destroyed))
-			{
-				try
-				{
-					if (spawnThing.Spawned)
-						spawnThing.DeSpawn();
-				}
-				catch (Exception e)
-				{
-					reason.AppendLine(e.Message);
-					fail = true;
 					var sb = new StringBuilder();
 					sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
 					if (devMode)
@@ -2027,75 +2021,53 @@ namespace SaveOurShip2
 					Log.Warning(sb.ToString());
 				}
 			}
-			if (playerMove)
+			foreach (Thing spawnThing in toMoveBuildings.Where(t => !t.Destroyed))
 			{
-				if (fail) //if error abort, respawn all in same pos/map, warn
+				try
 				{
-					foreach (Thing spawnThing in toSave.Where(t => !t.Destroyed && !t.Spawned))
-					{
-						spawnThing.SpawnSetup(sourceMap, false);
-					}
-					//reverse cache
-					if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
-					{
-						sourceMapComp.ShipsOnMap.Add(shipIndex, targetMapComp.ShipsOnMap[shipIndex]);
-						ship = targetMapComp.ShipsOnMap[shipIndex];
-						ship.Map = sourceMap;
-						ship.BuildingsDestroyed.Clear();
-						targetMapComp.RemoveShipFromCache(shipIndex);
-					}
-					if (adjustment != IntVec3.Zero) //cache: adjust area
-					{
-						ship.Area.Clear();
-						foreach (IntVec3 pos in sourceArea)
-						{
-							ship.Area.Add(pos);
-						}
-					}
-					AirlockBugFlag = false;
-					Find.LetterStack.ReceiveLetter("SoS.MoveFail".Translate(), "SoS.MoveFailDesc".Translate(reason), LetterDefOf.NegativeEvent);
-					return;
+					if (spawnThing.Spawned)
+						spawnThing.DeSpawn();
 				}
-				else //spawn parts,build,thing in order
+				catch (Exception e)
 				{
-					List<Thing> shipParts = new List<Thing>();
-					List<Thing> buildings = new List<Thing>();
-					List<Thing> things = new List<Thing>();
-
-					foreach (Thing spawnThing in toSave)
-					{
-						if (spawnThing is Building)
-						{
-							var cacheComp = spawnThing.TryGetComp<CompSoShipPart>();
-							if (cacheComp != null && cacheComp.Props.AnyPart)
-								shipParts.Add(spawnThing);
-							else
-								buildings.Add(spawnThing);
-						}
-						else
-							things.Add(spawnThing);
-					}
-					foreach (Thing spawnThing in shipParts)
-					{
-						ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
-					}
-					foreach (Thing spawnThing in buildings)
-					{
-						ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
-					}
-					foreach (Thing spawnThing in things)
-					{
-						ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
-					}
+					var sb = new StringBuilder();
+					sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
+					if (devMode)
+						sb.AppendLine(e.StackTrace);
+					Log.Warning(sb.ToString());
 				}
 			}
-			else
+			foreach (Thing spawnThing in toMoveShipParts.Where(t => !t.Destroyed))
 			{
-				foreach (Thing spawnThing in toSave)
+				try
 				{
-					ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+					if (spawnThing.Spawned)
+						spawnThing.DeSpawn();
+				}
+				catch (Exception e)
+				{
+					var sb = new StringBuilder();
+					sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
+					if (devMode)
+						sb.AppendLine(e.StackTrace);
+					Log.Warning(sb.ToString());
 				}
 			}
+			foreach (Thing spawnThing in toMoveShipParts)
+			{
+				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+			}
+			foreach (Thing spawnThing in toMoveBuildings)
+			{
+				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+			}
+			foreach (Thing spawnThing in toMoveThings)
+			{
+				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+			}
+			if (devMode)
+				watch.Record("moveThings");
+			AirlockBugFlag = false;
 
 			//draw fuel, exhaust area actions
 			if (core is Building_ShipBridge && playerMove)
@@ -2155,9 +2127,6 @@ namespace SaveOurShip2
 				if (devMode)
 					watch.Record("takeoffEngineEffects");
 			}
-			if (devMode)
-				watch.Record("moveThings");
-			AirlockBugFlag = false;
 			if (shipIndexes.Count > 1) //ship cache: adjacent ships found, merge in order: largest ship, ship, wreck
 			{
 				Log.Message("SOS2: ".Colorize(Color.cyan) + " ship move found adjacent ships in area, merging!");
@@ -2309,7 +2278,7 @@ namespace SaveOurShip2
 			if (devMode)
 			{
 				watch.Record("finalize");
-				Log.Message("SOS2: ".Colorize(Color.cyan) + sourceMap + " Ship move complete, timings:\n".Colorize(Color.green) + watch.MakeReport());
+				Log.Message("SOS2: ".Colorize(Color.cyan) + sourceMap + " Ship move complete in ".Colorize(Color.green) + watch.MakeReport());
 			}
 		}
 		private static void ReSpawnThingOnMap(Thing spawnThing, Map targetMap, IntVec3 adjustment, int rotb)
@@ -2763,19 +2732,25 @@ namespace SaveOurShip2
 		}
 
 		public List<TimeMeasure> measures = new List<TimeMeasure>();
+		public TimeSpan timeTotal;
 
 		public void Record(string name)
 		{
 			measures.Add(new TimeMeasure { name = name, time = watch.Elapsed });
+			timeTotal += watch.Elapsed;
 			watch.Restart();
 		}
 
 		public string MakeReport()
 		{
 			var sb = new StringBuilder();
-			foreach (var r in measures)
+			sb.AppendFormat("{0}ms\n", timeTotal.TotalMilliseconds);
+			if (measures.Count > 1)
 			{
-				sb.AppendFormat("{0}={1}ms\n", r.name, r.time.TotalMilliseconds);
+				foreach (var r in measures)
+				{
+					sb.AppendFormat("{0}={1}ms\n", r.name, r.time.TotalMilliseconds);
+				}
 			}
 			return sb.ToString();
 		}

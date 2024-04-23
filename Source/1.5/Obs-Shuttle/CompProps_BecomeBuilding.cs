@@ -2,7 +2,7 @@
 using Verse;
 
 namespace SaveOurShip2
-{
+{/*
 	public class CompProps_BecomeBuilding : CompProperties
 	{
 		public ThingDef buildingDef;
@@ -13,6 +13,6 @@ namespace SaveOurShip2
 		{
 			this.compClass = typeof(CompBecomeBuilding);
 		}
-	}
+	}*/
 }
 

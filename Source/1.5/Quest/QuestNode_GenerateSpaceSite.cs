@@ -45,7 +45,6 @@ namespace SaveOurShip2
 			site.theta = slate.Get<float>("theta");
 			site.phi = slate.Get<float>("phi");
 			site.radius = slate.Get<float>("radius");
-			site.fuelCost = slate.Get<int>("fuelCost");
 			List<Rule> list = new List<Rule>();
 			Dictionary<string, string> dictionary = new Dictionary<string, string>();
 			List<string> list2 = new List<string>();

@@ -12,6 +12,7 @@ using UnityEngine;
 using Verse.AI.Group;
 using System.IO;
 using static SaveOurShip2.ModSettings_SoS;
+using Vehicles;
 
 namespace SaveOurShip2
 {
@@ -43,9 +44,25 @@ namespace SaveOurShip2
 			ShipInteriorMod2.DefsLoaded();
 			Harmony pat = new Harmony("ShipInteriorMod2");
 			pat.PatchAll();
+			//Conditionally patch cross-mod methods
+			if(ModLister.HasActiveModWithName("Vanilla Expanded Framework"))
+            {
+                Log.Message("[SoS2] Vanilla Expanded framework detected - disabling vehicle wrecks in space");
+				Type typeToPatch = AccessTools.TypeByName("VFECore.MapGenerator_GenerateMap_Patch");
+				System.Reflection.MethodInfo methodToPatch = typeToPatch.GetMethod("CanSpawnAt", new Type[] { typeof(IntVec3), typeof(Map), AccessTools.TypeByName("VFECore.ObjectSpawnsDef") });
+				HarmonyMethod postfixPatch = new HarmonyMethod(typeof(Setup).GetMethod("WhatKindOfIdiotDrivesInSpace", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic));
+				pat.Patch(methodToPatch, null, postfixPatch);
+            }
 			//Needs an init delay
 			if (useSplashScreen) LongEventHandler.QueueLongEvent(() => ShipInteriorMod2.UseCustomSplashScreen(), "ShipInteriorMod2", false, null);
 		}
+
+		//This is an intentionally dumb name, in homage to my original 2019-era patch names. What it actually does is disable vehicle wrecks spawning in space. Credit to @Thain for the runner-up name, "NotElonsTesla"
+		static void WhatKindOfIdiotDrivesInSpace(ref bool __result, Map map)
+        {
+			if (map.IsSpace())
+				__result = false;
+        }
 	}
 	public class ModSettings_SoS : ModSettings
 	{
@@ -336,7 +353,7 @@ namespace SaveOurShip2
 			//shuttle, archolife cosmetics
 			if (!loadedGraphics)
 			{
-				foreach (ThingDef thingToResolve in CompShuttleCosmetics.GraphicsToResolve.Keys)
+				/*foreach (ThingDef thingToResolve in CompShuttleCosmetics.GraphicsToResolve.Keys)
 				{
 					Graphic_Single[] graphicsResolved = new Graphic_Single[CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphics.Count];
 					Graphic_Multi[] graphicsHoverResolved = new Graphic_Multi[CompShuttleCosmetics.GraphicsToResolve[thingToResolve].graphicsHover.Count];
@@ -358,7 +375,7 @@ namespace SaveOurShip2
 
 					CompShuttleCosmetics.graphics.Add(thingToResolve.defName, graphicsResolved);
 					CompShuttleCosmetics.graphicsHover.Add(thingToResolve.defName, graphicsHoverResolved);
-				}
+				}*/
 				foreach (ThingDef thingToResolve in CompArcholifeCosmetics.GraphicsToResolve.Keys)
 				{
 					Graphic_Multi[] graphicsResolved = new Graphic_Multi[CompArcholifeCosmetics.GraphicsToResolve[thingToResolve].graphics.Count];
@@ -913,6 +930,19 @@ namespace SaveOurShip2
 						lord?.AddPawn(pawn);
 						GenSpawn.Spawn(pawn, adjPos, map);
 						pawnsOnShip.Add(pawn);
+					}
+					else if (DefDatabase<VehicleDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
+                    {
+						VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
+						VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);
+						vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
+						GenSpawn.Spawn(vehicle, adjPos, map); 
+						if (vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def.GetNode("PassengersSix") != null) //TODO - in the future, we'll want enemy shuttles to be specced as fighters, bombers, shielded transports, etc.
+						{
+							Log.Message("Speccing shuttle as troop transport");
+							UpgradeNode node = vehicle.CompUpgradeTree.Props.def.GetNode("PassengersSix");
+							vehicle.CompUpgradeTree.FinishUnlock(node);
+						}
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{

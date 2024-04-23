@@ -1,0 +1,2919 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<Vehicles.VehicleBuildDef ParentName="VehicleBaseBuildable">
+		<defName>SoS2_Shuttle_Personal_Blueprint</defName>
+		<label>Personal Shuttle</label>
+		<description>A single-occupant shuttlecraft capable of both orbital and suborbital flight. Unlike larger shuttles, this model runs on chemfuel.</description>
+
+		<graphicData>
+			<texPath>Things/Shuttle/shuttle_personal</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(2,2)</drawSize>
+		</graphicData>
+		
+		<statBases>
+			<MaxHitPoints>500</MaxHitPoints>
+			<WorkToBuild>80000</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Mass>300</Mass>
+		</statBases>
+		
+		<size>(1,1)</size>
+		<rotatable>false</rotatable>
+		
+		<researchPrerequisites>
+			<li>ShuttlePersonal</li>
+		</researchPrerequisites>
+		
+		<costList>
+			<Plasteel>40</Plasteel>
+			<Steel>160</Steel>
+			<ComponentIndustrial>12</ComponentIndustrial>
+		</costList>
+		
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		
+		<thingToSpawn>SoS2_Shuttle_Personal</thingToSpawn>
+	</Vehicles.VehicleBuildDef>
+	
+	<Vehicles.VehicleDef ParentName="BaseVehiclePawn">
+		<defName>SoS2_Shuttle_Personal</defName>
+		<label>Personal Shuttle</label>
+		<description>A single-occupant shuttlecraft capable of both orbital and suborbital flight. Unlike larger shuttles, this model runs on chemfuel.</description>
+		
+		<graphicData>
+			<texPath>Things/Shuttle/shuttle_personal</texPath>
+			<graphicClass>Vehicles.Graphic_Vehicle</graphicClass>
+			<shaderType>CutoutComplexPattern</shaderType>
+			<drawSize>(2,2)</drawSize>
+			<drawRotated>false</drawRotated>
+			<color>(255, 255, 255)</color>
+			<colorTwo>(255, 255, 255)</colorTwo>
+			<colorThree>(255, 255, 255)</colorThree>
+		</graphicData>
+		
+		<fillPercent>0.75</fillPercent>
+		<rotatable>false</rotatable>
+		
+		<nameable>true</nameable>
+
+		<buildDef>SoS2_Shuttle_Personal_Blueprint</buildDef>
+
+		<size>(1, 1)</size>
+		<uiIconScale>0.65</uiIconScale>
+		
+		<vehicleMovementPermissions LockSetting="True">NotAllowed</vehicleMovementPermissions>
+		<canCaravan LockSetting = "True">false</canCaravan>
+		<vehicleCategory>Transport</vehicleCategory>
+		<techLevel>Industrial</techLevel>
+		<vehicleType>Air</vehicleType>
+		
+		<statBases>
+			<ArmorRating_Blunt>0.5</ArmorRating_Blunt>
+			<ArmorRating_Sharp>0.8</ArmorRating_Sharp>
+			<ArmorRating_Heat>2.0</ArmorRating_Heat>
+			<Flammability>0.0</Flammability>
+			<DecompressionResistance>1</DecompressionResistance>
+		</statBases>
+		
+		<vehicleStats>
+			<Mass>300</Mass>
+			<MoveSpeed LockSetting="True">0</MoveSpeed>
+			<CargoCapacity>50</CargoCapacity>
+			<RepairRate>1.2</RepairRate>
+			<FlightSpeed>24</FlightSpeed>
+		</vehicleStats>
+		
+		<soundSustainersOnEvent>
+			<li>
+				<start>AerialVehicleLaunch</start>
+				<stop>Despawned</stop>
+				<value>VVE_VehicleEngineRocket</value>
+			</li>
+			<li>
+				<start>AerialVehicleLanding</start>
+				<stop>Spawned</stop>
+				<value>VVE_VehicleEngineRocket</value>
+			</li>
+		</soundSustainersOnEvent>
+		
+		<drawProperties>
+			<displayRotation>North</displayRotation>
+		</drawProperties>
+		
+		<properties>
+			
+			<roles>
+				<li>
+					<key>pilot</key>
+					<label>Pilot</label>
+					<slots>1</slots>
+					<slotsToOperate>1</slotsToOperate>
+					
+					<handlingTypes>
+						<li>Movement</li>
+					</handlingTypes>
+				</li>
+			</roles>
+		</properties>
+		
+		<components>
+			<li>
+				<key>FirstThruster</key>
+				<label>First Thruster</label>
+				<health>15</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>2</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>SecondThruster</key>
+				<label>Second Thruster</label>
+				<health>15</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>2</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>ThirdThruster</key>
+				<label>Third Thruster</label>
+				<health>15</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>2</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>FourthThruster</key>
+				<label>Fourth Thruster</label>
+				<health>15</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>2</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>Chemtank</key>
+				<label>Chemtank</label>
+				<health>15</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_FuelLeak"/>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>3</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+			</li>
+			<li>
+				<key>Hull</key>
+				<label>Hull</label>
+				<health>200</health>
+				<depth>External</depth>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+			</li>
+		</components>
+		<!--
+		<modExtensions>
+			<li Class="VanillaVehiclesExpanded.StatExtension">
+				<statToAdd>
+					<li>VVE_VehicleTier</li>
+				</statToAdd>
+				<statValues>
+					<li>VVE_Tier1</li>
+				</statValues>
+				<statDescriptions>
+					<li>VVE_Tier1Desc</li>
+				</statDescriptions>
+			</li>
+		</modExtensions>
+		-->
+		<comps>	
+			<li Class="Vehicles.CompProperties_FueledTravel">
+				<fuelType>Chemfuel</fuelType>
+				<leakDef>Filth_Fuel</leakDef>
+				<fuelConsumptionRate>200</fuelConsumptionRate>
+				<fuelCapacity>250</fuelCapacity>
+			</li>
+			<li Class="Vehicles.CompProperties_VehicleLauncher">
+				<compClass>SaveOurShip2.Vehicles.CompShuttleLauncher</compClass>
+				<spaceFlight>true</spaceFlight>
+				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
+
+				<launchProtocol Class="Vehicles.DefaultTakeoff">
+					<launchProperties>
+						<maxTicks>600</maxTicks>
+						<renderShadow>false</renderShadow>
+						
+						<events>
+							<li>
+								<triggerAt>1</triggerAt>
+								<method>SaveOurShip2.VehicleEventMethods.ShuttleLaunched()</method>
+							</li>
+						</events>
+						
+						<zPositionCurve Class = "SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.25, 0)</li>
+								<li>(0.5, 0)</li>
+								<li>(0.75, 0)</li>
+								<li>(1, 200)</li>
+							</points>
+						</zPositionCurve>
+						
+						<fleckData>
+							<li>
+								<def>Smoke</def>
+								<angle>0~360</angle>
+								<runOutOfStep>false</runOutOfStep>
+								
+								<frequency Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 20)</li>
+										<li>(0.2, 30)</li>
+										<li>(0.3, 0)</li>
+										<li>(0.4, 0)</li>
+										<li>(0.6, 0)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 4)</li>
+										<li>(0.25, 2)</li>
+										<li>(0.75, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.BezierCurve">
+									<points>
+										<li>(1, 3)</li>
+										<li>(1, 2)</li>
+										<li>(1, 2)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>RocketExhaust_Long</def>
+								<angle>0~360</angle>
+								<runOutOfStep>false</runOutOfStep>
+								
+								<frequency Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 10)</li>
+										<li>(0.1, 20)</li>
+										<li>(0.2, 30)</li>
+										<li>(0.3, 20)</li>
+										<li>(0.4, 0)</li>
+										<li>(0.5, 0)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 5)</li>
+										<li>(0.25, 4)</li>
+										<li>(0.75, 4)</li>
+										<li>(1, 4)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 9)</li>
+										<li>(0.2, 9)</li>
+										<li>(0.3, 2)</li>
+										<li>(0.4, 0)</li>
+										<li>(1, 0)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>RocketSmoke</def>
+								<angle>145~215</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								
+								<frequency Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.1, 0)</li>
+										<li>(0.2, 0)</li>
+										<li>(0.5, 25)</li>
+										<li>(1, 0)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 5)</li>
+										<li>(0.25, 7)</li>
+										<li>(0.75, 7)</li>
+										<li>(1, 7)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 4)</li>
+										<li>(0.25, 3)</li>
+										<li>(0.75, 3)</li>
+										<li>(1, 3)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>RocketExhaust_Short</def>
+								<angle>177~183</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, 0.15)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0.2, 0)</li>
+										<li>(0.3, 250)</li>
+										<li>(0.4, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 3)</li>
+										<li>(0.7, 3)</li>
+										<li>(0.71, 5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0.2, 45)</li>
+										<li>(0.7, 40</li>
+										<li>(0.71, 70)</li>
+										<li>(1, 65)</li>
+									</points>
+								</speed>
+							</li>
+						</fleckData>
+					</launchProperties>
+					
+					<landingProperties>
+						<maxTicks>600</maxTicks>
+						<renderShadow>false</renderShadow>
+						
+						<events>
+							<li>
+								<triggerAt>1</triggerAt>
+								<method>SaveOurShip2.VehicleEventMethods.ShuttleLanded()</method>
+							</li>
+						</events>
+						
+						<zPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 300)</li>
+								<li>(0.15, 250)</li>
+								<li>(0.5, 150)</li>
+								<li>(0.75, 100)</li>
+								<li>(1, 0)</li>
+							</points>
+						</zPositionCurve>
+						
+						<fleckData>
+							<li>
+								<def>RocketSmoke</def>
+								<angle>145~215</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								
+								<frequency Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.1, 25)</li>
+										<li>(0.2, 0)</li>
+										<li>(0.5, 0)</li>
+										<li>(1, 0)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 5)</li>
+										<li>(0.25, 7)</li>
+										<li>(0.75, 7)</li>
+										<li>(1, 7)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.BezierCurve">
+									<points>
+										<li>(0, 4)</li>
+										<li>(0.25, 3)</li>
+										<li>(0.75, 3)</li>
+										<li>(1, 3)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>RocketExhaust_Short</def>
+								<angle>177~183</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, 0.15)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 25)</li>
+										<li>(0.97, 25)</li>
+										<li>(1, 0)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 3)</li>
+										<li>(0.7, 3)</li>
+										<li>(0.71, 5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 110)</li>
+										<li>(0.97, 110)</li>
+										<li>(1, 0)</li>
+									</points>
+								</speed>
+							</li>
+						</fleckData>
+					</landingProperties>
+				</launchProtocol>
+			</li>
+			<li Class="Vehicles.CompProperties_VehicleTurrets">
+				<turrets>
+				</turrets>
+			</li>
+		</comps>
+	</Vehicles.VehicleDef>
+	
+	<Vehicles.VehicleBuildDef ParentName="VehicleBaseBuildable">
+		<defName>SoS2_Shuttle_Standard_Blueprint</defName>
+		<label>Shuttle</label>
+		<description>A shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features one hardpoint for a turret.</description>
+
+		<graphicData>
+			<texPath>Things/Shuttle/shuttle</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(4,4)</drawSize>
+			<drawRotated>false</drawRotated>
+			<shaderType>Cutout</shaderType>
+		</graphicData>
+		
+		<statBases>
+			<MaxHitPoints>1000</MaxHitPoints>
+			<WorkToBuild>120000</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Mass>600</Mass>
+		</statBases>
+		
+		<size>(3,3)</size>
+		<rotatable>false</rotatable>
+		
+		<researchPrerequisites>
+			<li>ShuttleCargo</li>
+		</researchPrerequisites>
+		
+		<costList>
+			<Plasteel>80</Plasteel>
+			<Steel>320</Steel>
+			<ComponentIndustrial>12</ComponentIndustrial>
+			<ComponentSpacer>3</ComponentSpacer>
+		</costList>
+		
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		
+		<thingToSpawn>SoS2_Shuttle</thingToSpawn>
+	</Vehicles.VehicleBuildDef>
+	
+	<Vehicles.VehicleDef ParentName="BaseVehiclePawn">
+		<defName>SoS2_Shuttle</defName>
+		<label>Shuttle</label>
+		<description>A shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features one hardpoint for a turret.</description>
+		
+		<graphicData>
+			<texPath>Things/Shuttle/shuttle</texPath>
+			<graphicClass>Vehicles.Graphic_Vehicle</graphicClass>
+			<shaderType>CutoutComplexPattern</shaderType>
+			<drawSize>(4,4)</drawSize>
+			<drawRotated>false</drawRotated>
+			<color>(255, 255, 255)</color>
+			<colorTwo>(255, 255, 255)</colorTwo>
+			<colorThree>(255, 255, 255)</colorThree>
+		</graphicData>
+		
+		<fillPercent>0.75</fillPercent>
+		<rotatable>false</rotatable>
+		
+		<nameable>true</nameable>
+
+		<buildDef>SoS2_Shuttle_Blueprint</buildDef>
+
+		<size>(3, 3)</size>
+		
+		<vehicleMovementPermissions LockSetting="True">NotAllowed</vehicleMovementPermissions>
+		<canCaravan LockSetting = "True">false</canCaravan>
+		<vehicleCategory>Transport</vehicleCategory>
+		<techLevel>Spacer</techLevel>
+		<vehicleType>Air</vehicleType>
+		
+		<statBases>
+			<ArmorRating_Blunt>0.5</ArmorRating_Blunt>
+			<ArmorRating_Sharp>0.8</ArmorRating_Sharp>
+			<ArmorRating_Heat>2.0</ArmorRating_Heat>
+			<Flammability>0.0</Flammability>
+			<DecompressionResistance>1</DecompressionResistance>
+		</statBases>
+		
+		<vehicleStats>
+			<Mass>600</Mass>
+			<MoveSpeed LockSetting="True">0</MoveSpeed>
+			<CargoCapacity>1000</CargoCapacity>
+			<RepairRate>1.4</RepairRate>
+			<FlightSpeed>24</FlightSpeed>
+			<Hardpoints>1</Hardpoints>
+		</vehicleStats>
+		
+		<soundSustainersOnEvent>
+			<li>
+				<start>AerialVehicleLaunch</start>
+				<stop>Despawned</stop>
+				<value>VVE_VehicleEngineRocket</value>
+			</li>
+			<li>
+				<start>AerialVehicleLanding</start>
+				<stop>Spawned</stop>
+				<value>VVE_VehicleEngineRocket</value>
+			</li>
+		</soundSustainersOnEvent>
+		
+		<properties>
+			
+			<roles>
+				<li>
+					<key>pilot</key>
+					<label>Pilot</label>
+					<slots>1</slots>
+					<slotsToOperate>1</slotsToOperate>
+					
+					<handlingTypes>
+						<li>Movement</li>
+					</handlingTypes>
+				</li>
+				<li>
+					<key>passenger</key>
+					<label>Passenger</label>
+					<slots>0</slots>
+				</li>
+			</roles>
+		</properties>
+		
+		<components>
+			<li>
+				<key>FirstThruster</key>
+				<label>First Thruster</label>
+				<health>30</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>3</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>SecondThruster</key>
+				<label>Second Thruster</label>
+				<health>30</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>3</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>ThirdThruster</key>
+				<label>Third Thruster</label>
+				<health>30</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>3</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>FourthThruster</key>
+				<label>Fourth Thruster</label>
+				<health>30</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>3</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>Reactor</key>
+				<label>Reactor</label>
+				<health>60</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>10</radius>
+						<damageDef>Bomb</damageDef>
+					</li>
+				</reactors>
+			</li>
+			<li>
+				<key>Cockpit</key>
+				<label>Cockpit</label>
+				<health>40</health>
+				<depth>Internal</depth>
+				<hitWeight>2</hitWeight>
+			</li>
+			<li>
+				<key>shieldGenerator</key>
+				<label>Heatsink Compartment</label>
+				<health>1</health>
+				<depth>Internal</depth>
+			</li>
+			<li>
+				<key>Hull</key>
+				<label>Hull</label>
+				<health>400</health>
+				<depth>External</depth>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+			</li>
+		</components>
+		<!--
+		<modExtensions>
+			<li Class="VanillaVehiclesExpanded.StatExtension">
+				<statToAdd>
+					<li>VVE_VehicleTier</li>
+				</statToAdd>
+				<statValues>
+					<li>VVE_Tier1</li>
+				</statValues>
+				<statDescriptions>
+					<li>VVE_Tier1Desc</li>
+				</statDescriptions>
+			</li>
+		</modExtensions>
+		-->
+		<comps>	
+			<li Class="Vehicles.CompProperties_FueledTravel">
+				<fuelType>ShuttleFuelPods</fuelType>
+				<fuelConsumptionRate>40</fuelConsumptionRate>
+				<fuelCapacity>150</fuelCapacity>
+			</li>
+			<li Class="Vehicles.CompProperties_UpgradeTree">
+				<def>SoS2ShuttleUpgradeTree</def>
+			</li>
+			<li Class="Vehicles.CompProperties_VehicleLauncher">
+				<compClass>SaveOurShip2.Vehicles.CompShuttleLauncher</compClass>
+				<spaceFlight>true</spaceFlight>
+				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
+
+				<launchProtocol Class="SaveOurShip2.Vehicles.ShuttleTakeoff">
+					<launchProperties Class = "Vehicles.VerticalProtocolProperties">
+						<maxTicks>500</maxTicks>
+						<maxTicksVertical>250</maxTicksVertical>
+						<renderShadow>false</renderShadow>
+						<lockShadowZ>true</lockShadowZ>
+						
+						<events>
+							<li>
+								<triggerAt>1</triggerAt>
+								<method>SaveOurShip2.VehicleEventMethods.ShuttleLaunched()</method>
+							</li>
+						</events>
+						
+						<rotationCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationCurve>
+						
+						<rotationVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.2, 2)</li>
+								<li>(0.4, 6)</li>
+								<li>(0.6, -2)</li>
+								<li>(0.8, 0)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationVerticalCurve>
+						
+						<xPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.2, 1.33)</li>
+								<li>(0.62, 28.18)</li>
+								<li>(0.85, 42.12)</li>
+								<li>(1, 140)</li>
+							</points>
+						</xPositionCurve>
+						
+						<xPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>0, 0</li>
+								<li>0.2, 0</li>
+								<li>0.4, 0</li>
+								<li>0.6, 0</li>
+								<li>0.8, 0</li>
+								<li>1, 1</li>
+							</points>
+						</xPositionVerticalCurve>
+						
+						<zPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(1, 2)</li>
+							</points>
+						</zPositionCurve>
+						
+						<zPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.15, 0.25)</li>
+								<li>(0.85, 2.5)</li>
+								<li>(1, 3)</li>
+							</points>
+						</zPositionVerticalCurve>
+						
+						<fleckDataVertical>
+							<def>SoS2Exhaust_Short</def>
+							<angle>0~360</angle>
+							<runOutOfStep>false</runOutOfStep>
+							<lockFleckX>false</lockFleckX>
+							<lockFleckZ>false</lockFleckZ>
+							
+							<frequency Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 200)</li>
+									<li>(0.8, 400)</li>
+									<li>(1, 0)</li>
+								</points>
+							</frequency>
+							
+							<rotationRate>
+								<points>
+									<li>(0, 3)</li>
+									<li>(1, 1)</li>
+								</points>
+							</rotationRate>
+							
+							<size Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 1)</li>
+									<li>(1, 0.5)</li>
+								</points>
+							</size>
+							
+							<speed Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 15)</li>
+									<li>(1, 10)</li>
+								</points>
+							</speed>
+						</fleckDataVertical>
+						<fleckData>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, 0.25)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, -0.25)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+						</fleckData>
+					</launchProperties>
+					
+					<landingProperties Class = "Vehicles.VerticalProtocolProperties">
+						<maxTicks>500</maxTicks>
+						<maxTicksVertical>100</maxTicksVertical>
+						<renderShadow>false</renderShadow>
+						
+						<events>
+							<li>
+								<triggerAt>1</triggerAt>
+								<method>SaveOurShip2.VehicleEventMethods.ShuttleLanded()</method>
+							</li>
+						</events>
+						
+						<rotationVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.22, 4.57)</li>
+								<li>(0.44, 5.18)</li>
+								<li>(0.69, 3.37)</li>
+								<li>(0.79, 5.55)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationVerticalCurve>
+						
+						<xPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, -150)</li>
+								<li>(0.32, -120.12)</li>
+								<li>(0.49, -91.06)</li>
+								<li>(0.64, -66)</li>
+								<li>(0.73, -41.07)</li>
+								<li>(0.87, -29.64)</li>
+								<li>(1, -10)</li>
+							</points>
+						</xPositionCurve>
+						
+						<xPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.25, 5)</li>
+								<li>(0.7, 9.5)</li>
+								<li>(0.8, 10)</li>
+							</points>
+						</xPositionVerticalCurve>
+						
+						<zPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 2)</li>
+								<li>(0.25, 0.94)</li>
+								<li>(0.47, 0.46)</li>
+								<li>(0.74, 1.76)</li>
+								<li>(0.8, 0.58)</li>
+								<li>(1, 2.11)</li>
+							</points>
+						</zPositionCurve>
+						
+						<zPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.15, 0.1)</li>
+								<li>(0.5, -0.5)</li>
+								<li>(0.75, -1)</li>
+								<li>(0.9, -2.11)</li>
+							</points>
+						</zPositionVerticalCurve>
+						
+						<fleckDataVertical>
+							<def>SoS2Exhaust_Short</def>
+							<angle>0~360</angle>
+							<runOutOfStep>false</runOutOfStep>
+							<lockFleckX>false</lockFleckX>
+							<lockFleckZ>false</lockFleckZ>
+							
+							<frequency Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 200)</li>
+									<li>(0.8, 400)</li>
+									<li>(1, 0)</li>
+								</points>
+							</frequency>
+							
+							<rotationRate>
+								<points>
+									<li>(0, 3)</li>
+									<li>(1, 1)</li>
+								</points>
+							</rotationRate>
+							
+							<size Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 1)</li>
+									<li>(1, 0.5)</li>
+								</points>
+							</size>
+							
+							<speed Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 15)</li>
+									<li>(0.8,20)</li>
+									<li>(1, 10)</li>
+								</points>
+							</speed>
+						</fleckDataVertical>
+						<fleckData>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, 0.25)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, -0.25)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+						</fleckData>
+					</landingProperties>
+				</launchProtocol>
+			</li>
+			<li Class="Vehicles.CompProperties_VehicleTurrets">
+				<turrets>
+				</turrets>
+			</li>
+		</comps>
+	</Vehicles.VehicleDef>
+	
+	<Vehicles.VehicleBuildDef ParentName="VehicleBaseBuildable">
+		<defName>SoS2_Shuttle_Heavy_Blueprint</defName>
+		<label>Heavy Shuttle</label>
+		<description>A large shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features two hardpoints for turrets.</description>
+
+		<graphicData>
+			<texPath>Things/Shuttle/shuttle_heavy</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(6,6)</drawSize>
+			<drawRotated>false</drawRotated>
+			<shaderType>Cutout</shaderType>
+		</graphicData>
+		
+		<statBases>
+			<MaxHitPoints>2000</MaxHitPoints>
+			<WorkToBuild>200000</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Mass>1000</Mass>
+		</statBases>
+		
+		<size>(5,5)</size>
+		<rotatable>false</rotatable>
+		
+		<researchPrerequisites>
+			<li>ShuttleHeavy</li>
+		</researchPrerequisites>
+		
+		<costList>
+			<Plasteel>120</Plasteel>
+			<Steel>480</Steel>
+			<ComponentIndustrial>16</ComponentIndustrial>
+			<ComponentSpacer>6</ComponentSpacer>
+		</costList>
+		
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		
+		<thingToSpawn>SoS2_Shuttle_Heavy</thingToSpawn>
+	</Vehicles.VehicleBuildDef>
+	
+	<Vehicles.VehicleDef ParentName="BaseVehiclePawn">
+		<defName>SoS2_Shuttle_Heavy</defName>
+		<label>Heavy Shuttle</label>
+		<description>A large shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features two hardpoints for turrets.</description>
+		
+		<graphicData>
+			<texPath>Things/Shuttle/shuttle_heavy</texPath>
+			<graphicClass>Vehicles.Graphic_Vehicle</graphicClass>
+			<shaderType>CutoutComplexPattern</shaderType>
+			<drawSize>(6,6)</drawSize>
+			<drawRotated>false</drawRotated>
+			<color>(255, 255, 255)</color>
+			<colorTwo>(255, 255, 255)</colorTwo>
+			<colorThree>(255, 255, 255)</colorThree>
+		</graphicData>
+		
+		<fillPercent>0.75</fillPercent>
+		<rotatable>false</rotatable>
+		
+		<nameable>true</nameable>
+
+		<buildDef>SoS2_Shuttle_Heavy_Blueprint</buildDef>
+
+		<size>(5, 5)</size>
+		
+		<vehicleMovementPermissions LockSetting="True">NotAllowed</vehicleMovementPermissions>
+		<canCaravan LockSetting = "True">false</canCaravan>
+		<vehicleCategory>Transport</vehicleCategory>
+		<techLevel>Spacer</techLevel>
+		<vehicleType>Air</vehicleType>
+		
+		<statBases>
+			<ArmorRating_Blunt>0.6</ArmorRating_Blunt>
+			<ArmorRating_Sharp>0.9</ArmorRating_Sharp>
+			<ArmorRating_Heat>2.0</ArmorRating_Heat>
+			<Flammability>0.0</Flammability>
+			<DecompressionResistance>1</DecompressionResistance>
+		</statBases>
+		
+		<vehicleStats>
+			<Mass>1000</Mass>
+			<MoveSpeed LockSetting="True">0</MoveSpeed>
+			<CargoCapacity>2000</CargoCapacity>
+			<RepairRate>1.5</RepairRate>
+			<FlightSpeed>20</FlightSpeed>
+			<Hardpoints>2</Hardpoints>
+		</vehicleStats>
+		
+		<soundSustainersOnEvent>
+			<li>
+				<start>AerialVehicleLaunch</start>
+				<stop>Despawned</stop>
+				<value>VVE_VehicleEngineRocket</value>
+			</li>
+			<li>
+				<start>AerialVehicleLanding</start>
+				<stop>Spawned</stop>
+				<value>VVE_VehicleEngineRocket</value>
+			</li>
+		</soundSustainersOnEvent>
+		
+		<properties>
+			
+			<roles>
+				<li>
+					<key>pilot</key>
+					<label>Pilot</label>
+					<slots>1</slots>
+					<slotsToOperate>1</slotsToOperate>
+					
+					<handlingTypes>
+						<li>Movement</li>
+					</handlingTypes>
+				</li>
+				<li>
+					<key>passenger</key>
+					<label>Passenger</label>
+					<slots>0</slots>
+				</li>
+			</roles>
+		</properties>
+		
+		<components>
+			<li>
+				<key>FirstThruster</key>
+				<label>First Thruster</label>
+				<health>60</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>4</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>SecondThruster</key>
+				<label>Second Thruster</label>
+				<health>60</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>4</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>ThirdThruster</key>
+				<label>Third Thruster</label>
+				<health>60</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>4</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>FourthThruster</key>
+				<label>Fourth Thruster</label>
+				<health>60</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>4</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>Reactor</key>
+				<label>Reactor</label>
+				<health>120</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>15</radius>
+						<damageDef>Bomb</damageDef>
+					</li>
+				</reactors>
+			</li>
+			<li>
+				<key>Cockpit</key>
+				<label>Cockpit</label>
+				<health>100</health>
+				<depth>Internal</depth>
+				<hitWeight>2</hitWeight>
+			</li>
+			<li>
+				<key>shieldGenerator</key>
+				<label>Heatsink Compartment</label>
+				<health>1</health>
+				<depth>Internal</depth>
+			</li>
+			<li>
+				<key>Hull</key>
+				<label>Hull</label>
+				<health>800</health>
+				<depth>External</depth>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+			</li>
+		</components>
+		<!--
+		<modExtensions>
+			<li Class="VanillaVehiclesExpanded.StatExtension">
+				<statToAdd>
+					<li>VVE_VehicleTier</li>
+				</statToAdd>
+				<statValues>
+					<li>VVE_Tier1</li>
+				</statValues>
+				<statDescriptions>
+					<li>VVE_Tier1Desc</li>
+				</statDescriptions>
+			</li>
+		</modExtensions>
+		-->
+		<comps>	
+			<li Class="Vehicles.CompProperties_FueledTravel">
+				<fuelType>ShuttleFuelPods</fuelType>
+				<fuelConsumptionRate>60</fuelConsumptionRate>
+				<fuelCapacity>250</fuelCapacity>
+			</li>
+			<li Class="Vehicles.CompProperties_UpgradeTree">
+				<def>SoS2ShuttleUpgradeTree</def>
+			</li>
+			<li Class="Vehicles.CompProperties_VehicleLauncher">
+				<compClass>SaveOurShip2.Vehicles.CompShuttleLauncher</compClass>
+				<spaceFlight>true</spaceFlight>
+				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
+
+				<launchProtocol Class="SaveOurShip2.Vehicles.ShuttleTakeoff">
+					<launchProperties Class = "Vehicles.VerticalProtocolProperties">
+						<maxTicks>500</maxTicks>
+						<maxTicksVertical>250</maxTicksVertical>
+						<renderShadow>false</renderShadow>
+						<lockShadowZ>true</lockShadowZ>
+						
+						<events>
+							<li>
+								<triggerAt>1</triggerAt>
+								<method>SaveOurShip2.VehicleEventMethods.ShuttleLaunched()</method>
+							</li>
+						</events>
+						
+						<rotationCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationCurve>
+						
+						<rotationVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.2, 2)</li>
+								<li>(0.4, 6)</li>
+								<li>(0.6, -2)</li>
+								<li>(0.8, 0)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationVerticalCurve>
+						
+						<xPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.2, 1.33)</li>
+								<li>(0.62, 28.18)</li>
+								<li>(0.85, 42.12)</li>
+								<li>(1, 140)</li>
+							</points>
+						</xPositionCurve>
+						
+						<xPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>0, 0</li>
+								<li>0.2, 0</li>
+								<li>0.4, 0</li>
+								<li>0.6, 0</li>
+								<li>0.8, 0</li>
+								<li>1, 1</li>
+							</points>
+						</xPositionVerticalCurve>
+						
+						<zPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(1, 0)</li>
+							</points>
+						</zPositionCurve>
+						
+						<zPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.15, 0.25)</li>
+								<li>(0.85, 2.5)</li>
+								<li>(1, 3)</li>
+							</points>
+						</zPositionVerticalCurve>
+						
+						<fleckDataVertical>
+							<def>SoS2Exhaust_Short</def>
+							<angle>0~360</angle>
+							<runOutOfStep>false</runOutOfStep>
+							<lockFleckX>false</lockFleckX>
+							<lockFleckZ>false</lockFleckZ>
+							
+							<frequency Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 200)</li>
+									<li>(1, 400)</li>
+								</points>
+							</frequency>
+							
+							<rotationRate>
+								<points>
+									<li>(0, 3)</li>
+									<li>(1, 1)</li>
+								</points>
+							</rotationRate>
+							
+							<size Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 1)</li>
+									<li>(1, 0.5)</li>
+								</points>
+							</size>
+							
+							<speed Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 15)</li>
+									<li>(1, 10)</li>
+								</points>
+							</speed>
+						</fleckDataVertical>
+						<fleckData>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-2, 0, 0.3)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-2, 0, -0.3)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-2.2, 0, -1.1)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-2.2, 0, 1.1)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+						</fleckData>
+					</launchProperties>
+					
+					<landingProperties Class = "Vehicles.VerticalProtocolProperties">
+						<maxTicks>500</maxTicks>
+						<maxTicksVertical>100</maxTicksVertical>
+						<renderShadow>false</renderShadow>
+						
+						<events>
+							<li>
+								<triggerAt>1</triggerAt>
+								<method>SaveOurShip2.VehicleEventMethods.ShuttleLanded()</method>
+							</li>
+						</events>
+						
+						<rotationVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.22, 4.57)</li>
+								<li>(0.44, 5.18)</li>
+								<li>(0.69, 3.37)</li>
+								<li>(0.79, 5.55)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationVerticalCurve>
+						
+						<xPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, -150)</li>
+								<li>(0.32, -120.12)</li>
+								<li>(0.49, -91.06)</li>
+								<li>(0.64, -66)</li>
+								<li>(0.73, -41.07)</li>
+								<li>(0.87, -29.64)</li>
+								<li>(1, -10)</li>
+							</points>
+						</xPositionCurve>
+						
+						<xPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.25, 5)</li>
+								<li>(0.7, 9.5)</li>
+								<li>(0.8, 10)</li>
+							</points>
+						</xPositionVerticalCurve>
+						
+						<zPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 2)</li>
+								<li>(0.25, 0.94)</li>
+								<li>(0.47, 0.46)</li>
+								<li>(0.74, 1.76)</li>
+								<li>(0.8, 0.58)</li>
+								<li>(1, 2.11)</li>
+							</points>
+						</zPositionCurve>
+						
+						<zPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.15, 0.1)</li>
+								<li>(0.5, -0.5)</li>
+								<li>(0.75, -1)</li>
+								<li>(0.9, -2.11)</li>
+							</points>
+						</zPositionVerticalCurve>
+						
+						<fleckDataVertical>
+							<def>SoS2Exhaust_Short</def>
+							<angle>0~360</angle>
+							<runOutOfStep>false</runOutOfStep>
+							<lockFleckX>false</lockFleckX>
+							<lockFleckZ>false</lockFleckZ>
+							
+							<frequency Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 200)</li>
+									<li>(1, 400)</li>
+								</points>
+							</frequency>
+							
+							<rotationRate>
+								<points>
+									<li>(0, 3)</li>
+									<li>(1, 1)</li>
+								</points>
+							</rotationRate>
+							
+							<size Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 2)</li>
+									<li>(1, 1)</li>
+								</points>
+							</size>
+							
+							<speed Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 25)</li>
+									<li>(0.9,30)</li>
+									<li>(1, 20)</li>
+								</points>
+							</speed>
+						</fleckDataVertical>
+						<fleckData>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-2, 0, 0.3)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-2, 0, -0.3)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-2.2, 0, -1.1)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-2.2, 0, 1.1)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+						</fleckData>
+					</landingProperties>
+				</launchProtocol>
+			</li>
+			<li Class="Vehicles.CompProperties_VehicleTurrets">
+				<turrets>
+				</turrets>
+			</li>
+		</comps>
+	</Vehicles.VehicleDef>
+	
+	<Vehicles.VehicleBuildDef ParentName="VehicleBaseBuildable">
+		<defName>SoS2_Shuttle_Superheavy_Blueprint</defName>
+		<label>Superheavy Shuttle</label>
+		<description>A very large shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features three hardpoints for turrets.</description>
+
+		<graphicData>
+			<texPath>Things/Shuttle/shuttle_dropship</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<drawSize>(9,9)</drawSize>
+			<drawRotated>false</drawRotated>
+			<shaderType>Cutout</shaderType>
+		</graphicData>
+		
+		<statBases>
+			<MaxHitPoints>4000</MaxHitPoints>
+			<WorkToBuild>300000</WorkToBuild>
+			<Flammability>0</Flammability>
+			<Mass>1500</Mass>
+		</statBases>
+		
+		<size>(7,7)</size>
+		<rotatable>false</rotatable>
+		
+		<researchPrerequisites>
+			<li>ShuttleDropship</li>
+		</researchPrerequisites>
+		
+		<costList>
+			<Plasteel>240</Plasteel>
+			<Steel>960</Steel>
+			<ComponentIndustrial>24</ComponentIndustrial>
+			<ComponentSpacer>16</ComponentSpacer>
+		</costList>
+		
+		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+		
+		<thingToSpawn>SoS2_Shuttle_Superheavy</thingToSpawn>
+	</Vehicles.VehicleBuildDef>
+	
+	<Vehicles.VehicleDef ParentName="BaseVehiclePawn">
+		<defName>SoS2_Shuttle_Superheavy</defName>
+		<label>Superheavy Shuttle</label>
+		<description>A very large shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods. Due to its size, it requires special docking facilities.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features three hardpoints for turrets.</description>
+		
+		<graphicData>
+			<texPath>Things/Shuttle/shuttle_dropship</texPath>
+			<graphicClass>Vehicles.Graphic_Vehicle</graphicClass>
+			<shaderType>CutoutComplexPattern</shaderType>
+			<drawSize>(9,9)</drawSize>
+			<drawRotated>true</drawRotated>
+			<color>(255, 255, 255)</color>
+			<colorTwo>(255, 255, 255)</colorTwo>
+			<colorThree>(255, 255, 255)</colorThree>
+		</graphicData>
+		
+		<fillPercent>0.75</fillPercent>
+		<rotatable>false</rotatable>
+		
+		<nameable>true</nameable>
+
+		<buildDef>SoS2_Shuttle_Superheavy_Blueprint</buildDef>
+
+		<size>(7, 7)</size>
+		
+		<vehicleMovementPermissions LockSetting="True">NotAllowed</vehicleMovementPermissions>
+		<canCaravan LockSetting = "True">false</canCaravan>
+		<vehicleCategory>Transport</vehicleCategory>
+		<techLevel>Spacer</techLevel>
+		<vehicleType>Air</vehicleType>
+		
+		<statBases>
+			<ArmorRating_Blunt>0.8</ArmorRating_Blunt>
+			<ArmorRating_Sharp>1</ArmorRating_Sharp>
+			<ArmorRating_Heat>2.0</ArmorRating_Heat>
+			<Flammability>0.0</Flammability>
+			<DecompressionResistance>1</DecompressionResistance>
+		</statBases>
+		
+		<vehicleStats>
+			<Mass>1500</Mass>
+			<MoveSpeed LockSetting="True">0</MoveSpeed>
+			<CargoCapacity>3000</CargoCapacity>
+			<RepairRate>1.6</RepairRate>
+			<FlightSpeed>16</FlightSpeed>
+			<Hardpoints>3</Hardpoints>
+		</vehicleStats>
+		
+		<soundSustainersOnEvent>
+			<li>
+				<start>AerialVehicleLaunch</start>
+				<stop>Despawned</stop>
+				<value>VVE_VehicleEngineRocket</value>
+			</li>
+			<li>
+				<start>AerialVehicleLanding</start>
+				<stop>Spawned</stop>
+				<value>VVE_VehicleEngineRocket</value>
+			</li>
+		</soundSustainersOnEvent>
+		
+		<properties>
+			
+			<roles>
+				<li>
+					<key>pilot</key>
+					<label>Pilot</label>
+					<slots>1</slots>
+					<slotsToOperate>1</slotsToOperate>
+					
+					<handlingTypes>
+						<li>Movement</li>
+					</handlingTypes>
+				</li>
+				<li>
+					<key>passenger</key>
+					<label>Passenger</label>
+					<slots>0</slots>
+				</li>
+			</roles>
+		</properties>
+		
+		<components>
+			<li>
+				<key>FirstThruster</key>
+				<label>First Thruster</label>
+				<health>120</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>5</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>SecondThruster</key>
+				<label>Second Thruster</label>
+				<health>120</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>5</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>ThirdThruster</key>
+				<label>Third Thruster</label>
+				<health>120</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>5</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>FourthThruster</key>
+				<label>Fourth Thruster</label>
+				<health>120</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>5</radius>
+						<damageDef>Flame</damageDef>
+					</li>
+				</reactors>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+				
+				<categories>
+					<li>FlightControl</li>
+					<li>FlightSpeed</li>
+				</categories>
+			</li>
+			<li>
+				<key>Reactor</key>
+				<label>Reactor</label>
+				<health>200</health>
+				<depth>Internal</depth>
+				
+				<reactors>
+					<li Class = "Vehicles.Reactor_Explosive">
+						<indicator>VF_Explosive</indicator>
+						<chance>0.25</chance>
+						<maxHealth>0.2</maxHealth>
+						<radius>18</radius>
+						<damageDef>Bomb</damageDef>
+					</li>
+				</reactors>
+			</li>
+			<li>
+				<key>Cockpit</key>
+				<label>Cockpit</label>
+				<health>160</health>
+				<depth>Internal</depth>
+				<hitWeight>2</hitWeight>
+			</li>
+			<li>
+				<key>shieldGenerator</key>
+				<label>Heatsink Compartment</label>
+				<health>1</health>
+				<depth>Internal</depth>
+			</li>
+			<li>
+				<key>Hull</key>
+				<label>Hull</label>
+				<health>1200</health>
+				<depth>External</depth>
+				
+				<hitbox>
+					<side>Body</side>
+				</hitbox>
+			</li>
+		</components>
+		<!--
+		<modExtensions>
+			<li Class="VanillaVehiclesExpanded.StatExtension">
+				<statToAdd>
+					<li>VVE_VehicleTier</li>
+				</statToAdd>
+				<statValues>
+					<li>VVE_Tier1</li>
+				</statValues>
+				<statDescriptions>
+					<li>VVE_Tier1Desc</li>
+				</statDescriptions>
+			</li>
+		</modExtensions>
+		-->
+		<comps>	
+			<li Class="Vehicles.CompProperties_FueledTravel">
+				<fuelType>ShuttleFuelPods</fuelType>
+				<fuelConsumptionRate>80</fuelConsumptionRate>
+				<fuelCapacity>400</fuelCapacity>
+			</li>
+			<li Class="Vehicles.CompProperties_UpgradeTree">
+				<def>SoS2ShuttleUpgradeTree</def>
+			</li>
+			<li Class="Vehicles.CompProperties_VehicleLauncher">
+				<compClass>SaveOurShip2.Vehicles.CompShuttleLauncher</compClass>
+				<spaceFlight>true</spaceFlight>
+				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
+
+				<launchProtocol Class="SaveOurShip2.Vehicles.ShuttleTakeoff">
+					<launchProperties Class = "Vehicles.VerticalProtocolProperties">
+						<maxTicks>500</maxTicks>
+						<maxTicksVertical>250</maxTicksVertical>
+						<renderShadow>false</renderShadow>
+						<lockShadowZ>true</lockShadowZ>
+						
+						<events>
+							<li>
+								<triggerAt>1</triggerAt>
+								<method>SaveOurShip2.VehicleEventMethods.ShuttleLaunched()</method>
+							</li>
+						</events>
+						
+						<rotationCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationCurve>
+						
+						<rotationVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.2, 2)</li>
+								<li>(0.4, 6)</li>
+								<li>(0.6, -2)</li>
+								<li>(0.8, 0)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationVerticalCurve>
+						
+						<xPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.2, 1.33)</li>
+								<li>(0.62, 28.18)</li>
+								<li>(0.85, 42.12)</li>
+								<li>(1, 140)</li>
+							</points>
+						</xPositionCurve>
+						
+						<xPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>0, 0</li>
+								<li>0.2, 0</li>
+								<li>0.4, 0</li>
+								<li>0.6, 0</li>
+								<li>0.8, 0</li>
+								<li>1, 1</li>
+							</points>
+						</xPositionVerticalCurve>
+						
+						<zPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(1, 2)</li>
+							</points>
+						</zPositionCurve>
+						
+						<zPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.15, 0.25)</li>
+								<li>(0.85, 2.5)</li>
+								<li>(1, 3)</li>
+							</points>
+						</zPositionVerticalCurve>
+						
+						<fleckDataVertical>
+							<def>SoS2Exhaust_Short</def>
+							<angle>0~360</angle>
+							<runOutOfStep>false</runOutOfStep>
+							<lockFleckX>false</lockFleckX>
+							<lockFleckZ>false</lockFleckZ>
+							
+							<frequency Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 200)</li>
+									<li>(1, 400)</li>
+								</points>
+							</frequency>
+							
+							<rotationRate>
+								<points>
+									<li>(0, 3)</li>
+									<li>(1, 1)</li>
+								</points>
+							</rotationRate>
+							
+							<size Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 4)</li>
+									<li>(1, 2)</li>
+								</points>
+							</size>
+							
+							<speed Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 35)</li>
+									<li>(1, 30)</li>
+								</points>
+							</speed>
+						</fleckDataVertical>
+						<fleckData>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-3, 0, 1.3)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-3, 0, -1.3)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, -1.58)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, 1.58)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0.5)</li>
+										<li>(0.1, 0.5)</li>
+										<li>(0.2, 1)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+						</fleckData>
+					</launchProperties>
+					
+					<landingProperties Class = "Vehicles.VerticalProtocolProperties">
+						<maxTicks>500</maxTicks>
+						<maxTicksVertical>100</maxTicksVertical>
+						<renderShadow>false</renderShadow>
+						
+						<events>
+							<li>
+								<triggerAt>1</triggerAt>
+								<method>SaveOurShip2.VehicleEventMethods.ShuttleLanded()</method>
+							</li>
+						</events>
+						
+						<rotationVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.22, 4.57)</li>
+								<li>(0.44, 5.18)</li>
+								<li>(0.69, 3.37)</li>
+								<li>(0.79, 5.55)</li>
+								<li>(1, 0)</li>
+							</points>
+						</rotationVerticalCurve>
+						
+						<xPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, -150)</li>
+								<li>(0.32, -120.12)</li>
+								<li>(0.49, -91.06)</li>
+								<li>(0.64, -66)</li>
+								<li>(0.73, -41.07)</li>
+								<li>(0.87, -29.64)</li>
+								<li>(1, -10)</li>
+							</points>
+						</xPositionCurve>
+						
+						<xPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.25, 5)</li>
+								<li>(0.7, 9.5)</li>
+								<li>(0.8, 10)</li>
+							</points>
+						</xPositionVerticalCurve>
+						
+						<zPositionCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 2)</li>
+								<li>(0.25, 0.94)</li>
+								<li>(0.47, 0.46)</li>
+								<li>(0.74, 1.76)</li>
+								<li>(0.8, 0.58)</li>
+								<li>(1, 2.11)</li>
+							</points>
+						</zPositionCurve>
+						
+						<zPositionVerticalCurve Class="SmashTools.BezierCurve">
+							<points>
+								<li>(0, 0)</li>
+								<li>(0.15, 0.1)</li>
+								<li>(0.5, -0.5)</li>
+								<li>(0.75, -1)</li>
+								<li>(0.9, -2.11)</li>
+							</points>
+						</zPositionVerticalCurve>
+						
+						<fleckDataVertical>
+							<def>SoS2Exhaust_Short</def>
+							<angle>0~360</angle>
+							<runOutOfStep>false</runOutOfStep>
+							<lockFleckX>false</lockFleckX>
+							<lockFleckZ>false</lockFleckZ>
+							
+							<frequency Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 200)</li>
+									<li>(1, 400)</li>
+								</points>
+							</frequency>
+							
+							<rotationRate>
+								<points>
+									<li>(0, 3)</li>
+									<li>(1, 1)</li>
+								</points>
+							</rotationRate>
+							
+							<size Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 4)</li>
+									<li>(1, 2)</li>
+								</points>
+							</size>
+							
+							<speed Class="SmashTools.BezierCurve">
+								<points>
+									<li>(0, 30)</li>
+									<li>(1, 35)</li>
+								</points>
+							</speed>
+						</fleckDataVertical>
+						<fleckData>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, -1.58)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(0, 0, 1.58)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-3, 0, -1.3)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+							<li>
+								<def>SoS2Exhaust_Long</def>
+								<angle>267~273</angle>
+								<lockFleckX>false</lockFleckX>
+								<lockFleckZ>false</lockFleckZ>
+								<runOutOfStep>false</runOutOfStep>
+								<originOffset>(-3, 0, 1.3)</originOffset>
+								
+								<frequency Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 0)</li>
+										<li>(0.2, 250)</li>
+									</points>
+								</frequency>
+								
+								<rotationRate>
+									<points>
+										<li>(0, 3)</li>
+										<li>(1, 1)</li>
+									</points>
+								</rotationRate>
+								
+								<size Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 1)</li>
+										<li>(0.8, 1)</li>
+										<li>(1, 0.5)</li>
+									</points>
+								</size>
+								
+								<speed Class="SmashTools.LinearCurve">
+									<points>
+										<li>(0, 2)</li>
+										<li>(1, 1)</li>
+									</points>
+								</speed>
+							</li>
+						</fleckData>
+					</landingProperties>
+				</launchProtocol>
+			</li>
+			<li Class="Vehicles.CompProperties_VehicleTurrets">
+				<turrets>
+				</turrets>
+			</li>
+		</comps>
+	</Vehicles.VehicleDef>
+
+	<FleckDef Name = "SoS2ExhaustBase" ParentName="FleckBaseSmoke">
+		<defName>SoS2Exhaust</defName>
+		
+		<graphicData>
+			<texPath>Things/Mote/IonTrail</texPath>
+			<shaderType>MoteGlow</shaderType>
+		</graphicData>
+		
+		<altitudeLayer>MoteOverheadLow</altitudeLayer>
+		<fadeInTime>0.1</fadeInTime>
+		<solidTime>0.25</solidTime>
+		<fadeOutTime>0.25</fadeOutTime>
+	</FleckDef>
+	
+	<FleckDef ParentName="SoS2ExhaustBase">
+		<defName>SoS2Exhaust_Short</defName>
+		
+		<fadeInTime>0.05</fadeInTime>
+		<solidTime>0.05</solidTime>
+		<fadeOutTime>0.05</fadeOutTime>
+	</FleckDef>
+	
+	<FleckDef ParentName="SoS2ExhaustBase">
+		<defName>SoS2Exhaust_Long</defName>
+		
+		<fadeInTime>0.1</fadeInTime>
+		<solidTime>0.5</solidTime>
+		<fadeOutTime>0.25</fadeOutTime>
+	</FleckDef>
+	
+	<Vehicles.VehicleStatDef>
+		<defName>SoS2CombatDodgeChance</defName>
+		<label>Space Dodge Chance</label>
+		<description>This vehicle's chance of dodging enemy fire during space combat.</description>
+		<category>VehicleAerial</category>
+		<defaultBaseValue>10</defaultBaseValue>
+		<minValue>0</minValue>
+		
+		<toStringStyle>FloatOne</toStringStyle>
+		<formatString>{0}%</formatString>
+		<displayPriorityInCategory>101</displayPriorityInCategory>
+		
+		<modSettingsInfo>
+			<settingsType>FloatBox</settingsType>
+		</modSettingsInfo>
+	</Vehicles.VehicleStatDef>
+	
+	<Vehicles.VehicleStatDef>
+		<defName>Hardpoints</defName>
+		<label>hardpoints</label>
+		<description>How many hardpoints this shuttle has.</description>
+		<category>VehicleAerial</category>
+		<defaultBaseValue>0</defaultBaseValue>
+		<minValue>0</minValue>
+		
+		<toStringStyle>Integer</toStringStyle>
+		<displayPriorityInCategory>102</displayPriorityInCategory>
+		<showIfUndefined>false</showIfUndefined>
+		
+		<modSettingsInfo>
+			<settingsType>FloatBox</settingsType>
+		</modSettingsInfo>
+	</Vehicles.VehicleStatDef>
+</Defs>

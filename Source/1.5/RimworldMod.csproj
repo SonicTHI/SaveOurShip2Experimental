@@ -54,12 +54,16 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\2009463077 Harmony\Current\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="SmashTools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\3014915404\1.5\Assemblies\SmashTools.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -87,22 +91,30 @@
       <HintPath>..\..\..\..\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Vehicles">
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\3014915404\1.5\Assemblies\Vehicles.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alert_ArchotechSporeMoodLow.cs" />
     <Compile Include="Alert_MechanitesInHomeArea.cs" />
     <Compile Include="ApparelHolographic.cs" />
-    <Compile Include="Def\ArchotechGiftDef.cs" />
+    <Compile Include="ArchotechGiftDef.cs" />
+    <Compile Include="ArrivalAction\AerialVehicleArrivalAction_ShipAssault.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitTribalPillarSite.cs" />
-    <Compile Include="ArrivalAction\TransportPodsArrivalAction_MoonBase.cs" />
-    <Compile Include="ArrivalAction\TransportPodsArrivalAction_ShipAssault.cs" />
+    <Compile Include="Building\Building_CryptoCocoon.cs" />
+    <Compile Include="CompProps\CompProps_ShuttleAutoDoc.cs" />
+    <Compile Include="CompProps\CompProps_CryptoCocoon.cs" />
+    <Compile Include="Comp\CompCryptoCocoon.cs" />
+    <Compile Include="Comp\CompShuttleAutoDoc.cs" />
+    <Compile Include="Obs-Shuttle\TransportPodsArrivalAction_MoonBase.cs" />
+    <Compile Include="Obs-Shuttle\TransportPodsArrivalAction_ShipAssault.cs" />
     <Compile Include="BiomeWorker_OuterSpace.cs" />
     <Compile Include="Building\Building_ArchotechPillar.cs" />
     <Compile Include="Building\Building_ArchotechSpore.cs" />
     <Compile Include="Building\Building_SatelliteCore.cs" />
-    <Compile Include="Building\Building_ShipForceField.cs" />
     <Compile Include="Building\Building_ShipSensor.cs" />
     <Compile Include="Building\Building_ShipAirlock.cs" />
     <Compile Include="Building\Building_ShipBridge.cs" />
@@ -116,6 +128,7 @@
     <Compile Include="CompProps\CompProps_ArchoHullConversion.cs" />
     <Compile Include="CompProps\CompProps_Archolife.cs" />
     <Compile Include="CompProps\CompProps_ArcholifeCosmetics.cs" />
+    <Compile Include="Vehicles\CompVehicleHeatNet.cs" />
     <Compile Include="Obs-Shuttle\CompProps_BecomeBuilding.cs" />
     <Compile Include="Obs-Shuttle\CompProps_BecomePawn.cs" />
     <Compile Include="CompProps\CompProps_BlackBoxAI.cs" />
@@ -216,8 +229,8 @@
     <Compile Include="Dialog\Dialog_NameShip.cs" />
     <Compile Include="Dialog\Dialog_Pirate.cs" />
     <Compile Include="Dialog\Dialog_RenameShip.cs" />
-    <Compile Include="Def\SpaceShipDef.cs" />
-    <Compile Include="Def\SpaceShipPartDef.cs" />
+    <Compile Include="SpaceShipDef.cs" />
+    <Compile Include="SpaceShipPartDef.cs" />
     <Compile Include="Events\ChoiceLetter_SpacePod.cs" />
     <Compile Include="Events\GameCondition_SpaceDebris.cs" />
     <Compile Include="Events\IncidentWorker_ShipCombat.cs" />
@@ -347,6 +360,16 @@
     <Compile Include="MechaniteFire.cs" />
     <Compile Include="Projectile\Projectile_MechaniteSpark.cs" />
     <Compile Include="MinifiedThingShipMove.cs" />
+    <Compile Include="Vehicles\CompShuttleLauncher.cs" />
+    <Compile Include="Vehicles\ShuttleAutodocUpgrade.cs" />
+    <Compile Include="Vehicles\ShuttleHeatsinkUpgrade.cs" />
+    <Compile Include="Vehicles\ShuttlePassengerUpgrade.cs" />
+    <Compile Include="Vehicles\ShuttleRetreatGizmo.cs" />
+    <Compile Include="Vehicles\ShuttleShieldUpgrade.cs" />
+    <Compile Include="Vehicles\ShuttleTakeoff.cs" />
+    <Compile Include="Vehicles\SoS2TurretUpgrade.cs" />
+    <Compile Include="Vehicles\SoS2VehicleTurret.cs" />
+    <Compile Include="Vehicles\VehicleEventMethods.cs" />
     <Compile Include="WorldObject\MoonBase.cs" />
     <Compile Include="Obsolete\Building_Radiator.cs" />
     <Compile Include="Obsolete\Bullet_HologramLaser.cs" />
@@ -415,7 +438,7 @@
     <Compile Include="Ships\PirateShip.cs" />
     <Compile Include="Obs-Shuttle\ShuttleCaravanUtility.cs" />
     <Compile Include="SpaceShipCache.cs" />
-    <Compile Include="Def\SpaceNavyDef.cs" />
+    <Compile Include="SpaceNavyDef.cs" />
     <Compile Include="WorldObject\SpaceSite.cs" />
     <Compile Include="ThingSetMaker_ArchotechGift.cs" />
     <Compile Include="Thing_ArcholifePod.cs" />
@@ -442,6 +465,7 @@
   </ItemGroup>
   <ItemGroup>
     <Publicize Include="Assembly-CSharp" IncludeVirtualMembers="false" />
+    <Publicize Include="Vehicles" IncludeVirtualMembers="true" />
   </ItemGroup>
   <ItemGroup />
 </Project>

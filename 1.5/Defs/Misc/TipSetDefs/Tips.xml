@@ -15,12 +15,12 @@
 
       <!-- Combat -->
       <li TKey="SoSTipNoWeapons">An unarmed ship is easy prey. Install weapons before launching, or bring a shuttle and a competent boarding party.</li>
-      <li TKey="SoSTipHeatsinks">Heatsinks are critical to a ship's performance in combat. More heat capacity means your shields will stay up longer.</li>
+      <li TKey="SoSTipHeatsinks">Heatsinks and coolant tanks are critical to a ship's performance in combat. Without sufficient heat capacity, shields can't stay up and energy weapons can't fire.</li>
       <li TKey="SoSTipRadiators">A ship can't radiate heat while its cloaking device is active. Make sure to disable it once your ship becomes dangerously hot.</li>
-      <li TKey="SoSTipBoardingParties">Enemy ships will launch boarding parties once their weapons have broken your hull. You can use point defense capable ship weapons to help repel boarders.</li>
-      <li TKey="SoSTipBoardingParties2">Many ships are vulnerable to a skilled boarding party. You can send shuttles over to the enemy ship but beware their point-defense weapons. While the enemy ship has working engines only small shuttles can reach it.</li>
+      <li TKey="SoSTipBoardingParties">Enemy ships will launch boarding parties once their weapons have broken your hull. You can use point-defense weapons to help repel boarders.</li>
+      <li TKey="SoSTipBoardingParties2">Shuttles can deliver boarding parties to an enemy ship, but are vulnerable to point-defense weaponry. Armor and shield upgrades go a long way to protecting your boarding shuttles.</li>
       <li TKey="SoSTipHackBridge">A colonist can use the Intellectual skill to hack an enemy ship's bridge, placing it under your control. Some captains weld multiple captured ships together.</li>
-      <li TKey="SoSTipDetach">Pieces of a ship separated from its bridge will detach and drift away. They are unrecoverable so if you want to obtain most of the resources target enemy ship's consoles and AI cores or use a boarding party.</li>
+      <li TKey="SoSTipDetach">Pieces of a ship separated from its bridge will detach and drift away. They are unrecoverable, so for optimal salvaging you should disable the ship by targeting its pilot console or AI core. Boarding parties are also a good option.</li>
       <li TKey="SoSTipRange">Ship railguns are best at long range. Plasma weapons can be used at medium range or closer. Lasers are only effective up close.</li>
       <li TKey="SoSTipTorpedo">A well-placed torpedo can overload shields and shatter hull, assuming it isn't intercepted by point-defense weaponry.</li>
       <li TKey="SoSTipSpinal">Spinal-mount cannons deal more damage, and produce larger explosions, the more amplifiers they contain.</li>
@@ -30,12 +30,16 @@
       <li TKey="SoSTipAirlocks">When boarding an enemy ship, its airlocks can be breached with the Construction skill or hacked with the Intellectual skill.</li>
       <li TKey="SoSTipCombatPower">The more combat-capable your ship is, the more likely you are to be challenged by formidable enemies.</li>
       <li TKey="SoSTipEmergencyPurge">An emergency purge port can eject molten silver into space, quickly reducing a ship's stored heat - albeit at a fantastic cost.</li>
+	  <li TKey="SoSTipShuttleMissions">Depending on its upgrades, a shuttle can be launched on various missions during ship combat. You can recall a shuttle or change its mission from any ship bridge.</li>
+	  <li TKey="SoSTipShuttleIntercept">A shuttle equipped with lasers can be launched on interception missions during ship combat. It will attempt to destroy incoming torpedoes and dogfight enemy shuttlecraft.</li>
+	  <li TKey="SoSTipShuttleStrafe">A shuttle equipped with laser or plasma weaponry can be launched on strafing missions during ship combat. It will fire on the enemy ship but is vulnerable to point-defense.</li>
+	  <li TKey="SoSTipShuttleBombing">A shuttle equipped with torpedo tubes can be launched on bombing missions during ship combat. The shuttle itself will be vulnerable to point-defense, but its torpedoes will not be.</li>
+      <li TKey="SoSTipEngines">If an enemy ship's engines are intact, shuttles will take longer to reach it. This will them expose them to more fire from point-defense weapons.</li>
 
       <!-- Shuttles -->
       <li TKey="SoSTipShuttles">Shuttlecraft come in four sizes. Only the smallest among them is powered by chemfuel; larger cargo shuttles require nuclear fuel.</li>
       <li TKey="SoSTipShuttleBay">Shuttle bays allow cargo and passengers to enter a ship without ever risking vacuum exposure.</li>
-      <li TKey="SoSTipFullyFueled">A shuttle must be fully fueled to travel to or from orbit. When traveling between ground sites, they are slightly less fuel-efficient than transport pods.</li>
-      <li TKey="SoSTipHoverMode">Shuttlecraft can be placed in "hover mode" to act as pack animals for caravans. They will consume fuel slowly in this mode.</li>
+      <li TKey="SoSTipShuttleUpgrades">By default, a shuttlecraft has one seat for its pilot. Your colonists can add passenger capacity, weapons, shields, and other upgrades - at some cost in cargo space.</li>
 
       <!-- Misc ship stuff -->
       <li TKey="SoSTipVacuum">Vacuum exposure is not fun. Be sure to have EVA suits on hand in case of a hull breach.</li>
@@ -46,7 +50,7 @@
       <li TKey="SoSTipHydroponics">Thanks to hydroponics and artificial soil substrates, it is possible to build a fully self-sustaining colony in orbit.</li>
       <li TKey="SoSTipMood">Most colonists are excited to go to space, and even more so when on EVA. Wimps and undergrounders, however, will be terrified.</li>
       <li TKey="SoSTipSensors">Ship sensors and science consoles can remotely observe some maps, allowing you to plan attacks in advance or scout landing sites.</li>
-      <li TKey="SoSTipLanding">In order to land, ships require an area that supports heavy construction, is free of buildings and not under a mountain.</li>
+      <li TKey="SoSTipLanding">In order to land, ships require an area that supports heavy construction, is free of buildings, and is not under a mountain.</li>
       <li TKey="SoSTipTradeShips">Occasionally you will encounter trade ships in orbit. You can attempt to pirate them, but expect bounty hunters to pursue you as your notoriety rises.</li>
       <li TKey="SoSTipResources">Useful resources are surprisingly abundant in space. You might want to launch a small ship at first, then gradually expand it.</li>
       <li TKey="SoSTipCrittersleep">Crittersleep caskets can store many small animals, such as cats or puppies. You will need to anesthetize them first.</li>
@@ -68,7 +72,7 @@
       <li TKey="SoSTipMechanites">Shipeater mechanites can consume almost any solid material, but will be disabled by firefoam or water.</li>
       <li TKey="SoSTipRecyclotron">Invented by an archotech spore, the Recyclotron is capable of taking apart nearly any object at 100% efficiency.</li>
 
-      <li TKey="EclecticIsBestCat">The archocat was designed in the image of "Eclectic" and "Hitomi" - two early 21st-century housepets universally regarded as history's most lovable cats.</li>
+      <li TKey="EclecticIsBestCatAndSoIsHitomi">The archocat was designed in the image of "Eclectic" and "Hitomi" - two early 21st-century housepets universally regarded as history's most lovable cats.</li>
     </tips>
   </TipSetDef>
   

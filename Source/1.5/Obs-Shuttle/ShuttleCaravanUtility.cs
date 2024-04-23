@@ -7,7 +7,7 @@ using UnityEngine;
 using System.Linq;
 
 namespace SaveOurShip2
-{
+{/*
 	public static class ShuttleCaravanUtility
 	{
 		public static Caravan myVan;
@@ -252,6 +252,6 @@ namespace SaveOurShip2
 			loadPod.innerContainer.TryAddRangeOrTransfer (van.pawns);
 			Find.WorldObjects.Remove (van);
 		}
-	}
+	}*/
 }
 

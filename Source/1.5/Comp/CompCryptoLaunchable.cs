@@ -16,11 +16,11 @@ namespace SaveOurShip2
 		public static readonly Texture2D TargeterMouseAttachment = ContentFinder<Texture2D>.Get("UI/Overlays/LaunchableMouseAttachment", true);
 		public static readonly Texture2D LaunchCommandTex = ContentFinder<Texture2D>.Get("UI/Commands/LaunchShip", true);
 
-		public CompProps_ShuttleLaunchable Props
+		public CompProps_CryptoLaunchable Props
 		{
 			get
 			{
-				return (CompProps_ShuttleLaunchable)this.props;
+				return (CompProps_CryptoLaunchable)this.props;
 			}
 		}
 
@@ -36,7 +36,7 @@ namespace SaveOurShip2
 			{
 				defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandLaunchGroup"),
 				defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandLaunchGroupDesc"),
-				icon = CompShuttleLaunchable.LaunchCommandTex,
+				icon = LaunchCommandTex,
 				action = delegate
 				{
 					this.StartChoosingDestination();
@@ -64,7 +64,7 @@ namespace SaveOurShip2
 			CameraJumper.TryJump(CameraJumper.GetWorldTarget(this.parent));
 			Find.WorldSelector.ClearSelection();
 			int tile = this.parent.Map.Tile;
-			Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, delegate
+			Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, TargeterMouseAttachment, true, delegate
 			{
 			}, delegate (GlobalTargetInfo target)
 			{
@@ -231,7 +231,7 @@ namespace SaveOurShip2
 					return;
 				}
 				this.TryLaunch(x.ToGlobalTargetInfo(map), new TransportPodsArrivalAction_LandInSpecificCell(targetMapParent, x.Cell));
-			}, null, actionWhenFinished, CompShuttleLaunchable.TargeterMouseAttachment);
+			}, null, actionWhenFinished, TargeterMouseAttachment);
 		}
 		public void TryLaunch(GlobalTargetInfo target, TransportPodsArrivalAction arrivalAction)
 		{

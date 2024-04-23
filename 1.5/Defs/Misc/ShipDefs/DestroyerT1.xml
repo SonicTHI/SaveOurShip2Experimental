@@ -153,7 +153,7 @@
 			<li>
 				<key>U</key>
 				<value>
-					<shapeOrDef>PersonalShuttle</shapeOrDef>
+					<shapeOrDef>SoS2_Shuttle_Personal</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -384,7 +384,7 @@
 			<li>
 				<key>z</key>
 				<value>
-					<shapeOrDef>CargoShuttle</shapeOrDef>
+					<shapeOrDef>SoS2_Shuttle</shapeOrDef>
 				</value>
 			</li>
 			<li>

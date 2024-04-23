@@ -218,4 +218,12 @@
 			<Insulation_Cold>90</Insulation_Cold>
 		</value>
 	</Operation>
+	
+	<!-- Research schematics -->
+	<Operation Class="PatchOperationAdd"> 
+		<xpath>/Defs/ThingDef[defName="Schematic"]/comps/li[@Class="CompProperties_Book"]/doers/li[@Class="BookOutcomeProperties_GainResearch"]/tabs</xpath>
+		<value>
+			<ResearchTabShip />
+		</value>
+	</Operation>
 </Patch>

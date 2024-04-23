@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using RimWorld;
+using Vehicles;
 
 namespace SaveOurShip2
 {
@@ -76,6 +77,7 @@ namespace SaveOurShip2
 		}
 		public bool AddHeatToNetwork(float amount)
 		{
+			Log.Message("Adding " + amount + " heat to network. Network currently has " + (myNet == null ? 0 : (myNet.StorageAvailable)) + " of " + (myNet == null ? 0 : (myNet.StorageCapacity)) + " available.");
 			if (myNet == null || amount > myNet.StorageCapacity - myNet.StorageUsed)
 				return false;
 			myNet.AddHeat(amount);
@@ -101,6 +103,8 @@ namespace SaveOurShip2
 		}
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
+			if (this.parent is VehiclePawn)
+				return;
 			var mapComp = this.parent.Map.GetComponent<ShipMapComp>();
 			//td change to check for adj nets, perform merges
 			mapComp.cachedPipes.Add(this);
@@ -111,6 +115,8 @@ namespace SaveOurShip2
 			base.PostDeSpawn(map);
 			if (myNet != null)
 				myNet.DeRegister(this);
+			if (this.parent is VehiclePawn)
+				return;
 			var mapComp = map.GetComponent<ShipMapComp>();
 			//td change to check for adj nets, if at end of line simple remove, else regen
 			mapComp.cachedPipes.Remove(this);

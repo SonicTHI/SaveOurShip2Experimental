@@ -19,7 +19,6 @@
 	<SoS.BurnUpPlayerPrevented>Building a ship bridge has allowed you to stabilize the orbit.</SoS.BurnUpPlayerPrevented>
 	<SoS.BurnUpCountdown>Entering atmosphere in {0}!</SoS.BurnUpCountdown>
 	<SoS.BurnUpCountdownTip>This map will enter atmosphere in {0}. Everything on it will be destroyed.</SoS.BurnUpCountdownTip>
-	<SoS.SpaceSiteFuelCost>Fuel cost: {0}%</SoS.SpaceSiteFuelCost>
 	<!-- combat -->
 	<SoS.CombatTooltip>Shows the enemy ship's distance from your ship, all projectiles and shuttles currently in flight.\n\nRED: laser/canon range\nGREEN: plasma range\nBLUE: railgun range.\nPURPLE: torpedo range\nSmall colored bars: inaccurate maximum range for large weapons</SoS.CombatTooltip>
 	<SoS.CombatRetreat>Retreat</SoS.CombatRetreat>
@@ -35,7 +34,7 @@
 	<SoS.CombatAbandonPawns>WARNING!\n\nFleeing the enemy ship will leave behind any of your colonists still on board!</SoS.CombatAbandonPawns>
 	<SoS.CombatShieldBroken>Our shield has broken due to lack of heat capacity!</SoS.CombatShieldBroken>
 	<SoS.CombatShieldBrokenEnemy>Enemy shield has broken due to lack of heat capacity!</SoS.CombatShieldBrokenEnemy>
-	<SoS.CombatPodDestroyedPlayer>Your shuttle was destroyed by enemy point defense!</SoS.CombatPodDestroyedPlayer>
+	<SoS.CombatPodDestroyedPlayer>Your shuttle was destroyed by enemy point defense! If any crew survived, their ejector seats will take them back to your ship.</SoS.CombatPodDestroyedPlayer>
 	<SoS.CombatPodDestroyedEnemy>Enemy shuttle was destroyed by your point defense!</SoS.CombatPodDestroyedEnemy>
 	<SoS.WithdrawShip>Withdraw ship</SoS.WithdrawShip>
 	<SoS.WithdrawShipDesc>Withdraw this ship from the battle</SoS.WithdrawShipDesc>
@@ -323,22 +322,31 @@
     <MechanitesInHomeAreaDesc>Disassembler mechanites have infested the home area.</MechanitesInHomeAreaDesc>
 	<!-- shuttles -->
 	<SoSShuttles>Shuttles</SoSShuttles>
-	<CommandToggleHover>Toggle hover mode</CommandToggleHover>
-	<CommandHoverOnDesc>Activate this shuttle's hover mode, allowing it to join a caravan.</CommandHoverOnDesc>
-	<CommandHoverOffDesc>Deactivate this shuttle's hover mode, allowing it to be loaded and launched.</CommandHoverOffDesc>
-	<MessageShuttleMustBeFullyFueled>Shuttles must be fully fueled to travel to or from orbit.</MessageShuttleMustBeFullyFueled>
-	<NeedOpenShuttleBay>Landing shuttles require an unobstructed bay clear of buildings, debris, and landed shuttle-craft. Clear the shuttle bay to prepare for landing.</NeedOpenShuttleBay>
 	<MessageShuttleOnlyPods>Enemy ship has active engines. Use personal shuttles to directly assault the enemy ship or disable its engines.</MessageShuttleOnlyPods>
-	<MessageShuttleNeedsMoreFuel>Your shuttle must be at least {0}% fueled to reach this site. Bring double this if you intend to return!</MessageShuttleNeedsMoreFuel>
-	<MustLaunchFromOrbit>This site can only be reached by a shuttle launched from orbit.</MustLaunchFromOrbit>
-	<ShuttleChangeColor>Set color</ShuttleChangeColor>
-	<ShuttleChangeColorDesc>Change this shuttle's color</ShuttleChangeColorDesc>
+	
 	<ShuttleCommandLaunchGroup>Launch at opposing ship</ShuttleCommandLaunchGroup>
 	<ShuttleCommandLaunchGroupDesc>Take off and fly to opposing ship</ShuttleCommandLaunchGroupDesc>
-	<MessageShuttleMustBePartiallyFueled>Shuttle must have at least 25% fuel to launch a boarding action</MessageShuttleMustBePartiallyFueled>
-	<MessageShuttleMustBeFueledToLand>Shuttle must have at least 15% fuel to land.</MessageShuttleMustBeFueledToLand>
-	<MessageShuttleMustBeFueledToOrbit>Shuttle must have at least 80% fuel to reach orbit.</MessageShuttleMustBeFueledToOrbit>
-	<SoSPodsArrived>Shuttles have arrived at destination.</SoSPodsArrived>
+	<SoS.ShuttleRetreat>Your shuttle is retreating due to damaged hull!</SoS.ShuttleRetreat>
+	<SoS.ShuttleRetreatFuel>Your shuttle is retreating due to low fuel!</SoS.ShuttleRetreatFuel>
+	<SoS.SoSShuttleOutOfTorps>Your shuttle is out of torpedoes and has begun retreating!</SoS.SoSShuttleOutOfTorps>
+	<SoSBoardingShuttleArrived>Your boarding shuttle has arrived!</SoSBoardingShuttleArrived>
+	<SoSShuttleReturned>Your shuttle has returned!</SoSShuttleReturned>
+	<SoSEnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoSEnemyBoardingShuttleArrived>
+	<SoS.ShuttleMissionBoarding>Board enemy ship</SoS.ShuttleMissionBoarding>
+	<SoS.ShuttleMissionBoardingDesc>Send this shuttle to board the enemy ship. It will be vulnerable to point-defense weaponry. If the enemy has active engines, the shuttle will take longer to arrive.</SoS.ShuttleMissionBoardingDesc>
+	<SoS.ShuttleMissionBoardingReturn>Return to ship</SoS.ShuttleMissionBoardingReturn>
+	<SoS.ShuttleMissionBoardingReturnDesc>Send this shuttle back to your ship. If enemy point-defense weapons remain online, it will be vulnerable to attack.</SoS.ShuttleMissionBoardingReturnDesc>
+	<SoS.ShuttleMissionIntercept>Intercept</SoS.ShuttleMissionIntercept>
+	<SoS.ShuttleMissionInterceptDesc>Send this shuttle to intercept incoming torpedoes and enemy shuttlecraft.\n\nIt will continue its mission until it runs low on fuel or is sufficiently damaged, or you recall it manually.</SoS.ShuttleMissionInterceptDesc>
+	<SoS.ShuttleMissionStrafe>Strafe enemy ship</SoS.ShuttleMissionStrafe>
+	<SoS.ShuttleMissionStrafeDesc>Send this shuttle to strafe the enemy ship with its turrets. It will be vulnerable to point-defense weaponry. If the enemy has active engines, the shuttle will take longer to arrive.\n\nIt will continue its mission until it runs low on fuel or is sufficiently damaged, or you recall it manually.</SoS.ShuttleMissionStrafeDesc>
+	<SoS.ShuttleMissionBomb>Torpedo enemy ship</SoS.ShuttleMissionBomb>
+	<SoS.ShuttleMissionBombDesc>Send this shuttle to fire torpedoes from close range. It will be extremely vulnerable to point-defense weaponry, but its torpedoes will not be. If the enemy has active engines, the shuttle will take longer to arrive.\n\nIt will continue its mission until it runs low on fuel runs out of torpedoes, is sufficiently damaged, or you recall it manually.</SoS.ShuttleMissionBombDesc>
+	<SoS.RecallShuttle>Recall {0} (mission: {1})</SoS.RecallShuttle>
+	<SoS.RecallShuttleDesc>Order this shuttle to return to your ship</SoS.RecallShuttleDesc>
+	<SoS2RetreatAtHealth>Retreat at shuttle health</SoS2RetreatAtHealth>
+	<SoS2RetreatAtHealthTip>This shuttle will automatically retreat when its health drops below this percentage</SoS2RetreatAtHealthTip>
+	
 	<!-- obsolete/unused
 	<SoS.PirateTradeEmpire>Our act of piracy against the Empire has not gone unnoticed!</SoS.PirateTradeEmpire>
 	<SoS.MoveFailPawns>Player pawn in {0}, ship move aborted.</SoS.MoveFailPawns>
@@ -366,5 +374,19 @@
 	<SoSHologramRelayStop>Stop relaying hologram</SoSHologramRelayStop>
 	<SoSHologramRelayStopDesc>Return {0} to the hologram's original map</SoSHologramRelayStopDesc>
 	<SoSHologramApparel>Wear holographic apparel</SoSHologramApparel>
-	<SoSHologramApparelDesc>Simulate apparel on this hologram</SoSHologramApparelDesc> -->
+	<SoSHologramApparelDesc>Simulate apparel on this hologram</SoSHologramApparelDesc>
+	<MessageShuttleMustBePartiallyFueled>Shuttle must have at least 25% fuel to launch a boarding action</MessageShuttleMustBePartiallyFueled>
+	<MessageShuttleMustBeFueledToLand>Shuttle must have at least 15% fuel to land.</MessageShuttleMustBeFueledToLand>
+	<MessageShuttleMustBeFueledToOrbit>Shuttle must have at least 80% fuel to reach orbit.</MessageShuttleMustBeFueledToOrbit>
+	<SoSPodsArrived>Shuttles have arrived at destination.
+	<MessageShuttleNeedsMoreFuel>Your shuttle must be at least {0}% fueled to reach this site. Bring double this if you intend to return!</MessageShuttleNeedsMoreFuel>
+	<MustLaunchFromOrbit>This site can only be reached by a shuttle launched from orbit.</MustLaunchFromOrbit>
+	<ShuttleChangeColor>Set color</ShuttleChangeColor>
+	<ShuttleChangeColorDesc>Change this shuttle's color</ShuttleChangeColorDesc></SoSPodsArrived>
+	<CommandToggleHover>Toggle hover mode</CommandToggleHover>
+	<CommandHoverOnDesc>Activate this shuttle's hover mode, allowing it to join a caravan.</CommandHoverOnDesc>
+	<CommandHoverOffDesc>Deactivate this shuttle's hover mode, allowing it to be loaded and launched.</CommandHoverOffDesc>
+	<MessageShuttleMustBeFullyFueled>Shuttles must be fully fueled to travel to or from orbit.</MessageShuttleMustBeFullyFueled>
+	<NeedOpenShuttleBay>Landing shuttles require an unobstructed bay clear of buildings, debris, and landed shuttle-craft. Clear the shuttle bay to prepare for landing.</NeedOpenShuttleBay>
+	<SoS.SpaceSiteFuelCost>Fuel cost: {0}%</SoS.SpaceSiteFuelCost> -->
 </LanguageData>

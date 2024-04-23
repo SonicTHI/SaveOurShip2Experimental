@@ -11,6 +11,7 @@
 	<tags>
 		<li>SpaceCore</li>
 	</tags>
+	<disallowsAutomaticDetectionTimerStart>true</disallowsAutomaticDetectionTimerStart>
   </SitePartDef>
 
   <GenStepDef>
@@ -53,6 +54,7 @@
 	<tags>
 		<li>SpaceCore</li>
 	</tags>
+	<disallowsAutomaticDetectionTimerStart>true</disallowsAutomaticDetectionTimerStart>
   </SitePartDef>
 
   <GenStepDef>
@@ -100,6 +102,7 @@
 		<li>SpaceCore</li>
 		<li>SpaceBlackBox</li>
 	</tags>
+	<disallowsAutomaticDetectionTimerStart>true</disallowsAutomaticDetectionTimerStart>
   </SitePartDef>
 
   <GenStepDef>

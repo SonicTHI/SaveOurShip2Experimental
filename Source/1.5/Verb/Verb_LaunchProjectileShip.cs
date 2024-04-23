@@ -7,6 +7,8 @@ using Verse;
 using RimWorld.Planet;
 using HarmonyLib;
 using RimWorld;
+using Vehicles;
+using SaveOurShip2.Vehicles;
 
 namespace SaveOurShip2
 {
@@ -119,7 +121,7 @@ namespace SaveOurShip2
 			if (mapComp.ShipCombatTargetMap != null)
 			{
 				//pods
-				List<TravelingTransportPods> podsinrange = new List<TravelingTransportPods>();
+				/*List<TravelingTransportPods> podsinrange = new List<TravelingTransportPods>();
 				foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
 				{
 					float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
@@ -127,14 +129,70 @@ namespace SaveOurShip2
 					{
 						podsinrange.Add(obj);
 					}
-				}
+				}*/
 				if (mapComp.TargetMapComp.TorpsInRange.Any() && Rand.Chance(0.1f))
 				{
 					ShipCombatProjectile projtr = mapComp.TargetMapComp.TorpsInRange.RandomElement();
 					mapComp.TargetMapComp.Projectiles.Remove(projtr);
 					mapComp.TargetMapComp.TorpsInRange.Remove(projtr);
 				}
-				else if (!podsinrange.NullOrEmpty() && Rand.Chance(0.1f))
+				else if(mapComp.TargetMapComp.ShuttlesInRange.Where(shuttle=>shuttle.Faction!=turret.Faction).Any())
+                {
+					VehiclePawn shuttleHit = mapComp.TargetMapComp.ShuttlesInRange.Where(shuttle => shuttle.Faction != turret.Faction).RandomElement();
+					if(verbProps.defaultProjectile.thingClass!=typeof(Projectile_ExplosiveShipLaser) && Rand.Chance(0.75f))
+                    {
+						Log.Message("Shuttle dodged non-laser weapon");
+                    }
+					else if(Rand.Chance(1f-(shuttleHit.GetStatValue(ResourceBank.VehicleStatDefOf.SoS2CombatDodgeChance)/100f)))
+					{
+						if (shuttleHit.GetComp<CompShipCombatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 0) //Shield takes the hit
+						{
+							Projectile dummyProjectile = (Projectile)ThingMaker.MakeThing(verbProps.defaultProjectile);
+							shuttleHit.GetComp<CompShipCombatShield>().HitShield(dummyProjectile);
+							Log.Message("Shuttle's shield took a hit! Its internal heatsinks are at " + shuttleHit.GetComp<CompVehicleHeatNet>().myNet.StorageUsed + " of " + shuttleHit.GetComp<CompVehicleHeatNet>().myNet.StorageCapacity + " capacity.");
+							if(!dummyProjectile.Destroyed)
+								dummyProjectile.Destroy();
+						}
+						else
+						{
+							shuttleHit.TakeDamage(new DamageInfo(verbProps.defaultProjectile.projectile.damageDef, verbProps.defaultProjectile.projectile.GetDamageAmount(caster)), IntVec2.Zero);
+							Log.Message("Shuttle hit! It currently has " + shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) + " health.");
+							if(shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity)<=0)
+							{
+								if (shuttleHit.Faction==Faction.OfPlayer)
+									Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CombatPodDestroyedPlayer"), null, MessageTypeDefOf.NegativeEvent);
+								else
+									Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CombatPodDestroyedEnemy"), null, MessageTypeDefOf.PositiveEvent);
+								mapComp.TargetMapComp.DeRegisterShuttleMission(mapComp.TargetMapComp.ShuttleMissions.Where(mission => mission.shuttle == shuttleHit).First(), true);
+								foreach (Pawn pawn in shuttleHit.AllPawnsAboard.ListFullCopy())
+								{
+									Log.Message("Pawn " + pawn + " is having a real bad day.");
+									if (shuttleHit.Faction == Faction.OfPlayer && (ModSettings_SoS.easyMode || Rand.Chance(0.5f)))
+									{
+										HealthUtility.DamageUntilDowned(pawn, false);
+										shuttleHit.RemovePawn(pawn);
+										DropPodUtility.DropThingsNear(DropCellFinder.RandomDropSpot(mapComp.ShipCombatOriginMap), mapComp.OriginMapComp.map, new List<Thing> { pawn });
+									}
+									else
+									{
+										shuttleHit.RemovePawn(pawn);
+										pawn.Kill(new DamageInfo(DamageDefOf.Bomb, 100f));
+										if (shuttleHit.Faction == Faction.OfPlayer)
+											DropPodUtility.DropThingsNear(DropCellFinder.RandomDropSpot(mapComp.ShipCombatOriginMap), mapComp.OriginMapComp.map, new List<Thing> { pawn.Corpse });
+									}
+								}
+								foreach (Thing cargo in shuttleHit.GetDirectlyHeldThings())
+									cargo.Kill();
+							}
+							else if(shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) <= ((CompShuttleLauncher)shuttleHit.CompVehicleLauncher).retreatAtHealth)
+                            {
+								Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
+								mapComp.TargetMapComp.ShuttleMissions.Where(mission => mission.shuttle == shuttleHit).First().mission = ShipMapComp.ShuttleMission.RETURN;
+							}
+						}
+					}
+				}
+				/*else if (!podsinrange.NullOrEmpty() && Rand.Chance(0.1f))
 				{
 					var groupedPods = podsinrange.RandomElement();
 					List<ActiveDropPodInfo> pods = Traverse.Create(groupedPods).Field("pods").GetValue() as List<ActiveDropPodInfo>;
@@ -177,7 +235,7 @@ namespace SaveOurShip2
 						else
 							Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CombatPodDestroyedEnemy"), null, MessageTypeDefOf.PositiveEvent);
 					}
-				}
+				}*/
 			}
 		}
 		//projectiles register on turret map

@@ -6,7 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using RimWorld;
-
+using Vehicles;
 
 namespace SaveOurShip2
 {
@@ -38,6 +38,8 @@ namespace SaveOurShip2
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
+			if (this.parent is VehiclePawn)
+				return;
 			powerComp = parent.TryGetComp<CompPower>();
 			inSpace = this.parent.Map.IsSpace();
 			pos = this.parent.Position;
@@ -155,6 +157,8 @@ namespace SaveOurShip2
 		}
 		private bool TryPushHeat(IntVec3 vec, float heat)
 		{
+			if (map == null)
+				return false;
 			//dont push to null, doors or space
 			Room r = vec.GetRoom(map);
 			if (r != null && !r.IsDoorway && !(inSpace && (r.OpenRoofCount > 0 || r.TouchesMapEdge)))

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using RimWorld;
 
 namespace SaveOurShip2
-{
+{/*
 	[StaticConstructorOnStartup]
 	public class CompBecomeBuilding : ThingComp
 	{
@@ -76,7 +76,7 @@ namespace SaveOurShip2
 				{
 					yield return c2;
 				}
-			}*/
+			}*//*
 			if (parent.Faction != Faction.OfPlayer)
 				yield break;
 			foreach (Gizmo g in base.CompGetGizmosExtra()) {
@@ -135,7 +135,7 @@ namespace SaveOurShip2
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
 			/*if (parent.TryGetComp<CompShuttleCosmetics>() != null)
-				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);*/
+				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);*//*
 			Current.Game.GetComponent<ShipGameComp>().shuttleCache.Add(parent);
 		}
 
@@ -143,6 +143,6 @@ namespace SaveOurShip2
 		{
 			Current.Game.GetComponent<ShipGameComp>().shuttleCache.Remove(parent);
 		}
-	}
+	}*/
 }
 

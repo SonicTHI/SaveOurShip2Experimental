@@ -8,7 +8,7 @@ using UnityEngine;
 using Verse;
 
 namespace SaveOurShip2
-{
+{/*
 	public class CompProps_ShuttleCosmetics : CompProperties
 	{
 		public List<GraphicData> graphics;
@@ -27,5 +27,5 @@ namespace SaveOurShip2
 			if(!CompShuttleCosmetics.GraphicsToResolve.ContainsKey(parentDef))
 				CompShuttleCosmetics.GraphicsToResolve.Add(parentDef,this);
 		}
-	}
+	}*/
 }

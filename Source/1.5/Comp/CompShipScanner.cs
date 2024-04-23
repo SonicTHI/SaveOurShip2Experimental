@@ -122,8 +122,6 @@ namespace SaveOurShip2
 				Slate slate = new Slate();
 				slate.Set<Map>("map", this.parent.Map, false);
 				slate.Set<Pawn>("worker", worker, false);
-				int fuelCost = Rand.RangeInclusive((int)Props.minShuttleFuelPercent, (int)Props.maxShuttleFuelPercent);
-				slate.Set<int>("fuelCost", fuelCost, false);
 				slate.Set<float>("radius", Rand.Range(120f, 180f), false);
 				slate.Set<float>("theta", Rand.Range(((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta - 0.25f, ((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta + 0.25f), false);
 				slate.Set<float>("phi", Rand.Range(-1f, 1f), false);

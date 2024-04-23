@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <GeneDef MayRequire="Ludeon.RimWorld.Biotech">
+    <defName>SoS2_VacuumAdapted</defName>
+    <label>vacuum adapted</label>
+    <labelShortAdj>space</labelShortAdj>
+    <description>Carriers of this gene can survive direct vacuum exposure. Their bodies regulate blood gases to prevent decompression injuries, and can switch to anaerobic respiration when oxygen is not available. Metabolic waste gases are ejected through the skin to provide EVA thrust. However, on its own this gene does not protect against extreme temperatures.</description>
+    <iconPath>Things/Pawn/Humanlike/Apparel/EVA/EVA_Helmet</iconPath>
+    <displayOrderInCategory>0</displayOrderInCategory>
+    <statOffsets>
+      <DecompressionResistance>1</DecompressionResistance>
+	  <HypoxiaResistance>1</HypoxiaResistance>
+	  <VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
+    </statOffsets>
+    <biostatMet>-2</biostatMet>
+	<biostatCpx>2</biostatCpx>
+    <symbolPack>
+      <prefixSymbols>
+        <li><symbol>space</symbol></li>
+      </prefixSymbols>
+    </symbolPack>
+  </GeneDef>
+  
+  <GeneDef MayRequire="Ludeon.RimWorld.Biotech">
+    <defName>SoS2_Cocoon</defName>
+    <label>cryptosleep cocoon</label>
+    <description>Carriers of this gene can grow a natural cryptosleep cocoon, allowing them to enter stasis at will. However, the process is metabolically draining and the user will emerge badly malnourished.</description>
+    <iconPath>Things/Building/Natural/CocoonSpelopede/CocoonSpelopedeB</iconPath>
+    <displayCategory>Ability</displayCategory>
+    <abilities>
+      <li>SoS2_CryptoCocoon</li>
+    </abilities>
+    <descriptionHyperlinks>
+      <AbilityDef>SoS2_CryptoCocoon</AbilityDef>
+    </descriptionHyperlinks>
+    <biostatMet>-1</biostatMet>
+    <symbolPack>
+      <wholeNameSymbols>
+        <li><symbol>cocooner</symbol></li>
+      </wholeNameSymbols>
+      <prefixSymbols>
+        <li><symbol>crypto</symbol></li>
+      </prefixSymbols>
+      <suffixSymbols>
+        <li><symbol>sleeper</symbol></li>
+      </suffixSymbols>
+    </symbolPack>
+  </GeneDef>
+  
+  <AbilityDef MayRequire="Ludeon.RimWorld.Biotech">
+    <defName>SoS2_CryptoCocoon</defName>
+    <label>cryptosleep cocoon</label>
+    <description>Extrude a protective cocoon and begin the process of natural cryptosleep. You can awaken at will, but the process is metabolically draining and you will emerge badly malnourished.</description>
+    <iconPath>Things/Building/Natural/CocoonSpelopede/CocoonSpelopedeB</iconPath>
+    <cooldownTicksRange>0</cooldownTicksRange>
+    <targetRequired>false</targetRequired>
+    <hostile>false</hostile>
+    <casterMustBeCapableOfViolence>false</casterMustBeCapableOfViolence>
+    <verbProperties>
+      <verbClass>Verb_CastAbility</verbClass>
+      <warmupTime>1</warmupTime>
+      <range>0.5</range>
+      <drawAimPie>false</drawAimPie>    
+      <targetParams>
+        <canTargetSelf>true</canTargetSelf>
+		<canTargetBuildings>false</canTargetBuildings>
+		<canTargetPawns>false</canTargetPawns>
+      </targetParams>
+    </verbProperties>
+    <comps>
+      <li Class="SaveOurShip2.CompProps_CryptoCocoon"/>
+    </comps>
+  </AbilityDef>
+  
+  <ThingDef ParentName="BuildingBase" MayRequire="Ludeon.RimWorld.Biotech">
+    <defName>SoS2CryptosleepCocoon</defName>
+    <label>cryptosleep cocoon</label>
+    <description>A cocoon containing a person deep in cryptosleep.</description>
+    <thingClass>SaveOurShip2.Building_CryptoCocoon</thingClass>
+    <containedPawnsSelectable>true</containedPawnsSelectable>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <graphicData>
+      <texPath>Things/Building/Natural/CocoonSpelopede</texPath>
+      <graphicClass>Graphic_Random</graphicClass>
+      <drawSize>(1, 1)</drawSize>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <pathCost>42</pathCost>
+    <blockWind>true</blockWind>
+    <fillPercent>0.5</fillPercent>
+    <canOverlapZones>false</canOverlapZones>
+    <statBases>
+      <MaxHitPoints>150</MaxHitPoints>
+      <Flammability>1</Flammability>
+    </statBases>
+    <tickerType>Normal</tickerType>
+    <size>(1,1)</size>
+    <building>
+      <ai_chillDestination>false</ai_chillDestination>
+      <deconstructible>false</deconstructible>
+	  <isPlayerEjectable>true</isPlayerEjectable>
+    </building>
+    <comps/>
+    <inspectorTabs>
+      <li>ITab_ContentsCasket</li>
+    </inspectorTabs>
+  </ThingDef>
+
+  <XenotypeDef MayRequire="Ludeon.RimWorld.Biotech">
+    <defName>Gremlin</defName>
+    <label>gremlin</label>
+	<description>Engineered to serve as a spaceborne labor force, gremlins work tirelessly under hazardous conditions. Not only are they resistant to toxins and extreme cold, but gremlins can endure the vacuum of space without equipment - at least long enough to patch up the hull. They do not require cryptosleep caskets for interstellar journeys, as their bodies can secrete a cryptosleep cocoon. However, gremlins are painfully aware that they are a subordinate caste; their creators repurposed many of the brain's creative abilities, leaving them psychically deaf and inept at art and research. Likewise, no effort was made to build in psychological safeguards against the anxiety of prolonged spaceflight.\n\nGremlins were created during the first age of mass colonization thousands of years ago. The xenotype has fallen out of official favor on most worlds due to ethical concerns and several high-profile mutinies. Today, most gremlins receive their xenogerm as part of an indenture contract - captains who need crew can usually find someone desperate for passage offworld, no matter the strings attached.</description>
+    <descriptionShort>Engineered to labor aboard starships, gremlins do not sleep and can survive vacuum and other hazards. Their bodies can form a cryptosleep cocoon. However, their minds are creatively dull and they are unaffected by psychic phenomena.</descriptionShort>
+	<iconPath>UI/Icons/Xenotypes/Custom/CustomXenotypeIcon3</iconPath>
+	<genes>
+		<li>Immunity_Weak</li>
+		<li>WoundHealing_Slow</li>
+		<li>PsychicAbility_Deaf</li>
+		<li>Mood_Pessimist</li>
+		<li>MinTemp_LargeDecrease</li>
+		<li>ToxResist_Partial</li>
+		<li>FireResistant</li>
+		<li>Neversleep</li>
+		<li>Sterile</li>
+		<li>Ears_Pointed</li>
+		<li>Beauty_VeryUgly</li>
+		<li>Hair_BaldOnly</li>
+		<li>Beard_NoBeardOnly</li>
+		<li>Body_Thin</li>
+		<li>Skin_Green</li>
+		<li>SoS2_VacuumAdapted</li>
+		<li>SoS2_Cocoon</li>
+		<li>Nearsighted</li>
+		<li>DarkVision</li>
+		<li>ElongatedFingers</li>
+		<li>AptitudeRemarkable_Construction</li>
+		<li>AptitudeTerrible_Animals</li>
+		<li>AptitudeTerrible_Artistic</li>
+		<li>AptitudeTerrible_Social</li>
+		<li>AptitudeTerrible_Intellectual</li>
+	</genes>
+  </XenotypeDef>
+</Defs>

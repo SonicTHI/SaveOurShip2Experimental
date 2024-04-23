@@ -7,7 +7,7 @@ using UnityEngine;
 using Verse;
 
 namespace SaveOurShip2
-{
+{/*
 	[StaticConstructorOnStartup]
 	class CompShuttleCosmetics : ThingComp
 	{
@@ -69,7 +69,7 @@ namespace SaveOurShip2
 			{
 				parent.graphicInt=graphics[parent.def.defName][whichVersion];
 				parent.DirtyMapMesh(parent.Map);
-			}*/
+			}*//*
 		}
 	}
 
@@ -85,5 +85,5 @@ namespace SaveOurShip2
 		{
 			whichOptionWasChosen = this.options.IndexOf(opt);
 		}
-	}
+	}*/
 }

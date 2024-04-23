@@ -47,6 +47,8 @@ namespace SaveOurShip2
 			tmp.Add(GraphicDatabase.Get<Graphic_Single>("CassandraIcon"));
 			tmp.Add(GraphicDatabase.Get<Graphic_Single>("PhoebeIcon"));
 			tmp.Add(GraphicDatabase.Get<Graphic_Single>("RandyIcon"));
+			tmp.Add(GraphicDatabase.Get<Graphic_Single>("SaraIcon"));
+			tmp.Add(GraphicDatabase.Get<Graphic_Single>("KimIcon"));
 			programs.Add(SkillDefOf.Social, new HolodeckProgram(new Graphic_256(TerrainDefOf.WaterShallow.graphic), tmp, "Hot Spring", 0.2f));
 
 			tmp = new List<Graphic>();

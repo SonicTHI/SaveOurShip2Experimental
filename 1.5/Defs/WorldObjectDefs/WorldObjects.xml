@@ -64,7 +64,6 @@
 			<li Class="WorldObjectCompProperties_PrisonerWillingToJoin"/>
 			<li Class="SaveOurShip2.WorldObjectCompProps_TimedForcedExitShip"/>
 			<li Class="WorldObjectCompProperties_EnterCooldown"/>
-			<li Class="WorldObjectCompProperties_TimedDetectionRaids"/>
 		</comps>
 		<mapGenerator>EmptySpaceMap</mapGenerator>
 	</WorldObjectDef>
@@ -134,53 +133,5 @@
 			<li Class="SaveOurShip2.WorldObjectCompProps_InsectPillarSite"/>
 			<li Class="WorldObjectCompProperties_FormCaravan"/>
 		</comps>
-	</WorldObjectDef>
-	<WorldObjectDef>
-		<defName>TravelingShuttlesPersonal</defName>
-		<label>shuttles</label>
-		<description>Shuttles in flight.</description>
-		<worldObjectClass>TravelingTransportPods</worldObjectClass>
-		<texture>Things/ShuttleHover/ShuttlePersonal_north</texture>
-		<useDynamicDrawer>true</useDynamicDrawer>
-		<expandingIcon>true</expandingIcon>
-		<expandingIconTexture>Things/ShuttleHover/ShuttlePersonal_south</expandingIconTexture>
-		<expandingIconPriority>60</expandingIconPriority>
-		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
-	</WorldObjectDef>
-	<WorldObjectDef>
-		<defName>TravelingShuttlesCargo</defName>
-		<label>shuttles</label>
-		<description>Shuttles in flight.</description>
-		<worldObjectClass>TravelingTransportPods</worldObjectClass>
-		<texture>Things/ShuttleHover/Shuttle_south</texture>
-		<useDynamicDrawer>true</useDynamicDrawer>
-		<expandingIcon>true</expandingIcon>
-		<expandingIconTexture>Things/ShuttleHover/Shuttle_south</expandingIconTexture>
-		<expandingIconPriority>60</expandingIconPriority>
-		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
-	</WorldObjectDef>
-	<WorldObjectDef>
-		<defName>TravelingShuttlesHeavy</defName>
-		<label>shuttles</label>
-		<description>Shuttles in flight.</description>
-		<worldObjectClass>TravelingTransportPods</worldObjectClass>
-		<texture>Things/ShuttleHover/ShuttleHeavy_north</texture>
-		<useDynamicDrawer>true</useDynamicDrawer>
-		<expandingIcon>true</expandingIcon>
-		<expandingIconTexture>Things/ShuttleHover/ShuttleHeavy_south</expandingIconTexture>
-		<expandingIconPriority>60</expandingIconPriority>
-		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
-	</WorldObjectDef>
-	<WorldObjectDef>
-		<defName>TravelingShuttlesDropship</defName>
-		<label>shuttles</label>
-		<description>Shuttles in flight.</description>
-		<worldObjectClass>TravelingTransportPods</worldObjectClass>
-		<texture>Things/ShuttleHover/ShuttleDropship_north</texture>
-		<useDynamicDrawer>true</useDynamicDrawer>
-		<expandingIcon>true</expandingIcon>
-		<expandingIconTexture>Things/ShuttleHover/ShuttleDropship_south</expandingIconTexture>
-		<expandingIconPriority>60</expandingIconPriority>
-		<allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
 	</WorldObjectDef>
 </Defs>

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using RimWorld;
 
 namespace SaveOurShip2
-{
+{/*
 	[StaticConstructorOnStartup]
 	public class CompBecomePawn : ThingComp
 	{
@@ -30,7 +30,7 @@ namespace SaveOurShip2
 			Pawn transformed = myPawn (this.parent, myPos, fuelAmount);
 			transformed.SpawnSetup (myMap, false);
 			/*if(transformed.TryGetComp<CompShuttleCosmetics>()!=null)
-				CompShuttleCosmetics.ChangeShipGraphics(transformed, transformed.TryGetComp<CompShuttleCosmetics>().Props);*/
+				CompShuttleCosmetics.ChangeShipGraphics(transformed, transformed.TryGetComp<CompShuttleCosmetics>().Props);*//*
 		}
 
 		public static Pawn myPawn(Thing meAsABuilding, IntVec3 myPos, int fuelAmount)
@@ -81,8 +81,8 @@ namespace SaveOurShip2
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
 			/*if (parent.TryGetComp<CompShuttleCosmetics>() != null)
-				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);*/
+				CompShuttleCosmetics.ChangeShipGraphics(parent, parent.TryGetComp<CompShuttleCosmetics>().Props);*//*
 		}
-	}
+	}*/
 }
 

@@ -1,0 +1,1569 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<Vehicles.UpgradeTreeDef>
+		<defName>SoS2ShuttleUpgradeTree</defName>
+		<nodes>
+			<li>
+				<key>ArmorMinimal</key>
+				<label>Minimal Armor</label>
+				<description>Retrofit the shuttle's hull to minimize weight, trading armor for speed and fuel efficiency.\n&lt;color=#bb8f04&gt;-10% blunt armor, -20% sharp armor, +6 flight speed, +100 cargo capacity, -10 fuel consumption rate&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/ArmorMinimal</icon>
+				<work>6000</work>
+				<gridCoordinate>(1,1)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<stats>
+							<li>
+								<def>ArmorRating_Blunt</def>
+								<value>-0.1</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>ArmorRating_Sharp</def>
+								<value>-0.2</value>
+								<type>Add</type>
+							</li>
+						</stats>
+						<vehicleStats>
+							<li>
+								<def>FlightSpeed</def>
+								<value>6</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>CargoCapacity</def>
+								<value>100</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+						<statCategories>
+							<li>
+								<def>FuelConsumptionRate</def>
+								<value>-10</value>
+								<type>Add</type>
+							</li>
+						</statCategories>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>ArmorHeavy</li>
+					<li>ArmorNano</li>
+					<li>ArmorArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<Plasteel>10</Plasteel>
+				</ingredients>
+			</li>
+			<li>
+				<key>ArmorHeavy</key>
+				<label>Heavy Armor</label>
+				<description>Retrofit the shuttle's hull with additional armor plating.\n&lt;color=#bb8f04&gt;+40% blunt armor, +40% sharp armor, -6 flight speed, -250 cargo capacity, +10 fuel consumption rate&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/ArmorHeavy</icon>
+				<work>6000</work>
+				<gridCoordinate>(4,1)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<stats>
+							<li>
+								<def>ArmorRating_Blunt</def>
+								<value>0.4</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>ArmorRating_Sharp</def>
+								<value>0.4</value>
+								<type>Add</type>
+							</li>
+						</stats>
+						<vehicleStats>
+							<li>
+								<def>FlightSpeed</def>
+								<value>-6</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-250</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+						<statCategories>
+							<li>
+								<def>FuelConsumptionRate</def>
+								<value>10</value>
+								<type>Add</type>
+							</li>
+						</statCategories>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>ArmorMinimal</li>
+					<li>ArmorNano</li>
+					<li>ArmorArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<Plasteel>60</Plasteel>
+				</ingredients>
+			</li>
+			<li>
+				<key>ArmorNano</key>
+				<label>Reactive Nano-Armor</label>
+				<description>Apply a layer of vibrating mechanite chains which helps to diffuse blunt impacts.\n&lt;color=#bb8f04&gt;+30% blunt armor, +10% sharp armor, -50 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/ArmorNano</icon>
+				<work>12000</work>
+				<gridCoordinate>(7,1)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<stats>
+							<li>
+								<def>ArmorRating_Blunt</def>
+								<value>0.3</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>ArmorRating_Sharp</def>
+								<value>0.1</value>
+								<type>Add</type>
+							</li>
+						</stats>
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-50</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>ArmorMinimal</li>
+					<li>ArmorHeavy</li>
+					<li>ArmorArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>2</ComponentSpacer>
+					<Steel>25</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>ArmorArcho</key>
+				<label>Archotech Armor</label>
+				<description>[HUMAN CARAPACE\nFROM THIS COCOON I EMERGE\nTO WEAVE ONE STRONGER]\n&lt;color=#bb8f04&gt;+50% blunt armor, +50% sharp armor&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/ArmorArcho</icon>
+				<work>18000</work>
+				<gridCoordinate>(10,1)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<stats>
+							<li>
+								<def>ArmorRating_Blunt</def>
+								<value>0.5</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>ArmorRating_Sharp</def>
+								<value>0.5</value>
+								<type>Add</type>
+							</li>
+						</stats>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>ArmorMinimal</li>
+					<li>ArmorHeavy</li>
+					<li>ArmorNano</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ArchotechHullConversion</li>
+				</researchPrerequisites>
+				<ingredients>
+					<Plasteel>10</Plasteel>
+					<Gold>10</Gold>
+					<ArchotechExoticParticles>2</ArchotechExoticParticles>
+				</ingredients>
+			</li>
+			<li>
+				<key>EngineOverdriven</key>
+				<label>Overdriven Engine</label>
+				<description>Boost reactor output and overdrive the primary engines.\n&lt;color=#bb8f04&gt;+12 flight speed, +20 fuel consumption rate&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/EngineOverdriven</icon>
+				<work>8000</work>
+				<gridCoordinate>(1,4)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>FlightSpeed</def>
+								<value>12</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+						<statCategories>
+							<li>
+								<def>FuelConsumptionRate</def>
+								<value>20</value>
+								<type>Add</type>
+							</li>
+						</statCategories>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>EngineThrusters</li>
+					<li>EngineMule</li>
+					<li>EngineArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>1</ComponentSpacer>
+					<Uranium>20</Uranium>
+				</ingredients>
+			</li>
+			<li>
+				<key>EngineThrusters</key>
+				<label>Auxiliary Thrusters</label>
+				<description>Installing additional thrusters improves the shuttle's chance of dodging enemy point-defense systems.\n&lt;color=#bb8f04&gt;+15% ship combat dodge chance, +5 fuel consumption rate&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/EngineThrusters</icon>
+				<work>8000</work>
+				<gridCoordinate>(4,4)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>SoS2CombatDodgeChance</def>
+								<value>25</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+						<statCategories>
+							<li>
+								<def>FuelConsumptionRate</def>
+								<value>5</value>
+								<type>Add</type>
+							</li>
+						</statCategories>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>EngineOverdriven</li>
+					<li>EngineMule</li>
+					<li>EngineArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>2</ComponentSpacer>
+					<Plasteel>10</Plasteel>
+				</ingredients>
+			</li>
+			<li>
+				<key>EngineMule</key>
+				<label>M.U.L.E. Module</label>
+				<description>Utilize momentum-redirection technology to increase the mass of cargo this shuttle can carry, at the cost of greatly reduced flight speed.\n&lt;color=#bb8f04&gt;-8 flight speed, +250 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/EngineMule</icon>
+				<work>8000</work>
+				<gridCoordinate>(7,4)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>FlightSpeed</def>
+								<value>-8</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>CargoCapacity</def>
+								<value>250</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>EngineOverdriven</li>
+					<li>EngineThrusters</li>
+					<li>EngineArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>1</ComponentSpacer>
+					<Plasteel>10</Plasteel>
+					<Uranium>10</Uranium>
+				</ingredients>
+			</li>
+			<li>
+				<key>EngineArcho</key>
+				<label>Archotech Engine</label>
+				<description>[WHAT SAIL CARRIES YOU?\nPUSH AGAINST WHICH FIRMAMENT?\nTHE ANSWER IS: YES]\n&lt;color=#bb8f04&gt;+12 flight speed, +15% ship combat dodge chance, +100 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/EngineArcho</icon>
+				<work>12000</work>
+				<gridCoordinate>(10,4)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>FlightSpeed</def>
+								<value>12</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>SoS2CombatDodgeChance</def>
+								<value>25</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>CargoCapacity</def>
+								<value>100</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>EngineOverdriven</li>
+					<li>EngineThrusters</li>
+					<li>EngineMule</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ArchotechEngine</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>4</ComponentSpacer>
+					<ArchotechExoticParticles>2</ArchotechExoticParticles>
+					<Gold>20</Gold>
+				</ingredients>
+			</li>
+			<li>
+				<key>ShieldsBasic</key>
+				<label>Shield Generator</label>
+				<description>Install a miniaturized shield generator and its dedicated heatsinks.\n&lt;color=#bb8f04&gt;+200 heatsink, -250 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/ShieldsBasic</icon>
+				<work>12000</work>
+				<gridCoordinate>(1,7)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-250</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleShieldUpgrade">
+						<shield>
+							<compClass>SaveOurShip2.CompShipCombatShield</compClass>
+							<heatMultiplier>1.25</heatMultiplier>
+							<shieldMin>6</shieldMin>
+							<shieldMax>12</shieldMax>
+							<shieldDefault>10</shieldDefault>
+						</shield>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleHeatsinkUpgrade">
+						<sink>
+							<compClass>SaveOurShip2.CompShipHeatSink</compClass>
+							<heatCapacity>200</heatCapacity>
+							<heatVent>0.25</heatVent>
+							<heatLoss>0.25</heatLoss>
+						</sink>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>ShieldsHeavy</li>
+					<li>ShieldsArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipShields</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>6</ComponentSpacer>
+					<Steel>120</Steel>
+					<Plasteel>40</Plasteel>
+					<Silver>40</Silver>
+				</ingredients>
+			</li>
+			<li>
+				<key>ShieldsHeavy</key>
+				<label>Heavy Shield Generator</label>
+				<description>Install an efficient shield generator and its dedicated heatsinks.\n&lt;color=#bb8f04&gt;+400 heatsink, -500 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/ShieldsHeavy</icon>
+				<work>15000</work>
+				<gridCoordinate>(4,7)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-500</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleShieldUpgrade">
+						<shield>
+							<compClass>SaveOurShip2.CompShipCombatShield</compClass>
+							<shieldMin>6</shieldMin>
+							<shieldMax>15</shieldMax>
+							<shieldDefault>10</shieldDefault>
+						</shield>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleHeatsinkUpgrade">
+						<sink>
+							<compClass>SaveOurShip2.CompShipHeatSink</compClass>
+							<heatCapacity>400</heatCapacity>
+							<heatVent>0.5</heatVent>
+							<heatLoss>0.5</heatLoss>
+						</sink>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>ShieldsBasic</li>
+					<li>ShieldsArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipShields</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>10</ComponentSpacer>
+					<Steel>180</Steel>
+					<Plasteel>80</Plasteel>
+					<Silver>100</Silver>
+				</ingredients>
+			</li>
+			<li>
+				<key>ShieldsArcho</key>
+				<label>Archotech Shield Generator</label>
+				<description>[LESS THAN GRAINS OF SAND\nMEASURED AGAINST THE COSMOS\nHIT SOMETHING ELSE, PLEASE]\n&lt;color=#bb8f04&gt;+500 heatsink, -100 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/ShieldsArcho</icon>
+				<work>20000</work>
+				<gridCoordinate>(7,7)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-100</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleShieldUpgrade">
+						<shield>
+							<compClass>SaveOurShip2.CompShipCombatShield</compClass>
+							<heatMultiplier>0.75</heatMultiplier>
+							<color>(0,255,0)</color>
+							<shieldMin>6</shieldMin>
+							<shieldMax>20</shieldMax>
+							<shieldDefault>10</shieldDefault>
+						</shield>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleHeatsinkUpgrade">
+						<sink>
+							<compClass>SaveOurShip2.CompShipHeatSink</compClass>
+							<heatCapacity>500</heatCapacity>
+							<heatVent>1</heatVent>
+							<heatLoss>1</heatLoss>
+						</sink>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>ShieldsBasic</li>
+					<li>ShieldsHeavy</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ArchotechHeatsink</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>12</ComponentSpacer>
+					<Gold>200</Gold>
+					<Silver>200</Silver>
+					<Plasteel>80</Plasteel>
+					<ArchotechExoticParticles>6</ArchotechExoticParticles>
+				</ingredients>
+			</li>
+			<li>
+				<key>CargoAutodoc</key>
+				<label>Onboard Auto-Doc</label>
+				<description>Install automated paramedic arms aboard the shuttle. These systems will quickly patch any bleeding wounds passengers may have suffered, but their tend quality is minimal.\n\n&lt;color=#bb8f04&gt;-250 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/CargoAutodoc</icon>
+				<work>8000</work>
+				<gridCoordinate>(1,10)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-250</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleAutodocUpgrade">
+						<props>
+							<tendQualityRange>0.1~0.4</tendQualityRange>
+						</props>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>CargoCloaking</li>
+					<li>CargoHeatsink</li>
+					<li>CargoArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>2</ComponentSpacer>
+					<MedicineIndustrial>10</MedicineIndustrial>
+					<Plasteel>10</Plasteel>
+				</ingredients>
+			</li>
+			<li>
+				<key>CargoCloaking</key>
+				<label>Cloaking Device</label>
+				<description>Install a miniaturized cloaking device to improve dodge chance in combat. Its heatsinks also slightly boost shield capacity.\n&lt;color=#bb8f04&gt;+25% ship combat dodge chance, +50 heatsink, -500 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/CargoCloaking</icon>
+				<work>12000</work>
+				<gridCoordinate>(4,10)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-500</value>
+								<type>Add</type>
+							</li>
+							<li>
+								<def>SoS2CombatDodgeChance</def>
+								<value>50</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleHeatsinkUpgrade">
+						<sink>
+							<compClass>SaveOurShip2.CompShipHeatSink</compClass>
+							<heatCapacity>50</heatCapacity>
+							<heatVent>0.06125</heatVent>
+							<heatLoss>0.06125</heatLoss>
+						</sink>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>CargoAutodoc</li>
+					<li>CargoHeatsink</li>
+					<li>CargoArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipCloaking</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>6</ComponentSpacer>
+					<Gold>20</Gold>
+					<Plasteel>60</Plasteel>
+					<Steel>60</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>CargoHeatsink</key>
+				<label>Auxiliary Heatsink</label>
+				<description>Install an auxiliary heatsink to support shields and weaponry.\n&lt;color=#bb8f04&gt;+200 heatsink, -100 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/CargoHeatsink</icon>
+				<work>8000</work>
+				<gridCoordinate>(7,10)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-100</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttleHeatsinkUpgrade">
+						<sink>
+							<compClass>SaveOurShip2.CompShipHeatSink</compClass>
+							<heatCapacity>200</heatCapacity>
+							<heatVent>0.25</heatVent>
+							<heatLoss>0.25</heatLoss>
+						</sink>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>CargoAutodoc</li>
+					<li>CargoCloaking</li>
+					<li>CargoArcho</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipHeatsink</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>2</ComponentSpacer>
+					<ComponentIndustrial>2</ComponentIndustrial>
+					<Steel>100</Steel>
+					<Plasteel>25</Plasteel>
+				</ingredients>
+			</li>
+			<li>
+				<key>CargoArcho</key>
+				<label>Archotech Slipspace</label>
+				<description>[BOX INSIDE A BOX\nREPEAT AD INFINITUM\nSERIES CONVERGES]\n&lt;color=#bb8f04&gt;+500 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/CargoArcho</icon>
+				<work>20000</work>
+				<gridCoordinate>(10,10)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>500</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>CargoAutodoc</li>
+					<li>CargoCloaking</li>
+					<li>CargoHeatsink</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ArchotechExotics</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>8</ComponentSpacer>
+					<Jade>200</Jade>
+					<ArchotechExoticParticles>6</ArchotechExoticParticles>
+				</ingredients>
+			</li>
+			<li>
+				<key>PassengersTwo</key>
+				<label>Passenger Module (2)</label>
+				<description>Convert a small area of the cargo bay to seating and life support, allowing the shuttle to carry two passengers.\n&lt;color=#bb8f04&gt;+2 passenger capacity, -200 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/PassengersTwo</icon>
+				<work>2000</work>
+				<gridCoordinate>(1,13)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-200</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttlePassengerUpgrade">
+						<passengers>2</passengers>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>PassengersFour</li>
+					<li>PassengersSix</li>
+					<li>PassengersEight</li>
+					<li>PassengersTen</li>
+					<li>PassengersTwelve</li>
+					<li>PassengersFourteen</li>
+					<li>PassengersSixteen</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentIndustrial>2</ComponentIndustrial>
+					<Steel>10</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>PassengersFour</key>
+				<label>Passenger Module (4)</label>
+				<description>Convert a small area of the cargo bay to seating and life support, allowing the shuttle to carry four passengers.\n&lt;color=#bb8f04&gt;+4 passenger capacity, -400 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/PassengersFour</icon>
+				<work>3000</work>
+				<gridCoordinate>(4,13)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-400</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttlePassengerUpgrade">
+						<passengers>4</passengers>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>PassengersTwo</li>
+					<li>PassengersSix</li>
+					<li>PassengersEight</li>
+					<li>PassengersTen</li>
+					<li>PassengersTwelve</li>
+					<li>PassengersFourteen</li>
+					<li>PassengersSixteen</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentIndustrial>4</ComponentIndustrial>
+					<Steel>20</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>PassengersSix</key>
+				<label>Passenger Module (6)</label>
+				<description>Convert a moderate area of the cargo bay to seating and life support, allowing the shuttle to carry six passengers.\n&lt;color=#bb8f04&gt;+6 passenger capacity, -600 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/PassengersSix</icon>
+				<work>4000</work>
+				<gridCoordinate>(7,13)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-600</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttlePassengerUpgrade">
+						<passengers>6</passengers>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>PassengersTwo</li>
+					<li>PassengersFour</li>
+					<li>PassengersEight</li>
+					<li>PassengersTen</li>
+					<li>PassengersTwelve</li>
+					<li>PassengersFourteen</li>
+					<li>PassengersSixteen</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentIndustrial>6</ComponentIndustrial>
+					<Steel>30</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>PassengersEight</key>
+				<label>Passenger Module (8)</label>
+				<description>Convert a moderate area of the cargo bay to seating and life support, allowing the shuttle to carry eight passengers.\n&lt;color=#bb8f04&gt;+8 passenger capacity, -800 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/PassengersEight</icon>
+				<work>5000</work>
+				<gridCoordinate>(10,13)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-800</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttlePassengerUpgrade">
+						<passengers>8</passengers>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>PassengersTwo</li>
+					<li>PassengersFour</li>
+					<li>PassengersSix</li>
+					<li>PassengersTen</li>
+					<li>PassengersTwelve</li>
+					<li>PassengersFourteen</li>
+					<li>PassengersSixteen</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentIndustrial>8</ComponentIndustrial>
+					<Steel>40</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>PassengersTen</key>
+				<label>Passenger Module (10)</label>
+				<description>Convert a significant area of the cargo bay to seating and life support, allowing the shuttle to carry ten passengers.\n&lt;color=#bb8f04&gt;+10 passenger capacity, -1000 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/PassengersTen</icon>
+				<work>6000</work>
+				<gridCoordinate>(13,13)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-1000</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttlePassengerUpgrade">
+						<passengers>10</passengers>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>PassengersTwo</li>
+					<li>PassengersFour</li>
+					<li>PassengersSix</li>
+					<li>PassengersEight</li>
+					<li>PassengersTwelve</li>
+					<li>PassengersFourteen</li>
+					<li>PassengersSixteen</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentIndustrial>10</ComponentIndustrial>
+					<Steel>50</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>PassengersTwelve</key>
+				<label>Passenger Module (12)</label>
+				<description>Convert a significant area of the cargo bay to seating and life support, allowing the shuttle to carry twelve passengers.\n&lt;color=#bb8f04&gt;+12 passenger capacity, -1200 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/PassengersTwelve</icon>
+				<work>7000</work>
+				<gridCoordinate>(16,13)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-1200</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttlePassengerUpgrade">
+						<passengers>12</passengers>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>PassengersTwo</li>
+					<li>PassengersFour</li>
+					<li>PassengersSix</li>
+					<li>PassengersEight</li>
+					<li>PassengersTen</li>
+					<li>PassengersFourteen</li>
+					<li>PassengersSixteen</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentIndustrial>12</ComponentIndustrial>
+					<Steel>60</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>PassengersFourteen</key>
+				<label>Passenger Module (14)</label>
+				<description>Convert an enormous area of the cargo bay to seating and life support, allowing the shuttle to carry fourteen passengers.\n&lt;color=#bb8f04&gt;+14 passenger capacity, -1400 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/PassengersFourteen</icon>
+				<work>8000</work>
+				<gridCoordinate>(19,13)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-1400</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttlePassengerUpgrade">
+						<passengers>14</passengers>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>PassengersTwo</li>
+					<li>PassengersFour</li>
+					<li>PassengersSix</li>
+					<li>PassengersEight</li>
+					<li>PassengersTen</li>
+					<li>PassengersTwelve</li>
+					<li>PassengersSixteen</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentIndustrial>14</ComponentIndustrial>
+					<Steel>70</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>PassengersSixteen</key>
+				<label>Passenger Module (16)</label>
+				<description>Convert an enormous area of the cargo bay to seating and life support, allowing the shuttle to carry sixteen passengers.\n&lt;color=#bb8f04&gt;+16 passenger capacity, -1600 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/PassengersSixteen</icon>
+				<work>9000</work>
+				<gridCoordinate>(22,13)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-1600</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.ShuttlePassengerUpgrade">
+						<passengers>16</passengers>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>PassengersTwo</li>
+					<li>PassengersFour</li>
+					<li>PassengersSix</li>
+					<li>PassengersEight</li>
+					<li>PassengersTen</li>
+					<li>PassengersTwelve</li>
+					<li>PassengersFourteen</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShuttleCargo</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentIndustrial>16</ComponentIndustrial>
+					<Steel>80</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretLaserA</key>
+				<label>Laser Turret (hardpoint A)</label>
+				<description>Install a laser turret atop the first hardpoint. A shuttle equipped with laser weaponry can fly interception and strafing missions in combat.\n&lt;color=#bb8f04&gt;-200 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretLaser</icon>
+				<work>12000</work>
+				<gridCoordinate>(1,16)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-200</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<useShuttleFuel>true</useShuttleFuel>
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttleLaser</turretDef>
+								
+								<gizmoLabel>Laser Turret A</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>laserTurretA</key>
+							</li>
+						</turrets>
+						<turretSlot>0</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretPlasmaA</li>
+					<li>TurretTorpedoA</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTurretLaser</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>6</ComponentSpacer>
+					<Plasteel>100</Plasteel>
+					<Steel>100</Steel>
+					<Uranium>20</Uranium>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretPlasmaA</key>
+				<label>Plasma Turret (hardpoint A)</label>
+				<description>Install a plasma turret atop the first hardpoint. A shuttle equipped with plasma weaponry can fly strafing missions in combat.\n&lt;color=#bb8f04&gt;-200 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretPlasma</icon>
+				<work>12000</work>
+				<gridCoordinate>(4,16)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-200</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<useShuttleFuel>true</useShuttleFuel>
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttlePlasma</turretDef>
+								
+								<gizmoLabel>Plasma Turret A</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>plasmaTurretA</key>
+							</li>
+						</turrets>
+						<turretSlot>0</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretLaserA</li>
+					<li>TurretTorpedoA</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTurretPlasma</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>6</ComponentSpacer>
+					<Plasteel>100</Plasteel>
+					<Steel>100</Steel>
+					<Uranium>20</Uranium>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretTorpedoA</key>
+				<label>Torpedo Tube (hardpoint A)</label>
+				<description>Install a torpedo tube atop the first hardpoint. A shuttle equipped with torpedoes can fly bombing missions in combat.\n&lt;color=#bb8f04&gt;-400 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretTorpedo</icon>
+				<work>12000</work>
+				<gridCoordinate>(7,16)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-400</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttleTorpedo</turretDef>
+								
+								<gizmoLabel>Torpedo Turret A</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>torpedoTurretA</key>
+							</li>
+						</turrets>
+						<turretSlot>0</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretLaserA</li>
+					<li>TurretPlasmaA</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTorpedoes</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>1</ComponentSpacer>
+					<Plasteel>10</Plasteel>
+					<Steel>20</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretLaserB</key>
+				<label>Laser Turret (hardpoint B)</label>
+				<description>Install a laser turret atop the second hardpoint. A shuttle equipped with laser weaponry can fly interception and strafing missions in combat.\n&lt;color=#bb8f04&gt;-200 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretLaser</icon>
+				<work>12000</work>
+				<gridCoordinate>(1,19)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-200</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<useShuttleFuel>true</useShuttleFuel>
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttleLaser</turretDef>
+								
+								<gizmoLabel>Laser Turret B</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>laserTurretB</key>
+							</li>
+						</turrets>
+						<turretSlot>1</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretPlasmaB</li>
+					<li>TurretTorpedoB</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTurretLaser</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>6</ComponentSpacer>
+					<Plasteel>100</Plasteel>
+					<Steel>100</Steel>
+					<Uranium>20</Uranium>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretPlasmaB</key>
+				<label>Plasma Turret (hardpoint B)</label>
+				<description>Install a plasma turret atop the second hardpoint. A shuttle equipped with plasma weaponry can fly strafing missions in combat.\n&lt;color=#bb8f04&gt;-200 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretPlasma</icon>
+				<work>12000</work>
+				<gridCoordinate>(4,19)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-200</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<useShuttleFuel>true</useShuttleFuel>
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttlePlasma</turretDef>
+								
+								<gizmoLabel>Plasma Turret B</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>plasmaTurretB</key>
+							</li>
+						</turrets>
+						<turretSlot>1</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretLaserB</li>
+					<li>TurretTorpedoB</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTurretPlasma</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>6</ComponentSpacer>
+					<Plasteel>100</Plasteel>
+					<Steel>100</Steel>
+					<Uranium>20</Uranium>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretTorpedoB</key>
+				<label>Torpedo Tube (hardpoint B)</label>
+				<description>Install a torpedo tube atop the second hardpoint. A shuttle equipped with torpedoes can fly bombing missions in combat.\n&lt;color=#bb8f04&gt;-400 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretTorpedo</icon>
+				<work>12000</work>
+				<gridCoordinate>(7,19</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-400</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttleTorpedo</turretDef>
+								
+								<gizmoLabel>Torpedo Turret B</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>torpedoTurretB</key>
+							</li>
+						</turrets>
+						<turretSlot>1</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretLaserB</li>
+					<li>TurretPlasmaB</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTorpedoes</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>1</ComponentSpacer>
+					<Plasteel>10</Plasteel>
+					<Steel>20</Steel>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretLaserC</key>
+				<label>Laser Turret (hardpoint C)</label>
+				<description>Install a laser turret atop the third hardpoint. A shuttle equipped with laser weaponry can fly interception and strafing missions in combat.\n&lt;color=#bb8f04&gt;-200 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretLaser</icon>
+				<work>12000</work>
+				<gridCoordinate>(1,22)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-200</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<useShuttleFuel>true</useShuttleFuel>
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttleLaser</turretDef>
+								
+								<gizmoLabel>Laser Turret C</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>laserTurretC</key>
+							</li>
+						</turrets>
+						<turretSlot>2</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretPlasmaC</li>
+					<li>TurretTorpedoC</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTurretLaser</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>6</ComponentSpacer>
+					<Plasteel>100</Plasteel>
+					<Steel>100</Steel>
+					<Uranium>20</Uranium>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretPlasmaC</key>
+				<label>Plasma Turret (hardpoint C)</label>
+				<description>Install a plasma turret atop the third hardpoint. A shuttle equipped with plasma weaponry can fly strafing missions in combat.\n&lt;color=#bb8f04&gt;-200 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretPlasma</icon>
+				<work>12000</work>
+				<gridCoordinate>(4,22)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-200</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<useShuttleFuel>true</useShuttleFuel>
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttlePlasma</turretDef>
+								
+								<gizmoLabel>Plasma Turret C</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>plasmaTurretC</key>
+							</li>
+						</turrets>
+						<turretSlot>2</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretLaserC</li>
+					<li>TurretTorpedoC</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTurretPlasma</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>6</ComponentSpacer>
+					<Plasteel>100</Plasteel>
+					<Steel>100</Steel>
+					<Uranium>20</Uranium>
+				</ingredients>
+			</li>
+			<li>
+				<key>TurretTorpedoC</key>
+				<label>Torpedo Tube (hardpoint C)</label>
+				<description>Install a torpedo tube atop the third hardpoint. A shuttle equipped with torpedoes can fly bombing missions in combat.\n&lt;color=#bb8f04&gt;-400 cargo capacity&lt;/color&gt;</description>
+				<icon>UI/ShuttleUpgrades/TurretTorpedo</icon>
+				<work>12000</work>
+				<gridCoordinate>(7,22)</gridCoordinate>
+				<upgrades>
+					<li Class="Vehicles.StatUpgrade">
+						<vehicleStats>
+							<li>
+								<def>CargoCapacity</def>
+								<value>-400</value>
+								<type>Add</type>
+							</li>
+						</vehicleStats>
+					</li>
+					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
+						<turrets>
+							<li>
+								<turretDef>SoS2ShuttleTorpedo</turretDef>
+								
+								<gizmoLabel>Torpedo Turret C</gizmoLabel>
+								<autoTargeting>false</autoTargeting>
+								
+								<key>torpedoTurretC</key>
+							</li>
+						</turrets>
+						<turretSlot>2</turretSlot>
+					</li>
+				</upgrades>
+				<replaces>
+					<li>TurretLaserC</li>
+					<li>TurretPlasmaC</li>
+				</replaces>
+				<researchPrerequisites>
+					<li>ShipTorpedoes</li>
+				</researchPrerequisites>
+				<ingredients>
+					<ComponentSpacer>1</ComponentSpacer>
+					<Plasteel>10</Plasteel>
+					<Steel>20</Steel>
+				</ingredients>
+			</li>
+		</nodes>
+	</Vehicles.UpgradeTreeDef>
+	
+	<Vehicles.VehicleTurretDef ParentName="VehicleTurretBase">
+		<defName>SoS2ShuttleLaser</defName>
+		<label>shuttle laser cannon</label>
+		<description>A shuttle turret which fires a powerful laser.</description>
+		
+		<turretType>Rotatable</turretType>
+		<shotSound>ShipCombatLaser</shotSound>
+		
+		<reloadTimer>25.0</reloadTimer>
+		
+		<projectile>Shuttle_Laser</projectile>
+		<warmUpTimer>1.5</warmUpTimer>
+		
+		<magazineCapacity>6</magazineCapacity>
+		
+		<autoSnapTargeting>false</autoSnapTargeting>
+		<rotationSpeed>2</rotationSpeed>
+		
+		<maxRange>1000</maxRange>
+		<minRange>10</minRange>
+		
+		<fireModes>
+			<li>
+				<shotsPerBurst>6</shotsPerBurst>
+				<ticksBetweenShots>4</ticksBetweenShots>
+				<ticksBetweenBursts>4</ticksBetweenBursts>
+				<spreadRadius>1</spreadRadius>
+				<label>Pulse</label>
+				<texPath>UI/Gizmos/FireRate_Single</texPath>
+			</li>
+		</fireModes>
+		
+		<graphicData>
+			<texPath>Things/Shuttle/TurretLaser</texPath>
+			<graphicClass>Vehicles.Graphic_Turret</graphicClass>
+			<shaderType>CutoutComplexPattern</shaderType>
+			<drawSize>(1, 1)</drawSize>
+		</graphicData>
+	</Vehicles.VehicleTurretDef>
+	
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Shuttle_Laser</defName>
+		<label>laser beam</label>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipLaser</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<projectile>
+			<damageDef>ShipLaserSmall</damageDef>
+			<damageAmountBase>5</damageAmountBase>
+			<speed>800</speed>
+			<explosionRadius>0</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Shuttle_Laser_Space</defName>
+		<label>laser beam</label>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipLaser</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+		</graphicData>
+		<projectile>
+			<damageDef>ShipLaserSmall</damageDef>
+			<damageAmountBase>20</damageAmountBase>
+			<speed>800</speed>
+			<explosionRadius>1</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	
+	<Vehicles.VehicleTurretDef ParentName="VehicleTurretBase">
+		<defName>SoS2ShuttlePlasma</defName>
+		<label>shuttle plasma cannon</label>
+		<description>A shuttle turret which fires a burst of superheated plasma.</description>
+		
+		<turretType>Rotatable</turretType>
+		<shotSound>ShipCombatPlasma</shotSound>
+		
+		<reloadTimer>25.0</reloadTimer>
+		
+		<projectile>Shuttle_Plasma</projectile>
+		<warmUpTimer>1.5</warmUpTimer>
+		
+		<autoSnapTargeting>false</autoSnapTargeting>
+		<rotationSpeed>2</rotationSpeed>
+		
+		<maxRange>1000</maxRange>
+		<minRange>10</minRange>
+		
+		<fireModes>
+			<li>
+				<shotsPerBurst>1</shotsPerBurst>
+				<spreadRadius>2</spreadRadius>
+				<label>Single Shot</label>
+				<texPath>UI/Gizmos/FireRate_Single</texPath>
+			</li>
+		</fireModes>
+		
+		<graphicData>
+			<texPath>Things/Shuttle/TurretPlasma</texPath>
+			<graphicClass>Vehicles.Graphic_Turret</graphicClass>
+			<shaderType>CutoutComplexPattern</shaderType>
+			<drawSize>(1, 1)</drawSize>
+		</graphicData>
+	</Vehicles.VehicleTurretDef>
+	
+	<ThingDef ParentName="BaseGrenadeProjectile">
+		<defName>Shuttle_Plasma</defName>
+		<label>plasma toroid</label>
+		<graphicData>
+			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shaderType>TransparentPostLight</shaderType>
+			<drawSize>(1,1)</drawSize>
+		</graphicData>
+		<projectile>
+			<damageDef>ShipPlasmaSmall</damageDef>
+			<damageAmountBase>25</damageAmountBase>
+			<speed>160</speed>
+			<explosionRadius>1.2</explosionRadius>
+			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
+		</projectile>
+		<altitudeLayer>MetaOverlays</altitudeLayer>
+		<seeThroughFog>true</seeThroughFog>
+	</ThingDef>
+	
+	<Vehicles.VehicleTurretDef ParentName="VehicleTurretBase">
+		<defName>SoS2ShuttleTorpedo</defName>
+		<label>shuttle torpedo tube</label>
+		<description>A shuttle-mounted torpedo tube, capable of devastating bombing runs against starships. During ground operations, it can also be used as direct-fire artillery.</description>
+		
+		<turretType>Rotatable</turretType>
+		<shotSound>Mortar_LaunchA</shotSound>
+		
+		<reloadTimer>20.0</reloadTimer>
+		
+		<warmUpTimer>4</warmUpTimer>
+		
+		<autoSnapTargeting>false</autoSnapTargeting>
+		<rotationSpeed>1.35</rotationSpeed>
+		
+		<minRange>30</minRange>
+		
+		<recoil>
+			<distanceTotal>0.26</distanceTotal>
+			<distancePerTick>0.065</distancePerTick>
+			<speedMultiplierPostRecoil>0.15</speedMultiplierPostRecoil>
+		</recoil>
+		
+		<fireModes>
+			<li>
+				<shotsPerBurst>1</shotsPerBurst>
+				<spreadRadius>4.9</spreadRadius>
+				<ticksBetweenBursts>1500</ticksBetweenBursts>
+				<label>Single</label>
+				<texPath>UI/Gizmos/FireRate_Single</texPath>
+			</li>
+		</fireModes>
+		
+		<gizmoIconTexPath>Things/Shuttle/TurretTorpedo</gizmoIconTexPath>
+		
+		<graphicData>
+			<texPath>Things/Shuttle/TurretTorpedo</texPath>
+			<graphicClass>Vehicles.Graphic_Turret</graphicClass>
+			<shaderType>Cutout</shaderType>
+			<drawSize>(1, 1)</drawSize>
+		</graphicData>
+		
+		<graphics>
+			<li>
+				<recoil>
+					<distanceTotal>0.15</distanceTotal>
+					<distancePerTick>0.03</distancePerTick>
+					<speedMultiplierPostRecoil>0.15</speedMultiplierPostRecoil>
+				</recoil>
+				<graphicData>
+					<texPath>Things/Shuttle/TurretTorpedo</texPath>
+					<graphicClass>Vehicles.Graphic_Turret</graphicClass>
+					<shaderType>CutoutComplexPattern</shaderType>
+					<drawSize>(1, 1)</drawSize>
+					<layer>1</layer>
+				</graphicData>
+			</li>
+		</graphics>
+		
+		<ammunition>
+			<categories>
+				<li>SpaceTorpedoes</li>
+			</categories>
+		</ammunition>
+	</Vehicles.VehicleTurretDef>
+</Defs>

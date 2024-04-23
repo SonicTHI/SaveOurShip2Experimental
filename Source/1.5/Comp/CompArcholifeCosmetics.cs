@@ -72,5 +72,19 @@ namespace SaveOurShip2
 			pawn.Drawer.renderer.graphics.nakedGraphic.drawSize = drawSize;
 			*/
 		}
+
+		public class FloatMenuWithCallback : FloatMenu
+		{
+			public static int whichOptionWasChosen;
+
+			public FloatMenuWithCallback(List<FloatMenuOption> options) : base(options)
+			{
+			}
+
+			public override void PreOptionChosen(FloatMenuOption opt)
+			{
+				whichOptionWasChosen = this.options.IndexOf(opt);
+			}
+		}
 	}
 }

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace SaveOurShip2
 {
-	[StaticConstructorOnStartup]
+	/*[StaticConstructorOnStartup]
 	public class CompShuttleLaunchable : ThingComp
 	{
 		private CompTransporter cachedCompTransporter;
@@ -119,7 +119,7 @@ namespace SaveOurShip2
 				List<CompTransporter> transportersInGroup = this.TransportersInGroup;
 				for (int i = 0; i < transportersInGroup.Count; i++)
 				{
-					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || (t.TryGetComp<CompShipSalvageBay>() != null && transportersInGroup.All(tr => tr.parent.def == ResourceBank.ThingDefOf.PersonalShuttle)))) //td change to proper check per shuttle pos and type
+					if (transportersInGroup[i].parent.Position.Roofed(this.parent.Map) && !transportersInGroup[i].parent.Position.GetThingList(transportersInGroup[i].parent.Map).Any(t => t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || (t.TryGetComp<CompShipSalvageBay>() != null && transportersInGroup.All(tr => tr.parent.def == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)))) //td change to proper check per shuttle pos and type
 					{
 						return true;
 					}
@@ -354,7 +354,7 @@ namespace SaveOurShip2
 					{
 						foreach (CompTransporter t in this.TransportersInGroup)
 						{
-							if (t.parent.def != ResourceBank.ThingDefOf.PersonalShuttle)
+							if (t.parent.def != ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
 							{
 								Messages.Message(TranslatorFormattedStringExtensions.Translate("MessageShuttleOnlyPods"), MessageTypeDefOf.RejectInput);
 								return false;
@@ -803,6 +803,6 @@ namespace SaveOurShip2
 				}
 			}
 		}
-	}
+	}*/
 }
 

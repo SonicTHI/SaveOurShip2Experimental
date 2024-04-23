@@ -271,7 +271,7 @@
 			<li>
 				<key>h</key>
 				<value>
-					<shapeOrDef>PersonalShuttle</shapeOrDef>
+					<shapeOrDef>SoS2_Shuttle_Personal</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -523,7 +523,7 @@
 			<li>
 				<key></key>
 				<value>
-					<shapeOrDef>CargoShuttle</shapeOrDef>
+					<shapeOrDef>SoS2_Shuttle</shapeOrDef>
 				</value>
 			</li>
 			<li>
@@ -627,7 +627,7 @@
 			<li>
 				<key>¢</key>
 				<value>
-					<shapeOrDef>DropshipShuttle</shapeOrDef>
+					<shapeOrDef>SoS2_Shuttle_Superheavy</shapeOrDef>
 				</value>
 			</li>
 			<li>

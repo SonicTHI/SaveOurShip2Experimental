@@ -39,7 +39,7 @@ namespace SaveOurShip2
 					action = delegate
 					{
 						CameraJumper.TryShowWorld();
-						Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment);
+						Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(ChoseWorldTarget), true, CompCryptoLaunchable.TargeterMouseAttachment);
 					}
 				});
 				if (observedMap != null)

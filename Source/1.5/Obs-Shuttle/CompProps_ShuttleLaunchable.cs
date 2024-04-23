@@ -2,7 +2,7 @@
 using Verse;
 
 namespace SaveOurShip2
-{
+{/*
 	public class CompProps_ShuttleLaunchable : CompProperties
 	{
 		public float fuelPerTile;
@@ -12,5 +12,5 @@ namespace SaveOurShip2
 		{
 			this.compClass = typeof(CompShuttleLaunchable);
 		}
-	}
+	}*/
 }

@@ -20,13 +20,16 @@ namespace SaveOurShip2
 				obj.destination = hitThing.DrawPos;
 			else
 				obj.destination = this.DrawPos;
-			obj.color = heat.Props.laserColor;
+			if (heat != null)
+				obj.color = heat.Props.laserColor;
+			else
+				obj.color = Color.red;
 			if(this.weaponDamageMultiplier>1.0f)
 				obj.large = true;
 			obj.Attach(hitThing);
 			if (hitThing != null)
 				GenSpawn.Spawn(obj, hitThing.Position, hitThing.Map, 0);
-			else if(this.Map!=null)
+			else if (this.Map != null)
 				GenSpawn.Spawn(obj, this.Position, this.Map, 0);
 		}
 

@@ -972,16 +972,16 @@ namespace SaveOurShip2
 		}
 		public bool IncomingPtDefTargetsInRange() //PD targets are in range if they are on target map and in PD range
 		{
-			if (mapComp.TargetMapComp.TorpsInRange.Any())
+			if (mapComp.TargetMapComp.TorpsInRange.Any() || mapComp.TargetMapComp.ShuttlesInRange.Where(shuttle=>shuttle.Faction!=this.Faction).Any())
 				return true;
-			foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
+			/*foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
 			{
 				float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
 				if (obj.destinationTile == Map.Parent.Tile && obj.Faction != mapComp.ShipFaction && rng > 0.75)
 				{
 					return true;
 				}
-			}
+			}*/
 			return false;
 		}
 		public void SpinalRecalc()

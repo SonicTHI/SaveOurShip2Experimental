@@ -4,11 +4,15 @@
 	<ResearchTabDef>
 		<defName>ResearchTabShip</defName>
 		<label>Ship</label>
+		<generalTitle>[Save Our Ship 2] Ship research projects</generalTitle>
+		<generalDescription>Unlock starship components and other space-based technologies.</generalDescription>
 	</ResearchTabDef>
 	
 	<ResearchTabDef>
 		<defName>ResearchTabArchotech</defName>
 		<label>Archotech</label>
+		<generalTitle>[Save Our Ship 2] Archotech research projects</generalTitle>
+		<generalDescription>[ANY SUFFICIENTLY ADVANCED TECHNOLOGY IS INDISTINGUISHABLE FROM ME]</generalDescription>
 	</ResearchTabDef>
 
 </Defs>

@@ -38,6 +38,17 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>1</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship nuclear reactor</li>
+
+			<li>subject_story->constructed a new reactor for a colony ship, but never lived to see it lift off</li>
+			<li>subject_story->defended the ship whilst the reactor span up, against raiders desperate to get off-world</li>
+			<li>subject_story->used a starship reactor as the back-up power for a genebank buried beneath the planet's ice-cap</li>
+
+			<li>subject_gerund->constructing starship reactors</li>
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipEngine</defName>
@@ -52,6 +63,19 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>0</researchViewX>
 		<researchViewY>0</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->rocket propulsion</li>
+
+			<li>subject_story->escaped a rimworld by teaching a local tribe to refine chemfuel</li>
+			<li>subject_story->designed missile engines for a midworld government</li>
+			<li>subject_story->pioneered the post-apocalyptic planet Ishwalla's return to spaceflight</li>
+
+			<li>subject_gerund->maintaining optimal fuel/oxidizer ratios</li>
+			<li>subject_gerund->optimizing nozzle geometry</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>SoSJTDrive</defName>
@@ -65,6 +89,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>6</researchViewX>
 		<researchViewY>0</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->Johnson-Tanaka theory</li>
+			<li>subject->exotic momentum transfer</li>
+
+			<li>subject_story->lectured in the university on Johnson, Tanaka and quantum-scale effects</li>
+			<li>subject_story->constructed a Johnson-Tanaka drive from first principles for a thesis</li>
+			<li>subject_story->maintained a Johnson-Tanaka drive for two decades, as the ship traveled between the stars</li>
+
+			<li>subject_gerund->constructing starship drives</li>
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipSalvageBayGlitter</defName>
@@ -79,6 +115,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>7</researchViewX>
 		<researchViewY>0</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->Johnson-Tanaka theory</li>
+			<li>subject->exotic momentum transfer</li>
+
+			<li>subject_story->pirated interplanetary shipping, capturing small spacecraft with an asteroid-mounted tractor beam</li>
+			<li>subject_story->salvaged the wreckage of a spacefaring archotech which had apparently committed suicide</li>
+			<li>subject_story->jury-rigged a warship's drive to pull torpedoes away from vulnerable civilian craft</li>
+
+			<li>subject_gerund->salvaging starship wrecks</li>
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<!-- bridge, sensor -->
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
@@ -94,6 +142,17 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>0</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship navigation</li>
+
+			<li>subject_story->survived one starship landing, and decided that the next one should be intentional</li>
+			<li>subject_story->manually overrode the ship's targeting computer, destroying an enemy megastructure with a single well-placed torpedo</li>
+			<li>subject_story->carefully plotted a course through the nigh-impenetrable debris fields of the planet Ishwalla</li>
+
+			<li>subject_gerund->manually piloting starships</li>
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipComputerCore</defName>
@@ -108,6 +167,21 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>0</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->persona core incentivization</li>
+			<li>subject->starship AI sanity maintenance</li>
+
+			<li>subject_story->regained control of an aberrant ship's core with careful reconditioning</li>
+			<li>subject_story->set up colony-management simulations to occupy the ship's core during the many years of interstellar travel</li>
+			<li>subject_story->kept a ship's core company during a 'short' interstellar trip, learning much about cores in the process</li>
+
+			<li>subject_gerund->incentivizing persona cores</li>
+			<li>subject_gerund->maintaining starship AI sanity</li>
+			<li>subject_gerund->constructing reward-signal systems</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef>
 		<defName>ShipAvatarCasket</defName>
@@ -125,6 +199,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>3</researchViewX>
 		<researchViewY>0</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->biomimetic mechanite swarms</li>
+			<li>subject->neuro-psychic substrate reconstruction</li>
+
+			<li>subject_story->served aboard the KSS Apotheosis during Dr. Yao's initial formgel experiments</li>
+			<li>subject_story->operated a glitterworld's afterlife vault, where the dead could live again as formgels</li>
+			<li>subject_story->spent centuries as a formgel following a fatal accident, and sought to understand this new existence</li>
+
+			<li>subject_gerund->reviving the dead as formgels</li>
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipSensorCluster</defName>
@@ -140,6 +226,19 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>0</researchViewX>
 		<researchViewY>2</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->interstellar navigation</li>
+
+			<li>subject_story->used prototype starship sensors to detect an incoming extinction-level asteroid and evacuate the planet</li>
+			<li>subject_story->was employed as navigator and cook on a Glitterworld star-yacht</li>
+			<li>subject_story->refined the design of long-range sensors, improving their utility</li>
+
+			<li>subject_gerund->navigating interstellar space</li>
+			<li>subject_gerund->constructing starship sensors</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipSensorClusterAdv</defName>
@@ -153,6 +252,19 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>2</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship tactical intelligence</li>
+
+			<li>subject_story->used cutting-edge sensors to support boarding actions, directing marines to cut vulnerable thermal conduits</li>
+			<li>subject_story->became obsessed with peering through the hulls of mysterious archotech drones</li>
+			<li>subject_story->captained a small fleet of pirate hunters, using advanced sensors to avoid firing on compartments where the pirates held prisoners</li>
+
+			<li>subject_gerund->scanning enemy ships</li>
+			<li>subject_gerund->constructing starship sensors</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<!-- ls, eva, crypto -->
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
@@ -167,6 +279,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>0</researchViewX>
 		<researchViewY>1.5</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->ship life support</li>
+
+			<li>subject_story->saved an early generation ship from disaster by improving the genetics of oxygen-producing algae</li>
+			<li>subject_story->refused to travel on starships after learning that their drinking water was recycled from sweat and sewage</li>
+			<li>subject_story->served under a notoriously stingy starship captain, and once had to jury-rig a CO2 scrubber from an old sock</li>
+
+			<li>subject_gerund->maintaining livable conditions in a sealed environment</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipSpaceSuits</defName>
@@ -180,6 +304,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>1.5</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->EVA suits</li>
+
+			<li>subject_story->discovered the hard way how human eyeballs react to vacuum</li>
+			<li>subject_story->led a clan of nomadic asteroid miners who revered their vac-suits as ancestral treasures</li>
+			<li>subject_story->organized the evacuation of the crippled passenger liner KSS Calypso</li>
+
+			<li>subject_gerund->keeping humans alive in vacuum</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipSpaceSuitsHeavy</defName>
@@ -194,6 +330,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>1.5</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->EVA power armor</li>
+
+			<li>subject_story->served as quartermaster of an Imperial patrol ship during the fall of Sophiamunda</li>
+			<li>subject_story->was the lone survivor of a boarding action against a mechanoid battlesphere, thanks to special armor modifications</li>
+			<li>subject_story->defeated the pirate lord Mboko in single combat after audaciously boarding his flagship</li>
+
+			<li>subject_gerund->optimizing power armor for vacuum</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>Crittersleep</defName>
@@ -208,6 +356,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>4</researchViewX>
 		<researchViewY>0</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->small animal cryptosleep</li>
+
+			<li>subject_story->researched the psychological effects of separation from one's pets</li>
+			<li>subject_story->refused to leave the cats behind while evacuating a doomed colony</li>
+			<li>subject_story->miniaturized the biomonitors used by large-scale cryptovaults</li>
+
+			<li>subject_gerund->keeping many small animals alive within one device</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipCryptosleep</defName>
@@ -222,6 +382,17 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>5</researchViewX>
 		<researchViewY>0</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship-grade cryptosleep caskets</li>
+
+			<li>subject_story->replaced the failed cryptosleep caskets on the CMC Celeste, so the old generation ship could be used again</li>
+			<li>subject_story->was accidentally ejected in deep space, surviving in a self-designed casket for two months</li>
+			<li>subject_story->lectured on the differences between planetary- and starship-grade equipment</li>
+
+			<li>subject_gerund->constructing hardened cryptosleep caskets</li>
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipCapacitor</defName>
@@ -236,6 +407,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>0</researchViewX>
 		<researchViewY>2.75</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->advanced energy storage</li>
+
+			<li>subject_story->grew tired of watching batteries explode seemingly at random</li>
+			<li>subject_story->adapted a fuel-processing platform to run on solar power after the failure of its primary reactor</li>
+			<li>subject_story->became obsessed with safe power delivery to starship weaponry following a tragic conduit explosion</li>
+
+			<li>subject_gerund->powering a starship</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipSalvageBay</defName>
@@ -249,6 +432,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>0</researchViewX>
 		<researchViewY>1</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->spaceborne salvage operations</li>
+
+			<li>subject_story->operated a legally-gray vulture fleet, picking the debris of space battles</li>
+			<li>subject_story->welded several captured ships into a single ungainly hulk</li>
+			<li>subject_story->served under an AI captain who took a strange pleasure in "eating" defeating ships</li>
+
+			<li>subject_gerund->salvaging shipwrecks</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>HullFoam</defName>
@@ -262,6 +457,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>0</researchViewX>
 		<researchViewY>3.25</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->emergency ship repair</li>
+
+			<li>subject_story->held off a pirate boarding party by blocking corridors with hullfoam</li>
+			<li>subject_story->saved an early generation ship by repairing structural damage suffered during its deceleration burn</li>
+			<li>subject_story->after suffering radiation exposure, became obsessed with cocooning the ship in protective layers</li>
+
+			<li>subject_gerund->patching holes in ship hull</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipShields</defName>
@@ -276,6 +483,17 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>3.25</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship shielding</li>
+
+			<li>subject_story->helped the post-apocalyptic planet Ishwalla return to spaceflight, designing a shield which could survive its orbital debris rings</li>
+			<li>subject_story->tuned a warship's shields to protect a planetside settlement from solar flares</li>
+			<li>subject_story->wrote an influential thesis on using shields to red-shift incoming laser beams</li>
+
+			<li>subject_gerund->constructing starship shields</li>
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipCloaking</defName>
@@ -289,6 +507,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>3.25</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->stealth technology</li>
+
+			<li>subject_story->helped thousands of refugees slip past an Imperial blockade</li>
+			<li>subject_story->ran intelligence-gathering operations from a cloaked dropship</li>
+			<li>subject_story->grew tired of constant pirate attacks in the orbit of a rimworld</li>
+
+			<li>subject_gerund->hiding starships from detection</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<!-- shuttles -->
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
@@ -304,11 +534,23 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>0.5</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->docking in space</li>
+
+			<li>subject_story->suffered decompression injuries due to a malfunctioning plasma barrier</li>
+			<li>subject_story->worked in "cargo acquisition" for an orbital slave trader</li>
+			<li>subject_story->squandered vast amounts of wealth on a fleet of racing shuttles</li>
+
+			<li>subject_gerund->landing shuttles aboard a starship</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef>
 		<defName>ShuttlePersonal</defName>
 		<label>Personal Shuttle</label>
-		<description>Construct personal shuttles, which act much like reusable transport pods.</description>
+		<description>Construct simple personal shuttles capable of reaching orbit.</description>
 		<baseCost>1000</baseCost>
 		<techLevel>Industrial</techLevel>
 		<prerequisites>
@@ -319,11 +561,23 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>0.5</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->simple personal shuttles</li>
+
+			<li>subject_story->operated a courier service, ferrying VIPs and precious cargo into orbit</li>
+			<li>subject_story->wrote this book while starving alone in orbit, following a miscalculated launch trajectory</li>
+			<li>subject_story->belonged to a fringe ideologion which shunned nuclear technology, preferring simpler chemical rockets</li>
+
+			<li>subject_gerund->constructing basic shuttlecraft</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef>
 		<defName>ShuttleCargo</defName>
-		<label>Cargo Shuttle</label>
-		<description>Miniaturized ship components allow cargo shuttles to carry much more weight than simpler models.</description>
+		<label>Shuttle</label>
+		<description>Construct modular shuttlecraft based on miniaturized ship technology. These shuttles can be upgraded once the appropriate projects have been researched.</description>
 		<baseCost>1500</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
@@ -338,11 +592,23 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>1</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->modular shuttlecraft</li>
+
+			<li>subject_story->served the Imperial navy as a shuttle mechanic, optimizing the standard chassis for specific tasks</li>
+			<li>subject_story->flew interception missions aboard a converted cargo shuttle</li>
+			<li>subject_story->escaped pirate captivity by jury-rigging a nuclear thermal rocket engine</li>
+
+			<li>subject_gerund->constructing modular shuttlecraft</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef>
 		<defName>ShuttleHeavy</defName>
-		<label>Heavy Cargo Shuttle</label>
-		<description>Quickly transport a caravan's worth of goods with this advanced cargo shuttle.</description>
+		<label>Heavy Shuttle</label>
+		<description>Design a larger shuttle chassis capable of hauling more cargo, as well as mounting a turret.</description>
 		<baseCost>2000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
@@ -355,11 +621,23 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>3</researchViewX>
 		<researchViewY>1</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->heavy shuttlecraft</li>
+
+			<li>subject_story->evacuated colonists from the caveworld Grodol IX when its crust became unstable</li>
+			<li>subject_story->flew bombing missions against enemy starships</li>
+			<li>subject_story->claimed that an archotech whispered in a dream "just make it bigger."</li>
+
+			<li>subject_gerund->constructing heavy shuttlecraft</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef>
 		<defName>ShuttleDropship</defName>
-		<label>Superheavy Dropship</label>
-		<description>Deliver tonnes of goods, or an entire battalion of marines, with this superheavy shuttle.</description>
+		<label>Superheavy Shuttle</label>
+		<description>Build the largest shuttlecraft in common use, usually outfitted as heavy fighters or marine dropships.</description>
 		<baseCost>4000</baseCost>
 		<techLevel>Spacer</techLevel>
 		<prerequisites>
@@ -372,6 +650,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>4</researchViewX>
 		<researchViewY>1</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->superheavy shuttlecraft</li>
+
+			<li>subject_story->witnessed an AI persona seek self-determination by escaping into space</li>
+			<li>subject_story->led the boarding operation which crippled the Imperial flagship during the fall of Sophiamunda</li>
+			<li>subject_story->decided that existing shuttlecraft simply weren't large enough</li>
+
+			<li>subject_gerund->constructing superheavy shuttlecraft</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<!-- weapons, sinks -->
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
@@ -386,6 +676,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>3.75</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship autocannons</li>
+
+			<li>subject_story->saw energy weapons as needlessly complex, preferring the impact of metal on metal</li>
+			<li>subject_story->jury-rigged civilian spacecraft for a desperate assault on a pirate fortress</li>
+			<li>subject_story->accidentally ordered more uranium than the ship's reactor could burn, and sought a use for it</li>
+
+			<li>subject_gerund->constructing starship autocannons</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipTurretLaser</defName>
@@ -399,6 +701,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>4.25</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship lasers</li>
+
+			<li>subject_story->sacrificed one eye to an archotech in exchange for the secrets of laser weaponry (later losing the other eye to laser backscatter)</li>
+			<li>subject_story->used a modified mining laser to breach the armor of a mechanoid assault craft</li>
+			<li>subject_story->was shocked and disgusted to learn that lasers do not go "pew pew" in real life</li>
+
+			<li>subject_gerund->constructing starship lasers</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipTurretPlasma</defName>
@@ -412,6 +726,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>4.75</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship plasma cannons</li>
+
+			<li>subject_story->destroyed an enemy boarding shuttle by venting plasma from a warship's fusion reactor</li>
+			<li>subject_story->went mad while attempting to prove why high-temperature plasma shouldn't be green</li>
+			<li>subject_story->claimed to have learned this technology from an intelligent star whose internal plasma filaments function as a crude nervous system</li>
+
+			<li>subject_gerund->constructing starship plasma cannons</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipTurretKinetic</defName>
@@ -425,6 +751,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>5.25</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship railguns</li>
+
+			<li>subject_story->was an unwilling participant in a game played between archotechs, who competed to target a human spacecraft from the furthest possible distance</li>
+			<li>subject_story->took symbolic vengeance on the Sophian navy by accelerating its victims' ashes to relativistic speeds</li>
+			<li>subject_story->operated the mass driver of a lunar mining facility, launching containers of helium-3 into precise orbits</li>
+
+			<li>subject_gerund->constructing starship railguns</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipHeatsink</defName>
@@ -438,6 +776,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>1</researchViewX>
 		<researchViewY>2.75</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->starship heatsinks</li>
+
+			<li>subject_story->suffered disfiguring burns after a coolant overpressure event</li>
+			<li>subject_story->wore down an enemy ship by virtue of superior heat capacity and strategic venting</li>
+			<li>subject_story->led a mutiny of the ship's gremlin labor caste by strategically disabling heatsinks</li>
+
+			<li>subject_gerund->storing heat aboard a starship</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipHeatManifold</defName>
@@ -451,6 +801,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>2.75</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->emergency purge ports</li>
+
+			<li>subject_story->served aboard a ship whose AI was obsessed with contingency planning</li>
+			<li>subject_story->belonged to an ideoligion which eschewed material wealth as the temptation of Mammon</li>
+			<li>subject_story->took the Ishwallan naval motto of "Victory At Any Cost" a bit too literally</li>
+
+			<li>subject_gerund->quickly venting a starship's heat</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipTurretMedium</defName>
@@ -469,6 +831,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>4.25</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->cruiser armaments</li>
+
+			<li>subject_story->was taken captive during an arms race between rival planets, forced to design starship weaponry for the opposing side</li>
+			<li>subject_story->oversaw the retrofit of an interstellar passenger liner into a vessel of war</li>
+			<li>subject_story->led a slave rebellion during the fall of Sophiamunda, jury-rigging weapons large enough to threaten Imperial warships</li>
+
+			<li>subject_gerund->constructing cruiser armaments</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipTurretLarge</defName>
@@ -482,6 +856,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>3</researchViewX>
 		<researchViewY>4.25</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->spinal weaponry</li>
+
+			<li>subject_story->fought in the last stand of Old Ishwalla, desperately firing asteroid-based weapons against an endless horde of mechanoid dropships</li>
+			<li>subject_story->served aboard the KSS Judgement, an archotech-built starship whose primary gun was rumored to be kilometers long</li>
+			<li>subject_story->followed an eccentric ideoligion whose tenets limited starships to only carry a single weapon</li>
+
+			<li>subject_gerund->constructing spinal weaponry</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipTorpedoes</defName>
@@ -496,6 +882,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>5.25</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->space torpedoes</li>
+
+			<li>subject_story->took control of a glitterworld antimatter-production facility, diverting its output to manufacture antigrain torpedoes</li>
+			<li>subject_story->was rumored to have died by riding a space torpedo while waving a cowboy hat</li>
+			<li>subject_story->developed laser-reflective coatings for space torpedoes, improving their ability to survive point defenses</li>
+
+			<li>subject_gerund->launching space torpedoes</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<!-- holodeck -->
 	<ResearchProjectDef>
@@ -508,6 +906,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>2</researchViewX>
 		<researchViewY>2</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->simple holodecks</li>
+
+			<li>subject_story->sought escape from a life of alternating boredom and dread on the post-apocalyptic world Ishwalla</li>
+			<li>subject_story->claimed that holodeck simulations are "basically a joywire with extra steps" but chose to construct them anyway</li>
+			<li>subject_story->wanted to engage in physically-impossible acts best left to the reader's imagination</li>
+
+			<li>subject_gerund->improvising simple holodecks</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef>
 		<defName>Holodeck_Standard</defName>
@@ -526,6 +936,18 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>3</researchViewX>
 		<researchViewY>2</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->advanced holodecks</li>
+
+			<li>subject_story->designed training simulations for surgeons and engineers</li>
+			<li>subject_story->claimed that holodeck simulations are a plot by AI to keep humans in a docile state of derealization</li>
+			<li>subject_story->oversaw an insidious plot to reduce a planet's population by diverting sexual activity towards virtual partners</li>
+
+			<li>subject_gerund->constructing holodecks</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 	<ResearchProjectDef>
 		<defName>Holodeck_AI</defName>
@@ -544,5 +966,17 @@
 		<tab>ResearchTabShip</tab>
 		<researchViewX>4</researchViewX>
 		<researchViewY>2</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->sapient holodecks</li>
+
+			<li>subject_story->claimed that the highest form of art is creating a world that the user can fully inhabit</li>
+			<li>subject_story->warned that a holodeck's machine person must monitor its users for addictive tendencies</li>
+			<li>subject_story->led the so-called Tartarus Project, intended to keep criminals in an endlessly creative state of suffering</li>
+
+			<li>subject_gerund->coercing AI for entertainment purposes</li>
+
+		  </rulesStrings>
+		</generalRules>
 	</ResearchProjectDef>
 </Defs>

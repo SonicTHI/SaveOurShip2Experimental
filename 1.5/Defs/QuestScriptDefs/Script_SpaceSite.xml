@@ -12,7 +12,7 @@
     </questNameRules>
     <questDescriptionRules>
       <rulesStrings>
-        <li>questDescription->Using your ship's sensors, [worker_definite] has found [site_label] in a nearby orbit.\n\nUnfortunately, the orbit is decaying and will lead to atmospheric re-entry in [timeoutTicks_duration]. Reaching the site will take [fuelCost]% of a shuttle's maximum fuel - be sure to bring enough for a return trip!\n\n[allSitePartsDescriptionsExceptFirst]</li>
+        <li>questDescription->Using your ship's sensors, [worker_definite] has found [site_label] in a nearby orbit.\n\nUnfortunately, the orbit is decaying and will lead to atmospheric re-entry in [timeoutTicks_duration].\n\n[allSitePartsDescriptionsExceptFirst]</li>
       </rulesStrings>
     </questDescriptionRules>
     <root Class="QuestNode_Sequence">

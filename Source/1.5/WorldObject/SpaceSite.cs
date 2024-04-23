@@ -20,8 +20,6 @@ namespace SaveOurShip2
 		public static Vector3 orbitVec = new Vector3(0, 0, 1);
 		public static Vector3 orbitVecPolar = new Vector3(0, 1, 0);
 
-		public float fuelCost = 0;
-
 		public override Vector3 DrawPos
 		{
 			get
@@ -47,7 +45,6 @@ namespace SaveOurShip2
 			Scribe_Values.Look<float>(ref theta, "theta", 0, false);
 			Scribe_Values.Look<float>(ref phi, "phi", 0, false);
 			Scribe_Values.Look<float>(ref radius, "radius", 0f, false);
-			Scribe_Values.Look<float>(ref fuelCost, "fuelCost", 0f, false);
 		}
 
 		public override void Print(LayerSubMesh subMesh)
@@ -66,13 +63,11 @@ namespace SaveOurShip2
 			return base.ShouldRemoveMapNow(out alsoRemoveWorldObject);
 		}
 
-		public override string GetInspectString()
-		{
-			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.Append(base.GetInspectString());
-			stringBuilder.AppendLine();
-			stringBuilder.Append(TranslatorFormattedStringExtensions.Translate("SoS.SpaceSiteFuelCost", this.fuelCost));
-			return stringBuilder.ToString();
+        public override void PostMapGenerate()
+        {
+            base.PostMapGenerate();
+			FloodFillerFog.FloodUnfog(IntVec3.Zero, Map);
+
 		}
-	}
+    }
 }

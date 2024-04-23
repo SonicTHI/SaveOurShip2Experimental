@@ -15,6 +15,9 @@ using Verse.AI.Group;
 using RimWorld.QuestGen;
 using System.Collections;
 using System.Threading.Tasks;
+using Vehicles;
+using SaveOurShip2.Vehicles;
+using SmashTools;
 
 namespace SaveOurShip2
 {
@@ -201,7 +204,19 @@ namespace SaveOurShip2
 						new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.projectileEnemy.MatSingle.mainTexture);
 				}
 			}
-			foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
+			foreach (ShipMapComp.ShuttleMissionData mission in playerMapComp.ShuttleMissions)
+            {
+				Verse.Widgets.DrawTexturePart(
+						new Rect(screenHalf - 10 + mission.rangeTraveled, baseY - 12, 12, 12),
+						new Rect(0, 0, mission.mission == ShipMapComp.ShuttleMission.RETURN ? -1 : 1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
+			}
+			foreach (ShipMapComp.ShuttleMissionData mission in enemyMapComp.ShuttleMissions)
+			{
+				Verse.Widgets.DrawTexturePart(
+						new Rect(screenHalf - 10 - mission.rangeTraveled + range, baseY - 24, 12, 12),
+						new Rect(0, 0, mission.mission == ShipMapComp.ShuttleMission.RETURN ? 1 : -1, 1), (Texture2D)ResourceBank.shuttleEnemy.MatSingle.mainTexture);
+			}
+			/*foreach (TravelingTransportPods obj in Find.WorldObjects.TravelingTransportPods)
 			{
 				float rng = (float)Traverse.Create(obj).Field("traveledPct").GetValue();
 				int initialTile = (int)Traverse.Create(obj).Field("initialTile").GetValue();
@@ -223,7 +238,7 @@ namespace SaveOurShip2
 						new Rect(screenHalf + (1 - rng) * range, baseY - 20, 12, 12),
 						new Rect(0, 0, -1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
 				}
-			}
+			}*/
 			if (Mouse.IsOver(rect))
 			{
 				string iconTooltipText = TranslatorFormattedStringExtensions.Translate("SoS.CombatTooltip");
@@ -1191,7 +1206,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(Site __instance)
 		{
-			if (__instance.parts.Where(part => part.def.tags.Contains("SoSMayday")).Any())
+			if (__instance.parts.Where(part => part.def.tags.Contains("SoSMayday")).Any() && __instance.GetComponent<TimedDetectionRaids>()!=null)
 			{
 				__instance.GetComponent<TimedDetectionRaids>().StartDetectionCountdown(Rand.Range(6000, 12000), 1);
 			}
@@ -2147,16 +2162,6 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(Projectile), "CheckForFreeInterceptBetween")]
-	public static class OnePointThreeSpaceProjectiles
-	{
-		public static void Postfix(Projectile __instance, ref bool __result)
-		{
-			if (__instance is Projectile_ShipFake)
-				__result = false;
-		}
-	}
-
 	[HarmonyPatch(typeof(Projectile), "Launch", new Type[] {
 		typeof(Thing), typeof(Vector3), typeof(LocalTargetInfo), typeof(LocalTargetInfo),
 		typeof(ProjectileHitFlags), typeof(bool), typeof(Thing), typeof(ThingDef) })] //td? move this into ship turret/launch code
@@ -2478,585 +2483,6 @@ namespace SaveOurShip2
 		}
 	}
 
-	//skyfaller related patches - shuttles
-	
-	//obs-shuttle remove?
-	[HarmonyPatch(typeof(FlyShipLeaving), "LeaveMap")]
-	public static class LeavingPodFix
-	{
-		public static bool Prefix(ref FlyShipLeaving __instance)
-		{
-			if (__instance.def.defName.Equals("PersonalShuttleSkyfaller") || __instance.def.defName.Equals("CargoShuttleSkyfaller") || __instance.def.defName.Equals("HeavyCargoShuttleSkyfaller") || __instance.def.defName.Equals("DropshipShuttleSkyfaller"))
-			{
-				if ((bool)typeof(FlyShipLeaving).GetField("alreadyLeft", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance))
-				{
-					__instance.Destroy(DestroyMode.Vanish);
-					return false;
-				}
-				if (__instance.groupID < 0)
-				{
-					Log.Error("Drop pod left the map, but its group ID is " + __instance.groupID);
-					__instance.Destroy(DestroyMode.Vanish);
-					return false;
-				}
-				if (__instance.destinationTile < 0)
-				{
-					Log.Error("Drop pod left the map, but its destination tile is " + __instance.destinationTile);
-					__instance.Destroy(DestroyMode.Vanish);
-					return false;
-				}
-				Lord lord = TransporterUtility.FindLord(__instance.groupID, __instance.Map);
-				if (lord != null)
-				{
-					__instance.Map.lordManager.RemoveLord(lord);
-				}
-				TravelingTransportPods travelingTransportPods;
-				if (__instance.def.defName.Equals("PersonalShuttleSkyfaller"))
-					travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesPersonal"));
-				else if (__instance.def.defName.Equals("CargoShuttleSkyfaller"))
-					travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesCargo"));
-				else if (__instance.def.defName.Equals("HeavyCargoShuttleSkyfaller"))
-					travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesHeavy"));
-				else
-					travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesDropship"));
-				travelingTransportPods.Tile = __instance.Map.Tile;
-
-				Thing t = __instance.Contents.innerContainer.Where(p => p is Pawn).FirstOrDefault();
-				if (__instance.Map.GetComponent<ShipMapComp>().ShipMapState == ShipMapState.inCombat && t != null)
-					travelingTransportPods.SetFaction(t.Faction);
-				else
-					travelingTransportPods.SetFaction(Faction.OfPlayer);
-				travelingTransportPods.destinationTile = __instance.destinationTile;
-				travelingTransportPods.arrivalAction = __instance.arrivalAction;
-				Find.WorldObjects.Add(travelingTransportPods);
-
-				List<Thing> pods = new List<Thing>();
-				pods.AddRange(__instance.Map.listerThings.ThingsInGroup(ThingRequestGroup.ActiveDropPod));
-				for (int i = 0; i < pods.Count; i++)
-				{
-					FlyShipLeaving dropPodLeaving = pods[i] as FlyShipLeaving;
-					if (dropPodLeaving != null && dropPodLeaving.groupID == __instance.groupID)
-					{
-						typeof(FlyShipLeaving).GetField("alreadyLeft", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(dropPodLeaving, true);
-						travelingTransportPods.AddPod(dropPodLeaving.Contents, true);
-						dropPodLeaving.Contents = null;
-						dropPodLeaving.Destroy(DestroyMode.Vanish);
-					}
-				}
-				return false;
-			}
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(DropPodUtility), "MakeDropPodAt")]
-	public static class TravelingPodFix
-	{
-		public static bool Prefix(IntVec3 c, Map map, ActiveDropPodInfo info)
-		{
-			bool hasShuttle = false;
-			//ThingDef shuttleDef = null;
-			ThingDef skyfaller = null;
-			Thing foundShuttle = null;
-			foreach (Thing t in info.innerContainer)
-			{
-				if (t.TryGetComp<CompBecomeBuilding>() != null)
-				{
-					hasShuttle = true;
-					//shuttleDef = t.def;
-					skyfaller = t.TryGetComp<CompBecomeBuilding>().Props.skyfaller;
-					foundShuttle = t;
-					break;
-				}
-			}
-			if (hasShuttle)
-			{
-				ActiveDropPod activeDropPod = (ActiveDropPod)ThingMaker.MakeThing(ThingDefOf.ActiveDropPod, null);
-				activeDropPod.Contents = info;
-				Skyfaller theShuttle = SkyfallerMaker.SpawnSkyfaller(skyfaller, activeDropPod, c, map);
-				if (foundShuttle.TryGetComp<CompShuttleCosmetics>() != null)
-				{
-					Graphic_Single graphic = new Graphic_Single();
-					CompProps_ShuttleCosmetics Props = foundShuttle.TryGetComp<CompShuttleCosmetics>().Props;
-					int whichVersion = foundShuttle.TryGetComp<CompShuttleCosmetics>().whichVersion;
-					GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), Props.graphicsHover[whichVersion].texPath + "_south", ShaderDatabase.Cutout, Props.graphics[whichVersion].drawSize, Color.white, Color.white, Props.graphics[whichVersion], 0, null, "");
-					graphic.Init(req);
-					typeof(Thing).GetField("graphicInt", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(theShuttle, graphic);
-				}
-				return false;
-			}
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(DropPodIncoming), "Impact")]
-	public static class IncomingPodFix
-	{
-		public static bool Prefix(ref DropPodIncoming __instance)
-		{
-			//spawns pawns and shuttle at location
-			if (__instance.def.defName.Equals("ShuttleIncomingPersonal") || __instance.def.defName.Equals("ShuttleIncomingCargo") || __instance.def.defName.Equals("ShuttleIncomingHeavy") || __instance.def.defName.Equals("ShuttleIncomingDropship"))
-			{
-				for (int i = 0; i < 6; i++)
-				{
-					Vector3 loc = __instance.Position.ToVector3Shifted() + Gen.RandomHorizontalVector(1f);
-					FleckMaker.ThrowDustPuff(loc, __instance.Map, 1.2f);
-				}
-				FleckMaker.ThrowLightningGlow(__instance.Position.ToVector3Shifted(), __instance.Map, 2f);
-
-				Pawn myShuttle = null;
-				ThingOwner container = ((ActiveDropPod)__instance.innerContainer[0]).Contents.innerContainer;
-
-				for (int i = container.Count - 1; i >= 0; i--)
-				{
-					if (container[i] is Pawn && container[i].TryGetComp<CompBecomeBuilding>() != null)
-						myShuttle = (Pawn)container[i];
-				}
-				var mapComp = __instance.Map.GetComponent<ShipMapComp>().ShipCombatOriginMap;
-				ShipMapComp playerMapComp = null;
-				if (mapComp != null)
-					playerMapComp = mapComp.GetComponent<ShipMapComp>();
-				for (int i = container.Count - 1; i >= 0; i--)
-				{
-					if (container[i] is Pawn)
-					{
-						GenPlace.TryPlaceThing(container[i], __instance.Position, __instance.Map, ThingPlaceMode.Near, delegate (Thing thing, int count) {
-							PawnUtility.RecoverFromUnwalkablePositionOrKill(thing.Position, thing.Map);
-							if (thing.Faction != Faction.OfPlayer && playerMapComp != null && playerMapComp.ShipLord != null)
-								playerMapComp.ShipLord.AddPawn((Pawn)thing);
-							/*if (thing.TryGetComp<CompShuttleCosmetics>() != null)
-								CompShuttleCosmetics.ChangeShipGraphics((Pawn)thing, ((Pawn)thing).TryGetComp<CompShuttleCosmetics>().Props);*/
-						});
-					}
-					else if (myShuttle != null)
-						myShuttle.inventory.innerContainer.TryAddOrTransfer(container[i]);
-				}
-
-				__instance.innerContainer.ClearAndDestroyContents(DestroyMode.Vanish);
-				CellRect cellRect = __instance.OccupiedRect();
-
-				for (int j = 0; j < cellRect.Area * __instance.def.skyfaller.motesPerCell; j++)
-				{
-					FleckMaker.ThrowDustPuff(cellRect.RandomVector3, __instance.Map, 2f);
-				}
-				if (__instance.def.skyfaller.cameraShake > 0f && __instance.Map == Find.CurrentMap)
-				{
-					Find.CameraDriver.shaker.DoShake(__instance.def.skyfaller.cameraShake);
-				}
-				if (__instance.def.skyfaller.impactSound != null)
-				{
-					__instance.def.skyfaller.impactSound.PlayOneShot(SoundInfo.InMap(new TargetInfo(__instance.Position, __instance.Map, false), MaintenanceType.None));
-				}
-				__instance.Destroy(DestroyMode.Vanish);
-
-				if (myShuttle.Faction != Faction.OfPlayer)
-				{
-					if (myShuttle.Position.Roofed(myShuttle.Map) && Rand.Chance(0.5f))
-					{
-						Traverse.Create(myShuttle.TryGetComp<CompRefuelable>()).Field("fuel").SetValue(0);
-						myShuttle.Destroy();
-					}
-					else
-						myShuttle.GetComp<CompBecomeBuilding>().transform();
-				}
-				else if (myShuttle.Position.Fogged(myShuttle.Map))
-					FloodFillerFog.FloodUnfog(myShuttle.Position, myShuttle.Map);
-				return false;
-			}
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
-	public static class ShuttleGizmoFix
-	{
-		public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
-		{
-			if (__instance == null || __result == null)
-				return;
-			if (__instance.TryGetComp<CompBecomeBuilding>() != null)
-			{
-				List<Gizmo> newList = new List<Gizmo>();
-				foreach (Gizmo g in __result)
-				{
-					newList.Add(g);
-				}
-				if (__instance.drafter == null)
-				{
-					__instance.drafter = new Pawn_DraftController(__instance);
-					__instance.equipment = new Pawn_EquipmentTracker(__instance);
-				}
-				IEnumerable<Gizmo> draftGizmos = (IEnumerable<Gizmo>)typeof(Pawn_DraftController).GetMethod("GetGizmos", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(__instance.drafter, new object[] { });
-				foreach (Gizmo c2 in draftGizmos)
-				{
-					newList.Add(c2);
-				}
-				foreach (ThingComp comp in __instance.AllComps)
-				{
-					foreach (Gizmo com in comp.CompGetGizmosExtra())
-					{
-						newList.Add(com);
-					}
-				}
-				__result = newList;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(Pawn), "IsColonyMech", MethodType.Getter)] //1.4
-	public static class MechGizmoFix
-	{
-		public static bool Postfix(bool __result, Pawn __instance)
-		{
-			if (AccessExtensions.Utility.shuttleCache.Contains(__instance)) return false;
-			return __result;
-		}
-	}
-
-	[HarmonyPatch(typeof(Pawn_DraftController), "ShowDraftGizmo", MethodType.Getter)] //1.4
-	public static class GizmoFix
-	{
-		public static void Postfix(Pawn_DraftController __instance, ref bool __result)
-		{
-			if (__instance.pawn.TryGetComp<CompBecomeBuilding>() != null)
-				__result = true;
-		}
-	}
-
-	[HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
-	public static class OrderFix
-	{
-		public static void Postfix(Pawn pawn, ref bool __result)
-		{
-			if (pawn.TryGetComp<CompBecomeBuilding>() != null)
-				__result = true;
-		}
-	}
-
-	[HarmonyPatch(typeof(Caravan), "GetGizmos")]
-	public static class OtherGizmoFix
-	{
-		public static void Postfix(Caravan __instance, ref IEnumerable<Gizmo> __result)
-		{
-			if (__instance == null || __result == null)
-				return;
-
-			List<Gizmo> newList = new List<Gizmo>();
-			foreach (Gizmo g in __result)
-			{
-				newList.Add(g);
-			}
-
-			float shuttleCarryWeight = 0;
-			float pawnWeight = 0;
-			float minRange = float.MaxValue;
-			bool allFullyFueled = true;
-			List<Pawn> shuttlesToRefuel = new List<Pawn>();
-			List<Thing> CaravanThings = CaravanInventoryUtility.AllInventoryItems(__instance);
-			foreach (Pawn p in __instance.pawns)
-			{
-				if (p.TryGetComp<CompBecomeBuilding>() != null)
-				{
-					shuttleCarryWeight += p.TryGetComp<CompBecomeBuilding>().Props.buildingDef.GetCompProperties<CompProperties_Transporter>().massCapacity;
-					if (p.TryGetComp<CompRefuelable>() != null && p.TryGetComp<CompRefuelable>().Fuel / p.TryGetComp<CompBecomeBuilding>().Props.buildingDef.GetCompProperties<CompProps_ShuttleLaunchable>().fuelPerTile < minRange)
-					{
-						minRange = p.TryGetComp<CompRefuelable>().Fuel / p.TryGetComp<CompBecomeBuilding>().Props.buildingDef.GetCompProperties<CompProps_ShuttleLaunchable>().fuelPerTile;
-					}
-					if (p.TryGetComp<CompRefuelable>() != null && p.TryGetComp<CompRefuelable>().FuelPercentOfMax < 0.8f)
-					{
-						foreach (Thing t in CaravanThings)
-						{
-							if (p.TryGetComp<CompRefuelable>().Props.fuelFilter.Allows(t.def))
-							{
-								shuttlesToRefuel.Add(p);
-								break;
-							}
-						}
-						allFullyFueled = false;
-					}
-				}
-				else if (p.TryGetComp<CompShuttleLaunchable>() == null)
-				{
-					pawnWeight += p.def.BaseMass;
-				}
-			}
-			if (shuttleCarryWeight > 0)
-			{
-				float totalMass = pawnWeight + __instance.MassUsage;
-				Gizmo launchGizmo = new Command_Action
-				{
-					defaultLabel = "Launch Caravan",
-					defaultDesc = "Load this caravan into shuttle(s) and launch it",
-					icon = CompShuttleLaunchable.LaunchCommandTex,
-					action = delegate
-					{
-						ShuttleCaravanUtility.LaunchMe(__instance, minRange, allFullyFueled);
-					}
-				};
-
-				if (totalMass > shuttleCarryWeight)
-					launchGizmo.Disable("Caravan is too heavy for shuttle(s) to carry: " + totalMass + "/" + shuttleCarryWeight);
-
-				newList.Add(launchGizmo);
-			}
-			if (shuttlesToRefuel.Count > 0)
-			{
-				Gizmo refuelGizmo = new Command_Action
-				{
-					defaultLabel = "Refuel Shuttles",
-					defaultDesc = "Use caravan inventory to refuel shuttle(s)",
-					icon = CompShuttleLaunchable.SetTargetFuelLevelCommand,
-					action = delegate {
-						ShuttleCaravanUtility.RefuelMe(__instance, shuttlesToRefuel);
-					}
-				};
-
-				newList.Add(refuelGizmo);
-			}
-
-			List<MinifiedThing> inactiveShuttles = new List<MinifiedThing>();
-			foreach (Thing t in __instance.AllThings)
-			{
-				if (t is MinifiedThing)
-				{
-					MinifiedThing building = (MinifiedThing)t;
-					if (building.InnerThing.TryGetComp<CompShuttleLaunchable>() != null)
-					{
-						inactiveShuttles.Add(building);
-					}
-				}
-			}
-			List<MinifiedThing> fuelableShuttles = new List<MinifiedThing>();
-			foreach (MinifiedThing building in inactiveShuttles)
-			{
-				if (building.InnerThing.TryGetComp<CompRefuelable>() == null)
-				{
-					fuelableShuttles.Add(building);
-				}
-				else if (building.InnerThing.TryGetComp<CompRefuelable>().HasFuel)
-				{
-					fuelableShuttles.Add(building);
-				}
-				else
-				{
-					foreach (Thing tee in CaravanInventoryUtility.AllInventoryItems(__instance))
-					{
-						if (building.InnerThing.TryGetComp<CompRefuelable>().Props.fuelFilter.Allows(tee.def))
-						{
-							fuelableShuttles.Add(building);
-							break;
-						}
-					}
-				}
-			}
-			if (fuelableShuttles.Count > 0)
-			{
-				Gizmo activateGizmo = new Command_Action
-				{
-					defaultLabel = "Activate Shuttles",
-					defaultDesc = "Activate shuttle(s) and refuel them if possible",
-					icon = CompShuttleLaunchable.SetTargetFuelLevelCommand,
-					action = delegate {
-						ShuttleCaravanUtility.ActivateMe(__instance, fuelableShuttles);
-					}
-				};
-
-				newList.Add(activateGizmo);
-			}
-
-			__result = newList;
-		}
-	}
-
-	[HarmonyPatch(typeof(MassUtility), "Capacity")]
-	public static class FixShuttleCarryCap
-	{
-		public static void Postfix(ref float __result, Pawn p)
-		{
-			if (p.TryGetComp<CompBecomeBuilding>() != null)
-			{
-				__result = p.TryGetComp<CompBecomeBuilding>().Props.buildingDef.GetCompProperties<CompProperties_Transporter>().massCapacity;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(CaravanUIUtility), "AddPawnsSections")]
-	public static class UIFix
-	{
-		public static void Postfix(TransferableOneWayWidget widget, List<TransferableOneWay> transferables)
-		{
-			if (Find.WorldSelector.FirstSelectedObject == null || !(Find.WorldSelector.FirstSelectedObject is MapParent) || ((MapParent)Find.WorldSelector.FirstSelectedObject).Map == null || !((MapParent)Find.WorldSelector.FirstSelectedObject).Map.IsPlayerHome)
-			{
-				IEnumerable<TransferableOneWay> source = from x in transferables
-														 where x.ThingDef.category == ThingCategory.Pawn
-														 select x;
-				widget.AddSection(TranslatorFormattedStringExtensions.Translate("SoSShuttles"), from x in source
-																								where (((Pawn)x.AnyThing).TryGetComp<CompBecomeBuilding>() != null)
-																								select x);
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(TransportPodsArrivalAction_GiveToCaravan), "StillValid")]
-	public static class MakeSureNotToLoseYourShuttle
-	{
-		static bool hasShuttle = false;
-		public static bool Prefix(IEnumerable<IThingHolder> pods)
-		{
-			hasShuttle = false;
-			foreach (IThingHolder pod in pods)
-			{
-				foreach (Thing t in pod.GetDirectlyHeldThings())
-				{
-					if (t.TryGetComp<CompBecomeBuilding>() != null)
-					{
-						hasShuttle = true;
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-		public static void Postfix(ref FloatMenuAcceptanceReport __result)
-		{
-			if (hasShuttle)
-				__result = true;
-		}
-	}
-
-	[HarmonyPatch(typeof(PawnCapacitiesHandler), "CapableOf")]
-	public static class ShuttlesCannotConstruct //This is slow and shitty, but Tynan didn't leave us many options to avoid a nullref
-	{
-		public static void Postfix(PawnCapacityDef capacity, PawnCapacitiesHandler __instance, ref bool __result)
-		{
-			if (capacity == PawnCapacityDefOf.Manipulation && __instance.pawn.TryGetComp<CompBecomeBuilding>() != null)
-			{
-				__result = false;
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(Pawn_MeleeVerbs), "ChooseMeleeVerb")]
-	public static class ThatWasAnOldBug
-	{
-		public static bool Prefix(Pawn_MeleeVerbs __instance)
-		{
-			return __instance.Pawn.TryGetComp<CompBecomeBuilding>() == null;
-		}
-	}
-
-	[HarmonyPatch(typeof(Dialog_LoadTransporters), "AddPawnsToTransferables", null)]
-	public static class TransportPrisoners_Patch
-	{
-		public static bool Prefix(Dialog_LoadTransporters __instance)
-		{
-			List<Pawn> list = CaravanFormingUtility.AllSendablePawns(__instance.map);
-			for (int i = 0; i < list.Count; i++)
-			{
-				typeof(Dialog_LoadTransporters)
-					.GetMethod("AddToTransferables", BindingFlags.NonPublic | BindingFlags.Instance)
-					.Invoke(__instance, new object[1] { list[i] });
-			}
-
-			return false;
-		}
-	}
-
-	//obs-shuttle change?
-	[HarmonyPatch(typeof(TravelingTransportPods), "Start", MethodType.Getter)]
-	public static class FromSpaceship
-	{
-		public static void Postfix(TravelingTransportPods __instance, ref Vector3 __result)
-		{
-			foreach (WorldObject ship in Find.World.worldObjects.AllWorldObjects.Where(o => o is WorldObjectOrbitingShip))
-				if (ship.Tile == __instance.initialTile)
-					__result = ship.DrawPos;
-			foreach (WorldObject site in Find.World.worldObjects.AllWorldObjects.Where(o => o is SpaceSite || o is MoonBase))
-				if (site.Tile == __instance.initialTile)
-					__result = site.DrawPos;
-		}
-	}
-
-	[HarmonyPatch(typeof(TravelingTransportPods), "End", MethodType.Getter)]
-	public static class ToSpaceship
-	{
-		public static void Postfix(TravelingTransportPods __instance, ref Vector3 __result)
-		{
-			foreach (WorldObject ship in Find.World.worldObjects.AllWorldObjects.Where(o => o is WorldObjectOrbitingShip))
-				if (ship.Tile == __instance.destinationTile)
-					__result = ship.DrawPos;
-			foreach (WorldObject site in Find.World.worldObjects.AllWorldObjects.Where(o => o is SpaceSite || o is MoonBase))
-				if (site.Tile == __instance.destinationTile)
-					__result = site.DrawPos;
-		}
-	}
-
-	[HarmonyPatch(typeof(Skyfaller), "HitRoof")]
-	public static class ShuttleBayAcceptsShuttle
-	{
-		public static bool Prefix(Skyfaller __instance)
-		{
-			if (__instance.Position.GetThingList(__instance.Map).Any(t =>
-				t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || t.TryGetComp<CompShipSalvageBay>() != null))
-			{
-				return false;
-			}
-			if (__instance.Map.IsSpace() && (__instance.def.defName.Equals("ShuttleIncomingPersonal") || __instance.def == ThingDefOf.DropPodIncoming)) //dont breach roof with small pods in space
-			{
-				return false;
-			}
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(TransportPodsArrivalActionUtility), "DropTravelingTransportPods")]
-	public static class ShuttleBayArrivalPrecision
-	{
-		public static bool Prefix(List<ActiveDropPodInfo> dropPods, IntVec3 near, Map map)
-		{
-			if (map.Parent != null && map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
-			{
-				TransportPodsArrivalActionUtility.RemovePawnsFromWorldPawns(dropPods);
-				for (int i = 0; i < dropPods.Count; i++)
-				{
-					DropPodUtility.MakeDropPodAt(near, map, dropPods[i]);
-				}
-
-				return false;
-			}
-
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(ShipLandingArea), "RecalculateBlockingThing")]
-	public static class ShipLandingAreaUnderShipRoof
-	{
-		public static bool Prefix(Map ___map, CellRect ___rect, ref bool ___blockedByRoof, ref Thing ___firstBlockingThing)
-		{
-			___blockedByRoof = false;
-			foreach (IntVec3 c in ___rect)
-			{
-				if (c.Roofed(___map) && ___map.roofGrid.RoofAt(c) == ResourceBank.RoofDefOf.RoofShip)
-				{
-					List<Thing> thingList = c.GetThingList(___map);
-					for (int i = 0; i < thingList.Count; i++)
-					{
-						if ((!(thingList[i] is Pawn) && (thingList[i].def.Fillage != FillCategory.None || thingList[i].def.IsEdifice() || thingList[i] is Skyfaller)) && thingList[i].def != ResourceBank.ThingDefOf.ShipShuttleBay && thingList[i].def != ResourceBank.ThingDefOf.ShipShuttleBayLarge && !(thingList[i].TryGetComp<CompShipCachePart>()?.Props.isPlating ?? false))
-						{
-							___firstBlockingThing = thingList[i];
-							return false;
-						}
-					}
-				}
-				else
-					return true;
-			}
-			___firstBlockingThing = null;
-			return false;
-		}
-	}
-
 	//good
 	[HarmonyPatch(typeof(DropCellFinder), "TradeDropSpot")]
 	public static class DropTradeOnSalvageBay
@@ -3129,44 +2555,6 @@ namespace SaveOurShip2
 			{
 				return false;
 			}
-			return true;
-		}
-	}
-
-	[HarmonyPatch(typeof(Trigger_UrgentlyHungry), "ActivateOn")]
-	public static class MechsDontEat
-	{
-		public static bool Prefix(Lord lord, out bool __state)
-		{
-			__state = false;
-			foreach (Pawn p in lord.ownedPawns)
-			{
-				if (p.RaceProps.IsMechanoid)
-				{
-					__state = true;
-					return false;
-				}
-			}
-			return true;
-		}
-		public static void Postfix(ref bool __result, bool __state)
-		{
-			if (__state)
-				__result = false;
-		}
-	}
-
-	[HarmonyPatch(typeof(TransferableUtility), "CanStack")]
-	public static class MechsCannotStack
-	{
-		public static bool Prefix(Thing thing, ref bool __result)
-		{
-			if (thing is Pawn && ((Pawn)thing).RaceProps.IsMechanoid)
-			{
-				__result = false;
-				return false;
-			}
-
 			return true;
 		}
 	}
@@ -4473,7 +3861,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	//storyteller
+	//storytellers
 	[HarmonyPatch(typeof(Map), "get_PlayerWealthForStoryteller")]
 	public static class TechIsWealth
 	{
@@ -4509,6 +3897,97 @@ namespace SaveOurShip2
 			if (num > 100000)
 				num = 100000;
 			return num;
+		}
+	}
+
+	[HarmonyPatch(typeof(IncidentWorker_DiseaseHuman), "PotentialVictimCandidates")]
+	public static class KimTweakDisease
+    {
+		public static void Postfix(ref IEnumerable<Pawn> __result)
+        {
+			if (Find.Storyteller.def != ResourceBank.StorytellerDefOf.Kim)
+				return;
+			List<Pawn> newList = new List<Pawn>();
+			foreach(Pawn pawn in __result)
+            {
+				if (!Rand.Chance(Mathf.Lerp(0, 0.9f, pawn.records.records[RecordDefOf.TimeAsColonistOrColonyAnimal] / 7200000f))) //After two years in the colony, pawns are pretty safe
+					newList.Add(pawn);
+            }
+			__result = newList;
+		}
+	}
+
+	[HarmonyPatch(typeof(IncidentWorker_MetalhorrorImplantation), "GetPossiblePawns")]
+	public static class KimTweakMetalhorror
+	{
+		public static void Postfix(ref List<Pawn> __result)
+		{
+			if (Find.Storyteller.def != ResourceBank.StorytellerDefOf.Kim)
+				return;
+			List<Pawn> newList = new List<Pawn>();
+			foreach (Pawn pawn in __result)
+			{
+				if (!Rand.Chance(Mathf.Lerp(0, 0.9f, pawn.records.records[RecordDefOf.TimeAsColonistOrColonyAnimal] / 7200000f))) //After two years in the colony, pawns are pretty safe
+					newList.Add(pawn);
+			}
+			__result = newList;
+		}
+	}
+
+	[HarmonyPatch(typeof(HediffComp_Infecter), "CheckMakeInfection")]
+	public static class KimTweakInfection
+	{
+		public static bool Prefix(HediffComp_Infecter __instance)
+        {
+			if (Find.Storyteller.def != ResourceBank.StorytellerDefOf.Kim)
+				return true;
+			if (Rand.Chance(Mathf.Lerp(0, 0.5f, __instance.parent.pawn.records.records[RecordDefOf.TimeAsColonistOrColonyAnimal] / 7200000f))) //After two years in the colony, pawns are pretty safe
+            {
+				__instance.ticksUntilInfect = -3;
+				return false;
+            }
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(DamageWorker_AddInjury), "FinalizeAndAddInjury", new Type[] { typeof(Pawn), typeof(Hediff_Injury), typeof(DamageInfo), typeof(DamageWorker.DamageResult) })]
+	public static class KimTweakInstakill
+	{
+		static float allowInstantKillChanceUnadjusted;
+
+		public static bool Prefix(Pawn pawn)
+		{
+			if (Find.Storyteller.def != ResourceBank.StorytellerDefOf.Kim)
+				return true;
+			allowInstantKillChanceUnadjusted = Find.Storyteller.difficulty.allowInstantKillChance;
+			Find.Storyteller.difficulty.allowInstantKillChance = allowInstantKillChanceUnadjusted * Mathf.Lerp(1.2f,0.1f, pawn.records.records[RecordDefOf.TimeAsColonistOrColonyAnimal] / 7200000f); //After two years in the colony, pawns are pretty safe
+			return true;
+		}
+
+		public static void Postfix()
+        {
+			if (Find.Storyteller.def == ResourceBank.StorytellerDefOf.Kim)
+				Find.Storyteller.difficulty.allowInstantKillChance = allowInstantKillChanceUnadjusted;
+		}
+	}
+
+	[HarmonyPatch(typeof(FoodUtility), "GetFoodPoisonChanceFactor")]
+	public static class KimTweakFoodPoison
+	{
+		public static void Postfix(Pawn ingester, ref float __result)
+		{
+			if (Find.Storyteller.def == ResourceBank.StorytellerDefOf.Kim)
+				__result *= Mathf.Lerp(1.1f, 0.4f, ingester.records.records[RecordDefOf.TimeAsColonistOrColonyAnimal] / 7200000f); //After two years in the colony, pawns are pretty safe
+		}
+	}
+
+	[HarmonyPatch(typeof(ImmunityRecord), "ImmunityChangePerTick")]
+	public static class KimTweakImmunity
+	{
+		public static void Postfix(Pawn pawn, ref float __result)
+		{
+			if (Find.Storyteller.def == ResourceBank.StorytellerDefOf.Kim)
+				__result *= Mathf.Lerp(0.96f, 1.2f, pawn.records.records[RecordDefOf.TimeAsColonistOrColonyAnimal] / 7200000f); //After two years in the colony, pawns are pretty safe
 		}
 	}
 
@@ -4596,7 +4075,7 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch(typeof(District), "get_Map")]
-	public static class FixMapIssue //This is the most horrible hack that has ever been hacked, it *MUST* be removed before release
+	public static class FixMapIssue //This is the most horrible hack that has ever been hacked, it *MUST* be removed before release (Update: Of course it wasn't.)
 	{
 		public static bool Prefix(District __instance)
 		{
@@ -4625,6 +4104,164 @@ namespace SaveOurShip2
 				__result = Find.Maps.FirstOrDefault();
 		}
 	}
+
+	//This patch is intentionally implemented in a naive manner so that it cannot possibly be confused with DLC content
+	[HarmonyPatch(typeof(Projectile), "CheckForFreeInterceptBetween")]
+	public static class ShieldsWithoutDLC
+    {
+		public static void Postfix(Projectile __instance, Vector3 lastExactPos, Vector3 newExactPos, ref bool __result)
+        {
+			if (__instance is Projectile_ShipFake)
+			{
+				__result = false;
+				return;
+			}
+			if (__instance is Projectile_ExplosiveShip) //Handled natively
+				return;
+			if (__instance.Map == null)
+				return;
+			foreach(CompShipCombatShield shield in __instance.Map.GetComponent<ShipMapComp>().Shields)
+            {
+				if (shield.shutDown)
+					continue;
+				Vector3 pos = shield.parent.Position.ToVector3Shifted();
+				if(Vector3.Distance(lastExactPos, pos) > shield.radius && (Vector3.Distance(newExactPos, pos) <= shield.radius || Vector3.Distance((lastExactPos + newExactPos) / 2, pos) <= shield.radius))
+                {
+					shield.HitShield(__instance);
+					__result = true;
+					return;
+                }
+            }
+        }
+    }
+
+	//New VF shuttle patches
+	[HarmonyPatch(typeof(Ext_Vehicles), "IsRoofRestricted", new Type[] { typeof(IntVec3), typeof(Map), typeof(bool) })]
+	public static class VFShuttleBayLanding
+    {
+		public static void Postfix(IntVec3 cell, Map map, ref bool __result)
+        {
+			if (cell.GetThingList(map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+				__result = false;
+        }
+    }
+
+	[HarmonyPatch(typeof(CompVehicleLauncher), "CanLaunchWithCargoCapacity")]
+	public static class VFShuttleBayLaunch
+    {
+		public static void Postfix(ref string disableReason, CompVehicleLauncher __instance, ref bool __result)
+        {
+			if (disableReason == Translator.Translate("CommandLaunchGroupFailUnderRoof") && __instance.parent.Position.GetThingList(__instance.parent.Map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+            {
+				__result = true;
+				disableReason = null;
+            }
+		}
+	}
+
+	[HarmonyPatch(typeof(LaunchProtocol), "get_CanLaunchNow")]
+	public static class VFShuttleBayLaunch2
+	{
+		public static void Postfix(LaunchProtocol __instance, ref bool __result)
+		{
+			if(__result==false)
+            {
+				if (__instance.vehicle.Spawned && __instance.vehicle.Position.GetThingList(__instance.vehicle.Map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+					__result = true;
+            }
+		}
+	}
+
+	[HarmonyPatch(typeof(CompUpgradeTree), "Disabled")]
+	public static class RestrictHardpointNumber
+    {
+		public static void Postfix(CompUpgradeTree __instance, UpgradeNode node, ref bool __result)
+        {
+			if(node.upgrades.Where(upgrade=>upgrade is SoS2TurretUpgrade sosUpgrade && sosUpgrade.turretSlot >= __instance.Vehicle.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints)).Count()>0)
+            {
+				__result = true;
+            }
+        }
+    }
+
+	[HarmonyPatch(typeof(VehicleTurret), "get_ProjectileDef")]
+	public static class UseRightTorpedo
+    {
+		public static void Postfix(VehicleTurret __instance, ref ThingDef __result)
+        {
+			if (__instance is SoS2VehicleTurret turret && turret.isTorpedo && turret.loadedAmmo != null && turret.loadedAmmo.projectileWhenLoaded != null)
+				__result = turret.loadedAmmo.projectileWhenLoaded.interactionCellIcon; //This horrible kludge will haunt me until the day I die
+        }
+    }
+
+	[HarmonyPatch(typeof(VehicleTurret), "Init")]
+	public static class MatchTurretToHardpoint //It was not worth the effort to figure out why a launched shuttle was rendering turrets differently from a stationary one
+    {
+		public static void Postfix(VehicleTurret __instance)
+        {
+			if (!(__instance is SoS2VehicleTurret turret))
+				return;
+			if (turret.vehicle.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) == 1)
+			{
+				turret.renderProperties.north = new Vector2(0, -1.15f);
+			}
+			else if (turret.vehicle.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) == 2)
+			{
+				if (turret.hardpoint == 0)
+					turret.renderProperties.north = new Vector2(-1.5f, 0);
+				else
+					turret.renderProperties.north = new Vector2(1.5f, 0);
+			}
+			else
+			{
+				if (turret.hardpoint == 0)
+					turret.renderProperties.north = new Vector2(1.925f, 0);
+				else if (turret.hardpoint == 1)
+					turret.renderProperties.north = new Vector2(-1.925f, 0);
+				else
+					turret.renderProperties.north = new Vector2(0, -3);
+			}
+			turret.renderProperties.north = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
+			turret.renderProperties.east = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
+			turret.renderProperties.south = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
+			turret.renderProperties.west = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
+		}
+    }
+
+	[HarmonyPatch(typeof(VehiclePawn),"PostLoad")]
+	public static class PostLoadNewComponents
+    {
+		public static List<ThingComp> CompsToAdd;
+
+		public static bool Prefix(VehiclePawn __instance)
+        {
+			CompsToAdd = new List<ThingComp>();
+			return true;
+		}
+
+		public static void Postfix(VehiclePawn __instance)
+        {
+			foreach (ThingComp comp in CompsToAdd)
+			{
+				__instance.comps.Add(comp);
+				comp.PostSpawnSetup(true);
+			}
+			__instance.RecacheComponents();
+			CompVehicleHeatNet net = __instance.GetComp<CompVehicleHeatNet>();
+			if (net != null)
+				net.RebuildHeatNet();
+		}
+    }
+
+	//TEMPORARY until I talk to Phil and see how to fix this properly
+	[HarmonyPatch(typeof(CompUpgradeTree), "CompTickRare")]
+	public static class TEMPStopRedErrorOnTakeoff
+    {
+		public static bool Prefix(CompUpgradeTree __instance)
+        {
+			return __instance.parent.Map != null;
+        }
+    }
 
 	/*causes lag
 	[HarmonyPatch(typeof(ShipLandingBeaconUtility), "GetLandingZones")]
@@ -5130,6 +4767,621 @@ namespace SaveOurShip2
 		public static bool IsSpace(this Room room)
 		{
 			return room.FirstRegion.type != RegionType.Portal && (room.OpenRoofCount > 0 || room.TouchesMapEdge);
+		}
+	}*/
+
+	//OBSOLETE - shuttle patches
+	/*[HarmonyPatch(typeof(FlyShipLeaving), "LeaveMap")]
+	public static class LeavingPodFix
+	{
+		public static bool Prefix(ref FlyShipLeaving __instance)
+		{
+			if (__instance.def.defName.Equals("PersonalShuttleSkyfaller") || __instance.def.defName.Equals("CargoShuttleSkyfaller") || __instance.def.defName.Equals("HeavyCargoShuttleSkyfaller") || __instance.def.defName.Equals("DropshipShuttleSkyfaller"))
+			{
+				if ((bool)typeof(FlyShipLeaving).GetField("alreadyLeft", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance))
+				{
+					__instance.Destroy(DestroyMode.Vanish);
+					return false;
+				}
+				if (__instance.groupID < 0)
+				{
+					Log.Error("Drop pod left the map, but its group ID is " + __instance.groupID);
+					__instance.Destroy(DestroyMode.Vanish);
+					return false;
+				}
+				if (__instance.destinationTile < 0)
+				{
+					Log.Error("Drop pod left the map, but its destination tile is " + __instance.destinationTile);
+					__instance.Destroy(DestroyMode.Vanish);
+					return false;
+				}
+				Lord lord = TransporterUtility.FindLord(__instance.groupID, __instance.Map);
+				if (lord != null)
+				{
+					__instance.Map.lordManager.RemoveLord(lord);
+				}
+				TravelingTransportPods travelingTransportPods;
+				if (__instance.def.defName.Equals("PersonalShuttleSkyfaller"))
+					travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesPersonal"));
+				else if (__instance.def.defName.Equals("CargoShuttleSkyfaller"))
+					travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesCargo"));
+				else if (__instance.def.defName.Equals("HeavyCargoShuttleSkyfaller"))
+					travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesHeavy"));
+				else
+					travelingTransportPods = (TravelingTransportPods)WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed("TravelingShuttlesDropship"));
+				travelingTransportPods.Tile = __instance.Map.Tile;
+
+				Thing t = __instance.Contents.innerContainer.Where(p => p is Pawn).FirstOrDefault();
+				if (__instance.Map.GetComponent<ShipMapComp>().ShipMapState == ShipMapState.inCombat && t != null)
+					travelingTransportPods.SetFaction(t.Faction);
+				else
+					travelingTransportPods.SetFaction(Faction.OfPlayer);
+				travelingTransportPods.destinationTile = __instance.destinationTile;
+				travelingTransportPods.arrivalAction = __instance.arrivalAction;
+				Find.WorldObjects.Add(travelingTransportPods);
+
+				List<Thing> pods = new List<Thing>();
+				pods.AddRange(__instance.Map.listerThings.ThingsInGroup(ThingRequestGroup.ActiveDropPod));
+				for (int i = 0; i < pods.Count; i++)
+				{
+					FlyShipLeaving dropPodLeaving = pods[i] as FlyShipLeaving;
+					if (dropPodLeaving != null && dropPodLeaving.groupID == __instance.groupID)
+					{
+						typeof(FlyShipLeaving).GetField("alreadyLeft", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(dropPodLeaving, true);
+						travelingTransportPods.AddPod(dropPodLeaving.Contents, true);
+						dropPodLeaving.Contents = null;
+						dropPodLeaving.Destroy(DestroyMode.Vanish);
+					}
+				}
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(DropPodUtility), "MakeDropPodAt")]
+	public static class TravelingPodFix
+	{
+		public static bool Prefix(IntVec3 c, Map map, ActiveDropPodInfo info)
+		{
+			bool hasShuttle = false;
+			//ThingDef shuttleDef = null;
+			ThingDef skyfaller = null;
+			Thing foundShuttle = null;
+			foreach (Thing t in info.innerContainer)
+			{
+				if (t.TryGetComp<CompBecomeBuilding>() != null)
+				{
+					hasShuttle = true;
+					//shuttleDef = t.def;
+					skyfaller = t.TryGetComp<CompBecomeBuilding>().Props.skyfaller;
+					foundShuttle = t;
+					break;
+				}
+			}
+			if (hasShuttle)
+			{
+				ActiveDropPod activeDropPod = (ActiveDropPod)ThingMaker.MakeThing(ThingDefOf.ActiveDropPod, null);
+				activeDropPod.Contents = info;
+				Skyfaller theShuttle = SkyfallerMaker.SpawnSkyfaller(skyfaller, activeDropPod, c, map);
+				if (foundShuttle.TryGetComp<CompShuttleCosmetics>() != null)
+				{
+					Graphic_Single graphic = new Graphic_Single();
+					CompProps_ShuttleCosmetics Props = foundShuttle.TryGetComp<CompShuttleCosmetics>().Props;
+					int whichVersion = foundShuttle.TryGetComp<CompShuttleCosmetics>().whichVersion;
+					GraphicRequest req = new GraphicRequest(typeof(Graphic_Single), Props.graphicsHover[whichVersion].texPath + "_south", ShaderDatabase.Cutout, Props.graphics[whichVersion].drawSize, Color.white, Color.white, Props.graphics[whichVersion], 0, null, "");
+					graphic.Init(req);
+					typeof(Thing).GetField("graphicInt", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(theShuttle, graphic);
+				}
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(DropPodIncoming), "Impact")]
+	public static class IncomingPodFix
+	{
+		public static bool Prefix(ref DropPodIncoming __instance)
+		{
+			//spawns pawns and shuttle at location
+			if (__instance.def.defName.Equals("ShuttleIncomingPersonal") || __instance.def.defName.Equals("ShuttleIncomingCargo") || __instance.def.defName.Equals("ShuttleIncomingHeavy") || __instance.def.defName.Equals("ShuttleIncomingDropship"))
+			{
+				for (int i = 0; i < 6; i++)
+				{
+					Vector3 loc = __instance.Position.ToVector3Shifted() + Gen.RandomHorizontalVector(1f);
+					FleckMaker.ThrowDustPuff(loc, __instance.Map, 1.2f);
+				}
+				FleckMaker.ThrowLightningGlow(__instance.Position.ToVector3Shifted(), __instance.Map, 2f);
+
+				Pawn myShuttle = null;
+				ThingOwner container = ((ActiveDropPod)__instance.innerContainer[0]).Contents.innerContainer;
+
+				for (int i = container.Count - 1; i >= 0; i--)
+				{
+					if (container[i] is Pawn && container[i].TryGetComp<CompBecomeBuilding>() != null)
+						myShuttle = (Pawn)container[i];
+				}
+				var mapComp = __instance.Map.GetComponent<ShipMapComp>().ShipCombatOriginMap;
+				ShipMapComp playerMapComp = null;
+				if (mapComp != null)
+					playerMapComp = mapComp.GetComponent<ShipMapComp>();
+				for (int i = container.Count - 1; i >= 0; i--)
+				{
+					if (container[i] is Pawn)
+					{
+						GenPlace.TryPlaceThing(container[i], __instance.Position, __instance.Map, ThingPlaceMode.Near, delegate (Thing thing, int count) {
+							PawnUtility.RecoverFromUnwalkablePositionOrKill(thing.Position, thing.Map);
+							if (thing.Faction != Faction.OfPlayer && playerMapComp != null && playerMapComp.ShipLord != null)
+								playerMapComp.ShipLord.AddPawn((Pawn)thing);
+							/*if (thing.TryGetComp<CompShuttleCosmetics>() != null)
+								CompShuttleCosmetics.ChangeShipGraphics((Pawn)thing, ((Pawn)thing).TryGetComp<CompShuttleCosmetics>().Props);*//*
+						});
+					}
+					else if (myShuttle != null)
+						myShuttle.inventory.innerContainer.TryAddOrTransfer(container[i]);
+				}
+
+				__instance.innerContainer.ClearAndDestroyContents(DestroyMode.Vanish);
+				CellRect cellRect = __instance.OccupiedRect();
+
+				for (int j = 0; j < cellRect.Area * __instance.def.skyfaller.motesPerCell; j++)
+				{
+					FleckMaker.ThrowDustPuff(cellRect.RandomVector3, __instance.Map, 2f);
+				}
+				if (__instance.def.skyfaller.cameraShake > 0f && __instance.Map == Find.CurrentMap)
+				{
+					Find.CameraDriver.shaker.DoShake(__instance.def.skyfaller.cameraShake);
+				}
+				if (__instance.def.skyfaller.impactSound != null)
+				{
+					__instance.def.skyfaller.impactSound.PlayOneShot(SoundInfo.InMap(new TargetInfo(__instance.Position, __instance.Map, false), MaintenanceType.None));
+				}
+				__instance.Destroy(DestroyMode.Vanish);
+
+				if (myShuttle.Faction != Faction.OfPlayer)
+				{
+					if (myShuttle.Position.Roofed(myShuttle.Map) && Rand.Chance(0.5f))
+					{
+						Traverse.Create(myShuttle.TryGetComp<CompRefuelable>()).Field("fuel").SetValue(0);
+						myShuttle.Destroy();
+					}
+					else
+						myShuttle.GetComp<CompBecomeBuilding>().transform();
+				}
+				else if (myShuttle.Position.Fogged(myShuttle.Map))
+					FloodFillerFog.FloodUnfog(myShuttle.Position, myShuttle.Map);
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(Pawn), "GetGizmos")]
+	public static class ShuttleGizmoFix
+	{
+		public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
+		{
+			if (__instance == null || __result == null)
+				return;
+			if (__instance.TryGetComp<CompBecomeBuilding>() != null)
+			{
+				List<Gizmo> newList = new List<Gizmo>();
+				foreach (Gizmo g in __result)
+				{
+					newList.Add(g);
+				}
+				if (__instance.drafter == null)
+				{
+					__instance.drafter = new Pawn_DraftController(__instance);
+					__instance.equipment = new Pawn_EquipmentTracker(__instance);
+				}
+				IEnumerable<Gizmo> draftGizmos = (IEnumerable<Gizmo>)typeof(Pawn_DraftController).GetMethod("GetGizmos", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(__instance.drafter, new object[] { });
+				foreach (Gizmo c2 in draftGizmos)
+				{
+					newList.Add(c2);
+				}
+				foreach (ThingComp comp in __instance.AllComps)
+				{
+					foreach (Gizmo com in comp.CompGetGizmosExtra())
+					{
+						newList.Add(com);
+					}
+				}
+				__result = newList;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(Pawn), "IsColonyMech", MethodType.Getter)] //1.4
+	public static class MechGizmoFix
+	{
+		public static bool Postfix(bool __result, Pawn __instance)
+		{
+			if (AccessExtensions.Utility.shuttleCache.Contains(__instance)) return false;
+			return __result;
+		}
+	}
+
+	[HarmonyPatch(typeof(Pawn_DraftController), "ShowDraftGizmo", MethodType.Getter)] //1.4
+	public static class GizmoFix
+	{
+		public static void Postfix(Pawn_DraftController __instance, ref bool __result)
+		{
+			if (__instance.pawn.TryGetComp<CompBecomeBuilding>() != null)
+				__result = true;
+		}
+	}
+
+	[HarmonyPatch(typeof(FloatMenuMakerMap), "CanTakeOrder")]
+	public static class OrderFix
+	{
+		public static void Postfix(Pawn pawn, ref bool __result)
+		{
+			if (pawn.TryGetComp<CompBecomeBuilding>() != null)
+				__result = true;
+		}
+	}
+
+	[HarmonyPatch(typeof(Caravan), "GetGizmos")]
+	public static class OtherGizmoFix
+	{
+		public static void Postfix(Caravan __instance, ref IEnumerable<Gizmo> __result)
+		{
+			if (__instance == null || __result == null)
+				return;
+
+			List<Gizmo> newList = new List<Gizmo>();
+			foreach (Gizmo g in __result)
+			{
+				newList.Add(g);
+			}
+
+			float shuttleCarryWeight = 0;
+			float pawnWeight = 0;
+			float minRange = float.MaxValue;
+			bool allFullyFueled = true;
+			List<Pawn> shuttlesToRefuel = new List<Pawn>();
+			List<Thing> CaravanThings = CaravanInventoryUtility.AllInventoryItems(__instance);
+			foreach (Pawn p in __instance.pawns)
+			{
+				if (p.TryGetComp<CompBecomeBuilding>() != null)
+				{
+					shuttleCarryWeight += p.TryGetComp<CompBecomeBuilding>().Props.buildingDef.GetCompProperties<CompProperties_Transporter>().massCapacity;
+					if (p.TryGetComp<CompRefuelable>() != null && p.TryGetComp<CompRefuelable>().Fuel / p.TryGetComp<CompBecomeBuilding>().Props.buildingDef.GetCompProperties<CompProps_ShuttleLaunchable>().fuelPerTile < minRange)
+					{
+						minRange = p.TryGetComp<CompRefuelable>().Fuel / p.TryGetComp<CompBecomeBuilding>().Props.buildingDef.GetCompProperties<CompProps_ShuttleLaunchable>().fuelPerTile;
+					}
+					if (p.TryGetComp<CompRefuelable>() != null && p.TryGetComp<CompRefuelable>().FuelPercentOfMax < 0.8f)
+					{
+						foreach (Thing t in CaravanThings)
+						{
+							if (p.TryGetComp<CompRefuelable>().Props.fuelFilter.Allows(t.def))
+							{
+								shuttlesToRefuel.Add(p);
+								break;
+							}
+						}
+						allFullyFueled = false;
+					}
+				}
+				else if (p.TryGetComp<CompShuttleLaunchable>() == null)
+				{
+					pawnWeight += p.def.BaseMass;
+				}
+			}
+			if (shuttleCarryWeight > 0)
+			{
+				float totalMass = pawnWeight + __instance.MassUsage;
+				Gizmo launchGizmo = new Command_Action
+				{
+					defaultLabel = "Launch Caravan",
+					defaultDesc = "Load this caravan into shuttle(s) and launch it",
+					icon = CompShuttleLaunchable.LaunchCommandTex,
+					action = delegate
+					{
+						ShuttleCaravanUtility.LaunchMe(__instance, minRange, allFullyFueled);
+					}
+				};
+
+				if (totalMass > shuttleCarryWeight)
+					launchGizmo.Disable("Caravan is too heavy for shuttle(s) to carry: " + totalMass + "/" + shuttleCarryWeight);
+
+				newList.Add(launchGizmo);
+			}
+			if (shuttlesToRefuel.Count > 0)
+			{
+				Gizmo refuelGizmo = new Command_Action
+				{
+					defaultLabel = "Refuel Shuttles",
+					defaultDesc = "Use caravan inventory to refuel shuttle(s)",
+					icon = CompShuttleLaunchable.SetTargetFuelLevelCommand,
+					action = delegate {
+						ShuttleCaravanUtility.RefuelMe(__instance, shuttlesToRefuel);
+					}
+				};
+
+				newList.Add(refuelGizmo);
+			}
+
+			List<MinifiedThing> inactiveShuttles = new List<MinifiedThing>();
+			foreach (Thing t in __instance.AllThings)
+			{
+				if (t is MinifiedThing)
+				{
+					MinifiedThing building = (MinifiedThing)t;
+					if (building.InnerThing.TryGetComp<CompShuttleLaunchable>() != null)
+					{
+						inactiveShuttles.Add(building);
+					}
+				}
+			}
+			List<MinifiedThing> fuelableShuttles = new List<MinifiedThing>();
+			foreach (MinifiedThing building in inactiveShuttles)
+			{
+				if (building.InnerThing.TryGetComp<CompRefuelable>() == null)
+				{
+					fuelableShuttles.Add(building);
+				}
+				else if (building.InnerThing.TryGetComp<CompRefuelable>().HasFuel)
+				{
+					fuelableShuttles.Add(building);
+				}
+				else
+				{
+					foreach (Thing tee in CaravanInventoryUtility.AllInventoryItems(__instance))
+					{
+						if (building.InnerThing.TryGetComp<CompRefuelable>().Props.fuelFilter.Allows(tee.def))
+						{
+							fuelableShuttles.Add(building);
+							break;
+						}
+					}
+				}
+			}
+			if (fuelableShuttles.Count > 0)
+			{
+				Gizmo activateGizmo = new Command_Action
+				{
+					defaultLabel = "Activate Shuttles",
+					defaultDesc = "Activate shuttle(s) and refuel them if possible",
+					icon = CompShuttleLaunchable.SetTargetFuelLevelCommand,
+					action = delegate {
+						ShuttleCaravanUtility.ActivateMe(__instance, fuelableShuttles);
+					}
+				};
+
+				newList.Add(activateGizmo);
+			}
+
+			__result = newList;
+		}
+	}
+
+	[HarmonyPatch(typeof(MassUtility), "Capacity")]
+	public static class FixShuttleCarryCap
+	{
+		public static void Postfix(ref float __result, Pawn p)
+		{
+			if (p.TryGetComp<CompBecomeBuilding>() != null)
+			{
+				__result = p.TryGetComp<CompBecomeBuilding>().Props.buildingDef.GetCompProperties<CompProperties_Transporter>().massCapacity;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(CaravanUIUtility), "AddPawnsSections")]
+	public static class UIFix
+	{
+		public static void Postfix(TransferableOneWayWidget widget, List<TransferableOneWay> transferables)
+		{
+			if (Find.WorldSelector.FirstSelectedObject == null || !(Find.WorldSelector.FirstSelectedObject is MapParent) || ((MapParent)Find.WorldSelector.FirstSelectedObject).Map == null || !((MapParent)Find.WorldSelector.FirstSelectedObject).Map.IsPlayerHome)
+			{
+				IEnumerable<TransferableOneWay> source = from x in transferables
+														 where x.ThingDef.category == ThingCategory.Pawn
+														 select x;
+				widget.AddSection(TranslatorFormattedStringExtensions.Translate("SoSShuttles"), from x in source
+																								where (((Pawn)x.AnyThing).TryGetComp<CompBecomeBuilding>() != null)
+																								select x);
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(TransportPodsArrivalAction_GiveToCaravan), "StillValid")]
+	public static class MakeSureNotToLoseYourShuttle
+	{
+		static bool hasShuttle = false;
+		public static bool Prefix(IEnumerable<IThingHolder> pods)
+		{
+			hasShuttle = false;
+			foreach (IThingHolder pod in pods)
+			{
+				foreach (Thing t in pod.GetDirectlyHeldThings())
+				{
+					if (t.TryGetComp<CompBecomeBuilding>() != null)
+					{
+						hasShuttle = true;
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+		public static void Postfix(ref FloatMenuAcceptanceReport __result)
+		{
+			if (hasShuttle)
+				__result = true;
+		}
+	}
+
+	[HarmonyPatch(typeof(PawnCapacitiesHandler), "CapableOf")]
+	public static class ShuttlesCannotConstruct //This is slow and shitty, but Tynan didn't leave us many options to avoid a nullref
+	{
+		public static void Postfix(PawnCapacityDef capacity, PawnCapacitiesHandler __instance, ref bool __result)
+		{
+			if (capacity == PawnCapacityDefOf.Manipulation && __instance.pawn.TryGetComp<CompBecomeBuilding>() != null)
+			{
+				__result = false;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(Pawn_MeleeVerbs), "ChooseMeleeVerb")]
+	public static class ThatWasAnOldBug
+	{
+		public static bool Prefix(Pawn_MeleeVerbs __instance)
+		{
+			return __instance.Pawn.TryGetComp<CompBecomeBuilding>() == null;
+		}
+	}
+
+	[HarmonyPatch(typeof(Dialog_LoadTransporters), "AddPawnsToTransferables", null)]
+	public static class TransportPrisoners_Patch
+	{
+		public static bool Prefix(Dialog_LoadTransporters __instance)
+		{
+			List<Pawn> list = CaravanFormingUtility.AllSendablePawns(__instance.map);
+			for (int i = 0; i < list.Count; i++)
+			{
+				typeof(Dialog_LoadTransporters)
+					.GetMethod("AddToTransferables", BindingFlags.NonPublic | BindingFlags.Instance)
+					.Invoke(__instance, new object[1] { list[i] });
+			}
+
+			return false;
+		}
+	}
+
+	//obs-shuttle change?
+	[HarmonyPatch(typeof(TravelingTransportPods), "Start", MethodType.Getter)]
+	public static class FromSpaceship
+	{
+		public static void Postfix(TravelingTransportPods __instance, ref Vector3 __result)
+		{
+			foreach (WorldObject ship in Find.World.worldObjects.AllWorldObjects.Where(o => o is WorldObjectOrbitingShip))
+				if (ship.Tile == __instance.initialTile)
+					__result = ship.DrawPos;
+			foreach (WorldObject site in Find.World.worldObjects.AllWorldObjects.Where(o => o is SpaceSite || o is MoonBase))
+				if (site.Tile == __instance.initialTile)
+					__result = site.DrawPos;
+		}
+	}
+
+	[HarmonyPatch(typeof(TravelingTransportPods), "End", MethodType.Getter)]
+	public static class ToSpaceship
+	{
+		public static void Postfix(TravelingTransportPods __instance, ref Vector3 __result)
+		{
+			foreach (WorldObject ship in Find.World.worldObjects.AllWorldObjects.Where(o => o is WorldObjectOrbitingShip))
+				if (ship.Tile == __instance.destinationTile)
+					__result = ship.DrawPos;
+			foreach (WorldObject site in Find.World.worldObjects.AllWorldObjects.Where(o => o is SpaceSite || o is MoonBase))
+				if (site.Tile == __instance.destinationTile)
+					__result = site.DrawPos;
+		}
+	}
+
+	[HarmonyPatch(typeof(Skyfaller), "HitRoof")]
+	public static class ShuttleBayAcceptsShuttle
+	{
+		public static bool Prefix(Skyfaller __instance)
+		{
+			if (__instance.Position.GetThingList(__instance.Map).Any(t =>
+				t.def == ResourceBank.ThingDefOf.ShipShuttleBay || t.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || t.TryGetComp<CompShipSalvageBay>() != null))
+			{
+				return false;
+			}
+			if (__instance.Map.IsSpace() && (__instance.def.defName.Equals("ShuttleIncomingPersonal") || __instance.def == ThingDefOf.DropPodIncoming)) //dont breach roof with small pods in space
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(TransportPodsArrivalActionUtility), "DropTravelingTransportPods")]
+	public static class ShuttleBayArrivalPrecision
+	{
+		public static bool Prefix(List<ActiveDropPodInfo> dropPods, IntVec3 near, Map map)
+		{
+			if (map.Parent != null && map.Parent.def == ResourceBank.WorldObjectDefOf.ShipOrbiting)
+			{
+				TransportPodsArrivalActionUtility.RemovePawnsFromWorldPawns(dropPods);
+				for (int i = 0; i < dropPods.Count; i++)
+				{
+					DropPodUtility.MakeDropPodAt(near, map, dropPods[i]);
+				}
+
+				return false;
+			}
+
+			return true;
+		}
+	}
+
+	[HarmonyPatch(typeof(ShipLandingArea), "RecalculateBlockingThing")]
+	public static class ShipLandingAreaUnderShipRoof
+	{
+		public static bool Prefix(Map ___map, CellRect ___rect, ref bool ___blockedByRoof, ref Thing ___firstBlockingThing)
+		{
+			___blockedByRoof = false;
+			foreach (IntVec3 c in ___rect)
+			{
+				if (c.Roofed(___map) && ___map.roofGrid.RoofAt(c) == ResourceBank.RoofDefOf.RoofShip)
+				{
+					List<Thing> thingList = c.GetThingList(___map);
+					for (int i = 0; i < thingList.Count; i++)
+					{
+						if ((!(thingList[i] is Pawn) && (thingList[i].def.Fillage != FillCategory.None || thingList[i].def.IsEdifice() || thingList[i] is Skyfaller)) && thingList[i].def != ResourceBank.ThingDefOf.ShipShuttleBay && thingList[i].def != ResourceBank.ThingDefOf.ShipShuttleBayLarge && !(thingList[i].TryGetComp<CompShipCachePart>()?.Props.isPlating ?? false))
+						{
+							___firstBlockingThing = thingList[i];
+							return false;
+						}
+					}
+				}
+				else
+					return true;
+			}
+			___firstBlockingThing = null;
+			return false;
+		}
+	}                                                                                                      
+
+	[HarmonyPatch(typeof(Trigger_UrgentlyHungry), "ActivateOn")]
+	public static class MechsDontEat
+	{
+		public static bool Prefix(Lord lord, out bool __state)
+		{
+			__state = false;
+			foreach (Pawn p in lord.ownedPawns)
+			{
+				if (p.RaceProps.IsMechanoid)
+				{
+					__state = true;
+					return false;
+				}
+			}
+			return true;
+		}
+		public static void Postfix(ref bool __result, bool __state)
+		{
+			if (__state)
+				__result = false;
+		}
+	}
+
+	[HarmonyPatch(typeof(TransferableUtility), "CanStack")]
+	public static class MechsCannotStack
+	{
+		public static bool Prefix(Thing thing, ref bool __result)
+		{
+			if (thing is Pawn && ((Pawn)thing).RaceProps.IsMechanoid)
+			{
+				__result = false;
+				return false;
+			}
+
+			return true;
 		}
 	}*/
 }

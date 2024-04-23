@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using RimWorld;
+using Vehicles;
 
 namespace SaveOurShip2
 {
@@ -20,22 +21,28 @@ namespace SaveOurShip2
 		public float radiusSet = -1;
 		public float radius = -1;
 		public bool shutDown;
+		bool vehicleWantsShutDown = false;
 		private int lastIntercepted = -69;
 		private float lastInterceptAngle;
 
 		public CompFlickable flickComp;
 		public CompPowerTrader powerComp;
 		public CompBreakdownable breakComp;
+		VehiclePawn parentVehicle;
 
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
+			if (radiusSet == -1)
+				radiusSet = radius = Props.shieldDefault;
+			if(parent.Spawned && parent.Map.GetComponent<ShipMapComp>()!=null)
+				parent.Map.GetComponent<ShipMapComp>().Shields.Add(this);
+			parentVehicle = parent as VehiclePawn;
+			if (parentVehicle != null)
+				return;
 			flickComp = parent.TryGetComp<CompFlickable>();
 			powerComp = parent.TryGetComp<CompPowerTrader>();
 			breakComp = parent.TryGetComp<CompBreakdownable>();
-			parent.Map.GetComponent<ShipMapComp>().Shields.Add(this);
-			if (radiusSet == -1)
-				radiusSet = radius = Props.shieldDefault;
 		}
 		public override void PostDeSpawn(Map map)
 		{
@@ -45,7 +52,7 @@ namespace SaveOurShip2
 		public override void CompTick()
 		{
 			base.CompTick();
-			this.shutDown = breakComp.BrokenDown || !powerComp.PowerOn || Venting;
+			this.shutDown = (parentVehicle == null) ? (breakComp.BrokenDown || !powerComp.PowerOn || Venting) : (parentVehicle.statHandler.GetComponentHealth("shieldGenerator") <= 10 || vehicleWantsShutDown);
 			if (!this.shutDown && Find.TickManager.TicksGame % 60 == 0)
 			{			
 				float absDiff = Math.Abs(radius - radiusSet);
@@ -55,7 +62,8 @@ namespace SaveOurShip2
 					radius+=1f;
 				else if (radiusSet < radius)
 					radius-=1f;
-				powerComp.PowerOutput = radius * -50;
+				if(powerComp != null)
+					powerComp.PowerOutput = radius * -50;
 			}
 		}
 		public override string CompInspectStringExtra()
@@ -80,7 +88,7 @@ namespace SaveOurShip2
 			{ThingDef.Named("Bullet_Torpedo_Antimatter"), 0.33f},
 		};
 
-		public virtual float CalcHeatGenerated(Projectile_ExplosiveShip proj)
+		public virtual float CalcHeatGenerated(Projectile proj)
 		{
 			float heatGenerated = proj.DamageAmount * HeatDamageMult * Props.heatMultiplier;
 			heatGenerated *= ProjectileToMult.TryGetValue(proj.def, 1f);
@@ -89,20 +97,25 @@ namespace SaveOurShip2
 			return heatGenerated;
 		}
 
-		public void HitShield(Projectile_ExplosiveShip proj)
+		public void HitShield(Projectile proj)
 		{
 			lastInterceptAngle = proj.DrawPos.AngleToFlat(parent.TrueCenter());
 			lastIntercepted = Find.TickManager.TicksGame;
 
 			float heatGenerated = CalcHeatGenerated(proj);
-			if (proj is Projectile_ExplosiveShipLaser || proj is Projectile_ExplosiveShipPsychic)
+			if (parent.Spawned && (proj is Projectile_ExplosiveShipLaser || proj is Projectile_ExplosiveShipPsychic))
 			{
 				ShipCombatLaserMote obj = (ShipCombatLaserMote)(object)ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipCombatLaserMote);
 				obj.origin = proj.origin;
 				obj.destination = proj.DrawPos;
-				obj.color = proj.Launcher.TryGetComp<CompShipHeat>().Props.laserColor;
-				if (proj.weaponDamageMultiplier > 1f)
-					obj.large = true;
+				if (proj.Launcher != null && proj.Launcher.TryGetComp<CompShipHeat>()!=null)
+				{
+					obj.color = proj.Launcher.TryGetComp<CompShipHeat>().Props.laserColor;
+					if (proj.weaponDamageMultiplier > 1f)
+						obj.large = true;
+				}
+				else
+					obj.color = Color.red;
 				obj.Attach(parent);
 				GenSpawn.Spawn(obj, proj.DrawPos.ToIntVec3(), proj.Map, 0);
 			}
@@ -110,8 +123,12 @@ namespace SaveOurShip2
 			{
 				if (myNet != null)
 					AddHeatToNetwork(myNet.StorageCapacity - myNet.StorageUsed);
-				breakComp.DoBreakdown();
-				GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);
+				if (breakComp != null)
+					breakComp.DoBreakdown();
+				else
+					parentVehicle.statHandler.SetComponentHealth("shieldGenerator", 0);
+				if(parent.Spawned)
+					GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);
 				SoundDef.Named("EnergyShield_Broken").PlayOneShot(new TargetInfo(parent));
 				if (parent.Faction != Faction.OfPlayer)
 					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CombatShieldBrokenEnemy"), parent, MessageTypeDefOf.PositiveEvent);
@@ -126,11 +143,14 @@ namespace SaveOurShip2
 				}
 			}
 
-			FleckMaker.ThrowMicroSparks(parent.DrawPos, parent.Map);
-
-			GenExplosion.DoExplosion(proj.Position, parent.Map, 3, DefDatabase<DamageDef>.GetNamed("ShieldExplosion"), null);
+			if (parent.Spawned)
+			{
+				FleckMaker.ThrowMicroSparks(parent.DrawPos, parent.Map);
+				GenExplosion.DoExplosion(proj.Position, parent.Map, 3, DefDatabase<DamageDef>.GetNamed("ShieldExplosion"), null, screenShakeFactor: (proj is Projectile_ExplosiveShip ? 1 : 0));
+			}
 			proj.Destroy();
 		}
+
 		public float Alpha()
 		{
 			if (shutDown)
@@ -161,6 +181,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref shutDown, "shutDown");
 			Scribe_Values.Look(ref radius, "radius", Props.shieldDefault);
 			Scribe_Values.Look(ref radiusSet, "radiusSet", Props.shieldDefault);
+			Scribe_Values.Look(ref vehicleWantsShutDown, "wantsShutDown");
 		}
 		public override void PostDraw()
 		{
@@ -224,7 +245,8 @@ namespace SaveOurShip2
 				action = delegate ()
 				{
 					radiusSet = Props.shieldDefault;
-					powerComp.PowerOutput = -1500;
+					if(powerComp != null)
+						powerComp.PowerOutput = -1500;
 					SoundDefOf.Tick_Tiny.PlayOneShotOnCamera(null);
 				},
 				defaultLabel = "SoS.ResetShieldRadius".Translate(),
@@ -254,6 +276,20 @@ namespace SaveOurShip2
 				hotKey = KeyBindingDefOf.Misc3,
 				icon = ContentFinder<Texture2D>.Get("UI/Commands/TempRaise", true)
 			};
+			if (parent is VehiclePawn)
+			{
+				yield return new Command_Toggle
+				{
+					toggleAction = delegate ()
+					{
+						vehicleWantsShutDown = !vehicleWantsShutDown;
+					},
+					isActive = delegate () { return !vehicleWantsShutDown; },
+					defaultLabel = "Toggle shield",
+					defaultDesc = "Turn this shield on or off",
+					icon = ContentFinder<Texture2D>.Get("UI/Shield_On")
+				};
+            }
 			yield break;
 		}
 		public void ChangeShieldSize(float radius)

@@ -2,7 +2,7 @@
 using Verse;
 
 namespace SaveOurShip2
-{
+{/*
 	public class CompProps_BecomePawn : CompProperties
 	{
 		public PawnKindDef pawnDef;
@@ -11,6 +11,6 @@ namespace SaveOurShip2
 		{
 			this.compClass = typeof(CompBecomePawn);
 		}
-	}
+	}*/
 }
 

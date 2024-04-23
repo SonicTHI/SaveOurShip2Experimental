@@ -211,7 +211,7 @@ namespace SaveOurShip2
 						{
 							CameraJumper.TryJump(CameraJumper.GetWorldTarget(this.Map.Parent));
 							Find.WorldSelector.ClearSelection();
-							Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompShuttleLaunchable.TargeterMouseAttachment, true, delegate
+							Find.WorldTargeter.BeginTargeting(new Func<GlobalTargetInfo, bool>(this.ChoseWorldTarget), true, CompCryptoLaunchable.TargeterMouseAttachment, true, delegate
 							{
 							}, delegate (GlobalTargetInfo target)
 							{
@@ -474,6 +474,20 @@ namespace SaveOurShip2
 						};
 						yield return selectWeapons;
 					}
+					foreach(ShipMapComp.ShuttleMissionData mission in mapComp.ShuttleMissions.Where(mission=>mission.mission!=ShipMapComp.ShuttleMission.RETURN))
+                    {
+						Command_Action returnShuttle = new Command_Action
+						{
+							action = delegate
+							{
+								mission.mission = ShipMapComp.ShuttleMission.RETURN;
+							},
+							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.RecallShuttle", mission.shuttle, mission.mission.ToString()),
+							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RecallShuttleDesc"),
+							icon = ContentFinder<Texture2D>.Get("UI/ShuttleMissionBoarding")
+						};
+						yield return returnShuttle;
+                    }
 				}
 				//intarget
 				/*else if (mapComp.HasTarget) //end target

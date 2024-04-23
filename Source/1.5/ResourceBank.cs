@@ -2,6 +2,7 @@ using Verse;
 using RimWorld;
 using UnityEngine;
 using Verse.AI;
+using Vehicles;
 
 namespace SaveOurShip2
 {
@@ -40,7 +41,6 @@ namespace SaveOurShip2
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
 			shipBarNeutral = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Map_Icon_Neutral",
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
-
 		}
 		public static Graphic shipZeroEnemy;
 		public static Graphic shipOneEnemy;
@@ -111,7 +111,7 @@ namespace SaveOurShip2
 			public static ThingDef CrittersleepCasket;
 			public static ThingDef CrittersleepCasketLarge;
 			public static ThingDef Ship_CryptosleepCasket;
-			public static ThingDef PersonalShuttle;
+			public static ThingDef SoS2_Shuttle_Personal;
 			public static ThingDef SoS2DummyObject;
 			public static ThingDef Mote_HeatsinkPurge;
 			public static ThingDef Proj_ShipDebrisA;
@@ -128,6 +128,10 @@ namespace SaveOurShip2
 			public static ThingDef ArchotechExoticParticles;
 			public static ThingDef DetachedShipPart;
 			public static ThingDef ShipMoveBlueprint;
+			public static ThingDef SoS2CryptosleepCocoon;
+			public static ThingDef Shuttle_Laser;
+			public static ThingDef Shuttle_Laser_Space;
+			public static ThingDef Shuttle_Plasma;
 			//vanilla defs
 			public static ThingDef Turret_Autocannon;
 			public static ThingDef Turret_Sniper;
@@ -197,6 +201,7 @@ namespace SaveOurShip2
 		public static class StorytellerDefOf
 		{
 			public static StorytellerDef Sara;
+			public static StorytellerDef Kim;
 		}
 
 		[DefOf]
@@ -256,6 +261,27 @@ namespace SaveOurShip2
 			public static StatDef HypoxiaResistance;
 			public static StatDef HypoxiaResistanceOffset;
 			public static StatDef VacuumSpeedMultiplier;
+		}
+
+		[DefOf]
+		public static class VehicleStatDefOf
+        {
+			public static VehicleStatDef Hardpoints;
+			public static VehicleStatDef SoS2CombatDodgeChance;
+		}
+
+		[DefOf]
+		public static class ThingCategoryDefOf
+        {
+			public static ThingCategoryDef SpaceTorpedoes;
+		}
+
+		[DefOf]
+		public static class VehicleTurretDefOf
+        {
+			public static VehicleTurretDef SoS2ShuttleLaser;
+			public static VehicleTurretDef SoS2ShuttlePlasma;
+			public static VehicleTurretDef SoS2ShuttleTorpedo;
 		}
 	}
 }

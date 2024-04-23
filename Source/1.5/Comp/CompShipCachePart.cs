@@ -192,7 +192,7 @@ namespace SaveOurShip2
 				foreach (IntVec3 vec in cellsUnder) //if any part was on ship remove it from cache
 				{
 					int index = mapComp.ShipIndexOnVec(vec);
-					if (index != -1)
+					if (index != -1 && mapComp.ShipsOnMap.ContainsKey(index)) //Was causing ship mayday quests to fail without this check
 					{
 						mapComp.ShipsOnMap[index].RemoveFromCache(parent as Building, mode);
 					}

@@ -8,7 +8,7 @@
 			<success>Normal</success>
 			<operations>
 				<li Class="PatchOperationAdd">
-					<xpath>/Defs</xpath>
+					<xpath>Defs</xpath>
 					<value>
 						<!-- pawns -->
 						<PawnKindDef>
@@ -160,19 +160,19 @@
 							<colorSecondary>Structure_GrayLight</colorSecondary>
 							<marineDef>Empire_Fighter_Marine_Space</marineDef>
 							<marineHeavyDef>Empire_Fighter_Cataphract_Space</marineHeavyDef>
-							<enemyShipDefs>
+							<spaceShipDefs>
 								<li>EmpireBattleship</li>
 								<li>EmpireBomber</li>
 								<li>EmpireCorvette</li>
 								<li>EmpireCruiser</li>
 								<li>EmpireDestroyer</li>
 								<li>EmpireFighter</li>
-							</enemyShipDefs>
+							</spaceShipDefs>
 						</SpaceNavyDef>
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-					<xpath>Defs/EnemyShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
+					<xpath>Defs/SpaceShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
 					<value>
 						<navyExclusive>true</navyExclusive>
 					</value>
@@ -330,6 +330,60 @@
 					<value>
 						<li>PirateYttakin</li>
 						<li>PirateWaster</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Anomaly</li>
+		</mods>		
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs</xpath>
+					<value>
+						<SpaceNavyDef ParentName="SpaceNavy">
+							<defName>Shamblers_SpaceNavy</defName>
+							<label>Shamblers Space Navy</label>
+							<factionDefs>
+								<li>Entities</li>
+							</factionDefs>
+							<crewDef>ShamblerGorehulk</crewDef>
+							<marineDef>ShamblerSwarmer</marineDef>
+							<marineHeavyDef>ShamblerSoldier</marineHeavyDef>
+						</SpaceNavyDef>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs</xpath>
+					<value>
+						<SpaceNavyDef ParentName="SpaceNavy">
+							<defName>Fleshbeasts_SpaceNavy</defName>
+							<label>Fleshbeast Space Navy</label>
+							<factionDefs>
+								<li>Entities</li>
+							</factionDefs>
+							<crewDef>Trispike</crewDef>
+							<marineDef>Fingerspike</marineDef>
+							<marineHeavyDef>Toughspike</marineHeavyDef>
+						</SpaceNavyDef>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[@Name="BaseFleshbeast" or @Name="MysteriousSphereEntityBase" or @Name="Revenant" or defName="Metalhorror" or defName="Noctol"]/statBases</xpath>
+					<value>
+						<HypoxiaResistance>1</HypoxiaResistance>
+						<DecompressionResistance>1</DecompressionResistance>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/HediffDef[defName="Shambler"]/stages/li/statOffsets</xpath>
+					<value>
+						<HypoxiaResistance>1</HypoxiaResistance>
+						<DecompressionResistance>1</DecompressionResistance>
 					</value>
 				</li>
 			</operations>

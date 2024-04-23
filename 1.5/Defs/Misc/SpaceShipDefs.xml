@@ -1,0 +1,89 @@
+<Defs>
+	
+	<SpaceShipPartDef>
+		<defName>Cargo</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>CasketFilled</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>Mech_CentipedeGunner_SPAWNER</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>Mech_Scyther_SPAWNER</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>Mech_Pikeman_SPAWNER</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>Mech_Lancer_SPAWNER</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>Mech_Random</defName>
+		<things>
+			<li>Mech_Pikeman</li>
+			<li>Mech_Scyther</li>
+			<li>Mech_Lancer</li>
+			<li>Mech_CentipedeGunner</li>
+			<li>Mech_CentipedeBurner</li>
+		</things>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>Astromite_SPAWNER</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>Stellapede_SPAWNER</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>Cosmopillar_SPAWNER</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>SpaceHive_SPAWNER</defName>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>SpaceBug_Random</defName>
+		<things>
+			<li>Astromite</li>
+			<li>Stellapede</li>
+			<li>Cosmopillar</li>
+		</things>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>ShipPartTurretSmall</defName>
+		<things>
+			<li>ShipTurret_Laser</li>
+			<li>ShipTurret_Plasma</li>
+			<li>ShipTurret_Kinetic</li>
+		</things>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>ShipPartTurretLarge</defName>
+		<things>
+			<li>ShipTurret_Laser_Large</li>
+			<li>ShipTurret_Plasma_Large</li>
+			<li>ShipTurret_Kinetic_Large</li>
+		</things>
+	</SpaceShipPartDef>
+	
+	<SpaceShipPartDef>
+		<defName>ShipPartTurretSpinal</defName>
+		<things>
+			<li>ShipSpinalBarrelLaser</li>
+			<li>ShipSpinalBarrelPlasma</li>
+			<li>ShipSpinalBarrelKinetic</li>
+		</things>
+	</SpaceShipPartDef>
+</Defs>

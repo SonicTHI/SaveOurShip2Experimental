@@ -1,10 +1,12 @@
 ﻿using System;
 using UnityEngine;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 using System.Collections.Generic;
 
-namespace RimWorld.BaseGen
+using RimWorld.BaseGen;
+
+namespace SaveOurShip2
 {
 	public class SymbolResolver_Ship_Pregen_New : SymbolResolver
 	{
@@ -17,7 +19,7 @@ namespace RimWorld.BaseGen
 		public override void Resolve(ResolveParams rp)
 		{
 			List<Building> cores = new List<Building>();
-			try { ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("CharlonWhitestone"), BaseGen.globalSettings.map, null, Faction.OfPlayer, null, out cores, false, true); } catch (Exception e) { Log.Error(e.ToString()); }
+			try { ShipInteriorMod2.GenerateShip(DefDatabase<SpaceShipDef>.GetNamed("CharlonWhitestone"), BaseGen.globalSettings.map, null, Faction.OfPlayer, null, out cores, false, true); } catch (Exception e) { Log.Error(e.ToString()); }
 			foreach(Thing thing in BaseGen.globalSettings.map.listerThings.ThingsInGroup(ThingRequestGroup.Refuelable))
 			{
 				((ThingWithComps)thing).TryGetComp<CompRefuelable>().Refuel(9999);

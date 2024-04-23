@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RimWorld;
+using RimWorld.BaseGen;
 
-namespace RimWorld.BaseGen
+namespace SaveOurShip2
 {
 	public class SymbolResolver_ShipDebrisPart_Indoors_Leaf_Laboratory : SymbolResolver
 	{

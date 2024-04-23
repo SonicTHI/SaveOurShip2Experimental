@@ -1,8 +1,8 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	//dep
 	/*public class PlaceWorker_InsideStarship : PlaceWorker

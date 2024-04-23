@@ -5,8 +5,9 @@ using System.Text;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class Building_SatelliteCore : Building
 	{

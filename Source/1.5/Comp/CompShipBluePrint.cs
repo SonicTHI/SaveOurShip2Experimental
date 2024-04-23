@@ -1,17 +1,17 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class CompShipBlueprint : ThingComp
 	{
-		public CompProperties_ShipBlueprint Props
+		public CompProps_ShipBlueprint Props
 		{
-			get { return props as CompProperties_ShipBlueprint; }
+			get { return props as CompProps_ShipBlueprint; }
 		}
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()
 		{
@@ -62,7 +62,7 @@ namespace RimWorld
 			yield return place2;
 			yield return place3;
 		}
-		public void SpawnShipDefBlueprint(EnemyShipDef shipDef, IntVec3 pos, Map map, int tier)
+		public void SpawnShipDefBlueprint(SpaceShipDef shipDef, IntVec3 pos, Map map, int tier)
 		{
 			//get area
 			HashSet<IntVec3> Area = new HashSet<IntVec3>();
@@ -77,7 +77,7 @@ namespace RimWorld
 				{
 					v = new IntVec3(pos.x + shape.x + 1, 0, pos.z + shape.z + 1);
 					Area.Add(v);
-					var comp = def.GetCompProperties<CompProperties_SoShipPart>();
+					var comp = def.GetCompProperties<CompProps_ShipCachePart>();
 					if (comp != null && comp.Plating)
 						Plating.Add(v);
 					continue;
@@ -127,10 +127,10 @@ namespace RimWorld
 			foreach (ShipShape shape in shipDef.parts.Where(s => DefDatabase<ThingDef>.GetNamedSilentFail(s.shapeOrDef) != null))
 			{
 				ThingDef def = ThingDef.Named(shape.shapeOrDef);
-				if (!def.IsBuildingArtificial || !def.IsResearchFinished)
+				if (!def.IsBuildingArtificial || !def.IsResearchFinished || !def.BuildableByPlayer)
 					continue;
 				IntVec3 v = new IntVec3(pos.x + shape.x + 1, 0, pos.z + shape.z + 1);
-				var comp = def.GetCompProperties<CompProperties_SoShipPart>();
+				var comp = def.GetCompProperties<CompProps_ShipCachePart>();
 				//tier 1: plating and hull not on plating
 				//tier 2: hull (all, placecheck prevents dupes/overwrites)
 				//tier 3: rest, non ship part

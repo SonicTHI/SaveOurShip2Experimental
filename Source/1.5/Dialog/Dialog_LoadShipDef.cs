@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Dialog_LoadShipDef : Dialog_RenameShip
 	{
@@ -16,16 +17,16 @@ namespace RimWorld
 		{
 			if (name == ship || string.IsNullOrEmpty(name))
 				return;
-			if (DefDatabase<EnemyShipDef>.GetNamedSilentFail(name) == null)
+			if (DefDatabase<SpaceShipDef>.GetNamedSilentFail(name) == null)
 			{
 				Log.Error("Ship not found in database: " + name);
 				return;
 			}
 			AttackableShip shipa = new AttackableShip();
-			shipa.attackableShip = DefDatabase<EnemyShipDef>.GetNamed(name);
+			shipa.attackableShip = DefDatabase<SpaceShipDef>.GetNamed(name);
 			if (shipa.attackableShip.navyExclusive)
 			{
-				shipa.spaceNavyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.enemyShipDefs.Contains(shipa.attackableShip)).RandomElement();
+				shipa.spaceNavyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.spaceShipDefs.Contains(shipa.attackableShip)).RandomElement();
 				shipa.shipFaction = Find.FactionManager.AllFactions.Where(f => shipa.spaceNavyDef.factionDefs.Contains(f.def)).RandomElement();
 			}
 			Map.passingShipManager.AddShip(shipa);

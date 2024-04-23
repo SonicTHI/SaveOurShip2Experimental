@@ -33,11 +33,12 @@ namespace RimWorld
 			}
 			if ((parent.Faction != Faction.OfPlayer || !mapComp.IsPlayerShipMap) && !(Prefs.DevMode && ShipInteriorMod2.HasSoS2CK))
 				yield break;
-			
+
+			bool nominal = mapComp.ShipMapState == ShipMapState.nominal;
 			foreach (Map map in Find.Maps)
 			{
-				var mapComp = map.GetComponent<ShipHeatMapComp>();
-				if (mapComp.ShipMapState != ShipMapState.isGraveyard)
+				var targetMapComp = map.GetComponent<ShipHeatMapComp>();
+				if (targetMapComp.ShipMapState != ShipMapState.isGraveyard)
 					continue;
 
 				if (Props.beam && (parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? false))
@@ -52,13 +53,13 @@ namespace RimWorld
 						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageBeamDesc", map.Parent.Label),
 						icon = ContentFinder<Texture2D>.Get("UI/SalvageBeam")
 					};
-					if (mapComp.ShipMapState != ShipMapState.nominal)
+					if (!nominal)
 					{
 						beam.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 					}
 					yield return beam;
 				}
-				if (mapComp.MapShipCells.Any())
+				if (targetMapComp.MapShipCells.Any())
 				{
 					Command_TargetWreck retrieveShipEnemy = new Command_TargetWreck
 					{
@@ -69,7 +70,7 @@ namespace RimWorld
 						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.SalvageCommand", map.Parent.Label),
 						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageCommandDesc", map.Parent.Label)
 					};
-					if (mapComp.ShipMapState != ShipMapState.nominal)
+					if (!nominal)
 					{
 						retrieveShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 					}
@@ -87,7 +88,7 @@ namespace RimWorld
 						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.SalvageStablizeDesc", map.Parent.Label),
 						icon = ContentFinder<Texture2D>.Get("UI/StabilizeShip")
 					};
-					if (mapComp.ShipMapState != ShipMapState.nominal)
+					if (!nominal)
 					{
 						stablizeShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 					}
@@ -146,7 +147,7 @@ namespace RimWorld
 				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecksCommandDesc"),
 				icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")
 			};
-			if (mapComp.ShipMapState != ShipMapState.nominal || GenHostility.AnyHostileActiveThreatToPlayer(parent.Map))
+			if (!nominal || GenHostility.AnyHostileActiveThreatToPlayer(parent.Map))
 			{
 				moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 				moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));

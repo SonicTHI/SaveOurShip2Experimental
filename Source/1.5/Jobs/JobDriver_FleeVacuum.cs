@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Verse;
 using Verse.AI;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class JobDriver_FleeVacuum : JobDriver
 	{

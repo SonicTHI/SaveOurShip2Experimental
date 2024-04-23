@@ -1,10 +1,10 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class PlaceWorker_SolarShip : PlaceWorker
 	{

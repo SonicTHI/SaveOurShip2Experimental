@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using Verse.AI;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class JobGiver_AIDefendShip : JobGiver_AIFightEnemies
 	{

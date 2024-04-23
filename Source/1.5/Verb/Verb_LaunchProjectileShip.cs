@@ -6,9 +6,9 @@ using UnityEngine;
 using Verse;
 using RimWorld.Planet;
 using HarmonyLib;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Verb_LaunchProjectileShip : Verb_Shoot
 	{
@@ -20,7 +20,7 @@ namespace RimWorld
 			{
 				if (base.EquipmentSource != null)
 				{
-					CompChangeableProjectilePlural comp = base.EquipmentSource.GetComp<CompChangeableProjectilePlural>();
+					CompChangeableProjectile comp = base.EquipmentSource.GetComp<CompChangeableProjectile>();
 					if (comp != null && comp.LoadedNotPrevent)
 					{
 						return comp.Projectile;
@@ -63,7 +63,7 @@ namespace RimWorld
 			Vector3 drawPos = caster.DrawPos;
 			if (equipment != null)
 			{
-				base.EquipmentSource.GetComp<CompChangeableProjectilePlural>()?.Notify_ProjectileLaunched();
+				base.EquipmentSource.GetComp<CompChangeableProjectile>()?.Notify_ProjectileLaunched();
 			}
 			Projectile projectile2 = (Projectile)GenSpawn.Spawn(projectile, resultingLine.Source, caster.Map);
 
@@ -115,7 +115,7 @@ namespace RimWorld
 		}
 		public void PointDefense(Building_ShipTurret turret) // PD removes from target map
 		{
-			var mapComp = turret.Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = turret.Map.GetComponent<ShipMapComp>();
 			if (mapComp.ShipCombatTargetMap != null)
 			{
 				//pods
@@ -183,7 +183,7 @@ namespace RimWorld
 		//projectiles register on turret map
 		public void RegisterProjectile(Building_ShipTurret turret, LocalTargetInfo target, ThingDef spawnProjectile, IntVec3 burstLoc)
 		{
-			var mapComp = caster.Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = caster.Map.GetComponent<ShipMapComp>();
 
 			//inc acc if any manning pawn shooting or aicore
 			int accBoost = 0;

@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using Verse;
 using Verse.AI;
 using Verse.Sound;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class CompBlackBoxAI : ThingComp
 	{

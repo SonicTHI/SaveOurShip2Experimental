@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	//dep planet travel save
 	/*public class PreviousWorld : IExposable //Light(er)weight version of World, with no processing time wasted on it

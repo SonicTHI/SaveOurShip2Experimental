@@ -634,6 +634,7 @@
 		<combatEnhancingDrugsChance>0</combatEnhancingDrugsChance>
 		<initialWillRange>999~999</initialWillRange>
 		<initialResistanceRange>999~999</initialResistanceRange>
+		<generateInitialNonFamilyRelations>false</generateInitialNonFamilyRelations>
 	</PawnKindDef>
 	<!--obsolete-->
 	<!--ThingDef ParentName="BasePawn">

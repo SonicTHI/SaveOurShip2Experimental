@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Verse.AI;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class JobDriver_InstallConsciousness : JobDriver
 	{

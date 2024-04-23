@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse.AI;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class WorkGiver_InstallConsciousness : WorkGiver_Scanner //Also used for installing resurrector serum into afterlife caskets, to bring back a pawn's body
 	{
@@ -55,7 +56,7 @@ namespace RimWorld
 
 		public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
 		{
-			var mapComp = pawn.Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = pawn.Map.GetComponent<ShipMapComp>();
 			List<Thing> parents = new List<Thing>();
 			foreach (CompBuildingConsciousness consc in mapComp.Spores)
 				parents.Add(consc.parent);

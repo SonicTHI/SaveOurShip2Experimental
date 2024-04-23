@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
+using RimWorld;
+using RimWorld.QuestGen;
 
-namespace RimWorld.QuestGen
+namespace SaveOurShip2
 {
 	class QuestNode_GenerateThingSetArchotech : QuestNode
 	{

@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class Building_ShipTurretTorpedo : Building_ShipTurret
@@ -105,7 +105,7 @@ namespace RimWorld
 
 		public override void DeSpawn(DestroyMode mode)
 		{
-			this.Map.GetComponent<ShipHeatMapComp>().TorpedoTubes.Remove(this);
+			this.Map.GetComponent<ShipMapComp>().TorpedoTubes.Remove(this);
 			base.DeSpawn(mode);
 		}
 	}

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class AttackableShip : PassingShip
 	{
-		public EnemyShipDef attackableShip;
+		public SpaceShipDef attackableShip;
 		public Faction shipFaction;
 		public SpaceNavyDef spaceNavyDef;
 

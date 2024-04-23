@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using Verse;
 using Verse.AI;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class WorkGiver_OperateScannerSpace : WorkGiver_Scanner
 	{
@@ -43,7 +43,7 @@ namespace RimWorld
 				return false;
 			}
 			Building building = t as Building;
-			return building != null && !building.IsForbidden(pawn) && pawn.CanReserve(building, 1, -1, null, forced) && building.TryGetComp<CompLongRangeMineralScannerSpace>().CanUseNow && !building.IsBurning();
+			return building != null && !building.IsForbidden(pawn) && pawn.CanReserve(building, 1, -1, null, forced) && building.TryGetComp<CompShipScanner>().CanUseNow && !building.IsBurning();
 		}
 		public override Job JobOnThing(Pawn pawn, Thing t, bool forced = false)
 		{

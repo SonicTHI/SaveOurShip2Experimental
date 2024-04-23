@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompShipHeatPurge : CompShipHeatSink
@@ -18,7 +18,7 @@ namespace RimWorld
 		public bool purging = false;
 		bool start = false;
 		bool hiss = false;
-		public ShipHeatMapComp mapComp;
+		public ShipMapComp mapComp;
 		public CompRefuelable fuelComp;
 
 		public override void PostExposeData()
@@ -29,7 +29,7 @@ namespace RimWorld
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
-			mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
+			mapComp = parent.Map.GetComponent<ShipMapComp>();
 			fuelComp = parent.TryGetComp<CompRefuelable>();
 		}
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()

@@ -1,123 +1,120 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-
-  <MapGeneratorDef Name="EmptySpaceMap">
-	<defName>EmptySpaceMap</defName>
-	<genSteps>
-		<li>EmptySpaceTerrain</li>
-		<li>FindPlayerStartSpotSpace</li>
-		<li>FogSpace</li>
-	</genSteps>
-  </MapGeneratorDef>
-  
-  <GenStepDef>
-    <defName>EmptySpaceTerrain</defName>
-    <order>10</order>
-    <genStep Class="GenStep_EmptySpace"/>
-  </GenStepDef>
-  
-  <GenStepDef>
-    <defName>FindPlayerStartSpotSpace</defName>
-    <order>600</order>
-    <genStep Class="GenStep_FindPlayerStartSpot"/>
-  </GenStepDef>
-  
-  <GenStepDef>
-    <defName>FogSpace</defName>
-    <order>1500</order>
-    <genStep Class="GenStep_Fog"/>
-  </GenStepDef>
-  
-  <MapGeneratorDef ParentName="MapCommonBase">
-    <defName>ShipEngineImpactSite</defName>
-	<genSteps>
-      <li>RocksFromGrid</li>
-      <li>ShipEngineImpactSite</li>
-    </genSteps>
-  </MapGeneratorDef>
-  
-  <GenStepDef>
-    <defName>ShipEngineImpactSite</defName>
-    <order>420</order>
-    <genStep Class="GenStep_ShipEngineImpactSite">
-      <count>1</count>
-      <nearMapCenter>true</nearMapCenter>
+	<MapGeneratorDef Name="EmptySpaceMap">
+		<defName>EmptySpaceMap</defName>
+		<ignoreAreaRevealedLetter>true</ignoreAreaRevealedLetter>
+		<!--pocketMapProperties>
+			<biome>OuterSpaceBiome</biome>
+			<temperature>-100</temperature>
+		</pocketMapProperties-->
+		<genSteps>
+			<li>EmptySpaceTerrain</li>
+			<li>FindPlayerStartSpotSpace</li>
+			<li>FogSpace</li>
+		</genSteps>
+	</MapGeneratorDef>
+	<GenStepDef>
+		<defName>EmptySpaceTerrain</defName>
+		<order>10</order>
+		<genStep Class="SaveOurShip2.GenStep_EmptySpace"/>
+	</GenStepDef>
+	<GenStepDef>
+		<defName>FindPlayerStartSpotSpace</defName>
+		<order>600</order>
+		<genStep Class="GenStep_FindPlayerStartSpot"/>
+	</GenStepDef>
+	<GenStepDef>
+		<defName>FogSpace</defName>
+		<order>1500</order>
+		<genStep Class="GenStep_Fog"/>
+	</GenStepDef>
+	
+	<MapGeneratorDef ParentName="MapCommonBase">
+		<defName>ShipEngineImpactSite</defName>
+		<genSteps>
+			<li>RocksFromGrid</li>
+			<li>ShipEngineImpactSite</li>
+		</genSteps>
+	</MapGeneratorDef>
+	<GenStepDef>
+		<defName>ShipEngineImpactSite</defName>
+		<order>420</order>
+		<genStep Class="SaveOurShip2.GenStep_ShipEngineImpactSite">
+			<count>1</count>
+			<nearMapCenter>true</nearMapCenter>
+		</genStep>
+	</GenStepDef>
+	
+	<MapGeneratorDef>
+		<defName>MoonPillarSite</defName>
+		<ignoreAreaRevealedLetter>true</ignoreAreaRevealedLetter>
+		<genSteps>
+			<li>ElevationFertility</li>
+			<li>Caves</li>
+			<li>Terrain</li>
+			<li>CavesTerrain</li>
+			<li>FindPlayerStartSpot</li>
+			<li>ScenParts</li>
+			<li>Fog</li>
+			<li>MoonPillarSite</li>
+		</genSteps>
+	</MapGeneratorDef>
+	<GenStepDef>
+		<defName>MoonPillarSite</defName>
+		<order>420</order>
+		<genStep Class="SaveOurShip2.GenStep_MoonPillarSite">
+			<count>1</count>
+			<nearMapCenter>true</nearMapCenter>
+		</genStep>
+	</GenStepDef>
+	
+	<MapGeneratorDef ParentName="MapCommonBase">
+		<defName>TribalPillarSite</defName>
+		<genSteps>
+			<li>RocksFromGrid</li>
+			<li>TribalPillarSite</li>
+		</genSteps>
+	</MapGeneratorDef>
+	<GenStepDef>
+		<defName>TribalPillarSite</defName>
+		<order>420</order>
+		<genStep Class="SaveOurShip2.GenStep_TribalPillarSite">
+			<count>1</count>
+			<nearMapCenter>true</nearMapCenter>
+		</genStep>
+	</GenStepDef>
+	
+	<MapGeneratorDef>
+		<defName>InsectPillarSite</defName>
+		<ignoreAreaRevealedLetter>true</ignoreAreaRevealedLetter>
+		<genSteps>
+			<li>ElevationFertility</li>
+			<li>Caves</li>
+			<li>Terrain</li>
+			<li>CavesTerrain</li>
+			<li>Roads</li>
+			<li>RockChunks</li>
+			<li>ScatterRuinsSimple</li>
+			<li>SteamGeysers</li>
+			<li>FindPlayerStartSpot</li>
+			<li>ScenParts</li>
+			<li>Plants</li>
+			<li>Snow</li>
+			<li>Fog</li>
+			<li>EverythingIsRocks</li>
+			<li>InsectPillarCaves</li>
+		</genSteps>
+	</MapGeneratorDef>
+	<GenStepDef>
+		<defName>EverythingIsRocks</defName>
+		<order>419</order>
+		<genStep Class="SaveOurShip2.GenStep_EverythingIsRocks">
     </genStep>
-  </GenStepDef>
-  
-  <MapGeneratorDef>
-    <defName>MoonPillarSite</defName>
-	<genSteps>
-      <li>ElevationFertility</li>
-      <li>Caves</li>
-      <li>Terrain</li>
-      <li>CavesTerrain</li>
-      <li>FindPlayerStartSpot</li>
-      <li>ScenParts</li>
-      <li>Fog</li>
-      <li>MoonPillarSite</li>
-    </genSteps>
-  </MapGeneratorDef>
-  
-  <GenStepDef>
-    <defName>MoonPillarSite</defName>
-    <order>420</order>
-    <genStep Class="GenStep_MoonPillarSite">
-      <count>1</count>
-      <nearMapCenter>true</nearMapCenter>
+	</GenStepDef>
+	<GenStepDef>
+		<defName>InsectPillarCaves</defName>
+		<order>420</order>
+		<genStep Class="SaveOurShip2.GenStep_InsectPillarCaves">
     </genStep>
-  </GenStepDef>
-  
-  <MapGeneratorDef ParentName="MapCommonBase">
-    <defName>TribalPillarSite</defName>
-	<genSteps>
-      <li>RocksFromGrid</li>
-      <li>TribalPillarSite</li>
-    </genSteps>
-  </MapGeneratorDef>
-  
-  <GenStepDef>
-    <defName>TribalPillarSite</defName>
-    <order>420</order>
-    <genStep Class="GenStep_TribalPillarSite">
-      <count>1</count>
-      <nearMapCenter>true</nearMapCenter>
-    </genStep>
-  </GenStepDef>
-  
-  <MapGeneratorDef>
-    <defName>InsectPillarSite</defName>
-	<genSteps>
-      <li>ElevationFertility</li>
-      <li>Caves</li>
-      <li>Terrain</li>
-      <li>CavesTerrain</li>
-      <li>Roads</li>
-      <li>RockChunks</li>
-      <li>ScatterRuinsSimple</li>
-      <li>SteamGeysers</li>
-      <li>FindPlayerStartSpot</li>
-      <li>ScenParts</li>
-      <li>Plants</li>
-      <li>Snow</li>
-      <li>Fog</li>
-      <li>EverythingIsRocks</li>
-      <li>InsectPillarCaves</li>
-    </genSteps>
-  </MapGeneratorDef>
-  
-  <GenStepDef>
-    <defName>EverythingIsRocks</defName>
-    <order>419</order>
-    <genStep Class="GenStep_EverythingIsRocks">
-    </genStep>
-  </GenStepDef>
-  
-  <GenStepDef>
-    <defName>InsectPillarCaves</defName>
-    <order>420</order>
-    <genStep Class="GenStep_InsectPillarCaves">
-    </genStep>
-  </GenStepDef>
-
+	</GenStepDef>
 </Defs>

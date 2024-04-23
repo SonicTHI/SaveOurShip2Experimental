@@ -1,5 +1,5 @@
 ﻿
-using SaveOurShip2;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +7,20 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	class Building_SpaceCrib : Building_Bed
 	{
 		static Graphic overlayGraphic = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/SpaceCrib", ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
 
-		public ShipHeatMapComp mapComp;
+		public ShipMapComp mapComp;
 		public bool iAmClosed = false;
 
 		public override void SpawnSetup(Map map, bool respawningAfterLoad)
 		{
 			base.SpawnSetup(map, respawningAfterLoad);
-			this.mapComp = this.Map.GetComponent<ShipHeatMapComp>();
+			this.mapComp = this.Map.GetComponent<ShipMapComp>();
 		}
 		public override void TickRare()
 		{

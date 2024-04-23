@@ -5,8 +5,9 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using System.IO;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class GenStep_LoadShip : GenStep
 	{

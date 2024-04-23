@@ -15,7 +15,7 @@
 		</graphicData>
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase" Name="BaseShipTurretBuilding" Abstract="True">
-		<thingClass>Building_ShipTurret</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipTurret</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -54,7 +54,7 @@
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<placeWorkers>
 			<li>PlaceWorker_TurretTop</li>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipTurretBuilding" Name="ShipSpinalTurretBuilding" Abstract="True">
@@ -66,7 +66,7 @@
 		<designationHotKey>Misc12</designationHotKey>
 		<constructionSkillPrerequisite>12</constructionSkillPrerequisite>
 		<placeWorkers>
-			<li>PlaceWorker_NeedsSpinalMountPort</li>
+			<li>SaveOurShip2.PlaceWorker_NeedsSpinalMountPort</li>
 		</placeWorkers>
 	</ThingDef>
 	<!-- misc -->
@@ -87,7 +87,7 @@
 		</statBases>
 		<graphicData>
 			<texPath>Things/Building/Ship/ShieldGenerator</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
 			<drawSize>(3,3)</drawSize>
 			<shadowData>
 				<volume>(2.6, 0.8, 2.6)</volume>
@@ -98,12 +98,12 @@
 		</graphicData>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
-			<li>PlaceWorker_ShipProjectileInterceptorRadius</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipShieldRadius</li>
 		</placeWorkers>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipCombatShield</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipCombatShield</compClass>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
@@ -145,17 +145,17 @@
 		</statBases>
 		<graphicData>
 			<texPath>Things/Building/Ship/ShieldGeneratorMini</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
 			<drawSize>(1,1)</drawSize>
 		</graphicData>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
-			<li>PlaceWorker_ShipProjectileInterceptorRadius</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipShieldRadius</li>
 		</placeWorkers>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipCombatShield</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipCombatShield</compClass>
 				<heatMultiplier>1.25</heatMultiplier>
 				<shieldMin>10</shieldMin>
 				<shieldMax>20</shieldMax>
@@ -191,7 +191,7 @@
 		<defName>ShipHeatConduit</defName>
 		<label>thermal conduit</label>
 		<description>A liquid conduit for moving heat around a starship.</description>
-		<thingClass>Building_ShipConduit</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipConduit</thingClass>
 		<category>Building</category>
 		<graphicData>
 			<texPath>Things/Building/Ship/Atlas_CoolantConduit</texPath>
@@ -230,12 +230,12 @@
 			<Plasteel>1</Plasteel>
 		</costList>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipHeatConduit</li>
+			<li>SaveOurShip2.PlaceWorker_ShipHeatConduit</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>true</selectable>
@@ -274,7 +274,7 @@
 		<tickerType>Normal</tickerType>
 		<placeWorkers>
 			<li>PlaceWorker_Heater</li>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 	</ThingDef>
@@ -304,8 +304,8 @@
 			<ComponentIndustrial>2</ComponentIndustrial>
 		</costList>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSink</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatCapacity>200</heatCapacity>
 				<heatVent>8</heatVent>
@@ -353,8 +353,8 @@
 			<ComponentIndustrial>10</ComponentIndustrial>
 		</costList>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSink</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatCapacity>1000</heatCapacity>
 				<heatVent>32</heatVent>
@@ -399,8 +399,8 @@
 			<ComponentIndustrial>1</ComponentIndustrial>
 		</costList>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSink</compClass>
 				<heatCapacity>800</heatCapacity>
 				<heatLoss>4</heatLoss>
 				<threat>1</threat>
@@ -433,8 +433,8 @@
 			<ComponentIndustrial>5</ComponentIndustrial>
 		</costList>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSink</compClass>
 				<heatCapacity>4000</heatCapacity>
 				<heatLoss>12</heatLoss>
 				<threat>5</threat>
@@ -469,8 +469,8 @@
 		<passability>Impassable</passability>
 		<seeThroughFog>true</seeThroughFog>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatPurge</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatPurge</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatCapacity>200</heatCapacity>
 				<heatLoss>1</heatLoss>
@@ -526,8 +526,8 @@
 		<passability>Impassable</passability>
 		<seeThroughFog>true</seeThroughFog>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatPurge</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatPurge</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatCapacity>1000</heatCapacity>
 				<heatLoss>3</heatLoss>
@@ -573,8 +573,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>2</heatPerPulse>
 				<energyToFire>0</energyToFire>
@@ -640,7 +640,7 @@
 		<verbs>
 			<li>
 				<label>shoot slug</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<minRange>31.9</minRange>
 				<range>500</range>
@@ -669,7 +669,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(2,2)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>150</speed>
@@ -682,7 +682,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretACI</defName>
 		<label>Autocannon Slug</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShip</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretACI</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -756,8 +756,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>4</heatPerPulse>
 				<energyToFire>0</energyToFire>
@@ -821,7 +821,7 @@
 		<verbs>
 			<li>
 				<label>shoot slug</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1000</range>
 				<warmupTime>0.4</warmupTime>
@@ -849,7 +849,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(4,4)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>150</speed>
@@ -862,7 +862,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretACII</defName>
 		<label>Autocannon Slug</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShip</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretACII</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -916,8 +916,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>12</heatPerPulse>
 				<energyToFire>0</energyToFire>
@@ -981,7 +981,7 @@
 		<verbs>
 			<li>
 				<label>shoot slug</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1000</range>
 				<warmupTime>0.5</warmupTime>
@@ -1009,7 +1009,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(5,5)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>150</speed>
@@ -1022,7 +1022,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretACIII</defName>
 		<label>Autocannon Slug</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShip</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretACIII</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1079,8 +1079,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>10</heatPerPulse>
 				<energyToFire>80</energyToFire>
@@ -1126,7 +1126,7 @@
 		<verbs>
 			<li>
 				<label>shoot laser</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>500</range>
 				<minRange>31.9</minRange>
@@ -1153,7 +1153,7 @@
 			<graphicClass>Graphic_Single</graphicClass>
 			<shaderType>TransparentPostLight</shaderType>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>150</speed>
@@ -1166,7 +1166,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretLaser</defName>
 		<label>laser beam</label>
-		<thingClass>Projectile_ExplosiveShipCombatLaser</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipLaser</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1235,7 +1235,7 @@
 	</FleckDef>
 	<ThingDef ParentName="MoteBase">
 		<defName>ShipCombatLaserMote</defName>
-		<thingClass>ShipCombatLaserMote</thingClass>
+		<thingClass>SaveOurShip2.ShipCombatLaserMote</thingClass>
 		<graphicData>
 			<texPath>Other/OrbitalBeam</texPath>
 			<shaderType>MoteGlow</shaderType>
@@ -1264,8 +1264,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>30</heatPerPulse>
 				<energyToFire>240</energyToFire>
@@ -1309,7 +1309,7 @@
 		<verbs>
 			<li>
 				<label>shoot laser</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1000</range>
 				<warmupTime>0</warmupTime>
@@ -1330,7 +1330,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretLaserTwo</defName>
 		<label>laser beam</label>
-		<thingClass>Projectile_ExplosiveShipCombatLaser</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipLaser</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1386,8 +1386,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>15</heatPerPulse>
 				<energyToFire>50</energyToFire>
@@ -1433,7 +1433,7 @@
 		<verbs>
 			<li>
 				<label>fire plasma</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1000</range>
 				<minRange>31.9</minRange>
@@ -1461,7 +1461,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(4,4)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>150</speed>
@@ -1474,7 +1474,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretPlasma</defName>
 		<label>plasma toroid</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShip</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1557,8 +1557,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>45</heatPerPulse>
 				<energyToFire>150</energyToFire>
@@ -1602,7 +1602,7 @@
 		<verbs>
 			<li>
 				<label>fire plasma</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1500</range>
 				<warmupTime>1.5</warmupTime>
@@ -1630,7 +1630,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(6,6)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>150</speed>
@@ -1643,7 +1643,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretPlasma_Large</defName>
 		<label>plasma toroid</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShip</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1697,8 +1697,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>5</heatPerPulse>
 				<energyToFire>60</energyToFire>
@@ -1744,7 +1744,7 @@
 		<verbs>
 			<li>
 				<label>shoot slug</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1500</range>
 				<minRange>31.9</minRange>
@@ -1772,7 +1772,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(4,4)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>300</speed>
@@ -1785,7 +1785,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretKinetic</defName>
 		<label>railgun slug</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShip</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretKinetic</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1856,8 +1856,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>15</heatPerPulse>
 				<energyToFire>180</energyToFire>
@@ -1904,7 +1904,7 @@
 		<verbs>
 			<li>
 				<label>shoot slug</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>2500</range>
 				<warmupTime>0.5</warmupTime>
@@ -1932,7 +1932,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(6,6)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>300</speed>
@@ -1945,7 +1945,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretKinetic_Large</defName>
 		<label>railgun slug</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShip</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretKinetic</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2020,7 +2020,7 @@
 			<ComponentSpacer>12</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SpinalMount">
+			<li Class="SaveOurShip2.CompProps_SpinalMount">
 				<emits>true</emits>
 				<stackEnd>true</stackEnd>
 			</li>
@@ -2029,8 +2029,8 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_SpinalMountPort</li>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_SpinalMountPort</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<researchPrerequisites>
@@ -2072,7 +2072,7 @@
 			<ComponentSpacer>4</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SpinalMount">
+			<li Class="SaveOurShip2.CompProps_SpinalMount">
 				<emits>true</emits>
 				<receives>true</receives>
 				<ampAmount>0.25</ampAmount>
@@ -2082,9 +2082,9 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_NeedsSpinalMountPort</li>
-			<li>PlaceWorker_SpinalMountPort</li>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_NeedsSpinalMountPort</li>
+			<li>SaveOurShip2.PlaceWorker_SpinalMountPort</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<researchPrerequisites>
 			<li>ShipTurretLarge</li>
@@ -2119,16 +2119,16 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SpinalMount">
+			<li Class="SaveOurShip2.CompProps_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>
 				<color>(0.5,0,0)</color>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<heatPerPulse>90</heatPerPulse>
 				<energyToFire>720</energyToFire>
 				<optRange>50</optRange>
@@ -2168,7 +2168,7 @@
 		<verbs>
 			<li>
 				<label>shoot</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1000</range>
 				<warmupTime>0</warmupTime>
@@ -2189,7 +2189,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipSpinalBeamLaser</defName>
 		<label>death ray</label>
-		<thingClass>Projectile_ExplosiveShipCombatLaser</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipLaser</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2228,16 +2228,16 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SpinalMount">
+			<li Class="SaveOurShip2.CompProps_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>
 				<color>(0,0.5,0)</color>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<heatPerPulse>120</heatPerPulse>
 				<energyToFire>450</energyToFire>
 				<optRange>100</optRange>
@@ -2276,7 +2276,7 @@
 		<verbs>
 			<li>
 				<label>shoot</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1500</range>
 				<warmupTime>0</warmupTime>
@@ -2304,7 +2304,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(12,12)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>150</speed>
@@ -2317,7 +2317,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipSpinalBeamPlasma</defName>
 		<label>death ray</label>
-		<thingClass>Projectile_ExplosiveShipCombatPlasmaXL</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipPlasmaXL</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretPlasma</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2357,16 +2357,16 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SpinalMount">
+			<li Class="SaveOurShip2.CompProps_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>
 				<color>(0,0,0.5)</color>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<heatPerPulse>60</heatPerPulse>
 				<energyToFire>540</energyToFire>
 				<optRange>150</optRange>
@@ -2405,7 +2405,7 @@
 		<verbs>
 			<li>
 				<label>shoot</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>2500</range>
 				<warmupTime>0</warmupTime>
@@ -2438,7 +2438,7 @@
 		</weaponTags>
 		<verbs>
 			<li>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<forceNormalTimeSpeed>false</forceNormalTimeSpeed>
 				<warmupTime>4.0</warmupTime>
 				<requireLineOfSight>false</requireLineOfSight>
@@ -2472,7 +2472,7 @@
 		<defName>Artillery_ShipTorpedo_One</defName>
 		<label>torpedo tube</label>
 		<comps>
-			<li Class="CompProperties_ChangeableProjectilePlural">
+			<li Class="SaveOurShip2.CompProps_ChangeableProjectile">
 				<tubes>1</tubes>
 				<maxTorpedoes>7</maxTorpedoes>
 			</li>
@@ -2482,7 +2482,7 @@
 		<defName>Artillery_ShipTorpedo_Two</defName>
 		<label>torpedo tubes (2)</label>
 		<comps>
-			<li Class="CompProperties_ChangeableProjectilePlural">
+			<li Class="SaveOurShip2.CompProps_ChangeableProjectile">
 				<tubes>2</tubes>
 				<maxTorpedoes>14</maxTorpedoes>
 			</li>
@@ -2492,14 +2492,14 @@
 		<defName>Artillery_ShipTorpedo</defName>
 		<label>torpedo tubes (6)</label>
 		<comps>
-			<li Class="CompProperties_ChangeableProjectilePlural">
+			<li Class="SaveOurShip2.CompProps_ChangeableProjectile">
 				<tubes>6</tubes>
 				<maxTorpedoes>28</maxTorpedoes>
 			</li>
 		</comps>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipTurretBuilding" Name="BaseShipTorpedoBuilding" Abstract="True">
-		<thingClass>Building_ShipTurretTorpedo</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipTurretTorpedo</thingClass>
 		<designatorDropdown>ShipTurrets_Torpedo</designatorDropdown>
 		<graphicData>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2521,7 +2521,7 @@
 			<li>ITab_Shells</li>
 		</inspectorTabs>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 	</ThingDef>
@@ -2540,8 +2540,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
@@ -2582,8 +2582,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
@@ -2624,8 +2624,8 @@
 					<li>EMP</li>
 				</affectedDamageDefs>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<showOnRoof>true</showOnRoof>
 				<heatPerPulse>0</heatPerPulse>
 				<energyToFire>0</energyToFire>
@@ -2655,7 +2655,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipDebrisA</defName>
 		<label>ship debris</label>
-		<thingClass>Projectile_ExplosiveShipDebris</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipDebris</thingClass>
 		<graphicData>
 			<texPath>Things/Item/Chunk/ChunkSlag/MetalDebrisA</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2670,7 +2670,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipDebrisB</defName>
 		<label>ship debris</label>
-		<thingClass>Projectile_ExplosiveShipDebris</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipDebris</thingClass>
 		<graphicData>
 			<texPath>Things/Item/Chunk/ChunkSlag/MetalDebrisB</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2685,7 +2685,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipDebrisC</defName>
 		<label>ship debris</label>
-		<thingClass>Projectile_ExplosiveShipDebris</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipDebris</thingClass>
 		<graphicData>
 			<texPath>Things/Item/Chunk/ChunkSlag/MetalDebrisC</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2700,7 +2700,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipDebrisD</defName>
 		<label>ship debris</label>
-		<thingClass>Projectile_ExplosiveShipDebris</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipDebris</thingClass>
 		<graphicData>
 			<texPath>Things/Special/DropPod</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2715,7 +2715,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipRockA</defName>
 		<label>ship debris</label>
-		<thingClass>Projectile_ExplosiveShipDebris</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipDebris</thingClass>
 		<graphicData>
 			<texPath>Things/Item/Chunk/ChunkStone/RockLowA</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2731,7 +2731,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipRockB</defName>
 		<label>ship debris</label>
-		<thingClass>Projectile_ExplosiveShipDebris</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipDebris</thingClass>
 		<graphicData>
 			<texPath>Things/Item/Chunk/ChunkStone/RockLowB</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2747,7 +2747,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipRockC</defName>
 		<label>ship debris</label>
-		<thingClass>Projectile_ExplosiveShipDebris</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipDebris</thingClass>
 		<graphicData>
 			<texPath>Things/Item/Chunk/ChunkStone/RockLowC</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

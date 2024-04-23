@@ -38,13 +38,13 @@
 		<description>The outer structural elements of an archotech-designed ship's hull. Does not include conduits for power or coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<archotech>true</archotech>
 				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
 			<li>
@@ -102,7 +102,7 @@
 		<description>The outer structural elements of an archotech-designed ship's hull. Includes conduits for power and coolant.</description>
 		<placingDraggableDimensions>1</placingDraggableDimensions>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<archotech>true</archotech>
@@ -112,10 +112,10 @@
 				<compClass>CompPowerTransmitter</compClass>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
 			<li>
@@ -145,10 +145,10 @@
 		<designatorDropdown>Ship_Beams_Archotech</designatorDropdown>
 		<description>Angled armor for a ship's outer hull, designed by an archotech.</description>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
 			<li>
@@ -309,19 +309,19 @@
 			<paintable>true</paintable>
 		</building>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<archotech>true</archotech>
 				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_PowerPlantSolarShip">
-				<compClass>CompPowerPlantSolarShip</compClass>
+			<li Class="SaveOurShip2.CompProps_PowerPlantSolarShip">
+				<compClass>SaveOurShip2.CompPowerPlantSolarShip</compClass>
 				<basePowerConsumption>-1</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 				<bonusPower>2</bonusPower>
 			</li>
-			<li Class="CompProperties_Unfold">
+			<li Class="SaveOurShip2.CompProps_Unfold">
 				<extendRate>0.005</extendRate>
 				<retractRate>0.0025</retractRate>
 				<retractTime>750</retractTime>
@@ -330,10 +330,10 @@
 				<length>3.0</length>
 				<graphicPath>Things/Building/Ship/SolarExpand_Archotech</graphicPath>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
 			<li>
@@ -341,7 +341,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_SolarShip</li>
+			<li>SaveOurShip2.PlaceWorker_SolarShip</li>
 		</placeWorkers>
 		<designationCategory>Ship</designationCategory>
 		<designationHotKey>Misc5</designationHotKey>
@@ -352,7 +352,7 @@
 		<label>archotech ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
 		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.\n\nCan also heat rooms with electricity.</description>
-		<thingClass>Building_ShipVent</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipVent</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
 		<graphicData>
@@ -393,11 +393,11 @@
 		<soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
 		<resourcesFractionWhenDeconstructed>0.5</resourcesFractionWhenDeconstructed>
 		<placeWorkers>
-			<li>PlaceWorker_ShipVent</li>
+			<li>SaveOurShip2.PlaceWorker_ShipVent</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<hermetic>true</hermetic>
 				<archotech>true</archotech>
@@ -412,14 +412,14 @@
 			<li Class="CompProperties_TempControl">
 				<energyPerSecond>-64</energyPerSecond>
 			</li>
-			<li Class="CompProperties_Overlay">
+			<li Class="SaveOurShip2.CompProps_Overlay">
 				<graphicPath>Things/Building/Ship/Ship_Vent</graphicPath>
 				<size>(1,1,1)</size>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
 			<li>
@@ -443,7 +443,7 @@
 		<designatorDropdown>Ship_Airlocks</designatorDropdown>
 		<description>Allows access to a ship or divides rooms inside it. Low-energy plasma barriers prevent gases from escaping.</description>
 		<category>Building</category>
-		<thingClass>Building_ShipAirlock</thingClass>
+		<thingClass>SaveOurShip2.Building_ShipAirlock</thingClass>
 		<designationCategory>Ship</designationCategory>
 		<altitudeLayer>DoorMoveable</altitudeLayer>
 		<fillPercent>1</fillPercent>
@@ -465,7 +465,7 @@
 			<Gold>50</Gold>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isHull>true</isHull>
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
@@ -478,16 +478,16 @@
 				<transmitsPower>true</transmitsPower>
 			</li>
 			<li Class="CompProperties_Forbiddable"/>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>
 			</li>
-			<li Class="CompProperties_Unfold">
+			<li Class="SaveOurShip2.CompProps_Unfold">
 				<extendRate>0.005</extendRate>
 				<retractRate>0.005</retractRate>
 				<retractTime>240</retractTime>
@@ -501,7 +501,7 @@
 		</comps>
 		<designationHotKey>Misc2</designationHotKey>
 		<placeWorkers>
-			<li>PlaceWorker_ShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipHull</li>
 		</placeWorkers>
 		<statBases>
 			<WorkToBuild>1200</WorkToBuild>
@@ -574,13 +574,13 @@
 			<Gold>1</Gold>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<isPlating>true</isPlating>
 				<hermetic>true</hermetic>
 				<archotech>true</archotech>
 				<roof>true</roof>
 			</li>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
 			<li>
@@ -588,7 +588,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipPlating</li>
+			<li>SaveOurShip2.PlaceWorker_ShipPlating</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>
@@ -628,7 +628,7 @@
 		<receivesSignals>true</receivesSignals>
 		<designationCategory>Ship</designationCategory>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
 			<li Class="CompProperties_Power">
@@ -652,13 +652,13 @@
 				<drawFuelGaugeInMap>false</drawFuelGaugeInMap>
 				<showAllowAutoRefuelToggle>true</showAllowAutoRefuelToggle>
 			</li>
-			<li Class="CompProperties_EngineTrail">
+			<li Class="SaveOurShip2.CompProps_EngineTrail">
 				<thrust>12</thrust>
 				<fuelUse>1</fuelUse>
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_ShipEngine</li>
+			<li>SaveOurShip2.PlaceWorker_ShipEngine</li>
 		</placeWorkers>
 		<building>
 			<shipPart>true</shipPart>
@@ -681,7 +681,7 @@
 		<thingClass>Building</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/ArchotechReactor</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
 			<drawSize>(5,5)</drawSize>
 			<damageData>
 				<cornerTL>Damage/Corner</cornerTL>
@@ -738,8 +738,8 @@
 				<glowRadius>12</glowRadius>
 				<glowColor>(80,210,80,0)</glowColor>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSource</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSource</compClass>
 				<heatPerSecond>6</heatPerSecond>
 			</li>
 			<li Class="CompProperties_Explosive">
@@ -756,7 +756,7 @@
 		<designationHotKey>Misc4</designationHotKey>
 		<constructEffect>ConstructMetal</constructEffect>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<researchPrerequisites>
 			<li>ArchotechReactor</li>
@@ -789,8 +789,8 @@
 			<ArchotechExoticParticles>4</ArchotechExoticParticles>
 		</costList>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeatSink</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeatSink</compClass>
 				<heatCapacity>200</heatCapacity>
 				<heatVent>10</heatVent>
 				<threat>3</threat>
@@ -819,7 +819,7 @@
 		</statBases>
 		<graphicData>
 			<texPath>Things/Building/Ship/ArchoShieldGen</texPath>
-			<graphicClass>Graphic_SingleOnOff</graphicClass>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
 			<drawSize>(3,3)</drawSize>
 			<shadowData>
 				<volume>(2.6, 0.8, 2.6)</volume>
@@ -830,12 +830,12 @@
 		</graphicData>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<placeWorkers>
-			<li>PlaceWorker_ShipProjectileInterceptorRadius</li>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipShieldRadius</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 		</placeWorkers>
 		<comps>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipCombatShield</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipCombatShield</compClass>
 				<heatMultiplier>0.75</heatMultiplier>
 				<color>(0,255,0)</color>
 			</li>
@@ -874,7 +874,7 @@
 		<defName>ShipArchotechSpore</defName>
 		<label>archotech spore</label>
 		<designatorDropdown>Ship_ArchoSpore</designatorDropdown>
-		<thingClass>Building_ArchotechSpore</thingClass>
+		<thingClass>SaveOurShip2.Building_ArchotechSpore</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/Archotech_DeusXMachine</texPath>
@@ -915,9 +915,9 @@
 			<ComponentSpacer>20</ComponentSpacer>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart"/>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechSpore</unlock>
 			</li>
 			<li Class="CompProperties_Power">
@@ -925,8 +925,8 @@
 				<basePowerConsumption>2000</basePowerConsumption>
 				<transmitsPower>true</transmitsPower>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 			</li>
 			<li Class="CompProperties_MeditationFocus">
 				<statDef>MeditationFocusStrength</statDef>
@@ -956,13 +956,13 @@
 					<li>ShipArchotechPillarD</li>
 				</linkableFacilities>
 			</li>
-			<li Class="CompProperties_BuildingConsciousness">
+			<li Class="SaveOurShip2.CompProps_BuildingConsciousness">
 				<holoHediff>SoSHologramArchotech</holoHediff>
 				<canMergeHuman>true</canMergeHuman>
 				<canMergeAI>true</canMergeAI>
 				<healOnMerge>true</healOnMerge>
 			</li>
-			<li Class="CompProperties_ArchoHullConversion">
+			<li Class="SaveOurShip2.CompProps_ArchoHullConversion">
 				<radiusPerDayCurve>
 					<points>
 						<li>0  , 3</li>
@@ -978,7 +978,7 @@
 			<allowedSpectateSides>Down</allowedSpectateSides>
 		</ritualFocus>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 			<li>PlaceWorker_MeditationOffsetBuildingsNear</li>
 			<li MayRequire="Ludeon.RimWorld.Ideology">PlaceWorker_RitualFocus</li>
 			<li MayRequire="Ludeon.RimWorld.Ideology">PlaceWorker_RitualFocusNoArrow</li>
@@ -1045,7 +1045,7 @@
 				</statOffsets>
 				<maxSimultaneous>1</maxSimultaneous>
 			</li>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechUplink</unlock>
 			</li>
 		</comps>
@@ -1057,7 +1057,7 @@
 	</ThingDef>
 	<ThingDef ParentName="BuildingBase" Name="ShipPillar" Abstract="True">
 		<designatorDropdown>Ship_ArchoSpore</designatorDropdown>
-		<thingClass>Building_ArchotechPillar</thingClass>
+		<thingClass>SaveOurShip2.Building_ArchotechPillar</thingClass>
 		<graphicData>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(1,3)</drawSize>
@@ -1096,7 +1096,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>PlaceWorker_OnShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
 			<li>PlaceWorker_ShowFacilitiesConnections</li>
 		</placeWorkers>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
@@ -1116,7 +1116,7 @@
 			<texPath>Things/Building/Ship/ArchoTechPillar_01</texPath>
 		</graphicData>
 		<comps>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechPillarA</unlock>
 			</li>
 		</comps>
@@ -1128,7 +1128,7 @@
 			<texPath>Things/Building/Ship/ArchoTechPillar_02</texPath>
 		</graphicData>
 		<comps>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechPillarB</unlock>
 			</li>
 		</comps>
@@ -1140,7 +1140,7 @@
 			<texPath>Things/Building/Ship/ArchoTechPillar_03</texPath>
 		</graphicData>
 		<comps>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechPillarC</unlock>
 			</li>
 		</comps>
@@ -1152,7 +1152,7 @@
 			<texPath>Things/Building/Ship/ArchoTechPillar_04</texPath>
 		</graphicData>
 		<comps>
-			<li Class="CompProperties_SoSUnlock">
+			<li Class="SaveOurShip2.CompProps_ResearchUnlock">
 				<unlock>ArchotechPillarD</unlock>
 			</li>
 		</comps>
@@ -1181,17 +1181,17 @@
 			<ArchotechPsychicCore>1</ArchotechPsychicCore>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SpinalMount">
+			<li Class="SaveOurShip2.CompProps_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>
 				<color>(0.8,0.8,0.5)</color>
 				<destroysHull>false</destroysHull>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<heatPerPulse>140</heatPerPulse>
 				<energyToFire>2400</energyToFire>
 				<optRange>150</optRange>
@@ -1235,7 +1235,7 @@
 		<verbs>
 			<li>
 				<label>shoot</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1500</range>
 				<warmupTime>0</warmupTime>
@@ -1265,7 +1265,7 @@
 			<graphicClass>Graphic_Single</graphicClass>
 			<shaderType>TransparentPostLight</shaderType>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>100</speed>
@@ -1279,7 +1279,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretPsychic</defName>
 		<label>psychic blast</label>
-		<thingClass>Projectile_ExplosiveShipCombatPsychic</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShipPsychic</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1294,7 +1294,7 @@
 	<DamageDef ParentName="StunBase">
 		<defName>PsychicFlayer</defName>
 		<label>psychic trauma</label>
-		<workerClass>DamageWorker_PsychicFlayer</workerClass>
+		<workerClass>SaveOurShip2.DamageWorker_PsychicFlayer</workerClass>
 		<externalViolence>true</externalViolence>
 		<deathMessage>{0} has been psychically obliterated.</deathMessage>
 		<defaultDamage>60</defaultDamage>
@@ -1325,16 +1325,16 @@
 			<ArchotechMechaniteCore>1</ArchotechMechaniteCore>
 		</costList>
 		<comps>
-			<li Class="CompProperties_SoShipPart">
+			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
 			</li>
-			<li Class="CompProperties_SpinalMount">
+			<li Class="SaveOurShip2.CompProps_SpinalMount">
 				<emits>false</emits>
 				<receives>true</receives>
 				<color>(0.5,0,0.5)</color>
 			</li>
-			<li Class="CompProperties_ShipHeat">
-				<compClass>CompShipHeat</compClass>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
 				<heatPerPulse>140</heatPerPulse>
 				<energyToFire>2400</energyToFire>
 				<optRange>150</optRange>
@@ -1376,7 +1376,7 @@
 		<verbs>
 			<li>
 				<label>shoot</label>
-				<verbClass>Verb_LaunchProjectileShip</verbClass>
+				<verbClass>SaveOurShip2.Verb_LaunchProjectileShip</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>1500</range>
 				<warmupTime>0</warmupTime>
@@ -1408,7 +1408,7 @@
 			<shaderType>TransparentPostLight</shaderType>
 			<drawSize>(4,4)</drawSize>
 		</graphicData>
-		<thingClass>Projectile_SoSFake</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
 			<damageDef>Bomb</damageDef>
 			<speed>100</speed>
@@ -1419,7 +1419,7 @@
 	<ThingDef ParentName="BaseGrenadeProjectile">
 		<defName>Proj_ShipTurretMechanite</defName>
 		<label>mechanite glob</label>
-		<thingClass>Projectile_ExplosiveShipCombat</thingClass>
+		<thingClass>SaveOurShip2.Projectile_ExplosiveShip</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/ShipTurretMechanite</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -1435,7 +1435,7 @@
 	<DamageDef Name="BombMechanite">
 		<defName>BombMechanite</defName>
 		<label>bomb</label>
-		<workerClass>DamageWorker_Mechanite</workerClass>
+		<workerClass>SaveOurShip2.DamageWorker_Mechanite</workerClass>
 		<externalViolence>true</externalViolence>
 		<isExplosive>true</isExplosive>
 		<deathMessage>{0} has died in an explosion.</deathMessage>
@@ -1473,7 +1473,7 @@
 	<ThingDef>
 		<defName>MechaniteFire</defName>
 		<label>disassembler mechanites</label>
-		<thingClass>MechaniteFire</thingClass>
+		<thingClass>SaveOurShip2.MechaniteFire</thingClass>
 		<category>Attachment</category>
 		<tickerType>Normal</tickerType>
 		<graphicData>
@@ -1488,7 +1488,7 @@
 		<defName>MechaniteSpark</defName>
 		<label>disassembler mechanites</label>
 		<category>Projectile</category>
-		<thingClass>MechaniteSpark</thingClass>
+		<thingClass>SaveOurShip2.Projectile_MechaniteSpark</thingClass>
 		<graphicData>
 			<texPath>Things/Projectile/MechaniteSpark</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

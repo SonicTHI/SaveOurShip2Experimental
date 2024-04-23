@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class Building_ArchotechPillar : Building
 	{
@@ -31,7 +31,7 @@ namespace RimWorld
 
 		public void UnlockThis()
 		{
-			string unlock = ((CompProperties_SoSUnlock)this.TryGetComp<CompSoSUnlock>().props).unlock;
+			string unlock = ((CompProps_ResearchUnlock)this.TryGetComp<CompResearchUnlock>().props).unlock;
 			if (!ShipInteriorMod2.WorldComp.Unlocks.Contains(unlock))
 				ShipInteriorMod2.WorldComp.Unlocks.Add(unlock);
 		}

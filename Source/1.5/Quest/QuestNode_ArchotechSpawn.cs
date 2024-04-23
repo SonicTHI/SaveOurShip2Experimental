@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using RimWorld.QuestGen;
 
-namespace RimWorld.QuestGen
+namespace SaveOurShip2
 {
 	class QuestNode_ArchotechSpawn : QuestNode
 	{

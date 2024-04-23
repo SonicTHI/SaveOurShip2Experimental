@@ -1,11 +1,12 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Verse;
 using System.Linq;
+using RimWorld.Planet;
 
-namespace RimWorld.Planet
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class TribalPillarSiteComp : EscapeShipComp
@@ -39,7 +40,7 @@ namespace RimWorld.Planet
 				Map mapPlayer = ShipInteriorMod2.FindPlayerShipMap();
 				if (mapPlayer != null)
 				{
-					foreach (Building_ShipAdvSensor sensor in ShipInteriorMod2.WorldComp.Sensors)
+					foreach (Building_ShipSensor sensor in ShipInteriorMod2.WorldComp.Sensors)
 					{
 						if (sensor.observedMap == this.parent)
 						{

@@ -5,10 +5,10 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using SaveOurShip2;
+using RimWorld;
 
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompShipHeatSink : CompShipHeat
@@ -18,7 +18,7 @@ namespace RimWorld
 		public float depletion; //ditto
 		public bool inSpace;
 		public CompPower powerComp;
-		ShipHeatMapComp mapComp;
+		ShipMapComp mapComp;
 		IntVec3 pos; //needed because no predestroy
 		Map map; //needed because no predestroy
 
@@ -42,7 +42,7 @@ namespace RimWorld
 			inSpace = this.parent.Map.IsSpace();
 			pos = this.parent.Position;
 			map = this.parent.Map;
-			mapComp = this.map.GetComponent<ShipHeatMapComp>();
+			mapComp = this.map.GetComponent<ShipMapComp>();
 		}
 		public override void PostDestroy(DestroyMode mode, Map previousMap)
 		{

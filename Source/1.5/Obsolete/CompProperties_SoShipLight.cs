@@ -1,6 +1,6 @@
 ﻿using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	/*public class CompProperties_SoShipLight : CompProperties
 	{

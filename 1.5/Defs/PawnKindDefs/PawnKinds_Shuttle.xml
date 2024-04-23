@@ -90,7 +90,7 @@
 			</fuelFilter>
 			<consumeFuelOnlyWhenUsed>false</consumeFuelOnlyWhenUsed>
 		</li>
-		<li Class="CompProperties_BecomeBuilding">
+		<li Class="SaveOurShip2.CompProps_BecomeBuilding">
 			<buildingDef>PersonalShuttle</buildingDef>
 			<fuelPerTile>2.75</fuelPerTile>
 			<skyfaller>ShuttleIncomingPersonal</skyfaller>
@@ -191,7 +191,7 @@
 			</fuelFilter>
 			<consumeFuelOnlyWhenUsed>false</consumeFuelOnlyWhenUsed>
 		</li>
-		<li Class="CompProperties_BecomeBuilding">
+		<li Class="SaveOurShip2.CompProps_BecomeBuilding">
 			<buildingDef>CargoShuttle</buildingDef>
 			<fuelPerTile>1.25</fuelPerTile>
 			<skyfaller>ShuttleIncomingCargo</skyfaller>
@@ -292,7 +292,7 @@
 			</fuelFilter>
 			<consumeFuelOnlyWhenUsed>false</consumeFuelOnlyWhenUsed>
 		</li>
-		<li Class="CompProperties_BecomeBuilding">
+		<li Class="SaveOurShip2.CompProps_BecomeBuilding">
 			<buildingDef>HeavyShuttle</buildingDef>
 			<fuelPerTile>1.75</fuelPerTile>
 			<skyfaller>ShuttleIncomingHeavy</skyfaller>
@@ -393,12 +393,12 @@
 			</fuelFilter>
 			<consumeFuelOnlyWhenUsed>false</consumeFuelOnlyWhenUsed>
 		</li>
-		<li Class="CompProperties_BecomeBuilding">
+		<li Class="SaveOurShip2.CompProps_BecomeBuilding">
 			<buildingDef>DropshipShuttle</buildingDef>
 			<fuelPerTile>2.25</fuelPerTile>
 			<skyfaller>ShuttleIncomingDropship</skyfaller>
 		</li>
-		<li Class="CompProperties_ShuttleCosmetics">
+		<li Class="SaveOurShip2.CompProps_ShuttleCosmetics">
 			<graphics>
 				<li>
 						<texPath>Things/Shuttle/shuttle_dropship</texPath>

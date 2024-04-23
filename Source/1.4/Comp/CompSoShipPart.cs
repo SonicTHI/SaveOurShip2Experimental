@@ -78,7 +78,7 @@ namespace RimWorld
 				else //other parts
 				{
 					stringBuilder.Append("shipIndex: " + index);
-					if (parent is Building_ShipBridge && parent == mapComp.ShipsOnMapNew[index].Core)
+					if (parent is Building_ShipBridge && parent == mapComp.ShipsOnMap[index].Core)
 						stringBuilder.Append(" PRIMARY CORE");
 				}
 			}
@@ -101,7 +101,7 @@ namespace RimWorld
 					int shipIndex = mapComp.ShipIndexOnVec(vec);
 					if (shipIndex != -1)
 					{
-						mapComp.ShipsOnMapNew[shipIndex].AddToCache(parent as Building);
+						mapComp.ShipsOnMap[shipIndex].AddToCache(parent as Building);
 						return;
 					}
 				}
@@ -174,8 +174,7 @@ namespace RimWorld
 			}
 			else //else make new ship/wreck
 			{
-				mapComp.ShipsOnMapNew.Add(parent.thingIDNumber, new SoShipCache());
-				mapComp.ShipsOnMapNew[parent.thingIDNumber].RebuildCache(parent as Building);
+				ShipInteriorMod2.WorldComp.AddNewShip(mapComp.ShipsOnMap, parent as Building);
 			}
 		}
 
@@ -184,6 +183,22 @@ namespace RimWorld
 			//Log.Warning("despawn " + parent);
 			if (ShipInteriorMod2.AirlockBugFlag) //disable on moveship, detach destruction
 				return;
+
+			if (!parent.def.building.shipPart) //remove other parts
+			{
+				if (mapComp.CacheOff || ShipInteriorMod2.AirlockBugFlag)
+					return;
+				foreach (IntVec3 vec in cellsUnder) //if any part was on ship remove it from cache
+				{
+					int index = mapComp.ShipIndexOnVec(vec);
+					if (index != -1)
+					{
+						mapComp.ShipsOnMap[index].RemoveFromCache(parent as Building, mode);
+					}
+					return;
+				}
+				return;
+			}
 
 			List<IntVec3> areaDestroyed = new List<IntVec3>();
 			HashSet<Building> buildings = new HashSet<Building>();
@@ -225,7 +240,7 @@ namespace RimWorld
 			if (shipIndex == -1)
 				return;
 
-			var ship = mapComp.ShipsOnMapNew[shipIndex];
+			var ship = mapComp.ShipsOnMap[shipIndex];
 			ship.RemoveFromCache(parent as Building, mode);
 			if (!parent.def.building.shipPart || ArchoConvert)
 			{

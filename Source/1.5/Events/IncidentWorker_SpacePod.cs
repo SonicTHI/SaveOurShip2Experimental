@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class IncidentWorker_SpacePod : IncidentWorker
 	{
 		protected override bool CanFireNowSub(IncidentParms parms)
 		{
 			Map map = (Map)parms.target;
-			if (map.GetComponent<ShipHeatMapComp>().ShipMapState != ShipMapState.nominal)
+			if (map.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.nominal)
 				return false;
 			if (map.listerBuildings.allBuildingsColonist.Any(t => t.TryGetComp<CompShipSalvageBay>() != null))
 				return true;

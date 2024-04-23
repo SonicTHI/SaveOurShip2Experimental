@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Verse.AI;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class JobGiver_ManShipBridge : ThinkNode_JobGiver
 	{

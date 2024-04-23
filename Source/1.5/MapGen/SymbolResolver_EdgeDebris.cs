@@ -5,8 +5,10 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.AI.Group;
+using RimWorld;
+using RimWorld.BaseGen;
 
-namespace RimWorld.BaseGen
+namespace SaveOurShip2
 {
 	public class SymbolResolver_EdgeDebris : SymbolResolver
 	{

@@ -5,7 +5,9 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld.BaseGen
+using RimWorld.BaseGen;
+
+namespace SaveOurShip2
 {
 	public class SymbolResolver_ShipDebrisPart_Outdoors_Division_Split : SymbolResolver
 	{

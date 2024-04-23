@@ -5,9 +5,9 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompArcholife : ThingComp
@@ -51,7 +51,7 @@ namespace RimWorld
 						}
 					}
 
-					if (parent.Spawned && ((CompProperties_Archolife)props).purr)
+					if (parent.Spawned && ((CompProps_Archolife)props).purr)
 					{
 						foreach (Pawn p in parent.Map.mapPawns.FreeColonistsAndPrisonersSpawned)
 						{
@@ -121,7 +121,7 @@ namespace RimWorld
 
 		private static readonly Material BubbleMat = MaterialPool.MatFrom("Other/ShieldBubble", ShaderDatabase.Transparent);
 
-		private float EnergyMax => ((CompProperties_Archolife)props).shield;
+		private float EnergyMax => ((CompProps_Archolife)props).shield;
 
 		private float EnergyGainPerTick => 0.0002f;
 

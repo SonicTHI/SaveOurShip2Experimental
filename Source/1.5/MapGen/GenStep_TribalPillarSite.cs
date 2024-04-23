@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Verse.AI.Group;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class GenStep_TribalPillarSite : GenStep_Scatterer
 	{
@@ -31,7 +31,7 @@ namespace RimWorld
 			Faction nastyTribals = Find.FactionManager.AllFactions.Where(fac => fac.def.techLevel == TechLevel.Neolithic && fac.PlayerRelationKind==FactionRelationKind.Hostile).FirstOrDefault();
 			Lord defendShip = LordMaker.MakeNewLord(nastyTribals, new LordJob_DefendShip(nastyTribals, map.Center), map);
 			List<Building> cores = new List<Building>();
-			ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("TribalVillageIsNotAShip"), map, null, nastyTribals, defendShip, out cores, false, true);
+			ShipInteriorMod2.GenerateShip(DefDatabase<SpaceShipDef>.GetNamed("TribalVillageIsNotAShip"), map, null, nastyTribals, defendShip, out cores, false, true);
 		}
 	}
 }

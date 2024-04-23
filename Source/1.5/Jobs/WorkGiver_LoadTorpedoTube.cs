@@ -6,7 +6,7 @@ using System.Text;
 using Verse;
 using Verse.AI;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class WorkGiver_LoadTorpedoTube : WorkGiver_Scanner
 	{
@@ -65,7 +65,7 @@ namespace RimWorld
 
 		private Thing FindAmmo(Pawn pawn, Building_ShipTurretTorpedo tube)
 		{
-			StorageSettings allowedShellsSettings = ThingCompUtility.TryGetComp<CompChangeableProjectilePlural>(tube.gun).allowedShellsSettings;
+			StorageSettings allowedShellsSettings = ThingCompUtility.TryGetComp<CompChangeableProjectile>(tube.gun).allowedShellsSettings;
 			ThingRequest val = ThingRequest.ForGroup(ThingRequestGroup.Shell);
 			return GenClosest.ClosestThingReachable(pawn.Position, pawn.Map, val, (PathEndMode)3, TraverseParms.For(pawn, (Danger)3, (TraverseMode)0, false), 9999f, (Predicate<Thing>)Predicate, (IEnumerable<Thing>)null, 0, -1, false, RegionType.Set_Passable, false);
 			bool Predicate(Thing x)
@@ -84,8 +84,8 @@ namespace RimWorld
 
 		public override IEnumerable<Thing> PotentialWorkThingsGlobal(Pawn pawn)
 		{
-			if (pawn.Map.GetComponent<ShipHeatMapComp>().TorpedoTubes.Any())
-				return pawn.Map.GetComponent<ShipHeatMapComp>().TorpedoTubes;
+			if (pawn.Map.GetComponent<ShipMapComp>().TorpedoTubes.Any())
+				return pawn.Map.GetComponent<ShipMapComp>().TorpedoTubes;
 			return new List<Thing>();
 		}
 	}

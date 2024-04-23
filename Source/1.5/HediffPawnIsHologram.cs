@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SaveOurShip2;
+using RimWorld;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class HediffPawnIsHologram : Hediff
 	{

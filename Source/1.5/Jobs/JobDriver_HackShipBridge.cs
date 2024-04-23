@@ -5,8 +5,9 @@ using System.Text;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class JobDriver_HackShipBridge : JobDriver
 	{

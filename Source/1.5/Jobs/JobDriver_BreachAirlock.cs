@@ -6,8 +6,9 @@ using Verse;
 using Verse.AI;
 using Verse.Sound;
 using HarmonyLib;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class JobDriver_BreachAirlock : JobDriver
 	{

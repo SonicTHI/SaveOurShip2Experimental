@@ -7,7 +7,7 @@
 		<targetTags>
 			<li>Map_SpaceHome</li>
 		</targetTags>
-		<workerClass>IncidentWorker_ShipCombat</workerClass>
+		<workerClass>SaveOurShip2.IncidentWorker_ShipCombat</workerClass>
 		<baseChance>2</baseChance>
 		<category>ThreatBig</category>
 		<pointsScaleable>true</pointsScaleable>
@@ -20,7 +20,7 @@
 		<targetTags>
 			<li>Map_SpaceHome</li>
 		</targetTags>
-		<workerClass>IncidentWorker_SpacePirates</workerClass>
+		<workerClass>SaveOurShip2.IncidentWorker_SpacePirates</workerClass>
 		<baseChance>1</baseChance>
 		<minRefireDays>30</minRefireDays>
 		<letterLabel>Pirates!</letterLabel>
@@ -34,7 +34,7 @@
 		<targetTags>
 			<li>Map_SpaceHome</li>
 		</targetTags>
-		<workerClass>IncidentWorker_SpaceDebris</workerClass>
+		<workerClass>SaveOurShip2.IncidentWorker_SpaceDebris</workerClass>
 		<letterLabel>Space debris</letterLabel>
 		<letterText>Ship has entered a debris field. Engage engines to evade or brace for impact!</letterText>
 		<letterDef>ThreatSmall</letterDef>
@@ -53,7 +53,7 @@
 		<targetTags>
 			<li>Map_SpaceHome</li>
 		</targetTags>
-		<workerClass>IncidentWorker_SpacePod</workerClass>
+		<workerClass>SaveOurShip2.IncidentWorker_SpacePod</workerClass>
 		<baseChance>1</baseChance>
 		<minRefireDays>20</minRefireDays>
 		<letterLabel>Transport pod found</letterLabel>
@@ -62,6 +62,6 @@
 	</IncidentDef>
 	<LetterDef ParentName="CustomChoiceLetterBase">
 		<defName>AcceptSpacePod</defName>
-		<letterClass>ChoiceLetter_SpacePod</letterClass>
+		<letterClass>SaveOurShip2.ChoiceLetter_SpacePod</letterClass>
 	</LetterDef>
 </Defs>

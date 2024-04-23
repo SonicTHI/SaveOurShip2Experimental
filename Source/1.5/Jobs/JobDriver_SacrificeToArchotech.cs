@@ -7,8 +7,9 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 using Verse.Sound;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class JobDriver_SacrificeToArchotech : JobDriver
 	{

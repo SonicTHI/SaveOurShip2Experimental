@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class DamageWorker_Mechanite : DamageWorker_AddInjury
 	{

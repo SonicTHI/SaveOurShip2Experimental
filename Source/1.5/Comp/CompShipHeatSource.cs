@@ -5,9 +5,9 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	//generates heat per tick
 	public class CompShipHeatSource : CompShipHeat

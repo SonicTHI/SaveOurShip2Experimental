@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class GenStep_ShipDebris : GenStep_Scatterer
 	{
@@ -51,10 +51,10 @@ namespace RimWorld
 			ResolveParams resolveParams = default(ResolveParams);
 			resolveParams.rect = rect;
 			resolveParams.faction = null;
-			BaseGen.BaseGen.globalSettings.map = map;
-			BaseGen.BaseGen.globalSettings.minBuildings = 1;
-			BaseGen.BaseGen.symbolStack.Push("shipdebris", resolveParams);
-			BaseGen.BaseGen.Generate();
+			BaseGen.globalSettings.map = map;
+			BaseGen.globalSettings.minBuildings = 1;
+			BaseGen.symbolStack.Push("shipdebris", resolveParams);
+			BaseGen.Generate();
 		}
 	}
 }

@@ -23,6 +23,22 @@ namespace SaveOurShip2
 
 		}
 
+		private int nextShipId = 0;
+		private int newShipId
+		{
+			get
+			{
+				nextShipId++;
+				return nextShipId;
+			}
+		}
+		public int AddNewShip(Dictionary<int, SoShipCache> ShipsOnMap, Building core)
+		{
+			int mergeToIndex = ShipInteriorMod2.WorldComp.newShipId;
+			ShipsOnMap.Add(mergeToIndex, new SoShipCache());
+			ShipsOnMap[mergeToIndex].RebuildCache(core, mergeToIndex);
+			return mergeToIndex;
+		}
 		public override void FinalizeInit()
 		{
 			base.FinalizeInit();

@@ -5,8 +5,9 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class DetachedShipPart : Thing
 	{
@@ -18,7 +19,7 @@ namespace RimWorld
 		GraphicData graphicWall = ThingDef.Named("Ship_Beam_Wrecked_Fake").graphicData;
 		GraphicData graphicFloor = ThingDef.Named("ShipHullTileWreckedFake").graphicData;
 
-		public ShipHeatMapComp mapComp;
+		public ShipMapComp mapComp;
 		public List<int> wreckageList=new List<int>();
 		public byte[,] wreckage;
 		public int xSize;
@@ -30,7 +31,7 @@ namespace RimWorld
 		public override void SpawnSetup(Map map, bool respawningAfterLoad)
 		{
 			base.SpawnSetup(map, respawningAfterLoad);
-			mapComp = Map.GetComponent<ShipHeatMapComp>();
+			mapComp = Map.GetComponent<ShipMapComp>();
 		}
 
 		public override void Tick() //slow steady drift, gain accel when ship engines on

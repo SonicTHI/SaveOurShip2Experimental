@@ -1,7 +1,7 @@
 ﻿using System;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	/*class CompSoSGlower : CompGlower
 	{

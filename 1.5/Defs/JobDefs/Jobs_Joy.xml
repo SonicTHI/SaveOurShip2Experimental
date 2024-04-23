@@ -3,7 +3,7 @@
 
   <JobDef>
     <defName>UseHolodeck</defName>
-    <driverClass>JobDriver_Holodeck</driverClass>
+    <driverClass>SaveOurShip2.JobDriver_Holodeck</driverClass>
     <reportString>using holodeck.</reportString>
     <joyDuration>4000</joyDuration>
     <joyMaxParticipants>8</joyMaxParticipants>

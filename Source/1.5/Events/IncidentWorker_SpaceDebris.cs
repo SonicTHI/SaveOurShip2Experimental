@@ -4,16 +4,16 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class IncidentWorker_SpaceDebris : IncidentWorker
 	{
 		protected override bool CanFireNowSub(IncidentParms parms)
 		{
 			Map map = (Map)parms.target;
-			if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris) || map.GetComponent<ShipHeatMapComp>().ShipMapState != ShipMapState.nominal)
+			if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris) || map.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.nominal)
 				return false;
 			return true;
 		}

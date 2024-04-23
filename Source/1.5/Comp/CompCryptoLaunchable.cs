@@ -5,10 +5,10 @@ using UnityEngine;
 using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
-using SaveOurShip2;
+using RimWorld;
 
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompCryptoLaunchable : ThingComp
@@ -16,11 +16,11 @@ namespace RimWorld
 		public static readonly Texture2D TargeterMouseAttachment = ContentFinder<Texture2D>.Get("UI/Overlays/LaunchableMouseAttachment", true);
 		public static readonly Texture2D LaunchCommandTex = ContentFinder<Texture2D>.Get("UI/Commands/LaunchShip", true);
 
-		public CompProperties_ShuttleLaunchable Props
+		public CompProps_ShuttleLaunchable Props
 		{
 			get
 			{
-				return (CompProperties_ShuttleLaunchable)this.props;
+				return (CompProps_ShuttleLaunchable)this.props;
 			}
 		}
 

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using RimWorld;
+using RimWorld.BaseGen;
 
-namespace RimWorld.BaseGen
+namespace SaveOurShip2
 {
 	class SymbolResolver_EdgeSlag : SymbolResolver
 	{

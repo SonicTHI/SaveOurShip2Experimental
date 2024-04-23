@@ -38,7 +38,7 @@
 				<restEffectiveness>0.8</restEffectiveness>
 				<canChangeAssignedThingsAfterStarting>true</canChangeAssignedThingsAfterStarting>
 			</li>
-			<li Class="CompProperties_ShuttleLaunchable">
+			<li Class="SaveOurShip2.CompProps_ShuttleLaunchable">
 				<fuelPerTile>1</fuelPerTile>
 				<skyfaller>PersonalShuttleSkyfaller</skyfaller>
 			</li>
@@ -56,7 +56,7 @@
 				<showFuelGizmo>true</showFuelGizmo>
 				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
 			</li>
-			<li Class="CompProperties_BecomePawn">
+			<li Class="SaveOurShip2.CompProps_BecomePawn">
 				<pawnDef>ShuttlePersonalHover</pawnDef>
 			</li>
 		</comps>
@@ -115,7 +115,7 @@
 				<restEffectiveness>0.8</restEffectiveness>
 				<canChangeAssignedThingsAfterStarting>true</canChangeAssignedThingsAfterStarting>
 			</li>
-			<li Class="CompProperties_ShuttleLaunchable">
+			<li Class="SaveOurShip2.CompProps_ShuttleLaunchable">
 				<fuelPerTile>0.5</fuelPerTile>
 				<skyfaller>CargoShuttleSkyfaller</skyfaller>
 			</li>
@@ -133,7 +133,7 @@
 				<showFuelGizmo>true</showFuelGizmo>
 				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
 			</li>
-			<li Class="CompProperties_BecomePawn">
+			<li Class="SaveOurShip2.CompProps_BecomePawn">
 				<pawnDef>ShuttleCargoHover</pawnDef>
 			</li>
 		</comps>
@@ -190,7 +190,7 @@
 				<restEffectiveness>0.8</restEffectiveness>
 				<canChangeAssignedThingsAfterStarting>true</canChangeAssignedThingsAfterStarting>
 			</li>
-			<li Class="CompProperties_ShuttleLaunchable">
+			<li Class="SaveOurShip2.CompProps_ShuttleLaunchable">
 				<fuelPerTile>1</fuelPerTile>
 				<skyfaller>HeavyCargoShuttleSkyfaller</skyfaller>
 			</li>
@@ -208,7 +208,7 @@
 				<showFuelGizmo>true</showFuelGizmo>
 				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
 			</li>
-			<li Class="CompProperties_BecomePawn">
+			<li Class="SaveOurShip2.CompProps_BecomePawn">
 				<pawnDef>ShuttleHeavyHover</pawnDef>
 			</li>
 		</comps>
@@ -265,7 +265,7 @@
 				<restEffectiveness>0.8</restEffectiveness>
 				<canChangeAssignedThingsAfterStarting>true</canChangeAssignedThingsAfterStarting>
 			</li>
-			<li Class="CompProperties_ShuttleLaunchable">
+			<li Class="SaveOurShip2.CompProps_ShuttleLaunchable">
 				<fuelPerTile>1.25</fuelPerTile>
 				<skyfaller>DropshipShuttleSkyfaller</skyfaller>
 			</li>
@@ -283,10 +283,10 @@
 				<showFuelGizmo>true</showFuelGizmo>
 				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
 			</li>
-			<li Class="CompProperties_BecomePawn">
+			<li Class="SaveOurShip2.CompProps_BecomePawn">
 				<pawnDef>ShuttleDropshipHover</pawnDef>
 			</li>
-			<li Class="CompProperties_ShuttleCosmetics">
+			<li Class="SaveOurShip2.CompProps_ShuttleCosmetics">
 				<graphics>
 					<li>
 						<texPath>Things/Shuttle/shuttle_dropship</texPath>

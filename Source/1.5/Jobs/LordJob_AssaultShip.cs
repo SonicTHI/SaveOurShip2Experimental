@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	// Token: 0x02000887 RID: 2183
 	public class LordJob_AssaultShip : LordJob

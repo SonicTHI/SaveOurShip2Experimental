@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
+using RimWorld;
+using RimWorld.BaseGen;
 
-namespace RimWorld.BaseGen
+namespace SaveOurShip2
 {
 	public class SymbolResolver_ShipDebrisPart_Outdoors_Division_Grid : SymbolResolver
 	{

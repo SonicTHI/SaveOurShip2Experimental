@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Verse.AI.Group;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class GenStep_MoonPillarSite : GenStep_Scatterer
 	{
@@ -35,7 +35,7 @@ namespace RimWorld
 			}
 			Lord defendShip = LordMaker.MakeNewLord(Faction.OfMechanoids, new LordJob_DefendShip(Faction.OfMechanoids, map.Center), map);
 			List<Building> cores = new List<Building>();
-			ShipInteriorMod2.GenerateShip(DefDatabase<EnemyShipDef>.GetNamed("MechanoidMoonBase"), map, null, Faction.OfMechanoids, defendShip, out cores);
+			ShipInteriorMod2.GenerateShip(DefDatabase<SpaceShipDef>.GetNamed("MechanoidMoonBase"), map, null, Faction.OfMechanoids, defendShip, out cores);
 		}
 	}
 }

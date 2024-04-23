@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {/*
 	public class Building_Radiator : Building_TempControl
 	{

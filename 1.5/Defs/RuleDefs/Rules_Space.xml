@@ -5,7 +5,7 @@
     <defName>ShipDebris</defName>
     <symbol>shipdebris</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebris" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebris" />
     </resolvers>
   </RuleDef>
 
@@ -13,7 +13,7 @@
     <defName>EdgeDebris</defName>
     <symbol>edgeDebris</symbol>
     <resolvers>
-      <li Class="SymbolResolver_EdgeDebris">
+      <li Class="SaveOurShip2.SymbolResolver_EdgeDebris">
         <minRectSize>(2, 2)</minRectSize>
       </li>
     </resolvers>
@@ -23,7 +23,7 @@
     <defName>EdgeSlag</defName>
     <symbol>edgeSlag</symbol>
     <resolvers>
-      <li Class="SymbolResolver_EdgeSlag" />
+      <li Class="SaveOurShip2.SymbolResolver_EdgeSlag" />
     </resolvers>
   </RuleDef>
   
@@ -31,7 +31,7 @@
     <defName>ShipDebrisPart_Outdoors</defName>
     <symbol>shipdebrispart_outdoors</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisPart_Outdoors" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Outdoors" />
     </resolvers>
   </RuleDef>
   
@@ -39,10 +39,10 @@
     <defName>ShipDebrisPart_Outdoors_Division</defName>
     <symbol>shipdebrispart_outdoors_division</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisPart_Outdoors_Division_Grid">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Outdoors_Division_Grid">
         <minRectSize>(12, 12)</minRectSize>
       </li>
-      <li Class="SymbolResolver_ShipDebrisPart_Outdoors_Division_Split">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Outdoors_Division_Split">
         <minRectSize>(3, 3)</minRectSize> 
       </li>
     </resolvers>
@@ -52,7 +52,7 @@
     <defName>DebrisStreet</defName>
     <symbol>debrisstreet</symbol>
     <resolvers>
-      <li Class="SymbolResolver_DebrisStreet" />
+      <li Class="SaveOurShip2.SymbolResolver_DebrisStreet" />
     </resolvers>
   </RuleDef>
   
@@ -60,7 +60,7 @@
     <defName>ShipDebrisPart_Outdoors_LeafPossiblyDecorated</defName>
     <symbol>shipdebrispart_outdoors_leafPossiblyDecorated</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisPart_Outdoors_LeafPossiblyDecorated" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Outdoors_LeafPossiblyDecorated" />
     </resolvers>
   </RuleDef>
   
@@ -68,7 +68,7 @@
     <defName>ShipDebrisPart_Outdoors_LeafDecorated</defName>
     <symbol>shipdebrispart_outdoors_leafDecorated</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisPart_Outdoors_LeafDecorated_EdgeStreet">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Outdoors_LeafDecorated_EdgeStreet">
         <minRectSize>(3, 3)</minRectSize>
       </li>
     </resolvers>
@@ -78,10 +78,10 @@
     <defName>ShipDebrisPart_Outdoors_Leaf</defName>
     <symbol>shipdebrispart_outdoors_leaf</symbol>
     <resolvers>
-      <li Class="SymbolResolver_DebrisStreet">
+      <li Class="SaveOurShip2.SymbolResolver_DebrisStreet">
         <selectionWeight>0.25</selectionWeight>
       </li>
-      <li Class="SymbolResolver_ShipDebrisPart_Outdoors_Leaf_Building">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Outdoors_Leaf_Building">
         <minRectSize>(4, 4)</minRectSize>
       </li>
     </resolvers>
@@ -91,7 +91,7 @@
     <defName>DebrisEdgeStreet</defName>
     <symbol>debrisedgeStreet</symbol>
     <resolvers>
-      <li Class="SymbolResolver_DebrisEdgeStreet" />
+      <li Class="SaveOurShip2.SymbolResolver_DebrisEdgeStreet" />
     </resolvers>
   </RuleDef>
   
@@ -99,7 +99,7 @@
     <defName>ShipDebrisPart</defName>
     <symbol>shipdebrispart_indoors</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors" />
     </resolvers>
   </RuleDef>
   
@@ -107,7 +107,7 @@
     <defName>ShipDebrisPart_Indoors_Division</defName>
     <symbol>shipdebrispart_indoors_division</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors_Division_Split">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors_Division_Split">
         <minRectSize>(3, 3)</minRectSize>
       </li>
     </resolvers>
@@ -117,30 +117,30 @@
     <defName>ShipDebrisPart_Indoors_Leaf</defName>
     <symbol>shipdebrispart_indoors_leaf</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors_Leaf_Barracks">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors_Leaf_Barracks">
         <minRectSize>(3, 3)</minRectSize>
         <selectionWeight>1.25</selectionWeight>
       </li>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors_Leaf_Storage">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors_Leaf_Storage">
         <minRectSize>(3, 3)</minRectSize>
         <selectionWeight>0.25</selectionWeight>
       </li>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors_Leaf_DiningRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors_Leaf_DiningRoom">
         <minRectSize>(5, 5)</minRectSize>
       </li>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors_Leaf_Empty">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors_Leaf_Empty">
         <minRectSize>(3, 3)</minRectSize>
         <selectionWeight>1.5</selectionWeight>
       </li>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors_Leaf_Laboratory">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors_Leaf_Laboratory">
         <minRectSize>(4, 4)</minRectSize>
         <selectionWeight>0.5</selectionWeight>
       </li>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors_Leaf_Crypto">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors_Leaf_Crypto">
         <minRectSize>(7, 7)</minRectSize>
         <selectionWeight>0.5</selectionWeight>
       </li>
-      <li Class="SymbolResolver_ShipDebrisPart_Indoors_Leaf_Danger">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisPart_Indoors_Leaf_Danger">
         <minRectSize>(6, 6)</minRectSize>
       </li>
     </resolvers>
@@ -150,7 +150,7 @@
     <defName>ShipDebrisDiningRoom</defName>
     <symbol>shipdebrisdiningRoom</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisRoom">
         <minRectSize>(5, 5)</minRectSize>
         <interior>interior_diningRoom</interior>
       </li>
@@ -161,7 +161,7 @@
     <defName>ShipDebrisStorage</defName>
     <symbol>shipdebrisstorage</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_storage</interior>
       </li>
@@ -172,7 +172,7 @@
     <defName>ShipDebrisBarracks</defName>
     <symbol>shipdebrisbarracks</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_barracks</interior>
       </li>
@@ -183,7 +183,7 @@
     <defName>ShipDebrisLab</defName>
     <symbol>shipdebrislab</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_spacelab</interior>
       </li>
@@ -194,7 +194,7 @@
     <defName>ShipDebrisCrypto</defName>
     <symbol>shipdebriscrypto</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_spacecrypto</interior>
       </li>
@@ -205,7 +205,7 @@
     <defName>ShipDebrisEmpty</defName>
     <symbol>shipdebrisempty</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_spaceempty</interior>
       </li>
@@ -216,7 +216,7 @@
     <defName>ShipDebrisDanger</defName>
     <symbol>shipdebrisdanger</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_spacedanger</interior>
       </li>
@@ -227,7 +227,7 @@
     <defName>ShipDoors</defName>
     <symbol>shipdoors</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDoors" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipDoors" />
     </resolvers>
   </RuleDef>
   
@@ -235,7 +235,7 @@
     <defName>ExtraShipDoor</defName>
     <symbol>extraShipDoor</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ExtraShipDoor" />
+      <li Class="SaveOurShip2.SymbolResolver_ExtraShipDoor" />
     </resolvers>
   </RuleDef>
   
@@ -243,7 +243,7 @@
     <defName>ShipDebrisEmptyRoom</defName>
     <symbol>shipdebrisemptyRoom</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisEmptyRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisEmptyRoom">
         <minRectSize>(3, 3)</minRectSize>
       </li>
     </resolvers>
@@ -253,7 +253,7 @@
     <defName>ShipEmptyRoom</defName>
     <symbol>shipemptyRoom</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipEmptyRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipEmptyRoom">
         <minRectSize>(3, 3)</minRectSize>
       </li>
     </resolvers>
@@ -263,7 +263,7 @@
     <defName>ShipDebrisEdgeWalls</defName>
     <symbol>shipdebrisedgeWalls</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipDebrisEdgeWalls" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipDebrisEdgeWalls" />
     </resolvers>
   </RuleDef>
   
@@ -271,7 +271,7 @@
     <defName>ShipEdgeWalls</defName>
     <symbol>shipedgeWalls</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipEdgeWalls" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipEdgeWalls" />
     </resolvers>
   </RuleDef>
   
@@ -279,7 +279,7 @@
     <defName>ShipFloorFill</defName>
     <symbol>shipfloor</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipFloorFill" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipFloorFill" />
     </resolvers>
   </RuleDef>
   
@@ -287,7 +287,7 @@
     <defName>ShipEnsureCanReachMapEdge</defName>
     <symbol>shipensureCanReachMapEdge</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipEnsureCanReachMapEdge">
+      <li Class="SaveOurShip2.SymbolResolver_ShipEnsureCanReachMapEdge">
         <minRectSize>(0, 0)</minRectSize>
       </li>
     </resolvers>
@@ -297,7 +297,7 @@
     <defName>Interior_SpaceLab</defName>
     <symbol>interior_spacelab</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_SpaceLab" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_SpaceLab" />
     </resolvers>
   </RuleDef>
   
@@ -305,7 +305,7 @@
     <defName>Interior_SpaceCrypto</defName>
     <symbol>interior_spacecrypto</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_SpaceCrypto" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_SpaceCrypto" />
     </resolvers>
   </RuleDef>
   
@@ -313,7 +313,7 @@
     <defName>Interior_SpaceDanger</defName>
     <symbol>interior_spacedanger</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_SpaceDanger" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_SpaceDanger" />
     </resolvers>
   </RuleDef>
   
@@ -321,7 +321,7 @@
     <defName>Interior_SpaceEmpty</defName>
     <symbol>interior_spaceempty</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_SpaceEmpty" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_SpaceEmpty" />
     </resolvers>
   </RuleDef>
   
@@ -329,7 +329,7 @@
     <defName>FillWithThingsNoClear</defName>
     <symbol>fillWithThingsNoClear</symbol>
     <resolvers>
-      <li Class="SymbolResolver_FillWithThingsNoClear" />
+      <li Class="SaveOurShip2.SymbolResolver_FillWithThingsNoClear" />
     </resolvers>
   </RuleDef>
 
@@ -337,7 +337,7 @@
     <defName>Ship_Pregen</defName>
     <symbol>ship_pregen</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Ship_Pregen_New" />
+      <li Class="SaveOurShip2.SymbolResolver_Ship_Pregen_New" />
     </resolvers>
   </RuleDef>
   
@@ -345,7 +345,7 @@
     <defName>Ship_BlackBoxMission</defName>
     <symbol>ship_blackboxmission</symbol>
     <resolvers>
-      <li Class="SymbolResolver_BlackBoxMission" />
+      <li Class="SaveOurShip2.SymbolResolver_BlackBoxMission" />
     </resolvers>
   </RuleDef>
   
@@ -353,7 +353,7 @@
     <defName>ShipTriangle2Storage</defName>
     <symbol>shiptriangle2storage</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoomTriangle2">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoomTriangle2">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_storagetriangle</interior>
       </li>
@@ -364,7 +364,7 @@
     <defName>ShipEmptyRoomTriangle2</defName>
     <symbol>shipemptyRoomTriangle2</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipEmptyRoomTriangle2">
+      <li Class="SaveOurShip2.SymbolResolver_ShipEmptyRoomTriangle2">
         <minRectSize>(3, 3)</minRectSize>
       </li>
     </resolvers>
@@ -374,7 +374,7 @@
     <defName>ShipEdgeWallsTriangle2</defName>
     <symbol>shipedgeWallsTriangle2</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipEdgeWallsTriangle2" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipEdgeWallsTriangle2" />
     </resolvers>
   </RuleDef>
   
@@ -382,7 +382,7 @@
     <defName>ShipFloorTriangle2</defName>
     <symbol>shipfloorTriangle2</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipFloorTriangle2" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipFloorTriangle2" />
     </resolvers>
   </RuleDef>
   
@@ -390,7 +390,7 @@
     <defName>ShipTriangle1Lab</defName>
     <symbol>shiptriangle1lab</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoomTriangle1">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoomTriangle1">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_labtriangle</interior>
       </li>
@@ -401,7 +401,7 @@
     <defName>ShipEmptyRoomTriangle1</defName>
     <symbol>shipemptyRoomTriangle1</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipEmptyRoomTriangle1">
+      <li Class="SaveOurShip2.SymbolResolver_ShipEmptyRoomTriangle1">
         <minRectSize>(3, 3)</minRectSize>
       </li>
     </resolvers>
@@ -411,7 +411,7 @@
     <defName>ShipEdgeWallsTriangle1</defName>
     <symbol>shipedgeWallsTriangle1</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipEdgeWallsTriangle1" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipEdgeWallsTriangle1" />
     </resolvers>
   </RuleDef>
   
@@ -419,7 +419,7 @@
     <defName>ShipFloorTriangle1</defName>
     <symbol>shipfloorTriangle1</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipFloorTriangle1" />
+      <li Class="SaveOurShip2.SymbolResolver_ShipFloorTriangle1" />
     </resolvers>
   </RuleDef>
   
@@ -427,7 +427,7 @@
     <defName>ShipTriangle2Security</defName>
     <symbol>shiptriangle2security</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoomTriangle2">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoomTriangle2">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_securitytriangle</interior>
       </li>
@@ -438,7 +438,7 @@
     <defName>ShipTriangle1Salvage</defName>
     <symbol>shiptriangle1salvage</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoomTriangle1">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoomTriangle1">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_salvagetriangle</interior>
       </li>
@@ -449,7 +449,7 @@
     <defName>ShipMechsAndTurrets</defName>
     <symbol>shipmechsandturrets</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_spacemechsandturrets</interior>
       </li>
@@ -460,7 +460,7 @@
     <defName>Interior_SpaceMechsAndTurrets</defName>
     <symbol>interior_spacemechsandturrets</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_SpaceMechsAndTurrets" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_SpaceMechsAndTurrets" />
     </resolvers>
   </RuleDef>
   
@@ -468,7 +468,7 @@
     <defName>Interior_StorageTriangle</defName>
     <symbol>interior_storagetriangle</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_StorageTriangle" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_StorageTriangle" />
     </resolvers>
   </RuleDef>
   
@@ -476,7 +476,7 @@
     <defName>ShipDebrisCannibals</defName>
     <symbol>shipdebriscannibals</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_cannibal_barracks</interior>
       </li>
@@ -487,7 +487,7 @@
     <defName>Interior_Cannibal_Barracks</defName>
     <symbol>interior_cannibal_barracks</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_Cannibal_Barracks" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_Cannibal_Barracks" />
     </resolvers>
   </RuleDef>
   
@@ -495,7 +495,7 @@
     <defName>ShipMeltdownReactor</defName>
     <symbol>shipmeltdownreactor</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_meltdown_reactor</interior>
       </li>
@@ -506,7 +506,7 @@
     <defName>Interior_Meltdown_Reactor</defName>
     <symbol>interior_meltdown_reactor</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_Meltdown_Reactor" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_Meltdown_Reactor" />
     </resolvers>
   </RuleDef>
   
@@ -514,7 +514,7 @@
     <defName>ShipBlackBox</defName>
     <symbol>shipblackbox</symbol>
     <resolvers>
-      <li Class="SymbolResolver_ShipRoom">
+      <li Class="SaveOurShip2.SymbolResolver_ShipRoom">
         <minRectSize>(3, 3)</minRectSize>
         <interior>interior_black_box</interior>
       </li>
@@ -525,7 +525,7 @@
     <defName>Interior_Black_Box</defName>
     <symbol>interior_black_box</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_Black_Box" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_Black_Box" />
     </resolvers>
   </RuleDef>
   
@@ -533,7 +533,7 @@
     <defName>Interior_SecurityTriangle</defName>
     <symbol>interior_securitytriangle</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_Security_Triangle" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_Security_Triangle" />
     </resolvers>
   </RuleDef>
   
@@ -541,7 +541,7 @@
     <defName>Interior_SalvageTriangle</defName>
     <symbol>interior_salvagetriangle</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_Salvage_Triangle" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_Salvage_Triangle" />
     </resolvers>
   </RuleDef>
   
@@ -549,7 +549,7 @@
     <defName>Interior_LabTriangle</defName>
     <symbol>interior_labtriangle</symbol>
     <resolvers>
-      <li Class="SymbolResolver_Interior_Lab_Triangle" />
+      <li Class="SaveOurShip2.SymbolResolver_Interior_Lab_Triangle" />
     </resolvers>
   </RuleDef>
   
@@ -557,7 +557,7 @@
     <defName>DebrisClump</defName>
     <symbol>debrisclump</symbol>
     <resolvers>
-      <li Class="SymbolResolver_DebrisClump" />
+      <li Class="SaveOurShip2.SymbolResolver_DebrisClump" />
     </resolvers>
   </RuleDef>
 </Defs>

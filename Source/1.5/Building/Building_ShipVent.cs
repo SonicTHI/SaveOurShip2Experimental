@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using Verse;
 using System.Collections.Generic;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class Building_ShipVent : Building_TempControl
 	{

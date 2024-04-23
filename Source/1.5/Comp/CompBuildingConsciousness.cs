@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using SaveOurShip2;
+using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +10,14 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompBuildingConsciousness : ThingComp
 	{
 		public Pawn Consciousness;
 		public Color HologramColor;
-		public CompProperties_BuildingConsciousness Props => (CompProperties_BuildingConsciousness)props;
+		public CompProps_BuildingConsciousness Props => (CompProps_BuildingConsciousness)props;
 		public int HologramRespawnTick = 0;
 		public string AIName = "Unnamed AI";
 		public Thing WhichPawn;
@@ -302,7 +302,7 @@ namespace RimWorld
 				});
 			}
 
-			if (parent.Map.GetComponent<ShipHeatMapComp>().ShipMapState != ShipMapState.inCombat && ((!Props.canMergeAI && !Props.canMergeHuman) || Props.healOnMerge)) //AI or archotech
+			if (parent.Map.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.inCombat && ((!Props.canMergeAI && !Props.canMergeHuman) || Props.healOnMerge)) //AI or archotech
 			{
 				gizmos.Add(new Command_Action
 				{
@@ -449,13 +449,13 @@ namespace RimWorld
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
-			parent.Map.GetComponent<ShipHeatMapComp>().Spores.Add(this);
+			parent.Map.GetComponent<ShipMapComp>().Spores.Add(this);
 			compPower = parent.TryGetComp<CompPowerTrader>();
 		}
 
 		public override void PostDeSpawn(Map map)
 		{
-			map.GetComponent<ShipHeatMapComp>().Spores.Remove(this);
+			map.GetComponent<ShipMapComp>().Spores.Remove(this);
 			base.PostDeSpawn(map);
 		}
 

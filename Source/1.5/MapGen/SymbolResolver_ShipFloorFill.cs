@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld.BaseGen
+using RimWorld.BaseGen;
+
+namespace SaveOurShip2
 {
 	public class SymbolResolver_ShipFloorFill : SymbolResolver
 	{

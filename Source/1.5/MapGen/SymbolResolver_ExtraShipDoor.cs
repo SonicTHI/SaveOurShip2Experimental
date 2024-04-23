@@ -1,4 +1,4 @@
-﻿using SaveOurShip2;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,9 @@ using System.Text;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld.BaseGen
+using RimWorld.BaseGen;
+
+namespace SaveOurShip2
 {
 	public class SymbolResolver_ExtraShipDoor : SymbolResolver
 	{

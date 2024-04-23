@@ -5,22 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	class CompArcholifeCosmetics : ThingComp
 	{
 		public static Dictionary<string, Graphic[]> graphics = new Dictionary<string, Graphic[]>();
-		public static Dictionary<ThingDef, CompProperties_ArcholifeCosmetics> GraphicsToResolve = new Dictionary<ThingDef, CompProperties_ArcholifeCosmetics>();
+		public static Dictionary<ThingDef, CompProps_ArcholifeCosmetics> GraphicsToResolve = new Dictionary<ThingDef, CompProps_ArcholifeCosmetics>();
 
 		public int whichVersion = 0;
 
-		public CompProperties_ArcholifeCosmetics Props
+		public CompProps_ArcholifeCosmetics Props
 		{
 			get
 			{
-				return (CompProperties_ArcholifeCosmetics)props;
+				return (CompProps_ArcholifeCosmetics)props;
 			}
 		}
 
@@ -56,7 +57,7 @@ namespace RimWorld
 			yield return setVersion;
 		}
 
-		public static void ChangeAnimalGraphics(ThingWithComps parent, CompProperties_ArcholifeCosmetics Props, CompArcholifeCosmetics cosmetics, bool triggeredByChange = false)
+		public static void ChangeAnimalGraphics(ThingWithComps parent, CompProps_ArcholifeCosmetics Props, CompArcholifeCosmetics cosmetics, bool triggeredByChange = false)
 		{
 			if (triggeredByChange)
 				cosmetics.whichVersion = FloatMenuWithCallback.whichOptionWasChosen;

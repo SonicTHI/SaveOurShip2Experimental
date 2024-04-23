@@ -23,10 +23,10 @@
 					<method>DropPods</method>
 					<visible>false</visible>
 				</li>
-				<li Class="ScenPart_StartInSpace">
+				<li Class="SaveOurShip2.ScenPart_StartInSpace">
 					<def>StartInSpace</def>
 					<startType>Ship</startType>
-					<enemyShipDef>0</enemyShipDef>
+					<spaceShipDef>0</spaceShipDef>
 					<damageStart>true</damageStart>
 					<visible>true</visible>
 				</li>
@@ -119,10 +119,10 @@
 					<method>DropPods</method>
 					<visible>false</visible>
 				</li>
-				<li Class="ScenPart_StartInSpace">
+				<li Class="SaveOurShip2.ScenPart_StartInSpace">
 					<def>StartInSpace</def>
 					<startType>Station</startType>
-					<enemyShipDef>0</enemyShipDef>
+					<spaceShipDef>0</spaceShipDef>
 					<damageStart>false</damageStart>
 					<visible>true</visible>
 				</li>
@@ -213,7 +213,7 @@
 					<method>Standing</method>
 					<visible>false</visible>
 				</li>
-				<li Class="ScenPart_LoadShip">
+				<li Class="SaveOurShip2.ScenPart_LoadShip">
 					<def>LoadPreviousShip</def>
 					<filename>Select ship to load</filename>
 					<discardLog>false</discardLog>
@@ -243,7 +243,7 @@
 					<method>Standing</method>
 					<visible>false</visible>
 				</li>
-				<li Class="ScenPart_AfterlifeVault">
+				<li Class="SaveOurShip2.ScenPart_AfterlifeVault">
 					<def>AfterlifeVault</def>
 					<visible>true</visible>
 				</li>

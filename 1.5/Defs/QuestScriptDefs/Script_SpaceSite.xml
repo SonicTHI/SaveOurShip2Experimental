@@ -61,7 +61,7 @@
   
   <QuestScriptDef>
     <defName>Util_GenerateSpaceSite</defName>
-    <root Class="QuestNode_GenerateSpaceSite">
+    <root Class="SaveOurShip2.QuestNode_GenerateSpaceSite">
       <sitePartsParams>$sitePartsParams</sitePartsParams>
       <storeAs>site</storeAs>
       <faction>$siteFaction</faction>

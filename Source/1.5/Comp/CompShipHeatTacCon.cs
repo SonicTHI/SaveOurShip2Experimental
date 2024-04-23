@@ -5,8 +5,9 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class CompShipHeatTacCon : CompShipHeat
 	{
@@ -73,7 +74,7 @@ namespace RimWorld
 				};
 				yield return toggleShields;
 			}
-			var mapComp = parent.Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = parent.Map.GetComponent<ShipMapComp>();
 			/*if (!mapComp.InCombat && mapComp.HasTarget)
 			{
 				Command_Action endTarget = new Command_Action

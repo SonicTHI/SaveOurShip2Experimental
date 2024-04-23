@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public class CompHullFoamDistributor : ThingComp
 	{
-		public CompProperties_HullFoamDistributor Props
+		public CompProps_HullFoamDistributor Props
 		{
 			get
 			{
-				return (CompProperties_HullFoamDistributor)props;
+				return (CompProps_HullFoamDistributor)props;
 			}
 		}
 

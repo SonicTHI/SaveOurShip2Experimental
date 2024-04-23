@@ -5,22 +5,22 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using SaveOurShip2;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
 	public class CompShipHeat : ThingComp
 	{
-		public static Graphic ShipHeatOverlay = new GraphicShipHeatPipe_Overlay(GraphicDatabase.Get<Graphic_Single>("Things/Building/Ship/ShipHeat_Overlay_Atlas", ShaderDatabase.MetaOverlay));
+		public static Graphic ShipHeatOverlay = new Graphic_ShipHeat_Overlay(GraphicDatabase.Get<Graphic_Single>("Things/Building/Ship/ShipHeat_Overlay_Atlas", ShaderDatabase.MetaOverlay));
 		public static Graphic ShipHeatConnectorBase = GraphicDatabase.Get<Graphic_Single>("Things/Special/Power/OverlayBase", ShaderDatabase.MetaOverlay);
 		public static Graphic ShipHeatGraphic = new Graphic_LinkedShipConduit(GraphicDatabase.Get<Graphic_Single>("Things/Building/Ship/Atlas_CoolantConduit", ShaderDatabase.Cutout));
 
 		public ShipHeatNet myNet=null;
 
-		public CompProperties_ShipHeat Props
+		public CompProps_ShipHeat Props
 		{
-			get { return props as CompProperties_ShipHeat; }
+			get { return props as CompProps_ShipHeat; }
 		}
 
 		public virtual int Threat
@@ -101,7 +101,7 @@ namespace RimWorld
 		}
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
-			var mapComp = this.parent.Map.GetComponent<ShipHeatMapComp>();
+			var mapComp = this.parent.Map.GetComponent<ShipMapComp>();
 			//td change to check for adj nets, perform merges
 			mapComp.cachedPipes.Add(this);
 			mapComp.heatGridDirty = true;
@@ -111,7 +111,7 @@ namespace RimWorld
 			base.PostDeSpawn(map);
 			if (myNet != null)
 				myNet.DeRegister(this);
-			var mapComp = map.GetComponent<ShipHeatMapComp>();
+			var mapComp = map.GetComponent<ShipMapComp>();
 			//td change to check for adj nets, if at end of line simple remove, else regen
 			mapComp.cachedPipes.Remove(this);
 			mapComp.heatGridDirty = true;

@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Verse;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class CompRefuelableOverdrivable : CompRefuelable
 	{
 		private CompPowerTraderOverdrivable overdriveComp;
-		private float ConsumptionRatePerTick => Props.fuelConsumptionRate / 60000f;
+		private new float ConsumptionRatePerTick => Props.fuelConsumptionRate / 60000f;
 
 		public override void Initialize(CompProperties props)
 		{

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	/*class CompSoSSchedule : CompSchedule
 	{

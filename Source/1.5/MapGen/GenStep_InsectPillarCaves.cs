@@ -8,8 +8,9 @@ using UnityEngine;
 using Verse;
 using Verse.AI.Group;
 using Verse.Noise;
+using RimWorld;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	class GenStep_InsectPillarCaves : GenStep_Caves
 	{

@@ -435,8 +435,7 @@ namespace SaveOurShip2
 			{
 				if (MapRootListAll[i].ShipIndex == -1) //skip any with valid index
 				{
-					ShipsOnMap.Add(MapRootListAll[i].thingIDNumber, new SpaceShipCache());
-					ShipsOnMap[MapRootListAll[i].thingIDNumber].RebuildCache(MapRootListAll[i]);
+					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, MapRootListAll[i]);
 				}
 			}
 			List<IntVec3> invalidCells = new List<IntVec3>(); //might happen with wrecks - temp solution
@@ -450,15 +449,12 @@ namespace SaveOurShip2
 						invalidCells.Add(vec);
 						continue;
 					}
-					int mergeToIndex = t.thingIDNumber;
-
-					ShipsOnMap.Add(mergeToIndex, new SpaceShipCache());
-					ShipsOnMap[mergeToIndex].RebuildCache(t as Building);
+					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, t as Building);
 				}
 			}
 			if (invalidCells.Any())
 			{
-				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Recaching found ".Colorize(Color.red) + invalidCells.Count + " invalid cells! FIXING.");
+				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Recaching found ".Colorize(Color.red) + invalidCells.Count + " invalid cells! FIXING.");
 				foreach (IntVec3 vec in invalidCells)
 				{
 					MapShipCells.Remove(vec);
@@ -500,8 +496,7 @@ namespace SaveOurShip2
 				ShipsOnMap.Remove(i);
 			}
 			//full rebuild
-			ShipsOnMap.Add(mergeToIndex, new SpaceShipCache());
-			ShipsOnMap[mergeToIndex].RebuildCache(origin);
+			ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, origin);
 		}
 		public void CheckAndMerge(HashSet<IntVec3> cellsToMerge) //faster, attaches as a tumor
 		{
@@ -670,7 +665,7 @@ namespace SaveOurShip2
 			TargetMapComp.ResetCombatVars();
 
 			if (range == 0) //set range DL:1-9
-				DetermineInitialRange();
+				DetermineInitialRange(passingShip != null);
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Enemy range at start: " + Range);
 
 			//callSlowTick = true;
@@ -682,7 +677,9 @@ namespace SaveOurShip2
 			SpaceShipDef shipDef = null;
 			SpaceNavyDef navyDef = null;
 			int wreckLevel = 0;
+			bool fakeWreck = false;
 			bool shieldsActive = true;
+			bool isDerelict = false;
 			float CR = 0;
 			float radius = 150f;
 			float theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta - 0.1f + 0.002f * Rand.Range(0, 20);
@@ -696,11 +693,23 @@ namespace SaveOurShip2
 			}
 			else if (passingShip is DerelictShip derelictShip)
 			{
+				isDerelict = true;
 				shipDef = derelictShip.derelictShip;
 				navyDef = derelictShip.spaceNavyDef;
 				faction = derelictShip.shipFaction;
-				wreckLevel = derelictShip.wreckLevel;
-				theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta + (0.05f + 0.002f * Rand.Range(0, 40)) * (Rand.Bool ? 1 : -1);
+				if (derelictShip.wreckLevel == 2 && (derelictShip.derelictShip.neverAttacks && Rand.Chance(0.05f) || Rand.Chance(0.2f))) //fake wreck chance
+				{
+					fakeWreck = true;
+					if (Rand.Chance(0.1f))
+						wreckLevel = 0;
+					else
+						wreckLevel = 1;
+				}
+				else
+				{
+					wreckLevel = derelictShip.wreckLevel;
+					theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta + (0.05f + 0.002f * Rand.Range(0, 40)) * (Rand.Bool ? 1 : -1);
+				}
 			}
 			else //using player ship combat rating
 			{
@@ -790,7 +799,7 @@ namespace SaveOurShip2
 			if (passingShip != null)
 			{
 				ShipCombatOriginMap.passingShipManager.RemoveShip(passingShip);
-				if (ModsConfig.IdeologyActive && !(passingShip is DerelictShip))
+				if (ModsConfig.IdeologyActive && !isDerelict)
 					IdeoUtility.Notify_PlayerRaidedSomeone(map.mapPawns.FreeColonists);
 			}
 			if (faction == null)
@@ -800,7 +809,7 @@ namespace SaveOurShip2
 				else
 					faction = Faction.OfAncientsHostile;
 			}
-			if (faction.HasGoodwill && faction.AllyOrNeutralTo(Faction.OfPlayer))
+			if (!isDerelict && faction.HasGoodwill && faction.AllyOrNeutralTo(Faction.OfPlayer))
 				faction.TryAffectGoodwillWith(Faction.OfPlayer, -150);
 
 			//spawn map
@@ -813,6 +822,8 @@ namespace SaveOurShip2
 
 			newMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy);
 
+			//newMap = ShipInteriorMod2.GeneratePocketSpaceMap(mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy, null, map);
+
 			var mp = (WorldObjectOrbitingShip)newMap.Parent;
 			mp.Radius = radius;
 			mp.Theta = theta;
@@ -820,10 +831,17 @@ namespace SaveOurShip2
 			var newMapComp = newMap.GetComponent<ShipMapComp>();
 			if (passingShip is DerelictShip d)
 			{
-				shieldsActive = false;
-				newMapComp.ShipMapState = ShipMapState.isGraveyard;
-				newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
-				Find.LetterStack.ReceiveLetter("SoS.EncounterStart".Translate(), "SoS.EncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
+				if (fakeWreck)
+				{
+					Find.LetterStack.ReceiveLetter("SoS.EncounterAmbush".Translate(), "SoS.EncounterAmbushDesc".Translate(d.derelictShip.label), LetterDefOf.ThreatBig);
+				}
+				else
+				{
+					shieldsActive = false;
+					newMapComp.ShipMapState = ShipMapState.isGraveyard;
+					newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
+					Find.LetterStack.ReceiveLetter("SoS.EncounterStart".Translate(), "SoS.EncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
+				}
 			}
 			newMapComp.ShipFaction = faction;
 			if (wreckLevel != 3)
@@ -883,27 +901,24 @@ namespace SaveOurShip2
 				RangeToKeep = Range;
 			}
 		}
-		private void DetermineInitialRange()
+		private void DetermineInitialRange(bool ambush)
 		{
-			byte detectionLevel = 7;
-			List<Building_ShipSensor> Sensors = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == map).ToList();
-			List<Building_ShipSensor> SensorsEnemy = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == ShipCombatTargetMap).ToList();
-			if (Sensors.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-			{
-				detectionLevel += 2;
-			}
-			else if (Sensors.Where(sensor => sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-				detectionLevel += 1;
+			//advsensors = further, active cloak = closer
+			//nominal should be 320-380
+			//ambush 180-280
+			int detectionLevel = 0;
+			if (ambush)
+				detectionLevel -= 3;
 
+			List<Building_ShipSensor> Sensors = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == map && s.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && s.TryGetComp<CompPowerTrader>().PowerOn).ToList();
+			if (Sensors.Any())
+				detectionLevel += 1;
 			if (Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
 				detectionLevel -= 2;
-			if (SensorsEnemy.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-				detectionLevel -= 2;
-			else if (SensorsEnemy.Any())
-				detectionLevel -= 1;
+
 			if (TargetMapComp.Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
 				detectionLevel -= 2;
-			Range = 180 + detectionLevel * 20 + Rand.Range(0, 40);
+			Range = 300 + (detectionLevel * 20) + Rand.Range(0, 60);
 		}
 
 		//battle
@@ -1362,7 +1377,7 @@ namespace SaveOurShip2
 							{
 								var ship = ShipsOnMap[index];
 								//ship cant move and fleet fleeing or ship less than x of fleet threat
-								if (!ship.CanMove() && (Retreating || totalThreat * 0.2f > ship.ThreatCurrent))
+								if (!ship.CanMove() && (Retreating || totalThreat * 0.3f > ship.ThreatCurrent))
 								{
 									ShipsToMove.Add(index);
 								}
@@ -1901,13 +1916,12 @@ namespace SaveOurShip2
 		{
 			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
 			SpaceShipCache ship = ShipsOnMap[shipIndex];
-			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
+			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && !ship.IsWreck && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
 			{
 				EndBattle(map, false);
 				return;
 			}
 			Building core = ship.Core;
-			ship.LastBridgeDied = false;
 			//ship.AreaDestroyed.Clear();
 			if (core == null)
 			{

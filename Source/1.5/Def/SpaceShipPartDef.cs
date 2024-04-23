@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using Verse;
 
-namespace SaveOurShip2
+namespace RimWorld
 {
 	public class SpaceShipPartDef : Def
 	{
-		public int randomTurretPoints;
 		public List<ThingDef> things;
 	}
 }

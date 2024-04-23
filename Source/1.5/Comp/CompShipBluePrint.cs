@@ -127,7 +127,7 @@ namespace SaveOurShip2
 			foreach (ShipShape shape in shipDef.parts.Where(s => DefDatabase<ThingDef>.GetNamedSilentFail(s.shapeOrDef) != null))
 			{
 				ThingDef def = ThingDef.Named(shape.shapeOrDef);
-				if (!def.IsBuildingArtificial || !def.IsResearchFinished)
+				if (!def.IsBuildingArtificial || !def.IsResearchFinished || !def.BuildableByPlayer)
 					continue;
 				IntVec3 v = new IntVec3(pos.x + shape.x + 1, 0, pos.z + shape.z + 1);
 				var comp = def.GetCompProperties<CompProps_ShipCachePart>();

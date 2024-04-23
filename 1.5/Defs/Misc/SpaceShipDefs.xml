@@ -62,7 +62,6 @@
 	
 	<SpaceShipPartDef>
 		<defName>ShipPartTurretSmall</defName>
-		<randomTurretPoints>10</randomTurretPoints>
 		<things>
 			<li>ShipTurret_Laser</li>
 			<li>ShipTurret_Plasma</li>
@@ -72,7 +71,6 @@
 	
 	<SpaceShipPartDef>
 		<defName>ShipPartTurretLarge</defName>
-		<randomTurretPoints>30</randomTurretPoints>
 		<things>
 			<li>ShipTurret_Laser_Large</li>
 			<li>ShipTurret_Plasma_Large</li>

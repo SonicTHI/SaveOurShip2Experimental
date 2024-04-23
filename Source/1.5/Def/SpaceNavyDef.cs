@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Verse;
 using UnityEngine;
 using System.Linq;
-using RimWorld;
+using SaveOurShip2;
 
-namespace SaveOurShip2
+namespace RimWorld
 {
 	public class SpaceNavyDef : Def
 	{

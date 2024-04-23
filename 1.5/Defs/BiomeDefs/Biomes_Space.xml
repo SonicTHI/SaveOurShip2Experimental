@@ -30,6 +30,8 @@
 		<baseWeatherCommonalities>
 			<OuterSpaceWeather>99</OuterSpaceWeather>
 		</baseWeatherCommonalities>
+		<generatesNaturally>false</generatesNaturally>
+		<wildAnimalsCanWanderInto>false</wildAnimalsCanWanderInto>
 		<wildAnimals />
 		<wildPlants />
 		<modExtensions>

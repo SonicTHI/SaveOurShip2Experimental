@@ -64,13 +64,13 @@ namespace RimWorld.Planet
 			List<IntVec3> targetCells = new List<IntVec3>();
 			List<IntVec3> validCells = new List<IntVec3>();
 			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values.Where(s => !s.IsWreck))
+			foreach (SoShipCache ship in mapComp.ShipsOnMap.Values.Where(s => !s.IsWreck))
 			{
 				validCells.AddRange(ship.OuterCells());
 			}
 			if (targetCells.NullOrEmpty())
 			{
-				foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values.Where(s => s.IsWreck))
+				foreach (SoShipCache ship in mapComp.ShipsOnMap.Values.Where(s => s.IsWreck))
 				{
 					validCells.AddRange(ship.OuterCells());
 				}

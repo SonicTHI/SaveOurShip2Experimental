@@ -34,11 +34,11 @@ namespace RimWorld
 						//ShipInteriorMod2.LaunchShip counterpart
 						bool originIsSpace = originMap.IsSpace();
 						var mapComp = originMap.GetComponent<ShipHeatMapComp>();
-						var ship = mapComp.ShipsOnMapNew[((Building_ShipBridge)shipRoot).ShipIndex];
+						var ship = mapComp.ShipsOnMap[((Building_ShipBridge)shipRoot).ShipIndex];
 						IntVec3 adj = IntVec3.Zero;
 						WorldObjectOrbitingShip mapPar; //origin might not be WOS
 						
-						if (!originIsSpace || (originIsSpace && (mapComp.ShipsOnMapNew.Count > 1 || originMap.mapPawns.AllPawns.Any(p => !mapComp.MapShipCells.ContainsKey(p.Position))))) //to either with temp map
+						if (!originIsSpace || (originIsSpace && (mapComp.ShipsOnMap.Count > 1 || originMap.mapPawns.AllPawns.Any(p => !mapComp.MapShipCells.ContainsKey(p.Position))))) //to either with temp map
 						{
 							//spawn new WO and map
 							WorldObjectOrbitingShip transit = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.WreckSpace);

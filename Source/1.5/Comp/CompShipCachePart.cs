@@ -174,8 +174,7 @@ namespace SaveOurShip2
 			}
 			else //else make new ship/wreck
 			{
-				mapComp.ShipsOnMap.Add(parent.thingIDNumber, new SpaceShipCache());
-				mapComp.ShipsOnMap[parent.thingIDNumber].RebuildCache(parent as Building);
+				ShipInteriorMod2.WorldComp.AddNewShip(mapComp.ShipsOnMap, parent as Building);
 			}
 		}
 

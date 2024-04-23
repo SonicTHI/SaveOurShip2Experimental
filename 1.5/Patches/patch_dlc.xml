@@ -8,7 +8,7 @@
 			<success>Normal</success>
 			<operations>
 				<li Class="PatchOperationAdd">
-					<xpath>/Defs</xpath>
+					<xpath>Defs</xpath>
 					<value>
 						<!-- pawns -->
 						<PawnKindDef>
@@ -330,6 +330,60 @@
 					<value>
 						<li>PirateYttakin</li>
 						<li>PirateWaster</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Anomaly</li>
+		</mods>		
+		<match Class="PatchOperationSequence">
+			<success>Normal</success>
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs</xpath>
+					<value>
+						<SpaceNavyDef ParentName="SpaceNavy">
+							<defName>Shamblers_SpaceNavy</defName>
+							<label>Shamblers Space Navy</label>
+							<factionDefs>
+								<li>Entities</li>
+							</factionDefs>
+							<crewDef>ShamblerGorehulk</crewDef>
+							<marineDef>ShamblerSwarmer</marineDef>
+							<marineHeavyDef>ShamblerSoldier</marineHeavyDef>
+						</SpaceNavyDef>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs</xpath>
+					<value>
+						<SpaceNavyDef ParentName="SpaceNavy">
+							<defName>Fleshbeasts_SpaceNavy</defName>
+							<label>Fleshbeast Space Navy</label>
+							<factionDefs>
+								<li>Entities</li>
+							</factionDefs>
+							<crewDef>Trispike</crewDef>
+							<marineDef>Fingerspike</marineDef>
+							<marineHeavyDef>Toughspike</marineHeavyDef>
+						</SpaceNavyDef>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[@Name="BaseFleshbeast" or @Name="MysteriousSphereEntityBase" or @Name="Revenant" or defName="Metalhorror" or defName="Noctol"]/statBases</xpath>
+					<value>
+						<HypoxiaResistance>1</HypoxiaResistance>
+						<DecompressionResistance>1</DecompressionResistance>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/HediffDef[defName="Shambler"]/stages/li/statOffsets</xpath>
+					<value>
+						<HypoxiaResistance>1</HypoxiaResistance>
+						<DecompressionResistance>1</DecompressionResistance>
 					</value>
 				</li>
 			</operations>

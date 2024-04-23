@@ -10,6 +10,8 @@
 	<SoS.LetterLabelShortCircuitDesc>A fault in an electrical conduit has caused a short circuit. Luckily, your capacitor array's fuse prevented it from discharging.</SoS.LetterLabelShortCircuitDesc>
 	<SoS.EncounterStart>Derelict</SoS.EncounterStart>
 	<SoS.EncounterStartDesc>You have approached a derelict that will burn up in the atmosphere in {0}.\n\nYou can send a boarding party to investigate or move it to your map with the salvage bay, if it does not have an intact bridge. Once secured it can be salvaged, repaired or repurposed.</SoS.EncounterStartDesc>
+	<SoS.EncounterAmbush>Ambush!</SoS.EncounterAmbush>
+	<SoS.EncounterAmbushDesc>As you approach the {0} it begins to power up its shields and weapons.\nPrepare for battle!</SoS.EncounterAmbushDesc>
 	<SoS.CombatStart>Ship battle</SoS.CombatStart>
 	<SoS.CombatStartDesc>A hostile ship is approaching! Scans identify it as a {0}.</SoS.CombatStartDesc>
 	<SoS.CombatFleetDesc>A hostile fleet is approaching!</SoS.CombatFleetDesc>

@@ -296,7 +296,7 @@ namespace SaveOurShip2
 	public static class DrawShips
 	{
 		public static int Highlight = -1;
-		public static List<Pair<IntVec3, float>> tmpCachedCellColors;
+		public static List<Pair<IntVec3, int>> tmpCachedCellColors;
 		public static void Postfix()
 		{
 			if (ModSettings_SoS.debugMode)
@@ -308,7 +308,7 @@ namespace SaveOurShip2
 
 				if (tmpCachedCellColors == null)
 				{
-					tmpCachedCellColors = new List<Pair<IntVec3, float>>();
+					tmpCachedCellColors = new List<Pair<IntVec3, int>>();
 				}
 				//if (Time.frameCount % 6 == 0)
 				{
@@ -317,12 +317,13 @@ namespace SaveOurShip2
 				var cells = mapComp.MapShipCells;
 				foreach (IntVec3 v in cells.Keys)
 				{
-					tmpCachedCellColors.Add(new Pair<IntVec3, float>(v, cells[v].Item1));
+					int n = cells[v].Item1 * 300 - cells[v].Item1 * 30 + cells[v].Item1 * 3;
+					tmpCachedCellColors.Add(new Pair<IntVec3, int>(v, n));
 				}
 				for (int m = 0; m < tmpCachedCellColors.Count; m++)
 				{
 					IntVec3 v = tmpCachedCellColors[m].First;
-					int sec = (int)tmpCachedCellColors[m].Second;
+					int sec = tmpCachedCellColors[m].Second;
 
 					if (sec == -1)
 					{
@@ -335,7 +336,7 @@ namespace SaveOurShip2
 						continue;
 					}
 
-					int index = (int)tmpCachedCellColors[m].Second % 1000;
+					int index = tmpCachedCellColors[m].Second % 1000;
 					float r = index / 1000f;
 					index %= 100;
 					float g = index / 100f;
@@ -1163,7 +1164,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(Thing), typeof(bool) })]
+	/*[HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(Thing), typeof(bool) })]
 	public static class NoFogSpamInSpaceThing
 	{
 		public static bool Prefix(Thing thing, ref bool sendLetters, Map ___map, out bool __state)
@@ -1189,7 +1190,7 @@ namespace SaveOurShip2
 			}
 			return true;
 		}
-	}
+	}*/
 
 	[HarmonyPatch(typeof(RoyalTitlePermitWorker), "AidDisabled")]
 	public static class RoyalTitlePermitWorkerInSpace
@@ -2077,12 +2078,47 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch]
-	public class ReversePatchBuilding
+	public class ReversePatchBuildingSpawn
+	{
+		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+		[HarmonyPatch(typeof(Building), "SpawnSetup")]
+		public static void Snapshot(object instance, Map map, bool respawningAfterLoad)
+		{
+		}
+	}
+	[HarmonyPatch]
+	public class ReversePatchBuildingDespawn
 	{
 		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
 		[HarmonyPatch(typeof(Building), "DeSpawn")]
 		public static void Snapshot(object instance, DestroyMode mode)
 		{
+		}
+	}
+	[HarmonyPatch(typeof(Building_Bed), "SpawnSetup")]
+	public static class DisableForMoveBed
+	{
+		public static bool Prefix(Building_Bed __instance, Map map, bool respawningAfterLoad)
+		{
+			if (ShipInteriorMod2.MoveShipFlag)
+			{
+				ReversePatchBuildingSpawn.Snapshot(__instance, map, respawningAfterLoad);
+				return false;
+			}
+			return true;
+		}
+	}
+	[HarmonyPatch(typeof(Building_Bed), "DeSpawn")]
+	public static class DisableForMoveBedTwo
+	{
+		public static bool Prefix(Building_Bed __instance, DestroyMode mode)
+		{
+			if (ShipInteriorMod2.MoveShipFlag)
+			{
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
+				return false;
+			}
+			return true;
 		}
 	}
 	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
@@ -2092,7 +2128,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -2105,7 +2141,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -2118,7 +2154,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;

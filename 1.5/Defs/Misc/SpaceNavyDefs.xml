@@ -1,71 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-    <SpaceNavyDef Abstract="True" Name="SpaceNavy">
-        <factionDefs></factionDefs>
+	<SpaceNavyDef Abstract="True" Name="SpaceNavy">
+		<factionDefs></factionDefs>
 		<colorPrimary></colorPrimary>
 		<colorSecondary></colorSecondary>
+		<colorLighting></colorLighting>
 		<bountyHunts>false</bountyHunts>
 		<pirates>false</pirates>
 		<canOperateAfterFactionDefeated>true</canOperateAfterFactionDefeated>
-        <crewDef>SpaceCrew</crewDef>
-        <marineDef>SpaceCrewMarine</marineDef>
-        <marineHeavyDef>SpaceCrewMarineHeavy</marineHeavyDef>
-        <spaceShipDefs></spaceShipDefs>
-    </SpaceNavyDef>
-    <SpaceNavyDef ParentName="SpaceNavy">
-        <defName>Pirate_SpaceNavy</defName>
-        <label>Pirates</label>
-        <factionDefs>
-            <li>Pirate</li>
+		<crewDef>SpaceCrew</crewDef>
+		<marineDef>SpaceCrewMarine</marineDef>
+		<marineHeavyDef>SpaceCrewMarineHeavy</marineHeavyDef>
+		<spaceShipDefs></spaceShipDefs>
+	</SpaceNavyDef>
+	<SpaceNavyDef ParentName="SpaceNavy">
+		<defName>Pirate_SpaceNavy</defName>
+		<label>Pirates</label>
+		<factionDefs>
+			<li>Pirate</li>
 		</factionDefs>
 		<colorPrimary>Structure_Black</colorPrimary>
 		<colorSecondary>Structure_Red</colorSecondary>
 		<pirates>true</pirates>
-        <spaceShipDefs>
-            <li>PirateMiningRig</li>
-            <li>PirateISCS</li>
-            <li>DestroyerT1</li>
-            <li>FrigateIronclad</li>
-            <li>FrigateScorpion</li>
-            <li>ShipBreakerFullyArmed</li>
-            <li>CorvetteMartian</li>
-            <li>BomberHeavy</li>
-            <li>FighterMedium</li>
-            <li>CruiserCrab</li>
-        </spaceShipDefs>
-    </SpaceNavyDef>
-    <SpaceNavyDef ParentName="SpaceNavy">
-        <defName>Mechanoid_SpaceNavy</defName>
-        <label>Mechanoids</label>
-        <factionDefs>
-            <li>Mechanoid</li>
+		<spaceShipDefs>
+			<li>PirateMiningRig</li>
+			<li>PirateISCS</li>
+			<li>DestroyerT1</li>
+			<li>FrigateIronclad</li>
+			<li>FrigateScorpion</li>
+			<li>ShipBreakerFullyArmed</li>
+			<li>CorvetteMartian</li>
+			<li>BomberHeavy</li>
+			<li>FighterMedium</li>
+			<li>CruiserCrab</li>
+		</spaceShipDefs>
+	</SpaceNavyDef>
+	<SpaceNavyDef ParentName="SpaceNavy">
+		<defName>Mechanoid_SpaceNavy</defName>
+		<label>Mechanoids</label>
+		<factionDefs>
+			<li>Mechanoid</li>
 		</factionDefs>
-        <crewDef>Mech_Pikeman</crewDef>
-        <marineDef>Mech_Scyther</marineDef>
-        <marineHeavyDef>Mech_Lancer</marineHeavyDef>
-        <spaceShipDefs>
-            <li>MechPsychicAmp</li>
-            <li>MechSphere</li>
-            <li>MechSphereArcho</li>
-            <li>MechSphereHuge</li>
-            <li>MechSphereLarge</li>
-            <li>MechSphereLargeAlt</li>
-            <li>MechSphereMini</li>
-            <li>MechSphereSmall</li>
-            <li>MechanoidMoonBase</li>
-            <li>ContainerMech</li>
-        </spaceShipDefs>
-    </SpaceNavyDef>
-    <SpaceNavyDef ParentName="SpaceNavy">
-        <defName>Insect_SpaceNavy</defName>
-        <label>Insects</label>
-        <factionDefs>
-            <li>Insect</li>
+		<crewDef>Mech_Pikeman</crewDef>
+		<marineDef>Mech_Scyther</marineDef>
+		<marineHeavyDef>Mech_Lancer</marineHeavyDef>
+		<spaceShipDefs>
+			<li>MechPsychicAmp</li>
+			<li>MechSphere</li>
+			<li>MechSphereArcho</li>
+			<li>MechSphereHuge</li>
+			<li>MechSphereLarge</li>
+			<li>MechSphereLargeAlt</li>
+			<li>MechSphereMini</li>
+			<li>MechSphereSmall</li>
+			<li>MechanoidMoonBase</li>
+			<li>ContainerMech</li>
+		</spaceShipDefs>
+	</SpaceNavyDef>
+	<SpaceNavyDef ParentName="SpaceNavy">
+		<defName>Insect_SpaceNavy</defName>
+		<label>Insects</label>
+		<factionDefs>
+			<li>Insect</li>
 		</factionDefs>
-        <crewDef>Astromite</crewDef>
-        <marineDef>Stellapede</marineDef>
-        <marineHeavyDef>Cosmopillar</marineHeavyDef>
-        <spaceShipDefs>
-        </spaceShipDefs>
-    </SpaceNavyDef>
+		<crewDef>Astromite</crewDef>
+		<marineDef>Stellapede</marineDef>
+		<marineHeavyDef>Cosmopillar</marineHeavyDef>
+		<spaceShipDefs>
+		</spaceShipDefs>
+	</SpaceNavyDef>
 </Defs>

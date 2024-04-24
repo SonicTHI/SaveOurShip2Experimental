@@ -15,7 +15,7 @@ namespace SaveOurShip2
 			base.Tick();
 			if (this.Spawned)
 			{
-				foreach (CompShipCombatShield shield in this.Map.GetComponent<ShipMapComp>().Shields)
+				foreach (CompShipHeatShield shield in this.Map.GetComponent<ShipMapComp>().Shields)
 				{
 					if (!shield.shutDown && Position.DistanceTo(shield.parent.Position) <= shield.radius)
 					{

@@ -652,7 +652,7 @@
 		</researchPrerequisites>
 		<constructionSkillPrerequisite>6</constructionSkillPrerequisite>
 	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
+	<!--ThingDef ParentName="BuildingBase">
 		<defName>Ship_ForceField</defName>
 		<label>force field</label>
 		<designatorDropdown>Ship_Airlocks</designatorDropdown>
@@ -713,7 +713,7 @@
 			<li>ShipBasics</li>
 		</researchPrerequisites>
 		<designationHotKey>Misc1</designationHotKey>
-	</ThingDef>
+	</ThingDef-->
 	<!-- plating -->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_Hulls</defName>

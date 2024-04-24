@@ -25,16 +25,20 @@ namespace SaveOurShip2.Vehicles
                     yield return CommandBoard(vehicle);
                 else
                     yield return CommandGoHome(vehicle);
-                bool hasLaser = vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserA") || vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserB") || vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserC");
-                bool hasPlasma = vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaA") || vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaB") || vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaC");
-                bool hasTorpedo = vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA") || vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoB") || vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoC")
-                    && vehicle.carryTracker.GetDirectlyHeldThings().Any(t => t.HasThingCategory(ResourceBank.ThingCategoryDefOf.SpaceTorpedoes));
-                if (hasLaser)
-                    yield return CommandIntercept(vehicle);
-                if (hasLaser || hasPlasma)
-                    yield return CommandStrafe(vehicle);
-                if (hasTorpedo)
-                    yield return CommandBomb(vehicle);
+                var u = vehicle.CompUpgradeTree.upgrades;
+                if (u != null)
+				{
+					bool hasLaser = u.Contains("TurretLaserA") || u.Contains("TurretLaserB") || u.Contains("TurretLaserC");
+					bool hasPlasma = u.Contains("TurretPlasmaA") || u.Contains("TurretPlasmaB") || u.Contains("TurretPlasmaC");
+					bool hasTorpedo = u.Contains("TurretTorpedoA") || u.Contains("TurretTorpedoB") || u.Contains("TurretTorpedoC")
+						&& vehicle.carryTracker.GetDirectlyHeldThings().Any(t => t.HasThingCategory(ResourceBank.ThingCategoryDefOf.SpaceTorpedoes));
+					if (hasLaser)
+						yield return CommandIntercept(vehicle);
+					if (hasLaser || hasPlasma)
+						yield return CommandStrafe(vehicle);
+					if (hasTorpedo)
+						yield return CommandBomb(vehicle);
+				}
             }
         }
 

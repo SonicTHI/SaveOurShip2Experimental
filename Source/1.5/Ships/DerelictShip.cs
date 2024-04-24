@@ -9,9 +9,9 @@ namespace SaveOurShip2
 {
 	class DerelictShip : PassingShip
 	{
-		public SpaceShipDef derelictShip;
+		public ShipDef derelictShip;
 		public Faction shipFaction;
-		public SpaceNavyDef spaceNavyDef;
+		public NavyDef spaceNavyDef;
 		public int wreckLevel;
 		//wrecklevel
 		//1 (light damage - starting ships): outer explo few

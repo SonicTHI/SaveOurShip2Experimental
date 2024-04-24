@@ -1,30 +1,30 @@
 <Defs>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Cargo</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>CasketFilled</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Mech_CentipedeGunner_SPAWNER</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Mech_Scyther_SPAWNER</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Mech_Pikeman_SPAWNER</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Mech_Lancer_SPAWNER</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Mech_Random</defName>
 		<things>
 			<li>Mech_Pikeman</li>
@@ -33,57 +33,57 @@
 			<li>Mech_CentipedeGunner</li>
 			<li>Mech_CentipedeBurner</li>
 		</things>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Astromite_SPAWNER</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Stellapede_SPAWNER</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>Cosmopillar_SPAWNER</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>SpaceHive_SPAWNER</defName>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>SpaceBug_Random</defName>
 		<things>
 			<li>Astromite</li>
 			<li>Stellapede</li>
 			<li>Cosmopillar</li>
 		</things>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>ShipPartTurretSmall</defName>
 		<things>
 			<li>ShipTurret_Laser</li>
 			<li>ShipTurret_Plasma</li>
 			<li>ShipTurret_Kinetic</li>
 		</things>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>ShipPartTurretLarge</defName>
 		<things>
 			<li>ShipTurret_Laser_Large</li>
 			<li>ShipTurret_Plasma_Large</li>
 			<li>ShipTurret_Kinetic_Large</li>
 		</things>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 	
-	<SpaceShipPartDef>
+	<SaveOurShip2.ShipPartDef>
 		<defName>ShipPartTurretSpinal</defName>
 		<things>
 			<li>ShipSpinalBarrelLaser</li>
 			<li>ShipSpinalBarrelPlasma</li>
 			<li>ShipSpinalBarrelKinetic</li>
 		</things>
-	</SpaceShipPartDef>
+	</SaveOurShip2.ShipPartDef>
 </Defs>

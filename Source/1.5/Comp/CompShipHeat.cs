@@ -77,7 +77,7 @@ namespace SaveOurShip2
 		}
 		public bool AddHeatToNetwork(float amount)
 		{
-			Log.Message("Adding " + amount + " heat to network. Network currently has " + (myNet == null ? 0 : (myNet.StorageAvailable)) + " of " + (myNet == null ? 0 : (myNet.StorageCapacity)) + " available.");
+			//Log.Message("Adding " + amount + " heat to network. Network currently has " + (myNet == null ? 0 : (myNet.StorageAvailable)) + " of " + (myNet == null ? 0 : (myNet.StorageCapacity)) + " available.");
 			if (myNet == null || amount > myNet.StorageCapacity - myNet.StorageUsed)
 				return false;
 			myNet.AddHeat(amount);

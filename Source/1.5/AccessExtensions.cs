@@ -1,5 +1,6 @@
 using RimWorld;
 using UnityEngine;
+using Vehicles;
 using Verse;
 
 namespace SaveOurShip2
@@ -29,7 +30,7 @@ namespace SaveOurShip2
 
 		public static bool CanSurviveVacuum(this Pawn pawn)
 		{
-			return pawn.DecompressionResistance() >= 1.0f && pawn.HypoxiaResistance() >= 1.0f;
+			return (pawn.DecompressionResistance() >= 1.0f && pawn.HypoxiaResistance() >= 1.0f) || pawn is VehiclePawn;
 		}
 	}
 }

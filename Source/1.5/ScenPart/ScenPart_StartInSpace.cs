@@ -22,7 +22,7 @@ namespace SaveOurShip2
 	{
 
 		//ship selection - not sure how much of this is actually needed for this to work, also a bit convoluted random option
-		public SpaceShipDef spaceShipDef;
+		public ShipDef spaceShipDef;
 		public bool damageStart;
 		public ShipStartFlags startType;
 		public override bool CanCoexistWith(ScenPart other) //not working in menu
@@ -32,7 +32,7 @@ namespace SaveOurShip2
 		public override void ExposeData()
 		{
 			base.ExposeData();
-			Scribe_Defs.Look<SpaceShipDef>(ref spaceShipDef, "spaceShipDef");
+			Scribe_Defs.Look<ShipDef>(ref spaceShipDef, "spaceShipDef");
 			Scribe_Values.Look<bool>(ref damageStart, "damageStart");
 			Scribe_Values.Look<ShipStartFlags>(ref startType, "startType");
 		}
@@ -50,12 +50,12 @@ namespace SaveOurShip2
 					new FloatMenuOption("Start on: ship", delegate ()
 					{
 						startType = ShipStartFlags.Ship;
-						spaceShipDef = DefDatabase<SpaceShipDef>.GetNamed("0");
+						spaceShipDef = DefDatabase<ShipDef>.GetNamed("0");
 					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0),
 					new FloatMenuOption("Start on: station", delegate ()
 					{
 						startType = ShipStartFlags.Station;
-						spaceShipDef = DefDatabase<SpaceShipDef>.GetNamed("0");
+						spaceShipDef = DefDatabase<ShipDef>.GetNamed("0");
 					}, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0)
 				};
 				Find.WindowStack.Add(new FloatMenu(toggleType));
@@ -65,9 +65,9 @@ namespace SaveOurShip2
 			if (Widgets.ButtonText(rect2, spaceShipDef.label, true, true, true))
 			{
 				List<FloatMenuOption> list = new List<FloatMenuOption>();
-				foreach (SpaceShipDef localTd2 in DefDatabase<SpaceShipDef>.AllDefs.Where(t => t.defName == "0" || (startType == ShipStartFlags.Ship && t.startingShip == true && t.startingDungeon == false) || (startType == ShipStartFlags.Station && t.startingShip == true && t.startingDungeon == true)).OrderBy(t => t.defName))
+				foreach (ShipDef localTd2 in DefDatabase<ShipDef>.AllDefs.Where(t => t.defName == "0" || (startType == ShipStartFlags.Ship && t.startingShip == true && t.startingDungeon == false) || (startType == ShipStartFlags.Station && t.startingShip == true && t.startingDungeon == true)).OrderBy(t => t.defName))
 				{
-					SpaceShipDef localTd = localTd2;
+					ShipDef localTd = localTd2;
 					list.Add(new FloatMenuOption(localTd.label + " (" + localTd.defName + ")", delegate ()
 					{
 						spaceShipDef = localTd;
@@ -98,7 +98,7 @@ namespace SaveOurShip2
 
 		public override void Randomize()
 		{
-			spaceShipDef = DefDatabase<SpaceShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
+			spaceShipDef = DefDatabase<ShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
 		}
 		public override bool HasNullDefs()
 		{
@@ -132,12 +132,12 @@ namespace SaveOurShip2
 
 			if (scen.startType == ShipStartFlags.Station && scen.spaceShipDef.defName == "0") //random dungeon
 			{
-				scen.spaceShipDef = DefDatabase<SpaceShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
+				scen.spaceShipDef = DefDatabase<ShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == true).RandomElement();
 				scen.damageStart = false;
 			}
 			else if (scen.spaceShipDef.defName == "0") //random ship, damage lvl 1
 			{
-				scen.spaceShipDef = DefDatabase<SpaceShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
+				scen.spaceShipDef = DefDatabase<ShipDef>.AllDefs.Where(def => def.startingShip == true && def.startingDungeon == false && def.defName != "0").RandomElement();
 			}
 			List<Building> cores = new List<Building>();
 			ShipInteriorMod2.GenerateShip(scen.spaceShipDef, spaceMap, null, Faction.OfPlayer, null, out cores, false, false, scen.damageStart ? 1 : 0, (spaceMap.Size.x - scen.spaceShipDef.sizeX) / 2, (spaceMap.Size.z - scen.spaceShipDef.sizeZ) / 2);

@@ -19,12 +19,12 @@
 				</li>
 
 				<li Class="PatchOperationConditional">
-					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+					<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.CompEVA")]</xpath>
 					<match Class="PatchOperationAdd">
-						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+						<xpath>Defs/VFEPirates.WarcasketDef[@Name="VFEP_WarcasketArmorBase" or @Name="VFEP_WarcasketHelmetBase"]/comps[not(li/compClass="SaveOurShip2.CompEVA")]</xpath>
 						<value>
 							<li>
-								<compClass>SaveOurShip2.Comp_EVA</compClass>
+								<compClass>SaveOurShip2.CompEVA</compClass>
 							</li>
 						</value>
 					</match>

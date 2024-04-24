@@ -45,7 +45,7 @@ namespace SaveOurShip2
 			Harmony pat = new Harmony("ShipInteriorMod2");
 			pat.PatchAll();
 			//Conditionally patch cross-mod methods
-			if(ModLister.HasActiveModWithName("Vanilla Expanded Framework"))
+			if (ModLister.HasActiveModWithName("Vanilla Expanded Framework"))
             {
                 Log.Message("[SoS2] Vanilla Expanded framework detected - disabling vehicle wrecks in space");
 				Type typeToPatch = AccessTools.TypeByName("VFECore.MapGenerator_GenerateMap_Patch");
@@ -115,7 +115,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f6";
+		public const string SOS2EXPversion = "V101f7";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -241,7 +241,7 @@ namespace SaveOurShip2
 			Log.Message("SOS2EXP " + SOS2EXPversion + " active");
 			randomPlants = DefDatabase<ThingDef>.AllDefs.Where(t => t.plant != null && !t.defName.Contains("Anima")).ToList();
 
-			foreach (SpaceShipDef ship in DefDatabase<SpaceShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
+			foreach (ShipDef ship in DefDatabase<ShipDef>.AllDefs.Where(d => d.saveSysVer < 2 && !d.neverRandom).ToList())
 			{
 				Log.Error("SOS2: mod \"" + ship.modContentPack.Name + "\" contains SpaceShipDef: \"" + ship + "\" that can spawn as a random ship but is saved with an old version of CK!");
 			}
@@ -534,9 +534,9 @@ namespace SaveOurShip2
 			Find.WorldObjects.Add(site);
 			return site;
 		}
-		public static SpaceNavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true, bool bountyHunts = false)
+		public static NavyDef ValidRandomNavy(Faction hostileTo = null, bool needsShips = true, bool bountyHunts = false)
 		{
-			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
+			return DefDatabase<NavyDef>.AllDefs.Where(navy =>
 			{
 				if (needsShips && navy.spaceShipDefs.NullOrEmpty())
 					return false;
@@ -553,9 +553,9 @@ namespace SaveOurShip2
 				return false;
 			}).RandomElement();
 		}
-		public static SpaceNavyDef ValidRandomNavyBountyHunts()
+		public static NavyDef ValidRandomNavyBountyHunts()
 		{
-			return DefDatabase<SpaceNavyDef>.AllDefs.Where(navy =>
+			return DefDatabase<NavyDef>.AllDefs.Where(navy =>
 			{
 				if (!navy.bountyHunts || navy.spaceShipDefs.NullOrEmpty())
 					return false;
@@ -564,11 +564,11 @@ namespace SaveOurShip2
 				return false;
 			}).RandomElement();
 		}
-		public static SpaceShipDef RandomValidShipFrom(List<SpaceShipDef> ships, float CR, bool tradeShip, bool allowNavyExc, bool randomFleet = false, int minZ = 0, int maxZ = 0)
+		public static ShipDef RandomValidShipFrom(List<ShipDef> ships, float CR, bool tradeShip, bool allowNavyExc, bool randomFleet = false, int minZ = 0, int maxZ = 0)
 		{
 			int rarity = Rand.RangeInclusive(1, 2);
 			Log.Message("Spawning ship from CR: " + CR + " tradeShip: " + tradeShip + " allowNavyExc: " + allowNavyExc + " randomFleet: " + randomFleet + " rarityLevel: " + rarity + " minZ: " + minZ + " maxZ: " + maxZ);
-			List<SpaceShipDef> check = new List<SpaceShipDef>();
+			List<ShipDef> check = new List<ShipDef>();
 			if (randomFleet)
 			{
 				check = ships.Where(def => ValidShipDef(def, 0.7f * CR, 1.1f * CR, tradeShip, allowNavyExc, randomFleet, rarity, minZ, maxZ)).ToList();
@@ -599,7 +599,7 @@ namespace SaveOurShip2
 				if (check.Any())
 					return check.RandomElement();
 				Log.Warning("SOS2: navy has no trade ships, choosing any random.");
-				return DefDatabase<SpaceShipDef>.AllDefs.Where(def => ValidShipDef(def, 0f, 100000f, tradeShip, false, randomFleet, 0, minZ, maxZ)).RandomElement();
+				return DefDatabase<ShipDef>.AllDefs.Where(def => ValidShipDef(def, 0f, 100000f, tradeShip, false, randomFleet, 0, minZ, maxZ)).RandomElement();
 			}
 			else if (!allowNavyExc && !randomFleet)
 			{
@@ -611,7 +611,7 @@ namespace SaveOurShip2
 			}
 			return null;
 		}
-		public static bool ValidShipDef(SpaceShipDef def, float CRmin, float CRmax, bool tradeShip, bool allowNavyExc, bool randomFleet, int rarity = 0, int minZ = 0, int maxZ = 0)
+		public static bool ValidShipDef(ShipDef def, float CRmin, float CRmax, bool tradeShip, bool allowNavyExc, bool randomFleet, int rarity = 0, int minZ = 0, int maxZ = 0)
 		{
 			if (rarity > 0 && def.rarityLevel > rarity)
 			{
@@ -635,7 +635,7 @@ namespace SaveOurShip2
 				return false;
 			return true;
 		}
-		public static void GenerateShip(SpaceShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		public static void GenerateShip(ShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, NavyDef navyDef = null)
 		{
 			var mapComp = map.GetComponent<ShipMapComp>();
 			mapComp.CacheOff = true;
@@ -657,13 +657,13 @@ namespace SaveOurShip2
 				for (int i = 0; i < shipDef.ships.Count; i++)
 				{
 					Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Spawning fleet ship nr." + i);
-					var genShip = DefDatabase<SpaceShipDef>.GetNamedSilentFail(shipDef.ships[i].ship);
+					var genShip = DefDatabase<ShipDef>.GetNamedSilentFail(shipDef.ships[i].ship);
 					if (genShip == null)
 					{
 						Log.Error("Fleet ship not found in database");
 						return;
 					}
-					GenerateShipDef(DefDatabase<SpaceShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out coresOut, out areaOut, out plantersOut, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
+					GenerateShipDef(DefDatabase<ShipDef>.GetNamedSilentFail(shipDef.ships[i].ship), map, passingShip, fac, lord, out coresOut, out areaOut, out plantersOut, shipActive, clearArea, wreckLevel, shipDef.ships[i].offsetX, shipDef.ships[i].offsetZ, navyDef);
 					cores.AddRange(coresOut);
 					area.AddRange(areaOut);
 					planters.AddRange(plantersOut);
@@ -671,21 +671,21 @@ namespace SaveOurShip2
 			}
 			PostGenerateShipDef(map, clearArea, area, planters);
 		}
-		public static void GenerateFleet(float CR, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, SpaceNavyDef navyDef = null)
+		public static void GenerateFleet(float CR, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, NavyDef navyDef = null)
 		{
 			//use player points to spawn ships of the same navy, fit z, random x
 			//main + twin, twin, twin + escort, squadron, tradeship + escorts, tradeship + large, tradeship + large + escort
 			//60-20-20,50-50,40-40-10-10
 			var mapComp = map.GetComponent<ShipMapComp>();
 			mapComp.CacheOff = true;
-			List<SpaceShipDef> ships;
+			List<ShipDef> ships;
 			bool allowNavyExc = true;
 			if (navyDef != null)
 				ships = navyDef.spaceShipDefs;
 			else
 			{
 				allowNavyExc = false;
-				ships = DefDatabase<SpaceShipDef>.AllDefs.Where(def => !def.navyExclusive).ToList();
+				ships = DefDatabase<ShipDef>.AllDefs.Where(def => !def.navyExclusive).ToList();
 			}
 			bool tradeShip = passingShip is TradeShip;
 			List<IntVec3> area = new List<IntVec3>();
@@ -718,7 +718,7 @@ namespace SaveOurShip2
 			int offsetZup = (map.Size.z + marginZ) / 2;
 			int maxSizeZ; //max z to find a random def for
 			int minSizeZ = 20; //min z after margins to spawn a ship
-			SpaceShipDef shipDef = null;
+			ShipDef shipDef = null;
 			int i = 1;
 			while (i < 8 && CR > 50)
 			{
@@ -797,7 +797,7 @@ namespace SaveOurShip2
 			}
 			PostGenerateShipDef(map, clearArea, area, planters);
 		}
-		public static void GenerateShipDef(SpaceShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, out List<Thing> planters, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, SpaceNavyDef navyDef = null)
+		public static void GenerateShipDef(ShipDef shipDef, Map map, PassingShip passingShip, Faction fac, Lord lord, out List<Building> cores, out List<IntVec3> cellsToFog, out List<Thing> planters, bool shipActive = true, bool clearArea = false, int wreckLevel = 0, int offsetX = -1, int offsetZ = -1, NavyDef navyDef = null)
 		{
 			cellsToFog = new List<IntVec3>();
 			//List<IntVec3> cellsNotToFog = new List<IntVec3>();
@@ -908,7 +908,7 @@ namespace SaveOurShip2
 						GenSpawn.Spawn(pawn, adjPos, map);
 						pawnsOnShip.Add(pawn);
 					}
-					else if (DefDatabase<SpaceShipPartDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
+					else if (DefDatabase<ShipPartDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
 						partsToGenerate.Add(shape);
 					}
@@ -1098,7 +1098,7 @@ namespace SaveOurShip2
 									shipBridge.ShipName = shipDef.label;
 								else
 								{
-									var shieldComp = b.TryGetComp<CompShipCombatShield>();
+									var shieldComp = b.TryGetComp<CompShipHeatShield>();
 									if (shieldComp != null)
 									{
 										shieldComp.radiusSet = 40;
@@ -1188,7 +1188,7 @@ namespace SaveOurShip2
 				try
 				{
 					IntVec3 adjPos = new IntVec3(offset.x + shape.x, 0, offset.z + shape.z);
-					SpaceShipPartDef partDef = DefDatabase<SpaceShipPartDef>.GetNamed(shape.shapeOrDef);
+					ShipPartDef partDef = DefDatabase<ShipPartDef>.GetNamed(shape.shapeOrDef);
 					if (partDef.defName.Equals("CasketFilled"))
 					{
 						Thing thing = ThingMaker.MakeThing(ThingDef.Named("CryptosleepCasket"));
@@ -1380,7 +1380,7 @@ namespace SaveOurShip2
 				}
 				//invaders - pick faction, spawn lord + pawns
 				Faction invaderFac = null;
-				SpaceNavyDef navy = ValidRandomNavy(fac, false);
+				NavyDef navy = ValidRandomNavy(fac, false);
 				if ((wreckLevel == 2 && Rand.Chance(0.8f)) || (wreckLevel == 3 && Rand.Chance(0.6f)))
 				{
 					if (navy != null)

@@ -32,7 +32,7 @@ namespace SaveOurShip2
 		public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
 		public List<CompRCSThruster> RCSs = new List<CompRCSThruster>();
 		public List<CompShipHeatPurge> HeatPurges = new List<CompShipHeatPurge>();
-		public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>();
+		public List<CompShipHeatShield> Shields = new List<CompShipHeatShield>();
 		public List<CompCryptoLaunchable> Pods = new List<CompCryptoLaunchable>();
 		public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
 		public List<Building_ShipBridge> AICores = new List<Building_ShipBridge>();
@@ -723,7 +723,7 @@ namespace SaveOurShip2
 					{
 						HeatPurges.Add(purge);
 					}
-					else if (heatComp is CompShipCombatShield shield)
+					else if (heatComp is CompShipHeatShield shield)
 						Shields.Add(shield);
 				}
 				else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)
@@ -826,7 +826,7 @@ namespace SaveOurShip2
 					{
 						HeatPurges.Remove(purge);
 					}
-					else if (heatComp is CompShipCombatShield shield)
+					else if (heatComp is CompShipHeatShield shield)
 						Shields.Remove(shield);
 				}
 				else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)

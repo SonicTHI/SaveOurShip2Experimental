@@ -145,10 +145,10 @@ namespace SaveOurShip2
                     }
 					else if(Rand.Chance(1f-(shuttleHit.GetStatValue(ResourceBank.VehicleStatDefOf.SoS2CombatDodgeChance)/100f)))
 					{
-						if (shuttleHit.GetComp<CompShipCombatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 0) //Shield takes the hit
+						if (shuttleHit.GetComp<CompShipHeatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 0) //Shield takes the hit
 						{
 							Projectile dummyProjectile = (Projectile)ThingMaker.MakeThing(verbProps.defaultProjectile);
-							shuttleHit.GetComp<CompShipCombatShield>().HitShield(dummyProjectile);
+							shuttleHit.GetComp<CompShipHeatShield>().HitShield(dummyProjectile);
 							Log.Message("Shuttle's shield took a hit! Its internal heatsinks are at " + shuttleHit.GetComp<CompVehicleHeatNet>().myNet.StorageUsed + " of " + shuttleHit.GetComp<CompVehicleHeatNet>().myNet.StorageCapacity + " capacity.");
 							if(!dummyProjectile.Destroyed)
 								dummyProjectile.Destroy();

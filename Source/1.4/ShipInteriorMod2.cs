@@ -43,8 +43,24 @@ namespace SaveOurShip2
 			ShipInteriorMod2.DefsLoaded();
 			Harmony pat = new Harmony("ShipInteriorMod2");
 			pat.PatchAll();
+			//Conditionally patch cross-mod methods
+			if (ModLister.HasActiveModWithName("Vanilla Expanded Framework"))
+			{
+				Log.Message("[SoS2] Vanilla Expanded framework detected - disabling vehicle wrecks in space");
+				Type typeToPatch = AccessTools.TypeByName("VFECore.MapGenerator_GenerateMap_Patch");
+				System.Reflection.MethodInfo methodToPatch = typeToPatch.GetMethod("CanSpawnAt", new Type[] { typeof(IntVec3), typeof(Map), AccessTools.TypeByName("VFECore.ObjectSpawnsDef") });
+				HarmonyMethod postfixPatch = new HarmonyMethod(typeof(Setup).GetMethod("WhatKindOfIdiotDrivesInSpace", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic));
+				pat.Patch(methodToPatch, null, postfixPatch);
+			}
 			//Needs an init delay
 			if (useSplashScreen) LongEventHandler.QueueLongEvent(() => ShipInteriorMod2.UseCustomSplashScreen(), "ShipInteriorMod2", false, null);
+		}
+
+		//This is an intentionally dumb name, in homage to my original 2019-era patch names. What it actually does is disable vehicle wrecks spawning in space. Credit to @Thain for the runner-up name, "NotElonsTesla"
+		static void WhatKindOfIdiotDrivesInSpace(ref bool __result, Map map)
+		{
+			if (map.IsSpace())
+				__result = false;
 		}
 	}
 	public class ModSettings_SoS : ModSettings
@@ -98,7 +114,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V99f26";
+		public const string SOS2EXPversion = "V99f27";
 		public const int SOS2ReqCurrentMinor = 4;
 		public const int SOS2ReqCurrentBuild = 3704;
 

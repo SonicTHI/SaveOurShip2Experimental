@@ -47,16 +47,21 @@ namespace SaveOurShip2.Vehicles
         {
             if(!fromEnemy)
                 yield return FloatMenuOption_Board(tile);
-            bool hasLaser = this.vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserA") || this.vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserB") || this.vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserC");
-            bool hasPlasma = this.vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaA") || this.vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaB") || this.vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaC");
-            bool hasTorpedo = (this.vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA") || this.vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoB") || this.vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoC"))
-                && this.vehicle.carryTracker.GetDirectlyHeldThings().Any(t => t.HasThingCategory(ResourceBank.ThingCategoryDefOf.SpaceTorpedoes));
-            if (hasLaser)
-                yield return FloatMenuOption_Intercept(tile);
-            if (hasLaser || hasPlasma)
-                yield return FloatMenuOption_Strafe(tile);
-            if (hasTorpedo)
-                yield return FloatMenuOption_Bomb(tile);
+
+			var u = vehicle.CompUpgradeTree.upgrades;
+			if (u != null)
+			{
+				bool hasLaser = u.Contains("TurretLaserA") || u.Contains("TurretLaserB") || u.Contains("TurretLaserC");
+				bool hasPlasma = u.Contains("TurretPlasmaA") || u.Contains("TurretPlasmaB") || u.Contains("TurretPlasmaC");
+				bool hasTorpedo = u.Contains("TurretTorpedoA") || u.Contains("TurretTorpedoB") || u.Contains("TurretTorpedoC")
+					&& vehicle.carryTracker.GetDirectlyHeldThings().Any(t => t.HasThingCategory(ResourceBank.ThingCategoryDefOf.SpaceTorpedoes));
+				if (hasLaser)
+					yield return FloatMenuOption_Intercept(tile);
+				if (hasLaser || hasPlasma)
+					yield return FloatMenuOption_Strafe(tile);
+				if (hasTorpedo)
+					yield return FloatMenuOption_Bomb(tile);
+			}
         }
 
         FloatMenuOption FloatMenuOption_Board(int tile)

@@ -9,7 +9,7 @@ namespace SaveOurShip2
 {
 	public class CompProps_ShipBlueprint : CompProperties
 	{
-		public SpaceShipDef shipDef;
+		public ShipDef shipDef;
 		public bool flip = false;
 		public CompProps_ShipBlueprint()
 		{

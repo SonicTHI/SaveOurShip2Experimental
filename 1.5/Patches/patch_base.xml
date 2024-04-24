@@ -2,13 +2,6 @@
 <Patch>
 	<Operation Class="PatchOperationSequence">
 		<operations>
-			<!-- randy -->
-			<li Class="PatchOperationAdd">
-				<xpath>Defs/StorytellerDef[defName="Randy"]/comps/li[1]/allowedTargetTags</xpath>
-				<value>
-					<li>Map_SpaceHome</li>
-				</value>
-			</li>
 			<!-- events -->
 			<li Class="PatchOperationAdd">
 				<xpath>Defs/IncidentDef[defName="PsychicSoothe" or defName="PsychicDrone" or defName = "OrbitalTraderArrival"]/targetTags</xpath>
@@ -148,12 +141,12 @@
 	</Operation>
 
 	<Operation Class="PatchOperationConditional">
-		<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+		<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"]/comps[not(li/compClass="SaveOurShip2.CompEVA")]</xpath>
 		<match Class="PatchOperationAdd">
-			<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+			<xpath>Defs/ThingDef[@ParentName="ApparelArmorReconBase" or @ParentName="ApparelArmorPowerBase" or @ParentName="ApparelArmorHelmetPowerBase"]/comps[not(li/compClass="SaveOurShip2.CompEVA")]</xpath>
 			<value>
 				<li>
-					<compClass>SaveOurShip2.Comp_EVA</compClass>
+					<compClass>SaveOurShip2.CompEVA</compClass>
 				</li>
 			</value>
 		</match>

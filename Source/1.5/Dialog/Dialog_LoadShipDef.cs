@@ -17,16 +17,16 @@ namespace SaveOurShip2
 		{
 			if (name == ship || string.IsNullOrEmpty(name))
 				return;
-			if (DefDatabase<SpaceShipDef>.GetNamedSilentFail(name) == null)
+			if (DefDatabase<ShipDef>.GetNamedSilentFail(name) == null)
 			{
 				Log.Error("Ship not found in database: " + name);
 				return;
 			}
 			AttackableShip shipa = new AttackableShip();
-			shipa.attackableShip = DefDatabase<SpaceShipDef>.GetNamed(name);
+			shipa.attackableShip = DefDatabase<ShipDef>.GetNamed(name);
 			if (shipa.attackableShip.navyExclusive)
 			{
-				shipa.spaceNavyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.spaceShipDefs.Contains(shipa.attackableShip)).RandomElement();
+				shipa.spaceNavyDef = DefDatabase<NavyDef>.AllDefs.Where(n => n.spaceShipDefs.Contains(shipa.attackableShip)).RandomElement();
 				shipa.shipFaction = Find.FactionManager.AllFactions.Where(f => shipa.spaceNavyDef.factionDefs.Contains(f.def)).RandomElement();
 			}
 			Map.passingShipManager.AddShip(shipa);

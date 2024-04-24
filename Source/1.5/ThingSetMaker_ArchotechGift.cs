@@ -13,7 +13,7 @@ namespace SaveOurShip2
 		protected override IEnumerable<ThingDef> AllowedThingDefs(ThingSetMakerParams parms)
 		{
 			List<ThingDef> defs = new List<ThingDef>();
-			foreach(ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)
+			foreach(ArchoGiftDef def in DefDatabase<ArchoGiftDef>.AllDefs)
 			{
 				if(def.research.IsFinished)
 				{

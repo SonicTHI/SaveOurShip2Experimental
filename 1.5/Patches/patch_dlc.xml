@@ -149,7 +149,7 @@
 							<initialResistanceRange>17~26</initialResistanceRange>
 						</PawnKindDef>
 						<!-- navy -->
-						<SpaceNavyDef ParentName="SpaceNavy">
+						<SaveOurShip2.NavyDef ParentName="SpaceNavy">
 							<defName>Empire_SpaceNavy</defName>
 							<label>Royal Space Navy</label>
 							<factionDefs>
@@ -168,11 +168,11 @@
 								<li>EmpireDestroyer</li>
 								<li>EmpireFighter</li>
 							</spaceShipDefs>
-						</SpaceNavyDef>
+						</SaveOurShip2.NavyDef>
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-					<xpath>Defs/SpaceShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
+					<xpath>Defs/SaveOurShip2.ShipDef[defName="EmpireBattleship" or defName="EmpireBomber" or defName="EmpireCorvette" or defName="EmpireCruiser" or defName="EmpireDestroyer" or defName="EmpireFighter" or defName="EmpireFleetCruisers" or defName="EmpireFleetDestroyerEscort" or defName="EmpireFleetStrikeWing"]</xpath>
 					<value>
 						<navyExclusive>true</navyExclusive>
 					</value>
@@ -191,12 +191,12 @@
 				</li>
 
 				<li Class="PatchOperationConditional">
-					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+					<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"]/comps[not(li/compClass="SaveOurShip2.CompEVA")]</xpath>
 					<match Class="PatchOperationAdd">
-						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"]/comps[not(li/compClass="SaveOurShip2.Comp_EVA")]</xpath>
+						<xpath>Defs/ThingDef[@ParentName="ApparelArmorCataphractBase" or @ParentName="ApparelArmorHelmetCataphractBase"]/comps[not(li/compClass="SaveOurShip2.CompEVA")]</xpath>
 						<value>
 							<li>
-								<compClass>SaveOurShip2.Comp_EVA</compClass>
+								<compClass>SaveOurShip2.CompEVA</compClass>
 							</li>
 						</value>
 					</match>
@@ -326,7 +326,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
-					<xpath>Defs/SpaceNavyDef[defName="Pirate_SpaceNavy"]/factionDefs</xpath>
+					<xpath>Defs/SaveOurShip2.NavyDef[defName="Pirate_SpaceNavy"]/factionDefs</xpath>
 					<value>
 						<li>PirateYttakin</li>
 						<li>PirateWaster</li>
@@ -345,7 +345,7 @@
 				<li Class="PatchOperationAdd">
 					<xpath>Defs</xpath>
 					<value>
-						<SpaceNavyDef ParentName="SpaceNavy">
+						<SaveOurShip2.NavyDef ParentName="SpaceNavy">
 							<defName>Shamblers_SpaceNavy</defName>
 							<label>Shamblers Space Navy</label>
 							<factionDefs>
@@ -354,13 +354,13 @@
 							<crewDef>ShamblerGorehulk</crewDef>
 							<marineDef>ShamblerSwarmer</marineDef>
 							<marineHeavyDef>ShamblerSoldier</marineHeavyDef>
-						</SpaceNavyDef>
+						</SaveOurShip2.NavyDef>
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
 					<xpath>Defs</xpath>
 					<value>
-						<SpaceNavyDef ParentName="SpaceNavy">
+						<SaveOurShip2.NavyDef ParentName="SpaceNavy">
 							<defName>Fleshbeasts_SpaceNavy</defName>
 							<label>Fleshbeast Space Navy</label>
 							<factionDefs>
@@ -369,7 +369,7 @@
 							<crewDef>Trispike</crewDef>
 							<marineDef>Fingerspike</marineDef>
 							<marineHeavyDef>Toughspike</marineHeavyDef>
-						</SpaceNavyDef>
+						</SaveOurShip2.NavyDef>
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">

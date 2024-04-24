@@ -67,7 +67,7 @@ namespace SaveOurShip2
 			{
 				if (!start)
 				{
-					foreach (CompShipCombatShield shield in myNet.Shields.Where(s => !s.shutDown))
+					foreach (CompShipHeatShield shield in myNet.Shields.Where(s => !s.shutDown))
 					{
 						shield.flickComp.SwitchIsOn = false;
 					}
@@ -104,7 +104,7 @@ namespace SaveOurShip2
 		}
 		public bool CanPurge()
 		{
-			foreach (CompShipCombatShield shield in mapComp.Shields)
+			foreach (CompShipHeatShield shield in mapComp.Shields)
 			{
 				if (!shield.shutDown && (parent.DrawPos - shield.parent.DrawPos).magnitude < shield.radius)
 				{

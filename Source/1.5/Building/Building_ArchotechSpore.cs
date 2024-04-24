@@ -104,7 +104,7 @@ namespace SaveOurShip2
 			if (tick - ShipInteriorMod2.WorldComp.LastSporeGiftTick > 90000 * (5- NumConnectedPillars) * (3-Mood))
 			{
 				int numUnlock = 0;
-				foreach (ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)
+				foreach (ArchoGiftDef def in DefDatabase<ArchoGiftDef>.AllDefs)
 				{
 					if (def.research.IsFinished)
 					{

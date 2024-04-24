@@ -156,7 +156,7 @@ namespace SaveOurShip2
 				int rarity = Rand.RangeInclusive(1, 2);
 				if (Rand.Chance((float)ModSettings_SoS.navyShipChance))
 				{
-					SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
+					NavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
 					if (navy != null)
 					{
 						ship.derelictShip = navy.spaceShipDefs.Where(def => def.spaceSite && def.rarityLevel <= Rand.RangeInclusive(1, 2)).RandomElement();
@@ -170,7 +170,7 @@ namespace SaveOurShip2
 				}
 				if (ship.derelictShip == null)
 				{
-					ship.derelictShip = DefDatabase<SpaceShipDef>.AllDefs.Where(def => def.spaceSite && def.rarityLevel <= rarity).RandomElement();
+					ship.derelictShip = DefDatabase<ShipDef>.AllDefs.Where(def => def.spaceSite && def.rarityLevel <= rarity).RandomElement();
 					ship.shipFaction = Faction.OfAncientsHostile;
 				}
 				Log.Message("SOS2: ".Colorize(Color.cyan) + "Found ship with def: " + ship.derelictShip + " fac: " + ship.shipFaction + " navy: " + ship.spaceNavyDef);
@@ -190,7 +190,7 @@ namespace SaveOurShip2
 					ship.wreckLevel = 3;
 				if (Rand.Chance((float)SaveOurShip2.ModSettings_SoS.navyShipChance))
 				{
-					SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
+					NavyDef navy = ShipInteriorMod2.ValidRandomNavy(Faction.OfPlayer);
 					if (navy != null)
 					{
 						ship.spaceNavyDef = navy;
@@ -200,7 +200,7 @@ namespace SaveOurShip2
 				}
 				if (ship.derelictShip == null)
 				{
-					ship.derelictShip = DefDatabase<SpaceShipDef>.AllDefs.Where(def => !def.neverRandom && !def.spaceSite && !def.neverWreck && def.rarityLevel <= rarity && !def.navyExclusive).RandomElement();
+					ship.derelictShip = DefDatabase<ShipDef>.AllDefs.Where(def => !def.neverRandom && !def.spaceSite && !def.neverWreck && def.rarityLevel <= rarity && !def.navyExclusive).RandomElement();
 					ship.shipFaction = Faction.OfAncientsHostile;
 				}
 
@@ -217,7 +217,7 @@ namespace SaveOurShip2
 				int rarity = Rand.RangeInclusive(1, 2);
 				if (Rand.Chance((float)ModSettings_SoS.navyShipChance))
 				{
-					SpaceNavyDef navy = ShipInteriorMod2.ValidRandomNavy();
+					NavyDef navy = ShipInteriorMod2.ValidRandomNavy();
 					if (navy != null)
 					{
 						ship.spaceNavyDef = navy;
@@ -227,7 +227,7 @@ namespace SaveOurShip2
 				}
 				if (ship.attackableShip == null)
 				{
-					ship.attackableShip = DefDatabase<SpaceShipDef>.AllDefs.Where(def => !def.neverRandom && !def.neverAttacks && !def.navyExclusive && def.rarityLevel <= rarity).RandomElement();
+					ship.attackableShip = DefDatabase<ShipDef>.AllDefs.Where(def => !def.neverRandom && !def.neverAttacks && !def.navyExclusive && def.rarityLevel <= rarity).RandomElement();
 					ship.shipFaction = Faction.OfAncientsHostile;
 				}
 

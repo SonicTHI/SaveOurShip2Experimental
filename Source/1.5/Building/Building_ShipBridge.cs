@@ -696,8 +696,8 @@ namespace SaveOurShip2
 								{
 									AttackableShip station = new AttackableShip
 									{
-										attackableShip = DefDatabase<SpaceShipDef>.GetNamed("StationArchotechGarden"),
-										spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy"),
+										attackableShip = DefDatabase<ShipDef>.GetNamed("StationArchotechGarden"),
+										spaceNavyDef = DefDatabase<NavyDef>.GetNamed("Mechanoid_SpaceNavy"),
 										shipFaction = Faction.OfMechanoids
 									};
 									mapComp.StartShipEncounter(station);
@@ -716,7 +716,7 @@ namespace SaveOurShip2
 								action = delegate
 								{
 									float CR = Mathf.Max(mapComp.MapThreat() * 0.9f, 1500);
-									SpaceNavyDef mechNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
+									NavyDef mechNavyDef = DefDatabase<NavyDef>.GetNamed("Mechanoid_SpaceNavy");
 									AttackableShip attacker = new AttackableShip
 									{
 										spaceNavyDef = mechNavyDef,

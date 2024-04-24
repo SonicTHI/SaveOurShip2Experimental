@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-	<SpaceNavyDef Abstract="True" Name="SpaceNavy">
+	<SaveOurShip2.NavyDef Abstract="True" Name="SpaceNavy">
 		<factionDefs></factionDefs>
 		<colorPrimary></colorPrimary>
 		<colorSecondary></colorSecondary>
@@ -12,8 +12,8 @@
 		<marineDef>SpaceCrewMarine</marineDef>
 		<marineHeavyDef>SpaceCrewMarineHeavy</marineHeavyDef>
 		<spaceShipDefs></spaceShipDefs>
-	</SpaceNavyDef>
-	<SpaceNavyDef ParentName="SpaceNavy">
+	</SaveOurShip2.NavyDef>
+	<SaveOurShip2.NavyDef ParentName="SpaceNavy">
 		<defName>Pirate_SpaceNavy</defName>
 		<label>Pirates</label>
 		<factionDefs>
@@ -34,8 +34,8 @@
 			<li>FighterMedium</li>
 			<li>CruiserCrab</li>
 		</spaceShipDefs>
-	</SpaceNavyDef>
-	<SpaceNavyDef ParentName="SpaceNavy">
+	</SaveOurShip2.NavyDef>
+	<SaveOurShip2.NavyDef ParentName="SpaceNavy">
 		<defName>Mechanoid_SpaceNavy</defName>
 		<label>Mechanoids</label>
 		<factionDefs>
@@ -56,8 +56,8 @@
 			<li>MechanoidMoonBase</li>
 			<li>ContainerMech</li>
 		</spaceShipDefs>
-	</SpaceNavyDef>
-	<SpaceNavyDef ParentName="SpaceNavy">
+	</SaveOurShip2.NavyDef>
+	<SaveOurShip2.NavyDef ParentName="SpaceNavy">
 		<defName>Insect_SpaceNavy</defName>
 		<label>Insects</label>
 		<factionDefs>
@@ -68,5 +68,5 @@
 		<marineHeavyDef>Cosmopillar</marineHeavyDef>
 		<spaceShipDefs>
 		</spaceShipDefs>
-	</SpaceNavyDef>
+	</SaveOurShip2.NavyDef>
 </Defs>

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
-	public class SpaceShipPartDef : Def
+	public class ShipPartDef : Def
 	{
 		public List<ThingDef> things;
 	}

@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
-	public class ArchotechGiftDef : Def, ILoadReferenceable
+	public class ArchoGiftDef : Def, ILoadReferenceable
 	{
 		public ResearchProjectDef research;
 		public ThingDef thing;

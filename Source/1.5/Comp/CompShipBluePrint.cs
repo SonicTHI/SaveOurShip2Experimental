@@ -62,7 +62,7 @@ namespace SaveOurShip2
 			yield return place2;
 			yield return place3;
 		}
-		public void SpawnShipDefBlueprint(SpaceShipDef shipDef, IntVec3 pos, Map map, int tier)
+		public void SpawnShipDefBlueprint(ShipDef shipDef, IntVec3 pos, Map map, int tier)
 		{
 			//get area
 			HashSet<IntVec3> Area = new HashSet<IntVec3>();

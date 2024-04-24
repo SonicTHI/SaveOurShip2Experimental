@@ -3,7 +3,7 @@ namespace SaveOurShip2
 {
 	using Verse;
 
-	public class Comp_EVA : ThingComp
+	public class CompEVA : ThingComp
 	{
 		public override string GetDescriptionPart()
 		{

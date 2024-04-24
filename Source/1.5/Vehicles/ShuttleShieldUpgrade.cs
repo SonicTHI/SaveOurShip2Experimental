@@ -17,7 +17,7 @@ namespace SaveOurShip2.Vehicles
 
         public override void Refund(VehiclePawn vehicle)
         {
-            vehicle.RemoveComp(vehicle.GetComp<CompShipCombatShield>());
+            vehicle.RemoveComp(vehicle.GetComp<CompShipHeatShield>());
             vehicle.statHandler.components.Remove(vehicle.statHandler.components.First(comp => comp.props.key == "shieldGenerator"));
             if (vehicle.GetComp<CompShipHeat>() == null)
                 vehicle.RemoveComp(vehicle.GetComp<CompVehicleHeatNet>());
@@ -28,7 +28,7 @@ namespace SaveOurShip2.Vehicles
         public override void Unlock(VehiclePawn vehicle, bool unlockingAfterLoad)
         {
             //Check if we've already unlocked this... unlocking on load is unpredictable at times
-            if (vehicle.GetComp<CompShipCombatShield>() != null)
+            if (vehicle.GetComp<CompShipHeatShield>() != null)
                 return;
 
             CompVehicleHeatNet net = vehicle.GetComp<CompVehicleHeatNet>();
@@ -44,7 +44,7 @@ namespace SaveOurShip2.Vehicles
             VehicleComponent shieldGenerator = vehicle.statHandler.componentsByKeys["shieldGenerator"];
             shieldGenerator.SetHealthModifier = 50;
             shieldGenerator.health = 50;
-            CompShipCombatShield myShield = new CompShipCombatShield();
+            CompShipHeatShield myShield = new CompShipHeatShield();
             myShield.parent = vehicle;
             myShield.Initialize(shield);
             if (!unlockingAfterLoad)

@@ -9,6 +9,7 @@ using Verse.Sound;
 using HarmonyLib;
 using RimWorld;
 using UnityEngine;
+using Vehicles;
 
 namespace SaveOurShip2
 {

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
-	<SpaceShipDef>
+	<SaveOurShip2.ShipDef>
 		<defName>0</defName>
 		<saveSysVer>2</saveSysVer>
 		<label>Random</label>
@@ -8,5 +8,5 @@
 		<startingShip>True</startingShip>
 		<parts></parts>
 		<core></core>
-	</SpaceShipDef>
+	</SaveOurShip2.ShipDef>
 </Defs>

@@ -2,13 +2,6 @@
 <Patch>
 	<Operation Class="PatchOperationSequence">
 		<operations>
-			<!-- randy -->
-			<li Class="PatchOperationAdd">
-				<xpath>Defs/StorytellerDef[defName="Randy"]/comps/li[1]/allowedTargetTags</xpath>
-				<value>
-					<li>Map_SpaceHome</li>
-				</value>
-			</li>
 			<!-- events -->
 			<li Class="PatchOperationAdd">
 				<xpath>Defs/IncidentDef[defName="PsychicSoothe" or defName="PsychicDrone" or defName = "OrbitalTraderArrival"]/targetTags</xpath>

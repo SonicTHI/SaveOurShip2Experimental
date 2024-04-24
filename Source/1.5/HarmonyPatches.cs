@@ -2929,7 +2929,7 @@ namespace SaveOurShip2
 		{
 			float yMin = rect.yMin;
 			bool first = false;
-			foreach (ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)
+			foreach (ArchoGiftDef def in DefDatabase<ArchoGiftDef>.AllDefs)
 			{
 				if (def.research == project)
 				{
@@ -3692,7 +3692,7 @@ namespace SaveOurShip2
 				}
 				Map originMap = Find.CurrentMap;
 				Map map;
-				SpaceShipDef shipDef = DefDatabase<SpaceShipDef>.GetNamed("RewardEmpireDestroyer");
+				ShipDef shipDef = DefDatabase<ShipDef>.GetNamed("RewardEmpireDestroyer");
 				List<Building> cores = new List<Building>();
 				if (ShipInteriorMod2.FindPlayerShipMap() != null)
 				{
@@ -3851,8 +3851,8 @@ namespace SaveOurShip2
 					{
 						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoS.PsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
 						AttackableShip ship = new AttackableShip();
-						ship.attackableShip = DefDatabase<SpaceShipDef>.GetNamed("MechPsychicAmp");
-						ship.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
+						ship.attackableShip = DefDatabase<ShipDef>.GetNamed("MechPsychicAmp");
+						ship.spaceNavyDef = DefDatabase<NavyDef>.GetNamed("Mechanoid_SpaceNavy");
 						ship.shipFaction = Faction.OfMechanoids;
 						map.passingShipManager.AddShip(ship);
 						break;
@@ -3898,6 +3898,23 @@ namespace SaveOurShip2
 	}
 
 	//storytellers
+	[HarmonyPatch(typeof(Storyteller), "InitializeStorytellerComps")]
+	public static class RandyLikeTargetSpaceHome
+	{
+		public static void Postfix(Storyteller __instance)
+		{
+			foreach (StorytellerComp t in __instance.storytellerComps)
+			{
+				if (t is StorytellerComp_RandomMain m && m.Props.allowedTargetTags != null && !m.Props.allowedTargetTags.Contains(DefDatabase<IncidentTargetTagDef>.GetNamed("Map_SpaceHome")))
+				{
+					m.Props.allowedTargetTags.Add(DefDatabase<IncidentTargetTagDef>.GetNamed("Map_SpaceHome"));
+					Log.Message("SOS2: ".Colorize(Color.cyan) + "Found Randy based storyteller without Map_SpaceHome as target, fixing.");
+					break;
+				}
+			}
+		}
+	}
+
 	[HarmonyPatch(typeof(Map), "get_PlayerWealthForStoryteller")]
 	public static class TechIsWealth
 	{
@@ -4156,7 +4173,7 @@ namespace SaveOurShip2
 				return;
 			if (__instance.Map == null)
 				return;
-			foreach(CompShipCombatShield shield in __instance.Map.GetComponent<ShipMapComp>().Shields)
+			foreach(CompShipHeatShield shield in __instance.Map.GetComponent<ShipMapComp>().Shields)
             {
 				if (shield.shutDown)
 					continue;

@@ -6,7 +6,7 @@ using System.Xml;
 using UnityEngine;
 using Verse;
 
-namespace RimWorld
+namespace SaveOurShip2
 {
 	public struct ShipShape : IExposable
 	{
@@ -90,7 +90,7 @@ namespace RimWorld
 			return (x+","+z+","+rot).GetHashCode();
 		}
 	}*/
-	public class SpaceShipDef : Def, ILoadReferenceable
+	public class ShipDef : Def, ILoadReferenceable
 	{
 		public Dictionary<string, ShipShape> symbolTable;
 		/*[Unsaved(false)]

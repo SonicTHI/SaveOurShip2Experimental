@@ -53,6 +53,8 @@
 	<SoS.SelectWeaponsDesc>Select connected ship-to-ship weapons</SoS.SelectWeaponsDesc>
 	<SoS.HoldFire>Cease fire</SoS.HoldFire>
 	<SoS.HoldFireDesc>Stop all connected ship-to-ship weapons from firing on enemy ship</SoS.HoldFireDesc>
+	<SoS.TogglePointDefense>Stop all connected ship-to-ship weapons from firing on enemy ship</SoS.TogglePointDefense>
+	<SoS.TogglePointDefenseDesc>Stop all connected ship-to-ship weapons from firing on enemy ship</SoS.TogglePointDefenseDesc>
 	<SoS.NotAtMaxRange>Not at maximum range</SoS.NotAtMaxRange>
 	<SoS.OnUnstableMap>Ship is in unstable orbit.</SoS.OnUnstableMap>
 	<SoS.EnemyShipRetreating>Enemy ship is attempting to retreat!</SoS.EnemyShipRetreating>
@@ -321,17 +323,11 @@
 	<MechanitesInHomeArea>Mechanites!</MechanitesInHomeArea>
     <MechanitesInHomeAreaDesc>Disassembler mechanites have infested the home area.</MechanitesInHomeAreaDesc>
 	<!-- shuttles -->
-	<SoSShuttles>Shuttles</SoSShuttles>
-	<MessageShuttleOnlyPods>Enemy ship has active engines. Use personal shuttles to directly assault the enemy ship or disable its engines.</MessageShuttleOnlyPods>
-	
-	<ShuttleCommandLaunchGroup>Launch at opposing ship</ShuttleCommandLaunchGroup>
-	<ShuttleCommandLaunchGroupDesc>Take off and fly to opposing ship</ShuttleCommandLaunchGroupDesc>
 	<SoS.ShuttleRetreat>Your shuttle is retreating due to damaged hull!</SoS.ShuttleRetreat>
 	<SoS.ShuttleRetreatFuel>Your shuttle is retreating due to low fuel!</SoS.ShuttleRetreatFuel>
 	<SoS.SoSShuttleOutOfTorps>Your shuttle is out of torpedoes and has begun retreating!</SoS.SoSShuttleOutOfTorps>
-	<SoSBoardingShuttleArrived>Your boarding shuttle has arrived!</SoSBoardingShuttleArrived>
-	<SoSShuttleReturned>Your shuttle has returned!</SoSShuttleReturned>
-	<SoSEnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoSEnemyBoardingShuttleArrived>
+	<SoS.BoardingShuttleArrived>Your boarding shuttle has arrived!</SoS.BoardingShuttleArrived>
+	<SoS.EnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoS.EnemyBoardingShuttleArrived>
 	<SoS.ShuttleMissionBoarding>Board enemy ship</SoS.ShuttleMissionBoarding>
 	<SoS.ShuttleMissionBoardingDesc>Send this shuttle to board the enemy ship. It will be vulnerable to point-defense weaponry. If the enemy has active engines, the shuttle will take longer to arrive.</SoS.ShuttleMissionBoardingDesc>
 	<SoS.ShuttleMissionBoardingReturn>Return to ship</SoS.ShuttleMissionBoardingReturn>
@@ -344,10 +340,16 @@
 	<SoS.ShuttleMissionBombDesc>Send this shuttle to fire torpedoes from close range. It will be extremely vulnerable to point-defense weaponry, but its torpedoes will not be. If the enemy has active engines, the shuttle will take longer to arrive.\n\nIt will continue its mission until it runs low on fuel runs out of torpedoes, is sufficiently damaged, or you recall it manually.</SoS.ShuttleMissionBombDesc>
 	<SoS.RecallShuttle>Recall {0} (mission: {1})</SoS.RecallShuttle>
 	<SoS.RecallShuttleDesc>Order this shuttle to return to your ship</SoS.RecallShuttleDesc>
-	<SoS2RetreatAtHealth>Retreat at shuttle health</SoS2RetreatAtHealth>
-	<SoS2RetreatAtHealthTip>This shuttle will automatically retreat when its health drops below this percentage</SoS2RetreatAtHealthTip>
+	<SoS.RetreatAtHealth>Retreat at shuttle health</SoS.RetreatAtHealth>
+	<SoS.RetreatAtHealthDesc>This shuttle will automatically retreat when its health drops below this percentage</SoS.RetreatAtHealthDesc>
 	
+	<!-- 1.4 only -->
+	<SoSShuttles>Shuttles</SoSShuttles>
+	<MessageShuttleOnlyPods>Enemy ship has active engines. Use personal shuttles to directly assault the enemy ship or disable its engines.</MessageShuttleOnlyPods>
+	<ShuttleCommandLaunchGroup>Launch at opposing ship</ShuttleCommandLaunchGroup>
+	<ShuttleCommandLaunchGroupDesc>Take off and fly to opposing ship</ShuttleCommandLaunchGroupDesc>
 	<!-- obsolete/unused
+	<SoSShuttleReturned>Your shuttle has returned!</SoSShuttleReturned>
 	<SoS.PirateTradeEmpire>Our act of piracy against the Empire has not gone unnoticed!</SoS.PirateTradeEmpire>
 	<SoS.MoveFailPawns>Player pawn in {0}, ship move aborted.</SoS.MoveFailPawns>
 	<SoS.TargetEnd>Stop targeting</SoS.TargetEnd>

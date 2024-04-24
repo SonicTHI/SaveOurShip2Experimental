@@ -35,7 +35,7 @@ namespace SaveOurShip2
 			}
 			Lord defendShip = LordMaker.MakeNewLord(Faction.OfMechanoids, new LordJob_DefendShip(Faction.OfMechanoids, map.Center), map);
 			List<Building> cores = new List<Building>();
-			ShipInteriorMod2.GenerateShip(DefDatabase<SpaceShipDef>.GetNamed("MechanoidMoonBase"), map, null, Faction.OfMechanoids, defendShip, out cores);
+			ShipInteriorMod2.GenerateShip(DefDatabase<ShipDef>.GetNamed("MechanoidMoonBase"), map, null, Faction.OfMechanoids, defendShip, out cores);
 		}
 	}
 }

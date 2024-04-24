@@ -4643,7 +4643,24 @@ namespace SaveOurShip2
 		}
 	}
 
-	//storyteller
+	//storytellers
+	[HarmonyPatch(typeof(Storyteller), "InitializeStorytellerComps")]
+	public static class RandyLikeTargetSpaceHome
+	{
+		public static void Postfix(Storyteller __instance)
+		{
+			foreach (StorytellerComp t in __instance.storytellerComps)
+			{
+				if (t is StorytellerComp_RandomMain m && m.Props.allowedTargetTags != null && !m.Props.allowedTargetTags.Contains(DefDatabase<IncidentTargetTagDef>.GetNamed("Map_SpaceHome")))
+				{
+					m.Props.allowedTargetTags.Add(DefDatabase<IncidentTargetTagDef>.GetNamed("Map_SpaceHome"));
+					Log.Message("SOS2: ".Colorize(Color.cyan) + "Found Randy based storyteller without Map_SpaceHome as target, fixing.");
+					break;
+				}
+			}
+		}
+	}
+
 	[HarmonyPatch(typeof(Map), "get_PlayerWealthForStoryteller")]
 	public static class TechIsWealth
 	{

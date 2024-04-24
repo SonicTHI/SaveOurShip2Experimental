@@ -31,7 +31,7 @@ namespace SaveOurShip2
 			List<Building> cores = new List<Building>();
 			int rarity = Rand.RangeInclusive(1, 2);
 			//limited to 100x100 due to unsettable map size, no fleets
-			SpaceShipDef ship = DefDatabase<SpaceShipDef>.AllDefs.Where(def => def.ships.NullOrEmpty() && !def.neverRandom && !def.spaceSite && !def.neverWreck && def.rarityLevel <= rarity && def.sizeX < 100 && def.sizeZ < 100).RandomElement();
+			ShipDef ship = DefDatabase<ShipDef>.AllDefs.Where(def => def.ships.NullOrEmpty() && !def.neverRandom && !def.spaceSite && !def.neverWreck && def.rarityLevel <= rarity && def.sizeX < 100 && def.sizeZ < 100).RandomElement();
 			ShipInteriorMod2.GenerateShip(ship, map, null, Faction.OfAncients, null, out cores, false, true, 4, (map.Size.x - ship.sizeX) / 2, (map.Size.z - ship.sizeZ) / 2);
 		}
 	}

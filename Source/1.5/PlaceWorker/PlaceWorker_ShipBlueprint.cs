@@ -72,7 +72,7 @@ namespace SaveOurShip2
 			}*/
 			return true;
 		}
-		public List<IntVec3> GenerateBlueprintSketch(SpaceShipDef shipDef)
+		public List<IntVec3> GenerateBlueprintSketch(ShipDef shipDef)
 		{
 			HashSet<IntVec3> positions = new HashSet<IntVec3>();
 			foreach (ShipShape shape in shipDef.parts)

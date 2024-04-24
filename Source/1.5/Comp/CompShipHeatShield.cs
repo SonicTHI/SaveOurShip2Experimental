@@ -11,7 +11,7 @@ using Vehicles;
 namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
-	public class CompShipCombatShield : CompShipHeat
+	public class CompShipHeatShield : CompShipHeat
 	{
 		private static readonly Material ShieldMaterial = MaterialPool.MatFrom("Things/Building/Ship/ShieldBubbleSOS", ShaderDatabase.MoteGlow);
 		private static readonly Material ConeMaterial = MaterialPool.MatFrom("Other/ForceFieldCone", ShaderDatabase.MoteGlow);

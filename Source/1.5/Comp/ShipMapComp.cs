@@ -361,7 +361,7 @@ namespace SaveOurShip2
 
 		//map caches
 		public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
-		public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>(); //workjob, hit detect
+		public List<CompShipHeatShield> Shields = new List<CompShipHeatShield>(); //workjob, hit detect
 		public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>(); //td get this into shipcache?
 		public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
 		public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
@@ -674,8 +674,8 @@ namespace SaveOurShip2
 		{
 			Map newMap = new Map();
 			List<Building> cores = new List<Building>();
-			SpaceShipDef shipDef = null;
-			SpaceNavyDef navyDef = null;
+			ShipDef shipDef = null;
+			NavyDef navyDef = null;
 			int wreckLevel = 0;
 			bool fakeWreck = false;
 			bool shieldsActive = true;
@@ -748,15 +748,15 @@ namespace SaveOurShip2
 				{
 					//find suitable navyDef
 					faction = passingShip.Faction;
-					if (faction != null && DefDatabase<SpaceNavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def) && n.spaceShipDefs.Any(s => s.tradeShip)))
+					if (faction != null && DefDatabase<NavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def) && n.spaceShipDefs.Any(s => s.tradeShip)))
 					{
-						navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
+						navyDef = DefDatabase<NavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
 						if (!fleet)
 							shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.spaceShipDefs, CR, true, true);
 					}
 					else if (!fleet) //navy has no trade ships - use default ones
 					{
-						shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<SpaceShipDef>.AllDefs.ToList(), CR, true, false);
+						shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<ShipDef>.AllDefs.ToList(), CR, true, false);
 					}
 					ShipInteriorMod2.WorldComp.PlayerFactionBounty += 5;
 					attackedTradeship = true;
@@ -766,9 +766,9 @@ namespace SaveOurShip2
 					if (bounty)
 						CR *= (float)Math.Pow(ShipInteriorMod2.WorldComp.PlayerFactionBounty, 0.2);
 					//spawned with faction override - try to find a valid navy
-					if (faction != null && DefDatabase<SpaceNavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def)))
+					if (faction != null && DefDatabase<NavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def)))
 					{
-						navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
+						navyDef = DefDatabase<NavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
 						shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.spaceShipDefs, CR, false, true);
 					}
 					else if (Rand.Chance((float)ModSettings_SoS.navyShipChance)) //try to spawn a random navy ship
@@ -788,7 +788,7 @@ namespace SaveOurShip2
 					{
 						navyDef = null;
 						if (!fleet)
-							shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<SpaceShipDef>.AllDefs.ToList(), CR, false, false);
+							shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<ShipDef>.AllDefs.ToList(), CR, false, false);
 					}
 					if (shipDef != null)
 						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.CombatStart"), TranslatorFormattedStringExtensions.Translate("SoS.CombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
@@ -1188,10 +1188,10 @@ namespace SaveOurShip2
 									VehiclePawn shuttleHit = TargetMapComp.ShuttlesInRange.Where(shuttle => shuttle.Faction != mission.shuttle.Faction).RandomElement();
 									if (Rand.Chance(1f - (shuttleHit.GetStatValue(ResourceBank.VehicleStatDefOf.SoS2CombatDodgeChance) / 100f)))
 									{
-										if (shuttleHit.GetComp<CompShipCombatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 0) //Shield takes the hit
+										if (shuttleHit.GetComp<CompShipHeatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 0) //Shield takes the hit
 										{
 											Projectile dummyProjectile = (Projectile)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Shuttle_Laser);
-											shuttleHit.GetComp<CompShipCombatShield>().HitShield(dummyProjectile);
+											shuttleHit.GetComp<CompShipHeatShield>().HitShield(dummyProjectile);
 											dummyProjectile.Destroy();
 										}
 										else
@@ -1967,7 +1967,7 @@ namespace SaveOurShip2
 			TargetMapComp.MapFullStop();
 			foreach (SpaceShipCache ship in OriginMapComp.TargetMapComp.ShipsOnMap.Values)
 			{
-				foreach (CompShipCombatShield s in ship.Shields)
+				foreach (CompShipHeatShield s in ship.Shields)
 				{
 					s.flickComp.SwitchIsOn = false;
 				}
@@ -2133,7 +2133,7 @@ namespace SaveOurShip2
 					mapToSpawnIn = originMapComp.map;
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
-					Messages.Message("SoSBoardingShuttleArrived".Translate(), MessageTypeDefOf.TaskCompletion);
+					Messages.Message("SoS.BoardingShuttleArrived".Translate(), MessageTypeDefOf.TaskCompletion);
 					CameraJumper.TryJump(mapToSpawnIn.Center, mapToSpawnIn);
 					LandingTargeter.Instance.BeginTargeting(mission.shuttle, mapToSpawnIn, delegate (LocalTargetInfo target, Rot4 rot)
 					{
@@ -2143,7 +2143,7 @@ namespace SaveOurShip2
 				}
 				else
                 {
-					Messages.Message("SoSEnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
+					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
 					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
 					GenSpawn.Spawn(vehicleSkyfaller_Arriving, mapToSpawnIn.GetComponent<ShipMapComp>().shipsOnMap.Values.RandomElement().OuterCells().RandomElement(), mapToSpawnIn);
 				}					

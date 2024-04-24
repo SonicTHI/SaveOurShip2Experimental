@@ -9,9 +9,9 @@ namespace SaveOurShip2
 {
 	class AttackableShip : PassingShip
 	{
-		public SpaceShipDef attackableShip;
+		public ShipDef attackableShip;
 		public Faction shipFaction;
-		public SpaceNavyDef spaceNavyDef;
+		public NavyDef spaceNavyDef;
 
 		public AttackableShip() : base()
 		{

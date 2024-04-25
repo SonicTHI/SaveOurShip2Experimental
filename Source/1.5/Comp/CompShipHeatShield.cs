@@ -246,7 +246,7 @@ namespace SaveOurShip2
 				{
 					radiusSet = Props.shieldDefault;
 					if(powerComp != null)
-						powerComp.PowerOutput = -1500;
+						powerComp.PowerOutput = -powerComp.Props.basePowerConsumption;
 					SoundDefOf.Tick_Tiny.PlayOneShotOnCamera(null);
 				},
 				defaultLabel = "SoS.ResetShieldRadius".Translate(),

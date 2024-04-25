@@ -14,20 +14,27 @@ namespace SaveOurShip2.Vehicles
         public float retreatAtHealth;
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
-        {
-            foreach (Gizmo giz in base.CompGetGizmosExtra())
+		{
+			var mapComp = parent.Map.GetComponent<ShipMapComp>();
+			foreach (Gizmo giz in base.CompGetGizmosExtra())
                 yield return giz;
+
             yield return new ShuttleRetreatGizmo(this);
-            if(parent.Map.GetComponent<ShipMapComp>()?.ShipMapState==ShipMapState.inCombat && ((VehiclePawn)parent).handlers[0].handlers.Count>0)
-            {
-                VehiclePawn vehicle = ((VehiclePawn)parent);
-                if (parent.Map.GetComponent<ShipMapComp>().IsPlayerShipMap)
-                    yield return CommandBoard(vehicle);
+			VehiclePawn vehicle = (VehiclePawn)parent;
+			if (mapComp?.ShipMapState == ShipMapState.inCombat && vehicle.handlers[0].handlers.Count > 0)
+			{
+				//only pods incombat if enemy t/w above, same in ShuttleTakeoff.FloatMenuMissions
+				if (mapComp.IsPlayerShipMap)
+                {
+                    if (ModSettings_SoS.easyMode || mapComp.TargetMapComp.MapEnginePower < 0.02f || vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
+					    yield return CommandBoard(vehicle);
+				}
                 else
                     yield return CommandGoHome(vehicle);
-                var u = vehicle.CompUpgradeTree.upgrades;
-                if (u != null)
+
+                if (vehicle.CompUpgradeTree != null)
 				{
+					var u = vehicle.CompUpgradeTree.upgrades;
 					bool hasLaser = u.Contains("TurretLaserA") || u.Contains("TurretLaserB") || u.Contains("TurretLaserC");
 					bool hasPlasma = u.Contains("TurretPlasmaA") || u.Contains("TurretPlasmaB") || u.Contains("TurretPlasmaC");
 					bool hasTorpedo = u.Contains("TurretTorpedoA") || u.Contains("TurretTorpedoB") || u.Contains("TurretTorpedoC")

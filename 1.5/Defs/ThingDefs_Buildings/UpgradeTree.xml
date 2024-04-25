@@ -367,9 +367,9 @@
 						<shield>
 							<compClass>SaveOurShip2.CompShipHeatShield</compClass>
 							<heatMultiplier>1.25</heatMultiplier>
-							<shieldMin>6</shieldMin>
-							<shieldMax>12</shieldMax>
-							<shieldDefault>10</shieldDefault>
+							<shieldMin>4</shieldMin>
+							<shieldMax>8</shieldMax>
+							<shieldDefault>6</shieldDefault>
 						</shield>
 					</li>
 					<li Class="SaveOurShip2.Vehicles.ShuttleHeatsinkUpgrade">
@@ -415,9 +415,9 @@
 					<li Class="SaveOurShip2.Vehicles.ShuttleShieldUpgrade">
 						<shield>
 							<compClass>SaveOurShip2.CompShipHeatShield</compClass>
-							<shieldMin>6</shieldMin>
-							<shieldMax>15</shieldMax>
-							<shieldDefault>10</shieldDefault>
+							<shieldMin>4</shieldMin>
+							<shieldMax>12</shieldMax>
+							<shieldDefault>8</shieldDefault>
 						</shield>
 					</li>
 					<li Class="SaveOurShip2.Vehicles.ShuttleHeatsinkUpgrade">
@@ -465,9 +465,9 @@
 							<compClass>SaveOurShip2.CompShipHeatShield</compClass>
 							<heatMultiplier>0.75</heatMultiplier>
 							<color>(0,255,0)</color>
-							<shieldMin>6</shieldMin>
-							<shieldMax>20</shieldMax>
-							<shieldDefault>10</shieldDefault>
+							<shieldMin>4</shieldMin>
+							<shieldMax>14</shieldMax>
+							<shieldDefault>8</shieldDefault>
 						</shield>
 					</li>
 					<li Class="SaveOurShip2.Vehicles.ShuttleHeatsinkUpgrade">

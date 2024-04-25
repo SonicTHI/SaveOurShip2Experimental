@@ -23,34 +23,36 @@ namespace SaveOurShip2.Vehicles
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptionsAt(int tile)
         {
-            bool isPlayerMap = this.vehicle.Map.GetComponent<ShipMapComp>()?.ShipCombatOriginMap == this.vehicle.Map;
-            bool isEnemyMap = this.vehicle.Map.GetComponent<ShipMapComp>()?.ShipCombatTargetMap == this.vehicle.Map;
+            var mapComp = vehicle.Map.GetComponent<ShipMapComp>();
+			bool isPlayerMap = mapComp?.ShipCombatOriginMap == vehicle.Map;
+            bool isEnemyMap = mapComp?.ShipCombatTargetMap == vehicle.Map;
             if (!isPlayerMap && !isEnemyMap)
                 return base.GetFloatMenuOptionsAt(tile);
             if (isPlayerMap)
             {
-                if (this.vehicle.Map.GetComponent<ShipMapComp>().ShipCombatTargetMap.Tile == tile) //Launch mission against enemy ship
-                    return FloatMenuMissions(tile, false);
+                if (mapComp.ShipCombatTargetMap.Tile == tile) //Launch mission against enemy ship
+                    return FloatMenuMissions(tile, mapComp);
                 else
                     return base.GetFloatMenuOptionsAt(tile);
             }
 
-            if (this.vehicle.Map.GetComponent<ShipMapComp>().ShipCombatOriginMap.Tile == tile) //Return home
+            if (mapComp.ShipCombatOriginMap.Tile == tile) //Return home
                 return FloatMenuOption_ReturnFromEnemy(tile);
-            else if (this.vehicle.Map.GetComponent<ShipMapComp>().ShipCombatTargetMap.Tile == tile) //Target enemy ship to change mission
-                return FloatMenuMissions(tile, false);
+            else if (mapComp.ShipCombatTargetMap.Tile == tile) //Target enemy ship to change mission
+                return FloatMenuMissions(tile, mapComp);
             else
                 return base.GetFloatMenuOptionsAt(tile);
         }
 
-        public IEnumerable<FloatMenuOption> FloatMenuMissions(int tile, bool fromEnemy)
-        {
-            if(!fromEnemy)
+        public IEnumerable<FloatMenuOption> FloatMenuMissions(int tile, ShipMapComp mapComp)
+		{
+			//only pods incombat if enemy t/w above, same in CompShuttleLauncher.CompGetGizmosExtra
+			if (mapComp.IsPlayerShipMap && (ModSettings_SoS.easyMode || mapComp.TargetMapComp.MapEnginePower < 0.02f || vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal))
                 yield return FloatMenuOption_Board(tile);
 
-			var u = vehicle.CompUpgradeTree.upgrades;
-			if (u != null)
+			if (vehicle.CompUpgradeTree != null)
 			{
+				var u = vehicle.CompUpgradeTree.upgrades;
 				bool hasLaser = u.Contains("TurretLaserA") || u.Contains("TurretLaserB") || u.Contains("TurretLaserC");
 				bool hasPlasma = u.Contains("TurretPlasmaA") || u.Contains("TurretPlasmaB") || u.Contains("TurretPlasmaC");
 				bool hasTorpedo = u.Contains("TurretTorpedoA") || u.Contains("TurretTorpedoB") || u.Contains("TurretTorpedoC")

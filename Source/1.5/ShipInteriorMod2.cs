@@ -115,7 +115,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f7";
+		public const string SOS2EXPversion = "V101f8";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -2877,6 +2877,11 @@ namespace SaveOurShip2
 					return true;
 			}
 			return false;
+		}
+
+		public static bool CanLaunchUnderRoof(VehiclePawn __instance)
+		{
+			return (__instance.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal && __instance.Position.GetThingList(__instance.Map).Any(thing => thing.TryGetComp<CompShipSalvageBay>() != null)) || __instance.Position.GetThingList(__instance.Map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge);
 		}
 	}
 

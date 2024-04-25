@@ -4189,12 +4189,12 @@ namespace SaveOurShip2
     }
 
 	//New VF shuttle patches
-	[HarmonyPatch(typeof(Ext_Vehicles), "IsRoofRestricted", new Type[] { typeof(IntVec3), typeof(Map), typeof(bool) })]
+	[HarmonyPatch(typeof(Ext_Vehicles), "IsRoofRestricted", new Type[] { typeof(VehicleDef), typeof(IntVec3), typeof(Map) })]
 	public static class VFShuttleBayLanding
     {
-		public static void Postfix(IntVec3 cell, Map map, ref bool __result)
-        {
-			if (cell.GetThingList(map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+		public static void Postfix(VehicleDef vehicleDef, IntVec3 cell, Map map, ref bool __result)
+		{
+			if ((vehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal && cell.GetThingList(map).Any(thing => thing.TryGetComp<CompShipSalvageBay>() != null)) || cell.GetThingList(map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
 				__result = false;
         }
     }
@@ -4204,7 +4204,7 @@ namespace SaveOurShip2
     {
 		public static void Postfix(ref string disableReason, CompVehicleLauncher __instance, ref bool __result)
         {
-			if (disableReason == Translator.Translate("CommandLaunchGroupFailUnderRoof") && __instance.parent.Position.GetThingList(__instance.parent.Map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+			if (disableReason == Translator.Translate("CommandLaunchGroupFailUnderRoof") && ShipInteriorMod2.CanLaunchUnderRoof((VehiclePawn)__instance.parent))
             {
 				__result = true;
 				disableReason = null;
@@ -4218,10 +4218,10 @@ namespace SaveOurShip2
 		public static void Postfix(LaunchProtocol __instance, ref bool __result)
 		{
 			if(__result==false)
-            {
-				if (__instance.vehicle.Spawned && __instance.vehicle.Position.GetThingList(__instance.vehicle.Map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+			{
+				if (__instance.vehicle.Spawned && ShipInteriorMod2.CanLaunchUnderRoof(__instance.vehicle))
 					__result = true;
-            }
+			}
 		}
 	}
 

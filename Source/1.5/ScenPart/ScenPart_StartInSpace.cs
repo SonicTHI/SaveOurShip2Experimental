@@ -191,12 +191,27 @@ namespace SaveOurShip2
 			ScenPart_StartInSpace scen = (ScenPart_StartInSpace)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_StartInSpace);
 			Map spaceMap = Find.CurrentMap;
 			List<List<Thing>> list = new List<List<Thing>>();
+			List<Thing> list3 = new List<Thing>();
 			foreach (Pawn startingAndOptionalPawn in Find.GameInitData.startingAndOptionalPawns)
 			{
 				List<Thing> list2 = new List<Thing>{ startingAndOptionalPawn };
 				list.Add(list2);
+				foreach (ThingDefCount posession in Find.GameInitData.startingPossessions[startingAndOptionalPawn])
+				{
+					Thing thing = ThingMaker.MakeThing(posession.ThingDef, GenStuff.RandomStuffFor(posession.ThingDef));
+					if (posession.ThingDef.IsIngestible && posession.ThingDef.ingestible.IsMeal)
+					{
+						FoodUtility.GenerateGoodIngredients(thing, Faction.OfPlayer.ideos.PrimaryIdeo);
+					}
+					if (thing.def.Minifiable)
+					{
+						thing = thing.MakeMinified();
+					}
+					thing.stackCount = posession.Count;
+					list3.Add(thing);
+				}
 			}
-			List<Thing> list3 = new List<Thing>();
+			
 			foreach (ScenPart allPart in Find.Scenario.AllParts)
 			{
 				list3.AddRange(allPart.PlayerStartingThings());

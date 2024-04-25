@@ -580,7 +580,7 @@
 			<li>
 				<key>CargoHeatsink</key>
 				<label>Auxiliary Heatsink</label>
-				<description>Install an auxiliary heatsink to support shields and weaponry.\n&lt;color=#bb8f04&gt;+200 heatsink, -100 cargo capacity&lt;/color&gt;</description>
+				<description>Install an auxiliary heatsink to support shields.\n&lt;color=#bb8f04&gt;+200 heatsink, -100 cargo capacity&lt;/color&gt;</description>
 				<icon>UI/ShuttleUpgrades/CargoHeatsink</icon>
 				<work>8000</work>
 				<gridCoordinate>(7,10)</gridCoordinate>
@@ -1477,7 +1477,7 @@
 			<texPath>Things/Shuttle/TurretPlasma</texPath>
 			<graphicClass>Vehicles.Graphic_Turret</graphicClass>
 			<shaderType>CutoutComplexPattern</shaderType>
-			<drawSize>(1, 1)</drawSize>
+			<drawSize>(2, 2)</drawSize>
 		</graphicData>
 	</Vehicles.VehicleTurretDef>
 	
@@ -1554,7 +1554,7 @@
 					<texPath>Things/Shuttle/TurretTorpedo</texPath>
 					<graphicClass>Vehicles.Graphic_Turret</graphicClass>
 					<shaderType>CutoutComplexPattern</shaderType>
-					<drawSize>(1, 1)</drawSize>
+					<drawSize>(2, 2)</drawSize>
 					<layer>1</layer>
 				</graphicData>
 			</li>

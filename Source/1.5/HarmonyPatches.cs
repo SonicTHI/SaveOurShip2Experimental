@@ -4203,7 +4203,7 @@ namespace SaveOurShip2
 				return;
 			if (turret.vehicle.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) == 1)
 			{
-				turret.renderProperties.north = new Vector2(0, -1.15f);
+				turret.renderProperties.north = new Vector2(0, 1.15f);
 			}
 			else if (turret.vehicle.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) == 2)
 			{
@@ -4219,7 +4219,7 @@ namespace SaveOurShip2
 				else if (turret.hardpoint == 1)
 					turret.renderProperties.north = new Vector2(-1.925f, 0);
 				else
-					turret.renderProperties.north = new Vector2(0, -3);
+					turret.renderProperties.north = new Vector2(0, 3);
 			}
 			turret.renderProperties.north = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
 			turret.renderProperties.east = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);

@@ -438,7 +438,7 @@
 
 			<li>subject_story->operated a legally-gray vulture fleet, picking the debris of space battles</li>
 			<li>subject_story->welded several captured ships into a single ungainly hulk</li>
-			<li>subject_story->served under an AI captain who took a strange pleasure in "eating" defeating ships</li>
+			<li>subject_story->served under an AI captain who took a strange pleasure in "eating" defeated ships</li>
 
 			<li>subject_gerund->salvaging shipwrecks</li>
 
@@ -463,7 +463,7 @@
 
 			<li>subject_story->held off a pirate boarding party by blocking corridors with hullfoam</li>
 			<li>subject_story->saved an early generation ship by repairing structural damage suffered during its deceleration burn</li>
-			<li>subject_story->after suffering radiation exposure, became obsessed with cocooning the ship in protective layers</li>
+			<li>subject_story->became obsessed with cocooning the ship in protective layers after suffering radiation exposure</li>
 
 			<li>subject_gerund->patching holes in ship hull</li>
 
@@ -707,7 +707,7 @@
 
 			<li>subject_story->sacrificed one eye to an archotech in exchange for the secrets of laser weaponry (later losing the other eye to laser backscatter)</li>
 			<li>subject_story->used a modified mining laser to breach the armor of a mechanoid assault craft</li>
-			<li>subject_story->was shocked and disgusted to learn that lasers do not go "pew pew" in real life</li>
+			<li>subject_story->was shocked and disgusted to learn that lasers do not actually go "pew pew"</li>
 
 			<li>subject_gerund->constructing starship lasers</li>
 

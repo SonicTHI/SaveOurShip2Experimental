@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,8 @@ namespace SaveOurShip2.Vehicles
 			var mapComp = parent.Map.GetComponent<ShipMapComp>();
 			foreach (Gizmo giz in base.CompGetGizmosExtra())
                 yield return giz;
-
+            if (parent.Faction != Faction.OfPlayer)
+                yield break;
             yield return new ShuttleRetreatGizmo(this);
 			VehiclePawn vehicle = (VehiclePawn)parent;
 			if (mapComp?.ShipMapState == ShipMapState.inCombat && vehicle.handlers[0].handlers.Count > 0)

@@ -195,6 +195,8 @@ namespace SaveOurShip2
 				Scribe_Values.Look<bool>(ref hasAnyPartDetached, "hasAnyPartDetached");
 				Scribe_Values.Look<bool>(ref startedBoarderLoad, "StartedBoarding");
 				Scribe_Values.Look<bool>(ref launchedBoarders, "LaunchedBoarders");
+				Scribe_Values.Look<bool>(ref startedPilotLoad, "StartedShuttleMissions");
+				Scribe_Collections.Look<VehiclePawn>(ref shuttlesYetToLaunch, "ShuttlesYetToLaunch", LookMode.Reference);
 
 				Scribe_Collections.Look<Building_ShipBridge>(ref MapRootListAll, "MapRootListAll", LookMode.Reference); //td rem?
 				Scribe_Deep.Look(ref ShuttlesOnMissions, "ShuttlesOnMissions", this);
@@ -277,6 +279,8 @@ namespace SaveOurShip2
 		public bool hasAnyPartDetached = false; //AI is loosing ship parts, will load shuttles //td rework
 		public bool startedBoarderLoad = false; //AI started loading
 		public bool launchedBoarders = false; //AI launched
+		public bool startedPilotLoad = false; //AI started moving pawns to pilot shuttles
+		public List<VehiclePawn> shuttlesYetToLaunch = new List<VehiclePawn>(); //Shuttles which haven't launched yet
 		void ResetShipAI()
 		{
 			HasShipMapAI = true;
@@ -288,6 +292,8 @@ namespace SaveOurShip2
 			hasAnyPartDetached = false;
 			startedBoarderLoad = false;
 			launchedBoarders = false;
+			startedPilotLoad = false;
+			shuttlesYetToLaunch = new List<VehiclePawn>();
 		}
 
 		//all maps
@@ -1020,29 +1026,20 @@ namespace SaveOurShip2
 					if (OriginMapComp.Range - mission.rangeTraveled < 65)
 						ShuttlesInRange.Add(mission.shuttle);
                 }
-				foreach(ShuttleMissionData mission in ShuttleMissions)
+				float bestThrustRatio = SlowestThrustToWeight() * 5f;
+
+				if (bestThrustRatio >= 4f)
+					bestThrustRatio = 4f;
+				else if (bestThrustRatio == 0)
+					bestThrustRatio = 1;
+				else if (bestThrustRatio < 2f)
+					bestThrustRatio = 2f;
+				foreach (ShuttleMissionData mission in ShuttleMissions)
                 {
 					mission.shuttle.Tick();
 					float moveSpeed = Mathf.Max(mission.shuttle.GetStatValue(VehicleStatDefOf.FlightSpeed) / 100f, 0.05f);
 					if((mission.mission==ShuttleMission.BOARD && this==OriginMapComp) || mission.mission==ShuttleMission.BOMB || mission.mission==ShuttleMission.STRAFE) //Opposed by enemy ship's engines
                     {
-						float bestThrustRatio = 0f;
-
-						foreach(SpaceShipCache ship in TargetMapComp.ShipsOnMap.Values)
-                        {
-							if (ship.ThrustRatio > bestThrustRatio)
-								bestThrustRatio = ship.EnginePower() / ship.MassActual;
-						}
-
-						bestThrustRatio *= 5f;
-
-						if (bestThrustRatio >= 4f)
-							bestThrustRatio = 4f;
-						else if (bestThrustRatio == 0)
-							bestThrustRatio = 1;
-						else if (bestThrustRatio < 2f)
-							bestThrustRatio = 2f;
-
 						moveSpeed /= bestThrustRatio;
 
 						if (mission.shuttle.Faction != Faction.OfPlayer)
@@ -1129,7 +1126,10 @@ namespace SaveOurShip2
 										Thing torpToLoad = mission.shuttle.inventory.innerContainer.Where(thing => thing.HasThingCategory(ResourceBank.ThingCategoryDefOf.SpaceTorpedoes)).FirstOrDefault();
 										if (torpToLoad==null)
                                         {
-											Messages.Message("SoSShuttleOutOfTorps".Translate(), MessageTypeDefOf.CautionInput);
+											if(mission.shuttle.Faction==Faction.OfPlayer)
+												Messages.Message("SoS.ShuttleOutOfTorps".Translate(), MessageTypeDefOf.CautionInput);
+											else
+												Messages.Message("SoS.EnemyShuttleOutOfTorps".Translate(), MessageTypeDefOf.PositiveEvent);
 											mission.mission = ShuttleMission.RETURN;
                                         }
 										else
@@ -1225,7 +1225,10 @@ namespace SaveOurShip2
 											}
 											else if (shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) <= ((CompShuttleLauncher)shuttleHit.CompVehicleLauncher).retreatAtHealth)
 											{
-												Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
+												if (shuttleHit.Faction == Faction.OfPlayer)
+													Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
+												else
+													Messages.Message("SoS.EnemyShuttleRetreat".Translate(), MessageTypeDefOf.PositiveEvent);
 												TargetMapComp.ShuttleMissions.Where(otherMission => otherMission.shuttle == shuttleHit).First().mission = ShipMapComp.ShuttleMission.RETURN;
 											}
 										}
@@ -1238,7 +1241,10 @@ namespace SaveOurShip2
 					mission.shuttle.compFuel.ConsumeFuel(mission.shuttle.compFuel.FuelEfficiency / 6000f);
 					if(mission.mission != ShuttleMission.RETURN && mission.shuttle.compFuel.Fuel < 10)
                     {
-						Messages.Message("SoS.ShuttleRetreatFuel".Translate(), MessageTypeDefOf.NegativeEvent);
+						if (mission.shuttle.Faction == Faction.OfPlayer)
+							Messages.Message("SoS.ShuttleRetreatFuel".Translate(), MessageTypeDefOf.NegativeEvent);
+						else
+							Messages.Message("SoS.EnemyShuttleRetreatFuel".Translate(), MessageTypeDefOf.PositiveEvent);
 						mission.mission = ShuttleMission.RETURN;
 					}
 				}
@@ -1581,14 +1587,45 @@ namespace SaveOurShip2
 						}
 					}*/
 
-					if ((hasAnyPartDetached || tick > BattleStartTick + 5000) && !startedBoarderLoad && !Retreating)
+					if (!startedPilotLoad && !Retreating && tick > BattleStartTick + 500) //Shuttles for missions
+					{
+						foreach (SpaceShipCache ship in ShipsOnMap.Values)
+						{
+							List<VehiclePawn> shuttles = new List<VehiclePawn>();
+							foreach (VehiclePawn vehicle in this.map.listerThings.GetThingsOfType<VehiclePawn>())
+							{
+								if (vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight && vehicle.CompUpgradeTree != null && (vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserA") || !vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaA") || !vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA")))
+									shuttles.Add(vehicle);
+							}
+							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
+							List<Pawn> pawnsToBoard = PawnsOnShip(ship, ship.Faction);
+							foreach (Pawn p in pawnsToBoard)
+							{
+								if (shuttlesToBeFilled.Count > 0 && p.mindState.duty != null)
+								{
+									p.mindState.duty.transportersGroup = 0;
+									VehiclePawn myShuttle = shuttlesToBeFilled.RandomElement();
+									Job job = new Job(JobDefOf_Vehicles.Board, myShuttle);
+									p.jobs.StartJob(job);
+									map.GetComponent<VehicleReservationManager>().Reserve<VehicleHandler, VehicleHandlerReservation>(myShuttle, p, job, myShuttle.handlers.Where(handler => handler.AreSlotsAvailable).RandomElement());
+									if (!myShuttle.handlers.Any(handler => handler.AreSlotsAvailable))
+									{
+										shuttlesToBeFilled.Remove(myShuttle);
+										shuttlesYetToLaunch.Add(myShuttle);
+									}
+								}
+							}
+						}
+						startedPilotLoad = true;
+					}
+					if ((hasAnyPartDetached || tick > BattleStartTick + 5000) && !startedBoarderLoad && !Retreating) //Shuttles for boarders
                     {
 						foreach (SpaceShipCache ship in ShipsOnMap.Values)
 						{
 							List<VehiclePawn> shuttles = new List<VehiclePawn>();
 							foreach(VehiclePawn vehicle in this.map.listerThings.GetThingsOfType<VehiclePawn>())
                             {
-								if (vehicle.CompVehicleLauncher!=null&&vehicle.CompVehicleLauncher.SpaceFlight)
+								if (vehicle.CompVehicleLauncher!=null&&vehicle.CompVehicleLauncher.SpaceFlight&&(vehicle.CompUpgradeTree==null || (!vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserA") && !vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaA") && !vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA"))))
 									shuttles.Add(vehicle);
                             }
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
@@ -1597,7 +1634,7 @@ namespace SaveOurShip2
 							{
 								if (shuttlesToBeFilled.Count>0 && p.mindState.duty != null && p.kindDef.combatPower > 40)
 								{
-									p.mindState.duty.transportersGroup = 0;
+									p.mindState.duty.transportersGroup = 1;
 									VehiclePawn myShuttle = shuttlesToBeFilled.RandomElement();
 									Job job = new Job(JobDefOf_Vehicles.Board, myShuttle);
 									p.jobs.StartJob(job);
@@ -1608,6 +1645,46 @@ namespace SaveOurShip2
 							}
 						}
 						startedBoarderLoad = true;
+					}
+					if (startedPilotLoad && shuttlesYetToLaunch.Count>0 && !Retreating)
+					{
+						//abort and reset if player on ship
+						if (map.mapPawns.AllPawnsSpawned.Any(o => o.Faction == Faction.OfPlayer))
+						{
+							foreach (Pawn pawn in map.mapPawns.AllHumanlike)
+							{
+								if (pawn.Faction != Faction.OfPlayer && pawn.mindState.duty.transportersGroup == 0)
+								{
+									pawn.jobs.StopAll();
+									pawn.mindState.duty.transportersGroup = -1;
+								}
+							}
+							startedPilotLoad = false;
+						}
+						else //continue launching
+						{
+							foreach (VehiclePawn shuttle in shuttlesYetToLaunch.ToList())
+							{
+								if (shuttle.AllPawnsAboard.Count > 0)
+								{
+									shuttle.CompVehicleLauncher.inFlight = true;
+									shuttle.CompVehicleLauncher.launchProtocol.OrderProtocol(LaunchProtocol.LaunchType.Takeoff);
+									VehicleSkyfaller_Leaving vehicleSkyfaller_Leaving = (VehicleSkyfaller_Leaving)VehicleSkyfallerMaker.MakeSkyfaller(shuttle.CompVehicleLauncher.Props.skyfallerLeaving, shuttle);
+									vehicleSkyfaller_Leaving.vehicle = shuttle;
+									vehicleSkyfaller_Leaving.createWorldObject = false;
+									GenSpawn.Spawn(vehicleSkyfaller_Leaving, shuttle.Position, shuttle.Map, shuttle.CompVehicleLauncher.launchProtocol.CurAnimationProperties.forcedRotation ?? shuttle.Rotation);
+									if(shuttle.CompUpgradeTree.upgrades.Contains("TurretLaserA"))
+										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.INTERCEPT);
+									else if(shuttle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA"))
+										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.BOMB);
+									else
+										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.STRAFE);
+									CameraJumper.TryHideWorld();
+									shuttle.EventRegistry[VehicleEventDefOf.AerialVehicleLaunch].ExecuteEvents();
+									shuttlesYetToLaunch.Remove(shuttle);
+								}
+							}
+						}
 					}
 					if (startedBoarderLoad && !launchedBoarders && !Retreating)
                     {
@@ -2129,8 +2206,10 @@ namespace SaveOurShip2
 				Map mapToSpawnIn;
 				if (mission.mission == ShuttleMission.BOARD)
 					mapToSpawnIn = ShipCombatTargetMap;
-				else
+				else if (mission.shuttle.Faction == Faction.OfPlayer)
 					mapToSpawnIn = originMapComp.map;
+				else
+					mapToSpawnIn = originMapComp.targetMapComp.map;
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
 					Messages.Message("SoS.BoardingShuttleArrived".Translate(), MessageTypeDefOf.TaskCompletion);
@@ -2139,7 +2218,9 @@ namespace SaveOurShip2
 					{
 						VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
 						GenSpawn.Spawn(vehicleSkyfaller_Arriving, target.Cell, mapToSpawnIn, rot);
-					}, null, null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
+					},
+					delegate (LocalTargetInfo target) { return !MapHelper.NonStandableOrVehicleBlocked(mission.shuttle, map, target.Cell, Rot4.East); },
+					null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
 				}
 				else
                 {

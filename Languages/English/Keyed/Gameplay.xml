@@ -324,10 +324,14 @@
     <MechanitesInHomeAreaDesc>Disassembler mechanites have infested the home area.</MechanitesInHomeAreaDesc>
 	<!-- shuttles -->
 	<SoS.ShuttleRetreat>Your shuttle is retreating due to damaged hull!</SoS.ShuttleRetreat>
+	<SoS.EnemyShuttleRetreat>Enemy shuttle is retreating due to damaged hull!</SoS.ShuttleRetreat>
 	<SoS.ShuttleRetreatFuel>Your shuttle is retreating due to low fuel!</SoS.ShuttleRetreatFuel>
-	<SoS.SoSShuttleOutOfTorps>Your shuttle is out of torpedoes and has begun retreating!</SoS.SoSShuttleOutOfTorps>
-	<SoS.BoardingShuttleArrived>Your boarding shuttle has arrived!</SoS.BoardingShuttleArrived>
-	<SoS.EnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoS.EnemyBoardingShuttleArrived>
+	<SoS.EnemyShuttleRetreatFuel>Enemy shuttle is retreating due to low fuel!</SoS.EnemyShuttleRetreatFuel>
+	<SoS.ShuttleOutOfTorps>Your shuttle is out of torpedoes and has begun retreating!</SoS.ShuttleOutOfTorps>
+	<SoS.EnemyShuttleOutOfTorps>Enemy shuttle is out of torpedoes and has begun retreating!</SoS.EnemyShuttleOutOfTorps>
+	<SoSBoardingShuttleArrived>Your boarding shuttle has arrived!</SoSBoardingShuttleArrived>
+	<SoSShuttleReturned>Your shuttle has returned!</SoSShuttleReturned>
+	<SoSEnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoSEnemyBoardingShuttleArrived>
 	<SoS.ShuttleMissionBoarding>Board enemy ship</SoS.ShuttleMissionBoarding>
 	<SoS.ShuttleMissionBoardingDesc>Send this shuttle to board the enemy ship. It will be vulnerable to point-defense weaponry. If the enemy has active engines, the shuttle will take longer to arrive.</SoS.ShuttleMissionBoardingDesc>
 	<SoS.ShuttleMissionBoardingReturn>Return to ship</SoS.ShuttleMissionBoardingReturn>

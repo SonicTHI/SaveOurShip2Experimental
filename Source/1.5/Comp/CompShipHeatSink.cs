@@ -27,7 +27,7 @@ namespace SaveOurShip2
 		{
 			get
 			{
-				if (mapComp.Cloaks.Any(c => c.active))
+				if (mapComp!=null && mapComp.Cloaks.Any(c => c.active))
 				{
 					disabled = true;
 				}

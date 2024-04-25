@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,8 @@ namespace SaveOurShip2.Vehicles
         {
             foreach (Gizmo giz in base.CompGetGizmosExtra())
                 yield return giz;
+            if (parent.Faction != Faction.OfPlayer)
+                yield break;
             yield return new ShuttleRetreatGizmo(this);
             if(parent.Map.GetComponent<ShipMapComp>()?.ShipMapState==ShipMapState.inCombat && ((VehiclePawn)parent).handlers[0].handlers.Count>0)
             {
@@ -25,6 +28,8 @@ namespace SaveOurShip2.Vehicles
                     yield return CommandBoard(vehicle);
                 else
                     yield return CommandGoHome(vehicle);
+                if (vehicle.CompUpgradeTree == null)
+                    yield break;
                 bool hasLaser = vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserA") || vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserB") || vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserC");
                 bool hasPlasma = vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaA") || vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaB") || vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaC");
                 bool hasTorpedo = vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA") || vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoB") || vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoC")

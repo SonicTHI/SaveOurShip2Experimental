@@ -283,5 +283,11 @@ namespace SaveOurShip2
 			public static VehicleTurretDef SoS2ShuttlePlasma;
 			public static VehicleTurretDef SoS2ShuttleTorpedo;
 		}
+
+		[DefOf]
+		public static class UpgradeTreeDefOf
+        {
+			public static UpgradeTreeDef SoS2ShuttleUpgradeTree;
+		}
 	}
 }

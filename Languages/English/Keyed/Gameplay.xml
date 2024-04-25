@@ -325,8 +325,11 @@
 	<ShuttleCommandLaunchGroup>Launch at opposing ship</ShuttleCommandLaunchGroup>
 	<ShuttleCommandLaunchGroupDesc>Take off and fly to opposing ship</ShuttleCommandLaunchGroupDesc>
 	<SoS.ShuttleRetreat>Your shuttle is retreating due to damaged hull!</SoS.ShuttleRetreat>
+	<SoS.EnemyShuttleRetreat>Enemy shuttle is retreating due to damaged hull!</SoS.ShuttleRetreat>
 	<SoS.ShuttleRetreatFuel>Your shuttle is retreating due to low fuel!</SoS.ShuttleRetreatFuel>
-	<SoS.SoSShuttleOutOfTorps>Your shuttle is out of torpedoes and has begun retreating!</SoS.SoSShuttleOutOfTorps>
+	<SoS.EnemyShuttleRetreatFuel>Enemy shuttle is retreating due to low fuel!</SoS.EnemyShuttleRetreatFuel>
+	<SoS.ShuttleOutOfTorps>Your shuttle is out of torpedoes and has begun retreating!</SoS.ShuttleOutOfTorps>
+	<SoS.EnemyShuttleOutOfTorps>Enemy shuttle is out of torpedoes and has begun retreating!</SoS.EnemyShuttleOutOfTorps>
 	<SoSBoardingShuttleArrived>Your boarding shuttle has arrived!</SoSBoardingShuttleArrived>
 	<SoSShuttleReturned>Your shuttle has returned!</SoSShuttleReturned>
 	<SoSEnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoSEnemyBoardingShuttleArrived>

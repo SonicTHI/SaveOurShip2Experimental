@@ -13,6 +13,7 @@ using Verse.AI.Group;
 using System.IO;
 using static SaveOurShip2.ModSettings_SoS;
 using Vehicles;
+using SaveOurShip2.Vehicles;
 
 namespace SaveOurShip2
 {
@@ -916,12 +917,117 @@ namespace SaveOurShip2
 						VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
 						VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);
 						vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
-						GenSpawn.Spawn(vehicle, adjPos, map); 
-						if (vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def.GetNode("PassengersSix") != null) //TODO - in the future, we'll want enemy shuttles to be specced as fighters, bombers, shielded transports, etc.
+						GenSpawn.Spawn(vehicle, adjPos, map);
+						if (vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def==ResourceBank.UpgradeTreeDefOf.SoS2ShuttleUpgradeTree)
 						{
-							Log.Message("Speccing shuttle as troop transport");
-							UpgradeNode node = vehicle.CompUpgradeTree.Props.def.GetNode("PassengersSix");
-							vehicle.CompUpgradeTree.FinishUnlock(node);
+							switch (Rand.Range(0,4))
+                            {
+								case 0: //Boarding shuttle
+									Log.Message("Speccing shuttle as troop transport");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("PassengersSix"));
+									break;
+								case 1: //Interceptor
+									Log.Message("Speccing shuttle as interceptor");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserA"));
+									if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
+										vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserB"));
+									if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
+										vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserC"));
+									break;
+								case 2: //Heavy fighter
+									Log.Message("Speccing shuttle as heavy fighter");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaA"));
+									if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
+										vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaB"));
+									if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
+										vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaC"));
+									break;
+								case 3: //Bomber
+									Log.Message("Speccing shuttle as bomber");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretTorpedoA"));
+									if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
+										vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretTorpedoB"));
+									if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
+										vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretTorpedoC"));
+									foreach (VehicleTurret torp in vehicle.CompVehicleTurrets.turrets)
+										torp.ReloadCannon(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive, true);
+									int torps = Rand.Range(1, 6);
+									for (int i = 0; i < torps; i++)
+										vehicle.GetDirectlyHeldThings().AddItem(ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive));
+									break;
+							}
+							switch (Rand.Range(0,10))
+                            {
+								case 0:
+									Log.Message("Adding minimal armor");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorMinimal"));
+									break;
+								case 1:
+								case 2:
+									Log.Message("Adding heavy armor");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorHeavy"));
+                                    break;
+								case 3:
+									Log.Message("Adding nano armor");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorNano"));
+									break;
+								default:
+									break;
+							}
+							switch (Rand.Range(0, 10))
+							{
+								case 0:
+								case 1:
+									Log.Message("Adding overdriven engine");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("EngineOverdriven"));
+									break;
+								case 2:
+								case 3:
+									Log.Message("Adding auxiliary thrusters");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("EngineThrusters"));
+									break;
+								default:
+									break;
+							}
+							bool shields = true;
+							switch (Rand.Range(0, 10))
+							{
+								case 0:
+								case 1:
+								case 2:
+								case 3:
+									Log.Message("Adding light shield generator");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ShieldsBasic"));
+									break;
+								case 4:
+								case 5:
+								case 6:
+								case 7:
+									Log.Message("Adding heavy shield generator");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ShieldsHeavy"));
+									break;
+								default:
+									shields = false;
+									break;
+							}
+							switch (Rand.Range(0, 10))
+							{
+								case 0:
+									Log.Message("Adding cloaking device");
+									vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("CargoCloaking"));
+									break;
+								case 1:
+								case 2:
+									if (shields)
+									{
+										Log.Message("Adding auxiliary heatsink");
+										vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("CargoHeatsink"));
+									}
+									break;
+								default:
+									break;
+							}
+							vehicle.GetComp<CompShuttleLauncher>().retreatAtHealth = 0.15f;
 						}
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)

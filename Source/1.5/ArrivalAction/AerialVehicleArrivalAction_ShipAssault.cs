@@ -6,7 +6,7 @@ using RimWorld;
 using RimWorld.Planet;
 using Vehicles;
 
-namespace SaveOurShip2
+namespace SaveOurShip2.Vehicles
 {
 	public class AerialVehicleArrivalAction_ShipAssault : AerialVehicleArrivalAction_LandSpecificCell
 	{

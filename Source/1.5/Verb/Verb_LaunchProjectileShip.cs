@@ -181,12 +181,15 @@ namespace SaveOurShip2
 											DropPodUtility.DropThingsNear(DropCellFinder.RandomDropSpot(mapComp.ShipCombatOriginMap), mapComp.OriginMapComp.map, new List<Thing> { pawn.Corpse });
 									}
 								}
-								foreach (Thing cargo in shuttleHit.GetDirectlyHeldThings())
-									cargo.Kill();
+								/*foreach (Thing cargo in shuttleHit.GetDirectlyHeldThings())
+									cargo.Kill();*/
 							}
 							else if(shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) <= ((CompShuttleLauncher)shuttleHit.CompVehicleLauncher).retreatAtHealth)
                             {
-								Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
+								if(shuttleHit.Faction==Faction.OfPlayer)
+									Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
+								else
+									Messages.Message("SoS.EnemyShuttleRetreat".Translate(), MessageTypeDefOf.PositiveEvent);
 								mapComp.TargetMapComp.ShuttleMissions.Where(mission => mission.shuttle == shuttleHit).First().mission = ShipMapComp.ShuttleMission.RETURN;
 							}
 						}

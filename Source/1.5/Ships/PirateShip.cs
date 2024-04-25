@@ -11,7 +11,7 @@ namespace SaveOurShip2
 	{
 
 		public Faction shipFaction;
-		public SpaceNavyDef spaceNavyDef;
+		public NavyDef spaceNavyDef;
 		public bool parleyed = false;
 		public bool paidOff = false;
 

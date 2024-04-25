@@ -31,7 +31,7 @@ namespace SaveOurShip2
 			Faction nastyTribals = Find.FactionManager.AllFactions.Where(fac => fac.def.techLevel == TechLevel.Neolithic && fac.PlayerRelationKind==FactionRelationKind.Hostile).FirstOrDefault();
 			Lord defendShip = LordMaker.MakeNewLord(nastyTribals, new LordJob_DefendShip(nastyTribals, map.Center), map);
 			List<Building> cores = new List<Building>();
-			ShipInteriorMod2.GenerateShip(DefDatabase<SpaceShipDef>.GetNamed("TribalVillageIsNotAShip"), map, null, nastyTribals, defendShip, out cores, false, true);
+			ShipInteriorMod2.GenerateShip(DefDatabase<ShipDef>.GetNamed("TribalVillageIsNotAShip"), map, null, nastyTribals, defendShip, out cores, false, true);
 		}
 	}
 }

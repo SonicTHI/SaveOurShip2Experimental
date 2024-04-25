@@ -148,8 +148,8 @@ namespace RimWorld
 					PointDefenseMode = false;
 				Command_Toggle togglePD = new Command_Toggle
 				{
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("CommandShipPointDefense"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("CommandShipPointDefenseDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.TogglePointDefense"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.TogglePointDefenseDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/PointDefenseMode"),
 					toggleAction = delegate
 					{

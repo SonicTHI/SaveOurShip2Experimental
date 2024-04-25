@@ -14,7 +14,7 @@ namespace SaveOurShip2
 		public HashSet<CompShipHeatSource> Sources = new HashSet<CompShipHeatSource>();
 		public HashSet<CompShipHeatSink> Sinks = new HashSet<CompShipHeatSink>();
 		public HashSet<CompShipHeatPurge> HeatPurges = new HashSet<CompShipHeatPurge>();
-		public HashSet<CompShipCombatShield> Shields = new HashSet<CompShipCombatShield>();
+		public HashSet<CompShipHeatShield> Shields = new HashSet<CompShipHeatShield>();
 		public HashSet<CompShipHeat> Turrets = new HashSet<CompShipHeat>();
 		public HashSet<CompShipHeat> Cloaks = new HashSet<CompShipHeat>();
 		public HashSet<Building_ShipBridge> AICores = new HashSet<Building_ShipBridge>();
@@ -121,7 +121,7 @@ namespace SaveOurShip2
 						Cloaks.Add(source);
 				}
 			}
-			else if (comp is CompShipCombatShield shield)
+			else if (comp is CompShipHeatShield shield)
 				Shields.Add(shield);
 			else if (comp.parent is Building_ShipBridge br)
 			{
@@ -172,7 +172,7 @@ namespace SaveOurShip2
 				if (source.parent is Building_ShipCloakingDevice)
 					Cloaks.Remove(source);
 			}
-			else if (comp is CompShipCombatShield shield)
+			else if (comp is CompShipHeatShield shield)
 				Shields.Remove(shield);
 			else if (comp.parent is Building_ShipBridge br)
 			{

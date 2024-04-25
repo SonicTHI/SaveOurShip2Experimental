@@ -68,7 +68,7 @@
 		</apparel>
 		<comps>
 			<li>
-				<compClass>SaveOurShip2.Comp_EVA</compClass>
+				<compClass>SaveOurShip2.CompEVA</compClass>
 			</li>
 		</comps>
 	</ThingDef>
@@ -143,7 +143,7 @@
 		</apparel>
 		<comps>
 			<li>
-				<compClass>SaveOurShip2.Comp_EVA</compClass>
+				<compClass>SaveOurShip2.CompEVA</compClass>
 			</li>
 		</comps>
 	</ThingDef>
@@ -207,7 +207,7 @@
 		</apparel>
 		<comps>
 			<li>
-				<compClass>SaveOurShip2.Comp_EVA</compClass>
+				<compClass>SaveOurShip2.CompEVA</compClass>
 			</li>
 		</comps>
 	</ThingDef>
@@ -273,7 +273,7 @@
 		</apparel>
 		<comps>
 			<li>
-				<compClass>SaveOurShip2.Comp_EVA</compClass>
+				<compClass>SaveOurShip2.CompEVA</compClass>
 			</li>
 		</comps>
 	</ThingDef>
@@ -366,7 +366,7 @@
 		</colorGenerator>
 		<comps>
 			<li>
-				<compClass>SaveOurShip2.Comp_EVA</compClass>
+				<compClass>SaveOurShip2.CompEVA</compClass>
 			</li>
 		</comps>
 	</ThingDef>
@@ -432,7 +432,7 @@
 		</apparel>
 		<comps>
 			<li>
-				<compClass>SaveOurShip2.Comp_EVA</compClass>
+				<compClass>SaveOurShip2.CompEVA</compClass>
 			</li>
 		</comps>
 	</ThingDef>

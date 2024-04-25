@@ -7,10 +7,10 @@ using RimWorld;
 
 namespace SaveOurShip2
 {
-	public class SpaceNavyDef : Def
+	public class NavyDef : Def
 	{
 		public List<FactionDef> factionDefs = new List<FactionDef>();
-		public List<SpaceShipDef> spaceShipDefs = new List<SpaceShipDef>();
+		public List<ShipDef> spaceShipDefs = new List<ShipDef>();
 		public string colorPrimary;
 		public string colorSecondary;
 		public string colorLighting;

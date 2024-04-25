@@ -29,7 +29,7 @@ namespace SaveOurShip2
 			PirateShip ship = new PirateShip(DefDatabase<TraderKindDef>.GetNamed("Orbital_PirateMerchant"), Faction.OfPirates);
 
 			int rarity = Rand.RangeInclusive(1, 2);
-			SpaceNavyDef navy = DefDatabase<SpaceNavyDef>.AllDefs.Where(n =>
+			NavyDef navy = DefDatabase<NavyDef>.AllDefs.Where(n =>
 			{
 				if (n.spaceShipDefs.NullOrEmpty() || !n.pirates)
 					return false;

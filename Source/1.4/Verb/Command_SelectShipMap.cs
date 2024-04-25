@@ -94,7 +94,7 @@ namespace RimWorld
 					float req = bCount;// * 2.5f;
 					float fuel = 0f;
 					List<CompEngineTrail> engines = new List<CompEngineTrail>();
-					foreach (SoShipCache ship in mapComp.ShipsOnMapNew.Values)
+					foreach (SoShipCache ship in mapComp.ShipsOnMap.Values)
 					{
 						foreach (CompEngineTrail engine in ship.Engines.Where(e => e.Props.fuelUse > 0))
 						{

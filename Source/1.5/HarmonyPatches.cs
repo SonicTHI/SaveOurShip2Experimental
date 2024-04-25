@@ -296,7 +296,7 @@ namespace SaveOurShip2
 	public static class DrawShips
 	{
 		public static int Highlight = -1;
-		public static List<Pair<IntVec3, float>> tmpCachedCellColors;
+		public static List<Pair<IntVec3, int>> tmpCachedCellColors;
 		public static void Postfix()
 		{
 			if (ModSettings_SoS.debugMode)
@@ -308,7 +308,7 @@ namespace SaveOurShip2
 
 				if (tmpCachedCellColors == null)
 				{
-					tmpCachedCellColors = new List<Pair<IntVec3, float>>();
+					tmpCachedCellColors = new List<Pair<IntVec3, int>>();
 				}
 				//if (Time.frameCount % 6 == 0)
 				{
@@ -317,12 +317,13 @@ namespace SaveOurShip2
 				var cells = mapComp.MapShipCells;
 				foreach (IntVec3 v in cells.Keys)
 				{
-					tmpCachedCellColors.Add(new Pair<IntVec3, float>(v, cells[v].Item1));
+					int n = cells[v].Item1 * 300 - cells[v].Item1 * 30 + cells[v].Item1 * 3;
+					tmpCachedCellColors.Add(new Pair<IntVec3, int>(v, n));
 				}
 				for (int m = 0; m < tmpCachedCellColors.Count; m++)
 				{
 					IntVec3 v = tmpCachedCellColors[m].First;
-					int sec = (int)tmpCachedCellColors[m].Second;
+					int sec = tmpCachedCellColors[m].Second;
 
 					if (sec == -1)
 					{
@@ -335,7 +336,7 @@ namespace SaveOurShip2
 						continue;
 					}
 
-					int index = (int)tmpCachedCellColors[m].Second % 1000;
+					int index = tmpCachedCellColors[m].Second % 1000;
 					float r = index / 1000f;
 					index %= 100;
 					float g = index / 100f;
@@ -1163,7 +1164,7 @@ namespace SaveOurShip2
 		}
 	}
 
-	[HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(Thing), typeof(bool) })]
+	/*[HarmonyPatch(typeof(FogGrid), "FloodUnfogAdjacent", new Type[] { typeof(Thing), typeof(bool) })]
 	public static class NoFogSpamInSpaceThing
 	{
 		public static bool Prefix(Thing thing, ref bool sendLetters, Map ___map, out bool __state)
@@ -1189,7 +1190,7 @@ namespace SaveOurShip2
 			}
 			return true;
 		}
-	}
+	}*/
 
 	[HarmonyPatch(typeof(RoyalTitlePermitWorker), "AidDisabled")]
 	public static class RoyalTitlePermitWorkerInSpace
@@ -2077,12 +2078,47 @@ namespace SaveOurShip2
 	}
 
 	[HarmonyPatch]
-	public class ReversePatchBuilding
+	public class ReversePatchBuildingSpawn
+	{
+		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
+		[HarmonyPatch(typeof(Building), "SpawnSetup")]
+		public static void Snapshot(object instance, Map map, bool respawningAfterLoad)
+		{
+		}
+	}
+	[HarmonyPatch]
+	public class ReversePatchBuildingDespawn
 	{
 		[HarmonyReversePatch(HarmonyReversePatchType.Snapshot)]
 		[HarmonyPatch(typeof(Building), "DeSpawn")]
 		public static void Snapshot(object instance, DestroyMode mode)
 		{
+		}
+	}
+	[HarmonyPatch(typeof(Building_Bed), "SpawnSetup")]
+	public static class DisableForMoveBed
+	{
+		public static bool Prefix(Building_Bed __instance, Map map, bool respawningAfterLoad)
+		{
+			if (ShipInteriorMod2.MoveShipFlag)
+			{
+				ReversePatchBuildingSpawn.Snapshot(__instance, map, respawningAfterLoad);
+				return false;
+			}
+			return true;
+		}
+	}
+	[HarmonyPatch(typeof(Building_Bed), "DeSpawn")]
+	public static class DisableForMoveBedTwo
+	{
+		public static bool Prefix(Building_Bed __instance, DestroyMode mode)
+		{
+			if (ShipInteriorMod2.MoveShipFlag)
+			{
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
+				return false;
+			}
+			return true;
 		}
 	}
 	[HarmonyPatch(typeof(Building_MechCharger), "DeSpawn")]
@@ -2092,7 +2128,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -2105,7 +2141,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -2118,7 +2154,7 @@ namespace SaveOurShip2
 		{
 			if (ShipInteriorMod2.MoveShipFlag)
 			{
-				ReversePatchBuilding.Snapshot(__instance, mode);
+				ReversePatchBuildingDespawn.Snapshot(__instance, mode);
 				return false;
 			}
 			return true;
@@ -2893,7 +2929,7 @@ namespace SaveOurShip2
 		{
 			float yMin = rect.yMin;
 			bool first = false;
-			foreach (ArchotechGiftDef def in DefDatabase<ArchotechGiftDef>.AllDefs)
+			foreach (ArchoGiftDef def in DefDatabase<ArchoGiftDef>.AllDefs)
 			{
 				if (def.research == project)
 				{
@@ -3656,7 +3692,7 @@ namespace SaveOurShip2
 				}
 				Map originMap = Find.CurrentMap;
 				Map map;
-				SpaceShipDef shipDef = DefDatabase<SpaceShipDef>.GetNamed("RewardEmpireDestroyer");
+				ShipDef shipDef = DefDatabase<ShipDef>.GetNamed("RewardEmpireDestroyer");
 				List<Building> cores = new List<Building>();
 				if (ShipInteriorMod2.FindPlayerShipMap() != null)
 				{
@@ -3815,8 +3851,8 @@ namespace SaveOurShip2
 					{
 						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.PsychicAmplifier"), TranslatorFormattedStringExtensions.Translate("SoS.PsychicAmplifierDesc"), LetterDefOf.PositiveEvent);
 						AttackableShip ship = new AttackableShip();
-						ship.attackableShip = DefDatabase<SpaceShipDef>.GetNamed("MechPsychicAmp");
-						ship.spaceNavyDef = DefDatabase<SpaceNavyDef>.GetNamed("Mechanoid_SpaceNavy");
+						ship.attackableShip = DefDatabase<ShipDef>.GetNamed("MechPsychicAmp");
+						ship.spaceNavyDef = DefDatabase<NavyDef>.GetNamed("Mechanoid_SpaceNavy");
 						ship.shipFaction = Faction.OfMechanoids;
 						map.passingShipManager.AddShip(ship);
 						break;
@@ -3862,6 +3898,23 @@ namespace SaveOurShip2
 	}
 
 	//storytellers
+	[HarmonyPatch(typeof(Storyteller), "InitializeStorytellerComps")]
+	public static class RandyLikeTargetSpaceHome
+	{
+		public static void Postfix(Storyteller __instance)
+		{
+			foreach (StorytellerComp t in __instance.storytellerComps)
+			{
+				if (t is StorytellerComp_RandomMain m && m.Props.allowedTargetTags != null && !m.Props.allowedTargetTags.Contains(DefDatabase<IncidentTargetTagDef>.GetNamed("Map_SpaceHome")))
+				{
+					m.Props.allowedTargetTags.Add(DefDatabase<IncidentTargetTagDef>.GetNamed("Map_SpaceHome"));
+					Log.Message("SOS2: ".Colorize(Color.cyan) + "Found Randy based storyteller without Map_SpaceHome as target, fixing.");
+					break;
+				}
+			}
+		}
+	}
+
 	[HarmonyPatch(typeof(Map), "get_PlayerWealthForStoryteller")]
 	public static class TechIsWealth
 	{
@@ -4120,7 +4173,7 @@ namespace SaveOurShip2
 				return;
 			if (__instance.Map == null)
 				return;
-			foreach(CompShipCombatShield shield in __instance.Map.GetComponent<ShipMapComp>().Shields)
+			foreach(CompShipHeatShield shield in __instance.Map.GetComponent<ShipMapComp>().Shields)
             {
 				if (shield.shutDown)
 					continue;
@@ -4136,12 +4189,12 @@ namespace SaveOurShip2
     }
 
 	//New VF shuttle patches
-	[HarmonyPatch(typeof(Ext_Vehicles), "IsRoofRestricted", new Type[] { typeof(IntVec3), typeof(Map), typeof(bool) })]
+	[HarmonyPatch(typeof(Ext_Vehicles), "IsRoofRestricted", new Type[] { typeof(VehicleDef), typeof(IntVec3), typeof(Map) })]
 	public static class VFShuttleBayLanding
     {
-		public static void Postfix(IntVec3 cell, Map map, ref bool __result)
-        {
-			if (cell.GetThingList(map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+		public static void Postfix(VehicleDef vehicleDef, IntVec3 cell, Map map, ref bool __result)
+		{
+			if ((vehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal && cell.GetThingList(map).Any(thing => thing.TryGetComp<CompShipSalvageBay>() != null)) || cell.GetThingList(map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
 				__result = false;
         }
     }
@@ -4151,7 +4204,7 @@ namespace SaveOurShip2
     {
 		public static void Postfix(ref string disableReason, CompVehicleLauncher __instance, ref bool __result)
         {
-			if (disableReason == Translator.Translate("CommandLaunchGroupFailUnderRoof") && __instance.parent.Position.GetThingList(__instance.parent.Map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+			if (disableReason == Translator.Translate("CommandLaunchGroupFailUnderRoof") && ShipInteriorMod2.CanLaunchUnderRoof((VehiclePawn)__instance.parent))
             {
 				__result = true;
 				disableReason = null;
@@ -4165,10 +4218,10 @@ namespace SaveOurShip2
 		public static void Postfix(LaunchProtocol __instance, ref bool __result)
 		{
 			if(__result==false)
-            {
-				if (__instance.vehicle.Spawned && __instance.vehicle.Position.GetThingList(__instance.vehicle.Map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+			{
+				if (__instance.vehicle.Spawned && ShipInteriorMod2.CanLaunchUnderRoof(__instance.vehicle))
 					__result = true;
-            }
+			}
 		}
 	}
 

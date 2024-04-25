@@ -160,7 +160,7 @@ namespace SaveOurShip2
 				{
 					foreach (int i in DockedTo())
 					{
-						var ship = mapComp.ShipsOnMapNew[i];
+						var ship = mapComp.ShipsOnMap[i];
 						if (ship.CanMove())
 							return false;
 					}
@@ -182,7 +182,7 @@ namespace SaveOurShip2
 			int c = MassSum;
 			foreach (int i in DockedTo())
 			{
-				var ship = mapComp.ShipsOnMapNew[i];
+				var ship = mapComp.ShipsOnMap[i];
 				p += ship.EnginePower();
 				c += ship.MassSum;
 			}
@@ -352,7 +352,7 @@ namespace SaveOurShip2
 		{
 			IntVec3 lowestCorner = LowestCorner(rotb, Map);
 			Sketch sketch = new Sketch();
-			IntVec3 rot = new IntVec3(0, 0, 0);
+			IntVec3 rot = IntVec3.Zero;
 			foreach (IntVec3 pos in Area)
 			{
 				if (rotb == 1)
@@ -419,7 +419,7 @@ namespace SaveOurShip2
 		}
 		public IntVec3 MaximumCorner()
 		{
-			IntVec3 maxCorner = new IntVec3(0, 0, 0);
+			IntVec3 maxCorner = IntVec3.Zero;
 			foreach (IntVec3 v in Area)
 			{
 				if (v.x > maxCorner.x)
@@ -432,7 +432,7 @@ namespace SaveOurShip2
 		public IntVec3 Size(out IntVec3 min)
 		{
 			min = new IntVec3(int.MaxValue, 0, int.MaxValue);
-			IntVec3 max = new IntVec3(0, 0, 0);
+			IntVec3 max = IntVec3.Zero;
 			foreach (IntVec3 v in Area)
 			{
 				if (v.x < min.x)
@@ -565,12 +565,10 @@ namespace SaveOurShip2
 			}
 		}
 		//cache
-		public IntVec3 BridgeKillVec = IntVec3.Invalid; //system is stupid but here we are
-		public bool LastBridgeDied = false; //as above, prevents checking for detach until ship is moved
 		public bool PathDirty = true; //unused //td
 		public int LastSafePath = -1; //in combat the lowest path -1 that sufered damage
 		public List<HashSet<IntVec3>> DetachedShipAreas = new List<HashSet<IntVec3>>();
-		public void RebuildCache(Building origin, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
+		public void RebuildCache(Building origin, int mergeToIndex, HashSet<IntVec3> exclude = null) //full rebuild, on load, merge
 		{
 			if (origin == null || origin.Destroyed)
 			{
@@ -578,7 +576,7 @@ namespace SaveOurShip2
 				return;
 			}
 			Map = origin.Map;
-			Index = origin.thingIDNumber;
+			Index = mergeToIndex;
 			int path = -1;
 			if (origin is Building_ShipBridge core)
 			{
@@ -854,12 +852,9 @@ namespace SaveOurShip2
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Has 0 cores remaining.");
 			Core = null;
 			ResetCorePath();
-			if (mapComp.ShipMapState == ShipMapState.inCombat) //turn into wreck but do not float it
-				LastBridgeDied = true;
-
 			if (mapComp.ShipMapState == ShipMapState.inCombat) //if last ship end combat else move to grave
 			{
-				if (mapComp.ShipsOnMapNew.Values.Any(s => !s.IsWreck))
+				if (mapComp.ShipsOnMap.Values.Any(s => !s.IsWreck))
 					mapComp.ShipsToMove.Add(Index);
 				else
 					mapComp.EndBattle(Map, false);
@@ -956,20 +951,20 @@ namespace SaveOurShip2
 			//find cells around
 			//for each try to path back to 0 or LastSafePath - 1, if not possible detach each set separately
 
-			int pathTo = int.MaxValue; //lowest path in startCells
-			IntVec3 first = IntVec3.Invalid; //path to this cell
+			//int pathTo = int.MaxValue; //lowest path in startCells
+			//IntVec3 first = IntVec3.Invalid; //path to this cell
 			HashSet<IntVec3> startCells = new HashSet<IntVec3>(); //cells areaDestroyed
 			foreach (IntVec3 vec in areaDestroyed) //find first still attached cell around detach area
 			{
 				foreach (IntVec3 v in GenAdj.CellsAdjacentCardinal(vec, Rot4.North, IntVec2.One).Where(v => !areaDestroyed.Contains(v) && Area.Contains(v)))// && mapComp.MapShipCells[v].Item2 != 0))
 				{
 					startCells.Add(v);
-					int vecPath = mapComp.MapShipCells[v].Item2;
+					/*int vecPath = mapComp.MapShipCells[v].Item2;
 					if (vecPath < pathTo)
 					{
 						pathTo = vecPath;
 						first = v;
-					}
+					}*/
 				}
 			}
 			if (ModSettings_SoS.debugMode)
@@ -1070,7 +1065,7 @@ namespace SaveOurShip2
 					if (!Area.Any())
 					{
 						Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Area was empty, removing ship");
-						mapComp.ShipsOnMapNew.Remove(Index);
+						mapComp.ShipsOnMap.Remove(Index);
 					}
 					return;
 				}
@@ -1078,27 +1073,26 @@ namespace SaveOurShip2
 			}
 			if (ModSettings_SoS.debugMode)
 				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach new ship/wreck with: " + newCore);
-			if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
+			/*if (mapComp.ShipsOnMapNew.ContainsKey(newCore.thingIDNumber))
 			{
 				int newKey = mapComp.ShipsOnMapNew.Keys.Max() + 1000;
 				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Detach error, shipID " + newCore.thingIDNumber + " already exits! Using fallback index: " + newKey + ", pausing game. Recheck ship area with infestation overlay. If not correct - save and reload!");
 				//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
 				newCore.thingIDNumber = newKey;
-			}
+			}*/
 			//make new ship
-			mapComp.ShipsOnMapNew.Add(newCore.thingIDNumber, new SoShipCache());
-			mapComp.ShipsOnMapNew[newCore.thingIDNumber].RebuildCache(newCore);
+			int mergeToIndex = ShipInteriorMod2.WorldComp.AddNewShip(mapComp.ShipsOnMap, newCore);
 			if (mapComp.ShipMapState == ShipMapState.inCombat)
 			{
 				if (mapComp.HasShipMapAI)
 					mapComp.hasAnyPartDetached = true;
-				mapComp.ShipsToMove.Add(newCore.thingIDNumber);
+				mapComp.ShipsToMove.Add(mergeToIndex);
 			}
 			//remove this ship if nothing remains
 			if (!Area.Any())
 			{
-				Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
-				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Area is empty!");
+				//Find.TickManager.CurTimeSpeed = TimeSpeed.Paused;
+				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Area is empty!");
 				//mapComp.ShipsOnMapNew.Remove(Index);
 			}
 		}

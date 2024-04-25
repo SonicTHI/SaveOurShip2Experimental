@@ -367,7 +367,7 @@ namespace SaveOurShip2
 
 		//map caches
 		public List<Building_ShipBridge> MapRootListAll = new List<Building_ShipBridge>(); //all bridges on map
-		public List<CompShipCombatShield> Shields = new List<CompShipCombatShield>(); //workjob, hit detect
+		public List<CompShipHeatShield> Shields = new List<CompShipHeatShield>(); //workjob, hit detect
 		public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>(); //td get this into shipcache?
 		public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
 		public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
@@ -441,8 +441,7 @@ namespace SaveOurShip2
 			{
 				if (MapRootListAll[i].ShipIndex == -1) //skip any with valid index
 				{
-					ShipsOnMap.Add(MapRootListAll[i].thingIDNumber, new SpaceShipCache());
-					ShipsOnMap[MapRootListAll[i].thingIDNumber].RebuildCache(MapRootListAll[i]);
+					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, MapRootListAll[i]);
 				}
 			}
 			List<IntVec3> invalidCells = new List<IntVec3>(); //might happen with wrecks - temp solution
@@ -456,15 +455,12 @@ namespace SaveOurShip2
 						invalidCells.Add(vec);
 						continue;
 					}
-					int mergeToIndex = t.thingIDNumber;
-
-					ShipsOnMap.Add(mergeToIndex, new SpaceShipCache());
-					ShipsOnMap[mergeToIndex].RebuildCache(t as Building);
+					ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, t as Building);
 				}
 			}
 			if (invalidCells.Any())
 			{
-				Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Recaching found ".Colorize(Color.red) + invalidCells.Count + " invalid cells! FIXING.");
+				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Recaching found ".Colorize(Color.red) + invalidCells.Count + " invalid cells! FIXING.");
 				foreach (IntVec3 vec in invalidCells)
 				{
 					MapShipCells.Remove(vec);
@@ -506,8 +502,7 @@ namespace SaveOurShip2
 				ShipsOnMap.Remove(i);
 			}
 			//full rebuild
-			ShipsOnMap.Add(mergeToIndex, new SpaceShipCache());
-			ShipsOnMap[mergeToIndex].RebuildCache(origin);
+			ShipInteriorMod2.WorldComp.AddNewShip(ShipsOnMap, origin);
 		}
 		public void CheckAndMerge(HashSet<IntVec3> cellsToMerge) //faster, attaches as a tumor
 		{
@@ -676,7 +671,7 @@ namespace SaveOurShip2
 			TargetMapComp.ResetCombatVars();
 
 			if (range == 0) //set range DL:1-9
-				DetermineInitialRange();
+				DetermineInitialRange(passingShip != null);
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Enemy range at start: " + Range);
 
 			//callSlowTick = true;
@@ -685,10 +680,12 @@ namespace SaveOurShip2
 		{
 			Map newMap = new Map();
 			List<Building> cores = new List<Building>();
-			SpaceShipDef shipDef = null;
-			SpaceNavyDef navyDef = null;
+			ShipDef shipDef = null;
+			NavyDef navyDef = null;
 			int wreckLevel = 0;
+			bool fakeWreck = false;
 			bool shieldsActive = true;
+			bool isDerelict = false;
 			float CR = 0;
 			float radius = 150f;
 			float theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta - 0.1f + 0.002f * Rand.Range(0, 20);
@@ -702,11 +699,23 @@ namespace SaveOurShip2
 			}
 			else if (passingShip is DerelictShip derelictShip)
 			{
+				isDerelict = true;
 				shipDef = derelictShip.derelictShip;
 				navyDef = derelictShip.spaceNavyDef;
 				faction = derelictShip.shipFaction;
-				wreckLevel = derelictShip.wreckLevel;
-				theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta + (0.05f + 0.002f * Rand.Range(0, 40)) * (Rand.Bool ? 1 : -1);
+				if (derelictShip.wreckLevel == 2 && (derelictShip.derelictShip.neverAttacks && Rand.Chance(0.05f) || Rand.Chance(0.2f))) //fake wreck chance
+				{
+					fakeWreck = true;
+					if (Rand.Chance(0.1f))
+						wreckLevel = 0;
+					else
+						wreckLevel = 1;
+				}
+				else
+				{
+					wreckLevel = derelictShip.wreckLevel;
+					theta = ((WorldObjectOrbitingShip)ShipCombatOriginMap.Parent).Theta + (0.05f + 0.002f * Rand.Range(0, 40)) * (Rand.Bool ? 1 : -1);
+				}
 			}
 			else //using player ship combat rating
 			{
@@ -745,15 +754,15 @@ namespace SaveOurShip2
 				{
 					//find suitable navyDef
 					faction = passingShip.Faction;
-					if (faction != null && DefDatabase<SpaceNavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def) && n.spaceShipDefs.Any(s => s.tradeShip)))
+					if (faction != null && DefDatabase<NavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def) && n.spaceShipDefs.Any(s => s.tradeShip)))
 					{
-						navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
+						navyDef = DefDatabase<NavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
 						if (!fleet)
 							shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.spaceShipDefs, CR, true, true);
 					}
 					else if (!fleet) //navy has no trade ships - use default ones
 					{
-						shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<SpaceShipDef>.AllDefs.ToList(), CR, true, false);
+						shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<ShipDef>.AllDefs.ToList(), CR, true, false);
 					}
 					ShipInteriorMod2.WorldComp.PlayerFactionBounty += 5;
 					attackedTradeship = true;
@@ -763,9 +772,9 @@ namespace SaveOurShip2
 					if (bounty)
 						CR *= (float)Math.Pow(ShipInteriorMod2.WorldComp.PlayerFactionBounty, 0.2);
 					//spawned with faction override - try to find a valid navy
-					if (faction != null && DefDatabase<SpaceNavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def)))
+					if (faction != null && DefDatabase<NavyDef>.AllDefs.Any(n => n.factionDefs.Contains(faction.def)))
 					{
-						navyDef = DefDatabase<SpaceNavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
+						navyDef = DefDatabase<NavyDef>.AllDefs.Where(n => n.factionDefs.Contains(faction.def)).RandomElement();
 						shipDef = ShipInteriorMod2.RandomValidShipFrom(navyDef.spaceShipDefs, CR, false, true);
 					}
 					else if (Rand.Chance((float)ModSettings_SoS.navyShipChance)) //try to spawn a random navy ship
@@ -785,7 +794,7 @@ namespace SaveOurShip2
 					{
 						navyDef = null;
 						if (!fleet)
-							shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<SpaceShipDef>.AllDefs.ToList(), CR, false, false);
+							shipDef = ShipInteriorMod2.RandomValidShipFrom(DefDatabase<ShipDef>.AllDefs.ToList(), CR, false, false);
 					}
 					if (shipDef != null)
 						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.CombatStart"), TranslatorFormattedStringExtensions.Translate("SoS.CombatStartDesc", shipDef.label), LetterDefOf.ThreatBig);
@@ -796,7 +805,7 @@ namespace SaveOurShip2
 			if (passingShip != null)
 			{
 				ShipCombatOriginMap.passingShipManager.RemoveShip(passingShip);
-				if (ModsConfig.IdeologyActive && !(passingShip is DerelictShip))
+				if (ModsConfig.IdeologyActive && !isDerelict)
 					IdeoUtility.Notify_PlayerRaidedSomeone(map.mapPawns.FreeColonists);
 			}
 			if (faction == null)
@@ -806,7 +815,7 @@ namespace SaveOurShip2
 				else
 					faction = Faction.OfAncientsHostile;
 			}
-			if (faction.HasGoodwill && faction.AllyOrNeutralTo(Faction.OfPlayer))
+			if (!isDerelict && faction.HasGoodwill && faction.AllyOrNeutralTo(Faction.OfPlayer))
 				faction.TryAffectGoodwillWith(Faction.OfPlayer, -150);
 
 			//spawn map
@@ -819,6 +828,8 @@ namespace SaveOurShip2
 
 			newMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy);
 
+			//newMap = ShipInteriorMod2.GeneratePocketSpaceMap(mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy, null, map);
+
 			var mp = (WorldObjectOrbitingShip)newMap.Parent;
 			mp.Radius = radius;
 			mp.Theta = theta;
@@ -826,10 +837,17 @@ namespace SaveOurShip2
 			var newMapComp = newMap.GetComponent<ShipMapComp>();
 			if (passingShip is DerelictShip d)
 			{
-				shieldsActive = false;
-				newMapComp.ShipMapState = ShipMapState.isGraveyard;
-				newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
-				Find.LetterStack.ReceiveLetter("SoS.EncounterStart".Translate(), "SoS.EncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
+				if (fakeWreck)
+				{
+					Find.LetterStack.ReceiveLetter("SoS.EncounterAmbush".Translate(), "SoS.EncounterAmbushDesc".Translate(d.derelictShip.label), LetterDefOf.ThreatBig);
+				}
+				else
+				{
+					shieldsActive = false;
+					newMapComp.ShipMapState = ShipMapState.isGraveyard;
+					newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
+					Find.LetterStack.ReceiveLetter("SoS.EncounterStart".Translate(), "SoS.EncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
+				}
 			}
 			newMapComp.ShipFaction = faction;
 			if (wreckLevel != 3)
@@ -889,27 +907,24 @@ namespace SaveOurShip2
 				RangeToKeep = Range;
 			}
 		}
-		private void DetermineInitialRange()
+		private void DetermineInitialRange(bool ambush)
 		{
-			byte detectionLevel = 7;
-			List<Building_ShipSensor> Sensors = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == map).ToList();
-			List<Building_ShipSensor> SensorsEnemy = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == ShipCombatTargetMap).ToList();
-			if (Sensors.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-			{
-				detectionLevel += 2;
-			}
-			else if (Sensors.Where(sensor => sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-				detectionLevel += 1;
+			//advsensors = further, active cloak = closer
+			//nominal should be 320-380
+			//ambush 180-280
+			int detectionLevel = 0;
+			if (ambush)
+				detectionLevel -= 3;
 
+			List<Building_ShipSensor> Sensors = ShipInteriorMod2.WorldComp.Sensors.Where(s => s.Map == map && s.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && s.TryGetComp<CompPowerTrader>().PowerOn).ToList();
+			if (Sensors.Any())
+				detectionLevel += 1;
 			if (Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
 				detectionLevel -= 2;
-			if (SensorsEnemy.Where(sensor => sensor.def == ResourceBank.ThingDefOf.Ship_SensorClusterAdv && sensor.TryGetComp<CompPowerTrader>().PowerOn).Any())
-				detectionLevel -= 2;
-			else if (SensorsEnemy.Any())
-				detectionLevel -= 1;
+
 			if (TargetMapComp.Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
 				detectionLevel -= 2;
-			Range = 180 + detectionLevel * 20 + Rand.Range(0, 40);
+			Range = 300 + (detectionLevel * 20) + Rand.Range(0, 60);
 		}
 
 		//battle
@@ -1173,10 +1188,10 @@ namespace SaveOurShip2
 									VehiclePawn shuttleHit = TargetMapComp.ShuttlesInRange.Where(shuttle => shuttle.Faction != mission.shuttle.Faction).RandomElement();
 									if (Rand.Chance(1f - (shuttleHit.GetStatValue(ResourceBank.VehicleStatDefOf.SoS2CombatDodgeChance) / 100f)))
 									{
-										if (shuttleHit.GetComp<CompShipCombatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 0) //Shield takes the hit
+										if (shuttleHit.GetComp<CompShipHeatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 0) //Shield takes the hit
 										{
 											Projectile dummyProjectile = (Projectile)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Shuttle_Laser);
-											shuttleHit.GetComp<CompShipCombatShield>().HitShield(dummyProjectile);
+											shuttleHit.GetComp<CompShipHeatShield>().HitShield(dummyProjectile);
 											dummyProjectile.Destroy();
 										}
 										else
@@ -1368,7 +1383,7 @@ namespace SaveOurShip2
 							{
 								var ship = ShipsOnMap[index];
 								//ship cant move and fleet fleeing or ship less than x of fleet threat
-								if (!ship.CanMove() && (Retreating || totalThreat * 0.2f > ship.ThreatCurrent))
+								if (!ship.CanMove() && (Retreating || totalThreat * 0.3f > ship.ThreatCurrent))
 								{
 									ShipsToMove.Add(index);
 								}
@@ -1978,13 +1993,12 @@ namespace SaveOurShip2
 		{
 			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
 			SpaceShipCache ship = ShipsOnMap[shipIndex];
-			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
+			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && !ship.IsWreck && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
 			{
 				EndBattle(map, false);
 				return;
 			}
 			Building core = ship.Core;
-			ship.LastBridgeDied = false;
 			//ship.AreaDestroyed.Clear();
 			if (core == null)
 			{
@@ -2030,7 +2044,7 @@ namespace SaveOurShip2
 			TargetMapComp.MapFullStop();
 			foreach (SpaceShipCache ship in OriginMapComp.TargetMapComp.ShipsOnMap.Values)
 			{
-				foreach (CompShipCombatShield s in ship.Shields)
+				foreach (CompShipHeatShield s in ship.Shields)
 				{
 					s.flickComp.SwitchIsOn = false;
 				}
@@ -2198,7 +2212,7 @@ namespace SaveOurShip2
 					mapToSpawnIn = originMapComp.targetMapComp.map;
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
-					Messages.Message("SoSBoardingShuttleArrived".Translate(), MessageTypeDefOf.TaskCompletion);
+					Messages.Message("SoS.BoardingShuttleArrived".Translate(), MessageTypeDefOf.TaskCompletion);
 					CameraJumper.TryJump(mapToSpawnIn.Center, mapToSpawnIn);
 					LandingTargeter.Instance.BeginTargeting(mission.shuttle, mapToSpawnIn, delegate (LocalTargetInfo target, Rot4 rot)
 					{
@@ -2210,7 +2224,7 @@ namespace SaveOurShip2
 				}
 				else
                 {
-					Messages.Message("SoSEnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
+					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
 					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
 					GenSpawn.Spawn(vehicleSkyfaller_Arriving, mapToSpawnIn.GetComponent<ShipMapComp>().shipsOnMap.Values.RandomElement().OuterCells().RandomElement(), mapToSpawnIn);
 				}					

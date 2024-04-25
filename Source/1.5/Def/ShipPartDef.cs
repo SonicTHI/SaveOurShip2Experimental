@@ -6,9 +6,8 @@ using Verse;
 
 namespace SaveOurShip2
 {
-	public class SpaceShipPartDef : Def
+	public class ShipPartDef : Def
 	{
-		public int randomTurretPoints;
 		public List<ThingDef> things;
 	}
 }

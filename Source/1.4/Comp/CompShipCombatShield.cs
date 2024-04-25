@@ -223,7 +223,7 @@ namespace RimWorld
 				action = delegate ()
 				{
 					radiusSet = Props.shieldDefault;
-					powerComp.PowerOutput = -1500;
+					powerComp.PowerOutput = -powerComp.Props.basePowerConsumption;
 					SoundDefOf.Tick_Tiny.PlayOneShotOnCamera(null);
 				},
 				defaultLabel = "SoS.ResetShieldRadius".Translate(),

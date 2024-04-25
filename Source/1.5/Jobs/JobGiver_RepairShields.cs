@@ -26,7 +26,7 @@ namespace SaveOurShip2
 				return ThinkResult.NoJob;
 			if (pawn.RaceProps.IsMechanoid || !pawn.skills.GetSkill(SkillDefOf.Construction).TotallyDisabled)
 			{
-				foreach (CompShipCombatShield shield in mapComp.Shields.Where(s => !(s.parent is VehiclePawn) && s.breakComp.BrokenDown && pawn.CanReserveAndReach(s.parent, PathEndMode.ClosestTouch, Danger.Deadly)))
+				foreach (CompShipHeatShield shield in mapComp.Shields.Where(s => !(s.parent is VehiclePawn) && s.breakComp.BrokenDown && pawn.CanReserveAndReach(s.parent, PathEndMode.ClosestTouch, Danger.Deadly)))
 				{
 					if (fixGiver.FindClosestComponent(pawn) != null)
 						return new ThinkResult(fixGiver.JobOnThing(pawn, shield.parent), this);

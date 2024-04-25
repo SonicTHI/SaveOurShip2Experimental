@@ -835,7 +835,7 @@
 		</placeWorkers>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipHeat">
-				<compClass>SaveOurShip2.CompShipCombatShield</compClass>
+				<compClass>SaveOurShip2.CompShipHeatShield</compClass>
 				<heatMultiplier>0.75</heatMultiplier>
 				<color>(0,255,0)</color>
 			</li>

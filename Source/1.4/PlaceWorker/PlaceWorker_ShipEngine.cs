@@ -14,13 +14,13 @@ namespace RimWorld
 				return AcceptanceReport.WasAccepted;
 			CompEngineTrail engineprev = null;
 			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.ShipsOnMapNew.Values.Any(s => s.Engines.Any()))
+			if (mapComp.ShipsOnMap.Values.Any(s => s.Engines.Any()))
 			{
 				//prefer player owned non wreck ships
-				if (mapComp.ShipsOnMapNew.Values.Any(s => s.Engines.Any() && !s.IsWreck && s.Faction == Faction.OfPlayer))
-					engineprev = mapComp.ShipsOnMapNew.Values.Where(s => s.Engines.Any() && !s.IsWreck && s.Faction == Faction.OfPlayer).First().Engines.First();
-				else if (mapComp.ShipsOnMapNew.Values.Any(s => s.Engines.Any()))
-					engineprev = mapComp.ShipsOnMapNew.Values.First(s => s.Engines.Any()).Engines.First();
+				if (mapComp.ShipsOnMap.Values.Any(s => s.Engines.Any() && !s.IsWreck && s.Faction == Faction.OfPlayer))
+					engineprev = mapComp.ShipsOnMap.Values.Where(s => s.Engines.Any() && !s.IsWreck && s.Faction == Faction.OfPlayer).First().Engines.First();
+				else if (mapComp.ShipsOnMap.Values.Any(s => s.Engines.Any()))
+					engineprev = mapComp.ShipsOnMap.Values.First(s => s.Engines.Any()).Engines.First();
 			}
 			if (engineprev != null && engineprev.parent.Rotation != rot)
 				return (AcceptanceReport)TranslatorFormattedStringExtensions.Translate("SoS.EnginePlaceRotation");

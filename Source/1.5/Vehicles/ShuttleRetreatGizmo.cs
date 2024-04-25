@@ -54,12 +54,12 @@ namespace SaveOurShip2.Vehicles
 			float curY = rect3.yMin;
 			Text.Font = GameFont.Tiny;
 			Text.Anchor = TextAnchor.UpperLeft;
-			Widgets.Label(rect3.x, ref curY, rect3.width, "SoS2RetreatAtHealth".Translate() + ": " + RetreatAtHealth.ToStringPercent());
+			Widgets.Label(rect3.x, ref curY, rect3.width, "SoS.RetreatAtHealth".Translate() + ": " + RetreatAtHealth.ToStringPercent());
 			Text.Font = GameFont.Small;
 			if (Mouse.IsOver(rect2) && !draggingBar)
 			{
 				Widgets.DrawHighlight(rect2);
-				TooltipHandler.TipRegion(rect2, () => "SoS2RetreatAtHealthTip".Translate(), 9493937);
+				TooltipHandler.TipRegion(rect2, () => "SoS.RetreatAtHealthDesc".Translate(), 9493937);
 			}
 			DrawBar(rect2, curY);
 			return new GizmoResult(GizmoState.Clear);

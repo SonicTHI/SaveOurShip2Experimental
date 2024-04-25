@@ -154,7 +154,7 @@ namespace RimWorld
 		public override void PostDeSpawn(Map map)
 		{
 			var mapComp = map.GetComponent<ShipHeatMapComp>();
-			if (mapComp.ShipsOnMapNew.Values.Any(s => !s.IsWreck && s.Engines.Any()))
+			if (mapComp.ShipsOnMap.Values.Any(s => !s.IsWreck && s.Engines.Any()))
 				mapComp.EngineRot = -1;
 			Off();
 			//sustainer = null;

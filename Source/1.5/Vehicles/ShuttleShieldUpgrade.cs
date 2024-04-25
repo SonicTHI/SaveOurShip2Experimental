@@ -30,7 +30,7 @@ namespace SaveOurShip2.Vehicles
         public override void Unlock(VehiclePawn vehicle, bool unlockingAfterLoad)
         {
             //Check if we've already unlocked this... unlocking on load is unpredictable at times
-            if (vehicle.GetComp<CompShipCombatShield>() != null)
+            if (vehicle.GetComp<CompShipHeatShield>() != null)
                 return;
 
             CompVehicleHeatNet net = vehicle.GetComp<CompVehicleHeatNet>();
@@ -46,7 +46,7 @@ namespace SaveOurShip2.Vehicles
             VehicleComponent shieldGenerator = vehicle.statHandler.componentsByKeys["shieldGenerator"];
             shieldGenerator.SetHealthModifier = 50;
             shieldGenerator.health = 50;
-            CompShipCombatShield myShield = new CompShipCombatShield();
+            CompShipHeatShield myShield = new CompShipHeatShield();
             myShield.parent = vehicle;
             myShield.Initialize(shield);
             if (!unlockingAfterLoad)

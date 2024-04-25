@@ -22,7 +22,7 @@ namespace SaveOurShip2
 			List<Building> cores = new List<Building>();
 			try
 			{
-				ShipInteriorMod2.GenerateShip(DefDatabase<SpaceShipDef>.GetNamed("AfterlifeVaultStart"), map, null, Faction.OfPlayer, null, out cores, true, true);
+				ShipInteriorMod2.GenerateShip(DefDatabase<ShipDef>.GetNamed("AfterlifeVaultStart"), map, null, Faction.OfPlayer, null, out cores, true, true);
 			}
 			catch(Exception e)
 			{

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -30,19 +31,20 @@ namespace SaveOurShip2
 
 		public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
 		{
-			base.Destroy(mode);
 			if (mode == DestroyMode.Deconstruct)
 			{
 				if (Rand.Chance(0.4f) || hacked)
 				{
 					Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteMechAttackBase"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteMechAttackBaseDesc"), LetterDefOf.ThreatBig, LookTargets.Invalid);
-					SpawnMechInvasionAtShip();
+					SpawnMechRaidAtMap(ShipInteriorMod2.FindPlayerShipMap(), false);
 				}
 				else if(Rand.Chance(0.95f))
 				{
-					SpawnMechInvasionHere();
+					// This destroyed, can no longer manage repeated mechs spawn (invasion), so send one full-scale raid instead 
+					SpawnMechRaidAtMap(this.Map, true);
 				}
 			}
+			base.Destroy(mode);
 		}
 
 		public override IEnumerable<FloatMenuOption> GetFloatMenuOptions(Pawn pawn)
@@ -75,7 +77,7 @@ namespace SaveOurShip2
 			else if (Rand.Chance(0.05f * (20 - pawn.skills.GetSkill(SkillDefOf.Intellectual).levelInt)))
 			{
 				Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.SatelliteHackFailCritical"), TranslatorFormattedStringExtensions.Translate("SoS.SatelliteHackFailCriticalDesc", pawn.LabelShort), LetterDefOf.ThreatBig, this);
-				SpawnMechInvasionAtShip();
+				SpawnMechRaidAtMap(ShipInteriorMod2.FindPlayerShipMap(), false);
 			}
 			else
 			{
@@ -121,25 +123,31 @@ namespace SaveOurShip2
 				ThingDef.Named("WeatherCancelDevice")
 			};
 			int numTargeters = Rand.RangeInclusive(2, 3);
-			for(int i=0;i<numTargeters;i++)
+			for (int i = 0; i < numTargeters; i++)
 			{
 				GenPlace.TryPlaceThing(ThingMaker.MakeThing(targeters.RandomElement()), this.Position, this.Map, ThingPlaceMode.Near);
 			}
 		}
 
-		public void SpawnMechInvasionAtShip()
+		public void SpawnMechRaidAtMap(Map map, bool spawnStrongRraid)
 		{
-			foreach(Map map in Find.Maps)
+			if (map != null)
 			{
-				if (map.Parent != null && map.Parent is WorldObjectOrbitingShip)
+				IncidentParms parms = new IncidentParms();
+				parms.faction = Faction.OfMechanoids;
+				parms.forced = true;
+				parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeDrop;
+				parms.target = map;
+				if (!spawnStrongRraid)
 				{
-					IncidentParms parms = new IncidentParms();
-					parms.faction = Faction.OfMechanoids;
-					parms.forced = true;
-					parms.raidArrivalMode = PawnsArrivalModeDefOf.EdgeDrop;
-					parms.target = map;
-					Find.Storyteller.TryFire(new FiringIncident(IncidentDefOf.RaidEnemy, null, parms));
+					parms.points = StorytellerUtility.DefaultThreatPointsNow(map);
 				}
+				else
+				{
+					// When spawning raid at satellite map with points based only on player pawns visiting that map, tune up strength to make it real threat, not annoyance. 650 is 2 scythers.
+					parms.points = Mathf.Max(StorytellerUtility.DefaultThreatPointsNow(map) * 3, 650);
+				}
+				Find.Storyteller.TryFire(new FiringIncident(IncidentDefOf.RaidEnemy, null, parms));
 			}
 		}
 
@@ -162,7 +170,7 @@ namespace SaveOurShip2
 						mechLord = LordMaker.MakeNewLord(Faction.OfMechanoids, new LordJob_DefendPoint(this.Position), this.Map);
 					}
 					PawnKindDef pawnKindDef = (from kind in DefDatabase<PawnKindDef>.AllDefsListForReading
-											   where kind.RaceProps.IsMechanoid && kind.combatPower <= 500
+											   where kind.RaceProps.IsMechanoid && kind.combatPower <= 500 && kind.combatPower > 0 && MechClusterGenerator.MechKindSuitableForCluster(kind)
 											   select kind).RandomElementByWeight((PawnKindDef kind) => 1f / kind.combatPower);
 					Pawn pawn = PawnGenerator.GeneratePawn(pawnKindDef);
 					pawn.SetFaction(Faction.OfMechanoids);

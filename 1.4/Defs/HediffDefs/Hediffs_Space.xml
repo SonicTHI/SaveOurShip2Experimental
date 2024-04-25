@@ -427,7 +427,7 @@
 					<DecompressionResistance>1</DecompressionResistance>
 					<HypoxiaResistance>1</HypoxiaResistance>
 					<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
-					<MechFormingSpeed  MayRequire="Ludeon.RimWorld.Biotech">1</MechFormingSpeed>
+					<MechFormingSpeed  MayRequire="Ludeon.RimWorld.Biotech">2</MechFormingSpeed>
 				</statOffsets>
 				<capMods>
 					<li>

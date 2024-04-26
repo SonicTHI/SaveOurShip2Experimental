@@ -14,15 +14,13 @@ namespace SaveOurShip2
         public static void ShuttleLaunched(DefaultTakeoff takeoff)
         {
             CompVehicleHeatNet net = takeoff.vehicle.TryGetComp<CompVehicleHeatNet>();
-            if (net != null)
-                net.RebuildHeatNet();
+            net?.RebuildHeatNet();
         }
 
         public static void ShuttleLanded(DefaultTakeoff landing)
         {
             CompVehicleHeatNet net = landing.vehicle.TryGetComp<CompVehicleHeatNet>();
-            if (net != null)
-                net.RebuildHeatNet();
+            net?.RebuildHeatNet();
         }
     }
 }

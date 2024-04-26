@@ -14,17 +14,17 @@ namespace SaveOurShip2
 		{
 			List<FloatMenuOption> options = new List<FloatMenuOption>();
 			options.AddRange(base.GetFloatMenuOptions(selPawn));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchocat"), delegate { GeneratePawn("Archocat"); }));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchomutt"), delegate { GeneratePawn("Archomutt"); }));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchostrich"), delegate { GeneratePawn("Archostrich"); }));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchoffalo"), delegate { GeneratePawn("Archoffalo"); }));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchospider"), delegate { GeneratePawn("Archospider"); }));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArcholope"), delegate { GeneratePawn("Archolope"); }));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchotortoise"), delegate { GeneratePawn("Archotortoise"); }));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchopanda"), delegate {GeneratePawn("Archopanda"); }));
-			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchojerboa"), delegate { GeneratePawn("Archojerboa"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchocat"), delegate { GeneratePawn("Archocat"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchomutt"), delegate { GeneratePawn("Archomutt"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchostrich"), delegate { GeneratePawn("Archostrich"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchoffalo"), delegate { GeneratePawn("Archoffalo"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchospider"), delegate { GeneratePawn("Archospider"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArcholope"), delegate { GeneratePawn("Archolope"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchotortoise"), delegate { GeneratePawn("Archotortoise"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchopanda"), delegate {GeneratePawn("Archopanda"); }));
+			options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchojerboa"), delegate { GeneratePawn("Archojerboa"); }));
 			if(stackCount>=10)
-				options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("CraftArchothrumbo"), delegate { GeneratePawn("Archothrumbo", 10); }));
+				options.Add(new FloatMenuOption(TranslatorFormattedStringExtensions.Translate("SoS.CraftArchothrumbo"), delegate { GeneratePawn("Archothrumbo", 10); }));
 			return options;
 		}
 

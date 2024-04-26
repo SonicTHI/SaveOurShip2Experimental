@@ -46,10 +46,9 @@ namespace SaveOurShip2.Vehicles
 
         public IEnumerable<FloatMenuOption> FloatMenuMissions(int tile, ShipMapComp mapComp)
 		{
-			//only pods incombat if enemy t/w above, same in CompShuttleLauncher.CompGetGizmosExtra
-			if (mapComp.IsPlayerShipMap && (ModSettings_SoS.easyMode || mapComp.TargetMapComp.MapEnginePower < 0.02f || vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal))
+			if (ShipInteriorMod2.ShuttleCanBoard(mapComp, vehicle))
                 yield return FloatMenuOption_Board(tile);
-
+			//samey in CompShuttleLauncher.CompGetGizmosExtra
 			if (vehicle.CompUpgradeTree != null)
 			{
 				var u = vehicle.CompUpgradeTree.upgrades;

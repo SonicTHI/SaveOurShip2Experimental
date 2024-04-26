@@ -33,8 +33,8 @@ namespace SaveOurShip2
 
 		public Alert_MechanitesInHomeArea()
 		{
-			defaultLabel = "MechanitesInHomeArea".Translate();
-			defaultExplanation = "MechanitesInHomeAreaDesc".Translate();
+			defaultLabel = "SoS.MechanitesInHomeArea".Translate();
+			defaultExplanation = "SoS.MechanitesInHomeAreaDesc".Translate();
 		}
 
 		public override AlertReport GetReport()

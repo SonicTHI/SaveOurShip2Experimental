@@ -101,6 +101,7 @@
     <Compile Include="Alert_MechanitesInHomeArea.cs" />
     <Compile Include="ApparelHolographic.cs" />
     <Compile Include="ArrivalAction\AerialVehicleArrivalAction_ShipAssault.cs" />
+    <Compile Include="Comp\CompShipBay.cs" />
     <Compile Include="Def\ArchoGiftDef.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitImpactSite.cs" />
     <Compile Include="ArrivalAction\CaravanArrivalAction_VisitInsectPillarSite.cs" />
@@ -150,7 +151,7 @@
     <Compile Include="CompProps\CompProps_PowerPlantSolarShip.cs" />
     <Compile Include="CompProps\CompProps_RCSThruster.cs" />
     <Compile Include="CompProps\CompProps_ResearchUnlock.cs" />
-    <Compile Include="CompProps\CompProps_SalvageBay.cs" />
+    <Compile Include="CompProps\CompProps_ShipBay.cs" />
     <Compile Include="CompProps\CompProps_ShipBlueprint.cs" />
     <Compile Include="CompProps\CompProps_ShipCachePart.cs" />
     <Compile Include="CompProps\CompProps_ShipHeat.cs" />
@@ -191,7 +192,7 @@
     <Compile Include="Comp\CompRCSThruster.cs" />
     <Compile Include="Comp\CompRefuelableOverdrivable.cs" />
     <Compile Include="Comp\CompResearchUnlock.cs" />
-    <Compile Include="Comp\CompSalvageBay.cs" />
+    <Compile Include="Comp\CompShipBaySalvage.cs" />
     <Compile Include="Comp\CompShipBlueprint.cs" />
     <Compile Include="Comp\CompShipCachePart.cs" />
     <Compile Include="Comp\CompShipHeatShield.cs" />

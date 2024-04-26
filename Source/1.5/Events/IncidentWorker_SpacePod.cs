@@ -11,7 +11,7 @@ namespace SaveOurShip2
 			Map map = (Map)parms.target;
 			if (map.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.nominal)
 				return false;
-			if (map.listerBuildings.allBuildingsColonist.Any(t => t.TryGetComp<CompShipSalvageBay>() != null))
+			if (map.listerBuildings.allBuildingsColonist.Any(t => t.TryGetComp<CompShipBaySalvage>() != null))
 				return true;
 			return false;
 		}

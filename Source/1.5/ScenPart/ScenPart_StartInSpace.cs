@@ -280,7 +280,7 @@ namespace SaveOurShip2
 				{
 					spawncells.Add(b.InteractionCell);
 				}
-				else if (b.TryGetComp<CompShipSalvageBay>() != null)
+				else if (b.TryGetComp<CompShipBaySalvage>() != null)
 				{
 					salvBayCells.AddRange(b.OccupiedRect().ToList());
 				}

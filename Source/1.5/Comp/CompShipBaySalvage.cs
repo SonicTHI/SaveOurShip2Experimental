@@ -9,16 +9,9 @@ using RimWorld.Planet;
 
 namespace SaveOurShip2
 {
-	public class CompShipSalvageBay : ThingComp
+	public class CompShipBaySalvage : CompShipBay
 	{
 		private ShipMapComp mapComp;
-		public CompProps_SalvageBay Props
-		{
-			get
-			{
-				return (CompProps_SalvageBay)props;
-			}
-		}
 		public int SalvageWeight => Props.weight;
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{

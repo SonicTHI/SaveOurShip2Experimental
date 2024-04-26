@@ -307,33 +307,33 @@
 	<!-- archoanimals -->
 	<SoS.ArchoAnimalSuddenDeath>By some cosmic event an archo animal appeared for a brief moment only to vanish soon after. Maybe it is a sign of things to come.</SoS.ArchoAnimalSuddenDeath>
 	<SoS.ArchoAnimalSporeDeath>Without an Archotech to guide it, {0} has perished.</SoS.ArchoAnimalSporeDeath>
-	<CraftArchocat>Spawn archocat</CraftArchocat>
-	<CraftArchomutt>Spawn archomutt</CraftArchomutt>
-	<CraftArchostrich>Spawn archostrich</CraftArchostrich>
-	<CraftArchoffalo>Spawn archoffalo</CraftArchoffalo>
-	<CraftArchospider>Spawn archospider</CraftArchospider>
-	<CraftArcholope>Spawn archolope</CraftArcholope>
-	<CraftArchotortoise>Spawn archotortoise</CraftArchotortoise>
-	<CraftArchopanda>Spawn archopanda</CraftArchopanda>
-	<CraftArchojerboa>Spawn archojerboa</CraftArchojerboa>
-	<CraftArchothrumbo>Spawn archothrumbo</CraftArchothrumbo>
-	<ArcholifeChangeSkin>Change animal appearance</ArcholifeChangeSkin>
-	<ArcholifeChangeSkinDesc>This creature seems able to change shape at will, but only between a few discrete forms.</ArcholifeChangeSkinDesc>
+	<SoS.CraftArchocat>Spawn archocat</SoS.CraftArchocat>
+	<SoS.CraftArchomutt>Spawn archomutt</SoS.CraftArchomutt>
+	<SoS.CraftArchostrich>Spawn archostrich</SoS.CraftArchostrich>
+	<SoS.CraftArchoffalo>Spawn archoffalo</SoS.CraftArchoffalo>
+	<SoS.CraftArchospider>Spawn archospider</SoS.CraftArchospider>
+	<SoS.CraftArcholope>Spawn archolope</SoS.CraftArcholope>
+	<SoS.CraftArchotortoise>Spawn archotortoise</SoS.CraftArchotortoise>
+	<SoS.CraftArchopanda>Spawn archopanda</SoS.CraftArchopanda>
+	<SoS.CraftArchojerboa>Spawn archojerboa</SoS.CraftArchojerboa>
+	<SoS.CraftArchothrumbo>Spawn archothrumbo</SoS.CraftArchothrumbo>
+	<SoS.ArcholifeChangeSkin>Change animal appearance</SoS.ArcholifeChangeSkin>
+	<SoS.ArcholifeChangeSkinDesc>This creature seems able to change shape at will, but only between a few discrete forms.</SoS.ArcholifeChangeSkinDesc>
 	<!-- mechanites -->
-	<MechanitesInHomeArea>Mechanites!</MechanitesInHomeArea>
-    <MechanitesInHomeAreaDesc>Disassembler mechanites have infested the home area.</MechanitesInHomeAreaDesc>
+	<SoS.MechanitesInHomeArea>Mechanites!</SoS.MechanitesInHomeArea>
+    <SoS.MechanitesInHomeAreaDesc>Disassembler mechanites have infested the home area.</SoS.MechanitesInHomeAreaDesc>
 	<!-- shuttles -->
 	<SoS.ShuttleRetreat>Your shuttle is retreating due to damaged hull!</SoS.ShuttleRetreat>
-	<SoS.EnemyShuttleRetreat>Enemy shuttle is retreating due to damaged hull!</SoS.ShuttleRetreat>
+	<SoS.EnemyShuttleRetreat>Enemy shuttle is retreating due to damaged hull!</SoS.EnemyShuttleRetreat>
 	<SoS.ShuttleRetreatFuel>Your shuttle is retreating due to low fuel!</SoS.ShuttleRetreatFuel>
 	<SoS.EnemyShuttleRetreatFuel>Enemy shuttle is retreating due to low fuel!</SoS.EnemyShuttleRetreatFuel>
 	<SoS.ShuttleOutOfTorps>Your shuttle is out of torpedoes and has begun retreating!</SoS.ShuttleOutOfTorps>
 	<SoS.EnemyShuttleOutOfTorps>Enemy shuttle is out of torpedoes and has begun retreating!</SoS.EnemyShuttleOutOfTorps>
-	<SoSBoardingShuttleArrived>Your boarding shuttle has arrived!</SoSBoardingShuttleArrived>
-	<SoSShuttleReturned>Your shuttle has returned!</SoSShuttleReturned>
-	<SoSEnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoSEnemyBoardingShuttleArrived>
+	<SoS.BoardingShuttleArrived>Your boarding shuttle has arrived!</SoS.BoardingShuttleArrived>
+	<SoS.EnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoS.EnemyBoardingShuttleArrived>
 	<SoS.ShuttleMissionBoarding>Board enemy ship</SoS.ShuttleMissionBoarding>
 	<SoS.ShuttleMissionBoardingDesc>Send this shuttle to board the enemy ship. It will be vulnerable to point-defense weaponry. If the enemy has active engines, the shuttle will take longer to arrive.</SoS.ShuttleMissionBoardingDesc>
+	<SoS.ShuttleMissionBoardingDisabled>Target ship has active engines or no suitable bays to land at.</SoS.ShuttleMissionBoardingDisabled>
 	<SoS.ShuttleMissionBoardingReturn>Return to ship</SoS.ShuttleMissionBoardingReturn>
 	<SoS.ShuttleMissionBoardingReturnDesc>Send this shuttle back to your ship. If enemy point-defense weapons remain online, it will be vulnerable to attack.</SoS.ShuttleMissionBoardingReturnDesc>
 	<SoS.ShuttleMissionIntercept>Intercept</SoS.ShuttleMissionIntercept>

@@ -116,7 +116,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f8";
+		public const string SOS2EXPversion = "V101f9";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -2987,7 +2987,22 @@ namespace SaveOurShip2
 
 		public static bool CanLaunchUnderRoof(VehiclePawn __instance)
 		{
-			return (__instance.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal && __instance.Position.GetThingList(__instance.Map).Any(thing => thing.TryGetComp<CompShipSalvageBay>() != null)) || __instance.Position.GetThingList(__instance.Map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge);
+			var bay = __instance.Position.GetThingList(__instance.Map).Where(t => t.TryGetComp<CompShipBay>() != null).FirstOrDefault();
+			return bay != null && bay.TryGetComp<CompShipBay>().CanLaunchShuttle(__instance);
+		}
+		public static bool ShuttleCanBoard(ShipMapComp mapComp, VehiclePawn vehicle)
+		{
+			//incombat if enemy t/w above x - shuttles if bay is available, else pods only
+			if (ModSettings_SoS.easyMode || mapComp.TargetMapComp.MapEnginePower < 0.02f)
+				return true;
+			if (vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
+				return true;
+			else
+			{
+				if (mapComp.Bays.Where(b => b.CanFitShuttle(vehicle.OccupiedRect())).Any())
+					return true;
+			}
+			return false;
 		}
 	}
 

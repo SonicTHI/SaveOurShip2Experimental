@@ -21,7 +21,7 @@ namespace SaveOurShip2
 						{
 							hasPlating = true;
 						}
-						if (b.TryGetComp<CompShipSalvageBay>() != null)
+						if (b.TryGetComp<CompShipBaySalvage>() != null)
 							return false;
 					}
 				}

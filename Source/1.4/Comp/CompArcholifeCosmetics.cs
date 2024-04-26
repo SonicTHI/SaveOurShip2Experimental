@@ -45,8 +45,8 @@ namespace RimWorld
 					Find.WindowStack.Add(new FloatMenuWithCallback(list));
 				},
 				icon = (Texture2D)graphics[parent.def.defName][whichVersion].MatSouth.mainTexture,
-				defaultLabel = TranslatorFormattedStringExtensions.Translate("ArcholifeChangeSkin"),
-				defaultDesc = TranslatorFormattedStringExtensions.Translate("ArcholifeChangeSkinDesc")
+				defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArcholifeChangeSkin"),
+				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArcholifeChangeSkinDesc")
 			};
 			List<Gizmo> toReturn = new List<Gizmo>();
 			toReturn.Add(setVersion);

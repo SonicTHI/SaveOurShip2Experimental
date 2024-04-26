@@ -25,16 +25,20 @@ namespace SaveOurShip2.Vehicles
 			VehiclePawn vehicle = (VehiclePawn)parent;
 			if (mapComp?.ShipMapState == ShipMapState.inCombat && vehicle.handlers[0].handlers.Count > 0)
 			{
-				//only pods incombat if enemy t/w above, same in ShuttleTakeoff.FloatMenuMissions
 				if (mapComp.IsPlayerShipMap)
-                {
-                    if (ModSettings_SoS.easyMode || mapComp.TargetMapComp.MapEnginePower < 0.02f || vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
-					    yield return CommandBoard(vehicle);
+				{
+					Command_Action board = CommandBoard(vehicle);
+					if (!ShipInteriorMod2.ShuttleCanBoard(mapComp, vehicle))
+                    {
+                        board.Disable();
+						board.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleMissionBoardingDisabled");
+					}
+					yield return board;
 				}
                 else
                     yield return CommandGoHome(vehicle);
-
-                if (vehicle.CompUpgradeTree != null)
+				//samey in ShuttleTakeoff.FloatMenuMissions
+				if (vehicle.CompUpgradeTree != null)
 				{
 					var u = vehicle.CompUpgradeTree.upgrades;
 					bool hasLaser = u.Contains("TurretLaserA") || u.Contains("TurretLaserB") || u.Contains("TurretLaserC");
@@ -42,7 +46,7 @@ namespace SaveOurShip2.Vehicles
 					bool hasTorpedo = u.Contains("TurretTorpedoA") || u.Contains("TurretTorpedoB") || u.Contains("TurretTorpedoC")
 						&& vehicle.carryTracker.GetDirectlyHeldThings().Any(t => t.HasThingCategory(ResourceBank.ThingCategoryDefOf.SpaceTorpedoes));
 					if (hasLaser)
-						yield return CommandIntercept(vehicle);
+                        yield return CommandIntercept(vehicle);
 					if (hasLaser || hasPlasma)
 						yield return CommandStrafe(vehicle);
 					if (hasTorpedo)
@@ -50,7 +54,6 @@ namespace SaveOurShip2.Vehicles
 				}
             }
         }
-
         Command_Action CommandBoard(VehiclePawn vehicle)
         {
             return new Command_Action

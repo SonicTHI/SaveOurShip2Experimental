@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Vehicles;
 using SaveOurShip2.Vehicles;
 using SmashTools;
+using static Vehicles.LandingTargeter;
 
 namespace SaveOurShip2
 {
@@ -2526,9 +2527,9 @@ namespace SaveOurShip2
 		public static void Postfix(Map map, ref IntVec3 __result)
 		{
 			//find first salvagebay
-			Building bay = map.listerBuildings.allBuildingsColonist.FirstOrDefault(b => b.TryGetComp<CompShipSalvageBay>() != null);
+			var bay = map.GetComponent<ShipMapComp>().Bays.FirstOrDefault(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer);
 			if (map.IsSpace() && bay != null)
-				__result = bay.Position;
+				__result = bay.parent.Position;
 		}
 	}
 
@@ -2539,10 +2540,10 @@ namespace SaveOurShip2
 		{
 			if (__instance.mapParent.Map.IsSpace())
 			{
-				IEnumerable<Thing> bays = __instance.mapParent.Map.listerBuildings.allBuildingsColonist.Where(b => b.def == ResourceBank.ThingDefOf.ShipShuttleBay || b.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || b.TryGetComp<CompShipSalvageBay>() != null);
+				IEnumerable<CompShipBay> bays = __instance.mapParent.Map.GetComponent<ShipMapComp>().Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer);
 				if (bays.Any())
 				{
-					__result = bays.RandomElement().Position;
+					__result = bays.RandomElement().parent.Position;
 				}
 			}
 		}
@@ -3711,7 +3712,7 @@ namespace SaveOurShip2
 				
 				if (list != null)
 				{
-					IntVec3 bay = map.listerBuildings.allBuildingsColonist.Where(b => b.def == ResourceBank.ThingDefOf.ShipShuttleBay).Last().Position;
+					IntVec3 bay = map.GetComponent<ShipMapComp>().Bays.Where(b => !(b is CompShipBaySalvage)).Last().parent.Position;
 					foreach (Pawn p in list) //drop off player pawns on ship
 					{
 						Thing t;
@@ -4194,7 +4195,12 @@ namespace SaveOurShip2
     {
 		public static void Postfix(VehicleDef vehicleDef, IntVec3 cell, Map map, ref bool __result)
 		{
-			if ((vehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal && cell.GetThingList(map).Any(thing => thing.TryGetComp<CompShipSalvageBay>() != null)) || cell.GetThingList(map).Any(thing => thing.def == ResourceBank.ThingDefOf.ShipShuttleBay || thing.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge))
+			var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null).FirstOrDefault();
+			if (bay == null)
+				__result = false;
+			//td rounabout way, not sure if there is a better way in Ext_Vehicles
+			CellRect rect = new CellRect(cell.x - vehicleDef.Size.x / 2 + 1, cell.z - vehicleDef.Size.z / 2 + 1, cell.x + vehicleDef.Size.x / 2 + 1, cell.z + vehicleDef.Size.x / 2 + 1);
+			if(!bay.TryGetComp<CompShipBay>().CanFitShuttleAt(cell, rect))
 				__result = false;
         }
     }
@@ -4221,6 +4227,55 @@ namespace SaveOurShip2
 			{
 				if (__instance.vehicle.Spawned && ShipInteriorMod2.CanLaunchUnderRoof(__instance.vehicle))
 					__result = true;
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(LandingTargeter), "GetPosState")]
+	public static class CombatLandingRestictions
+	{
+		public static void Postfix(LandingTargeter __instance, LocalTargetInfo localTargetInfo, ref PositionState __result)
+		{
+			if (__result == PositionState.Invalid)
+				return;
+			//if map in combat and manouvering allow only bays
+			Map map = Current.Game.CurrentMap;
+			var mapComp = map.GetComponent<ShipMapComp>();
+			IntVec3 cell = localTargetInfo.Cell;
+			if (mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttle(__instance.vehicle.OccupiedRect()))) //restrict to bays
+			{
+				var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
+				if (bay != null && bay.TryGetComp<CompShipBay>().CanLandShuttle(__instance.vehicle))
+				{
+					__result = PositionState.Valid;
+					return;
+				}
+				__result = PositionState.Invalid;
+				return;
+			}
+			//normally do not allow landing on ship walls - not sure why this is allowed anyway, might need to further narrow it
+			foreach (IntVec3 v in __instance.vehicle.OccupiedRect())
+			{
+				if (v.Impassable(map))
+				{
+					__result = PositionState.Invalid;
+					return;
+				}
+			}
+		}
+	}
+
+	[HarmonyPatch(typeof(AerialVehicleArrivalModeWorker_TargetedDrop), "VehicleArrived")]
+	public static class UnfogBays
+	{
+		public static void Prefix(AerialVehicleArrivalModeWorker_TargetedDrop __instance, VehiclePawn vehicle, LaunchProtocol launchProtocol, Map map)
+		{
+			var mapComp = map.GetComponent<ShipMapComp>();
+			if (mapComp.ShipMapState != ShipMapState.inCombat || mapComp.IsPlayerShipMap || mapComp.Bays.NullOrEmpty())
+				return;
+			foreach (var bay in mapComp.Bays)
+			{
+				FloodFillerFog.FloodUnfog(bay.parent.Position, map);
 			}
 		}
 	}

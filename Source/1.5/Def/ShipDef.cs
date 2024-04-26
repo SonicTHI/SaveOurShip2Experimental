@@ -117,6 +117,7 @@ namespace SaveOurShip2
 		public bool startingDungeon = false;
 		public bool spaceSite = false; //custom space site
 		public bool tradeShip = false; //trades, requires neverAttacks
+		public bool carrier = false; //carries shuttles aggressively
 		public bool navyExclusive = false; //only navies can use this
 		public bool customPaintjob = false; //prevents simple navy paint scheme
 

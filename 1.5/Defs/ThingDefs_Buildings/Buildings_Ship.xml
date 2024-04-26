@@ -2106,6 +2106,9 @@
 		</costList>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
+			<li Class="SaveOurShip2.CompProps_ShipBay">
+				<maxShuttleSize>5</maxShuttleSize>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
@@ -2155,6 +2158,9 @@
 		</costList>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
+			<li Class="SaveOurShip2.CompProps_ShipBay">
+				<maxShuttleSize>7</maxShuttleSize>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
@@ -2206,7 +2212,9 @@
 		</costList>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
-			<li Class="SaveOurShip2.CompProps_SalvageBay"/>
+			<li Class="SaveOurShip2.CompProps_ShipBay">
+				<compClass>SaveOurShip2.CompShipBaySalvage</compClass>
+			</li>
 		</comps>
 		<placeWorkers>
 			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
@@ -2256,7 +2264,8 @@
 		</costList>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
-			<li Class="SaveOurShip2.CompProps_SalvageBay">
+			<li Class="SaveOurShip2.CompProps_ShipBay">
+				<compClass>SaveOurShip2.CompShipBaySalvage</compClass>
 				<beam>true</beam>
 				<weight>10000</weight>
 			</li>

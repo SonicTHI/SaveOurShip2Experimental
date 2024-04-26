@@ -87,7 +87,7 @@ namespace SaveOurShip2
 		public Dialog_Pirate(TradeShip tradeShip)
 		{
 			this.map = tradeShip.Map;
-			this.numSalvageBays = map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null).Count();
+			this.numSalvageBays = map.GetComponent<ShipMapComp>().Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer).Count();
 			this.tradeShip = tradeShip;
 			transporters = new List<ThingOwner>();
 			for (int i = 0; i < numSalvageBays; i++)
@@ -271,13 +271,13 @@ namespace SaveOurShip2
 		public override void PostClose()
 		{
 			base.PostClose();
-			Thing[] bays = map.listerBuildings.allBuildingsColonist.Where(b => b.TryGetComp<CompShipSalvageBay>() != null).ToArray();
+			List<CompShipBay> bays = map.GetComponent<ShipMapComp>().Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer).ToList();
 			for (int i = 0; i < numSalvageBays; i++)
 			{
 				ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
 				activeDropPodInfo.innerContainer = transporters[i];
 				activeDropPodInfo.leaveSlag = false;
-				DropPodUtility.MakeDropPodAt(bays[i].Position, map, activeDropPodInfo);
+				DropPodUtility.MakeDropPodAt(bays[i].parent.Position, map, activeDropPodInfo);
 			}
 			if (tradeShip.Faction == Faction.OfEmpire)
 				Faction.OfEmpire.TryAffectGoodwillWith(Faction.OfPlayer, -75, false, true, HistoryEventDefOf.AttackedCaravan, null);

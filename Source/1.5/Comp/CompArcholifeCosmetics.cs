@@ -51,8 +51,8 @@ namespace SaveOurShip2
 					Find.WindowStack.Add(new FloatMenuWithCallback(list));
 				},
 				icon = (Texture2D)graphics[parent.def.defName][whichVersion].MatSouth.mainTexture,
-				defaultLabel = TranslatorFormattedStringExtensions.Translate("ArcholifeChangeSkin"),
-				defaultDesc = TranslatorFormattedStringExtensions.Translate("ArcholifeChangeSkinDesc")
+				defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ArcholifeChangeSkin"),
+				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ArcholifeChangeSkinDesc")
 			};
 			yield return setVersion;
 		}

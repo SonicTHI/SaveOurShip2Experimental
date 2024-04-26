@@ -15,7 +15,7 @@ namespace SaveOurShip2
 					return false;
 				foreach (Thing b in vec.GetThingList(map))
 				{
-					if (b.TryGetComp<CompShipSalvageBay>() != null || b.def == ResourceBank.ThingDefOf.ShipShuttleBay || b.def == ResourceBank.ThingDefOf.ShipShuttleBayLarge || b.def.passability == Traversability.PassThroughOnly || b.def.IsBlueprint)
+					if (b.TryGetComp<CompShipBay>() != null || b.def.passability == Traversability.PassThroughOnly || b.def.IsBlueprint)
 						return false;
 				}
 			}

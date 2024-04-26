@@ -371,13 +371,14 @@ namespace SaveOurShip2
 		public List<Building_ShipCloakingDevice> Cloaks = new List<Building_ShipCloakingDevice>(); //td get this into shipcache?
 		public List<Building_ShipTurretTorpedo> TorpedoTubes = new List<Building_ShipTurretTorpedo>(); //workjob
 		public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
+		public List<CompShipBay> Bays = new List<CompShipBay>(); //landing checks
 		public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
 		public int MaxSalvageWeightOnMap()
 		{
 			int total = 0;
-			foreach (Building b in map.listerBuildings.allBuildingsColonist.Where(t => t.TryGetComp<CompShipSalvageBay>() != null))
+			foreach (var b in map.GetComponent<ShipMapComp>().Bays.Where(t => t is CompShipBaySalvage))
 			{
-				total += b.TryGetComp<CompShipSalvageBay>().SalvageWeight;
+				total += ((CompShipBaySalvage)b).SalvageWeight;
 			}
 			return total;
 		}

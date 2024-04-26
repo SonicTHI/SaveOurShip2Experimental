@@ -17,7 +17,7 @@ namespace SaveOurShip2.Vehicles
 
         public override void Refund(VehiclePawn vehicle)
         {
-            vehicle.RemoveComp(vehicle.GetComp<CompShipCombatShield>());
+            vehicle.RemoveComp(vehicle.GetComp<CompShipHeatShield>());
             VehicleComponent shieldGenerator = vehicle.statHandler.components.First(comp => comp.props.key == "shieldGenerator");
             shieldGenerator.SetHealthModifier = 1;
             shieldGenerator.health = 1;

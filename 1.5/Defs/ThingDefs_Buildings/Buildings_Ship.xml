@@ -2214,6 +2214,7 @@
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<compClass>SaveOurShip2.CompShipBaySalvage</compClass>
+				<weight>5000</weight>
 			</li>
 		</comps>
 		<placeWorkers>

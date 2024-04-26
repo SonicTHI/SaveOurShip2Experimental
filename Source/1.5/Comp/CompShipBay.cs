@@ -13,6 +13,7 @@ namespace SaveOurShip2
 	public class CompShipBay : ThingComp
 	{
 		private ShipMapComp mapComp;
+		CellRect occupiedRect;
 		public CompProps_ShipBay Props
 		{
 			get
@@ -22,82 +23,54 @@ namespace SaveOurShip2
 		}
 		public bool CanLaunchShuttle(VehiclePawn vehicle)
 		{
+			if (vehicle.def.Size.x > Props.maxShuttleSize || vehicle.def.Size.z > Props.maxShuttleSize)
+				return false;
 			foreach (IntVec3 v in vehicle.OccupiedRect())
 			{
-				if (!parent.OccupiedRect().Contains(v))
+				if (!occupiedRect.Contains(v))
 					return false;
 			}
 			return true;
 		}
-		public bool CanLandShuttle(VehiclePawn vehicle)
+		public bool CanFitShuttleAt(CellRect occArea)
 		{
-			if (CanFitShuttleAt(vehicle.Position, vehicle.OccupiedRect()))
-			{
-				return true;
-			}
-			return false;
-		}
-		public bool CanFitShuttleAt(IntVec3 pos, CellRect occArea) //we only have square shuttles so simplified, no rot
-		{
-			//if too big
 			if (occArea.Width > Props.maxShuttleSize || occArea.Height > Props.maxShuttleSize)
 				return false;
-			//if 1x1
-			if (occArea.Width == 1 && occArea.Height == 1 && parent.OccupiedRect().Contains(pos) && pos.Impassable(parent.Map))
-				return true;
-			//if not in area
-			IntVec2 halfSize = new IntVec2(occArea.Width / 2 + 1, occArea.Height / 2 + 1);
-			IntVec3 halfSizeBay = new IntVec3(parent.def.Size.x / 2 + 1, 0, parent.def.Size.z / 2 + 1);
-			if (pos.x - halfSize.x < parent.Position.x - halfSizeBay.x)
-				return false;
-			if (pos.z - halfSize.z < parent.Position.z - halfSizeBay.z)
-				return false;
-			if (pos.x + halfSize.x > parent.Position.x + halfSizeBay.x)
-				return false;
-			if (pos.x - halfSize.z > parent.Position.z + halfSizeBay.z)
-				return false;
-			//if occupied
-			foreach (IntVec3 vec in occArea)
+			foreach (IntVec3 v in occArea)
 			{
-				if (!vec.Impassable(parent.Map))
+				if (!occupiedRect.Contains(v) || v.Impassable(parent.Map))
 					return false;
 			}
-			return false;
+			Log.Message("CanFitShuttleAt");
+			return true;
 		}
-		public bool CanFitShuttle(CellRect occArea) //we only have square shuttles so simplified, no rot
+		public bool CanFitShuttleSize(int x, int z) //we only have square shuttles so simplified, no rot
 		{
 			//if too big
-			if (occArea.Width > Props.maxShuttleSize || occArea.Height > Props.maxShuttleSize)
+			if (x > Props.maxShuttleSize || z > Props.maxShuttleSize)
 				return false;
 			//if 1x1
-			if (occArea.Width == 1 && occArea.Height == 1 && parent.OccupiedRect().Any(p => p.Impassable(parent.Map)))
+			if (x == 1 && z == 1 && occupiedRect.Any(p => p.Impassable(parent.Map)))
 				return true;
 			//if not in area
-			IntVec2 halfSize = new IntVec2(occArea.Width / 2 + 1, occArea.Height / 2 + 1);
-			IntVec3 halfSizeBay = new IntVec3(parent.def.Size.x / 2 + 1, 0, parent.def.Size.z / 2 + 1);
-
+			IntVec2 halfSize = new IntVec2(x / 2, z / 2);
+			//find a viable positions for shuttle
 			List<IntVec3> validPos = new List<IntVec3>();
-			foreach (IntVec3 pos in occArea) //find a viable positions for shuttle
+			foreach (IntVec3 pos in occupiedRect.Where(v => v.x >= occupiedRect.minX + halfSize.x && v.z >= occupiedRect.minZ +  halfSize.z && v.x <= occupiedRect.maxX - halfSize.x && v.z <= occupiedRect.maxZ - halfSize.z))
 			{
-				if (pos.x - halfSize.x < parent.Position.x - halfSizeBay.x)
-					continue;
-				if (pos.z - halfSize.z < parent.Position.z - halfSizeBay.z)
-					continue;
-				if (pos.x + halfSize.x > parent.Position.x + halfSizeBay.x)
-					continue;
-				if (pos.x - halfSize.z > parent.Position.z + halfSizeBay.z)
-					continue;
 				validPos.Add(pos);
 			}
-			//check all possible if occupied
+			//check all viable rects if occupied
+			List<IntVec3> invalidPos = new List<IntVec3>();
 			foreach (IntVec3 vec in validPos)
 			{
-				CellRect area = new CellRect(vec.x - halfSize.x, vec.z - halfSize.z, vec.x + halfSize.x, vec.z + halfSize.z);
+				CellRect area = new CellRect(vec.x - halfSize.x, vec.z - halfSize.z, x, z);
 				bool fits = true;
 				foreach (IntVec3 v in area)
 				{
-					if (!v.Impassable(parent.Map))
+					if (invalidPos.Contains(v) || v.Impassable(parent.Map))
 					{
+						invalidPos.Add(v);
 						fits = false;
 						break;
 					}
@@ -112,6 +85,7 @@ namespace SaveOurShip2
 			base.PostSpawnSetup(respawningAfterLoad);
 			mapComp = parent.Map.GetComponent<ShipMapComp>();
 			mapComp.Bays.Add(this);
+			occupiedRect = parent.OccupiedRect();
 		}
 		public override void PostDeSpawn(Map map)
 		{

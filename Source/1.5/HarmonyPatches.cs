@@ -4195,12 +4195,12 @@ namespace SaveOurShip2
     {
 		public static void Postfix(VehicleDef vehicleDef, IntVec3 cell, Map map, ref bool __result)
 		{
-			var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null).FirstOrDefault();
+			var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
 			if (bay == null)
 				__result = false;
 			//td rounabout way, not sure if there is a better way in Ext_Vehicles
-			CellRect rect = new CellRect(cell.x - vehicleDef.Size.x / 2 + 1, cell.z - vehicleDef.Size.z / 2 + 1, cell.x + vehicleDef.Size.x / 2 + 1, cell.z + vehicleDef.Size.x / 2 + 1);
-			if(!bay.TryGetComp<CompShipBay>().CanFitShuttleAt(cell, rect))
+			CellRect rect = new CellRect(cell.x - vehicleDef.Size.x / 2, cell.z - vehicleDef.Size.z / 2, vehicleDef.Size.x, vehicleDef.Size.z);
+			if(!bay.TryGetComp<CompShipBay>().CanFitShuttleAt(rect))
 				__result = false;
         }
     }
@@ -4242,10 +4242,10 @@ namespace SaveOurShip2
 			Map map = Current.Game.CurrentMap;
 			var mapComp = map.GetComponent<ShipMapComp>();
 			IntVec3 cell = localTargetInfo.Cell;
-			if (mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttle(__instance.vehicle.OccupiedRect()))) //restrict to bays
+			if (mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle.def.Size.x, __instance.vehicle.def.Size.z))) //restrict to bays
 			{
 				var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
-				if (bay != null && bay.TryGetComp<CompShipBay>().CanLandShuttle(__instance.vehicle))
+				if (bay != null && bay.TryGetComp<CompShipBay>().CanFitShuttleAt(GenAdj.OccupiedRect(cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size)))
 				{
 					__result = PositionState.Valid;
 					return;
@@ -4270,6 +4270,7 @@ namespace SaveOurShip2
 	{
 		public static void Prefix(AerialVehicleArrivalModeWorker_TargetedDrop __instance, VehiclePawn vehicle, LaunchProtocol launchProtocol, Map map)
 		{
+			Log.Message("UnfogBays"); //td not called at all
 			var mapComp = map.GetComponent<ShipMapComp>();
 			if (mapComp.ShipMapState != ShipMapState.inCombat || mapComp.IsPlayerShipMap || mapComp.Bays.NullOrEmpty())
 				return;

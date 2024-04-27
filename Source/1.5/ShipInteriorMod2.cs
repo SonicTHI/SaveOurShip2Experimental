@@ -195,7 +195,7 @@ namespace SaveOurShip2
 			options.Gap();
 			options.Label("SoS.Settings.Misc".Translate());
 			options.GapLine();
-			options.CheckboxLabeled("SoS.Settings.ShuttleBullshit".Translate(), ref shuttleBullshit, "SoS.Settings.ShuttleBullshit.Desc");
+			options.CheckboxLabeled("SoS.Settings.ShuttleBullshit".Translate(), ref shuttleBullshit, "SoS.Settings.ShuttleBullshit.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.ArchoRemove".Translate(), ref archoRemove, "SoS.Settings.ArchoRemove.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.Debug".Translate(), ref debugMode, "SoS.Settings.Debug.Desc".Translate());

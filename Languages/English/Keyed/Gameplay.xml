@@ -292,6 +292,10 @@
 	<SoS.ArchotechInsanityDesc>Inflict psychic insanity on one pawn (costs {0} field strength)</SoS.ArchotechInsanityDesc>
 	<SoS.ArchotechPsylink>Psylink</SoS.ArchotechPsylink>
 	<SoS.ArchotechPsylinkDesc>Grant a level of psylink to one pawn (costs {0} field strength)</SoS.ArchotechPsylinkDesc>
+	<SoS.ArchotechSoulLink>Link psychic presence</SoS.ArchotechSoulLink>
+	<SoS.ArchotechSoulLinkDesc>Connect one pawn to this archotech spore. If the subject's body is destroyed, the psychic pattern can be directly downloaded into an afterlife casket, exactly as it was before death. (costs {0} field strength)</SoS.ArchotechSoulLinkDesc>
+	<SoS.ArchotechSoulDownload>Download psychic presence ({0})</SoS.ArchotechSoulDownload>
+	<SoS.ArchotechSoulDownloadDesc>Download {0}'s consciousness into an empty afterlife casket.</SoS.ArchotechSoulDownloadDesc>
 	<SoS.ArchotechOptimizeMatter>Optimize matter</SoS.ArchotechOptimizeMatter>
 	<SoS.ArchotechOptimizeMatterDesc>Automatically convert standard hull to archotech hull in a slowly widening radius. This will not affect large structures such as heatsinks or shield generators.</SoS.ArchotechOptimizeMatterDesc>
 	<SoS.ArchotechGiftParticles>Auto gift particles</SoS.ArchotechGiftParticles>
@@ -342,10 +346,11 @@
 	<SoS.ShuttleMissionStrafeDesc>Send this shuttle to strafe the enemy ship with its turrets. It will be vulnerable to point-defense weaponry. If the enemy has active engines, the shuttle will take longer to arrive.\n\nIt will continue its mission until it runs low on fuel or is sufficiently damaged, or you recall it manually.</SoS.ShuttleMissionStrafeDesc>
 	<SoS.ShuttleMissionBomb>Torpedo enemy ship</SoS.ShuttleMissionBomb>
 	<SoS.ShuttleMissionBombDesc>Send this shuttle to fire torpedoes from close range. It will be extremely vulnerable to point-defense weaponry, but its torpedoes will not be. If the enemy has active engines, the shuttle will take longer to arrive.\n\nIt will continue its mission until it runs low on fuel runs out of torpedoes, is sufficiently damaged, or you recall it manually.</SoS.ShuttleMissionBombDesc>
-	<SoS.RecallShuttle>Recall {0} (mission: {1})</SoS.RecallShuttle>
-	<SoS.RecallShuttleDesc>Order this shuttle to return to your ship</SoS.RecallShuttleDesc>
+	<SoS.RecallShuttle>{0} (mission: {1})</SoS.RecallShuttle>
+	<SoS.RecallShuttleDesc>Change this shuttle's mission.</SoS.RecallShuttleDesc>
 	<SoS.RetreatAtHealth>Retreat at shuttle health</SoS.RetreatAtHealth>
-	<SoS.RetreatAtHealthDesc>This shuttle will automatically retreat when its health drops below this percentage</SoS.RetreatAtHealthDesc>
+	<SoS.RetreatAtHealthDesc>This shuttle will automatically retreat when its health drops below this percentage.</SoS.RetreatAtHealthDesc>
+	<SoS.CancelBoarding>Cancel boarding action? Your shuttle will return to your ship.</SoS.CancelBoarding>
 	
 	<!-- 1.4 only -->
 	<SoSShuttles>Shuttles</SoSShuttles>

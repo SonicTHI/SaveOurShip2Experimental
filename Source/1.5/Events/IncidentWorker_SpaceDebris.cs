@@ -13,7 +13,7 @@ namespace SaveOurShip2
 		protected override bool CanFireNowSub(IncidentParms parms)
 		{
 			Map map = (Map)parms.target;
-			if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris) || map.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.nominal)
+			if (map.gameConditionManager.ConditionIsActive(ResourceBank.GameConditionDefOf.SpaceDebris) || map.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.nominal || !map.GetComponent<ShipMapComp>().IsPlayerShipMap)
 				return false;
 			return true;
 		}

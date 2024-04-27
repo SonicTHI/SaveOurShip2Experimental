@@ -7,17 +7,19 @@ using Verse;
 using Verse.Sound;
 using RimWorld.QuestGen;
 using RimWorld;
+using Vehicles;
 
 namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
-	public class Building_ArchotechSpore : Building_ShipBridge
+	public class Building_ArchotechSpore : Building_ShipBridge, IThingHolder //Holds pawns who were psychically linked, and whose bodies were destroyed
 	{
 		private readonly static Graphic eyeGraphic = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Archotech_DeusXMachine_Eye", ShaderDatabase.MetaOverlay, new Vector2(5, 8), Color.white, Color.white);
 		static readonly float fieldCostSoothe = 10f;
 		static readonly float fieldCostShock = 2f;
 		static readonly float fieldCostInsanity = 5f;
 		static readonly float fieldCostPsylink = 25f;
+		static readonly float fieldCostSoulLink = 10f;
 
 		readonly StatDef pillars = StatDef.Named("ArchotechPillarsConnected");
 		public float Mood => Consciousness == null ? 1 : Mathf.Clamp(Consciousness.needs.mood.CurLevel * 2, 0, 2); //1 is neutral, 2 is super happy, 0 is MURDER
@@ -28,6 +30,9 @@ namespace SaveOurShip2
 		bool ideoCrisis = false;
 		public bool newSpore = false;
 		int MeditationTicks = 0;
+
+		public List<Pawn> linkedPawns = new List<Pawn>();
+		public ThingOwner<Pawn> soulsHeld = new ThingOwner<Pawn>();
 
 		Pawn Consciousness => ConsciousnessComp.Consciousness;
 		CompBuildingConsciousness ConsciousnessComp
@@ -347,12 +352,34 @@ namespace SaveOurShip2
 			Scribe_Values.Look<bool>(ref newSpore, "NewSpore");
 			Scribe_Values.Look<bool>(ref ideoCrisis, "IdeoCrisis");
 			Scribe_Values.Look<bool>(ref GiftParticles, "GiftParticles");
+			Scribe_Collections.Look<Pawn>(ref linkedPawns, "LinkedSouls", LookMode.Reference);
+			Scribe_Deep.Look(ref soulsHeld, "SoulsHeld", this);
 		}
 
 		public override string GetInspectString()
 		{
 			string text = base.GetInspectString();
 			text += "\nMood: " + Mathf.Round(Mood * 50f) + "\nPsychic field strength: "+fieldStrength;
+			if (linkedPawns.Count > 0)
+			{
+				text += "\nLinked: ";
+				for(int i=0;i<linkedPawns.Count;i++)
+                {
+					text += linkedPawns[i];
+					if (i < linkedPawns.Count - 1)
+						text += ", ";
+                }
+			}
+			if (soulsHeld.Count > 0)
+			{
+				text += "\nStored: ";
+				for (int i = 0; i < soulsHeld.Count; i++)
+				{
+					text += soulsHeld[i];
+					if (i < soulsHeld.Count - 1)
+						text += ", ";
+				}
+			}
 			return text;
 		}
 
@@ -506,7 +533,7 @@ namespace SaveOurShip2
 				}
 				giz.Add(insaneInTheBrain);
 			}
-			if (ModsConfig.RoyaltyActive && Find.ResearchManager.GetProgress(ResourceBank.ResearchProjectDefOf.ArchotechPsylink) >= ResourceBank.ResearchProjectDefOf.ArchotechPsylink.CostApparent)
+			if (ModsConfig.RoyaltyActive && ResourceBank.ResearchProjectDefOf.ArchotechPsylink.IsFinished)
 			{
 				Command_Action formPsylink = new Command_Action
 				{
@@ -546,7 +573,91 @@ namespace SaveOurShip2
 				}
 				giz.Add(formPsylink);
 			}
+			if (ResourceBank.ResearchProjectDefOf.ArchotechPsychicSoulLink.IsFinished)
+            {
+				Command_Action linkSoul = new Command_Action
+				{
+					action = delegate
+					{
+						List<FloatMenuOption> options = new List<FloatMenuOption>();
+						foreach (Map map in Find.Maps)
+						{
+							FloatMenuOption op = new FloatMenuOption(map.Parent.Label, delegate {
+								CameraJumper.TryJump(Position, map);
+								Find.Targeter.BeginTargeting(TargetingParameters.ForAttackAny(), delegate (LocalTargetInfo target) {
+									if (target.HasThing && target.Thing is Pawn p && p.RaceProps.Humanlike && !linkedPawns.Contains(p))
+									{
+										linkedPawns.Add(p);
+										fieldStrength -= fieldCostSoulLink;
+										SoundDefOf.PsychicPulseGlobal.PlayOneShotOnCamera(Find.CurrentMap);
+										FleckMaker.Static(Position, Map, FleckDefOf.PsycastAreaEffect, 10f);
+									}
+								});
+							});
+							options.Add(op);
+						}
+						if (options.Count > 0)
+						{
+							FloatMenu menu = new FloatMenu(options);
+							Find.WindowStack.Add(menu);
+						}
+					},
+					defaultLabel = "SoS.ArchotechSoulLink".Translate(),
+					defaultDesc = "SoS.ArchotechSoulLinkDesc".Translate(fieldCostSoulLink),
+					icon = ContentFinder<Texture2D>.Get("UI/ArchoTechUpload")
+				};
+				if (fieldStrength < fieldCostSoulLink)
+                {
+					linkSoul.disabled = true;
+					linkSoul.disabledReason = "SoS.ArchotechFieldStrengthLow".Translate();
+				}
+				giz.Add(linkSoul);
 
+				foreach(Pawn soul in soulsHeld)
+                {
+					Command_Action_PawnDrawer downloadSoul = new Command_Action_PawnDrawer
+					{
+						action = delegate
+						{
+							List<FloatMenuOption> options = new List<FloatMenuOption>();
+							foreach (Map map in Find.Maps)
+							{
+								FloatMenuOption op = new FloatMenuOption(map.Parent.Label, delegate {
+									CameraJumper.TryJump(Position, map);
+									Find.Targeter.BeginTargeting(TargetingParameters.ForAttackAny(), delegate (LocalTargetInfo target) {
+										if (target.HasThing && target.Thing is Building b)
+										{
+											CompBuildingConsciousness consc = b.GetComp<CompBuildingConsciousness>();
+											if (consc != null && consc.Consciousness == null)
+											{
+
+												consc.InstallConsciousness(soul);
+												consc.parent.DirtyMapMesh(consc.parent.Map);
+												if (consc.Consciousness == soul) //Safety check
+												{
+													soulsHeld.Remove(soul);
+													linkedPawns.Add(soul);
+												}
+											}
+										}
+									});
+								});
+								options.Add(op);
+							}
+							if (options.Count > 0)
+							{
+								FloatMenu menu = new FloatMenu(options);
+								Find.WindowStack.Add(menu);
+							}
+						},
+						defaultLabel = "SoS.ArchotechSoulDownload".Translate(soul),
+						defaultDesc = "SoS.ArchotechSoulDownloadDesc".Translate(soul),
+						pawn = soul,
+						groupable = false
+                    };
+					giz.Add(downloadSoul);
+                }
+            }
 
 			if (Consciousness != null) //gifting
 			{
@@ -1044,7 +1155,7 @@ namespace SaveOurShip2
 			}
 			builder.AppendLine();
 			builder.AppendLine(GameVictoryUtility.InMemoryOfSection());
-			builder.AppendLine("Save Our Ship 2 was developed by Kentington, Thain and SonicTHI");
+			builder.AppendLine("Save Our Ship 2 was developed by Kentington, Thain, and SonicTHI");
 			builder.AppendLine();
 			builder.AppendLine("Special thanks to Owlchemist for his code contributions.");
 			builder.AppendLine();
@@ -1060,5 +1171,16 @@ namespace SaveOurShip2
 			ShipInteriorMod2.WorldComp.SoSWin = true;
 			GameVictoryUtility.ShowCredits(builder.ToString(), null);
 		}
-	}
+
+        public void GetChildHolders(List<IThingHolder> outChildren)
+        {
+			foreach (Pawn pawn in soulsHeld)
+				outChildren.Add(pawn);
+        }
+
+        public ThingOwner GetDirectlyHeldThings()
+        {
+			return soulsHeld;
+        }
+    }
 }

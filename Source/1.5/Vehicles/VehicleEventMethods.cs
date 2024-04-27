@@ -15,6 +15,11 @@ namespace SaveOurShip2
         {
             CompVehicleHeatNet net = takeoff.vehicle.TryGetComp<CompVehicleHeatNet>();
             net?.RebuildHeatNet();
+            if (((ShuttleTakeoff)takeoff).TempMissionRef != null)
+            {
+                ((ShuttleTakeoff)takeoff).TempMissionRef.liftedOffYet = true;
+                ((ShuttleTakeoff)takeoff).TempMissionRef = null;
+            }
         }
 
         public static void ShuttleLanded(DefaultTakeoff landing)

@@ -71,6 +71,7 @@ namespace SaveOurShip2
 		public static Texture2D PowerTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.45f, 0.425f, 0.1f));
 		public static Texture2D HeatTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.5f, 0.1f, 0.1f));
 		public static Texture2D DepletionTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.37f, 0.37f, 0.37f));
+		public static Texture2D ShuttleShieldTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.1f, 0.7f, 0.7f));
 		public static Texture2D Splash = ContentFinder<Texture2D>.Get("SplashScreen");
 		public static Texture2D virtualPhoto = new Texture2D(2048, 2048, TextureFormat.RGB24, false);
 		public static RenderTexture target = new RenderTexture(2048, 2048, 16);
@@ -190,6 +191,7 @@ namespace SaveOurShip2
 			public static JobDef HackAirlock;
 			public static JobDef BreachAirlock;
 			public static JobDef DefendBreacher;
+			public static JobDef ManShipBridge;
 		}
 
 		[DefOf]
@@ -224,6 +226,7 @@ namespace SaveOurShip2
 			public static ResearchProjectDef ArchotechPsylink;
 			public static ResearchProjectDef ArchotechBroadManipulation;
 			public static ResearchProjectDef ArchotechExotics;
+			public static ResearchProjectDef ArchotechPsychicSoulLink;
 		}
 
 		[DefOf]

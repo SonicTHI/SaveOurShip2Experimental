@@ -188,6 +188,19 @@
 		<researchViewY>3</researchViewY>
 	</ResearchProjectDef>
 	
+	<ResearchProjectDef ParentName="ArchotechResearchProjectBase">
+		<defName>ArchotechPsychicSoulLink</defName>
+		<label>psychic preservation</label>
+		<description>Link individuals' psychic presence to your archotech spore, allowing it to download them into afterlife caskets even if their bodies have been destroyed.</description>
+		<baseCost>6000</baseCost>
+		<prerequisites>
+			<li>ArchotechPsychicField</li>
+			<li>ShipAvatarCasket</li>
+		</prerequisites>
+		<researchViewX>3</researchViewX>
+		<researchViewY>4.5</researchViewY>
+	</ResearchProjectDef>
+	
   <ResearchProjectDef ParentName="ArchotechResearchProjectBase">
     <defName>ArchotechExotics</defName>
     <label>exotic particles</label>

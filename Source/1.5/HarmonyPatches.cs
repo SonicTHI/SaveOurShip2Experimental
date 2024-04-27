@@ -19,6 +19,7 @@ using Vehicles;
 using SaveOurShip2.Vehicles;
 using SmashTools;
 using static Vehicles.LandingTargeter;
+using static SaveOurShip2.ShipMapComp;
 
 namespace SaveOurShip2
 {
@@ -127,6 +128,18 @@ namespace SaveOurShip2
 				DrawPower(screenHalf - 220, baseY, bridge);
 				DrawHeat(screenHalf - 415, baseY, bridge);
 			}
+			foreach(ShuttleMissionData mission in playerMapComp.ShuttleMissions)
+            {
+				baseY += 45;
+				string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
+				int strSize = 5 + str.Length * 8;
+				Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 395 + strSize, 35);
+				Widgets.DrawMenuSection(rect2);
+				Widgets.Label(rect2.ContractedBy(7), str);
+
+				DrawShuttleHealth(screenHalf - 220, baseY, mission.shuttle);
+				DrawShuttleHeat(screenHalf - 415, baseY, mission.shuttle);
+			}
 			//no UI OOC bellow
 			var enemyMapComp = playerMapComp.TargetMapComp;
 			if (enemyMapComp == null || enemyMapComp.ShipMapState != ShipMapState.inCombat)
@@ -145,6 +158,18 @@ namespace SaveOurShip2
 
 				DrawHeat(screenHalf + 455, baseY, bridge);
 				DrawPower(screenHalf + 645, baseY, bridge);
+			}
+			foreach (ShuttleMissionData mission in enemyMapComp.ShuttleMissions)
+			{
+				baseY += 45;
+				string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
+				int strSize = 5 + str.Length * 8;
+				Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 395 + strSize, 35);
+				Widgets.DrawMenuSection(rect2);
+				Widgets.Label(rect2.ContractedBy(7), str);
+
+				DrawShuttleHealth(screenHalf + 455 + strSize, baseY, mission.shuttle);
+				DrawShuttleHeat(screenHalf + 645 + strSize, baseY, mission.shuttle);
 			}
 
 			//range bar
@@ -273,6 +298,34 @@ namespace SaveOurShip2
 				Widgets.Label(rect, "Heat: " + Mathf.Floor(bridge.heat) + " / " + bridge.heatCap);
 			else
 				Widgets.Label(rect, "<color=red>Heat: N/A</color>");
+		}
+		private static void DrawShuttleHealth(float offset, float baseY, VehiclePawn shuttle)
+		{
+			Rect rect = new Rect(offset - 15, baseY - 40, 200, 35);
+			Widgets.FillableBar(rect.ContractedBy(6), shuttle.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity), ResourceBank.HeatTex);
+			Text.Font = GameFont.Small;
+			rect.y += 7;
+			rect.x = offset;
+			rect.height = Text.LineHeight;
+			Widgets.Label(rect, "Hull: "+Mathf.Round(shuttle.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) * 100f)+"%");
+		}
+		private static void DrawShuttleHeat(float offset, float baseY, VehiclePawn shuttle)
+		{
+			Rect rect = new Rect(offset - 15, baseY - 40, 200, 35);
+			CompVehicleHeatNet heatNet = shuttle.GetComp<CompVehicleHeatNet>();
+			float heatMax = 0;
+			float heatCurrent = 0;
+			if(heatNet!=null)
+            {
+				heatMax = heatNet.myNet.StorageCapacity;
+				heatCurrent = heatNet.myNet.StorageUsed;
+            }
+			Widgets.FillableBar(rect.ContractedBy(6), heatMax == 0 ? 0 : 1f - (heatCurrent / heatMax), ResourceBank.ShuttleShieldTex);
+			Text.Font = GameFont.Small;
+			rect.y += 7;
+			rect.x = offset;
+			rect.height = Text.LineHeight;
+			Widgets.Label(rect, "Shields: " + (heatMax == 0 ? "N/A" : (Mathf.Round((1f - heatCurrent/heatMax)*100f) + "%")));
 		}
 		public static Rect FillableBarWithDepletion(Rect rect, float fillPercent, float fillDepletion, Texture2D fillTex, Texture2D depletionTex)
 		{
@@ -4238,8 +4291,19 @@ namespace SaveOurShip2
 		{
 			if (__result == PositionState.Invalid)
 				return;
-			//if map in combat and manouvering allow only bays
 			Map map = Current.Game.CurrentMap;
+			//Avoid impassable tiles
+			foreach(IntVec3 v in GenAdj.OccupiedRect(localTargetInfo.Cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size))
+			{
+				if (v.Impassable(map) || !v.Standable(map))
+				{
+					__result = PositionState.Invalid;
+					return;
+				}
+			}
+			//If using Restricted Boarding, limit to bays. Otherwise, ignore this nonsense.
+			if (!ModSettings_SoS.shuttleBullshit)
+				return;
 			var mapComp = map.GetComponent<ShipMapComp>();
 			IntVec3 cell = localTargetInfo.Cell;
 			if (mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle.def.Size.x, __instance.vehicle.def.Size.z))) //restrict to bays
@@ -4253,17 +4317,42 @@ namespace SaveOurShip2
 				__result = PositionState.Invalid;
 				return;
 			}
-			//normally do not allow landing on ship walls - not sure why this is allowed anyway, might need to further narrow it
-			foreach (IntVec3 v in __instance.vehicle.OccupiedRect())
-			{
-				if (v.Impassable(map))
-				{
-					__result = PositionState.Invalid;
-					return;
-				}
-			}
+			
 		}
 	}
+
+	[HarmonyPatch(typeof(LandingTargeter), "ProcessInputEvents")]
+	public static class ReturnBoardingParty
+    {
+		public static ShuttleMissionData missionData = null;
+
+		public static bool Prefix(LandingTargeter __instance)
+        {
+			if (missionData==null)
+				return true;
+			if ((Event.current.type == EventType.MouseDown && Event.current.button == 1) || KeyBindingDefOf.Cancel.KeyDownEvent)
+            {
+				if(missionData.mission==ShuttleMission.BOARD)
+                {
+					Event.current.Use();
+					Dialog_MessageBox messageBox = Dialog_MessageBox.CreateConfirmation("SoS.CancelBoarding".Translate(), delegate
+					{
+						ShipMapComp originMapComp = ShipInteriorMod2.FindPlayerShipMap().GetComponent<ShipMapComp>();
+						ShuttleMissionData newMission = originMapComp.RegisterShuttleMission(missionData.shuttle, ShuttleMission.RETURN);
+						newMission.rangeTraveled = originMapComp.Range;
+						newMission.liftedOffYet = true;
+						__instance.StopTargeting();
+					}, false, null, WindowLayer.Dialog);
+					Find.WindowStack.Add(messageBox);
+				}
+				//Otherwise, returning can't be canceled
+				SoundDefOf.ClickReject.PlayOneShotOnCamera();
+				Event.current.Use();
+				return false;
+            }
+			return true;
+        }
+    }
 
 	[HarmonyPatch(typeof(AerialVehicleArrivalModeWorker_TargetedDrop), "VehicleArrived")]
 	public static class UnfogBays
@@ -4361,6 +4450,61 @@ namespace SaveOurShip2
 				net.RebuildHeatNet();
 		}
     }
+
+	[HarmonyPatch(typeof(Corpse), "PostCorpseDestroy")]
+	public static class PreserveSoul
+    {
+		public static void Postfix(Pawn pawn)
+        {
+			foreach (Map map in Find.Maps)
+			{
+				ShipMapComp comp = map.GetComponent<ShipMapComp>();
+				if (comp != null)
+				{
+					foreach (CompBuildingConsciousness sporeConsc in comp.Spores)
+					{
+						Building_ArchotechSpore spore = sporeConsc.parent as Building_ArchotechSpore;
+						if (spore == null || spore.linkedPawns == null)
+							continue;
+						if (spore.linkedPawns.Contains(pawn))
+						{
+							spore.soulsHeld.TryAddOrTransfer(pawn);
+							spore.linkedPawns.Remove(pawn);
+						}
+					}
+				}
+			}
+		}
+    }
+
+	[HarmonyPatch(typeof(Pawn), "Destroy")]
+	public static class PreserveSoul2
+	{
+		public static void Postfix(Pawn __instance, DestroyMode mode)
+		{
+			if (mode != DestroyMode.KillFinalize)
+			{
+				foreach (Map map in Find.Maps)
+				{
+					ShipMapComp comp = map.GetComponent<ShipMapComp>();
+					if (comp != null)
+					{
+						foreach (CompBuildingConsciousness sporeConsc in comp.Spores)
+						{
+							Building_ArchotechSpore spore = sporeConsc.parent as Building_ArchotechSpore;
+							if (spore == null || spore.linkedPawns == null)
+								continue;
+							if (spore.linkedPawns.Contains(__instance))
+							{
+								spore.soulsHeld.TryAddOrTransfer(__instance);
+								spore.linkedPawns.Remove(__instance);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
 	//TEMPORARY until I talk to Phil and see how to fix this properly
 	[HarmonyPatch(typeof(CompUpgradeTree), "CompTickRare")]

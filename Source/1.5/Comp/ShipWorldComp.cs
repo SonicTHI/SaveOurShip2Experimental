@@ -17,6 +17,7 @@ namespace SaveOurShip2
 		public bool renderedThatAlready = false;
 		public List<Building_ShipSensor> Sensors = new List<Building_ShipSensor>();
 		public bool MoveShipFlag = false;
+		public int nextUniqueMissionID = 0;
 
 		public ShipWorldComp(World world) : base(world)
 		{
@@ -83,6 +84,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look<int>(ref PlayerFactionBounty, "PlayerFactionBounty", 0);
 			Scribe_Values.Look<int>(ref LastSporeGiftTick, "LastSporeGiftTick", 0);
 			Scribe_Values.Look<bool>(ref startedEndgame, "StartedEndgame");
+			Scribe_Values.Look<int>(ref nextUniqueMissionID, "UniqueMissionID");
 
 			if (Scribe.mode != LoadSaveMode.PostLoadInit)
 			{

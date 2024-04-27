@@ -220,7 +220,7 @@
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
 		<statBases>
 			<MaxHitPoints>80</MaxHitPoints>
-			<WorkToBuild>35</WorkToBuild>
+			<WorkToBuild>50</WorkToBuild>
 			<Flammability>0.7</Flammability>
 			<Beauty>-2</Beauty>
 		</statBases>

@@ -4242,7 +4242,7 @@ namespace SaveOurShip2
 			Map map = Current.Game.CurrentMap;
 			var mapComp = map.GetComponent<ShipMapComp>();
 			IntVec3 cell = localTargetInfo.Cell;
-			if (mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle.def.Size.x, __instance.vehicle.def.Size.z))) //restrict to bays
+			if (mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero)) //restrict to bays
 			{
 				var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
 				if (bay != null && bay.TryGetComp<CompShipBay>().CanFitShuttleAt(GenAdj.OccupiedRect(cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size)))
@@ -4261,22 +4261,6 @@ namespace SaveOurShip2
 					__result = PositionState.Invalid;
 					return;
 				}
-			}
-		}
-	}
-
-	[HarmonyPatch(typeof(AerialVehicleArrivalModeWorker_TargetedDrop), "VehicleArrived")]
-	public static class UnfogBays
-	{
-		public static void Prefix(AerialVehicleArrivalModeWorker_TargetedDrop __instance, VehiclePawn vehicle, LaunchProtocol launchProtocol, Map map)
-		{
-			Log.Message("UnfogBays"); //td not called at all
-			var mapComp = map.GetComponent<ShipMapComp>();
-			if (mapComp.ShipMapState != ShipMapState.inCombat || mapComp.IsPlayerShipMap || mapComp.Bays.NullOrEmpty())
-				return;
-			foreach (var bay in mapComp.Bays)
-			{
-				FloodFillerFog.FloodUnfog(bay.parent.Position, map);
 			}
 		}
 	}

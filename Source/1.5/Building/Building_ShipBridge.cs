@@ -508,6 +508,19 @@ namespace SaveOurShip2
 						};
 						yield return changeShuttleMission;
                     }
+					if (Prefs.DevMode)
+					{
+						Command_Action forceBoard = new Command_Action
+						{
+							groupable = false,
+							action = delegate
+							{
+								mapComp.TargetMapComp.hasAnyPartDetached = true;
+							},
+							defaultLabel = "Dev: Start enemy boarding",
+						};
+						yield return forceBoard;
+					}
 				}
 				//intarget
 				/*else if (mapComp.HasTarget) //end target

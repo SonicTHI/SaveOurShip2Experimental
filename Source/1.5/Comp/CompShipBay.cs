@@ -38,7 +38,7 @@ namespace SaveOurShip2
 				return false;
 			foreach (IntVec3 v in occArea)
 			{
-				if (!occupiedRect.Contains(v) || v.Impassable(parent.Map))
+				if (!occupiedRect.Contains(v) || !v.Standable(parent.Map))
 					return false;
 			}
 			return true;

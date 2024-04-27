@@ -149,8 +149,8 @@ namespace SaveOurShip2
 					PointDefenseMode = false;
 				Command_Toggle togglePD = new Command_Toggle
 				{
-					defaultLabel = TranslatorFormattedStringExtensions.Translate("TogglePointDefense"),
-					defaultDesc = TranslatorFormattedStringExtensions.Translate("TogglePointDefenseDesc"),
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.TogglePointDefense"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.TogglePointDefenseDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/PointDefenseMode"),
 					toggleAction = delegate
 					{

@@ -48,7 +48,7 @@ namespace SaveOurShip2.Vehicles
 
         public IEnumerable<FloatMenuOption> FloatMenuMissions(int tile, ShipMapComp mapComp)
 		{
-			if (ShipInteriorMod2.ShuttleCanBoard(mapComp, vehicle))
+			if (ShipInteriorMod2.ShuttleCanBoard(mapComp.TargetMapComp, vehicle))
                 yield return FloatMenuOption_Board(tile);
 			//samey in CompShuttleLauncher.CompGetGizmosExtra
 			if (vehicle.CompUpgradeTree != null)

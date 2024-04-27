@@ -75,7 +75,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
 
 			Scribe_Values.Look(ref easyMode, "easyMode", false);
-			Scribe_Values.Look(ref shuttleBullshit, "shuttleBullshit", false);
+			Scribe_Values.Look(ref respectPhysics, "respectPhysics", true);
 			//Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
@@ -98,7 +98,7 @@ namespace SaveOurShip2
 			fleetChance = 0.3;
 		public static bool
 			easyMode = false,
-			shuttleBullshit = false,
+			respectPhysics = true,
 			//useVacuumPathfinding = true,
 			renderPlanet = false,
 			useSplashScreen = true,
@@ -118,7 +118,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f11";
+		public const string SOS2EXPversion = "V101f12";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -195,7 +195,7 @@ namespace SaveOurShip2
 			options.Gap();
 			options.Label("SoS.Settings.Misc".Translate());
 			options.GapLine();
-			options.CheckboxLabeled("SoS.Settings.ShuttleBullshit".Translate(), ref shuttleBullshit, "SoS.Settings.ShuttleBullshit.Desc".Translate());
+			options.CheckboxLabeled("SoS.Settings.RespectPhysics".Translate(), ref respectPhysics, "SoS.Settings.RespectPhysics.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.ArchoRemove".Translate(), ref archoRemove, "SoS.Settings.ArchoRemove.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.Debug".Translate(), ref debugMode, "SoS.Settings.Debug.Desc".Translate());
@@ -2884,16 +2884,16 @@ namespace SaveOurShip2
 			var bay = __instance.Position.GetThingList(__instance.Map).Where(t => t.TryGetComp<CompShipBay>() != null).FirstOrDefault();
 			return bay != null && bay.TryGetComp<CompShipBay>().CanLaunchShuttle(__instance);
 		}
-		public static bool ShuttleCanBoard(ShipMapComp mapComp, VehiclePawn vehicle)
+		public static bool ShuttleCanBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
 		{
 			//incombat if enemy t/w above x - shuttles if bay is available, else pods only
-			if (!ModSettings_SoS.shuttleBullshit || mapComp.TargetMapComp.MapEnginePower < 0.02f)
+			if (!ModSettings_SoS.respectPhysics || targetMapComp.MapEnginePower < 0.02f)
 				return true;
 			if (vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
 				return true;
 			else
 			{
-				if (mapComp.Bays.Any(b => b.CanFitShuttleSize(vehicle) != IntVec3.Zero))
+				if (targetMapComp.Bays.Any(b => b.CanFitShuttleSize(vehicle) != IntVec3.Zero))
 					return true;
 			}
 			return false;

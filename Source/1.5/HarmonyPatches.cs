@@ -4297,18 +4297,6 @@ namespace SaveOurShip2
 			if (__result == PositionState.Invalid)
 				return;
 			Map map = Current.Game.CurrentMap;
-			//Avoid impassable tiles
-			foreach(IntVec3 v in GenAdj.OccupiedRect(localTargetInfo.Cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size))
-			{
-				if (v.Impassable(map) || !v.Standable(map))
-				{
-					__result = PositionState.Invalid;
-					return;
-				}
-			}
-			//If using Restricted Boarding, limit to bays. Otherwise, ignore this nonsense.
-			if (!ModSettings_SoS.shuttleBullshit)
-				return;
 			var mapComp = map.GetComponent<ShipMapComp>();
 			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower >= 0.02f && mapComp.TargetMapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero)) //restrict to bays
 			{
@@ -4322,7 +4310,6 @@ namespace SaveOurShip2
 				__result = PositionState.Invalid;
 				return;
 			}
-			
 		}
 	}
 

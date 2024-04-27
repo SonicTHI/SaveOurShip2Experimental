@@ -2234,26 +2234,44 @@ namespace SaveOurShip2
 					},
 					null, null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
 				}
-				else
+				else //enemy shuttles - never returns?
 				{
 					mapToSpawnIn = originMapComp.map;
 					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
 					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
-					if (mapToSpawnIn == originMapComp.map)
+
+					IntVec3 vec = IntVec3.Zero;
+					foreach (var bay in Bays)
 					{
-						Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent);
-						GenSpawn.Spawn(vehicleSkyfaller_Arriving, CellFinder.FindNoWipeSpawnLocNear(mapToSpawnIn.GetComponent<ShipMapComp>().shipsOnMap.Values.RandomElement().OuterCells().RandomElement(), mapToSpawnIn,mission.shuttle.def,Rot4.East,5,delegate(IntVec3 cell) { return !mapToSpawnIn.roofGrid.Roofed(cell); }), mapToSpawnIn);
+						vec = bay.CanFitShuttleSize(mission.shuttle);
+						if (vec != IntVec3.Zero)
+							break;
 					}
-					else
-                    {
-						IEnumerable<CompShipBay> bays = originMapComp.targetMapComp.Bays.Where(b => b.CanFitShuttleSize(mission.shuttle.def.Size.x, mission.shuttle.def.Size.z));
-						if (bays.Count()>0)
-							GenSpawn.Spawn(vehicleSkyfaller_Arriving, bays.RandomElement().parent.Position, mapToSpawnIn);
-						else
-							GenSpawn.Spawn(vehicleSkyfaller_Arriving, CellFinder.FindNoWipeSpawnLocNear(mapToSpawnIn.GetComponent<ShipMapComp>().shipsOnMap.Values.RandomElement().OuterCells().RandomElement(), mapToSpawnIn, mission.shuttle.def, Rot4.East, 5, delegate (IntVec3 cell) { return !mapToSpawnIn.roofGrid.Roofed(cell); }), mapToSpawnIn);
+					if (vec == IntVec3.Zero) //fallbacks
+					{
+						if (mission.shuttle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
+						{
+							var ship = mapComp.ShipsOnMap.Values.Where(s => !s.IsWreck)?.RandomElement();
+							if (ship == null)
+								ship = mapComp.ShipsOnMap.Values.Where(s => s.IsWreck)?.RandomElement();
+							if (ship != null)
+							{
+								int i = 0;
+								while (i < 10)
+								{
+									IntVec3 v = ship.OuterCells().RandomElement();
+									vec = FindTargetForPod(ship, v);
+									if (vec != null)
+										break;
+									i++;
+								}
+							}
+						}
+						vec = mapToSpawnIn.AllCells.Where(c => !c.Impassable(mapToSpawnIn)).RandomElement();
 					}
-				}					
+					GenSpawn.Spawn(vehicleSkyfaller_Arriving, vec, mapToSpawnIn);
+				}
 			}
         }
 

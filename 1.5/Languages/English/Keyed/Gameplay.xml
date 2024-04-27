@@ -352,11 +352,6 @@
 	<SoS.RetreatAtHealthDesc>This shuttle will automatically retreat when its health drops below this percentage.</SoS.RetreatAtHealthDesc>
 	<SoS.CancelBoarding>Cancel boarding action? Your shuttle will return to your ship.</SoS.CancelBoarding>
 	
-	<!-- 1.4 only -->
-	<SoSShuttles>Shuttles</SoSShuttles>
-	<MessageShuttleOnlyPods>Enemy ship has active engines. Use personal shuttles to directly assault the enemy ship or disable its engines.</MessageShuttleOnlyPods>
-	<ShuttleCommandLaunchGroup>Launch at opposing ship</ShuttleCommandLaunchGroup>
-	<ShuttleCommandLaunchGroupDesc>Take off and fly to opposing ship</ShuttleCommandLaunchGroupDesc>
 	<!-- obsolete/unused
 	<SoS.PirateTradeEmpire>Our act of piracy against the Empire has not gone unnoticed!</SoS.PirateTradeEmpire>
 	<SoS.MoveFailPawns>Player pawn in {0}, ship move aborted.</SoS.MoveFailPawns>

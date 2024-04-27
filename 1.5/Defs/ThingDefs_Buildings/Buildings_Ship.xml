@@ -51,7 +51,7 @@
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeamModular_east</uiIconPath>
 		<statBases>
-			<WorkToBuild>1600</WorkToBuild>
+			<WorkToBuild>1500</WorkToBuild>
 			<MaxHitPoints>1000</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>

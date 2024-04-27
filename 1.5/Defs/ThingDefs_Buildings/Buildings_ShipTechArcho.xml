@@ -94,7 +94,7 @@
 		</graphicData>
 		<uiIconPath>Things/Building/Ship/ShipBeam_Archotech_UI</uiIconPath>
 		<statBases>
-			<WorkToBuild>1600</WorkToBuild>
+			<WorkToBuild>1700</WorkToBuild>
 			<MaxHitPoints>1500</MaxHitPoints>
 			<Flammability>0</Flammability>
 			<Beauty>1</Beauty>

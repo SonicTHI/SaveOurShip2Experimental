@@ -1595,7 +1595,7 @@ namespace SaveOurShip2
 							List<VehiclePawn> shuttles = new List<VehiclePawn>();
 							foreach (VehiclePawn vehicle in this.map.listerThings.GetThingsOfType<VehiclePawn>())
 							{
-								if (vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight && vehicle.CompUpgradeTree != null && (vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserA") || !vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaA") || !vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA")))
+								if (vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight && vehicle.CompUpgradeTree != null && ShipInteriorMod2.ShuttleIsArmed(vehicle))
 									shuttles.Add(vehicle);
 							}
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
@@ -1626,7 +1626,7 @@ namespace SaveOurShip2
 							List<VehiclePawn> shuttles = new List<VehiclePawn>();
 							foreach(VehiclePawn vehicle in this.map.listerThings.GetThingsOfType<VehiclePawn>())
                             {
-								if (vehicle.CompVehicleLauncher!=null&&vehicle.CompVehicleLauncher.SpaceFlight&&(vehicle.CompUpgradeTree==null || (!vehicle.CompUpgradeTree.upgrades.Contains("TurretLaserA") && !vehicle.CompUpgradeTree.upgrades.Contains("TurretPlasmaA") && !vehicle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA"))))
+								if (vehicle.CompVehicleLauncher!=null && vehicle.CompVehicleLauncher.SpaceFlight&&(vehicle.CompUpgradeTree == null || !ShipInteriorMod2.ShuttleIsArmed(vehicle)))
 									shuttles.Add(vehicle);
                             }
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
@@ -1674,9 +1674,9 @@ namespace SaveOurShip2
 									vehicleSkyfaller_Leaving.vehicle = shuttle;
 									vehicleSkyfaller_Leaving.createWorldObject = false;
 									GenSpawn.Spawn(vehicleSkyfaller_Leaving, shuttle.Position, shuttle.Map, shuttle.CompVehicleLauncher.launchProtocol.CurAnimationProperties.forcedRotation ?? shuttle.Rotation);
-									if(shuttle.CompUpgradeTree.upgrades.Contains("TurretLaserA"))
+									if (ShipInteriorMod2.ShuttleHasLaser(shuttle))
 										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.INTERCEPT);
-									else if(shuttle.CompUpgradeTree.upgrades.Contains("TurretTorpedoA"))
+									else if (ShipInteriorMod2.ShuttleHasTorp(shuttle))
 										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.BOMB);
 									else
 										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.STRAFE);
@@ -2202,17 +2202,25 @@ namespace SaveOurShip2
 			Log.Message("De-registering shuttle mission " + mission.mission);
 			ShuttlesOnMissions.Remove(mission.shuttle);
 			ShuttleMissions.Remove(mission);
-			if(!destroyed)
+			if (!destroyed)
             {
 				Map mapToSpawnIn;
 				if (mission.mission == ShuttleMission.BOARD)
+				{
 					mapToSpawnIn = ShipCombatTargetMap;
-				else if (mission.shuttle.Faction == Faction.OfPlayer)
-					mapToSpawnIn = originMapComp.map;
-				else
-					mapToSpawnIn = originMapComp.targetMapComp.map;
+				}
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
+					mapToSpawnIn = originMapComp.map;
+
+					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
+					if (!mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(mission.shuttle) != IntVec3.Zero))
+					{
+						foreach (var bay in mapComp.Bays) //unfog bays
+						{
+							FloodFillerFog.FloodUnfog(bay.parent.Position, mapToSpawnIn);
+						}
+					}
 					Messages.Message("SoS.BoardingShuttleArrived".Translate(), MessageTypeDefOf.TaskCompletion);
 					CameraJumper.TryJump(mapToSpawnIn.Center, mapToSpawnIn);
 					LandingTargeter.Instance.BeginTargeting(mission.shuttle, mapToSpawnIn, delegate (LocalTargetInfo target, Rot4 rot)
@@ -2225,9 +2233,41 @@ namespace SaveOurShip2
 				}
 				else
                 {
+					mapToSpawnIn = originMapComp.targetMapComp.map;
+					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
 					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
-					GenSpawn.Spawn(vehicleSkyfaller_Arriving, mapToSpawnIn.GetComponent<ShipMapComp>().shipsOnMap.Values.RandomElement().OuterCells().RandomElement(), mapToSpawnIn);
+
+					IntVec3 vec = IntVec3.Zero;
+					foreach (var bay in Bays)
+					{
+						vec = bay.CanFitShuttleSize(mission.shuttle);
+						if (vec != IntVec3.Zero)
+							break;
+					}
+					if (vec == IntVec3.Zero) //falbacks
+					{
+						if (mission.shuttle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
+						{
+							var ship = mapComp.ShipsOnMap.Values.Where(s => !s.IsWreck)?.RandomElement();
+							if (ship == null)
+								ship = mapComp.ShipsOnMap.Values.Where(s => s.IsWreck)?.RandomElement();
+							if (ship != null)
+							{
+								int i = 0;
+								while (i < 10)
+								{
+									IntVec3 v = ship.OuterCells().RandomElement();
+									vec = FindTargetForPod(ship, v);
+									if (vec != null)
+										break;
+									i++;
+								}
+							}
+						}
+						vec = mapToSpawnIn.AllCells.Where(c => !c.Impassable(mapToSpawnIn)).RandomElement();
+					}
+					GenSpawn.Spawn(vehicleSkyfaller_Arriving, vec, mapToSpawnIn);
 				}					
 			}
         }
@@ -2257,6 +2297,33 @@ namespace SaveOurShip2
 				Scribe_Values.Look<float>(ref retreatAtHealth, "retreatAtHealth");
 				Scribe_Values.Look<float>(ref weaponCooldown, "weaponCooldown");
             }
-        }
-    }
+		}
+		public IntVec3 FindTargetForPod(SpaceShipCache ship, IntVec3 v)
+		{
+			foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(v, Rot4.North, new IntVec2(7, 7)))
+			{
+				Room room = vec.GetRoom(map);
+				if (vec.InBounds(map) && vec.Standable(map) && room != null && !room.TouchesMapEdge && !room.IsDoorway && !AnyBridgeIn(room))
+				{
+					if (!vec.GetThingList(map).Any(t => t.def.preventSkyfallersLandingOn))
+					{
+						return vec;
+					}
+				}
+			}
+			return IntVec3.Zero;
+		}
+		public bool AnyBridgeIn(Room room)
+		{
+			List<Region> regions = room.Regions;
+			for (int i = 0; i < regions.Count; i++)
+			{
+				if (regions[i].ListerThings.AllThings.Any(t => t is Building_ShipBridge))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
 }

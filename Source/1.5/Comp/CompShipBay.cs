@@ -41,17 +41,25 @@ namespace SaveOurShip2
 				if (!occupiedRect.Contains(v) || v.Impassable(parent.Map))
 					return false;
 			}
-			Log.Message("CanFitShuttleAt");
 			return true;
 		}
-		public bool CanFitShuttleSize(int x, int z) //we only have square shuttles so simplified, no rot
+		public IntVec3 CanFitShuttleSize(VehiclePawn vehicle) //we only have square shuttles so simplified, no rot
 		{
+			int x = vehicle.def.size.x;
+			int z = vehicle.def.size.z;
 			//if too big
 			if (x > Props.maxShuttleSize || z > Props.maxShuttleSize)
-				return false;
+				return IntVec3.Zero;
 			//if 1x1
-			if (x == 1 && z == 1 && occupiedRect.Any(p => p.Impassable(parent.Map)))
-				return true;
+			if (x == 1 && z == 1)
+			{
+				foreach (IntVec3 vec in occupiedRect)
+				{
+					if (!vec.Impassable(parent.Map))
+						return vec;
+				}
+				return IntVec3.Zero;
+			}
 			//if not in area
 			IntVec2 halfSize = new IntVec2(x / 2, z / 2);
 			//find a viable positions for shuttle
@@ -61,7 +69,7 @@ namespace SaveOurShip2
 				validPos.Add(pos);
 			}
 			//check all viable rects if occupied
-			List<IntVec3> invalidPos = new List<IntVec3>();
+			HashSet<IntVec3> invalidPos = new HashSet<IntVec3>();
 			foreach (IntVec3 vec in validPos)
 			{
 				CellRect area = new CellRect(vec.x - halfSize.x, vec.z - halfSize.z, x, z);
@@ -76,9 +84,9 @@ namespace SaveOurShip2
 					}
 				}
 				if (fits)
-					return true;
+					return vec;
 			}
-			return false;
+			return IntVec3.Zero;
 		}
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{

@@ -487,7 +487,21 @@ namespace SaveOurShip2
 							icon = ContentFinder<Texture2D>.Get("UI/ShuttleMissionBoarding")
 						};
 						yield return returnShuttle;
-                    }
+					}
+					if (Prefs.DevMode)
+					{
+						Command_Action forceBoard = new Command_Action
+						{
+							groupable = false,
+							action = delegate
+							{
+								mapComp.TargetMapComp.hasAnyPartDetached = true;
+							},
+							defaultLabel = "Dev: Start enemy boarding",
+						};
+						forceBoard.hotKey = KeyBindingDefOf.Misc9;
+						yield return forceBoard;
+					}
 				}
 				//intarget
 				/*else if (mapComp.HasTarget) //end target

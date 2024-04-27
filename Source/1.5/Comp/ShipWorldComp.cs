@@ -35,6 +35,27 @@ namespace SaveOurShip2
 		public int AddNewShip(Dictionary<int, SpaceShipCache> ShipsOnMap, Building core)
 		{
 			int mergeToIndex = ShipInteriorMod2.WorldComp.newShipId;
+			if(ShipsOnMap.ContainsKey(mergeToIndex))
+            {
+				Log.Warning("[SoS2] ShipsOnMap already contains key " + mergeToIndex + " - fixing this.");
+				int i;
+				for(i=0;i<ShipsOnMap.Count;i++)
+                {
+					if(!ShipsOnMap.ContainsKey(i))
+                    {
+						mergeToIndex = i;
+						break;
+                    }
+                }
+				for(i=0;i<ShipsOnMap.Count;i++)
+                {
+					if (i!=mergeToIndex && !ShipsOnMap.ContainsKey(i))
+					{
+						nextShipId = i;
+						break;
+					}
+				}
+            }
 			ShipsOnMap.Add(mergeToIndex, new SpaceShipCache());
 			ShipsOnMap[mergeToIndex].RebuildCache(core, mergeToIndex);
 			return mergeToIndex;

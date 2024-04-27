@@ -2211,8 +2211,7 @@ namespace SaveOurShip2
 				}
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
-					mapToSpawnIn = originMapComp.map;
-
+					mapToSpawnIn = originMapComp.targetMapComp.map;
 					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 					if (!mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(mission.shuttle) != IntVec3.Zero))
 					{
@@ -2232,8 +2231,8 @@ namespace SaveOurShip2
 					null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
 				}
 				else
-                {
-					mapToSpawnIn = originMapComp.targetMapComp.map;
+				{
+					mapToSpawnIn = originMapComp.map;
 					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
 					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);

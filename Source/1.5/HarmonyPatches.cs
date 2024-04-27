@@ -4190,21 +4190,6 @@ namespace SaveOurShip2
     }
 
 	//New VF shuttle patches
-	[HarmonyPatch(typeof(Ext_Vehicles), "IsRoofRestricted", new Type[] { typeof(VehicleDef), typeof(IntVec3), typeof(Map) })]
-	public static class VFShuttleBayLanding
-    {
-		public static void Postfix(VehicleDef vehicleDef, IntVec3 cell, Map map, ref bool __result)
-		{
-			var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
-			if (bay == null)
-				__result = false;
-			//td rounabout way, not sure if there is a better way in Ext_Vehicles
-			CellRect rect = new CellRect(cell.x - vehicleDef.Size.x / 2, cell.z - vehicleDef.Size.z / 2, vehicleDef.Size.x, vehicleDef.Size.z);
-			if(!bay.TryGetComp<CompShipBay>().CanFitShuttleAt(rect))
-				__result = false;
-        }
-    }
-
 	[HarmonyPatch(typeof(CompVehicleLauncher), "CanLaunchWithCargoCapacity")]
 	public static class VFShuttleBayLaunch
     {
@@ -4231,6 +4216,26 @@ namespace SaveOurShip2
 		}
 	}
 
+	[HarmonyPatch(typeof(Ext_Vehicles), "IsRoofRestricted", new Type[] { typeof(VehicleDef), typeof(IntVec3), typeof(Map) })]
+	public static class VFShuttleBayLanding //do not restrict under roof if bay under
+	{
+		public static void Postfix(VehicleDef vehicleDef, IntVec3 cell, Map map, ref bool __result)
+		{
+			if (__result == false || !cell.InBounds(map))
+				return;
+
+			var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
+			if (bay == null)
+			{
+				__result = true;
+				return;
+			}
+			CellRect rect = new CellRect(cell.x - vehicleDef.Size.x / 2, cell.z - vehicleDef.Size.z / 2, vehicleDef.Size.x, vehicleDef.Size.z);
+			if (bay.TryGetComp<CompShipBay>().CanFitShuttleAt(rect))
+				__result = false;
+		}
+	}
+
 	[HarmonyPatch(typeof(LandingTargeter), "GetPosState")]
 	public static class CombatLandingRestictions
 	{
@@ -4241,9 +4246,9 @@ namespace SaveOurShip2
 			//if map in combat and manouvering allow only bays
 			Map map = Current.Game.CurrentMap;
 			var mapComp = map.GetComponent<ShipMapComp>();
-			IntVec3 cell = localTargetInfo.Cell;
-			if (mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero)) //restrict to bays
+			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower >= 0.02f && mapComp.TargetMapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero)) //restrict to bays
 			{
+				IntVec3 cell = localTargetInfo.Cell;
 				var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
 				if (bay != null && bay.TryGetComp<CompShipBay>().CanFitShuttleAt(GenAdj.OccupiedRect(cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size)))
 				{
@@ -4252,15 +4257,6 @@ namespace SaveOurShip2
 				}
 				__result = PositionState.Invalid;
 				return;
-			}
-			//normally do not allow landing on ship walls - not sure why this is allowed anyway, might need to further narrow it
-			foreach (IntVec3 v in __instance.vehicle.OccupiedRect())
-			{
-				if (v.Impassable(map))
-				{
-					__result = PositionState.Invalid;
-					return;
-				}
 			}
 		}
 	}

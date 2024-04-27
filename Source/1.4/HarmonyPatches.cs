@@ -2960,7 +2960,7 @@ namespace SaveOurShip2
 				IEnumerable<TransferableOneWay> source = from x in transferables
 														 where x.ThingDef.category == ThingCategory.Pawn
 														 select x;
-				widget.AddSection(TranslatorFormattedStringExtensions.Translate("SoSShuttles"), from x in source
+				widget.AddSection(TranslatorFormattedStringExtensions.Translate("SoS.Shuttles"), from x in source
 																								where (((Pawn)x.AnyThing).TryGetComp<CompBecomeBuilding>() != null)
 																								select x);
 			}

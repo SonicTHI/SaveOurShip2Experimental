@@ -28,7 +28,7 @@ namespace SaveOurShip2.Vehicles
 				if (mapComp.IsPlayerShipMap)
 				{
 					Command_Action board = CommandBoard(vehicle);
-					if (!ShipInteriorMod2.ShuttleCanBoard(mapComp, vehicle))
+					if (!ShipInteriorMod2.ShuttleCanBoard(mapComp.TargetMapComp, vehicle))
                     {
                         board.Disable();
 						board.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleMissionBoardingDisabled");

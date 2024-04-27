@@ -40,16 +40,12 @@ namespace SaveOurShip2.Vehicles
 				//samey in ShuttleTakeoff.FloatMenuMissions
 				if (vehicle.CompUpgradeTree != null)
 				{
-					var u = vehicle.CompUpgradeTree.upgrades;
-					bool hasLaser = u.Contains("TurretLaserA") || u.Contains("TurretLaserB") || u.Contains("TurretLaserC");
-					bool hasPlasma = u.Contains("TurretPlasmaA") || u.Contains("TurretPlasmaB") || u.Contains("TurretPlasmaC");
-					bool hasTorpedo = u.Contains("TurretTorpedoA") || u.Contains("TurretTorpedoB") || u.Contains("TurretTorpedoC")
-						&& vehicle.carryTracker.GetDirectlyHeldThings().Any(t => t.HasThingCategory(ResourceBank.ThingCategoryDefOf.SpaceTorpedoes));
+                    bool hasLaser = ShipInteriorMod2.ShuttleHasLaser(vehicle);
 					if (hasLaser)
                         yield return CommandIntercept(vehicle);
-					if (hasLaser || hasPlasma)
+					if (hasLaser || ShipInteriorMod2.ShuttleHasPlasma(vehicle))
 						yield return CommandStrafe(vehicle);
-					if (hasTorpedo)
+					if (ShipInteriorMod2.ShuttleHasTorp(vehicle))
 						yield return CommandBomb(vehicle);
 				}
             }

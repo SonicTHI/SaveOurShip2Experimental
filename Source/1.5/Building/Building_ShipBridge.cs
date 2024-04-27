@@ -474,20 +474,40 @@ namespace SaveOurShip2
 						};
 						yield return selectWeapons;
 					}
-					foreach(ShipMapComp.ShuttleMissionData mission in mapComp.ShuttleMissions.Where(mission=>mission.mission!=ShipMapComp.ShuttleMission.RETURN))
+					foreach(ShipMapComp.ShuttleMissionData mission in mapComp.ShuttleMissions)
                     {
-						Command_Action returnShuttle = new Command_Action
+						Command_Action changeShuttleMission = new Command_Action
 						{
 							action = delegate
 							{
-								mission.mission = ShipMapComp.ShuttleMission.RETURN;
+								List<FloatMenuOption> options = new List<FloatMenuOption>();
+								var u = mission.shuttle.CompUpgradeTree.upgrades;
+								bool hasLaser = u.Contains("TurretLaserA") || u.Contains("TurretLaserB") || u.Contains("TurretLaserC");
+								bool hasPlasma = u.Contains("TurretPlasmaA") || u.Contains("TurretPlasmaB") || u.Contains("TurretPlasmaC");
+								bool hasTorpedo = u.Contains("TurretTorpedoA") || u.Contains("TurretTorpedoB") || u.Contains("TurretTorpedoC")
+									&& mission.shuttle.carryTracker.GetDirectlyHeldThings().Any(t => t.HasThingCategory(ResourceBank.ThingCategoryDefOf.SpaceTorpedoes));
+								if (hasLaser && mission.mission != ShipMapComp.ShuttleMission.INTERCEPT)
+									options.Add(new FloatMenuOption("Intercept", delegate { mission.mission = ShipMapComp.ShuttleMission.INTERCEPT; }));
+								if ((hasLaser || hasPlasma) && mission.mission != ShipMapComp.ShuttleMission.STRAFE)
+									options.Add(new FloatMenuOption("Strafe", delegate { mission.mission = ShipMapComp.ShuttleMission.STRAFE; }));
+								if (hasTorpedo && mission.mission != ShipMapComp.ShuttleMission.BOMB)
+									options.Add(new FloatMenuOption("Bomb", delegate { mission.mission = ShipMapComp.ShuttleMission.BOMB; }));
+								if (mission.mission != ShipMapComp.ShuttleMission.BOARD)
+									options.Add(new FloatMenuOption("Board", delegate { mission.mission = ShipMapComp.ShuttleMission.BOARD; }));
+								if (mission.mission != ShipMapComp.ShuttleMission.RETURN)
+									options.Add(new FloatMenuOption("Return", delegate { mission.mission = ShipMapComp.ShuttleMission.RETURN; }));
+								Find.WindowStack.Add(new FloatMenu(options));
+
 							},
 							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.RecallShuttle", mission.shuttle, mission.mission.ToString()),
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RecallShuttleDesc"),
-							icon = ContentFinder<Texture2D>.Get("UI/ShuttleMissionBoarding")
+							icon = mission.mission == ShipMapComp.ShuttleMission.INTERCEPT ? ContentFinder<Texture2D>.Get("UI/ShuttleMissionIntercept") :
+								mission.mission == ShipMapComp.ShuttleMission.STRAFE ? ContentFinder<Texture2D>.Get("UI/ShuttleMissionStrafe") :
+								mission.mission == ShipMapComp.ShuttleMission.BOMB ? ContentFinder<Texture2D>.Get("UI/ShuttleMissionBomb") :
+								ContentFinder<Texture2D>.Get("UI/ShuttleMissionBoarding")
 						};
-						yield return returnShuttle;
-					}
+						yield return changeShuttleMission;
+                    }
 					if (Prefs.DevMode)
 					{
 						Command_Action forceBoard = new Command_Action
@@ -499,7 +519,6 @@ namespace SaveOurShip2
 							},
 							defaultLabel = "Dev: Start enemy boarding",
 						};
-						forceBoard.hotKey = KeyBindingDefOf.Misc9;
 						yield return forceBoard;
 					}
 				}

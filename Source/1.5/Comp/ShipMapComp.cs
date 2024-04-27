@@ -221,6 +221,8 @@ namespace SaveOurShip2
 		public List<VehiclePawn> ShuttlesInRange;
 		public Map ShipCombatOriginMap; //"player" map - initializes combat vars, runs all non duplicate code, AI
 		private ShipMapComp originMapComp;
+		public ThingOwner<VehiclePawn> ShuttlesOnMissions = new ThingOwner<VehiclePawn>();
+		public List<ShuttleMissionData> ShuttleMissions = new List<ShuttleMissionData>();
 		public ShipMapComp OriginMapComp
 		{
 			get
@@ -257,8 +259,6 @@ namespace SaveOurShip2
 		public int LastAttackTick;
 		public int LastBountyRaidTick;
 		private bool shipCombatOrigin = false;
-		public ThingOwner<VehiclePawn> ShuttlesOnMissions = new ThingOwner<VehiclePawn>();
-		public List<ShuttleMissionData> ShuttleMissions = new List<ShuttleMissionData>();
 		public bool ShipCombatOrigin //reset after battle
 		{
 			get
@@ -1024,7 +1024,7 @@ namespace SaveOurShip2
 				ShuttlesInRange = new List<VehiclePawn>();
 				foreach(ShuttleMissionData mission in ShuttleMissions)
                 {
-					if (OriginMapComp.Range - mission.rangeTraveled < 65)
+					if (OriginMapComp.Range - mission.rangeTraveled < 65 && mission.liftedOffYet)
 						ShuttlesInRange.Add(mission.shuttle);
                 }
 				float bestThrustRatio = SlowestThrustToWeight() * 5f;
@@ -1037,6 +1037,8 @@ namespace SaveOurShip2
 					bestThrustRatio = 2f;
 				foreach (ShuttleMissionData mission in ShuttleMissions)
                 {
+					if (!mission.liftedOffYet)
+						continue;
 					mission.shuttle.Tick();
 					float moveSpeed = Mathf.Max(mission.shuttle.GetStatValue(VehicleStatDefOf.FlightSpeed) / 100f, 0.05f);
 					if((mission.mission==ShuttleMission.BOARD && this==OriginMapComp) || mission.mission==ShuttleMission.BOMB || mission.mission==ShuttleMission.STRAFE) //Opposed by enemy ship's engines
@@ -1599,7 +1601,7 @@ namespace SaveOurShip2
 									shuttles.Add(vehicle);
 							}
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
-							List<Pawn> pawnsToBoard = PawnsOnShip(ship, ship.Faction);
+							IEnumerable<Pawn> pawnsToBoard = PawnsOnShip(ship, ship.Faction).Where(pawn=>pawn.CurJob==null||pawn.CurJob.def!=ResourceBank.JobDefOf.ManShipBridge);
 							foreach (Pawn p in pawnsToBoard)
 							{
 								if (shuttlesToBeFilled.Count > 0 && p.mindState.duty != null)
@@ -1607,13 +1609,11 @@ namespace SaveOurShip2
 									p.mindState.duty.transportersGroup = 0;
 									VehiclePawn myShuttle = shuttlesToBeFilled.RandomElement();
 									Job job = new Job(JobDefOf_Vehicles.Board, myShuttle);
+									p.jobs.StopAll();
 									p.jobs.StartJob(job);
 									map.GetComponent<VehicleReservationManager>().Reserve<VehicleHandler, VehicleHandlerReservation>(myShuttle, p, job, myShuttle.handlers.Where(handler => handler.AreSlotsAvailable).RandomElement());
-									if (!myShuttle.handlers.Any(handler => handler.AreSlotsAvailable))
-									{
-										shuttlesToBeFilled.Remove(myShuttle);
-										shuttlesYetToLaunch.Add(myShuttle);
-									}
+									shuttlesToBeFilled.Remove(myShuttle);
+									shuttlesYetToLaunch.Add(myShuttle);
 								}
 							}
 						}
@@ -1630,7 +1630,7 @@ namespace SaveOurShip2
 									shuttles.Add(vehicle);
                             }
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
-							List<Pawn> pawnsToBoard = PawnsOnShip(ship, ship.Faction);
+							IEnumerable<Pawn> pawnsToBoard = PawnsOnShip(ship, ship.Faction).Where(pawn => pawn.CurJob == null || pawn.CurJob.def != ResourceBank.JobDefOf.ManShipBridge);
 							foreach (Pawn p in pawnsToBoard)
 							{
 								if (shuttlesToBeFilled.Count>0 && p.mindState.duty != null && p.kindDef.combatPower > 40)
@@ -1638,6 +1638,7 @@ namespace SaveOurShip2
 									p.mindState.duty.transportersGroup = 1;
 									VehiclePawn myShuttle = shuttlesToBeFilled.RandomElement();
 									Job job = new Job(JobDefOf_Vehicles.Board, myShuttle);
+									p.jobs.StopAll();
 									p.jobs.StartJob(job);
 									map.GetComponent<VehicleReservationManager>().Reserve<VehicleHandler, VehicleHandlerReservation>(myShuttle, p, job, myShuttle.handlers.Where(handler=>handler.AreSlotsAvailable).RandomElement());
 									if(!myShuttle.handlers.Any(handler=>handler.AreSlotsAvailable))
@@ -1679,7 +1680,7 @@ namespace SaveOurShip2
 									else if (ShipInteriorMod2.ShuttleHasTorp(shuttle))
 										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.BOMB);
 									else
-										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.STRAFE);
+										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.STRAFE);
 									CameraJumper.TryHideWorld();
 									shuttle.EventRegistry[VehicleEventDefOf.AerialVehicleLaunch].ExecuteEvents();
 									shuttlesYetToLaunch.Remove(shuttle);
@@ -1724,7 +1725,7 @@ namespace SaveOurShip2
 										vehicleSkyfaller_Leaving.vehicle = shuttle;
 										vehicleSkyfaller_Leaving.createWorldObject = false;
 										GenSpawn.Spawn(vehicleSkyfaller_Leaving, shuttle.Position, shuttle.Map, shuttle.CompVehicleLauncher.launchProtocol.CurAnimationProperties.forcedRotation ?? shuttle.Rotation);
-										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.BOARD);
+										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.BOARD);
 										CameraJumper.TryHideWorld();
 										shuttle.EventRegistry[VehicleEventDefOf.AerialVehicleLaunch].ExecuteEvents();
 									}
@@ -2186,15 +2187,18 @@ namespace SaveOurShip2
 			return ShuttlesOnMissions;
         }
 
-		public void RegisterShuttleMission(VehiclePawn shuttle, ShuttleMission mission)
+		public ShuttleMissionData RegisterShuttleMission(VehiclePawn shuttle, ShuttleMission mission)
         {
-			shuttle.DeSpawn();
+			if(shuttle.Spawned)
+				shuttle.DeSpawn();
 			ShuttlesOnMissions.TryAddOrTransfer(shuttle);
 			ShuttleMissionData data = new ShuttleMissionData();
 			data.shuttle = shuttle;
 			data.mission = mission;
 			data.retreatAtHealth = shuttle.GetComp<CompShuttleLauncher>().retreatAtHealth;
+			data.uniqueID = ShipInteriorMod2.WorldComp.nextUniqueMissionID++;
 			ShuttleMissions.Add(data);
+			return data;
 		}
 
 		public void DeRegisterShuttleMission(ShuttleMissionData mission, bool destroyed=false)
@@ -2222,13 +2226,13 @@ namespace SaveOurShip2
 					}
 					Messages.Message("SoS.BoardingShuttleArrived".Translate(), MessageTypeDefOf.TaskCompletion);
 					CameraJumper.TryJump(mapToSpawnIn.Center, mapToSpawnIn);
+					ReturnBoardingParty.missionData = mission;
 					LandingTargeter.Instance.BeginTargeting(mission.shuttle, mapToSpawnIn, delegate (LocalTargetInfo target, Rot4 rot)
 					{
 						VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
 						GenSpawn.Spawn(vehicleSkyfaller_Arriving, target.Cell, mapToSpawnIn, rot);
 					},
-					delegate (LocalTargetInfo target) { return !MapHelper.NonStandableOrVehicleBlocked(mission.shuttle, map, target.Cell, Rot4.East); },
-					null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
+					null, null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
 				}
 				else
 				{
@@ -2236,37 +2240,19 @@ namespace SaveOurShip2
 					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
 					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
-
-					IntVec3 vec = IntVec3.Zero;
-					foreach (var bay in Bays)
+					if (mapToSpawnIn == originMapComp.map)
 					{
-						vec = bay.CanFitShuttleSize(mission.shuttle);
-						if (vec != IntVec3.Zero)
-							break;
+						Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent);
+						GenSpawn.Spawn(vehicleSkyfaller_Arriving, CellFinder.FindNoWipeSpawnLocNear(mapToSpawnIn.GetComponent<ShipMapComp>().shipsOnMap.Values.RandomElement().OuterCells().RandomElement(), mapToSpawnIn,mission.shuttle.def,Rot4.East,5,delegate(IntVec3 cell) { return !mapToSpawnIn.roofGrid.Roofed(cell); }), mapToSpawnIn);
 					}
-					if (vec == IntVec3.Zero) //falbacks
-					{
-						if (mission.shuttle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
-						{
-							var ship = mapComp.ShipsOnMap.Values.Where(s => !s.IsWreck)?.RandomElement();
-							if (ship == null)
-								ship = mapComp.ShipsOnMap.Values.Where(s => s.IsWreck)?.RandomElement();
-							if (ship != null)
-							{
-								int i = 0;
-								while (i < 10)
-								{
-									IntVec3 v = ship.OuterCells().RandomElement();
-									vec = FindTargetForPod(ship, v);
-									if (vec != null)
-										break;
-									i++;
-								}
-							}
-						}
-						vec = mapToSpawnIn.AllCells.Where(c => !c.Impassable(mapToSpawnIn)).RandomElement();
+					else
+                    {
+						IEnumerable<CompShipBay> bays = originMapComp.targetMapComp.Bays.Where(b => b.CanFitShuttleSize(mission.shuttle.def.Size.x, mission.shuttle.def.Size.z));
+						if (bays.Count()>0)
+							GenSpawn.Spawn(vehicleSkyfaller_Arriving, bays.RandomElement().parent.Position, mapToSpawnIn);
+						else
+							GenSpawn.Spawn(vehicleSkyfaller_Arriving, CellFinder.FindNoWipeSpawnLocNear(mapToSpawnIn.GetComponent<ShipMapComp>().shipsOnMap.Values.RandomElement().OuterCells().RandomElement(), mapToSpawnIn, mission.shuttle.def, Rot4.East, 5, delegate (IntVec3 cell) { return !mapToSpawnIn.roofGrid.Roofed(cell); }), mapToSpawnIn);
 					}
-					GenSpawn.Spawn(vehicleSkyfaller_Arriving, vec, mapToSpawnIn);
 				}					
 			}
         }
@@ -2280,13 +2266,15 @@ namespace SaveOurShip2
 			BOMB
 		}
 
-		public class ShuttleMissionData : IExposable
+		public class ShuttleMissionData : IExposable, ILoadReferenceable
         {
 			public VehiclePawn shuttle;
 			public ShuttleMission mission;
 			public float rangeTraveled;
 			public float retreatAtHealth;
 			public float weaponCooldown;
+			public bool liftedOffYet;
+			public int uniqueID;
 
             public void ExposeData()
             {
@@ -2295,6 +2283,30 @@ namespace SaveOurShip2
 				Scribe_Values.Look<float>(ref rangeTraveled, "rangeTraveled");
 				Scribe_Values.Look<float>(ref retreatAtHealth, "retreatAtHealth");
 				Scribe_Values.Look<float>(ref weaponCooldown, "weaponCooldown");
+				Scribe_Values.Look<bool>(ref liftedOffYet, "liftedOffYet");
+				Scribe_Values.Look<int>(ref uniqueID, "uniqueID");
+			}
+
+			public static string MissionGerund(ShuttleMission mission)
+            {
+				switch (mission)
+				{
+					case ShuttleMission.BOARD:
+						return "Boarding";
+					case ShuttleMission.INTERCEPT:
+						return "Intercepting";
+					case ShuttleMission.STRAFE:
+						return "Strafing";
+					case ShuttleMission.BOMB:
+						return "Bombing";
+					default:
+						return "Retreating";
+				}
+            }
+
+            public string GetUniqueLoadID()
+            {
+				return "Mission_" + uniqueID;
             }
 		}
 		public IntVec3 FindTargetForPod(SpaceShipCache ship, IntVec3 v)

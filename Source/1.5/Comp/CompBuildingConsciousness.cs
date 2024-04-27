@@ -131,7 +131,10 @@ namespace SaveOurShip2
 			}
 			HediffPawnIsHologram hologramHediff = (HediffPawnIsHologram)Consciousness.health.AddHediff(Props.holoHediff);
 			hologramHediff.consciousnessSource = (Building)parent;
-			Consciousness.needs.AddOrRemoveNeedsAsAppropriate();
+			if (Consciousness.needs == null)
+				Consciousness.needs = new Pawn_NeedsTracker(Consciousness);
+			else
+				Consciousness.needs.AddOrRemoveNeedsAsAppropriate();
 			if (Props.canMergeAI && Props.canMergeHuman) //Archotech
 			{
 				HologramColor = colors[0];
@@ -173,7 +176,7 @@ namespace SaveOurShip2
 			if (Consciousness == null)
 				return;
 			Thing thing = null;
-			if (Consciousness.carryTracker.CarriedThing != null)
+			if (Consciousness.carryTracker?.CarriedThing != null)
 				Consciousness.carryTracker.TryDropCarriedThing(Consciousness.Position, ThingPlaceMode.Near, out thing);
 			if (Consciousness.Spawned)
 			{
@@ -426,6 +429,8 @@ namespace SaveOurShip2
 
 		public void SpawnHologram()
 		{
+			if (Consciousness.Destroyed)
+				Consciousness.mapIndexOrState = -1;
 			GenPlace.TryPlaceThing(Consciousness, parent.Position, parent.Map, ThingPlaceMode.Near);
 			//Consciousness.Drawer.renderer.graphics.ResolveAllGraphics();
 			Consciousness.Drawer.renderer.EnsureGraphicsInitialized();
@@ -467,17 +472,17 @@ namespace SaveOurShip2
 			if (newConsc is Corpse)
 			{
 				pawn = ((Corpse)newConsc).InnerPawn;
-				List<Apparel> pawnApparel = pawn.apparel.WornApparel.ListFullCopy();
-				pawn.Strip();
+				if(newConsc.Spawned)
+					pawn.Strip();
 				ResurrectionUtility.TryResurrect(pawn);
 				Consciousness = pawn;
-				SetupConsciousness(overrideApparel == null ? pawnApparel : overrideApparel, graphicsDirty);
+				SetupConsciousness(overrideApparel, graphicsDirty);
 			}
 			else if (newConsc is Pawn)
 			{
 				pawn = (Pawn)newConsc;
-				List<Apparel> pawnApparel = pawn.apparel.WornApparel.ListFullCopy();
-				pawn.Strip();
+				if(newConsc.Spawned)
+					pawn.Strip();
 
 				if (ShipInteriorMod2.IsHologram((Pawn)newConsc))
 				{
@@ -490,7 +495,7 @@ namespace SaveOurShip2
 				}
 
 				Consciousness = pawn;
-				SetupConsciousness(overrideApparel == null ? pawnApparel : overrideApparel, graphicsDirty);
+				SetupConsciousness(overrideApparel, graphicsDirty);
 			}
 			else
 			{

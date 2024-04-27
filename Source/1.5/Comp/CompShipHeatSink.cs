@@ -71,7 +71,7 @@ namespace SaveOurShip2
 		public override void CompTick()
 		{
 			base.CompTick();
-			if (!parent.Spawned || parent.Destroyed || myNet == null)
+			if (!parent.Spawned || parent.Destroyed || myNet == null || map == null)
 			{
 				return;
 			}

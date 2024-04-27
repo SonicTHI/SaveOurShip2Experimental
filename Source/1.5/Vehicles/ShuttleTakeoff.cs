@@ -30,15 +30,15 @@ namespace SaveOurShip2.Vehicles
                 return base.GetFloatMenuOptionsAt(tile);
             if (isPlayerMap)
             {
-                if (mapComp.ShipCombatTargetMap.Tile == tile) //Launch mission against enemy ship
+                if (mapComp.ShipCombatTargetMap?.Tile == tile) //Launch mission against enemy ship
                     return FloatMenuMissions(tile, mapComp);
                 else
                     return base.GetFloatMenuOptionsAt(tile);
             }
 
-            if (mapComp.ShipCombatOriginMap.Tile == tile) //Return home
+            if (mapComp.ShipCombatOriginMap?.Tile == tile) //Return home
                 return FloatMenuOption_ReturnFromEnemy(tile);
-            else if (mapComp.ShipCombatTargetMap.Tile == tile) //Target enemy ship to change mission
+            else if (mapComp.ShipCombatTargetMap?.Tile == tile) //Target enemy ship to change mission
                 return FloatMenuMissions(tile, mapComp);
             else
                 return base.GetFloatMenuOptionsAt(tile);

@@ -526,7 +526,7 @@ namespace SaveOurShip2
 				foreach (IntVec3 vec in cellsToMerge)
 				{
 					int shipIndex = ShipIndexOnVec(vec);
-					if (ShipsOnMap[shipIndex].Mass > mass)
+					if (ShipsOnMap.ContainsKey(shipIndex) && ShipsOnMap[shipIndex].Mass > mass)
 					{
 						mergeTo = vec;
 						mass = ShipsOnMap[shipIndex].Mass;
@@ -1117,7 +1117,7 @@ namespace SaveOurShip2
 								IntVec3 spawnCell = FindClosestEdgeCell(ShipCombatTargetMap, targetCell);
 								foreach (VehicleTurret turret in mission.shuttle.CompVehicleTurrets.turrets)
 								{
-									if (turret.turretDef == ResourceBank.VehicleTurretDefOf.SoS2ShuttleTorpedo)
+									if (turret.turretDef == ResourceBank.VehicleTurretDefOf.SoS2ShuttleTorpedo && turret.loadedAmmo != null)
 									{
 										Projectile projectile = (Projectile)GenSpawn.Spawn(turret.loadedAmmo.projectileWhenLoaded.interactionCellIcon, spawnCell, ShipCombatTargetMap);
 										IntVec3 a = targetCell - spawnCell;

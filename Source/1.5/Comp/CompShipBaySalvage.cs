@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using RimWorld.Planet;
+using Vehicles;
 
 namespace SaveOurShip2
 {
@@ -167,6 +168,8 @@ namespace SaveOurShip2
 				{
 					buildings.Add(b);
 				}
+				else if (t is VehiclePawn p)
+					p.SetFaction(Faction.OfPlayer);
 				else if (t is DetachedShipPart)
 					things.Add(t);
 			}

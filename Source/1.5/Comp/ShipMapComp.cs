@@ -2277,11 +2277,11 @@ namespace SaveOurShip2
 
 		public enum ShuttleMission
         {
-			BOARD,
-			RETURN,
-			INTERCEPT,
-			STRAFE,
-			BOMB
+			BOARD, //go to ShipCombatTargetMap, attempt boarding action
+			RETURN, //return to map you started the previous mission from, attempt landing action
+			INTERCEPT, //fly to close range, intercept enemy shuttles and projectiles
+			STRAFE, //fly to far range, shoot at enemy ship
+			BOMB //fly to furthest range, shoot at enemy ship, rturn when out of torpedoes
 		}
 
 		public class ShuttleMissionData : IExposable, ILoadReferenceable

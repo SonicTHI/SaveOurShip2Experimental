@@ -24,31 +24,32 @@ namespace SaveOurShip2.Vehicles
         }
 
         public override IEnumerable<FloatMenuOption> GetFloatMenuOptionsAt(int tile)
-        {
-            var mapComp = vehicle.Map.GetComponent<ShipMapComp>();
-			bool isPlayerMap = mapComp?.ShipCombatOriginMap == vehicle.Map;
-            bool isEnemyMap = mapComp?.ShipCombatTargetMap == vehicle.Map;
-            if (!isPlayerMap && !isEnemyMap)
-                return base.GetFloatMenuOptionsAt(tile);
-            if (isPlayerMap)
-            {
-                if (mapComp.ShipCombatTargetMap?.Tile == tile) //Launch mission against enemy ship
-                    return FloatMenuMissions(tile, mapComp);
-                else
-                    return base.GetFloatMenuOptionsAt(tile);
-            }
-
-            if (mapComp.ShipCombatOriginMap?.Tile == tile) //Return home
-                return FloatMenuOption_ReturnFromEnemy(tile);
-            else if (mapComp.ShipCombatTargetMap?.Tile == tile) //Target enemy ship to change mission
-                return FloatMenuMissions(tile, mapComp);
-            else
-                return base.GetFloatMenuOptionsAt(tile);
+		{
+            //td not sure the limits we want on this, right now you could assault from anywhere, should it be only from ship-ship?
+            var mp = Find.World.worldObjects.MapParentAt(tile);
+            if (mp != null && mp.def == ResourceBank.WorldObjectDefOf.ShipOrbiting) //target is ship
+			{
+				var mapComp = mp.Map.GetComponent<ShipMapComp>();
+				if (mapComp.ShipMapState == ShipMapState.inCombat) //target is in combat
+				{
+					if (mapComp.ShipCombatTargetMap != mapComp.ShipCombatOriginMap) //target is enemy ship
+					{
+						foreach (FloatMenuOption giz in FloatMenuMissions(tile, mapComp))
+							yield return giz;
+					}
+					else //target is player ship
+					{
+						yield return FloatMenuOption_ReturnFromEnemy(tile);
+					}
+				}
+			}
+			foreach (FloatMenuOption giz in base.GetFloatMenuOptionsAt(tile))
+				yield return giz;
         }
 
         public IEnumerable<FloatMenuOption> FloatMenuMissions(int tile, ShipMapComp mapComp)
 		{
-			if (ShipInteriorMod2.ShuttleCanBoard(mapComp.TargetMapComp, vehicle))
+			if (ShipInteriorMod2.ShuttleCanBoard(mapComp, vehicle))
                 yield return FloatMenuOption_Board(tile);
 			//samey in CompShuttleLauncher.CompGetGizmosExtra
 			if (vehicle.CompUpgradeTree != null)
@@ -83,9 +84,9 @@ namespace SaveOurShip2.Vehicles
             return new FloatMenuOption("Mission: Torpedo Enemy Ship", delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOMB); });
         }
 
-        IEnumerable<FloatMenuOption> FloatMenuOption_ReturnFromEnemy(int tile)
+        FloatMenuOption FloatMenuOption_ReturnFromEnemy(int tile)
         {
-            yield return new FloatMenuOption("Return to Ship", delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOARD); });
+            return new FloatMenuOption("Return to Ship", delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOARD); });
         }
 
         public static void LaunchShuttleToCombatManager(VehiclePawn vehicle, ShuttleMission mission)

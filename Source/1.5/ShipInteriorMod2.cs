@@ -75,7 +75,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
 
 			Scribe_Values.Look(ref easyMode, "easyMode", false);
-			Scribe_Values.Look(ref respectPhysics, "respectPhysics", true);
+			Scribe_Values.Look(ref restrictedBoarding, "restrictedBoarding", false);
 			//Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
@@ -98,7 +98,7 @@ namespace SaveOurShip2
 			fleetChance = 0.3;
 		public static bool
 			easyMode = false,
-			respectPhysics = true,
+			restrictedBoarding = false,
 			//useVacuumPathfinding = true,
 			renderPlanet = false,
 			useSplashScreen = true,
@@ -195,7 +195,7 @@ namespace SaveOurShip2
 			options.Gap();
 			options.Label("SoS.Settings.Misc".Translate());
 			options.GapLine();
-			options.CheckboxLabeled("SoS.Settings.RespectPhysics".Translate(), ref respectPhysics, "SoS.Settings.RespectPhysics.Desc".Translate());
+			options.CheckboxLabeled("SoS.Settings.RestrictiveBoarding".Translate(), ref restrictedBoarding, "SoS.Settings.RestrictiveBoarding.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.ArchoRemove".Translate(), ref archoRemove, "SoS.Settings.ArchoRemove.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.Debug".Translate(), ref debugMode, "SoS.Settings.Debug.Desc".Translate());
@@ -2887,7 +2887,7 @@ namespace SaveOurShip2
 		public static bool ShuttleCanBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
 		{
 			//incombat if enemy t/w above x - shuttles if bay is available, else pods only
-			if (!ModSettings_SoS.respectPhysics || targetMapComp.MapEnginePower < 0.02f)
+			if (!ModSettings_SoS.restrictedBoarding || targetMapComp.MapEnginePower < 0.02f)
 				return true;
 			if (vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
 				return true;

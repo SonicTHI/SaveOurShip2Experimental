@@ -72,7 +72,7 @@
     </comps>
   </AbilityDef>
   
-  <ThingDef ParentName="BuildingBase" MayRequire="Ludeon.RimWorld.Biotech">
+  <ThingDef ParentName="BuildingBase">
     <defName>SoS2CryptosleepCocoon</defName>
     <label>cryptosleep cocoon</label>
     <description>A cocoon containing a person deep in cryptosleep.</description>

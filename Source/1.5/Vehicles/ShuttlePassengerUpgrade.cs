@@ -25,6 +25,7 @@ namespace SaveOurShip2.Vehicles
             if (passengerHandler.role.slots>0)
                 return;
 
+            passengerHandler.role = new VehicleRole(passengerHandler.role);
             passengerHandler.role.slots += passengers;
         }
     }

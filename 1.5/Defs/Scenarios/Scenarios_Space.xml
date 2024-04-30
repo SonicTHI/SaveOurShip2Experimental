@@ -87,10 +87,14 @@
 					<thingDef>Apparel_AdvancedHelmet</thingDef>
 					<stuff>Plasteel</stuff>
 				</li>
+				<li Class="ScenPart_StartingResearch">
+					<def>StartingResearch</def>
+					<project>ShipBasics</project>
+				</li>
 				<!-- Game start dialog -->
 				<li Class="ScenPart_GameStartDialog">
 					<def>GameStartDialog</def>
-					<text>The three of you awake in your cryptosleep sarcophagi, stirred from slumber by an automated warning. A storm of micrometeorites has torn several breaches in your ship's hull and destroyed its Johnson-Tanaka drive. Trapped in orbit above an unknown rimworld, you must patch up your damaged ship and make long-term survival plans.\n\nPerhaps you can acquire resources by scanning for orbital sites. You could also turn your sensors towards the planet's surface to scout a potential landing site for your ship. One way or another, you will need to reinvent the technologies needed to properly repair it.</text>
+					<text>The three of you awake in your cryptosleep sarcophagi, stirred from slumber by an automated warning. A storm of micrometeorites has torn several breaches in your ship's hull and destroyed its Johnson-Tanaka drive. Trapped in orbit above an unknown rimworld, you must patch up your damaged ship and make long-term survival plans.\n\nPerhaps you can acquire resources by scanning for orbital sites. You could also turn your sensors towards the planet's surface to scout a potential landing site for your ship.</text>
 					<closeSound>GameStartSting</closeSound>
 				</li>
 			</parts>
@@ -182,6 +186,10 @@
 					<def>StartingThing_Defined</def>
 					<thingDef>Apparel_AdvancedHelmet</thingDef>
 					<stuff>Plasteel</stuff>
+				</li>
+				<li Class="ScenPart_StartingResearch">
+					<def>StartingResearch</def>
+					<project>ShipBasics</project>
 				</li>
 				<!-- Game start dialog -->
 				<li Class="ScenPart_GameStartDialog">

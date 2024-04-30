@@ -93,9 +93,9 @@ namespace SaveOurShip2
 						mapComp.ShipMapState = ShipMapState.inTransit;
 						CameraJumper.TryJump(mapComp.MapRootListAll.FirstOrDefault().Position, originMap);
 					}
-					else //normal move to target map
+					else //normal move to target map, claim moved ships for player
 					{
-						ShipInteriorMod2.MoveShip(shipRoot, targetMap, InstallBlueprintUtility.ExistingBlueprintFor(this).Position - bottomLeftPos, fac, shipRotNum, includeRock);
+						ShipInteriorMod2.MoveShip(shipRoot, targetMap, InstallBlueprintUtility.ExistingBlueprintFor(this).Position - bottomLeftPos, Faction.OfPlayer, shipRotNum, includeRock);
 					}
 				}
 				if (!Destroyed)

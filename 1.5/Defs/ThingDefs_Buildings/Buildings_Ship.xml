@@ -575,7 +575,7 @@
 		<defName>ShipAirlockBeam</defName>
 		<label>docking clamp</label>
 		<designatorDropdown>Ship_Airlocks</designatorDropdown>
-		<description>One half of a system for attaching spacecraft. Place two of these directly adjacent to a vacuum-facing airlock facing the same way. The airlock will gain the ability to extend a docking tube up to 3 tiles long. No special equipment is necessary on the other end; simply line the tube up with the other ship's airlock. You can also connect it to other airlocks.\n\nThe tube is not rated for interplanetary travel or atmospheric re-entry so ships will automatically decouple.</description>
+		<description>One half of a system for attaching spacecraft. Place two of these directly adjacent to a vacuum-facing airlock, facing outward: |o| where | represents a docking clamp and o represents the airlock. The airlock will then gain the ability to extend a docking tube up to 3 tiles long.\n\nNo special equipment is necessary on the other end; simply line the tube up with the other ship's airlock. You can also connect it to other airlocks.\n\nThe tube is not rated for interplanetary travel or atmospheric re-entry so ships will automatically decouple.</description>
 		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
@@ -2731,7 +2731,7 @@
 			</li>
 			<li Class="CompProperties_Flickable"/>
 			<li Class="CompProperties_Refuelable">
-				<fuelCapacity>50.0</fuelCapacity>
+				<fuelCapacity>250.0</fuelCapacity>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
 				<fuelFilter>
 					<thingDefs>

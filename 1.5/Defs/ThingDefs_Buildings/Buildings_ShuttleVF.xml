@@ -3,7 +3,7 @@
 	<Vehicles.VehicleBuildDef ParentName="VehicleBaseBuildable">
 		<defName>SoS2_Shuttle_Personal_Blueprint</defName>
 		<label>Personal Shuttle</label>
-		<description>A single-occupant shuttlecraft capable of both orbital and suborbital flight. Unlike larger shuttles, this model runs on chemfuel.</description>
+		<description>A single-occupant shuttlecraft capable of both orbital and suborbital flight. Unlike larger shuttles, this model runs on chemfuel and cannot be upgraded.</description>
 
 		<graphicData>
 			<texPath>Things/Shuttle/shuttle_personal</texPath>
@@ -39,7 +39,7 @@
 	<Vehicles.VehicleDef ParentName="BaseVehiclePawn">
 		<defName>SoS2_Shuttle_Personal</defName>
 		<label>Personal Shuttle</label>
-		<description>A single-occupant shuttlecraft capable of both orbital and suborbital flight. Unlike larger shuttles, this model runs on chemfuel.</description>
+		<description>A single-occupant shuttlecraft capable of both orbital and suborbital flight. Unlike larger shuttles, this model runs on chemfuel and cannot be upgraded.</description>
 		
 		<graphicData>
 			<texPath>Things/Shuttle/shuttle_personal</texPath>
@@ -62,11 +62,12 @@
 		<size>(1, 1)</size>
 		<uiIconScale>0.65</uiIconScale>
 		
-		<vehicleMovementPermissions LockSetting="True">NotAllowed</vehicleMovementPermissions>
-		<canCaravan LockSetting = "True">false</canCaravan>
+		<vehicleMovementPermissions LockSetting="True">DriverNeeded</vehicleMovementPermissions>
+		<canCaravan LockSetting = "True">true</canCaravan>
 		<vehicleCategory>Transport</vehicleCategory>
 		<techLevel>Industrial</techLevel>
-		<vehicleType>Air</vehicleType>
+		<vehicleType>Universal</vehicleType>
+		<draftLabel>Hover Mode</draftLabel>
 		
 		<statBases>
 			<ArmorRating_Blunt>0.5</ArmorRating_Blunt>
@@ -74,11 +75,12 @@
 			<ArmorRating_Heat>2.0</ArmorRating_Heat>
 			<Flammability>0.0</Flammability>
 			<DecompressionResistance>1</DecompressionResistance>
+			<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 		</statBases>
 		
 		<vehicleStats>
 			<Mass>300</Mass>
-			<MoveSpeed LockSetting="True">0</MoveSpeed>
+			<MoveSpeed>15</MoveSpeed>
 			<CargoCapacity>50</CargoCapacity>
 			<RepairRate>1.2</RepairRate>
 			<FlightSpeed>24</FlightSpeed>
@@ -115,6 +117,12 @@
 					</handlingTypes>
 				</li>
 			</roles>
+			<customTerrainCosts>
+				<li>
+					<key>EmptySpace</key>
+					<value>0</value>
+				</li>
+			</customTerrainCosts>
 		</properties>
 		
 		<components>
@@ -573,6 +581,9 @@
 				<turrets>
 				</turrets>
 			</li>
+			<li>
+				<compClass>SaveOurShip2.Vehicles.CompHoverMode</compClass>
+			</li>
 		</comps>
 	</Vehicles.VehicleDef>
 	
@@ -582,10 +593,9 @@
 		<description>A shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features one hardpoint for a turret.</description>
 
 		<graphicData>
-			<texPath>Things/Shuttle/shuttle</texPath>
+			<texPath>Things/Shuttle/shuttle_north</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(4,4)</drawSize>
-			<drawRotated>false</drawRotated>
 			<shaderType>Cutout</shaderType>
 		</graphicData>
 		
@@ -597,7 +607,6 @@
 		</statBases>
 		
 		<size>(3,3)</size>
-		<rotatable>false</rotatable>
 		
 		<researchPrerequisites>
 			<li>ShuttleCargo</li>
@@ -625,14 +634,14 @@
 			<graphicClass>Vehicles.Graphic_Vehicle</graphicClass>
 			<shaderType>CutoutComplexPattern</shaderType>
 			<drawSize>(4,4)</drawSize>
-			<drawRotated>false</drawRotated>
+			<drawRotated>true</drawRotated>
 			<color>(255, 255, 255)</color>
 			<colorTwo>(255, 255, 255)</colorTwo>
 			<colorThree>(255, 255, 255)</colorThree>
 		</graphicData>
 		
 		<fillPercent>0.75</fillPercent>
-		<rotatable>false</rotatable>
+		<rotatable>true</rotatable>
 		
 		<nameable>true</nameable>
 
@@ -640,11 +649,12 @@
 
 		<size>(3, 3)</size>
 		
-		<vehicleMovementPermissions LockSetting="True">NotAllowed</vehicleMovementPermissions>
-		<canCaravan LockSetting = "True">false</canCaravan>
+		<vehicleMovementPermissions LockSetting="True">DriverNeeded</vehicleMovementPermissions>
+		<canCaravan LockSetting = "True">true</canCaravan>
 		<vehicleCategory>Transport</vehicleCategory>
 		<techLevel>Spacer</techLevel>
-		<vehicleType>Air</vehicleType>
+		<vehicleType>Universal</vehicleType>
+		<draftLabel>Hover Mode</draftLabel>
 		
 		<statBases>
 			<ArmorRating_Blunt>0.5</ArmorRating_Blunt>
@@ -652,11 +662,12 @@
 			<ArmorRating_Heat>2.0</ArmorRating_Heat>
 			<Flammability>0.0</Flammability>
 			<DecompressionResistance>1</DecompressionResistance>
+			<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 		</statBases>
 		
 		<vehicleStats>
 			<Mass>600</Mass>
-			<MoveSpeed LockSetting="True">0</MoveSpeed>
+			<MoveSpeed>15</MoveSpeed>
 			<CargoCapacity>1000</CargoCapacity>
 			<RepairRate>1.4</RepairRate>
 			<FlightSpeed>24</FlightSpeed>
@@ -674,10 +685,14 @@
 				<stop>Spawned</stop>
 				<value>VVE_VehicleEngineRocket</value>
 			</li>
+			<li>
+				<start>IgnitionOn</start>
+				<stop>IgnitionOff</stop>
+				<value>VVE_VehicleEngineHeavy</value>
+			</li>
 		</soundSustainersOnEvent>
 		
 		<properties>
-			
 			<roles>
 				<li>
 					<key>pilot</key>
@@ -695,6 +710,12 @@
 					<slots>0</slots>
 				</li>
 			</roles>
+			<customTerrainCosts>
+				<li>
+					<key>EmptySpace</key>
+					<value>0</value>
+				</li>
+			</customTerrainCosts>
 		</properties>
 		
 		<components>
@@ -873,6 +894,7 @@
 						<maxTicksVertical>250</maxTicksVertical>
 						<renderShadow>false</renderShadow>
 						<lockShadowZ>true</lockShadowZ>
+						<forcedRotation>East</forcedRotation>
 						
 						<events>
 							<li>
@@ -1054,6 +1076,7 @@
 						<maxTicks>500</maxTicks>
 						<maxTicksVertical>100</maxTicksVertical>
 						<renderShadow>false</renderShadow>
+						<forcedRotation>East</forcedRotation>
 						
 						<events>
 							<li>
@@ -1235,6 +1258,9 @@
 				<turrets>
 				</turrets>
 			</li>
+			<li>
+				<compClass>SaveOurShip2.Vehicles.CompHoverMode</compClass>
+			</li>
 		</comps>
 	</Vehicles.VehicleDef>
 	
@@ -1244,10 +1270,9 @@
 		<description>A large shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features two hardpoints for turrets.</description>
 
 		<graphicData>
-			<texPath>Things/Shuttle/shuttle_heavy</texPath>
+			<texPath>Things/Shuttle/shuttle_heavy_north</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(6,6)</drawSize>
-			<drawRotated>false</drawRotated>
 			<shaderType>Cutout</shaderType>
 		</graphicData>
 		
@@ -1259,7 +1284,6 @@
 		</statBases>
 		
 		<size>(5,5)</size>
-		<rotatable>false</rotatable>
 		
 		<researchPrerequisites>
 			<li>ShuttleHeavy</li>
@@ -1287,14 +1311,14 @@
 			<graphicClass>Vehicles.Graphic_Vehicle</graphicClass>
 			<shaderType>CutoutComplexPattern</shaderType>
 			<drawSize>(6,6)</drawSize>
-			<drawRotated>false</drawRotated>
+			<drawRotated>true</drawRotated>
 			<color>(255, 255, 255)</color>
 			<colorTwo>(255, 255, 255)</colorTwo>
 			<colorThree>(255, 255, 255)</colorThree>
 		</graphicData>
 		
 		<fillPercent>0.75</fillPercent>
-		<rotatable>false</rotatable>
+		<rotatable>true</rotatable>
 		
 		<nameable>true</nameable>
 
@@ -1302,11 +1326,12 @@
 
 		<size>(5, 5)</size>
 		
-		<vehicleMovementPermissions LockSetting="True">NotAllowed</vehicleMovementPermissions>
-		<canCaravan LockSetting = "True">false</canCaravan>
+		<vehicleMovementPermissions LockSetting="True">DriverNeeded</vehicleMovementPermissions>
+		<canCaravan LockSetting = "True">true</canCaravan>
 		<vehicleCategory>Transport</vehicleCategory>
 		<techLevel>Spacer</techLevel>
-		<vehicleType>Air</vehicleType>
+		<vehicleType>Universal</vehicleType>
+		<draftLabel>Hover Mode</draftLabel>
 		
 		<statBases>
 			<ArmorRating_Blunt>0.6</ArmorRating_Blunt>
@@ -1314,11 +1339,12 @@
 			<ArmorRating_Heat>2.0</ArmorRating_Heat>
 			<Flammability>0.0</Flammability>
 			<DecompressionResistance>1</DecompressionResistance>
+			<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 		</statBases>
 		
 		<vehicleStats>
 			<Mass>1000</Mass>
-			<MoveSpeed LockSetting="True">0</MoveSpeed>
+			<MoveSpeed>12</MoveSpeed>
 			<CargoCapacity>2000</CargoCapacity>
 			<RepairRate>1.5</RepairRate>
 			<FlightSpeed>20</FlightSpeed>
@@ -1336,10 +1362,14 @@
 				<stop>Spawned</stop>
 				<value>VVE_VehicleEngineRocket</value>
 			</li>
+			<li>
+				<start>IgnitionOn</start>
+				<stop>IgnitionOff</stop>
+				<value>VVE_VehicleEngineHeavy</value>
+			</li>
 		</soundSustainersOnEvent>
 		
 		<properties>
-			
 			<roles>
 				<li>
 					<key>pilot</key>
@@ -1357,6 +1387,12 @@
 					<slots>0</slots>
 				</li>
 			</roles>
+			<customTerrainCosts>
+				<li>
+					<key>EmptySpace</key>
+					<value>0</value>
+				</li>
+			</customTerrainCosts>
 		</properties>
 		
 		<components>
@@ -1535,6 +1571,7 @@
 						<maxTicksVertical>250</maxTicksVertical>
 						<renderShadow>false</renderShadow>
 						<lockShadowZ>true</lockShadowZ>
+						<forcedRotation>East</forcedRotation>
 						
 						<events>
 							<li>
@@ -1789,6 +1826,7 @@
 						<maxTicks>500</maxTicks>
 						<maxTicksVertical>100</maxTicksVertical>
 						<renderShadow>false</renderShadow>
+						<forcedRotation>East</forcedRotation>
 						
 						<events>
 							<li>
@@ -2043,6 +2081,9 @@
 				<turrets>
 				</turrets>
 			</li>
+			<li>
+				<compClass>SaveOurShip2.Vehicles.CompHoverMode</compClass>
+			</li>
 		</comps>
 	</Vehicles.VehicleDef>
 	
@@ -2052,10 +2093,9 @@
 		<description>A very large shuttlecraft capable of both orbital and suborbital flight, powered by uranium fuel pods.\n\nBecause the design is based on miniaturized ship components, this shuttle can be upgraded once the appropriate technologies have been researched. Most upgrades cost cargo space to install. This shuttle features three hardpoints for turrets.</description>
 
 		<graphicData>
-			<texPath>Things/Shuttle/shuttle_dropship</texPath>
+			<texPath>Things/Shuttle/shuttle_dropship_north</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<drawSize>(9,9)</drawSize>
-			<drawRotated>false</drawRotated>
 			<shaderType>Cutout</shaderType>
 		</graphicData>
 		
@@ -2067,7 +2107,6 @@
 		</statBases>
 		
 		<size>(7,7)</size>
-		<rotatable>false</rotatable>
 		
 		<researchPrerequisites>
 			<li>ShuttleDropship</li>
@@ -2102,7 +2141,7 @@
 		</graphicData>
 		
 		<fillPercent>0.75</fillPercent>
-		<rotatable>false</rotatable>
+		<rotatable>true</rotatable>
 		
 		<nameable>true</nameable>
 
@@ -2110,11 +2149,12 @@
 
 		<size>(7, 7)</size>
 		
-		<vehicleMovementPermissions LockSetting="True">NotAllowed</vehicleMovementPermissions>
-		<canCaravan LockSetting = "True">false</canCaravan>
+		<vehicleMovementPermissions LockSetting="True">DriverNeeded</vehicleMovementPermissions>
+		<canCaravan LockSetting = "True">true</canCaravan>
 		<vehicleCategory>Transport</vehicleCategory>
 		<techLevel>Spacer</techLevel>
-		<vehicleType>Air</vehicleType>
+		<vehicleType>Universal</vehicleType>
+		<draftLabel>Hover Mode</draftLabel>
 		
 		<statBases>
 			<ArmorRating_Blunt>0.8</ArmorRating_Blunt>
@@ -2122,11 +2162,12 @@
 			<ArmorRating_Heat>2.0</ArmorRating_Heat>
 			<Flammability>0.0</Flammability>
 			<DecompressionResistance>1</DecompressionResistance>
+			<VacuumSpeedMultiplier>4</VacuumSpeedMultiplier>
 		</statBases>
 		
 		<vehicleStats>
 			<Mass>1500</Mass>
-			<MoveSpeed LockSetting="True">0</MoveSpeed>
+			<MoveSpeed>9</MoveSpeed>
 			<CargoCapacity>3000</CargoCapacity>
 			<RepairRate>1.6</RepairRate>
 			<FlightSpeed>16</FlightSpeed>
@@ -2144,10 +2185,14 @@
 				<stop>Spawned</stop>
 				<value>VVE_VehicleEngineRocket</value>
 			</li>
+			<li>
+				<start>IgnitionOn</start>
+				<stop>IgnitionOff</stop>
+				<value>VVE_VehicleEngineHeavy</value>
+			</li>
 		</soundSustainersOnEvent>
 		
 		<properties>
-			
 			<roles>
 				<li>
 					<key>pilot</key>
@@ -2165,6 +2210,12 @@
 					<slots>0</slots>
 				</li>
 			</roles>
+			<customTerrainCosts>
+				<li>
+					<key>EmptySpace</key>
+					<value>0</value>
+				</li>
+			</customTerrainCosts>
 		</properties>
 		
 		<components>
@@ -2343,6 +2394,7 @@
 						<maxTicksVertical>250</maxTicksVertical>
 						<renderShadow>false</renderShadow>
 						<lockShadowZ>true</lockShadowZ>
+						<forcedRotation>East</forcedRotation>
 						
 						<events>
 							<li>
@@ -2597,6 +2649,7 @@
 						<maxTicks>500</maxTicks>
 						<maxTicksVertical>100</maxTicksVertical>
 						<renderShadow>false</renderShadow>
+						<forcedRotation>East</forcedRotation>
 						
 						<events>
 							<li>
@@ -2850,6 +2903,9 @@
 				<turrets>
 				</turrets>
 			</li>
+			<li>
+				<compClass>SaveOurShip2.Vehicles.CompHoverMode</compClass>
+			</li>
 		</comps>
 	</Vehicles.VehicleDef>
 
@@ -2861,7 +2917,7 @@
 			<shaderType>MoteGlow</shaderType>
 		</graphicData>
 		
-		<altitudeLayer>MoteOverheadLow</altitudeLayer>
+		<altitudeLayer>MoteLow</altitudeLayer>
 		<fadeInTime>0.1</fadeInTime>
 		<solidTime>0.25</solidTime>
 		<fadeOutTime>0.25</fadeOutTime>

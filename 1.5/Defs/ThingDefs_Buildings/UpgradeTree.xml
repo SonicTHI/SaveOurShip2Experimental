@@ -974,7 +974,7 @@
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<useShuttleFuel>true</useShuttleFuel>
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttleLaser</turretDef>
 								
 								<gizmoLabel>Laser Turret A</gizmoLabel>
@@ -1020,7 +1020,7 @@
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<useShuttleFuel>true</useShuttleFuel>
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttlePlasma</turretDef>
 								
 								<gizmoLabel>Plasma Turret A</gizmoLabel>
@@ -1065,7 +1065,7 @@
 					</li>
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttleTorpedo</turretDef>
 								
 								<gizmoLabel>Torpedo Turret A</gizmoLabel>
@@ -1110,7 +1110,7 @@
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<useShuttleFuel>true</useShuttleFuel>
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttleLaser</turretDef>
 								
 								<gizmoLabel>Laser Turret B</gizmoLabel>
@@ -1156,7 +1156,7 @@
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<useShuttleFuel>true</useShuttleFuel>
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttlePlasma</turretDef>
 								
 								<gizmoLabel>Plasma Turret B</gizmoLabel>
@@ -1201,7 +1201,7 @@
 					</li>
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttleTorpedo</turretDef>
 								
 								<gizmoLabel>Torpedo Turret B</gizmoLabel>
@@ -1246,7 +1246,7 @@
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<useShuttleFuel>true</useShuttleFuel>
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttleLaser</turretDef>
 								
 								<gizmoLabel>Laser Turret C</gizmoLabel>
@@ -1292,7 +1292,7 @@
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<useShuttleFuel>true</useShuttleFuel>
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttlePlasma</turretDef>
 								
 								<gizmoLabel>Plasma Turret C</gizmoLabel>
@@ -1337,7 +1337,7 @@
 					</li>
 					<li Class="SaveOurShip2.Vehicles.SoS2TurretUpgrade">
 						<turrets>
-							<li>
+							<li Class="SaveOurShip2.Vehicles.SoS2VehicleTurret">
 								<turretDef>SoS2ShuttleTorpedo</turretDef>
 								
 								<gizmoLabel>Torpedo Turret C</gizmoLabel>
@@ -1518,12 +1518,6 @@
 		
 		<minRange>30</minRange>
 		
-		<recoil>
-			<distanceTotal>0.26</distanceTotal>
-			<distancePerTick>0.065</distancePerTick>
-			<speedMultiplierPostRecoil>0.15</speedMultiplierPostRecoil>
-		</recoil>
-		
 		<fireModes>
 			<li>
 				<shotsPerBurst>1</shotsPerBurst>
@@ -1545,11 +1539,6 @@
 		
 		<graphics>
 			<li>
-				<recoil>
-					<distanceTotal>0.15</distanceTotal>
-					<distancePerTick>0.03</distancePerTick>
-					<speedMultiplierPostRecoil>0.15</speedMultiplierPostRecoil>
-				</recoil>
 				<graphicData>
 					<texPath>Things/Shuttle/TurretTorpedo</texPath>
 					<graphicClass>Vehicles.Graphic_Turret</graphicClass>

@@ -5,6 +5,7 @@ using System.Text;
 using Verse;
 using RimWorld;
 using UnityEngine;
+using Vehicles;
 
 namespace SaveOurShip2
 {
@@ -79,6 +80,14 @@ namespace SaveOurShip2
 				if (building.def.CanHaveFaction)
 					building.SetFaction(fac);
 			}
+			foreach (VehiclePawn shuttle in map.listerThings.GetThingsOfType<VehiclePawn>())
+            {
+				if(shuttle.Faction!=fac && this.Area.Contains(shuttle.Position))
+                {
+					shuttle.DisembarkAll();
+					shuttle.SetFaction(fac);
+                }
+            }
 		}
 		//threat
 		public int BuildingCount = 0;

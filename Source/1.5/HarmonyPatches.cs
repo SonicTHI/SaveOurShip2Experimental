@@ -4294,7 +4294,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(LandingTargeter __instance, LocalTargetInfo localTargetInfo, ref PositionState __result)
 		{
-			if (__result == PositionState.Invalid)
+			if (__result == PositionState.Invalid || !ModSettings_SoS.restrictedBoarding)
 				return;
 			Map map = Current.Game.CurrentMap;
 			var mapComp = map.GetComponent<ShipMapComp>();
@@ -4385,7 +4385,7 @@ namespace SaveOurShip2
     }
 
 	[HarmonyPatch(typeof(VehicleTurret), "Init")]
-	public static class MatchTurretToHardpoint //It was not worth the effort to figure out why a launched shuttle was rendering turrets differently from a stationary one
+	public static class MatchTurretToHardpoint
     {
 		public static void Postfix(VehicleTurret __instance)
         {
@@ -4411,14 +4411,27 @@ namespace SaveOurShip2
 				else
 					turret.renderProperties.north = new Vector2(0, 3);
 			}
-			turret.renderProperties.north = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
-			turret.renderProperties.east = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
-			turret.renderProperties.south = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
-			turret.renderProperties.west = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
+			turret.renderProperties.north = turret.rootDrawPos_North =  Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 0);
+			turret.renderProperties.northEast = turret.rootDrawPos_NorthEast = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, -45);
+			turret.renderProperties.east = turret.rootDrawPos_East = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
+			turret.renderProperties.southEast = turret.rootDrawPos_SouthEast = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 45);
+			turret.renderProperties.south = turret.rootDrawPos_South = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 180);
+			turret.renderProperties.southWest = turret.rootDrawPos_SouthWest = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 135);
+			turret.renderProperties.west = turret.rootDrawPos_West = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 270);
+			turret.renderProperties.northWest = turret.rootDrawPos_NorthWest = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 225);
 		}
     }
 
-	[HarmonyPatch(typeof(VehiclePawn),"PostLoad")]
+	[HarmonyPatch(typeof(VehicleTurret),"RecacheRootDrawPos")]
+	public static class DisableRecacheTurretDrawSoICanDoItManually
+    {
+		public static bool Prefix(VehicleTurret __instance)
+        {
+			return !(__instance is SoS2VehicleTurret);
+        }
+    }
+
+    [HarmonyPatch(typeof(VehiclePawn),"PostLoad")]
 	public static class PostLoadNewComponents
     {
 		public static List<ThingComp> CompsToAdd;

@@ -1,8 +1,11 @@
-﻿using System;
+﻿using RimWorld;
+using SmashTools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Vehicles;
 using Verse;
 
@@ -53,6 +56,16 @@ namespace SaveOurShip2.Vehicles
         {
             base.ExposeData();
             Scribe_Values.Look<int>(ref hardpoint, "hardpoint");
+        }
+
+        public override void DrawAt(Vector3 drawPos, Rot8 rot)
+        {
+            if (!vehicle.Spawned)
+            {
+                VehicleGraphics.DrawTurret(this, drawPos, Rot8.East);
+            }
+            else
+                base.DrawAt(drawPos, rot);
         }
     }
 }

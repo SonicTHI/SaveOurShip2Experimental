@@ -300,5 +300,11 @@ namespace SaveOurShip2
         {
 			public static UpgradeTreeDef SoS2ShuttleUpgradeTree;
 		}
+
+		[DefOf]
+		public static class FleckDefOf
+        {
+			public static FleckDef SoS2Exhaust_Short;
+        }
 	}
 }

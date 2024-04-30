@@ -1597,7 +1597,7 @@ namespace SaveOurShip2
 							List<VehiclePawn> shuttles = new List<VehiclePawn>();
 							foreach (VehiclePawn vehicle in this.map.listerThings.GetThingsOfType<VehiclePawn>())
 							{
-								if (vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight && vehicle.CompUpgradeTree != null && ShipInteriorMod2.ShuttleIsArmed(vehicle))
+								if (vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight && vehicle.CompUpgradeTree != null && ShipInteriorMod2.ShuttleIsArmed(vehicle) && vehicle.NextAvailableHandler()!=null)
 									shuttles.Add(vehicle);
 							}
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
@@ -1611,7 +1611,7 @@ namespace SaveOurShip2
 									Job job = new Job(JobDefOf_Vehicles.Board, myShuttle);
 									p.jobs.StopAll();
 									p.jobs.StartJob(job);
-									map.GetComponent<VehicleReservationManager>().Reserve<VehicleHandler, VehicleHandlerReservation>(myShuttle, p, job, myShuttle.handlers.Where(handler => handler.AreSlotsAvailable).RandomElement());
+									map.GetComponent<VehicleReservationManager>().Reserve<VehicleHandler, VehicleHandlerReservation>(myShuttle, p, job, myShuttle.NextAvailableHandler());
 									shuttlesToBeFilled.Remove(myShuttle);
 									shuttlesYetToLaunch.Add(myShuttle);
 								}
@@ -1626,7 +1626,7 @@ namespace SaveOurShip2
 							List<VehiclePawn> shuttles = new List<VehiclePawn>();
 							foreach(VehiclePawn vehicle in this.map.listerThings.GetThingsOfType<VehiclePawn>())
                             {
-								if (vehicle.CompVehicleLauncher!=null && vehicle.CompVehicleLauncher.SpaceFlight&&(vehicle.CompUpgradeTree == null || !ShipInteriorMod2.ShuttleIsArmed(vehicle)))
+								if (vehicle.CompVehicleLauncher!=null && vehicle.CompVehicleLauncher.SpaceFlight&&(vehicle.CompUpgradeTree == null || !ShipInteriorMod2.ShuttleIsArmed(vehicle)) && vehicle.NextAvailableHandler() != null)
 									shuttles.Add(vehicle);
                             }
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
@@ -1640,8 +1640,8 @@ namespace SaveOurShip2
 									Job job = new Job(JobDefOf_Vehicles.Board, myShuttle);
 									p.jobs.StopAll();
 									p.jobs.StartJob(job);
-									map.GetComponent<VehicleReservationManager>().Reserve<VehicleHandler, VehicleHandlerReservation>(myShuttle, p, job, myShuttle.handlers.Where(handler=>handler.AreSlotsAvailable).RandomElement());
-									if(!myShuttle.handlers.Any(handler=>handler.AreSlotsAvailable))
+									map.GetComponent<VehicleReservationManager>().Reserve<VehicleHandler, VehicleHandlerReservation>(myShuttle, p, job, myShuttle.NextAvailableHandler());
+									if(myShuttle.NextAvailableHandler() == null)
 										shuttlesToBeFilled.Remove(myShuttle);
 								}
 							}
@@ -2210,12 +2210,11 @@ namespace SaveOurShip2
             {
 				Map mapToSpawnIn;
 				if (mission.mission == ShuttleMission.BOARD)
-				{
 					mapToSpawnIn = ShipCombatTargetMap;
-				}
+				else //Return mission
+					mapToSpawnIn = map;
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
-					mapToSpawnIn = originMapComp.targetMapComp.map;
 					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 					if (!mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(mission.shuttle) != IntVec3.Zero))
 					{
@@ -2236,7 +2235,6 @@ namespace SaveOurShip2
 				}
 				else //enemy shuttles - never returns?
 				{
-					mapToSpawnIn = originMapComp.map;
 					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
 					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);

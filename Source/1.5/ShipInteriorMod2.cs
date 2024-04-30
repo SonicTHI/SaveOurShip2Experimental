@@ -75,7 +75,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
 
 			Scribe_Values.Look(ref easyMode, "easyMode", false);
-			Scribe_Values.Look(ref shipMapPhysics, "shipMapPhysics", true);
+			Scribe_Values.Look(ref shipMapPhysics, "shipMapPhysics", false);
 			//Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
@@ -98,7 +98,7 @@ namespace SaveOurShip2
 			fleetChance = 0.3;
 		public static bool
 			easyMode = false,
-			shipMapPhysics = true,
+			shipMapPhysics = false,
 			//useVacuumPathfinding = true,
 			renderPlanet = false,
 			useSplashScreen = true,

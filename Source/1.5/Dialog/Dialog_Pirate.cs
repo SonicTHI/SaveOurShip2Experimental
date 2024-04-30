@@ -200,7 +200,7 @@ namespace SaveOurShip2
 		{
 			transferables = new List<TransferableOneWay>();
 			AddItemsToTransferables();
-			pawnsTransfer = new TransferableOneWayWidget(null, null, null, TranslatorFormattedStringExtensions.Translate("FormCaravanColonyThingCountTip"), drawMass: true, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload, includePawnsMassInMassUsage: true, () => MassCapacity - MassUsage, 0f, ignoreSpawnedCorpseGearAndInventoryMass: false, map.Tile, drawMarketValue: true, drawEquippedWeapon: true, drawNutritionEatenPerDay: false, drawItemNutrition: false, drawForagedFoodPerDay: false);
+			pawnsTransfer = new TransferableOneWayWidget(transferables.Where((TransferableOneWay x) => x.ThingDef.category == ThingCategory.Pawn && x.ThingDef.race.Humanlike), null, null, TranslatorFormattedStringExtensions.Translate("FormCaravanColonyThingCountTip"), drawMass: true, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload, includePawnsMassInMassUsage: true, () => MassCapacity - MassUsage, 0f, ignoreSpawnedCorpseGearAndInventoryMass: false, map.Tile, drawMarketValue: true, drawEquippedWeapon: true, drawNutritionEatenPerDay: false, drawItemNutrition: false, drawForagedFoodPerDay: false);
 			CaravanUIUtility.AddPawnsSections(pawnsTransfer, transferables);
 			itemsTransfer = new TransferableOneWayWidget(transferables.Where((TransferableOneWay x) => x.ThingDef.category != ThingCategory.Pawn), null, null, TranslatorFormattedStringExtensions.Translate("FormCaravanColonyThingCountTip"), drawMass: true, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload, includePawnsMassInMassUsage: true, () => MassCapacity - MassUsage, 0f, ignoreSpawnedCorpseGearAndInventoryMass: false, map.Tile, drawMarketValue: true, drawEquippedWeapon: false, drawNutritionEatenPerDay: false, drawItemNutrition: true, drawForagedFoodPerDay: false, drawDaysUntilRot: true);
 			CountToTransferChanged();
@@ -228,6 +228,12 @@ namespace SaveOurShip2
 				{
 					int which = Rand.RangeInclusive(0, transporters.Count - 1);
 					transporters[which].TryAddOrTransfer(splitPiece);
+					if (splitPiece is Pawn pawn)
+					{
+						pawn.SetFaction(Faction.OfPlayer);
+						if (ModLister.IdeologyInstalled)
+							pawn.guest.SetGuestStatus(Faction.OfPlayer, GuestStatus.Slave);
+					}
 				});
 			}
 		}
@@ -245,7 +251,7 @@ namespace SaveOurShip2
 
 		private void AddItemsToTransferables()
 		{
-			foreach (Thing item in tradeShip.GetDirectlyHeldThings())
+			foreach (Thing item in tradeShip.Goods)
 				AddToTransferables(item);
 		}
 

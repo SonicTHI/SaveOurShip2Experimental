@@ -161,15 +161,30 @@ namespace SaveOurShip2
 			}
 			foreach (ShuttleMissionData mission in enemyMapComp.ShuttleMissions)
 			{
-				baseY += 45;
-				string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
-				int strSize = 5 + str.Length * 8;
-				Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 395 + strSize, 35);
-				Widgets.DrawMenuSection(rect2);
-				Widgets.Label(rect2.ContractedBy(7), str);
+				if (mission.shuttle.Faction == Faction.OfPlayer)
+				{
+					baseY += 45;
+					string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
+					int strSize = 5 + str.Length * 8;
+					Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 395 + strSize, 35);
+					Widgets.DrawMenuSection(rect2);
+					Widgets.Label(rect2.ContractedBy(7), str);
 
-				DrawShuttleHealth(screenHalf + 455 + strSize, baseY, mission.shuttle);
-				DrawShuttleHeat(screenHalf + 645 + strSize, baseY, mission.shuttle);
+					DrawShuttleHealth(screenHalf - 220, baseY, mission.shuttle);
+					DrawShuttleHeat(screenHalf - 415, baseY, mission.shuttle);
+				}
+				else
+				{
+					baseY += 45;
+					string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
+					int strSize = 5 + str.Length * 8;
+					Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 395 + strSize, 35);
+					Widgets.DrawMenuSection(rect2);
+					Widgets.Label(rect2.ContractedBy(7), str);
+
+					DrawShuttleHealth(screenHalf + 455 + strSize, baseY, mission.shuttle);
+					DrawShuttleHeat(screenHalf + 645 + strSize, baseY, mission.shuttle);
+				}
 			}
 
 			//range bar
@@ -238,7 +253,12 @@ namespace SaveOurShip2
 			}
 			foreach (ShipMapComp.ShuttleMissionData mission in enemyMapComp.ShuttleMissions)
 			{
-				Verse.Widgets.DrawTexturePart(
+				if(mission.shuttle.Faction==Faction.OfPlayer)
+					Verse.Widgets.DrawTexturePart(
+						new Rect(screenHalf - 10 - mission.rangeTraveled + range, baseY - 12, 12, 12),
+						new Rect(0, 0, mission.mission == ShipMapComp.ShuttleMission.RETURN ? 1 : -1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
+				else
+					Verse.Widgets.DrawTexturePart(
 						new Rect(screenHalf - 10 - mission.rangeTraveled + range, baseY - 24, 12, 12),
 						new Rect(0, 0, mission.mission == ShipMapComp.ShuttleMission.RETURN ? 1 : -1, 1), (Texture2D)ResourceBank.shuttleEnemy.MatSingle.mainTexture);
 			}
@@ -4240,7 +4260,18 @@ namespace SaveOurShip2
                 }
             }
         }
-    }
+	}
+
+	[HarmonyPatch(typeof(Skyfaller), "HitRoof")]
+	public static class DontBreakBayRoofs
+	{
+		public static bool Prefix(Skyfaller __instance)
+		{
+			if (__instance.Position.GetThingList(__instance.Map).Any(t => t.TryGetComp<CompShipBay>() != null))
+				return false;
+			return true;
+		}
+	}
 
 	//New VF shuttle patches
 	[HarmonyPatch(typeof(CompVehicleLauncher), "CanLaunchWithCargoCapacity")]
@@ -4519,6 +4550,28 @@ namespace SaveOurShip2
         {
 			return __instance.parent.Map != null;
         }
+    }
+
+	[HarmonyPatch(typeof(GenGridVehicles), "Walkable")]
+	public static class TEMPFixShuttleSpawnFail
+    {
+		public static bool Prefix()
+        {
+			return false;
+        }
+
+		public static void Postfix(IntVec3 cell, VehicleDef vehicleDef, Map map, ref bool __result)
+        {
+			try
+			{
+				__result = ComponentCache.GetCachedMapComponent<VehicleMapping>(map)[vehicleDef].VehiclePathGrid.Walkable(cell);
+			}
+			catch (Exception e)
+            {
+				Log.Error("[SoS2] Temporary patch prevented shuttle spawn from failing. Exception was: " + e);
+				__result = true;
+            }
+		}
     }
 
 	/*causes lag

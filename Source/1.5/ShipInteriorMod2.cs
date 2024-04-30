@@ -940,8 +940,8 @@ namespace SaveOurShip2
 						VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
 						VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);
 						vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
-						GenSpawn.Spawn(vehicle, adjPos, map);
 						SpawnShuttleUpgrades(vehicle);
+						GenSpawn.Spawn(vehicle, adjPos, map);
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
@@ -1060,7 +1060,7 @@ namespace SaveOurShip2
 							var powerComp = b.TryGetComp<CompPowerTrader>();
 							if (powerComp != null)
 								powerComp.PowerOn = true;
-							if (ideoActive && b.def.CanBeStyled() && fac.ideos.PrimaryIdeo.style.StyleForThingDef(thing.def) != null)
+							if (ideoActive && b.def.CanBeStyled() && fac.ideos?.PrimaryIdeo?.style.StyleForThingDef(thing.def) != null)
 							{
 								b.SetStyleDef(fac.ideos.PrimaryIdeo.GetStyleFor(thing.def));
 							}
@@ -2925,7 +2925,10 @@ namespace SaveOurShip2
 		{
 			if (vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def == ResourceBank.UpgradeTreeDefOf.SoS2ShuttleUpgradeTree)
 			{
-				switch (Rand.Range(0, 4))
+				int version = Rand.Range(0, 4);
+				if (Current.ProgramState == ProgramState.MapInitializing)
+					version = 0;
+				switch (version)
 				{
 					case 0: //Boarding shuttle
 						Log.Message("Speccing shuttle as troop transport");

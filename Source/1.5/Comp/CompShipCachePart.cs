@@ -258,9 +258,9 @@ namespace SaveOurShip2
 			else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && parent.def.Size == IntVec2.One && (Props.Hull && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map) || (Props.Plating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
 			{
 				//replace part with foam, no detach checks
-				foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.parent.TryGetComp<CompRefuelable>().Fuel > 0 && d.parent.TryGetComp<CompPowerTrader>().PowerOn))
+				foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.fuelComp.Fuel > 0 && d.powerComp.PowerOn))
 				{
-					dist.parent.TryGetComp<CompRefuelable>().ConsumeFuel(1);
+					dist.fuelComp.ConsumeFuel(1);
 					FoamFill = true;
 					return;
 				}
@@ -274,6 +274,7 @@ namespace SaveOurShip2
 				if (path == 0)
 					replaceCore = true;
 				ship.Area.Remove(vec);
+				ship.AreaDestroyed.Add(vec);
 				mapComp.MapShipCells.Remove(vec);
 				if (replaceCore) //tile under bridge was hit before bridge
 				{

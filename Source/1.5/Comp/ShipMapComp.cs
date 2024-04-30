@@ -23,6 +23,13 @@ namespace SaveOurShip2
 		inEvent, //events that have movement - meteors
 		burnUpSet //force terminate map+WO if no player pawns or pods present or in flight to
 	}
+	public enum ShipAI : byte
+	{
+		none,
+		normal, //aggressive, consider weapons vs enemy
+		carrier, //try to stay just out of torp range
+		avoidant //flee is possible, else fight - traders, etc.
+	}
 
 	public class ShipMapComp : MapComponent, IThingHolder //It's an IThingHolder because it holds shuttles while they're on missions
 	{
@@ -140,8 +147,8 @@ namespace SaveOurShip2
 			}
 		}*/
 		//SC
-		readonly float[] minRange = new[] { 0f, 60f, 110f, 160f };
-		readonly float[] maxRange = new[] { 40f, 90f, 140f, 190f };
+		readonly float[] minRange = new[] { 0f, 60f, 110f, 160f, 310f };
+		readonly float[] maxRange = new[] { 40f, 90f, 140f, 190f, 330f };
 		public override void ExposeData()
 		{
 			base.ExposeData();
@@ -188,7 +195,7 @@ namespace SaveOurShip2
 				Scribe_Values.Look<bool>(ref callSlowTick, "callSlowTick");
 
 				//SC only - target only
-				Scribe_Values.Look<bool>(ref HasShipMapAI, "HasShipMapAI");
+				Scribe_Values.Look<ShipAI>(ref ShipMapAI, "ShipMapAI", 0);
 				Scribe_Values.Look<int>(ref BattleStartTick, "BattleStartTick");
 				Scribe_Values.Look<bool>(ref Retreating, "Retreating");
 				Scribe_Values.Look<bool>(ref warnedAboutRetreat, "warnedAboutRetreat");
@@ -272,7 +279,8 @@ namespace SaveOurShip2
 		}
 
 		//SC only - target only
-		public bool HasShipMapAI = false; //target has ship map AI
+		public ShipAI ShipMapAI; //target ship map AI
+		public bool HasShipMapAI => ShipMapAI != ShipAI.none; //target has ship map AI
 		//public Thing TurretTarget; //AI target for turrets
 		public int BattleStartTick = 0; //AI retreat param, stalemate eject
 		public bool Retreating = false; //AI is retreating
@@ -285,7 +293,6 @@ namespace SaveOurShip2
 		public List<VehiclePawn> shuttlesYetToLaunch = new List<VehiclePawn>(); //Shuttles which haven't launched yet
 		void ResetShipAI()
 		{
-			HasShipMapAI = true;
 			//TurretTarget = TargetMapComp.MapRootListAll.RandomElement();
 			BattleStartTick = Find.TickManager.TicksGame;
 			Retreating = false;
@@ -667,7 +674,6 @@ namespace SaveOurShip2
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Starting combat vs map: ".Colorize(Color.green) + ShipCombatTargetMap);
 			TargetMapComp.ShipCombatTargetMap = ShipCombatOriginMap;
 			TargetMapComp.ShipCombatOriginMap = ShipCombatOriginMap;
-			TargetMapComp.HasShipMapAI = true; //td for now set manually here
 			//start caches
 			RepathMap();
 			ResetCombatVars();
@@ -832,13 +838,12 @@ namespace SaveOurShip2
 
 			newMap = GetOrGenerateMapUtility.GetOrGenerateMap(ShipInteriorMod2.FindWorldTile(), mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy);
 
-			//newMap = ShipInteriorMod2.GeneratePocketSpaceMap(mapSize, ResourceBank.WorldObjectDefOf.ShipEnemy, null, map);
-
 			var mp = (WorldObjectOrbitingShip)newMap.Parent;
 			mp.Radius = radius;
 			mp.Theta = theta;
 			mp.Phi = phi;
 			var newMapComp = newMap.GetComponent<ShipMapComp>();
+			newMapComp.ShipMapAI = ShipAI.normal;
 			if (passingShip is DerelictShip d)
 			{
 				if (fakeWreck)
@@ -847,11 +852,19 @@ namespace SaveOurShip2
 				}
 				else
 				{
+					newMapComp.ShipMapAI = ShipAI.none;
 					shieldsActive = false;
 					newMapComp.ShipMapState = ShipMapState.isGraveyard;
 					newMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(d.ticksUntilDeparture);
 					Find.LetterStack.ReceiveLetter("SoS.EncounterStart".Translate(), "SoS.EncounterStartDesc".Translate(newMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.NeutralEvent);
 				}
+			}
+			else if (shipDef != null)
+			{
+				if (shipDef.carrier)
+					newMapComp.ShipMapAI = ShipAI.carrier;
+				else if (shipDef.tradeShip)
+					newMapComp.ShipMapAI = ShipAI.avoidant;
 			}
 			newMapComp.ShipFaction = faction;
 			if (wreckLevel != 3)
@@ -888,6 +901,7 @@ namespace SaveOurShip2
 				ship.BuildingCountAtCombatStart = ship.BuildingCount;
 				BuildingCountAtStart += ship.BuildingCountAtCombatStart;
 				ship.BuildingsDestroyed.Clear();
+				ship.AreaDestroyed.Clear();
 			}
 			BuildingsCount = BuildingCountAtStart;
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " BuildingCountAtStart: ".Colorize(Color.green) + BuildingCountAtStart);
@@ -914,8 +928,8 @@ namespace SaveOurShip2
 		private void DetermineInitialRange(bool ambush)
 		{
 			//advsensors = further, active cloak = closer
-			//nominal should be 320-380
-			//ambush 180-280
+			//nominal should be 320-360
+			//ambush 200-300
 			int detectionLevel = 0;
 			if (ambush)
 				detectionLevel -= 3;
@@ -928,7 +942,9 @@ namespace SaveOurShip2
 
 			if (TargetMapComp.Cloaks.Where(cloak => cloak.TryGetComp<CompPowerTrader>().PowerOn).Any())
 				detectionLevel -= 2;
-			Range = 300 + (detectionLevel * 20) + Rand.Range(0, 60);
+			Range = 300 + (detectionLevel * 20) + Rand.Range(0, 40);
+			if (ambush)
+				Range += Rand.Range(20, 40);
 		}
 
 		//battle
@@ -1440,7 +1456,7 @@ namespace SaveOurShip2
 					{
 						//True, totalThreat:1, TargetMapComp.totalThreat:1, TurretNum:0
 						//retreat
-						if (Retreating || totalThreat / (TargetMapComp.totalThreat * 0.9f * Difficulty) < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || tick > BattleStartTick + 90000)
+						if (Retreating || totalThreat / (TargetMapComp.totalThreat * 0.9f * Difficulty) < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || tick > BattleStartTick + 90000 || (ShipMapAI == ShipAI.avoidant && MapEnginePower > targetMapComp.MapEnginePower))
 						{
 							Heading = -1;
 							Retreating = true;
@@ -1455,42 +1471,39 @@ namespace SaveOurShip2
 						{
 							//calc ratios, higher = better
 							float[] threatRatio = new[] { threatPerSegment[0] / TargetMapComp.threatPerSegment[0],
-							threatPerSegment[1] / TargetMapComp.threatPerSegment[1],
-							threatPerSegment[2] / TargetMapComp.threatPerSegment[2],
-							threatPerSegment[3] / TargetMapComp.threatPerSegment[3] };
-							float max = threatRatio[0];
+									threatPerSegment[1] / TargetMapComp.threatPerSegment[1],
+									threatPerSegment[2] / TargetMapComp.threatPerSegment[2],
+									threatPerSegment[3] / TargetMapComp.threatPerSegment[3] };
 							int best = 0;
-							//string str = "threat LMSC: ";
-							for (int i = 1; i < 4; i++)
+							if (ShipMapAI == ShipAI.carrier)
+								best = 4;
+							else
 							{
-								if (threatRatio[i] == 1) //threat is 0 for both
-									threatRatio[i] = 0;
-								//str += threatRatio[i] + " ";
-								if (threatRatio[i] > max)
+								float max = threatRatio[0];
+								//string str = "threat LMSC: ";
+								for (int i = 1; i < 4; i++)
 								{
-									max = threatRatio[i];
-									best = i;
+									if (threatRatio[i] == 1) //threat is 0 for both
+										threatRatio[i] = 0;
+									//str += threatRatio[i] + " ";
+									if (threatRatio[i] > max)
+									{
+										max = threatRatio[i];
+										best = i;
+									}
 								}
 							}
+							int prevHeading = Heading;
 							//Log.Message(str);
 							if (OriginMapComp.Range > maxRange[best]) //forward
-							{
-								if (Heading != 1)
-									Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI now moving forward".Colorize(Color.green) + " Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
 								Heading = 1;
-							}
 							else if (OriginMapComp.Range <= minRange[best]) //back
-							{
-								if (Heading != -1)
-									Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI now moving backward".Colorize(Color.green) + " Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
 								Heading = -1;
-							}
 							else //chill
-							{
-								if (Heading != 0)
-									Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI now stopped".Colorize(Color.green) + " Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
 								Heading = 0;
-							}
+
+							if (Prefs.DevMode && prevHeading != Heading)
+								Log.Message("SOS2: ".Colorize(Color.cyan) + map + " AI dir change: ".Colorize(Color.green) + Heading + " Threat ratios (CSML): " + threatRatio[0].ToString("F2") + " " + threatRatio[1].ToString("F2") + " " + threatRatio[2].ToString("F2") + " " + threatRatio[3].ToString("F2"));
 						}
 					}
 					else //all engines dead or disabled
@@ -1738,6 +1751,10 @@ namespace SaveOurShip2
 						}
 					}
 				}
+				if (tick % 360 == 0 && ModSettings_SoS.shipMapPhysics && MapEnginePower > 0.02f)
+				{
+					MoveAllOffShip();
+				}
 			}
 			else if (ShipMapState == ShipMapState.inTransit)
 			{
@@ -1926,6 +1943,57 @@ namespace SaveOurShip2
 				}
 			}
 		}
+
+		public void MoveAllOffShip()
+		{
+			//fling pawns to grave if they stumble off ship
+			List<Pawn> pawns = new List<Pawn>();
+			foreach (Pawn p in map.mapPawns.AllPawnsSpawned.ToList())
+			{
+				if (ShipIndexOnVec(p.Position) == -1)
+				{
+					pawns.Add(p);
+				}
+			}
+			if (pawns.Any())
+			{
+				if (ShipGraveyard == null)
+					SpawnGraveyard();
+				foreach (Pawn p in pawns)
+				{
+					p.DeSpawn();
+				}
+				foreach (Pawn p in pawns)
+				{
+					p.SpawnSetup(ShipGraveyard, false);
+				}
+			}
+			//move things
+			if (ShipsOnMap.Values.Any(s => s.AreaDestroyed.Any()))
+			{
+				List<Thing> things = new List<Thing>();
+				if (ShipGraveyard == null)
+					SpawnGraveyard();
+				foreach (SpaceShipCache ship in ShipsOnMap.Values)
+				{
+					foreach (IntVec3 v in ship.AreaDestroyed)
+					{
+						foreach (Thing thing in v.GetThingList(map))
+						{
+							things.Add(thing);
+						}
+					}
+				}
+				foreach (Thing p in things)
+				{
+					p.DeSpawn();
+				}
+				foreach (Thing p in things)
+				{
+					p.SpawnSetup(ShipGraveyard, false);
+				}
+			}
+		}
 		public void KillAllOffShip()
 		{
 			List<Pawn> pawns = new List<Pawn>();
@@ -1997,6 +2065,11 @@ namespace SaveOurShip2
 		public void RemoveShipFromBattle(int shipIndex) //only call this on mapcomp tick!
 		{
 			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " RemoveShipFromBattle");
+			if (!ShipsOnMap.ContainsKey(shipIndex))
+			{
+				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Tried removing ship ".Colorize(Color.green) + shipIndex + " but it is not present in cache!");
+				return;
+			}
 			SpaceShipCache ship = ShipsOnMap[shipIndex];
 			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && !ship.IsWreck && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
 			{
@@ -2067,7 +2140,7 @@ namespace SaveOurShip2
 			//tgtMap is opponent of origin
 			Map tgtMap = OriginMapComp.ShipCombatTargetMap;
 			var tgtMapComp = OriginMapComp.TargetMapComp;
-			tgtMapComp.HasShipMapAI = false;
+			tgtMapComp.ShipMapAI = ShipAI.none;
 			tgtMapComp.ShipMapState = ShipMapState.isGraveyard;
 			if (OriginMapComp.map == ShipInteriorMod2.FindPlayerShipMap())
 				OriginMapComp.ShipMapState = ShipMapState.nominal;
@@ -2152,6 +2225,7 @@ namespace SaveOurShip2
 			OriginMapComp.originMapComp = null;
 			OriginMapComp.targetMapComp = null;
 		}
+		
 		//proj
 		public IntVec3 FindClosestEdgeCell(Map map, IntVec3 targetCell)
 		{
@@ -2179,17 +2253,16 @@ namespace SaveOurShip2
 			return CellFinder.RandomEdgeCell(dir, map);
 		}
 
+		//shuttles
         public void GetChildHolders(List<IThingHolder> outChildren)
         {
 			foreach (VehiclePawn shuttle in ShuttlesOnMissions)
 				outChildren.Add(shuttle);
         }
-
         public ThingOwner GetDirectlyHeldThings()
         {
 			return ShuttlesOnMissions;
         }
-
 		public ShuttleMissionData RegisterShuttleMission(VehiclePawn shuttle, ShuttleMission mission)
         {
 			if(shuttle.Spawned)
@@ -2203,7 +2276,6 @@ namespace SaveOurShip2
 			ShuttleMissions.Add(data);
 			return data;
 		}
-
 		public void DeRegisterShuttleMission(ShuttleMissionData mission, bool destroyed=false)
         {
 			Log.Message("De-registering shuttle mission " + mission.mission);
@@ -2275,7 +2347,6 @@ namespace SaveOurShip2
 				}
 			}
         }
-
 		public enum ShuttleMission
         {
 			BOARD, //go to ShipCombatTargetMap, attempt boarding action
@@ -2284,7 +2355,6 @@ namespace SaveOurShip2
 			STRAFE, //fly to far range, shoot at enemy ship
 			BOMB //fly to furthest range, shoot at enemy ship, rturn when out of torpedoes
 		}
-
 		public class ShuttleMissionData : IExposable, ILoadReferenceable
         {
 			public VehiclePawn shuttle;

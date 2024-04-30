@@ -238,6 +238,10 @@
 	<SoS.ResetShieldRadiusDesc>Reset shield radius to 40.</SoS.ResetShieldRadiusDesc>
 	<SoS.DecShieldRadius>Decrease shield radius</SoS.DecShieldRadius>
 	<SoS.IncShieldRadius>Increase shield radius</SoS.IncShieldRadius>
+	<SoS.FoamFill>Fill destroyed</SoS.FoamFill>
+	<SoS.FoamFillDesc>Fill destroyed areas of your ship with hullfoam from its distributors.</SoS.FoamFillDesc>
+	<SoS.FoamFillDisabled>Nothing to fill or no fuel in distributors.</SoS.FoamFillDisabled>
+	
 	<!-- reactor -->
 	<SoS.ReactorOverdrive>Overdrive I</SoS.ReactorOverdrive>
 	<SoS.ReactorOverdriveDesc>Increase reactor output, at the cost of increased heat production and fuel consumption.</SoS.ReactorOverdriveDesc>

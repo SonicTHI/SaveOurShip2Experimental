@@ -17,8 +17,8 @@
 	<SoS.Settings.Misc>Misc settings:</SoS.Settings.Misc>
 	<SoS.Settings.EasyMode>Easy boarding mode</SoS.Settings.EasyMode>
 	<SoS.Settings.EasyMode.Desc>If checked, will prevent player pawns in shuttles from dying to point defense. Default: off</SoS.Settings.EasyMode.Desc>
-	<SoS.Settings.RestrictBoarding>Respect space physics</SoS.Settings.RestrictBoarding>
-	<SoS.Settings.RestrictBoarding.Desc>While enabled you will not be able to launch shuttles at enemy ships when they have active engines and no open bay. Turning this off will allow you to land in empty space outside the ship. Default: Off</SoS.Settings.RestrictBoarding.Desc>
+	<SoS.Settings.ShipMapPhysics>Ship map physics</SoS.Settings.ShipMapPhysics>
+	<SoS.Settings.ShipMapPhysics.Desc>If enabled pawns and things not on a ship while it is moving will be sent to the graveyard. This will also restrict shuttle landings to bays or outer hull. Default: Off</SoS.Settings.ShipMapPhysics.Desc>
 	<SoS.Settings.ArchoRemove>Remove archo animals</SoS.Settings.ArchoRemove>
 	<SoS.Settings.ArchoRemove.Desc>Removes archo animals if they are spawned into the game before the required building is built. Default: on</SoS.Settings.ArchoRemove.Desc>
 	<SoS.Settings.Debug>Debug mode</SoS.Settings.Debug>

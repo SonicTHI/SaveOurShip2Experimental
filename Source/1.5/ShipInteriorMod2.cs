@@ -2213,15 +2213,15 @@ namespace SaveOurShip2
 			}
 			foreach (Thing spawnThing in toMoveShipParts)
 			{
-				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb, fac);
 			}
 			foreach (Thing spawnThing in toMoveBuildings)
 			{
-				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb, fac);
 			}
 			foreach (Thing spawnThing in toMoveThings)
 			{
-				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb);
+				ReSpawnThingOnMap(spawnThing, targetMap, adjustment, rotb, fac);
 			}
 			if (devMode)
 				watch.Record("moveThings");
@@ -2438,7 +2438,7 @@ namespace SaveOurShip2
 				Log.Message("SOS2: ".Colorize(Color.cyan) + sourceMap + " Ship move complete in ".Colorize(Color.green) + watch.MakeReport());
 			}
 		}
-		private static void ReSpawnThingOnMap(Thing spawnThing, Map targetMap, IntVec3 adjustment, int rotb)
+		private static void ReSpawnThingOnMap(Thing spawnThing, Map targetMap, IntVec3 adjustment, int rotb, Faction fac=null)
 		{
 			if (spawnThing.Destroyed)
 				return;
@@ -2484,6 +2484,9 @@ namespace SaveOurShip2
 			}
 			else
 				spawnThing.Position += adjustment;
+
+			if (fac != null && !(spawnThing is Pawn) && spawnThing.def.CanHaveFaction)
+				spawnThing.SetFaction(fac);
 
 			spawnThing.SpawnSetup(targetMap, false);
 		}

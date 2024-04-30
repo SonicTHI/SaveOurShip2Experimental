@@ -1436,7 +1436,7 @@
 		</graphicData>
 		<projectile>
 			<damageDef>ShipLaserSmall</damageDef>
-			<damageAmountBase>20</damageAmountBase>
+			<damageAmountBase>30</damageAmountBase>
 			<speed>800</speed>
 			<explosionRadius>1</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>
@@ -1492,7 +1492,7 @@
 		</graphicData>
 		<projectile>
 			<damageDef>ShipPlasmaSmall</damageDef>
-			<damageAmountBase>25</damageAmountBase>
+			<damageAmountBase>40</damageAmountBase>
 			<speed>160</speed>
 			<explosionRadius>1.2</explosionRadius>
 			<soundHitThickRoof>Artillery_HitThickRoof</soundHitThickRoof>

@@ -364,4 +364,99 @@
 			</li>
 		</subSounds>
 	</SoundDef>
+	<SoundDef>
+		<defName>SoS_HeavyShuttleTakeoff_Loop</defName>
+		<sustain>True</sustain>
+		<context>MapOnly</context>
+		<priorityMode>PrioritizeNearest</priorityMode>
+		<subSounds>
+			<li>
+				<muteWhenPaused>True</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Shuttle/Heavy_Rocket_Bass_Loop</clipPath>
+					</li>
+				</grains>
+				<volumeRange>40~45</volumeRange>
+				<pitchRange>1~1.015</pitchRange>
+				<distRange>0~30</distRange>
+			</li>
+		</subSounds>
+	</SoundDef>
+	<SoundDef>
+		<defName>SoS_HeavyShuttleLiftoff</defName>
+		<sustain>False</sustain>
+		<context>MapOnly</context>
+		<priorityMode>PrioritizeNearest</priorityMode>
+		<subSounds>
+			<li>
+				<muteWhenPaused>True</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Shuttle/Heavy_Shuttle_Liftoff</clipPath>
+					</li>
+				</grains>
+				<volumeRange>40~45</volumeRange>
+				<pitchRange>1~1.015</pitchRange>
+				<distRange>0~30</distRange>
+			</li>
+		</subSounds>
+	</SoundDef>
+	<SoundDef>
+		<defName>SoS_ShuttleTakeoff_Loop</defName>
+		<sustain>True</sustain>
+		<context>MapOnly</context>
+		<priorityMode>PrioritizeNearest</priorityMode>
+		<subSounds>
+			<li>
+				<muteWhenPaused>True</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Shuttle/Ship_Engines_Rumble_Loop</clipPath>
+					</li>
+				</grains>
+				<volumeRange>40~45</volumeRange>
+				<pitchRange>1~1.015</pitchRange>
+				<distRange>0~30</distRange>
+			</li>
+		</subSounds>
+	</SoundDef>
+	<SoundDef>
+		<defName>SoS_ShuttleLiftoff</defName>
+		<sustain>False</sustain>
+		<context>MapOnly</context>
+		<priorityMode>PrioritizeNearest</priorityMode>
+		<subSounds>
+			<li>
+				<muteWhenPaused>True</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Shuttle/Small_Shuttle_Liftoff</clipPath>
+					</li>
+				</grains>
+				<volumeRange>40~45</volumeRange>
+				<pitchRange>1~1.015</pitchRange>
+				<distRange>0~30</distRange>
+			</li>
+		</subSounds>
+	</SoundDef>
+	<SoundDef>
+		<defName>SoS_RocketLaunch</defName>
+		<sustain>False</sustain>
+		<context>MapOnly</context>
+		<priorityMode>PrioritizeNearest</priorityMode>
+		<subSounds>
+			<li>
+				<muteWhenPaused>True</muteWhenPaused>
+				<grains>
+					<li Class="AudioGrain_Clip">
+						<clipPath>Shuttle/RocketLaunch</clipPath>
+					</li>
+				</grains>
+				<volumeRange>40~45</volumeRange>
+				<pitchRange>1~1.015</pitchRange>
+				<distRange>0~30</distRange>
+			</li>
+		</subSounds>
+	</SoundDef>
 </Defs>

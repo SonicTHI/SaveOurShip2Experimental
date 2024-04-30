@@ -86,18 +86,12 @@
 			<FlightSpeed>24</FlightSpeed>
 		</vehicleStats>
 		
-		<soundSustainersOnEvent>
+		<soundOneShotsOnEvent>
 			<li>
-				<start>AerialVehicleLaunch</start>
-				<stop>Despawned</stop>
-				<value>VVE_VehicleEngineRocket</value>
+				<key>AerialVehicleLaunch</key>
+				<value>SoS_RocketLaunch</value>
 			</li>
-			<li>
-				<start>AerialVehicleLanding</start>
-				<stop>Spawned</stop>
-				<value>VVE_VehicleEngineRocket</value>
-			</li>
-		</soundSustainersOnEvent>
+		</soundOneShotsOnEvent>
 		
 		<drawProperties>
 			<displayRotation>North</displayRotation>
@@ -678,19 +672,26 @@
 			<li>
 				<start>AerialVehicleLaunch</start>
 				<stop>Despawned</stop>
-				<value>VVE_VehicleEngineRocket</value>
+				<value>SoS_ShuttleTakeoff_Loop</value>
 			</li>
 			<li>
 				<start>AerialVehicleLanding</start>
 				<stop>Spawned</stop>
-				<value>VVE_VehicleEngineRocket</value>
+				<value>SoS_ShuttleTakeoff_Loop</value>
 			</li>
 			<li>
 				<start>IgnitionOn</start>
 				<stop>IgnitionOff</stop>
-				<value>VVE_VehicleEngineHeavy</value>
+				<value>SoS_ShuttleTakeoff_Loop</value>
 			</li>
 		</soundSustainersOnEvent>
+		
+		<soundOneShotsOnEvent>
+			<li>
+				<key>AerialVehicleLaunch</key>
+				<value>SoS_ShuttleLiftoff</value>
+			</li>
+		</soundOneShotsOnEvent>
 		
 		<properties>
 			<roles>
@@ -1355,19 +1356,26 @@
 			<li>
 				<start>AerialVehicleLaunch</start>
 				<stop>Despawned</stop>
-				<value>VVE_VehicleEngineRocket</value>
+				<value>SoS_HeavyShuttleTakeoff_Loop</value>
 			</li>
 			<li>
 				<start>AerialVehicleLanding</start>
 				<stop>Spawned</stop>
-				<value>VVE_VehicleEngineRocket</value>
+				<value>SoS_HeavyShuttleTakeoff_Loop</value>
 			</li>
 			<li>
 				<start>IgnitionOn</start>
 				<stop>IgnitionOff</stop>
-				<value>VVE_VehicleEngineHeavy</value>
+				<value>SoS_HeavyShuttleTakeoff_Loop</value>
 			</li>
 		</soundSustainersOnEvent>
+		
+		<soundOneShotsOnEvent>
+			<li>
+				<key>AerialVehicleLaunch</key>
+				<value>SoS_HeavyShuttleLiftoff</value>
+			</li>
+		</soundOneShotsOnEvent>
 		
 		<properties>
 			<roles>
@@ -2178,19 +2186,26 @@
 			<li>
 				<start>AerialVehicleLaunch</start>
 				<stop>Despawned</stop>
-				<value>VVE_VehicleEngineRocket</value>
+				<value>SoS_HeavyShuttleTakeoff_Loop</value>
 			</li>
 			<li>
 				<start>AerialVehicleLanding</start>
 				<stop>Spawned</stop>
-				<value>VVE_VehicleEngineRocket</value>
+				<value>SoS_HeavyShuttleTakeoff_Loop</value>
 			</li>
 			<li>
 				<start>IgnitionOn</start>
 				<stop>IgnitionOff</stop>
-				<value>VVE_VehicleEngineHeavy</value>
+				<value>SoS_HeavyShuttleTakeoff_Loop</value>
 			</li>
 		</soundSustainersOnEvent>
+		
+		<soundOneShotsOnEvent>
+			<li>
+				<key>AerialVehicleLaunch</key>
+				<value>SoS_HeavyShuttleLiftoff</value>
+			</li>
+		</soundOneShotsOnEvent>
 		
 		<properties>
 			<roles>

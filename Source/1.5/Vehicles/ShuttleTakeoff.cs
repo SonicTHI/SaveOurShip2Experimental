@@ -99,7 +99,7 @@ namespace SaveOurShip2.Vehicles
             vehicleSkyfaller_Leaving.vehicle = vehicle;
             vehicleSkyfaller_Leaving.createWorldObject = false;
             GenSpawn.Spawn(vehicleSkyfaller_Leaving, vehicle.Position, vehicle.Map, vehicle.CompVehicleLauncher.launchProtocol.CurAnimationProperties.forcedRotation ?? vehicle.Rotation);
-            ((ShuttleTakeoff)vehicle.CompVehicleLauncher.launchProtocol).TempMissionRef = vehicle.Map.GetComponent<ShipMapComp>().OriginMapComp.RegisterShuttleMission(vehicle, mission);
+            ((ShuttleTakeoff)vehicle.CompVehicleLauncher.launchProtocol).TempMissionRef = vehicle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(vehicle, mission);
             CameraJumper.TryHideWorld();
             vehicle.EventRegistry[VehicleEventDefOf.AerialVehicleLaunch].ExecuteEvents();
         }

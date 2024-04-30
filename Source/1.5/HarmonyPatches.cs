@@ -4411,14 +4411,14 @@ namespace SaveOurShip2
 				else
 					turret.renderProperties.north = new Vector2(0, 3);
 			}
-			turret.renderProperties.north = turret.rootDrawPos_North =  Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 0);
-			turret.renderProperties.northEast = turret.rootDrawPos_NorthEast = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, -45);
 			turret.renderProperties.east = turret.rootDrawPos_East = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 90);
 			turret.renderProperties.southEast = turret.rootDrawPos_SouthEast = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 45);
-			turret.renderProperties.south = turret.rootDrawPos_South = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 180);
-			turret.renderProperties.southWest = turret.rootDrawPos_SouthWest = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 135);
+			turret.renderProperties.south = turret.rootDrawPos_South = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 0);
+			turret.renderProperties.southWest = turret.rootDrawPos_SouthWest = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 315);
 			turret.renderProperties.west = turret.rootDrawPos_West = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 270);
 			turret.renderProperties.northWest = turret.rootDrawPos_NorthWest = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 225);
+			turret.renderProperties.northEast = turret.rootDrawPos_NorthEast = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 135);
+			turret.renderProperties.north = turret.rootDrawPos_North = Vector2Utility.RotatedBy(turret.renderProperties.north.Value, 180);
 		}
     }
 

@@ -134,7 +134,9 @@ namespace SaveOurShip2
 				//tier 1: plating and hull not on plating
 				//tier 2: hull (all, placecheck prevents dupes/overwrites)
 				//tier 3: rest, non ship part
-				if (tier == 1 && (comp != null && (comp.Plating || (comp.isHull && !Plating.Contains(v)))) || (tier == 2 && def.building.shipPart && comp != null && !comp.Plating) || tier == 3 && !def.building.shipPart)
+				if (tier == 1 && comp != null && (comp.Plating || (comp.isHull && !Plating.Contains(v)))
+					|| (tier == 2 && def.building.shipPart && comp != null && !comp.Plating)
+					|| (tier == 3 && !def.building.shipPart))
 				{
 					if (GenConstruct.CanPlaceBlueprintAt(def, v, shape.rot, map))
 					{

@@ -87,8 +87,8 @@
 			<li>ShipBasics</li>
 		</prerequisites>
 		<tab>ResearchTabShip</tab>
-		<researchViewX>6</researchViewX>
-		<researchViewY>0</researchViewY>
+		<researchViewX>3</researchViewX>
+		<researchViewY>3</researchViewY>
 		<generalRules>
 		  <rulesStrings>
 			<li>subject->Johnson-Tanaka theory</li>
@@ -99,32 +99,6 @@
 			<li>subject_story->maintained a Johnson-Tanaka drive for two decades, as the ship traveled between the stars</li>
 
 			<li>subject_gerund->constructing starship drives</li>
-		  </rulesStrings>
-		</generalRules>
-	</ResearchProjectDef>
-	<ResearchProjectDef ParentName="ShipResearchProjectBase">
-		<defName>ShipSalvageBayGlitter</defName>
-		<label>glittertech salvage bay</label>
-		<description>Utilize a reversed polarity JT beam to quickly retrieve salvage after a space battle.\nNote: Actually constructing the bay will require an Entanglement Manifold, a very rare artifact.</description>
-		<baseCost>3000</baseCost>
-		<techLevel>Spacer</techLevel>
-		<prerequisites>
-			<li>SoSJTDrive</li>
-			<li>ShipSalvageBay</li>
-		</prerequisites>
-		<tab>ResearchTabShip</tab>
-		<researchViewX>7</researchViewX>
-		<researchViewY>0</researchViewY>
-		<generalRules>
-		  <rulesStrings>
-			<li>subject->Johnson-Tanaka theory</li>
-			<li>subject->exotic momentum transfer</li>
-
-			<li>subject_story->pirated interplanetary shipping, capturing small spacecraft with an asteroid-mounted tractor beam</li>
-			<li>subject_story->salvaged the wreckage of a spacefaring archotech which had apparently committed suicide</li>
-			<li>subject_story->jury-rigged a warship's drive to pull torpedoes away from vulnerable civilian craft</li>
-
-			<li>subject_gerund->salvaging starship wrecks</li>
 		  </rulesStrings>
 		</generalRules>
 	</ResearchProjectDef>
@@ -354,8 +328,8 @@
 			<li>Cryptosleep</li>
 		</prerequisites>
 		<tab>ResearchTabShip</tab>
-		<researchViewX>4</researchViewX>
-		<researchViewY>0</researchViewY>
+		<researchViewX>0</researchViewX>
+		<researchViewY>4.75</researchViewY>
 		<generalRules>
 		  <rulesStrings>
 			<li>subject->small animal cryptosleep</li>
@@ -380,8 +354,8 @@
 			<li>Cryptosleep</li>
 		</prerequisites>
 		<tab>ResearchTabShip</tab>
-		<researchViewX>5</researchViewX>
-		<researchViewY>0</researchViewY>
+		<researchViewX>0</researchViewX>
+		<researchViewY>4.25</researchViewY>
 		<generalRules>
 		  <rulesStrings>
 			<li>subject->starship-grade cryptosleep caskets</li>
@@ -394,6 +368,7 @@
 		  </rulesStrings>
 		</generalRules>
 	</ResearchProjectDef>
+	<!-- misc -->
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipCapacitor</defName>
 		<label>capacitor arrays</label>
@@ -406,7 +381,7 @@
 		</prerequisites>
 		<tab>ResearchTabShip</tab>
 		<researchViewX>0</researchViewX>
-		<researchViewY>2.75</researchViewY>
+		<researchViewY>3</researchViewY>
 		<generalRules>
 		  <rulesStrings>
 			<li>subject->advanced energy storage</li>
@@ -416,56 +391,6 @@
 			<li>subject_story->became obsessed with safe power delivery to starship weaponry following a tragic conduit explosion</li>
 
 			<li>subject_gerund->powering a starship</li>
-
-		  </rulesStrings>
-		</generalRules>
-	</ResearchProjectDef>
-	<ResearchProjectDef ParentName="ShipResearchProjectBase">
-		<defName>ShipSalvageBay</defName>
-		<label>salvage bay</label>
-		<description>Utilize an automated gantry and swarms of tug drones to quickly retrieve salvage after a space battle.</description>
-		<baseCost>2000</baseCost>
-		<techLevel>Spacer</techLevel>
-		<prerequisites>
-			<li>ShipBasics</li>
-		</prerequisites>
-		<tab>ResearchTabShip</tab>
-		<researchViewX>0</researchViewX>
-		<researchViewY>1</researchViewY>
-		<generalRules>
-		  <rulesStrings>
-			<li>subject->spaceborne salvage operations</li>
-
-			<li>subject_story->operated a legally-gray vulture fleet, picking the debris of space battles</li>
-			<li>subject_story->welded several captured ships into a single ungainly hulk</li>
-			<li>subject_story->served under an AI captain who took a strange pleasure in "eating" defeated ships</li>
-
-			<li>subject_gerund->salvaging shipwrecks</li>
-
-		  </rulesStrings>
-		</generalRules>
-	</ResearchProjectDef>
-	<ResearchProjectDef ParentName="ShipResearchProjectBase">
-		<defName>HullFoam</defName>
-		<label>hullfoam</label>
-		<description>Craft hullfoam, a sprayable substance that hardens into airtight barriers. Useful for quickly patching holes in starships.</description>
-		<baseCost>1000</baseCost>
-		<techLevel>Spacer</techLevel>
-		<prerequisites>
-			<li>ShipBasics</li>
-		</prerequisites>
-		<tab>ResearchTabShip</tab>
-		<researchViewX>0</researchViewX>
-		<researchViewY>3.25</researchViewY>
-		<generalRules>
-		  <rulesStrings>
-			<li>subject->emergency ship repair</li>
-
-			<li>subject_story->held off a pirate boarding party by blocking corridors with hullfoam</li>
-			<li>subject_story->saved an early generation ship by repairing structural damage suffered during its deceleration burn</li>
-			<li>subject_story->became obsessed with cocooning the ship in protective layers after suffering radiation exposure</li>
-
-			<li>subject_gerund->patching holes in ship hull</li>
 
 		  </rulesStrings>
 		</generalRules>
@@ -520,7 +445,83 @@
 		  </rulesStrings>
 		</generalRules>
 	</ResearchProjectDef>
-	<!-- shuttles -->
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>HullFoam</defName>
+		<label>hullfoam</label>
+		<description>Craft hullfoam, a sprayable substance that hardens into airtight barriers. Useful for quickly patching holes in starships.</description>
+		<baseCost>1000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>3.75</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->emergency ship repair</li>
+
+			<li>subject_story->held off a pirate boarding party by blocking corridors with hullfoam</li>
+			<li>subject_story->saved an early generation ship by repairing structural damage suffered during its deceleration burn</li>
+			<li>subject_story->became obsessed with cocooning the ship in protective layers after suffering radiation exposure</li>
+
+			<li>subject_gerund->patching holes in ship hull</li>
+
+		  </rulesStrings>
+		</generalRules>
+	</ResearchProjectDef>
+	<!-- bays -->
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSalvageBay</defName>
+		<label>salvage bay</label>
+		<description>Utilize an automated gantry and swarms of tug drones to quickly retrieve salvage after a space battle.</description>
+		<baseCost>2000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>ShipBasics</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>0</researchViewX>
+		<researchViewY>2.50</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->spaceborne salvage operations</li>
+
+			<li>subject_story->operated a legally-gray vulture fleet, picking the debris of space battles</li>
+			<li>subject_story->welded several captured ships into a single ungainly hulk</li>
+			<li>subject_story->served under an AI captain who took a strange pleasure in "eating" defeated ships</li>
+
+			<li>subject_gerund->salvaging shipwrecks</li>
+
+		  </rulesStrings>
+		</generalRules>
+	</ResearchProjectDef>
+	<ResearchProjectDef ParentName="ShipResearchProjectBase">
+		<defName>ShipSalvageBayGlitter</defName>
+		<label>glittertech salvage bay</label>
+		<description>Utilize a reversed polarity JT beam to quickly retrieve salvage after a space battle.\nNote: Actually constructing the bay will require an Entanglement Manifold, a very rare artifact.</description>
+		<baseCost>3000</baseCost>
+		<techLevel>Spacer</techLevel>
+		<prerequisites>
+			<li>SoSJTDrive</li>
+			<li>ShipSalvageBay</li>
+		</prerequisites>
+		<tab>ResearchTabShip</tab>
+		<researchViewX>4</researchViewX>
+		<researchViewY>2.50</researchViewY>
+		<generalRules>
+		  <rulesStrings>
+			<li>subject->Johnson-Tanaka theory</li>
+			<li>subject->exotic momentum transfer</li>
+
+			<li>subject_story->pirated interplanetary shipping, capturing small spacecraft with an asteroid-mounted tractor beam</li>
+			<li>subject_story->salvaged the wreckage of a spacefaring archotech which had apparently committed suicide</li>
+			<li>subject_story->jury-rigged a warship's drive to pull torpedoes away from vulnerable civilian craft</li>
+
+			<li>subject_gerund->salvaging starship wrecks</li>
+		  </rulesStrings>
+		</generalRules>
+	</ResearchProjectDef>
 	<ResearchProjectDef ParentName="ShipResearchProjectBase">
 		<defName>ShipShuttleBay</defName>
 		<label>shuttle bay</label>
@@ -547,6 +548,7 @@
 		  </rulesStrings>
 		</generalRules>
 	</ResearchProjectDef>
+	<!-- shuttles -->
 	<ResearchProjectDef>
 		<defName>ShuttlePersonal</defName>
 		<label>Personal Shuttle</label>

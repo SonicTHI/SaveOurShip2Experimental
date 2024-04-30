@@ -25,10 +25,11 @@ namespace SaveOurShip2
 		//other buildings: +-for count, mass if on shipPart
 
 		public HashSet<IntVec3> Area = new HashSet<IntVec3>(); //shipParts add to area, removed in despawn, detach
+		public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //total area destroyed in combat
 		public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
 		public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
 		//for rebuild after battle, reset before combat, rebuild gizmo
-		public HashSet<Tuple<BuildableDef, IntVec3, Rot4>> BuildingsDestroyed = new HashSet<Tuple<BuildableDef, IntVec3, Rot4>>();
+		public HashSet<Tuple<ThingDef, IntVec3, Rot4>> BuildingsDestroyed = new HashSet<Tuple<ThingDef, IntVec3, Rot4>>();
 		public HashSet<Building> BuildingsNonRot = new HashSet<Building>();
 		public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
 		public List<CompRCSThruster> RCSs = new List<CompRCSThruster>();
@@ -82,7 +83,7 @@ namespace SaveOurShip2
 			}
 			foreach (VehiclePawn shuttle in map.listerThings.GetThingsOfType<VehiclePawn>())
             {
-				if(shuttle.Faction!=fac && this.Area.Contains(shuttle.Position))
+				if (shuttle.Faction!=fac && Area.Contains(shuttle.Position))
                 {
 					shuttle.DisembarkAll();
 					shuttle.SetFaction(fac);
@@ -747,7 +748,7 @@ namespace SaveOurShip2
 				BuildingCount--;
 				if (mapComp.ShipMapState == ShipMapState.inCombat && !IsWreck && b.def.blueprintDef != null && (mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly))
 				{
-					BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(b.def, b.Position, b.Rotation));
+					BuildingsDestroyed.Add(new Tuple<ThingDef, IntVec3, Rot4>(b.def, b.Position, b.Rotation));
 				}
 				if (BuildingsNonRot.Contains(b))
 				{

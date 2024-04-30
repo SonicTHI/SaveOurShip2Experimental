@@ -95,7 +95,7 @@ namespace SaveOurShip2
 					}
 					else //normal move to target map, claim moved ships for player
 					{
-						ShipInteriorMod2.MoveShip(shipRoot, targetMap, InstallBlueprintUtility.ExistingBlueprintFor(this).Position - bottomLeftPos, Faction.OfPlayer, shipRotNum, includeRock);
+						ShipInteriorMod2.MoveShip(shipRoot, targetMap, InstallBlueprintUtility.ExistingBlueprintFor(this).Position - bottomLeftPos, fac, shipRotNum, includeRock);
 					}
 				}
 				if (!Destroyed)

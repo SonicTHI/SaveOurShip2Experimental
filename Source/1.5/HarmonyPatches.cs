@@ -4294,7 +4294,7 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(LandingTargeter __instance, LocalTargetInfo localTargetInfo, ref PositionState __result)
 		{
-			if (__result == PositionState.Invalid || !ModSettings_SoS.respectPhysics)
+			if (__result == PositionState.Invalid || !ModSettings_SoS.shipMapPhysics)
 				return;
 			Map map = Current.Game.CurrentMap;
 			var mapComp = map.GetComponent<ShipMapComp>();

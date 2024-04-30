@@ -10,7 +10,7 @@
 		<label>Heavy carrier</label>
 		<combatPoints>1308</combatPoints>
 		<rarityLevel>2</rarityLevel>
-		<neverRandom>True</neverRandom>
+		<carrier>True</carrier>
 		<core>
 			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
 			<x>161</x>

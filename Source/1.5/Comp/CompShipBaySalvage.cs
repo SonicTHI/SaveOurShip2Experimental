@@ -7,6 +7,7 @@ using Verse;
 using RimWorld;
 using RimWorld.Planet;
 using Vehicles;
+using Verse.AI;
 
 namespace SaveOurShip2
 {
@@ -141,7 +142,7 @@ namespace SaveOurShip2
 				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecksCommandDesc"),
 				icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")
 			};
-			if (!nominal || GenHostility.AnyHostileActiveThreatToPlayer(parent.Map))
+			if (!nominal || AnyHostileActiveThreatTo(parent.Map, Faction.OfPlayer))
 			{
 				moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 				moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
@@ -162,6 +163,7 @@ namespace SaveOurShip2
 		{
 			List<Building> buildings = new List<Building>();
 			List<Thing> things = new List<Thing>();
+			List<VehiclePawn> shuttles = new List<VehiclePawn>();
 			foreach (Thing t in parent.Map.listerThings.AllThings)
 			{
 				if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
@@ -169,7 +171,7 @@ namespace SaveOurShip2
 					buildings.Add(b);
 				}
 				else if (t is VehiclePawn p)
-					p.SetFaction(Faction.OfPlayer);
+					shuttles.Add(p);
 				else if (t is DetachedShipPart)
 					things.Add(t);
 			}
@@ -188,7 +190,35 @@ namespace SaveOurShip2
 			{
 				t.Destroy();
 			}
+			foreach (VehiclePawn shuttle in shuttles)
+			{
+				shuttle.DisembarkAll();
+				shuttle.SetFaction(Faction.OfPlayer);
+			}
 			parent.Map.fogGrid.ClearAllFog();
+		}
+		public bool AnyHostileActiveThreatTo(Map map, Faction faction, bool countDormantPawnsAsHostile = false, bool canBeFogged = false)
+		{
+			foreach (IAttackTarget item in map.attackTargetsCache.TargetsHostileToFaction(faction))
+			{
+				if (GenHostility.IsActiveThreatTo(item, faction) && !(item.Thing is VehiclePawn))
+				{
+					Log.Message("1");
+					return true;
+				}
+
+				Pawn pawn;
+				if (countDormantPawnsAsHostile && item.Thing.HostileTo(faction) && (canBeFogged || !item.Thing.Fogged()) && !item.ThreatDisabled(null) && (pawn = item.Thing as Pawn) != null && !(pawn is VehiclePawn))
+				{
+					CompCanBeDormant comp = pawn.GetComp<CompCanBeDormant>();
+					if (comp != null && !comp.Awake)
+					{
+						Log.Message("2");
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 		public override void CompTickRare()
 		{

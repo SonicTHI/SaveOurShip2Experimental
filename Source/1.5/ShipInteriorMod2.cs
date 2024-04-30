@@ -75,7 +75,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
 
 			Scribe_Values.Look(ref easyMode, "easyMode", false);
-			Scribe_Values.Look(ref respectPhysics, "respectPhysics", true);
+			Scribe_Values.Look(ref shipMapPhysics, "shipMapPhysics", true);
 			//Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
@@ -98,7 +98,7 @@ namespace SaveOurShip2
 			fleetChance = 0.3;
 		public static bool
 			easyMode = false,
-			respectPhysics = true,
+			shipMapPhysics = true,
 			//useVacuumPathfinding = true,
 			renderPlanet = false,
 			useSplashScreen = true,
@@ -118,7 +118,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f15";
+		public const string SOS2EXPversion = "V101f16";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -195,7 +195,7 @@ namespace SaveOurShip2
 			options.Gap();
 			options.Label("SoS.Settings.Misc".Translate());
 			options.GapLine();
-			options.CheckboxLabeled("SoS.Settings.RespectPhysics".Translate(), ref respectPhysics, "SoS.Settings.RespectPhysics.Desc".Translate());
+			options.CheckboxLabeled("SoS.Settings.ShipMapPhysics".Translate(), ref shipMapPhysics, "SoS.Settings.ShipMapPhysics.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.ArchoRemove".Translate(), ref archoRemove, "SoS.Settings.ArchoRemove.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.Debug".Translate(), ref debugMode, "SoS.Settings.Debug.Desc".Translate());
@@ -518,7 +518,7 @@ namespace SaveOurShip2
 			//map.fogGrid.ClearAllFog();
 			return map;
 		}
-		public static Map GeneratePocketSpaceMap(IntVec3 size, WorldObjectDef worldObjectDef, IEnumerable<GenStepWithParams> extraGenStepDefs = null, Map sourceMap = null) //not working correctly
+		/*public static Map GeneratePocketSpaceMap(IntVec3 size, WorldObjectDef worldObjectDef, IEnumerable<GenStepWithParams> extraGenStepDefs = null, Map sourceMap = null) //unusable, shuttles need tiles, etc.
 		{
 			PocketMapParent pocketMapParent = WorldObjectMaker.MakeWorldObject(worldObjectDef) as PocketMapParent;
 			if (sourceMap != null)
@@ -526,7 +526,7 @@ namespace SaveOurShip2
 			Map result = MapGenerator.GenerateMap(size, pocketMapParent, worldObjectDef.mapGenerator, extraGenStepDefs, null, true);
 			Find.World.pocketMaps.Add(pocketMapParent);
 			return result;
-		}
+		}*/
 		public static Map FindPlayerShipMap()
 		{
 			return ((MapParent)Find.WorldObjects.AllWorldObjects.Where(ob => ob.def == ResourceBank.WorldObjectDefOf.ShipOrbiting).FirstOrDefault())?.Map;
@@ -1890,11 +1890,11 @@ namespace SaveOurShip2
 				ship.Map = targetMap;
 				if (adjustment != IntVec3.Zero && ship.BuildingsDestroyed.Any()) //cache: adjust destroyed
 				{
-					HashSet<Tuple<BuildableDef, IntVec3, Rot4>> buildingsDestroyed = new HashSet<Tuple<BuildableDef, IntVec3, Rot4>>(ship.BuildingsDestroyed);
+					HashSet<Tuple<ThingDef, IntVec3, Rot4>> buildingsDestroyed = new HashSet<Tuple<ThingDef, IntVec3, Rot4>>(ship.BuildingsDestroyed);
 					ship.BuildingsDestroyed.Clear();
 					foreach (var sh in buildingsDestroyed)
 					{
-						ship.BuildingsDestroyed.Add(new Tuple<BuildableDef, IntVec3, Rot4>(sh.Item1, Transform(sh.Item2), sh.Item3));
+						ship.BuildingsDestroyed.Add(new Tuple<ThingDef, IntVec3, Rot4>(sh.Item1, Transform(sh.Item2), sh.Item3));
 					}
 					buildingsDestroyed.Clear();
 				}
@@ -2890,7 +2890,7 @@ namespace SaveOurShip2
 		public static bool ShuttleCanBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
 		{
 			//incombat if enemy t/w above x - shuttles if bay is available, else pods only
-			if (!ModSettings_SoS.respectPhysics || targetMapComp.MapEnginePower < 0.02f)
+			if (!ModSettings_SoS.shipMapPhysics || targetMapComp.MapEnginePower < 0.02f)
 				return true;
 			if (vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
 				return true;

@@ -182,6 +182,7 @@ namespace SaveOurShip2
 
 				//SC only - origin only
 				originMapComp = null;
+				Scribe_Values.Look<float>(ref Difficulty, "Difficulty");
 				Scribe_Values.Look<float>(ref Range, "Range");
 				Scribe_Values.Look<bool>(ref attackedTradeship, "attackedTradeship");
 				Scribe_Values.Look<bool>(ref callSlowTick, "callSlowTick");
@@ -253,6 +254,7 @@ namespace SaveOurShip2
 		}
 
 		//SC only - origin only
+		public float Difficulty; //current battle difficulty factor taken from settings
 		public float Range; //400 is furthest away, 0 is up close and personal
 		public bool attackedTradeship; //target was AI tradeship - notoriety gain
 		public bool callSlowTick = false; //call both slow ticks
@@ -720,7 +722,8 @@ namespace SaveOurShip2
 			}
 			else //using player ship combat rating
 			{
-				CR = MapThreat() * Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.1f, 5f);
+				Difficulty = (float)ModSettings_SoS.difficultySoS;
+				CR = MapThreat() * Difficulty;
 				if (CR < 30) //minimum rating
 					CR = 30;
 				else //reduce difficulty early or at low rating
@@ -1437,7 +1440,7 @@ namespace SaveOurShip2
 					{
 						//True, totalThreat:1, TargetMapComp.totalThreat:1, TurretNum:0
 						//retreat
-						if (Retreating || totalThreat / (TargetMapComp.totalThreat * 0.9f * Mathf.Clamp((float)ModSettings_SoS.difficultySoS, 0.3f, 3f)) < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || tick > BattleStartTick + 90000)
+						if (Retreating || totalThreat / (TargetMapComp.totalThreat * 0.9f * Difficulty) < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || tick > BattleStartTick + 90000)
 						{
 							Heading = -1;
 							Retreating = true;
@@ -2275,11 +2278,11 @@ namespace SaveOurShip2
 
 		public enum ShuttleMission
         {
-			BOARD,
-			RETURN,
-			INTERCEPT,
-			STRAFE,
-			BOMB
+			BOARD, //go to ShipCombatTargetMap, attempt boarding action
+			RETURN, //return to map you started the previous mission from, attempt landing action
+			INTERCEPT, //fly to close range, intercept enemy shuttles and projectiles
+			STRAFE, //fly to far range, shoot at enemy ship
+			BOMB //fly to furthest range, shoot at enemy ship, rturn when out of torpedoes
 		}
 
 		public class ShuttleMissionData : IExposable, ILoadReferenceable

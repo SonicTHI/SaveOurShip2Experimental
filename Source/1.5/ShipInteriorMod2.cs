@@ -75,7 +75,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref fleetChance, "fleetChance", 0.3);
 
 			Scribe_Values.Look(ref easyMode, "easyMode", false);
-			Scribe_Values.Look(ref respectPhysics, "respectPhysics", true);
+			Scribe_Values.Look(ref restrictBoarding, "restrictBoarding", false);
 			//Scribe_Values.Look(ref useVacuumPathfinding, "useVacuumPathfinding", true);
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
@@ -98,7 +98,7 @@ namespace SaveOurShip2
 			fleetChance = 0.3;
 		public static bool
 			easyMode = false,
-			respectPhysics = true,
+			restrictBoarding = true,
 			//useVacuumPathfinding = true,
 			renderPlanet = false,
 			useSplashScreen = true,
@@ -195,7 +195,7 @@ namespace SaveOurShip2
 			options.Gap();
 			options.Label("SoS.Settings.Misc".Translate());
 			options.GapLine();
-			options.CheckboxLabeled("SoS.Settings.RespectPhysics".Translate(), ref respectPhysics, "SoS.Settings.RespectPhysics.Desc".Translate());
+			options.CheckboxLabeled("SoS.Settings.RestrictBoarding".Translate(), ref restrictBoarding, "SoS.Settings.RestrictBoarding.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.EasyMode".Translate(), ref easyMode, "SoS.Settings.EasyMode.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.ArchoRemove".Translate(), ref archoRemove, "SoS.Settings.ArchoRemove.Desc".Translate());
 			options.CheckboxLabeled("SoS.Settings.Debug".Translate(), ref debugMode, "SoS.Settings.Debug.Desc".Translate());
@@ -940,8 +940,8 @@ namespace SaveOurShip2
 						VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
 						VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);
 						vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
-						GenSpawn.Spawn(vehicle, adjPos, map);
 						SpawnShuttleUpgrades(vehicle);
+						GenSpawn.Spawn(vehicle, adjPos, map);
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
@@ -1060,7 +1060,7 @@ namespace SaveOurShip2
 							var powerComp = b.TryGetComp<CompPowerTrader>();
 							if (powerComp != null)
 								powerComp.PowerOn = true;
-							if (ideoActive && b.def.CanBeStyled() && fac.ideos.PrimaryIdeo.style.StyleForThingDef(thing.def) != null)
+							if (ideoActive && b.def.CanBeStyled() && fac.ideos?.PrimaryIdeo?.style.StyleForThingDef(thing.def) != null)
 							{
 								b.SetStyleDef(fac.ideos.PrimaryIdeo.GetStyleFor(thing.def));
 							}
@@ -2890,7 +2890,7 @@ namespace SaveOurShip2
 		public static bool ShuttleCanBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
 		{
 			//incombat if enemy t/w above x - shuttles if bay is available, else pods only
-			if (!ModSettings_SoS.respectPhysics || targetMapComp.MapEnginePower < 0.02f)
+			if (!ModSettings_SoS.restrictBoarding || targetMapComp.MapEnginePower < 0.02f)
 				return true;
 			if (vehicle.VehicleDef == ResourceBank.ThingDefOf.SoS2_Shuttle_Personal)
 				return true;
@@ -2925,7 +2925,10 @@ namespace SaveOurShip2
 		{
 			if (vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def == ResourceBank.UpgradeTreeDefOf.SoS2ShuttleUpgradeTree)
 			{
-				switch (Rand.Range(0, 4))
+				int version = Rand.Range(0, 4);
+				if (Current.ProgramState == ProgramState.MapInitializing)
+					version = 0;
+				switch (version)
 				{
 					case 0: //Boarding shuttle
 						Log.Message("Speccing shuttle as troop transport");

@@ -275,9 +275,10 @@
 				<spaceFlight>true</spaceFlight>
 				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
 
-				<launchProtocol Class="Vehicles.DefaultTakeoff">
-					<launchProperties>
-						<maxTicks>600</maxTicks>
+				<launchProtocol Class="SaveOurShip2.Vehicles.ShuttleTakeoff">
+					<launchProperties Class="Vehicles.VerticalProtocolProperties">
+						<maxTicksVertical>10</maxTicksVertical>
+						<maxTicks>500</maxTicks>
 						<renderShadow>false</renderShadow>
 						
 						<events>
@@ -464,8 +465,9 @@
 						</fleckData>
 					</launchProperties>
 					
-					<landingProperties>
-						<maxTicks>600</maxTicks>
+					<landingProperties Class="Vehicles.VerticalProtocolProperties">
+						<maxTicksVertical>10</maxTicksVertical>
+						<maxTicks>500</maxTicks>
 						<renderShadow>false</renderShadow>
 						
 						<events>

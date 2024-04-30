@@ -41,13 +41,6 @@ namespace SaveOurShip2
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
 			shipBarNeutral = GraphicDatabase.Get(typeof(Graphic_Single), "UI/Map_Icon_Neutral",
 			ShaderDatabase.Cutout, new Vector2(1, 1), Color.white, Color.white);
-			//Needed to avoid thread load errors on shuttles
-			shuttleTurretLaser = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Shuttle/TurretLaser",
-			RGBShaderTypeDefOf.CutoutComplexPattern.Shader, new Vector2(1, 1), Color.white, Color.white);
-			shuttleTurretPlasma = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Shuttle/TurretPlasma",
-			RGBShaderTypeDefOf.CutoutComplexPattern.Shader, new Vector2(2, 2), Color.white, Color.white);
-			shuttleTurretLaser = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Shuttle/TurretTorpedo",
-			RGBShaderTypeDefOf.CutoutComplexPattern.Shader, new Vector2(2, 2), Color.white, Color.white);
 		}
 		public static Graphic shipZeroEnemy;
 		public static Graphic shipOneEnemy;
@@ -64,9 +57,6 @@ namespace SaveOurShip2
 		public static Graphic shipBarEnemy;
 		public static Graphic shipBarPlayer;
 		public static Graphic shipBarNeutral;
-		public static Graphic shuttleTurretLaser;
-		public static Graphic shuttleTurretPlasma;
-		public static Graphic shuttleTurretTorpedo;
 
 		public static Texture2D PowerTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.45f, 0.425f, 0.1f));
 		public static Texture2D HeatTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.5f, 0.1f, 0.1f));

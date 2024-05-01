@@ -124,6 +124,23 @@ namespace SaveOurShip2
 				loadedShells.Remove(t.def);
 			return output;
 		}
+		public Thing RemoveOneShellOfType(ThingDef type)
+		{
+			Thing result = null;
+			foreach (ThingDef t in loadedShells)
+			{
+				if (t == null)
+					continue;
+				if (t == type)
+				{
+					result = ThingMaker.MakeThing(t);
+					result.stackCount = 1;
+					break;
+				}
+			}
+			loadedShells.Remove(type);
+			return result;
+		}
 
 		public StorageSettings GetStoreSettings()
 		{

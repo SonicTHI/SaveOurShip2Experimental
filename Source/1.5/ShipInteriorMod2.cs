@@ -118,7 +118,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f16";
+		public const string SOS2EXPversion = "V101f17";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -534,7 +534,7 @@ namespace SaveOurShip2
 		public static WorldObject GenerateSite(string defName)
 		{
 			WorldObject site = WorldObjectMaker.MakeWorldObject(DefDatabase<WorldObjectDef>.GetNamed(defName));
-			site.Tile = TileFinder.RandomStartingTile();
+			site.Tile = FindWorldTile();
 			Find.WorldObjects.Add(site);
 			return site;
 		}

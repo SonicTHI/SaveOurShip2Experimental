@@ -127,6 +127,12 @@ namespace SaveOurShip2
 			foreach (ShipShape shape in shipDef.parts.Where(s => DefDatabase<ThingDef>.GetNamedSilentFail(s.shapeOrDef) != null))
 			{
 				ThingDef def = ThingDef.Named(shape.shapeOrDef);
+				if (def.defName.Equals("ShipPartTurretSmall")) //default to plasma for randoms
+					def = ThingDef.Named("ShipTurret_Plasma");
+				else if (def.defName.Equals("ShipPartTurretLarge"))
+					def = ThingDef.Named("ShipTurret_Plasma_Large");
+				else if (def.defName.Equals("ShipPartTurretSpinal"))
+					def = ThingDef.Named("ShipSpinalBarrelPlasma");
 				if (!def.IsBuildingArtificial || !def.IsResearchFinished || !def.BuildableByPlayer)
 					continue;
 				IntVec3 v = new IntVec3(pos.x + shape.x + 1, 0, pos.z + shape.z + 1);

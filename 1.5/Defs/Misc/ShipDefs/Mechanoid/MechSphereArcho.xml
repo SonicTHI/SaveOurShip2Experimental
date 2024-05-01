@@ -8,8 +8,7 @@
 		<sizeX>63</sizeX>
 		<sizeZ>66</sizeZ>
 		<label>Mysterious Archotech Sphere</label>
-		<combatPoints>1185</combatPoints>
-		<randomTurretPoints>120</randomTurretPoints>
+		<combatPoints>1379</combatPoints>
 		<rarityLevel>2</rarityLevel>
 		<neverWreck>True</neverWreck>
 		<navyExclusive>True</navyExclusive>

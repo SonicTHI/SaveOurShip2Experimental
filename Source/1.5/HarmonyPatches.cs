@@ -4325,20 +4325,29 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(LandingTargeter __instance, LocalTargetInfo localTargetInfo, ref PositionState __result)
 		{
-			if (__result == PositionState.Invalid || !ModSettings_SoS.shipMapPhysics)
+			if (__result == PositionState.Invalid)
 				return;
 			Map map = Current.Game.CurrentMap;
 			var mapComp = map.GetComponent<ShipMapComp>();
-			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower >= 0.02f && mapComp.TargetMapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero)) //restrict to bays
+			IntVec3 cell = localTargetInfo.Cell;
+			CellRect occupiedRect = GenAdj.OccupiedRect(cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size);
+			var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
+			if (bay != null && bay.TryGetComp<CompShipBay>().CanFitShuttleAt(occupiedRect))
 			{
-				IntVec3 cell = localTargetInfo.Cell;
-				var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
-				if (bay != null && bay.TryGetComp<CompShipBay>().CanFitShuttleAt(GenAdj.OccupiedRect(cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size)))
-				{
-					__result = PositionState.Valid;
-					return;
-				}
-				__result = PositionState.Invalid;
+				__result = PositionState.Valid; //bays are always valid
+				return;
+			}
+			else if (occupiedRect.Any(v => v.Roofed(map)))
+			{
+				__result = PositionState.Invalid; //roof is not (check due to our shuttles being able to roofpunch)
+				return;
+			}
+			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower >= 0.02f)
+			{
+				if (mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero))
+					__result = PositionState.Invalid; //restrict to bays if available
+				else if (ModSettings_SoS.shipMapPhysics)
+					__result = PositionState.Obstructed; //warn but allow
 				return;
 			}
 		}
@@ -4376,22 +4385,6 @@ namespace SaveOurShip2
 			return true;
         }
     }
-
-	[HarmonyPatch(typeof(AerialVehicleArrivalModeWorker_TargetedDrop), "VehicleArrived")]
-	public static class UnfogBays
-	{
-		public static void Prefix(AerialVehicleArrivalModeWorker_TargetedDrop __instance, VehiclePawn vehicle, LaunchProtocol launchProtocol, Map map)
-		{
-			Log.Message("UnfogBays"); //td not called at all
-			var mapComp = map.GetComponent<ShipMapComp>();
-			if (mapComp.ShipMapState != ShipMapState.inCombat || mapComp.IsPlayerShipMap || mapComp.Bays.NullOrEmpty())
-				return;
-			foreach (var bay in mapComp.Bays)
-			{
-				FloodFillerFog.FloodUnfog(bay.parent.Position, map);
-			}
-		}
-	}
 
 	[HarmonyPatch(typeof(CompUpgradeTree), "Disabled")]
 	public static class RestrictHardpointNumber

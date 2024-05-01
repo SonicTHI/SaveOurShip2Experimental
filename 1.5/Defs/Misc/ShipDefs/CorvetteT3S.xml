@@ -8,7 +8,7 @@
 		<sizeX>37</sizeX>
 		<sizeZ>20</sizeZ>
 		<label>Corvette</label>
-		<combatPoints>178</combatPoints>
+		<combatPoints>183</combatPoints>
 		<core>
 			<shapeOrDef>ShipPilotSeatMini</shapeOrDef>
 			<x>19</x>

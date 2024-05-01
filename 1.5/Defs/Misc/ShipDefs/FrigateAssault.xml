@@ -8,7 +8,7 @@
 		<sizeX>61</sizeX>
 		<sizeZ>50</sizeZ>
 		<label>Assault frigate</label>
-		<combatPoints>351</combatPoints>
+		<combatPoints>406</combatPoints>
 		<core>
 			<shapeOrDef>ShipConsoleTactical</shapeOrDef>
 			<x>28</x>

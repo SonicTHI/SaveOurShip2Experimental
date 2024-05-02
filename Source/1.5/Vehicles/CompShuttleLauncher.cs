@@ -25,13 +25,19 @@ namespace SaveOurShip2.Vehicles
 			VehiclePawn vehicle = (VehiclePawn)parent;
 			if (mapComp?.ShipMapState == ShipMapState.inCombat && vehicle.handlers[0].handlers.Count > 0)
 			{
+                bool launchDisabled = !ShipInteriorMod2.CanLaunchUnderRoof(vehicle);
 				if (mapComp.IsPlayerShipMap)
 				{
 					Command_Action board = CommandBoard(vehicle);
-					if (!ShipInteriorMod2.ShuttleCanBoard(mapComp.TargetMapComp, vehicle))
+					if (launchDisabled)
                     {
                         board.Disable();
 						board.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleMissionBoardingDisabled");
+					}
+					else if (!ShipInteriorMod2.ShuttleShouldBoard(mapComp.TargetMapComp, vehicle))
+					{
+						board.defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleMissionBoardingWarn");
+						board.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleMissionBoardingWarnDesc");
 					}
 					yield return board;
 				}
@@ -42,11 +48,35 @@ namespace SaveOurShip2.Vehicles
 				{
                     bool hasLaser = ShipInteriorMod2.ShuttleHasLaser(vehicle);
 					if (hasLaser)
-                        yield return CommandIntercept(vehicle);
+					{
+						Command_Action intercept = CommandIntercept(vehicle);
+						yield return intercept;
+						if (launchDisabled)
+						{
+							intercept.Disable();
+							intercept.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleMissionBoardingDisabled");
+						}
+					}
 					if (hasLaser || ShipInteriorMod2.ShuttleHasPlasma(vehicle))
-						yield return CommandStrafe(vehicle);
+					{
+						Command_Action strafe = CommandStrafe(vehicle);
+						yield return strafe;
+						if (launchDisabled)
+						{
+							strafe.Disable();
+							strafe.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleMissionBoardingDisabled");
+						}
+					}
 					if (ShipInteriorMod2.ShuttleHasTorp(vehicle))
-						yield return CommandBomb(vehicle);
+					{
+						Command_Action bomb = CommandBomb(vehicle);
+						yield return bomb;
+						if (launchDisabled)
+						{
+							bomb.Disable();
+							bomb.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleMissionBoardingDisabled");
+						}
+					}
 				}
             }
         }

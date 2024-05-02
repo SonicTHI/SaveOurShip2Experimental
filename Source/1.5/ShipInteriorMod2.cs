@@ -126,7 +126,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f18";
+		public const string SOS2EXPversion = "V101f19";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -2909,7 +2909,7 @@ namespace SaveOurShip2
 		{
 			return vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight;
 		}
-		public static bool ShuttleCanBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
+		public static bool ShuttleShouldBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
 		{
 			//incombat if enemy t/w above x - shuttles if bay is available, else pods only
 			if (!ModSettings_SoS.shipMapPhysics || targetMapComp.MapEnginePower < 0.02f)

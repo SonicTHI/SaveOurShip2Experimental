@@ -6,8 +6,6 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using RimWorld.Planet;
-using System.Security.Policy;
-using Verse.Noise;
 
 namespace SaveOurShip2
 {

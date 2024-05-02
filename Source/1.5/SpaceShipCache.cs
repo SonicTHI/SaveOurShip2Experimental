@@ -876,13 +876,6 @@ namespace SaveOurShip2
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Has 0 cores remaining.");
 			Core = null;
 			ResetCorePath();
-			if (mapComp.ShipMapState == ShipMapState.inCombat) //if last ship end combat else move to grave
-			{
-				if (mapComp.ShipsOnMap.Values.Any(s => !s.IsWreck))
-					mapComp.ShipsToMove.Add(Index);
-				else
-					mapComp.EndBattle(Map, false);
-			}
 			return false;
 		}
 		private Building_ShipBridge BestCoreReplacer(List<Building_ShipBridge> bridges)
@@ -958,6 +951,11 @@ namespace SaveOurShip2
 				{
 					CrashShip();
 				}
+			}
+			//if wreck, move to grave
+			if (IsWreck && mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower != 0)
+			{
+				mapComp.ShipsToMove.Add(Index);
 			}
 		}
 		public void CheckForDetach(List<IntVec3> areaDestroyed)
@@ -1039,6 +1037,11 @@ namespace SaveOurShip2
 						break;
 				}
 				cellsDone.AddRange(cellsDoneInSet);
+				if (cellsDoneInSet.Count == Area.Count)
+				{
+					Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Ship was detached from bridge. Area = DetachedArea, aborting detach.");
+					return;
+				}
 				if (detach)
 				{
 					if (ModSettings_SoS.debugMode)
@@ -1076,7 +1079,7 @@ namespace SaveOurShip2
 			}
 			if (newCore == null) //wreck
 			{
-				if (mapComp.ShipMapState == ShipMapState.inCombat || mapComp.ShipMapState == ShipMapState.inTransit) //float wrecks except in case the last bridge was destroyed
+				if ((mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.ShipCombatOrigin && detachArea.Count < 100) || mapComp.ShipMapState == ShipMapState.inTransit) //float wrecks except in case the last bridge was destroyed
 				{
 					DetachedShipAreas.Add(detachArea);
 					ShipInteriorMod2.MoveShipFlag = true;

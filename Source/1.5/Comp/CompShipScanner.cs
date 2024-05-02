@@ -125,14 +125,7 @@ namespace SaveOurShip2
 				slate.Set<float>("radius", Rand.Range(120f, 180f), false);
 				slate.Set<float>("theta", Rand.Range(((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta - 0.25f, ((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta + 0.25f), false);
 				slate.Set<float>("phi", Rand.Range(-1f, 1f), false);
-				for (int i = 0; i < Find.World.grid.TilesCount; i++)
-				{
-					if (!Find.World.worldObjects.AnyWorldObjectAt(i))
-					{
-						slate.Set<int>("siteTile", i, false);
-						break;
-					}
-				}
+				slate.Set<int>("siteTile", ShipInteriorMod2.FindWorldTile(), false);
 				Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(DefDatabase<QuestScriptDef>.GetNamed("SpaceSiteQuest"), slate);
 				Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null);
 			}

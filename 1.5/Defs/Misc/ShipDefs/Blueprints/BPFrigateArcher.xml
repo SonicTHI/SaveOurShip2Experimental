@@ -8,7 +8,7 @@
 		<sizeX>76</sizeX>
 		<sizeZ>44</sizeZ>
 		<label>Archer class frigate</label>
-		<combatPoints>575</combatPoints>
+		<combatPoints>640</combatPoints>
 		<neverRandom>True</neverRandom>
 		<neverFleet>True</neverFleet>
 		<core>

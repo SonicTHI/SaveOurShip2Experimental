@@ -126,7 +126,7 @@ namespace SaveOurShip2
 			{
 				action = delegate
 				{
-					Claim();
+					mapComp.Claim();
 				},
 				defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksCommand"),
 				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksCommandDesc"),
@@ -142,7 +142,7 @@ namespace SaveOurShip2
 				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecksCommandDesc"),
 				icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")
 			};
-			if (!nominal || AnyHostileActiveThreatTo(parent.Map, Faction.OfPlayer))
+			if (!nominal || mapComp.CanClaimNow(Faction.OfPlayer))
 			{
 				moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 				moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
@@ -159,67 +159,7 @@ namespace SaveOurShip2
 			yield return claim;
 			yield return removeTargetWreck;
 		}
-		private void Claim()
-		{
-			List<Building> buildings = new List<Building>();
-			List<Thing> things = new List<Thing>();
-			List<VehiclePawn> shuttles = new List<VehiclePawn>();
-			foreach (Thing t in parent.Map.listerThings.AllThings)
-			{
-				if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
-				{
-					buildings.Add(b);
-				}
-				else if (t is VehiclePawn p)
-					shuttles.Add(p);
-				else if (t is DetachedShipPart)
-					things.Add(t);
-			}
-			if (buildings.Any())
-			{
-				foreach (Building b in buildings)
-				{
-					if (b is Building_Storage s)
-						s.settings.filter.SetDisallowAll();
-					b.SetFaction(Faction.OfPlayer);
-				}
-				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksSuccess", buildings.Count), parent, MessageTypeDefOf.PositiveEvent);
-			}
-			//remove floating tiles
-			foreach (Thing t in things)
-			{
-				t.Destroy();
-			}
-			foreach (VehiclePawn shuttle in shuttles)
-			{
-				shuttle.DisembarkAll();
-				shuttle.SetFaction(Faction.OfPlayer);
-			}
-			parent.Map.fogGrid.ClearAllFog();
-		}
-		public bool AnyHostileActiveThreatTo(Map map, Faction faction, bool countDormantPawnsAsHostile = false, bool canBeFogged = false)
-		{
-			foreach (IAttackTarget item in map.attackTargetsCache.TargetsHostileToFaction(faction))
-			{
-				if (GenHostility.IsActiveThreatTo(item, faction) && !(item.Thing is VehiclePawn))
-				{
-					Log.Message("1");
-					return true;
-				}
-
-				Pawn pawn;
-				if (countDormantPawnsAsHostile && item.Thing.HostileTo(faction) && (canBeFogged || !item.Thing.Fogged()) && !item.ThreatDisabled(null) && (pawn = item.Thing as Pawn) != null && !(pawn is VehiclePawn))
-				{
-					CompCanBeDormant comp = pawn.GetComp<CompCanBeDormant>();
-					if (comp != null && !comp.Awake)
-					{
-						Log.Message("2");
-						return true;
-					}
-				}
-			}
-			return false;
-		}
+		
 		public override void CompTickRare()
 		{
 			base.CompTickRare();

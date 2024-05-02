@@ -42,7 +42,6 @@ namespace SaveOurShip2
 		public List<Building_ShipSensor> Sensors = new List<Building_ShipSensor>();
 		public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
 		public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
-		public List<Pawn> PawnsOnShip => Map.mapPawns.AllPawns.Where(p => Area.Contains(p.Position)).ToList();
 		private Map map;
 		public Map Map
 		{
@@ -534,7 +533,7 @@ namespace SaveOurShip2
 					GenExplosion.DoExplosion(c, Map, Rand.Range(1.9f, 4.9f), DamageDefOf.Bomb, null, 50);
 			}
 			//pawns
-			foreach (Pawn p in PawnsOnShip)
+			foreach (Pawn p in PawnsOnShip())
 			{
 				int chance = Rand.RangeInclusive(1, 3);
 				if (Rand.Chance(WeBeCrashing) && chance == 1)
@@ -572,6 +571,22 @@ namespace SaveOurShip2
 						myNet.StartVent();
 				}
 			}
+		}
+		public List<Pawn> PawnsOnShip(Faction fac = null)
+		{
+			if (fac == null)
+			{
+				return map.mapPawns.AllPawns.Where(p => Area.Contains(p.Position)).ToList();
+			}
+			return map.mapPawns.AllPawns.Where(p => p.Faction == fac && Area.Contains(p.Position)).ToList();
+		}
+		public List<Pawn> ShuttlesOnShip(Faction fac = null)
+		{
+			if (fac == null)
+			{
+				return map.mapPawns.AllPawns.Where(p => Area.Contains(p.Position) && p is VehiclePawn).ToList();
+			}
+			return map.mapPawns.AllPawns.Where(p => p.Faction == fac && Area.Contains(p.Position) && p is VehiclePawn).ToList();
 		}
 		//cache
 		public bool PathDirty = true; //unused //td

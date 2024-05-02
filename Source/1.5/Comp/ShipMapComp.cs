@@ -601,15 +601,6 @@ namespace SaveOurShip2
 			}
 			return -1;
 		}
-		public List<Pawn> PawnsOnShip(SpaceShipCache ship, Faction fac = null)
-		{
-			if (fac == null)
-			{
-				return map.mapPawns.AllPawns.Where(p => ShipIndexOnVec(p.Position) == ship.Index).ToList();
-			}
-			return map.mapPawns.AllPawns.Where(p => p.Faction == fac && ShipIndexOnVec(p.Position) == ship.Index).ToList();
-			//return ShipLord.ownedPawns.Where(p => ShipIndexOnVec(p.Position) == ship.Index).ToList();
-		}
 		public bool VecHasLS(IntVec3 vec)
 		{
 			int shipIndex = ShipIndexOnVec(vec);
@@ -636,7 +627,65 @@ namespace SaveOurShip2
 			}
 			return false;
 		}
+		public bool CanClaimNow(Faction faction, bool countDormantPawnsAsHostile = false, bool canBeFogged = false)
+		{
+			foreach (IAttackTarget item in map.attackTargetsCache.TargetsHostileToFaction(faction))
+			{
+				if (GenHostility.IsActiveThreatTo(item, faction) && !(item.Thing is VehiclePawn))
+				{
+					return true;
+				}
 
+				Pawn pawn;
+				if (countDormantPawnsAsHostile && item.Thing.HostileTo(faction) && (canBeFogged || !item.Thing.Fogged()) && !item.ThreatDisabled(null) && (pawn = item.Thing as Pawn) != null && !(pawn is VehiclePawn))
+				{
+					CompCanBeDormant comp = pawn.GetComp<CompCanBeDormant>();
+					if (comp != null && !comp.Awake)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		public void Claim()
+		{
+			List<Building> buildings = new List<Building>();
+			List<Thing> things = new List<Thing>();
+			List<VehiclePawn> shuttles = new List<VehiclePawn>();
+			foreach (Thing t in map.listerThings.AllThings)
+			{
+				if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
+				{
+					buildings.Add(b);
+				}
+				else if (t is VehiclePawn p)
+					shuttles.Add(p);
+				else if (t is DetachedShipPart)
+					things.Add(t);
+			}
+			if (buildings.Any())
+			{
+				foreach (Building b in buildings)
+				{
+					if (b is Building_Storage s)
+						s.settings.filter.SetDisallowAll();
+					b.SetFaction(Faction.OfPlayer);
+				}
+				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.ClaimWrecksSuccess", buildings.Count), null, MessageTypeDefOf.PositiveEvent);
+			}
+			//remove floating tiles
+			foreach (Thing t in things)
+			{
+				t.Destroy();
+			}
+			foreach (VehiclePawn shuttle in shuttles)
+			{
+				shuttle.DisembarkAll();
+				shuttle.SetFaction(Faction.OfPlayer);
+			}
+			map.fogGrid.ClearAllFog();
+		}
 		//battle start
 		public int MapThreat()
 		{
@@ -1611,13 +1660,13 @@ namespace SaveOurShip2
 						foreach (SpaceShipCache ship in ShipsOnMap.Values)
 						{
 							List<VehiclePawn> shuttles = new List<VehiclePawn>();
-							foreach (VehiclePawn vehicle in this.map.listerThings.GetThingsOfType<VehiclePawn>())
+							foreach (VehiclePawn vehicle in ship.ShuttlesOnShip(ship.Faction))
 							{
-								if (vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight && vehicle.CompUpgradeTree != null && ShipInteriorMod2.ShuttleIsArmed(vehicle) && vehicle.NextAvailableHandler()!=null)
+								if (ShipInteriorMod2.IsShuttle(vehicle) && vehicle.CompUpgradeTree != null && ShipInteriorMod2.ShuttleIsArmed(vehicle) && vehicle.NextAvailableHandler() != null)
 									shuttles.Add(vehicle);
 							}
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
-							IEnumerable<Pawn> pawnsToBoard = PawnsOnShip(ship, ship.Faction).Where(pawn=>pawn.CurJob==null||pawn.CurJob.def!=ResourceBank.JobDefOf.ManShipBridge);
+							IEnumerable<Pawn> pawnsToBoard = ship.PawnsOnShip(ship.Faction).Where(pawn => pawn.CurJob == null || pawn.CurJob.def != ResourceBank.JobDefOf.ManShipBridge);
 							foreach (Pawn p in pawnsToBoard)
 							{
 								if (shuttlesToBeFilled.Count > 0 && p.mindState.duty != null)
@@ -1636,20 +1685,20 @@ namespace SaveOurShip2
 						startedPilotLoad = true;
 					}
 					if ((hasAnyPartDetached || tick > BattleStartTick + 5000) && !startedBoarderLoad && !Retreating) //Shuttles for boarders
-                    {
+					{
 						foreach (SpaceShipCache ship in ShipsOnMap.Values)
 						{
 							List<VehiclePawn> shuttles = new List<VehiclePawn>();
-							foreach(VehiclePawn vehicle in this.map.listerThings.GetThingsOfType<VehiclePawn>())
-                            {
-								if (vehicle.CompVehicleLauncher!=null && vehicle.CompVehicleLauncher.SpaceFlight&&(vehicle.CompUpgradeTree == null || !ShipInteriorMod2.ShuttleIsArmed(vehicle)) && vehicle.NextAvailableHandler() != null)
+							foreach (VehiclePawn vehicle in ship.ShuttlesOnShip(ship.Faction))
+							{
+								if (ShipInteriorMod2.IsShuttle(vehicle) && (vehicle.CompUpgradeTree == null || !ShipInteriorMod2.ShuttleIsArmed(vehicle)) && vehicle.NextAvailableHandler() != null)
 									shuttles.Add(vehicle);
-                            }
+							}
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
-							IEnumerable<Pawn> pawnsToBoard = PawnsOnShip(ship, ship.Faction).Where(pawn => pawn.CurJob == null || pawn.CurJob.def != ResourceBank.JobDefOf.ManShipBridge);
+							IEnumerable<Pawn> pawnsToBoard = ship.PawnsOnShip(ship.Faction).Where(pawn => pawn.CurJob == null || pawn.CurJob.def != ResourceBank.JobDefOf.ManShipBridge);
 							foreach (Pawn p in pawnsToBoard)
 							{
-								if (shuttlesToBeFilled.Count>0 && p.mindState.duty != null && p.kindDef.combatPower > 40)
+								if (shuttlesToBeFilled.Count > 0 && p.mindState.duty != null && p.kindDef.combatPower > 40)
 								{
 									p.mindState.duty.transportersGroup = 1;
 									VehiclePawn myShuttle = shuttlesToBeFilled.RandomElement();
@@ -1657,14 +1706,14 @@ namespace SaveOurShip2
 									p.jobs.StopAll();
 									p.jobs.StartJob(job);
 									map.GetComponent<VehicleReservationManager>().Reserve<VehicleHandler, VehicleHandlerReservation>(myShuttle, p, job, myShuttle.NextAvailableHandler());
-									if(myShuttle.NextAvailableHandler() == null)
+									if (myShuttle.NextAvailableHandler() == null)
 										shuttlesToBeFilled.Remove(myShuttle);
 								}
 							}
 						}
 						startedBoarderLoad = true;
 					}
-					if (startedPilotLoad && shuttlesYetToLaunch.Count>0 && !Retreating)
+					if (startedPilotLoad && shuttlesYetToLaunch.Count > 0 && !Retreating)
 					{
 						//abort and reset if player on ship
 						if (map.mapPawns.AllPawnsSpawned.Any(o => o.Faction == Faction.OfPlayer))
@@ -1705,7 +1754,7 @@ namespace SaveOurShip2
 						}
 					}
 					if (startedBoarderLoad && !launchedBoarders && !Retreating)
-                    {
+					{
 						//abort and reset if player on ship
 						if (map.mapPawns.AllPawnsSpawned.Any(o => o.Faction == Faction.OfPlayer))
 						{
@@ -1720,18 +1769,18 @@ namespace SaveOurShip2
 							startedBoarderLoad = false;
 						}
 						else //continue boarding action
-                        {
+						{
 							bool allOnPods = true;
 							foreach (Pawn p in map.mapPawns.AllPawnsSpawned.Where(o => o.Faction != Faction.OfPlayer))
 							{
-								if (p.mindState?.duty?.transportersGroup == 0 && p.GetVehicle()==null)
+								if (p.mindState?.duty?.transportersGroup == 0 && p.GetVehicle() == null)
 									allOnPods = false;
 							}
-							if(allOnPods)
-                            {
+							if (allOnPods)
+							{
 								List<Pawn> vehicles = map.mapPawns.AllPawnsSpawned.Where(pawn => pawn is VehiclePawn veh && veh.CompVehicleLauncher != null && veh.CompVehicleLauncher.SpaceFlight).ToList();
 								foreach (Pawn vPawn in vehicles)
-                                {
+								{
 									VehiclePawn shuttle = (VehiclePawn)vPawn;
 									if (shuttle.AllPawnsAboard.Count > 0)
 									{
@@ -1747,7 +1796,7 @@ namespace SaveOurShip2
 									}
 								}
 								launchedBoarders = true;
-                            }
+							}
 						}
 					}
 				}
@@ -1913,6 +1962,13 @@ namespace SaveOurShip2
 					StartShipEncounter(null, NextTargetMap);
 					NextTargetMap = null;
 					return;
+				}
+				if (tick % 300 == 0)
+				{
+					if (ShipsOnMap.Values.Any(s => s.Faction != Faction.OfPlayer) && CanClaimNow(Faction.OfPlayer))
+					{
+						Claim();
+					}
 				}
 			}
 			if (tick % 6000 == 0) //decomp

@@ -859,6 +859,20 @@ namespace SaveOurShip2
 						}
 					};
 					yield return command_Action;
+					Command_Action command_ExtractOne = new Command_Action
+					{
+						defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.TurretExtractOneTorpedo"),
+						defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.TurretExtractOneTorpedoDesc"),
+						icon = torpComp.LoadedShells[0].uiIcon,
+						iconAngle = torpComp.LoadedShells[0].uiIconAngle,
+						iconOffset = torpComp.LoadedShells[0].uiIconOffset,
+						iconDrawScale = GenUI.IconDrawScale(torpComp.LoadedShells[0]),
+						action = delegate
+						{
+							ExtractOneShellMenu();
+						}
+					};
+					yield return command_ExtractOne;
 				}
 				List<ThingDef> torpTypes = new List<ThingDef>();
 				foreach (ThingDef torp in torpComp.LoadedShells)
@@ -866,6 +880,7 @@ namespace SaveOurShip2
 					if (!torpTypes.Contains(torp))
 						torpTypes.Add(torp);
 				}
+				torpTypes = torpTypes.OrderBy(t => t.defName).ToList();
 				foreach (ThingDef torp in torpTypes)
 				{
 					Command_Toggle command_Toggle = new Command_Toggle
@@ -933,6 +948,32 @@ namespace SaveOurShip2
 		{
 			foreach(Thing t in torpComp.RemoveShells())
 				GenPlace.TryPlaceThing(t, base.Position, base.Map, ThingPlaceMode.Near);
+		}
+
+		private void ExtractOneShellMenu()
+		{
+			List<ThingDef> loadedTypes = new List<ThingDef>();
+			foreach (ThingDef torp in torpComp.LoadedShells)
+			{
+				if (!loadedTypes.Contains(torp))
+					loadedTypes.Add(torp);
+			}
+			List<FloatMenuOption> unloadOptions = new List<FloatMenuOption>();
+			foreach (ThingDef loadedType in loadedTypes)
+			{
+				String commandText = TranslatorFormattedStringExtensions.Translate("SoS.TurretExtract") + " " +
+					loadedType.label;
+				unloadOptions.Add(new FloatMenuOption(commandText, delegate
+				{
+					Thing torp = torpComp.RemoveOneShellOfType(loadedType);
+					GenPlace.TryPlaceThing(torp, base.Position, base.Map, ThingPlaceMode.Near);
+				}, loadedType.uiIcon, Color.white));
+
+			}
+			// Having options in the UI in different order, depending on torp loading order is annoyng,
+			// like may have 2 launchers with same torpedoes loaded, but options in diffrrent order.
+			unloadOptions = unloadOptions.OrderBy(x => x.Label).ToList();
+			Find.WindowStack.Add(new FloatMenu(unloadOptions));
 		}
 		public void ResetForcedTarget()
 		{

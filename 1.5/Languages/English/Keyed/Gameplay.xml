@@ -219,6 +219,9 @@
 	<SoS.TurretInPointDefense>Warning: Turret will not target the enemy ship because it is set to Point Defense mode</SoS.TurretInPointDefense>
 	<SoS.TurretExtractTorpedo>Extract torpedoes</SoS.TurretExtractTorpedo>
 	<SoS.TurretExtractTorpedoDesc>Unloads the current torpedoes so they can be replaced with different ammunition.</SoS.TurretExtractTorpedoDesc>
+	<SoS.TurretExtractOneTorpedo>Extract one torpedo</SoS.TurretExtractOneTorpedo>
+	<SoS.TurretExtractOneTorpedoDesc>Unloads just one torpedo so it can be replaced with different ammunition.</SoS.TurretExtractOneTorpedoDesc>
+	<SoS.TurretExtract>Extract</SoS.TurretExtract>
 	<SoS.TurretOptimalRange>Use optimal range</SoS.TurretOptimalRange>
 	<SoS.TurretOptimalRangeDesc>Enable to only fire on targets within optimal range</SoS.TurretOptimalRangeDesc>
 	<SoS.TurretPointDefense>Point Defense mode</SoS.TurretPointDefense>

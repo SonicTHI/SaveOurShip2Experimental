@@ -38,8 +38,11 @@ namespace SaveOurShip2
 				return false;
 			foreach (IntVec3 v in occArea)
 			{
-				if (!occupiedRect.Contains(v) || !v.Standable(parent.Map))
+				if (!occupiedRect.Contains(v) || v.Impassable(parent.Map))
+				{
+					Log.Message("4");
 					return false;
+				}
 			}
 			return true;
 		}
@@ -56,7 +59,9 @@ namespace SaveOurShip2
 				foreach (IntVec3 vec in occupiedRect)
 				{
 					if (!vec.Impassable(parent.Map))
+					{
 						return vec;
+					}
 				}
 				return IntVec3.Zero;
 			}
@@ -76,7 +81,7 @@ namespace SaveOurShip2
 				bool fits = true;
 				foreach (IntVec3 v in area)
 				{
-					if (invalidPos.Contains(v) || v.Impassable(parent.Map))
+					if (invalidPos.Contains(v) || v.Impassable(parent.Map) || v.GetThingList(parent.Map).Any(t => t is VehiclePawn))
 					{
 						invalidPos.Add(v);
 						fits = false;
@@ -84,7 +89,9 @@ namespace SaveOurShip2
 					}
 				}
 				if (fits)
+				{
 					return vec;
+				}
 			}
 			return IntVec3.Zero;
 		}

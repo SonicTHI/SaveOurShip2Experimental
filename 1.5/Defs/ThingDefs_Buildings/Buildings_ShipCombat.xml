@@ -50,7 +50,7 @@
 	</ThingDef>
 	<ThingDef ParentName="BaseShipTurretBuilding" Name="ShipTurretBuilding" Abstract="True">
 		<size>(2,2)</size>
-		<altitudeLayer>WorldClipper</altitudeLayer>
+		<altitudeLayer>Gas</altitudeLayer>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<placeWorkers>
 			<li>PlaceWorker_TurretTop</li>
@@ -281,7 +281,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsink</defName>
 		<label>heatsink</label>
-		<altitudeLayer>WorldClipper</altitudeLayer>
+		<altitudeLayer>Gas</altitudeLayer>
 		<description>A heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Will slowly replenish capacity from depletion when not in battle. Does not function if the ship is cloaked.\n\nHeat capacity: 200Hu\nHeat vented to space: 4Hu/s\nHeat loss: 1Hu/s</description>
 		<size>(2,2)</size>
 		<graphicData>
@@ -330,7 +330,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipHeatsinkLarge</defName>
 		<label>large heatsink</label>
-		<altitudeLayer>WorldClipper</altitudeLayer>
+		<altitudeLayer>Gas</altitudeLayer>
 		<description>A large heatsink that slowly removes heat from the heat network. Will take damage if coolant gets near maximum heat capacity and release all heat stored if destroyed. Will slowly replenish capacity from depletion when not in battle. Does not function if the ship is cloaked.\n\nHeat capacity: 1000Hu\nHeat vented to space: 16Hu/s\nHeat loss: 3Hu/s</description>
 		<size>(4,4)</size>
 		<graphicData>
@@ -447,7 +447,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipPurgePort</defName>
 		<label>emergency purge port</label>
-		<altitudeLayer>WorldClipper</altitudeLayer>
+		<altitudeLayer>Gas</altitudeLayer>
 		<description>A system for channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.</description>
 		<size>(2,2)</size>
 		<graphicData>
@@ -504,7 +504,7 @@
 	<ThingDef ParentName="ShipHeatsinkBase">
 		<defName>ShipPurgePortLarge</defName>
 		<label>large emergency purge port</label>
-		<altitudeLayer>WorldClipper</altitudeLayer>
+		<altitudeLayer>Gas</altitudeLayer>
 		<description>A system for rapidly channeling heat into low-melting-point metals like silver. Ejecting molten silver into space is a costly way to quickly purge stored heat. Shields will be dropped during a purge.</description>
 		<size>(4,4)</size>
 		<graphicData>
@@ -2508,7 +2508,7 @@
 				<cornerTL>Damage/Corner</cornerTL>
 			</damageData>
 		</graphicData>
-		<altitudeLayer>WorldClipper</altitudeLayer>
+		<altitudeLayer>Gas</altitudeLayer>
 		<constructionSkillPrerequisite>10</constructionSkillPrerequisite>
 		<comps>
 			<li Class="CompProperties_Flickable"/>

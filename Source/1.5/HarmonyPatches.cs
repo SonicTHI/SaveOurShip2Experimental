@@ -67,7 +67,7 @@ namespace SaveOurShip2
 					{
 						string str2 = "";
 						if (!ship.IsWreck)
-							str2 += "Name: " + ship.Core.ShipName +"\n";
+							str2 += "Name: " + ship.Core.ShipName + "\n";
 						str2 += "Map: " + ship.Map + "\nFaction: " + ship.Faction + "\nParts: " + ship.Parts.Count + "\nBuildings: " + ship.Buildings.Count + "\nMass: " + ship.MassActual + "\nArea: " + ship.Area.Count + "\nCores: " + ship.Bridges.Count + "\nCore: " + ship.Core + "\nPath max: " + ship.LastSafePath;
 						TooltipHandler.TipRegion(rect2, str2);
 						DrawShips.Highlight = ship.Index;
@@ -128,8 +128,8 @@ namespace SaveOurShip2
 				DrawPower(screenHalf - 220, baseY, bridge);
 				DrawHeat(screenHalf - 415, baseY, bridge);
 			}
-			foreach(ShuttleMissionData mission in playerMapComp.ShuttleMissions)
-            {
+			foreach (ShuttleMissionData mission in playerMapComp.ShuttleMissions)
+			{
 				baseY += 45;
 				string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
 				int strSize = 5 + str.Length * 8;
@@ -246,14 +246,14 @@ namespace SaveOurShip2
 				}
 			}
 			foreach (ShipMapComp.ShuttleMissionData mission in playerMapComp.ShuttleMissions)
-            {
+			{
 				Verse.Widgets.DrawTexturePart(
 						new Rect(screenHalf - 10 + mission.rangeTraveled, baseY - 12, 12, 12),
 						new Rect(0, 0, mission.mission == ShipMapComp.ShuttleMission.RETURN ? -1 : 1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
 			}
 			foreach (ShipMapComp.ShuttleMissionData mission in enemyMapComp.ShuttleMissions)
 			{
-				if(mission.shuttle.Faction==Faction.OfPlayer)
+				if (mission.shuttle.Faction == Faction.OfPlayer)
 					Verse.Widgets.DrawTexturePart(
 						new Rect(screenHalf - 10 - mission.rangeTraveled + range, baseY - 12, 12, 12),
 						new Rect(0, 0, mission.mission == ShipMapComp.ShuttleMission.RETURN ? 1 : -1, 1), (Texture2D)ResourceBank.shuttlePlayer.MatSingle.mainTexture);
@@ -327,7 +327,7 @@ namespace SaveOurShip2
 			rect.y += 7;
 			rect.x = offset;
 			rect.height = Text.LineHeight;
-			Widgets.Label(rect, "Hull: "+Mathf.Round(shuttle.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) * 100f)+"%");
+			Widgets.Label(rect, "Hull: " + Mathf.Round(shuttle.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) * 100f) + "%");
 		}
 		private static void DrawShuttleHeat(float offset, float baseY, VehiclePawn shuttle)
 		{
@@ -335,17 +335,17 @@ namespace SaveOurShip2
 			CompVehicleHeatNet heatNet = shuttle.GetComp<CompVehicleHeatNet>();
 			float heatMax = 0;
 			float heatCurrent = 0;
-			if(heatNet!=null)
-            {
+			if (heatNet != null)
+			{
 				heatMax = heatNet.myNet.StorageCapacity;
 				heatCurrent = heatNet.myNet.StorageUsed;
-            }
+			}
 			Widgets.FillableBar(rect.ContractedBy(6), heatMax == 0 ? 0 : 1f - (heatCurrent / heatMax), ResourceBank.ShuttleShieldTex);
 			Text.Font = GameFont.Small;
 			rect.y += 7;
 			rect.x = offset;
 			rect.height = Text.LineHeight;
-			Widgets.Label(rect, "Shields: " + (heatMax == 0 ? "N/A" : (Mathf.Round((1f - heatCurrent/heatMax)*100f) + "%")));
+			Widgets.Label(rect, "Shields: " + (heatMax == 0 ? "N/A" : (Mathf.Round((1f - heatCurrent / heatMax) * 100f) + "%")));
 		}
 		public static Rect FillableBarWithDepletion(Rect rect, float fillPercent, float fillDepletion, Texture2D fillTex, Texture2D depletionTex)
 		{
@@ -1235,6 +1235,39 @@ namespace SaveOurShip2
 		public static void Postfix(ref bool __result, Map map)
 		{
 			if (map.IsSpace()) __result = true;
+		}
+	}
+
+
+	[HarmonyPatch(typeof(SectionLayer_FogOfWar), "Regenerate")]
+	public static class DontDrawFogOnShips //toggles fogged cells over ship hull when mesh is made
+	{
+		public static bool Prefix(SectionLayer_FogOfWar __instance, out HashSet<int> __state)
+		{
+			var mapComp = __instance.Map.GetComponent<ShipMapComp>();
+			HashSet<int> ints = new HashSet<int>();
+			foreach (IntVec3 v in mapComp.MapShipCells.Keys)
+			{
+				int index = __instance.Map.cellIndices.CellToIndex(v);
+				if (__instance.Map.fogGrid.fogGrid[index])
+				{
+					ints.Add(index);
+				}
+			}
+			foreach (int i in ints)
+			{
+				__instance.Map.fogGrid.fogGrid[i] = false;
+			}
+			__state = ints;
+			return true;
+		}
+		public static void Postfix(SectionLayer_FogOfWar __instance, HashSet<int> __state)
+		{
+
+			foreach (int i in __state)
+			{
+				__instance.Map.fogGrid.fogGrid[i] = true;
+			}
 		}
 	}
 
@@ -4326,20 +4359,29 @@ namespace SaveOurShip2
 	{
 		public static void Postfix(LandingTargeter __instance, LocalTargetInfo localTargetInfo, ref PositionState __result)
 		{
-			if (__result == PositionState.Invalid || !ModSettings_SoS.shipMapPhysics)
+			if (__result == PositionState.Invalid)
 				return;
 			Map map = Current.Game.CurrentMap;
 			var mapComp = map.GetComponent<ShipMapComp>();
-			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower >= 0.02f && mapComp.TargetMapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero)) //restrict to bays
+			IntVec3 cell = localTargetInfo.Cell;
+			CellRect occupiedRect = GenAdj.OccupiedRect(cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size);
+			var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
+			if (bay != null && bay.TryGetComp<CompShipBay>().CanFitShuttleAt(occupiedRect))
 			{
-				IntVec3 cell = localTargetInfo.Cell;
-				var bay = cell.GetThingList(map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
-				if (bay != null && bay.TryGetComp<CompShipBay>().CanFitShuttleAt(GenAdj.OccupiedRect(cell, __instance.landingRotation, __instance.vehicle.VehicleDef.Size)))
-				{
-					__result = PositionState.Valid;
-					return;
-				}
-				__result = PositionState.Invalid;
+				__result = PositionState.Valid; //bays are always valid
+				return;
+			}
+			else if (occupiedRect.Any(v => v.Roofed(map)) && ShipInteriorMod2.IsShuttle(__instance.vehicle))
+			{
+				__result = PositionState.Invalid; //roof is not (check due to our shuttles being able to roofpunch)
+				return;
+			}
+			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower >= 0.02f)
+			{
+				if (mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero))
+					__result = PositionState.Invalid; //restrict to bays if available
+				else if (ModSettings_SoS.shipMapPhysics)
+					__result = PositionState.Obstructed; //warn but allow
 				return;
 			}
 		}
@@ -4377,22 +4419,6 @@ namespace SaveOurShip2
 			return true;
         }
     }
-
-	[HarmonyPatch(typeof(AerialVehicleArrivalModeWorker_TargetedDrop), "VehicleArrived")]
-	public static class UnfogBays
-	{
-		public static void Prefix(AerialVehicleArrivalModeWorker_TargetedDrop __instance, VehiclePawn vehicle, LaunchProtocol launchProtocol, Map map)
-		{
-			Log.Message("UnfogBays"); //td not called at all
-			var mapComp = map.GetComponent<ShipMapComp>();
-			if (mapComp.ShipMapState != ShipMapState.inCombat || mapComp.IsPlayerShipMap || mapComp.Bays.NullOrEmpty())
-				return;
-			foreach (var bay in mapComp.Bays)
-			{
-				FloodFillerFog.FloodUnfog(bay.parent.Position, map);
-			}
-		}
-	}
 
 	[HarmonyPatch(typeof(CompUpgradeTree), "Disabled")]
 	public static class RestrictHardpointNumberAndCargoCapacity

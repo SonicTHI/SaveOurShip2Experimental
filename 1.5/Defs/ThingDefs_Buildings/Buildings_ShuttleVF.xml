@@ -66,7 +66,7 @@
 		<canCaravan LockSetting = "True">true</canCaravan>
 		<vehicleCategory>Transport</vehicleCategory>
 		<techLevel>Industrial</techLevel>
-		<vehicleType>Universal</vehicleType>
+		<vehicleType>Air</vehicleType>
 		<draftLabel>Hover Mode</draftLabel>
 		
 		<statBases>
@@ -273,6 +273,7 @@
 			<li Class="Vehicles.CompProperties_VehicleLauncher">
 				<compClass>SaveOurShip2.Vehicles.CompShuttleLauncher</compClass>
 				<spaceFlight>true</spaceFlight>
+				<controlInFlight>true</controlInFlight>
 				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
 
 				<launchProtocol Class="SaveOurShip2.Vehicles.ShuttleTakeoff">
@@ -649,7 +650,7 @@
 		<canCaravan LockSetting = "True">true</canCaravan>
 		<vehicleCategory>Transport</vehicleCategory>
 		<techLevel>Spacer</techLevel>
-		<vehicleType>Universal</vehicleType>
+		<vehicleType>Air</vehicleType>
 		<draftLabel>Hover Mode</draftLabel>
 		
 		<statBases>
@@ -889,6 +890,7 @@
 			<li Class="Vehicles.CompProperties_VehicleLauncher">
 				<compClass>SaveOurShip2.Vehicles.CompShuttleLauncher</compClass>
 				<spaceFlight>true</spaceFlight>
+				<controlInFlight>true</controlInFlight>
 				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
 
 				<launchProtocol Class="SaveOurShip2.Vehicles.ShuttleTakeoff">
@@ -1333,7 +1335,7 @@
 		<canCaravan LockSetting = "True">true</canCaravan>
 		<vehicleCategory>Transport</vehicleCategory>
 		<techLevel>Spacer</techLevel>
-		<vehicleType>Universal</vehicleType>
+		<vehicleType>Air</vehicleType>
 		<draftLabel>Hover Mode</draftLabel>
 		
 		<statBases>
@@ -1573,6 +1575,7 @@
 			<li Class="Vehicles.CompProperties_VehicleLauncher">
 				<compClass>SaveOurShip2.Vehicles.CompShuttleLauncher</compClass>
 				<spaceFlight>true</spaceFlight>
+				<controlInFlight>true</controlInFlight>
 				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
 
 				<launchProtocol Class="SaveOurShip2.Vehicles.ShuttleTakeoff">
@@ -2163,7 +2166,7 @@
 		<canCaravan LockSetting = "True">true</canCaravan>
 		<vehicleCategory>Transport</vehicleCategory>
 		<techLevel>Spacer</techLevel>
-		<vehicleType>Universal</vehicleType>
+		<vehicleType>Air</vehicleType>
 		<draftLabel>Hover Mode</draftLabel>
 		
 		<statBases>
@@ -2403,6 +2406,7 @@
 			<li Class="Vehicles.CompProperties_VehicleLauncher">
 				<compClass>SaveOurShip2.Vehicles.CompShuttleLauncher</compClass>
 				<spaceFlight>true</spaceFlight>
+				<controlInFlight>true</controlInFlight>
 				<animationPunchAt>2</animationPunchAt> <!--To disable punching through shuttle bay roofs-->
 
 				<launchProtocol Class="SaveOurShip2.Vehicles.ShuttleTakeoff">

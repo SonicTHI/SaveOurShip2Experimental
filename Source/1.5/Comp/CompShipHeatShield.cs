@@ -35,8 +35,9 @@ namespace SaveOurShip2
 			base.PostSpawnSetup(respawningAfterLoad);
 			if (radiusSet == -1)
 				radiusSet = radius = Props.shieldDefault;
-			if(parent.Spawned && parent.Map.GetComponent<ShipMapComp>()!=null)
-				parent.Map.GetComponent<ShipMapComp>().Shields.Add(this);
+			ShipMapComp mapComp = parent.Map.GetComponent<ShipMapComp>();
+			if (mapComp != null)
+				mapComp.Shields.Add(this);
 			parentVehicle = parent as VehiclePawn;
 			if (parentVehicle != null)
 				return;

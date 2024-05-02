@@ -403,5 +403,10 @@ namespace SaveOurShip2
 			firstRot = -1;
 			unfoldComp.extension = 0.0f;
 		}
-	}
+        protected override void DrawAt(Vector3 drawLoc, bool flip = false)
+        {
+            base.DrawAt(drawLoc, flip);
+			Comps_PostDraw();
+        }
+    }
 }

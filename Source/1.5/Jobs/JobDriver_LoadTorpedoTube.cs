@@ -31,6 +31,8 @@ namespace SaveOurShip2
 		{
 			if (Tube.torpComp.FullyLoaded)
 				return false;
+			if (base.pawn.Faction != Tube.Faction)
+				return false;
 			return ReservationUtility.Reserve(base.pawn, base.job.targetA, base.job, 1, 1, null, true);
 		}
 

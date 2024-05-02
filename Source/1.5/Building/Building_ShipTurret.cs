@@ -866,6 +866,7 @@ namespace SaveOurShip2
 					if (!torpTypes.Contains(torp))
 						torpTypes.Add(torp);
 				}
+				torpTypes = torpTypes.OrderBy(t => t.defName).ToList();
 				foreach (ThingDef torp in torpTypes)
 				{
 					Command_Toggle command_Toggle = new Command_Toggle

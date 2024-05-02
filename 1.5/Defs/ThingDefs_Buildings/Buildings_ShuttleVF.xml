@@ -2934,7 +2934,7 @@
 			<shaderType>MoteGlow</shaderType>
 		</graphicData>
 		
-		<altitudeLayer>MoteLow</altitudeLayer>
+		<altitudeLayer>MoteOverhead</altitudeLayer>
 		<fadeInTime>0.1</fadeInTime>
 		<solidTime>0.25</solidTime>
 		<fadeOutTime>0.25</fadeOutTime>

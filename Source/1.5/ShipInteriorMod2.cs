@@ -40,6 +40,14 @@ namespace SaveOurShip2
 				LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(errorLong, null, null, null, null, "ERROR: ".Colorize(Color.red), false, null, null, WindowLayer.Super)), null, false, null);
 				return;
 			}
+			if (!ModLister.HasActiveModWithName("Vehicle Framework"))
+			{
+				string error = "ERROR: SOS2EXP requires Vehicle Framework! Download and enable it!";
+				Log.Error(error);
+				string errorLong = error + "\n\nIt must be loaded before SOS2!";
+				LongEventHandler.QueueLongEvent(() => Find.WindowStack.Add(new Dialog_MessageBox(errorLong, null, null, null, null, "ERROR: ".Colorize(Color.red), false, null, null, WindowLayer.Super)), null, false, null);
+				return;
+			}
 			ShipInteriorMod2.HasSoS2CK = ModLister.HasActiveModWithName("Save Our Ship Creation Kit");
 			//Legacy methods. All of these could technically be merged
 			ShipInteriorMod2.DefsLoaded();
@@ -118,7 +126,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f17";
+		public const string SOS2EXPversion = "V101f18";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -480,7 +488,7 @@ namespace SaveOurShip2
 			{
 				if (!Find.World.worldObjects.AnyWorldObjectAt(i) && TileFinder.IsValidTileForNewSettlement(i))
 				{
-					//Log.Message("Generating orbiting ship at tile " + i);
+					//Log.Message("Generating orbiting object at tile " + i);
 					return i;
 				}
 			}
@@ -1272,8 +1280,6 @@ namespace SaveOurShip2
 					Log.Warning("SOS2: ".Colorize(Color.cyan) + map + "Ship shape was not generated properly: ".Colorize(Color.red) + shape.shapeOrDef + " at " + offset.x + shape.x + ", " + offset.z + shape.z + " Shipdef pos: |" + shape.x + "," + shape.z + ",0,*|\n" + e);
 				}
 			}
-			/*cellsToFog.RemoveWhere(v => cellsNotToFog.Contains(v));
-			cellsNotToFog.Clear();*/
 			//cargo
 			if (cargoCells.Any() && wreckLevel < 3)
 			{
@@ -1457,6 +1463,18 @@ namespace SaveOurShip2
 			map.regionAndRoomUpdater.RebuildAllRegionsAndRooms();
 			if (map.IsSpace())
 				map.fogGrid.ClearAllFog();
+
+			//remove fog on turrets, sinks
+			List<IntVec3> removeCells = new List<IntVec3>();
+			foreach (IntVec3 v in shipArea)
+			{
+				if (v.GetThingList(map).Any(t => t.TryGetComp<CompShipHeat>()?.Props.showOnRoof ?? false))
+					removeCells.Add(v);
+			}
+			foreach (IntVec3 v in removeCells)
+			{
+				shipArea.Remove(v);
+			}
 
 			if (!clearArea)
 			{
@@ -2700,7 +2718,7 @@ namespace SaveOurShip2
 			var mapComp = map.GetComponent<ShipMapComp>();
 			var ship = mapComp.ShipsOnMap[core.ShipIndex];
 			List<Pawn> toKill = new List<Pawn>();
-			foreach (Pawn p in ship.PawnsOnShip)
+			foreach (Pawn p in ship.PawnsOnShip())
 			{
 				if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map != map))
 					toKill.Add(p);
@@ -2886,6 +2904,10 @@ namespace SaveOurShip2
 		{
 			var bay = __instance.Position.GetThingList(__instance.Map).Where(t => t.TryGetComp<CompShipBay>() != null).FirstOrDefault();
 			return bay != null && bay.TryGetComp<CompShipBay>().CanLaunchShuttle(__instance);
+		}
+		public static bool IsShuttle(VehiclePawn vehicle)
+		{
+			return vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight;
 		}
 		public static bool ShuttleCanBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
 		{

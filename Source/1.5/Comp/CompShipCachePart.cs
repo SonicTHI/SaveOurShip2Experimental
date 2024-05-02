@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using RimWorld;
+using Verse.AI;
 
 namespace SaveOurShip2
 {
@@ -52,6 +53,9 @@ namespace SaveOurShip2
 		public HashSet<IntVec3> cellsUnder;
 		public bool FoamFill = false;
 		public bool ArchoConvert = false;
+		IntVec3 parentPos;
+		Rot4 parentRot;
+		ThingDef parentDef;
 		Map map;
 		public ShipMapComp mapComp;
 		Faction fac;
@@ -222,7 +226,7 @@ namespace SaveOurShip2
 						{
 							partExists = true;
 						}
-						else
+						else if (!ArchoConvert)
 						{
 							if (b is Building_ShipBridge br)
 								br.terminate = true;
@@ -253,6 +257,9 @@ namespace SaveOurShip2
 			ship.RemoveFromCache(parent as Building, mode);
 			if (!parent.def.building.shipPart || ArchoConvert)
 			{
+				parentDef = parent.def;
+				parentPos = parent.Position;
+				parentRot = parent.Rotation;
 				return;
 			}
 			else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && parent.def.Size == IntVec2.One && (Props.Hull && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map) || (Props.Plating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
@@ -352,13 +359,12 @@ namespace SaveOurShip2
 			}
 			else if (ArchoConvert)
 			{
-				Thing replacer = ThingMaker.MakeThing(ShipInteriorMod2.archoConversions[parent.def]);
-				replacer.Rotation = parent.Rotation;
-				replacer.Position = parent.Position;
+				Thing replacer = ThingMaker.MakeThing(ShipInteriorMod2.archoConversions[parentDef]);
+				replacer.Rotation = parentRot;
+				replacer.Position = parentPos;
 				replacer.SetFaction(fac);
-
-				replacer.SpawnSetup(parent.Map, false);
-				FleckMaker.ThrowSmoke(replacer.DrawPos, parent.Map, 2);
+				replacer.SpawnSetup(map, false);
+				FleckMaker.ThrowSmoke(replacer.DrawPos, map, 2);
 			}
 		}
 		public override void PostDraw()
@@ -371,7 +377,7 @@ namespace SaveOurShip2
 				foreach (Thing t in parent.Position.GetThingList(parent.Map).Where(t => t is Building))
 				{
 					var heatComp = t.TryGetComp<CompShipHeat>();
-					if (heatComp != null && heatComp.Props.showOnRoof)// t.def.altitudeLayer == AltitudeLayer.WorldClipper)
+					if (heatComp != null && heatComp.Props.showOnRoof)
 					{
 						return;
 					}

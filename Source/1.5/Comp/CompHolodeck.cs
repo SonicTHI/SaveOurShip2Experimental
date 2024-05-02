@@ -211,7 +211,7 @@ namespace SaveOurShip2
 
 		void DrawInSquare(Graphic graphic, Vector3 offset)
 		{
-			Graphics.DrawMesh(material: graphic.MatSingleFor(parent), mesh: graphic.MeshAt(parent.Rotation), position: new UnityEngine.Vector3(parent.DrawPos.x+offset.x, offset.y, parent.DrawPos.z+offset.z), rotation: Quaternion.identity, layer: 0);
+			Graphics.DrawMesh(graphic.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x + offset.x, offset.y, parent.DrawPos.z + offset.z), Quaternion.identity, graphic.MatSingleFor(parent), 0);
 		}
 
 		public override void CompTickRare()

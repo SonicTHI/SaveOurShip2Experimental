@@ -4285,6 +4285,7 @@ namespace SaveOurShip2
 				if (shield.shutDown)
 					continue;
 				Vector3 pos = shield.parent.Position.ToVector3Shifted();
+				pos.y = lastExactPos.y;
 				if(Vector3.Distance(lastExactPos, pos) > shield.radius && (Vector3.Distance(newExactPos, pos) <= shield.radius || Vector3.Distance((lastExactPos + newExactPos) / 2, pos) <= shield.radius))
                 {
 					shield.HitShield(__instance);
@@ -4420,7 +4421,7 @@ namespace SaveOurShip2
     }
 
 	[HarmonyPatch(typeof(CompUpgradeTree), "Disabled")]
-	public static class RestrictHardpointNumber
+	public static class RestrictHardpointNumberAndCargoCapacity
     {
 		public static void Postfix(CompUpgradeTree __instance, UpgradeNode node, ref bool __result)
         {
@@ -4428,6 +4429,20 @@ namespace SaveOurShip2
             {
 				__result = true;
             }
+			float CargoMod = 0;
+			foreach (Upgrade upgrade in node.upgrades)
+			{
+				if (upgrade is StatUpgrade stat && stat.vehicleStats!=null)
+				{
+					foreach (StatUpgrade.VehicleStatDefUpgrade value in stat.vehicleStats)
+					{
+						if(value.def==VehicleStatDefOf.CargoCapacity)
+							CargoMod += value.value;
+					}
+				}
+			}
+			if (CargoMod + __instance.Vehicle.GetStatValue(VehicleStatDefOf.CargoCapacity) < 0)
+				__result = true;
         }
     }
 
@@ -4491,7 +4506,7 @@ namespace SaveOurShip2
     [HarmonyPatch(typeof(VehiclePawn),"PostLoad")]
 	public static class PostLoadNewComponents
     {
-		public static List<ThingComp> CompsToAdd;
+		public static List<ThingComp> CompsToAdd=new List<ThingComp>();
 
 		public static bool Prefix(VehiclePawn __instance)
         {
@@ -4504,14 +4519,32 @@ namespace SaveOurShip2
 			foreach (ThingComp comp in CompsToAdd)
 			{
 				__instance.comps.Add(comp);
-				comp.PostSpawnSetup(true);
+				PostSpawnNewComponents.CompsToSpawn.Add(comp);
 			}
 			__instance.RecacheComponents();
+		}
+	}
+
+	[HarmonyPatch(typeof(VehiclePawn), "SpawnSetup")]
+	public static class PostSpawnNewComponents
+	{
+		public static List<ThingComp> CompsToSpawn=new List<ThingComp>();
+
+		public static bool Prefix(VehiclePawn __instance)
+		{
+			CompsToSpawn = new List<ThingComp>();
+			return true;
+		}
+
+		public static void Postfix(VehiclePawn __instance)
+		{
+			foreach (ThingComp comp in CompsToSpawn)
+				comp.PostSpawnSetup(true);
 			CompVehicleHeatNet net = __instance.GetComp<CompVehicleHeatNet>();
 			if (net != null)
 				net.RebuildHeatNet();
 		}
-    }
+	}
 
 	[HarmonyPatch(typeof(Corpse), "PostCorpseDestroy")]
 	public static class PreserveSoul

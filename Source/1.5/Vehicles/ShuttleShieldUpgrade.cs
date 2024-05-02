@@ -17,12 +17,16 @@ namespace SaveOurShip2.Vehicles
 
         public override void Refund(VehiclePawn vehicle)
         {
-            vehicle.RemoveComp(vehicle.GetComp<CompShipHeatShield>());
+            CompShipHeatShield shield = vehicle.GetComp<CompShipHeatShield>();
+            vehicle.comps.Remove(shield);
+            ShipMapComp mapComp = vehicle.Map.GetComponent<ShipMapComp>();
+            if (mapComp != null && mapComp.Shields.Contains(shield))
+                mapComp.Shields.Remove(shield);
             VehicleComponent shieldGenerator = vehicle.statHandler.components.First(comp => comp.props.key == "shieldGenerator");
             shieldGenerator.SetHealthModifier = 1;
             shieldGenerator.health = 1;
             if (vehicle.GetComp<CompShipHeat>() == null)
-                vehicle.RemoveComp(vehicle.GetComp<CompVehicleHeatNet>());
+                vehicle.comps.Remove(vehicle.GetComp<CompVehicleHeatNet>());
             else
                 vehicle.GetComp<CompVehicleHeatNet>().RebuildHeatNet();
         }
@@ -31,8 +35,10 @@ namespace SaveOurShip2.Vehicles
         {
             //Check if we've already unlocked this... unlocking on load is unpredictable at times
             if (vehicle.GetComp<CompShipHeatShield>() != null)
+            {
+                Log.Message("huh");
                 return;
-
+            }
             CompVehicleHeatNet net = vehicle.GetComp<CompVehicleHeatNet>();
             if (net == null)
             {
@@ -54,7 +60,10 @@ namespace SaveOurShip2.Vehicles
                 vehicle.comps.Add(myShield);
                 vehicle.RecacheComponents();
                 myShield.PostSpawnSetup(unlockingAfterLoad);
-                net.RebuildHeatNet();
+                net.RebuildHeatNet(); 
+                ShipMapComp mapComp = vehicle.Map.GetComponent<ShipMapComp>();
+                if (mapComp != null)
+                    mapComp.Shields.Add(myShield);
             }
             else
                 PostLoadNewComponents.CompsToAdd.Add(myShield);

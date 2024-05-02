@@ -17,10 +17,10 @@ namespace SaveOurShip2.Vehicles
         {
             CompShipHeat heatComp = GetMatchingComp(vehicle);
             if (heatComp != null)
-                vehicle.RemoveComp(heatComp);
+                vehicle.comps.Remove(heatComp);
 
             if (vehicle.GetComp<CompShipHeat>() == null)
-                vehicle.RemoveComp(vehicle.GetComp<CompVehicleHeatNet>());
+                vehicle.comps.Remove(vehicle.GetComp<CompVehicleHeatNet>());
             else
                 vehicle.GetComp<CompVehicleHeatNet>().RebuildHeatNet();
         }

@@ -45,8 +45,21 @@ namespace SaveOurShip2.Vehicles
 					}
 				}
 			}
-			foreach (FloatMenuOption giz in base.GetFloatMenuOptionsAt(tile))
-				yield return giz;
+            List<FloatMenuOption> baseOptions = new List<FloatMenuOption>(base.GetFloatMenuOptionsAt(tile));
+            if(baseOptions.Count==0)
+            {
+                if (mp!=null&&!mp.HasMap)
+                {
+                    foreach (FloatMenuOption option in VehicleArrivalActionUtility.GetFloatMenuOptions(() => true, () => new AerialVehicleArrivalAction_LoadMapAndDefog(vehicle, this, tile, AerialVehicleArrivalModeDefOf.TargetedLanding), TranslatorFormattedStringExtensions.Translate("VF_LandVehicleTargetedLanding", mp, vehicle, tile), vehicle, tile))
+                        yield return option;
+                }
+            }
+            else
+            {
+                foreach (FloatMenuOption option in baseOptions)
+                    yield return option;
+            }
+            
         }
 
         public IEnumerable<FloatMenuOption> FloatMenuMissions(int tile, ShipMapComp mapComp)

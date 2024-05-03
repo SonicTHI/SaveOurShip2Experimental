@@ -31,8 +31,12 @@ namespace SaveOurShip2
 		//roof textures
 		public static GraphicData roofedData = new GraphicData();
 		public static GraphicData roofedDataMech = new GraphicData();
+		public static GraphicData roofedDataWreck = new GraphicData();
+		public static GraphicData roofedDataFoam = new GraphicData();
 		public static Graphic roofedGraphicTile;
 		public static Graphic roofedGraphicTileMech;
+		public static Graphic roofedGraphicTileWreck;
+		public static Graphic roofedGraphicTileFoam;
 		static CompShipCachePart()
 		{
 			roofedData.texPath = "Things/Building/Ship/Ship_Roof";
@@ -43,13 +47,21 @@ namespace SaveOurShip2
 			roofedDataMech.graphicClass = typeof(Graphic_Single);
 			roofedDataMech.shaderType = ShaderTypeDefOf.Cutout;
 			roofedGraphicTileMech = new Graphic_256(roofedDataMech.Graphic);
+			roofedDataWreck.texPath = "Things/Building/Ship/Ship_RoofWreck";
+			roofedDataWreck.graphicClass = typeof(Graphic_Single);
+			roofedDataWreck.shaderType = ShaderTypeDefOf.Cutout;
+			roofedGraphicTileWreck = new Graphic_256(roofedDataWreck.Graphic);
+			roofedDataFoam.texPath = "Things/Building/Ship/Ship_RoofFoam";
+			roofedDataFoam.graphicClass = typeof(Graphic_Single);
+			roofedDataFoam.shaderType = ShaderTypeDefOf.Cutout;
+			roofedGraphicTileFoam = new Graphic_256(roofedDataFoam.Graphic);
 		}
 
 		bool isTile;
 		bool isMechTile;
 		bool isArchoTile;
-		bool isFoamTile; //no gfx for foam roof
-		bool isWreckTile; //or wreck atm
+		bool isFoamTile;
+		bool isWreckTile;
 
 		public HashSet<IntVec3> cellsUnder;
 		public bool FoamFill = false;
@@ -386,13 +398,13 @@ namespace SaveOurShip2
 					}
 				}
 				if (isTile)
-				{
 					Graphics.DrawMesh(roofedGraphicTile.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), Quaternion.identity, roofedGraphicTile.MatSingleFor(parent), 0);
-				}
 				else if (isMechTile || isArchoTile)
-				{
 					Graphics.DrawMesh(roofedGraphicTileMech.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), Quaternion.identity, roofedGraphicTileMech.MatSingleFor(parent), 0);
-				}
+				else if (isWreckTile)
+					Graphics.DrawMesh(roofedGraphicTileWreck.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), Quaternion.identity, roofedGraphicTileWreck.MatSingleFor(parent), 0);
+				else if (isFoamTile)
+					Graphics.DrawMesh(roofedGraphicTileFoam.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), Quaternion.identity, roofedGraphicTileFoam.MatSingleFor(parent), 0);
 			}
 		}
 		public virtual void SetShipTerrain(IntVec3 v)

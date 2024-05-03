@@ -722,7 +722,6 @@
 		<defName>ShipHullTile</defName>
 		<label>hull plating</label>
 		<designatorDropdown>Ship_Hulls</designatorDropdown>
-		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
 		<graphicData>
@@ -2830,7 +2829,6 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipHullfoamTile</defName>
 		<label>hullfoam plating</label>
-		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
 		<graphicData>

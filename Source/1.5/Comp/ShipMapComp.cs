@@ -633,7 +633,7 @@ namespace SaveOurShip2
 			{
 				if (GenHostility.IsActiveThreatTo(item, faction) && !(item.Thing is VehiclePawn))
 				{
-					return true;
+					return false;
 				}
 
 				Pawn pawn;
@@ -642,14 +642,15 @@ namespace SaveOurShip2
 					CompCanBeDormant comp = pawn.GetComp<CompCanBeDormant>();
 					if (comp != null && !comp.Awake)
 					{
-						return true;
+						return false;
 					}
 				}
 			}
-			return false;
+			return true;
 		}
 		public void Claim()
 		{
+			Log.Message("SOS2 autofire claim");
 			List<Building> buildings = new List<Building>();
 			List<Thing> things = new List<Thing>();
 			List<VehiclePawn> shuttles = new List<VehiclePawn>();

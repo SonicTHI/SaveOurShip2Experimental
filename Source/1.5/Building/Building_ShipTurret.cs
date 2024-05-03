@@ -679,8 +679,7 @@ namespace SaveOurShip2
 			if (spinalComp != null)
 			{
 				// Do not show numer of amplifiers when room with capacitor and amplifiers is fogged
-				IntVec3 positionBehindBarrel = Position + GenAdj.CardinalDirectionsAround[Rotation.rotInt] * 2;
-				if (!positionBehindBarrel.Fogged(this.Map))
+				if (Faction != Faction.OfPlayer && !(Position + GenAdj.CardinalDirectionsAround[Rotation.rotInt] * 2).Fogged(Map))
 				{
 					if (AmplifierCount != -1)
 						stringBuilder.AppendLine("SoS.AmplifierCount".Translate(AmplifierCount));

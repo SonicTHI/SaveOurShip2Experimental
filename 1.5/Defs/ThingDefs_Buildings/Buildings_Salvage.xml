@@ -128,13 +128,13 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipHullTileWrecked</defName>
 		<label>hull wreckage</label>
-		<thingClass>Building</thingClass>
-		<!--drawerType>MapMeshAndRealTime</drawerType-->
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
 		<graphicData>
 			<texPath>Things/Building/Ship/HullPlateTransparent</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 		</graphicData>
+		<seeThroughFog>true</seeThroughFog>
 		<building>
 			<ai_chillDestination>false</ai_chillDestination>
 			<isInert>true</isInert>
@@ -169,7 +169,7 @@
 			</li>
 		</comps>
 		<placeWorkers>
-			<li>SaveOurShip2.PlaceWorker_ShipHull</li>
+			<li>SaveOurShip2.PlaceWorker_ShipPlating</li>
 		</placeWorkers>
 		<rotatable>false</rotatable>
 		<selectable>false</selectable>

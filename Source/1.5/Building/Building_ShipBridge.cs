@@ -1029,7 +1029,8 @@ namespace SaveOurShip2
 			{
 				TacCon = true;
 			}
-			ShipIndex = shipIndex;
+			if (!ShipInteriorMod2.MoveShipFlag)
+				ShipIndex = shipIndex;
 			if (!Map.IsSpace())
 				return;
 
@@ -1139,10 +1140,10 @@ namespace SaveOurShip2
 			}
 			pawn?.skills.GetSkill(SkillDefOf.Intellectual).Learn(2000);
 
-			if (pawn == null)
+			//if (pawn == null)
 				Ship.Capture(Faction.OfPlayer);
-			else
-				Ship.Capture(pawn.Faction);
+			//else
+			//	Ship.Capture(pawn.Faction);
 
 			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.ShipsOnMap.Values.Any(s => s.Index != ShipIndex && s.CanMove()))
 			{

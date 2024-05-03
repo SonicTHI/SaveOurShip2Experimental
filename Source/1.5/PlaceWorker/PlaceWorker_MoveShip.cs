@@ -29,30 +29,45 @@ namespace SaveOurShip2
 					targetMapLarger = true;
 				}
 				AcceptanceReport result = true;
-				foreach (SketchEntity current in ship.shipSketch.Entities)
+				foreach (SketchEntity current in ship.shipSketch.Entities.Concat(ship.extenderSketch?.Entities))
 				{
 					IntVec3 vec = loc + current.pos;
-
+					if (!vec.InBounds(map))
+					{
+						result = false;
+						break;
+					}
 					if (GenGrid.InNoBuildEdgeArea(vec, map) || current.IsSpawningBlocked(vec, map) || map.roofGrid.Roofed(vec) || (targetMapLarger && (vec.x > originMap.Size.x || vec.z > originMap.Size.z)))
 					{
 						current.DrawGhost(vec, new Color(0.8f, 0.2f, 0.2f, 0.3f));
 						result = false;
 						continue;
 					}
-					if (vec.InBounds(map))
+					foreach (Thing t in vec.GetThingList(map))
 					{
-						foreach (Thing t in vec.GetThingList(map))
+						if (t is Building b)
 						{
-							if (t is Building b)
+							if (b.def.passability == Traversability.Impassable || b is Building_SteamGeyser)
 							{
-								if (b.def.passability == Traversability.Impassable || b is Building_SteamGeyser)
-								{
-									current.DrawGhost(vec, new Color(0.8f, 0.2f, 0.2f, 0.3f));
-									result = false;
-									break;
-								}
+								current.DrawGhost(vec, new Color(0.8f, 0.2f, 0.2f, 0.3f));
+								result = false;
+								break;
 							}
 						}
+					}
+				}
+				foreach (SketchEntity current in ship.conflictSketch?.Entities) //nothing allowed in this
+				{
+					IntVec3 vec = loc + current.pos;
+					if (!vec.InBounds(map))
+					{
+						result = false;
+						break;
+					}
+					if (vec.GetThingList(map).Any())
+					{
+						result = false;
+						break;
 					}
 				}
 				return result;

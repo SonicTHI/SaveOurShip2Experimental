@@ -126,7 +126,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f21";
+		public const string SOS2EXPversion = "V101f22";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -1901,31 +1901,6 @@ namespace SaveOurShip2
 			var targetMapComp = targetMap.GetComponent<ShipMapComp>();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
 
-			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
-			{
-				targetMapComp.ShipsOnMap.Add(shipIndex, sourceMapComp.ShipsOnMap[shipIndex]);
-				ship = targetMapComp.ShipsOnMap[shipIndex];
-				ship.Map = targetMap;
-				if (adjustment != IntVec3.Zero && ship.BuildingsDestroyed.Any()) //cache: adjust destroyed
-				{
-					HashSet<Tuple<ThingDef, IntVec3, Rot4>> buildingsDestroyed = new HashSet<Tuple<ThingDef, IntVec3, Rot4>>(ship.BuildingsDestroyed);
-					ship.BuildingsDestroyed.Clear();
-					foreach (var sh in buildingsDestroyed)
-					{
-						ship.BuildingsDestroyed.Add(new Tuple<ThingDef, IntVec3, Rot4>(sh.Item1, Transform(sh.Item2), sh.Item3));
-					}
-					buildingsDestroyed.Clear();
-				}
-				sourceMapComp.RemoveShipFromCache(shipIndex);
-			}
-			if (adjustment != IntVec3.Zero) //cache: adjust area
-			{
-				ship.Area.Clear();
-				foreach (IntVec3 pos in sourceArea)
-				{
-					ship.Area.Add(Transform(pos));
-				}
-			}
 			//Log.Message("Area: " + ship.Area.Count);
 
 			//HashSet<Zone> zonesToDestroy = new HashSet<Zone>();
@@ -2094,9 +2069,8 @@ namespace SaveOurShip2
 					}
 				}
 			}
-			if (adjustment != IntVec3.Zero) //ship cache: offset area, find adjacent ships
+			if (adjustment != IntVec3.Zero) //find adjacent ships
 			{
-				ship.Area = targetArea;
 				foreach (IntVec3 pos in targetArea)
 				{
 					foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, new IntVec2(1, 1)).Where(v => !targetArea.Contains(v) && targetMapComp.MapShipCells.ContainsKey(v)))
@@ -2208,24 +2182,6 @@ namespace SaveOurShip2
 				{
 					spawnThing.SpawnSetup(sourceMap, false);
 				}
-				//reverse cache
-				if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
-				{
-					sourceMapComp.ShipsOnMap.Add(shipIndex, targetMapComp.ShipsOnMap[shipIndex]);
-					ship = targetMapComp.ShipsOnMap[shipIndex];
-					ship.Map = sourceMap;
-					ship.BuildingsDestroyed.Clear();
-					targetMapComp.RemoveShipFromCache(shipIndex);
-				}
-				if (adjustment != IntVec3.Zero) //cache: adjust area
-				{
-					ship.Area.Clear();
-					foreach (IntVec3 pos in sourceArea)
-					{
-						ship.Area.Add(pos);
-					}
-				}
-				MoveShipFlag = false;
 				Find.LetterStack.ReceiveLetter("SoS.MoveFail".Translate(), "SoS.MoveFailDesc".Translate(reason), LetterDefOf.NegativeEvent);
 				return;
 			}
@@ -2243,6 +2199,33 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveThings");
+
+			//adjust cache
+			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
+			{
+				targetMapComp.ShipsOnMap.Add(shipIndex, sourceMapComp.ShipsOnMap[shipIndex]);
+				ship = targetMapComp.ShipsOnMap[shipIndex];
+				ship.Map = targetMap;
+				if (adjustment != IntVec3.Zero && ship.BuildingsDestroyed.Any()) //cache: adjust destroyed
+				{
+					HashSet<Tuple<ThingDef, IntVec3, Rot4>> buildingsDestroyed = new HashSet<Tuple<ThingDef, IntVec3, Rot4>>(ship.BuildingsDestroyed);
+					ship.BuildingsDestroyed.Clear();
+					foreach (var sh in buildingsDestroyed)
+					{
+						ship.BuildingsDestroyed.Add(new Tuple<ThingDef, IntVec3, Rot4>(sh.Item1, Transform(sh.Item2), sh.Item3));
+					}
+					buildingsDestroyed.Clear();
+				}
+				sourceMapComp.RemoveShipFromCache(shipIndex);
+			}
+			if (adjustment != IntVec3.Zero) //ship cache: adjust area
+			{
+				ship.Area.Clear();
+				foreach (IntVec3 pos in sourceArea)
+				{
+					ship.Area.Add(Transform(pos));
+				}
+			}
 			MoveShipFlag = false;
 
 			//draw fuel, exhaust area actions

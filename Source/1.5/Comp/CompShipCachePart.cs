@@ -37,11 +37,11 @@ namespace SaveOurShip2
 		{
 			roofedData.texPath = "Things/Building/Ship/Ship_Roof";
 			roofedData.graphicClass = typeof(Graphic_Single);
-			roofedData.shaderType = ShaderTypeDefOf.MetaOverlay;
+			roofedData.shaderType = ShaderTypeDefOf.Cutout;
 			roofedGraphicTile = new Graphic_256(roofedData.Graphic);
 			roofedDataMech.texPath = "Things/Building/Ship/Ship_RoofMech";
 			roofedDataMech.graphicClass = typeof(Graphic_Single);
-			roofedDataMech.shaderType = ShaderTypeDefOf.MetaOverlay;
+			roofedDataMech.shaderType = ShaderTypeDefOf.Cutout;
 			roofedGraphicTileMech = new Graphic_256(roofedDataMech.Graphic);
 		}
 
@@ -49,6 +49,7 @@ namespace SaveOurShip2
 		bool isMechTile;
 		bool isArchoTile;
 		bool isFoamTile; //no gfx for foam roof
+		bool isWreckTile; //or wreck atm
 
 		public HashSet<IntVec3> cellsUnder;
 		public bool FoamFill = false;
@@ -116,6 +117,7 @@ namespace SaveOurShip2
 			isMechTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileMech;
 			isArchoTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileArchotech;
 			isFoamTile = parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile;
+			isWreckTile = parent.def == ResourceBank.ThingDefOf.ShipHullTileWrecked;
 			if (!respawningAfterLoad && Props.AnyPart)
 			{
 				if (!ShipInteriorMod2.MoveShipFlag)
@@ -377,18 +379,19 @@ namespace SaveOurShip2
 				foreach (Thing t in parent.Position.GetThingList(parent.Map).Where(t => t is Building))
 				{
 					var heatComp = t.TryGetComp<CompShipHeat>();
-					if (heatComp != null && heatComp.Props.showOnRoof)
+					var bayComp = t.TryGetComp<CompShipBay>();
+					if (bayComp != null || (heatComp != null && heatComp.Props.showOnRoof))
 					{
 						return;
 					}
 				}
 				if (isTile)
 				{
-					Graphics.DrawMesh(roofedGraphicTile.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), Quaternion.identity, roofedGraphicTile.MatSingleFor(parent), 0);
+					Graphics.DrawMesh(roofedGraphicTile.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), Quaternion.identity, roofedGraphicTile.MatSingleFor(parent), 0);
 				}
 				else if (isMechTile || isArchoTile)
 				{
-					Graphics.DrawMesh(roofedGraphicTileMech.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x, 0, parent.DrawPos.z), Quaternion.identity, roofedGraphicTileMech.MatSingleFor(parent), 0);
+					Graphics.DrawMesh(roofedGraphicTileMech.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), Quaternion.identity, roofedGraphicTileMech.MatSingleFor(parent), 0);
 				}
 			}
 		}

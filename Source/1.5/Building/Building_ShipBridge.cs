@@ -299,10 +299,10 @@ namespace SaveOurShip2
 					yield return vent;
 				}
 				bool wrecksOnMap = false;
-				List<SpaceShipCache> shipStuck = new List<SpaceShipCache>();
+				List<int> shipStuck = new List<int>();
 				if (mapComp.ShipsOnMap.Count > 1)
 				{
-					shipStuck = mapComp.ShipsOnMap.Values.Where(s => s.IsStuckAndNotAssisted()).ToList();
+					shipStuck = mapComp.ShipsOnMap.Keys.Where(s => mapComp.ShipsOnMap[s].IsStuckAndNotAssisted()).ToList();
 					if (shipStuck.Any())
 						wrecksOnMap = true;
 				}
@@ -358,9 +358,9 @@ namespace SaveOurShip2
 							{
 								Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("SoS.WithdrawWrecksConfirm"), delegate
 								{
-									foreach (var ship in shipStuck)
+									foreach (int ship in shipStuck)
 									{
-										mapComp.ShipsToMove.Add(ship.Index);
+										mapComp.ShipsToMove.Add(ship);
 									}
 								}));
 							},
@@ -389,7 +389,7 @@ namespace SaveOurShip2
 						if (wrecksOnMap)
 						{
 							retreat.Disable();
-							retreat.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
+							retreat.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WrecksPreventMove");
 						}
 					}
 					if (mapComp.Maintain == false)
@@ -410,7 +410,7 @@ namespace SaveOurShip2
 						if (wrecksOnMap)
 						{
 							maintain.Disable();
-							maintain.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
+							maintain.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WrecksPreventMove");
 						}
 					}
 					if (mapComp.Maintain == true || mapComp.Heading != 0)
@@ -431,7 +431,7 @@ namespace SaveOurShip2
 						if (wrecksOnMap)
 						{
 							stop.Disable();
-							stop.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
+							stop.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WrecksPreventMove");
 						}
 					}
 					if (mapComp.Maintain == true || mapComp.Heading != 1)
@@ -452,7 +452,7 @@ namespace SaveOurShip2
 						if (wrecksOnMap)
 						{
 							advance.Disable();
-							advance.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
+							advance.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WrecksPreventMove");
 						}
 					}
 					if (heatNet.Turrets.Any())
@@ -565,7 +565,29 @@ namespace SaveOurShip2
 					if (wrecksOnMap || !Ship.CanFire())
 					{
 						toggleEngines.Disable();
-						//toggleEngines.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WithdrawMoveWrecks");
+						toggleEngines.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.WrecksPreventMove");
+					}
+					//wrecks
+					if (wrecksOnMap)
+					{
+						Command_Action withdrawWrecks = new Command_Action
+						{
+							groupable = false,
+							action = delegate
+							{
+								Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecksConfirm"), delegate
+								{
+									foreach (int ship in shipStuck)
+									{
+										ShipInteriorMod2.RemoveShipOrArea(Map, ship);
+									}
+								}));
+							},
+							icon = ContentFinder<Texture2D>.Get("UI/Ship_Icon_RemoveWrecks"),
+							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecks"),
+							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecksDesc"),
+						};
+						yield return withdrawWrecks;
 					}
 				}
 				//not incombat or in event
@@ -1122,7 +1144,7 @@ namespace SaveOurShip2
 			else
 				Ship.Capture(pawn.Faction);
 
-			if (mapComp.ShipMapState == ShipMapState.inCombat)
+			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.ShipsOnMap.Values.Any(s => s.Index != ShipIndex && s.CanMove()))
 			{
 				mapComp.ShipsToMove.Add(ShipIndex);
 			}

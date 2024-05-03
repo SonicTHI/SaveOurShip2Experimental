@@ -126,7 +126,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f20";
+		public const string SOS2EXPversion = "V101f21";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -1464,11 +1464,11 @@ namespace SaveOurShip2
 			if (map.IsSpace())
 				map.fogGrid.ClearAllFog();
 
-			//remove fog on turrets, sinks
+			//remove fog on turrets, sinks, bays
 			List<IntVec3> removeCells = new List<IntVec3>();
 			foreach (IntVec3 v in shipArea)
 			{
-				if (v.GetThingList(map).Any(t => t.TryGetComp<CompShipHeat>()?.Props.showOnRoof ?? false))
+				if (v.GetThingList(map).Any(t => (t.TryGetComp<CompShipBay>() != null && t.TryGetComp<CompShipBay>().bayRect.Contains(v)) || (t.TryGetComp<CompShipHeat>()?.Props.showOnRoof ?? false)))
 					removeCells.Add(v);
 			}
 			foreach (IntVec3 v in removeCells)

@@ -2069,7 +2069,7 @@
 		<defName>ShipShuttleBay</defName>
 		<label>shuttle bay</label>
 		<designatorDropdown>Ship_ShuttleBays</designatorDropdown>
-		<thingClass>Building</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/Shuttle_Bay_off</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2108,6 +2108,7 @@
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<maxShuttleSize>5</maxShuttleSize>
+				<graphicPath>Things/Building/Ship/Shuttle_Bay_Roof</graphicPath>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -2121,7 +2122,7 @@
 		<defName>ShipShuttleBayLarge</defName>
 		<label>large shuttle bay</label>
 		<designatorDropdown>Ship_ShuttleBays</designatorDropdown>
-		<thingClass>Building</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/Shuttle_Bay_off</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2160,6 +2161,7 @@
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<maxShuttleSize>7</maxShuttleSize>
+				<graphicPath>Things/Building/Ship/Shuttle_Bay_Roof</graphicPath>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -2176,6 +2178,7 @@
 		<defName>ShipSalvageBay</defName>
 		<label>salvage bay</label>
 		<designatorDropdown>Ship_SalvageBays</designatorDropdown>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/SalvageBay</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2215,6 +2218,8 @@
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<compClass>SaveOurShip2.CompShipBaySalvage</compClass>
 				<weight>5000</weight>
+				<borderSize>1</borderSize>
+				<graphicPath>Things/Building/Ship/Salvage_Bay_Roof</graphicPath>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -2228,6 +2233,7 @@
 		<defName>ShipSalvageBayNano</defName>
 		<label>glittertech salvage bay</label>
 		<designatorDropdown>Ship_SalvageBays</designatorDropdown>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/SalvageBayNano</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2269,6 +2275,8 @@
 				<compClass>SaveOurShip2.CompShipBaySalvage</compClass>
 				<beam>true</beam>
 				<weight>10000</weight>
+				<borderSize>1</borderSize>
+				<graphicPath>Things/Building/Ship/Salvage_Bay_Roof</graphicPath>
 			</li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>

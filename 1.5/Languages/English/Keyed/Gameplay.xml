@@ -40,9 +40,12 @@
 	<SoS.WithdrawShipDesc>Withdraw this ship from the battle</SoS.WithdrawShipDesc>
 	<SoS.WithdrawShipLast>Last ship can not withdraw</SoS.WithdrawShipLast>
 	<SoS.CombatConfirmWithdraw>Withdraw this ship to the graveyard? If you lose or flee, the enemy ship will attack your graveyard.</SoS.CombatConfirmWithdraw>
+	<SoS.WrecksPreventMove>Can not move with wrecks on map!</SoS.WrecksPreventMove>
+	<SoS.RemoveWrecks>Remove wrecks</SoS.RemoveWrecks>
+	<SoS.RemoveWrecksDesc>Remove all wrecks from your map, they will be destroyed.</SoS.RemoveWrecksDesc>
+	<SoS.RemoveWrecksConfirm>Remove all wrecks from your map?\n\nThis will remove any ship or wreck that can not move on its own! They will be destroyed by the debris field.</SoS.RemoveWrecksConfirm>
 	<SoS.WithdrawWrecks>Withdraw wrecks</SoS.WithdrawWrecks>
-	<SoS.WithdrawWrecksDesc>Withdraw all wrecks from the battle</SoS.WithdrawWrecksDesc>
-	<SoS.WithdrawMoveWrecks>Can not move with wrecks on map!</SoS.WithdrawMoveWrecks>
+	<SoS.WithdrawWrecksDesc>Withdraw all wrecks from battle</SoS.WithdrawWrecksDesc>
 	<SoS.WithdrawWrecksConfirm>Withdraw all wrecks to the graveyard? If you lose or flee, the enemy ship will attack your graveyard. If you win, the wrecks can be retrieved with the salvage bay for a minor amount of fuel.</SoS.WithdrawWrecksConfirm>
 	<SoS.ScuttleShip>Launch all escape pods</SoS.ScuttleShip>
 	<SoS.ScuttleShipDesc>Launches all escape pods to selected destination on the planet.</SoS.ScuttleShipDesc>

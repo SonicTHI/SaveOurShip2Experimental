@@ -678,10 +678,15 @@ namespace SaveOurShip2
 			}
 			if (spinalComp != null)
 			{
-				if (AmplifierCount != -1)
-					stringBuilder.AppendLine("SoS.AmplifierCount".Translate(AmplifierCount));
-				else
-					stringBuilder.AppendLine("SoS.SpinalCapNotFound".Translate());
+				// Do not show numer of amplifiers when room with capacitor and amplifiers is fogged
+				IntVec3 positionBehindBarrel = Position + GenAdj.CardinalDirectionsAround[Rotation.rotInt] * 2;
+				if (!positionBehindBarrel.Fogged(this.Map))
+				{
+					if (AmplifierCount != -1)
+						stringBuilder.AppendLine("SoS.AmplifierCount".Translate(AmplifierCount));
+					else
+						stringBuilder.AppendLine("SoS.SpinalCapNotFound".Translate());
+				}
 			}
 			if (torpComp != null)
 			{

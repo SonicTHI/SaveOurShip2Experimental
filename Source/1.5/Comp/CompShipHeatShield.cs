@@ -53,7 +53,18 @@ namespace SaveOurShip2
 		public override void CompTick()
 		{
 			base.CompTick();
-			this.shutDown = (parentVehicle == null) ? (breakComp.BrokenDown || !powerComp.PowerOn || Venting) : (parentVehicle.statHandler.GetComponentHealth("shieldGenerator") <= 10 || vehicleWantsShutDown);
+			if (parentVehicle != null)
+			{
+				if (!parentVehicle.Spawned || parentVehicle.statHandler == null)
+					shutDown = true;
+				else
+					shutDown = parentVehicle.statHandler.GetComponentHealth("shieldGenerator") <= 10 || vehicleWantsShutDown;
+			}
+			else if (breakComp != null && powerComp != null)
+				shutDown = breakComp.BrokenDown || !powerComp.PowerOn || Venting;
+			else
+				shutDown = true;
+
 			if (!this.shutDown && Find.TickManager.TicksGame % 60 == 0)
 			{			
 				float absDiff = Math.Abs(radius - radiusSet);

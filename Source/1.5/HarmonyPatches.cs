@@ -4601,6 +4601,64 @@ namespace SaveOurShip2
 		}
 	}
 
+	[HarmonyPatch(typeof(ITab_Vehicle_Upgrades), "DrawButtons")] //Destructive patch, remove this when/if VF adds upgrade failure reasons
+	public static class TEMPVerboseUpgradeFailure
+    {
+		public static bool Prefix(Rect rect, ITab_Vehicle_Upgrades __instance)
+        {
+			VehiclePawn Vehicle = __instance.Vehicle;
+			if (Vehicle.CompUpgradeTree.NodeUnlocking == __instance.SelectedNode || Vehicle.CompUpgradeTree.NodeUnlocked(__instance.SelectedNode) && Vehicle.CompUpgradeTree.LastNodeUnlocked(__instance.SelectedNode))
+				return true;
+			if (!Widgets.ButtonText(rect, Translator.Translate("VF_Upgrade"), true, true, true, null) || Vehicle.CompUpgradeTree.NodeUnlocked(__instance.SelectedNode))
+			{
+				return false;
+			}
+			if (Vehicle.CompUpgradeTree.Disabled(__instance.SelectedNode))
+			{
+				if (__instance.SelectedNode.upgrades.Where(upgrade => upgrade is SoS2TurretUpgrade sosUpgrade && sosUpgrade.turretSlot >= __instance.Vehicle.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints)).Count() > 0)
+				{
+					Messages.Message(Translator.Translate("SoS.NoHardpoints"), MessageTypeDefOf.RejectInput, false);
+					return false;
+				}
+				float CargoMod = 0;
+				foreach (Upgrade upgrade in __instance.SelectedNode.upgrades)
+				{
+					if (upgrade is StatUpgrade stat && stat.vehicleStats != null)
+					{
+						foreach (StatUpgrade.VehicleStatDefUpgrade value in stat.vehicleStats)
+						{
+							if (value.def == VehicleStatDefOf.CargoCapacity)
+								CargoMod += value.value;
+						}
+					}
+				}
+				if (CargoMod + __instance.Vehicle.GetStatValue(VehicleStatDefOf.CargoCapacity) < 0)
+					Messages.Message(Translator.Translate("SoS.NotEnoughCargoSpace"), MessageTypeDefOf.RejectInput, false);
+				else
+					Messages.Message(Translator.Translate("VF_DisabledFromOtherNode"), MessageTypeDefOf.RejectInput, false);
+			}
+			else if (Vehicle.CompUpgradeTree.PrerequisitesMet(__instance.SelectedNode))
+			{
+				SoundStarter.PlayOneShotOnCamera(SoundDefOf.ExecuteTrade, (Vehicle).Map);
+				if (DebugSettings.godMode)
+				{
+					Vehicle.CompUpgradeTree.FinishUnlock(__instance.SelectedNode);
+					SoundStarter.PlayOneShot(SoundDefOf.Building_Complete, Vehicle);
+				}
+				else
+				{
+					Vehicle.CompUpgradeTree.StartUnlock(__instance.SelectedNode);
+				}
+				__instance.SelectedNode = null;
+			}
+			else
+			{
+				Messages.Message(Translator.Translate("VF_MissingPrerequisiteUpgrade"), MessageTypeDefOf.RejectInput, false);
+			}
+			return false;
+		}
+    }
+
 	//TEMPORARY until I talk to Phil and see how to fix this properly
 	[HarmonyPatch(typeof(CompUpgradeTree), "CompTickRare")]
 	public static class TEMPStopRedErrorOnTakeoff

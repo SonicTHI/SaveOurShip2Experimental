@@ -85,6 +85,7 @@ namespace SaveOurShip2
 				if (shuttle.Faction!=fac && Area.Contains(shuttle.Position))
                 {
 					shuttle.DisembarkAll();
+					shuttle.ignition.Drafted = false;
 					shuttle.SetFaction(fac);
                 }
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,6 @@ namespace SaveOurShip2.Vehicles
 {
     class CompProperties_HoverMode : VehicleCompProperties
     {
-        public FleckData hoverFleck;
 
         public CompProperties_HoverMode()
         {

@@ -13,7 +13,8 @@ namespace SaveOurShip2
 		public override void Tick()
 		{
 			base.Tick();
-			if (this.Spawned)
+			//Replaced by new Harmony shield patch
+			/*if (this.Spawned)
 			{
 				foreach (CompShipHeatShield shield in this.Map.GetComponent<ShipMapComp>().Shields)
 				{
@@ -23,7 +24,7 @@ namespace SaveOurShip2
 						break;
 					}
 				}
-			}
+			}*/
 			if (!(this is Projectile_ExplosiveShipPsychic))
 			{
 				if (this.Spawned && this.ExactPosition.ToIntVec3().GetThingList(this.Map).Any(t => t is Building b && (b.TryGetComp<CompShipCachePart>()?.Props.isPlating ?? false)))

@@ -4276,8 +4276,8 @@ namespace SaveOurShip2
 				__result = false;
 				return;
 			}
-			if (__instance is Projectile_ExplosiveShip) //Handled natively
-				return;
+			/*if (__instance is Projectile_ExplosiveShip) //Handled natively
+				return;*/
 			if (__instance.Map == null)
 				return;
 			foreach(CompShipHeatShield shield in __instance.Map.GetComponent<ShipMapComp>().Shields)
@@ -4288,6 +4288,7 @@ namespace SaveOurShip2
 				pos.y = lastExactPos.y;
 				if(Vector3.Distance(lastExactPos, pos) > shield.radius && (Vector3.Distance(newExactPos, pos) <= shield.radius || Vector3.Distance((lastExactPos + newExactPos) / 2, pos) <= shield.radius))
                 {
+					//Log.Message("Hit shield - lastExactPos was " + lastExactPos + ", newExactPos was " + newExactPos + ", midpoint was " + ((lastExactPos + newExactPos) / 2) + ", shield pos was " + pos + ", radius was " + shield.radius);
 					shield.HitShield(__instance);
 					__result = true;
 					return;
@@ -4600,6 +4601,18 @@ namespace SaveOurShip2
 			}
 		}
 	}
+
+	[HarmonyPatch(typeof(MechanitorUtility), "ShouldBeMechanitor")]
+	public static class AIControlsMechs
+    {
+		public static void Postfix(Pawn pawn, ref bool __result)
+        {
+			if (ModsConfig.BiotechActive && (pawn.health.hediffSet.HasHediff(ResourceBank.HediffDefOf.SoSHologramMachine) || pawn.health.hediffSet.HasHediff(ResourceBank.HediffDefOf.SoSHologramArchotech)))
+			{
+				__result = true;
+			}
+		}
+    }
 
 	[HarmonyPatch(typeof(ITab_Vehicle_Upgrades), "DrawButtons")] //Destructive patch, remove this when/if VF adds upgrade failure reasons
 	public static class TEMPVerboseUpgradeFailure

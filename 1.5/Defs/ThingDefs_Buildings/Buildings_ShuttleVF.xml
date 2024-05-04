@@ -578,8 +578,7 @@
 				<turrets>
 				</turrets>
 			</li>
-			<li>
-				<compClass>SaveOurShip2.Vehicles.CompHoverMode</compClass>
+			<li Class="SaveOurShip2.Vehicles.CompProperties_HoverMode">
 			</li>
 		</comps>
 	</Vehicles.VehicleDef>
@@ -1263,8 +1262,7 @@
 				<turrets>
 				</turrets>
 			</li>
-			<li>
-				<compClass>SaveOurShip2.Vehicles.CompHoverMode</compClass>
+			<li Class="SaveOurShip2.Vehicles.CompProperties_HoverMode">
 			</li>
 		</comps>
 	</Vehicles.VehicleDef>
@@ -2094,8 +2092,7 @@
 				<turrets>
 				</turrets>
 			</li>
-			<li>
-				<compClass>SaveOurShip2.Vehicles.CompHoverMode</compClass>
+			<li Class="SaveOurShip2.Vehicles.CompProperties_HoverMode">
 			</li>
 		</comps>
 	</Vehicles.VehicleDef>
@@ -2924,8 +2921,7 @@
 				<turrets>
 				</turrets>
 			</li>
-			<li>
-				<compClass>SaveOurShip2.Vehicles.CompHoverMode</compClass>
+			<li Class="SaveOurShip2.Vehicles.CompProperties_HoverMode">
 			</li>
 		</comps>
 	</Vehicles.VehicleDef>

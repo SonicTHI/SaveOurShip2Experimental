@@ -358,6 +358,10 @@
 	<SoS.RetreatAtHealth>Retreat at shuttle health</SoS.RetreatAtHealth>
 	<SoS.RetreatAtHealthDesc>This shuttle will automatically retreat when its health drops below this percentage.</SoS.RetreatAtHealthDesc>
 	<SoS.CancelBoarding>Cancel boarding action? Your shuttle will return to your ship.</SoS.CancelBoarding>
+	<SoS.NoHardpoints>Shuttle does not have enough hardpoints for this turret.</SoS.NoHardpoints>
+	<SoS.NotEnoughCargoSpace>This upgrade would reduce cargo capacity below zero.</SoS.NotEnoughCargoSpace>
+	<SoS.HoverJump>Local flight</SoS.HoverJump>
+	<SoS.HoverJump.Desc>Launch and land in the same tile, at the cost of 5 fuel</SoS.HoverJump.Desc>
 	
 	<!-- obsolete/unused
 	<SoS.PirateTradeEmpire>Our act of piracy against the Empire has not gone unnoticed!</SoS.PirateTradeEmpire>

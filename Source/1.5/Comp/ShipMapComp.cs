@@ -1720,10 +1720,15 @@ namespace SaveOurShip2
 						{
 							foreach (Pawn pawn in map.mapPawns.AllHumanlike)
 							{
-								if (pawn.Faction != Faction.OfPlayer && pawn.mindState.duty.transportersGroup == 0)
+								if (pawn.Faction != Faction.OfPlayer)
 								{
-									pawn.jobs.StopAll();
-									pawn.mindState.duty.transportersGroup = -1;
+									if (pawn.mindState.duty.transportersGroup == 0)
+									{
+										pawn.jobs.StopAll();
+										pawn.mindState.duty.transportersGroup = -1;
+									}
+									if (pawn.GetVehicle() != null)
+										pawn.GetVehicle().DisembarkPawn(pawn);
 								}
 							}
 							startedPilotLoad = false;
@@ -1741,9 +1746,9 @@ namespace SaveOurShip2
 									vehicleSkyfaller_Leaving.createWorldObject = false;
 									GenSpawn.Spawn(vehicleSkyfaller_Leaving, shuttle.Position, shuttle.Map, shuttle.CompVehicleLauncher.launchProtocol.CurAnimationProperties.forcedRotation ?? shuttle.Rotation);
 									if (ShipInteriorMod2.ShuttleHasLaser(shuttle))
-										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.INTERCEPT);
+										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.INTERCEPT);
 									else if (ShipInteriorMod2.ShuttleHasTorp(shuttle))
-										shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.BOMB);
+										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.BOMB);
 									else
 										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.STRAFE);
 									CameraJumper.TryHideWorld();
@@ -1760,10 +1765,15 @@ namespace SaveOurShip2
 						{
 							foreach (Pawn pawn in map.mapPawns.AllHumanlike)
 							{
-								if (pawn.Faction != Faction.OfPlayer && pawn.mindState.duty.transportersGroup == 0)
+								if (pawn.Faction != Faction.OfPlayer)
 								{
-									pawn.jobs.StopAll();
-									pawn.mindState.duty.transportersGroup = -1;
+									if (pawn.mindState.duty.transportersGroup == 1)
+									{
+										pawn.jobs.StopAll();
+										pawn.mindState.duty.transportersGroup = -1;
+									}
+									if (pawn.GetVehicle() != null)
+										pawn.GetVehicle().DisembarkPawn(pawn);
 								}
 							}
 							startedBoarderLoad = false;

@@ -950,6 +950,7 @@ namespace SaveOurShip2
 						vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
 						SpawnShuttleUpgrades(vehicle);
 						GenSpawn.Spawn(vehicle, adjPos, map);
+						vehicle.ignition.Drafted = false;
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{

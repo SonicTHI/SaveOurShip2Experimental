@@ -170,7 +170,7 @@
 	<SoS.MoveRotNo>Ship has non-rotatable, non-even sided buildings!</SoS.MoveRotNo>
 	<SoS.MoveRotDesc>Rotate the ship counter clockwise</SoS.MoveRotDesc>
 	<SoS.MoveFail>Move failed!</SoS.MoveFail>
-	<SoS.MoveFailDesc>Ship move failed! Reload recommended.\nFailed by moving: {0}</SoS.MoveFailDesc>
+	<SoS.MoveFailDesc>Ship move failed! Recheck your ship and reload if things are out of place or broken. This is most often caused by modded buildings that do not despawn properly.\nFailed by moving: {0}</SoS.MoveFailDesc>
 	<SoS.MoveFailRCS>Not enough RCS thrusters to move ship, required {0}</SoS.MoveFailRCS>
 	<SoS.MoveFailFuel>Not enough fuel to move ship, required {0} fuel</SoS.MoveFailFuel>
 	<SoS.MoveFailPilot>Ship requires a pilot to move.</SoS.MoveFailPilot>

@@ -126,7 +126,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f22";
+		public const string SOS2EXPversion = "V101f23";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -517,6 +517,12 @@ namespace SaveOurShip2
 		}
 		public static Map GeneratePlayerShipMap(IntVec3 size)
 		{
+			if (Current.ProgramState != ProgramState.MapInitializing)
+			{
+				var m = FindPlayerShipMap();
+				if (m != null)
+					return m;
+			}
 			WorldObjectOrbitingShip orbiter = (WorldObjectOrbitingShip)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.ShipOrbiting);
 			orbiter.SetNominalPos();
 			orbiter.SetFaction(Faction.OfPlayer);
@@ -2119,12 +2125,16 @@ namespace SaveOurShip2
 				catch (Exception e)
 				{
 					reason.AppendLine(e.Message);
-					fail = true;
 					var sb = new StringBuilder();
 					sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
 					if (devMode)
 						sb.AppendLine(e.StackTrace);
 					Log.Warning(sb.ToString());
+					if (playerMove)
+					{
+						fail = true;
+						break;
+					}
 				}
 			}
 			if (!fail)
@@ -2139,12 +2149,16 @@ namespace SaveOurShip2
 					catch (Exception e)
 					{
 						reason.AppendLine(e.Message);
-						fail = true;
 						var sb = new StringBuilder();
 						sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
 						if (devMode)
 							sb.AppendLine(e.StackTrace);
 						Log.Warning(sb.ToString());
+						if (playerMove)
+						{
+							fail = true;
+							break;
+						}
 					}
 				}
 			}
@@ -2160,16 +2174,20 @@ namespace SaveOurShip2
 					catch (Exception e)
 					{
 						reason.AppendLine(e.Message);
-						fail = true;
 						var sb = new StringBuilder();
 						sb.AppendFormat("Error spawning {0}: {1}\n", spawnThing.def.label, e.Message);
 						if (devMode)
 							sb.AppendLine(e.StackTrace);
 						Log.Warning(sb.ToString());
+						if (playerMove)
+						{
+							fail = true;
+							break;
+						}
 					}
 				}
 			}
-			if (playerMove && fail)
+			if (fail)
 			{
 				foreach (Thing spawnThing in toMoveShipParts.Where(t => !t.Destroyed && !t.Spawned))
 				{
@@ -2184,6 +2202,7 @@ namespace SaveOurShip2
 					spawnThing.SpawnSetup(sourceMap, false);
 				}
 				Find.LetterStack.ReceiveLetter("SoS.MoveFail".Translate(), "SoS.MoveFailDesc".Translate(reason), LetterDefOf.NegativeEvent);
+				MoveShipFlag = false;
 				return;
 			}
 			foreach (Thing spawnThing in toMoveShipParts)
@@ -2931,7 +2950,7 @@ namespace SaveOurShip2
 		{
 			if (vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def == ResourceBank.UpgradeTreeDefOf.SoS2ShuttleUpgradeTree)
 			{
-				int version = Rand.Range(0, 4);
+				int version = Rand.Range(0, 8);
 				if (Current.ProgramState == ProgramState.MapInitializing)
 					version = 0;
 				switch (version)
@@ -2941,6 +2960,7 @@ namespace SaveOurShip2
 						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("PassengersSix"));
 						break;
 					case 1: //Interceptor
+					case 2:
 						Log.Message("Speccing shuttle as interceptor");
 						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserA"));
 						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
@@ -2948,15 +2968,8 @@ namespace SaveOurShip2
 						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
 							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserC"));
 						break;
-					case 2: //Heavy fighter
-						Log.Message("Speccing shuttle as heavy fighter");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaA"));
-						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
-							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaB"));
-						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
-							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaC"));
-						break;
 					case 3: //Bomber
+					case 4:
 						Log.Message("Speccing shuttle as bomber");
 						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretTorpedoA"));
 						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
@@ -2965,9 +2978,17 @@ namespace SaveOurShip2
 							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretTorpedoC"));
 						foreach (VehicleTurret torp in vehicle.CompVehicleTurrets.turrets)
 							torp.ReloadCannon(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive, true);
-						int torps = Rand.Range(1, 6);
+						int torps = Rand.Range(3, 6);
 						for (int i = 0; i < torps; i++)
 							vehicle.GetDirectlyHeldThings().AddItem(ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive));
+						break;
+					default: //Heavy fighter
+						Log.Message("Speccing shuttle as heavy fighter");
+						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaA"));
+						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
+							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaB"));
+						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
+							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaC"));
 						break;
 				}
 				switch (Rand.Range(0, 10))

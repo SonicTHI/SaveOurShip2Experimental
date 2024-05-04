@@ -80,10 +80,10 @@
 		
 		<vehicleStats>
 			<Mass>300</Mass>
-			<MoveSpeed>15</MoveSpeed>
+			<MoveSpeed>5</MoveSpeed>
 			<CargoCapacity>50</CargoCapacity>
 			<RepairRate>1.2</RepairRate>
-			<FlightSpeed>24</FlightSpeed>
+			<FlightSpeed>28</FlightSpeed>
 		</vehicleStats>
 		
 		<soundOneShotsOnEvent>

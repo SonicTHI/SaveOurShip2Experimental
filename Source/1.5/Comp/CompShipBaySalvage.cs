@@ -142,7 +142,7 @@ namespace SaveOurShip2
 				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RemoveWrecksCommandDesc"),
 				icon = ContentFinder<Texture2D>.Get("UI/SalvageCancel")
 			};
-			if (!nominal || mapComp.CanClaimNow(Faction.OfPlayer))
+			if (!nominal || !mapComp.CanClaimNow(Faction.OfPlayer))
 			{
 				moveWreck.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));
 				moveWreckFlip.Disable(TranslatorFormattedStringExtensions.Translate("SoS.SalvageDisabled"));

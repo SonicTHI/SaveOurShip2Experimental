@@ -1186,7 +1186,7 @@ namespace SaveOurShip2
 
 			foreach (IntVec3 vec in detachArea)
 			{
-				//mapComp.MapShipCells.Remove(vec);
+				AreaDestroyed.Add(vec);
 				//Log.Message("Detaching location " + at);
 				foreach (Thing t in vec.GetThingList(Map).Where(t => t.def.destroyable && !t.Destroyed))
 				{

@@ -1507,7 +1507,7 @@ namespace SaveOurShip2
 					{
 						//True, totalThreat:1, TargetMapComp.totalThreat:1, TurretNum:0
 						//retreat
-						if (Retreating || totalThreat / (TargetMapComp.totalThreat * 0.9f * Difficulty) < 0.4f || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || tick > BattleStartTick + 90000 || (ShipMapAI == ShipAI.avoidant && MapEnginePower > targetMapComp.MapEnginePower))
+						if (Retreating || (totalThreat / (TargetMapComp.totalThreat * 0.9f * Difficulty) < 0.4f) || powerRemaining / powerCapacity < 0.2f || totalThreat == 1 || BuildingsCount / (float)BuildingCountAtStart < 0.7f || tick > BattleStartTick + 90000 || (ShipMapAI == ShipAI.avoidant && MapEnginePower > targetMapComp.MapEnginePower) || (ShipMapAI == ShipAI.carrier && tick > BattleStartTick + 9000 && !ShuttleMissions.Any()))
 						{
 							Heading = -1;
 							Retreating = true;
@@ -1747,12 +1747,13 @@ namespace SaveOurShip2
 									vehicleSkyfaller_Leaving.vehicle = shuttle;
 									vehicleSkyfaller_Leaving.createWorldObject = false;
 									GenSpawn.Spawn(vehicleSkyfaller_Leaving, shuttle.Position, shuttle.Map, shuttle.CompVehicleLauncher.launchProtocol.CurAnimationProperties.forcedRotation ?? shuttle.Rotation);
+									var shuttleMapComp = shuttle.Map.GetComponent<ShipMapComp>(); //td wouldnt it always be this.?
 									if (ShipInteriorMod2.ShuttleHasLaser(shuttle))
-										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.INTERCEPT);
+										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttleMapComp.RegisterShuttleMission(shuttle, ShuttleMission.INTERCEPT);
 									else if (ShipInteriorMod2.ShuttleHasTorp(shuttle))
-										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.BOMB);
+										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttleMapComp.RegisterShuttleMission(shuttle, ShuttleMission.BOMB);
 									else
-										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(shuttle, ShuttleMission.STRAFE);
+										((ShuttleTakeoff)shuttle.CompVehicleLauncher.launchProtocol).TempMissionRef = shuttleMapComp.RegisterShuttleMission(shuttle, ShuttleMission.STRAFE);
 									CameraJumper.TryHideWorld();
 									shuttle.EventRegistry[VehicleEventDefOf.AerialVehicleLaunch].ExecuteEvents();
 									shuttlesYetToLaunch.Remove(shuttle);
@@ -2379,6 +2380,16 @@ namespace SaveOurShip2
 					ReturnBoardingParty.missionData = mission;
 					LandingTargeter.Instance.BeginTargeting(mission.shuttle, mapToSpawnIn, delegate (LocalTargetInfo target, Rot4 rot)
 					{
+						IntVec3 vec = IntVec3.Zero;
+						var bay = target.Cell.GetThingList(mapToSpawnIn).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
+						if (bay != null)
+						{
+							vec = bay.TryGetComp<CompShipBay>().CanFitShuttleSize(mission.shuttle);
+							if (vec != IntVec3.Zero)
+							{
+								bay.TryGetComp<CompShipBay>().ReserveArea(vec, mission.shuttle);
+							}
+						}
 						VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
 						GenSpawn.Spawn(vehicleSkyfaller_Arriving, target.Cell, mapToSpawnIn, rot);
 					},
@@ -2395,7 +2406,10 @@ namespace SaveOurShip2
 					{
 						vec = bay.CanFitShuttleSize(mission.shuttle);
 						if (vec != IntVec3.Zero)
+						{
+							bay.ReserveArea(vec, mission.shuttle);
 							break;
+						}
 					}
 					if (vec == IntVec3.Zero) //fallbacks
 					{

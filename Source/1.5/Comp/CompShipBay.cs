@@ -25,15 +25,37 @@ namespace SaveOurShip2
 			roofedData.shaderType = ShaderTypeDefOf.Cutout;
 			roofedGraphicTile = new Graphic_256(roofedData.Graphic);
 		}*/
+		public override void PostExposeData()
+		{
+			base.PostExposeData();
+			Scribe_Deep.Look(ref reservedArea, "reservedArea", this);
+		}
 
 		public ShipMapComp mapComp;
 		public CellRect bayRect;
 		Matrix4x4 matrix = new Matrix4x4();
+		public HashSet<IntVec3> reservedArea = new HashSet<IntVec3>();
 		public CompProps_ShipBay Props
 		{
 			get
 			{
 				return (CompProps_ShipBay)props;
+			}
+		}
+		public void ReserveArea(IntVec3 pos, VehiclePawn vehicle) //we only have square shuttles so simplified, no rot
+		{
+			CellRect rect = new CellRect(pos .x- vehicle.def.size.x / 2, pos.z - vehicle.def.Size.z / 2, vehicle.def.size.x, vehicle.def.size.z);
+			foreach (IntVec3 v in rect)
+			{
+				reservedArea.Add(v);
+			}
+		}
+		public void UnReserveArea(IntVec3 pos, VehiclePawn vehicle) //we only have square shuttles so simplified, no rot
+		{
+			CellRect rect = new CellRect(pos.x - vehicle.def.size.x / 2, pos.z - vehicle.def.Size.z / 2, vehicle.def.size.x, vehicle.def.size.z);
+			foreach (IntVec3 v in rect)
+			{
+				reservedArea.Remove(v);
 			}
 		}
 		public bool CanLaunchShuttle(VehiclePawn vehicle)
@@ -53,9 +75,8 @@ namespace SaveOurShip2
 				return false;
 			foreach (IntVec3 v in occArea)
 			{
-				if (!bayRect.Contains(v) || v.Impassable(parent.Map))
+				if (!bayRect.Contains(v) || v.Impassable(parent.Map) || reservedArea.Contains(v))
 				{
-					Log.Message("4");
 					return false;
 				}
 			}
@@ -73,7 +94,7 @@ namespace SaveOurShip2
 			{
 				foreach (IntVec3 vec in bayRect)
 				{
-					if (!vec.Impassable(parent.Map))
+					if (!vec.Impassable(parent.Map) && !reservedArea.Contains(vec))
 					{
 						return vec;
 					}
@@ -96,7 +117,7 @@ namespace SaveOurShip2
 				bool fits = true;
 				foreach (IntVec3 v in area)
 				{
-					if (invalidPos.Contains(v) || v.Impassable(parent.Map) || v.GetThingList(parent.Map).Any(t => t is VehiclePawn))
+					if (invalidPos.Contains(v) || v.Impassable(parent.Map) || v.GetThingList(parent.Map).Any(t => t is VehiclePawn) || reservedArea.Contains(vec))
 					{
 						invalidPos.Add(v);
 						fits = false;

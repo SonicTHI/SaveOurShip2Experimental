@@ -138,7 +138,10 @@ namespace SaveOurShip2
 				if (breakComp != null)
 					breakComp.DoBreakdown();
 				else
+				{
 					parentVehicle.statHandler.SetComponentHealth("shieldGenerator", 0);
+					parentVehicle.Map.GetComponent<ListerVehiclesRepairable>().Notify_VehicleTookDamage(parentVehicle);
+				}
 				if(parent.Spawned)
 					GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);
 				SoundDef.Named("EnergyShield_Broken").PlayOneShot(new TargetInfo(parent));

@@ -55,7 +55,7 @@ namespace SaveOurShip2
 				rotation.Rotate(RotationDirection.Clockwise);
 				vector = rotation.AsQuat * vector;
 				Vector3 drawPos = DrawPos;
-				drawPos.y = AltitudeLayer.MapDataOverlay.AltitudeFor();
+				drawPos.y = AltitudeLayer.Skyfaller.AltitudeFor() - 0.0001f;
 				drawPos += vector * d;
 				if (i == 0 || def.size.x > 3)
 				{

@@ -27,6 +27,13 @@ namespace SaveOurShip2
 					}
 				}
 			}
+			foreach (IntVec3 vec in occupiedRect.AdjacentCells) //check for adj non player ships
+			{
+				var mapComp = map.GetComponent<ShipMapComp>();
+				int index = mapComp.ShipIndexOnVec(vec);
+				if (index != -1 && mapComp.ShipsOnMap[index].Faction != Faction.OfPlayer)
+					return false;
+			}
 			return true;
 			/*
 			Room room = loc.GetRoom(map);

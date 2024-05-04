@@ -361,25 +361,72 @@ namespace SaveOurShip2
 		{
 			IntVec3 lowestCorner = LowestCorner(rotb, Map);
 			Sketch sketch = new Sketch();
+			Sketch sketchConflict = new Sketch();
+			Sketch sketchExtender = new Sketch();
 			IntVec3 rot = IntVec3.Zero;
-			foreach (IntVec3 pos in Area)
+			HashSet<IntVec3> areaAdj = new HashSet<IntVec3>();
+			HashSet<IntVec3> areaAdjConflict = new HashSet<IntVec3>();
+			HashSet<IntVec3> areaAdjExtender = new HashSet<IntVec3>();
+			foreach (IntVec3 pos in Area) //adjust area
 			{
 				if (rotb == 1)
 				{
 					rot.x = targetMap.Size.x - pos.z;
 					rot.z = pos.x;
-					sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
+					areaAdj.Add(rot - lowestCorner);
 				}
 				else if (rotb == 2)
 				{
 					rot.x = targetMap.Size.x - pos.x;
 					rot.z = targetMap.Size.z - pos.z;
-					sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, rot - lowestCorner, Rot4.North);
+					areaAdj.Add(rot - lowestCorner);
 				}
 				else
-					sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos - lowestCorner, Rot4.North);
+					areaAdj.Add(pos - lowestCorner);
 			}
-			MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(sketch).TryMakeMinified();
+			foreach (Building b in Parts.OfType<Building_ShipAirlock>().Where(a => a.Outerdoor()))
+			{
+				IntVec3 pos = b.Position;
+				if (rotb == 1)
+				{
+					rot.x = targetMap.Size.x - pos.z;
+					rot.z = pos.x;
+					areaAdjExtender.Add(rot - lowestCorner);
+				}
+				else if (rotb == 2)
+				{
+					rot.x = targetMap.Size.x - pos.x;
+					rot.z = targetMap.Size.z - pos.z;
+					areaAdjExtender.Add(rot - lowestCorner);
+				}
+				else
+					areaAdjExtender.Add(pos - lowestCorner);
+			}
+			if (Faction != Faction.OfPlayer)
+			{
+				foreach (IntVec3 pos in areaAdj)
+				{
+					foreach (IntVec3 vec in GenAdj.CellsAdjacentCardinal(pos, Rot4.North, IntVec2.One).Where(v => !areaAdj.Contains(v)))
+					{
+						areaAdjConflict.Add(vec);
+					}
+				}
+				foreach (IntVec3 pos in areaAdjConflict)
+				{
+					sketchConflict.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos, Rot4.North);
+					areaAdj.Remove(pos);
+				}
+			}
+			foreach (IntVec3 pos in areaAdjExtender)
+			{
+				sketchExtender.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos, Rot4.North);
+				areaAdj.Remove(pos);
+			}
+			foreach (IntVec3 pos in areaAdj)
+			{
+				sketch.AddThing(ResourceBank.ThingDefOf.Ship_FakeBeam, pos, Rot4.North);
+			}
+			MinifiedThingShipMove fakeMover = (MinifiedThingShipMove)new ShipMoveBlueprint(sketch, sketchConflict, sketchExtender).TryMakeMinified();
 			if (IsWreck)
 				fakeMover.shipRoot = Buildings.First();
 			else
@@ -877,13 +924,6 @@ namespace SaveOurShip2
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Has 0 cores remaining.");
 			Core = null;
 			ResetCorePath();
-			if (mapComp.ShipMapState == ShipMapState.inCombat) //if last ship end combat else move to grave
-			{
-				if (mapComp.ShipsOnMap.Values.Any(s => !s.IsWreck))
-					mapComp.ShipsToMove.Add(Index);
-				else
-					mapComp.EndBattle(Map, false);
-			}
 			return false;
 		}
 		private Building_ShipBridge BestCoreReplacer(List<Building_ShipBridge> bridges)
@@ -959,6 +999,11 @@ namespace SaveOurShip2
 				{
 					CrashShip();
 				}
+			}
+			//if wreck, move to grave
+			if (IsWreck && mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower != 0)
+			{
+				mapComp.ShipsToMove.Add(Index);
 			}
 		}
 		public void CheckForDetach(List<IntVec3> areaDestroyed)
@@ -1040,6 +1085,11 @@ namespace SaveOurShip2
 						break;
 				}
 				cellsDone.AddRange(cellsDoneInSet);
+				if (cellsDoneInSet.Count == Area.Count)
+				{
+					Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " Ship was detached from bridge. Area = DetachedArea, aborting detach.");
+					return;
+				}
 				if (detach)
 				{
 					if (ModSettings_SoS.debugMode)
@@ -1077,7 +1127,7 @@ namespace SaveOurShip2
 			}
 			if (newCore == null) //wreck
 			{
-				if (mapComp.ShipMapState == ShipMapState.inCombat || mapComp.ShipMapState == ShipMapState.inTransit) //float wrecks except in case the last bridge was destroyed
+				if ((mapComp.ShipMapState == ShipMapState.inCombat && !mapComp.ShipCombatOrigin && detachArea.Count < 100) || mapComp.ShipMapState == ShipMapState.inTransit) //float wrecks except in case the last bridge was destroyed
 				{
 					DetachedShipAreas.Add(detachArea);
 					ShipInteriorMod2.MoveShipFlag = true;

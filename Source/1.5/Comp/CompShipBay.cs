@@ -7,13 +7,28 @@ using Verse;
 using RimWorld;
 using RimWorld.Planet;
 using Vehicles;
+using SmashTools;
 
 namespace SaveOurShip2
 {
+	//[StaticConstructorOnStartup]
 	public class CompShipBay : ThingComp
 	{
-		private ShipMapComp mapComp;
-		CellRect occupiedRect;
+		/*private static Graphic roofedGraphic = GraphicDatabase.Get(typeof(Graphic_Single), "Things/Building/Ship/Shuttle_Bay_Roof", ShaderDatabase.Cutout, new Vector2(5f, 5f), Color.white, Color.white);
+
+		public static GraphicData roofedData = new GraphicData();
+		public static Graphic roofedGraphicTile;
+		static CompShipBay()
+		{
+			roofedData.texPath = "Things/Building/Ship/Shuttle_Bay_Roof";
+			roofedData.graphicClass = typeof(Graphic_Single);
+			roofedData.shaderType = ShaderTypeDefOf.Cutout;
+			roofedGraphicTile = new Graphic_256(roofedData.Graphic);
+		}*/
+
+		public ShipMapComp mapComp;
+		public CellRect bayRect;
+		Matrix4x4 matrix = new Matrix4x4();
 		public CompProps_ShipBay Props
 		{
 			get
@@ -27,7 +42,7 @@ namespace SaveOurShip2
 				return false;
 			foreach (IntVec3 v in vehicle.OccupiedRect())
 			{
-				if (!occupiedRect.Contains(v))
+				if (!bayRect.Contains(v))
 					return false;
 			}
 			return true;
@@ -38,7 +53,7 @@ namespace SaveOurShip2
 				return false;
 			foreach (IntVec3 v in occArea)
 			{
-				if (!occupiedRect.Contains(v) || v.Impassable(parent.Map))
+				if (!bayRect.Contains(v) || v.Impassable(parent.Map))
 				{
 					Log.Message("4");
 					return false;
@@ -56,7 +71,7 @@ namespace SaveOurShip2
 			//if 1x1
 			if (x == 1 && z == 1)
 			{
-				foreach (IntVec3 vec in occupiedRect)
+				foreach (IntVec3 vec in bayRect)
 				{
 					if (!vec.Impassable(parent.Map))
 					{
@@ -69,7 +84,7 @@ namespace SaveOurShip2
 			IntVec2 halfSize = new IntVec2(x / 2, z / 2);
 			//find a viable positions for shuttle
 			List<IntVec3> validPos = new List<IntVec3>();
-			foreach (IntVec3 pos in occupiedRect.Where(v => v.x >= occupiedRect.minX + halfSize.x && v.z >= occupiedRect.minZ +  halfSize.z && v.x <= occupiedRect.maxX - halfSize.x && v.z <= occupiedRect.maxZ - halfSize.z))
+			foreach (IntVec3 pos in bayRect.Where(v => v.x >= bayRect.minX + halfSize.x && v.z >= bayRect.minZ +  halfSize.z && v.x <= bayRect.maxX - halfSize.x && v.z <= bayRect.maxZ - halfSize.z))
 			{
 				validPos.Add(pos);
 			}
@@ -95,12 +110,27 @@ namespace SaveOurShip2
 			}
 			return IntVec3.Zero;
 		}
+		public override void PostDraw()
+		{
+			base.PostDraw();
+			if ((Find.PlaySettings.showRoofOverlay || parent.GetRoom().Cells.Any(c => c.Fogged(parent.Map))) && parent.Position.Roofed(parent.Map))
+			{
+				//roofedGraphic.Draw(new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), parent.Rotation, parent);
+
+				Graphics.DrawMesh(MeshPool.plane10, matrix, Props.roofGraphic, 0);
+
+				//roofedGraphic.Draw(new Vector3(parent.DrawPos.x, parent.DrawPos.y + 10f, parent.DrawPos.z), parent.Rotation, parent);
+
+				//Graphics.DrawMesh(roofedGraphicTile.MeshAt(parent.Rotation), new Vector3(parent.DrawPos.x + occupiedRect.Width / 2f, parent.DrawPos.y + 10f, parent.DrawPos.z + occupiedRect.Height / 2f), Quaternion.identity, roofedGraphicTile.MatSingleFor(parent), 0);
+			}
+		}
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{
 			base.PostSpawnSetup(respawningAfterLoad);
 			mapComp = parent.Map.GetComponent<ShipMapComp>();
 			mapComp.Bays.Add(this);
-			occupiedRect = parent.OccupiedRect();
+			bayRect = parent.OccupiedRect().ContractedBy(Props.borderSize);
+			matrix.SetTRS(new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), parent.Rotation.AsQuat, new Vector3(parent.DrawSize.x, 1f, parent.DrawSize.y));
 		}
 		public override void PostDeSpawn(Map map)
 		{

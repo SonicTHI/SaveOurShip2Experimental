@@ -279,7 +279,7 @@ namespace SaveOurShip2
 		}
 
 		//SC only - target only
-		public ShipAI ShipMapAI; //target ship map AI
+		public ShipAI ShipMapAI = 0; //target ship map AI
 		public bool HasShipMapAI => ShipMapAI != ShipAI.none; //target has ship map AI
 		//public Thing TurretTarget; //AI target for turrets
 		public int BattleStartTick = 0; //AI retreat param, stalemate eject
@@ -633,7 +633,7 @@ namespace SaveOurShip2
 			{
 				if (GenHostility.IsActiveThreatTo(item, faction) && !(item.Thing is VehiclePawn))
 				{
-					return true;
+					return false;
 				}
 
 				Pawn pawn;
@@ -642,14 +642,15 @@ namespace SaveOurShip2
 					CompCanBeDormant comp = pawn.GetComp<CompCanBeDormant>();
 					if (comp != null && !comp.Awake)
 					{
-						return true;
+						return false;
 					}
 				}
 			}
-			return false;
+			return true;
 		}
 		public void Claim()
 		{
+			Log.Message("SOS2 autofire claim");
 			List<Building> buildings = new List<Building>();
 			List<Thing> things = new List<Thing>();
 			List<VehiclePawn> shuttles = new List<VehiclePawn>();
@@ -1456,6 +1457,7 @@ namespace SaveOurShip2
 								//ship cant move and fleet fleeing or ship less than x of fleet threat
 								if (!ship.CanMove() && (Retreating || totalThreat * 0.3f > ship.ThreatCurrent))
 								{
+									Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + index + " abandoned by AI.");
 									ShipsToMove.Add(index);
 								}
 								//ship is much slower than rest of fleet
@@ -1950,22 +1952,50 @@ namespace SaveOurShip2
 					MapFullStop();
 				}
 			}
-			else
+			else if (ShipMapState == ShipMapState.nominal)
 			{
-				if (tick % 6000 == 0) //bounty hunters
+				if (tick % 300 == 0)
 				{
-					if (IsPlayerShipMap)
+					if (tick % 6000 == 0) //bounty hunters
 					{
-						if (ShipInteriorMod2.WorldComp.PlayerFactionBounty > 20 && tick - LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(ShipInteriorMod2.WorldComp.PlayerFactionBounty), 60000f))
+						if (IsPlayerShipMap)
 						{
-							LastBountyRaidTick = tick;
-							Building_ShipBridge bridge = MapRootListAll.FirstOrDefault();
-							if (bridge == null)
-								return;
-							StartShipEncounter(bounty: true);
+							if (ShipInteriorMod2.WorldComp.PlayerFactionBounty > 20 && tick - LastBountyRaidTick > Mathf.Max(600000f / Mathf.Sqrt(ShipInteriorMod2.WorldComp.PlayerFactionBounty), 60000f))
+							{
+								LastBountyRaidTick = tick;
+								Building_ShipBridge bridge = MapRootListAll.FirstOrDefault();
+								if (bridge == null)
+									return;
+								StartShipEncounter(bounty: true);
+							}
 						}
 					}
+					//auto claim
+					if (ShipsOnMap.Values.Any(s => s.Faction != Faction.OfPlayer) && CanClaimNow(Faction.OfPlayer))
+					{
+						Claim();
+					}
 				}
+			}
+			if (tick % 300 == 0)
+			{
+				if (tick % 6000 == 0) //decomp
+				{
+					List<Building> buildings = new List<Building>();
+					foreach (SpaceShipCache ship in ShipsOnMap.Values) //decompresson
+					{
+						foreach (Building b in ship.OuterNonShipWalls())
+						{
+							if (Rand.Chance(0.5f))
+								buildings.Add(b);
+						}
+					}
+					foreach (Building b in buildings)
+					{
+						b.Destroy(DestroyMode.KillFinalize);
+					}
+				}
+
 				//trigger combat with next target
 				if (NextTargetMap != null && tick > LastAttackTick + 600)
 				{
@@ -1973,38 +2003,16 @@ namespace SaveOurShip2
 					NextTargetMap = null;
 					return;
 				}
-				if (tick % 300 == 0)
+				//RCS fx
+				if (MapEnginePower != 0)
 				{
-					if (ShipsOnMap.Values.Any(s => s.Faction != Faction.OfPlayer) && CanClaimNow(Faction.OfPlayer))
+					foreach (SpaceShipCache ship in ShipsOnMap.Values)
 					{
-						Claim();
-					}
-				}
-			}
-			if (tick % 6000 == 0) //decomp
-			{
-				List<Building> buildings = new List<Building>();
-				foreach (SpaceShipCache ship in ShipsOnMap.Values) //decompresson
-				{
-					foreach (Building b in ship.OuterNonShipWalls())
-					{
-						if (Rand.Chance(0.5f))
-							buildings.Add(b);
-					}
-				}
-				foreach (Building b in buildings)
-				{
-					b.Destroy(DestroyMode.KillFinalize);
-				}
-			}
-			if (tick % 300 == 0 && MapEnginePower != 0)
-			{
-				foreach (SpaceShipCache ship in ShipsOnMap.Values)
-				{
-					foreach (CompRCSThruster rcs in ship.RCSs)
-					{
-						if (rcs.active && Rand.Chance(0.3f)) //td need better fx, not affected by wind
-							FleckMaker.ThrowHeatGlow(rcs.ventTo, rcs.parent.Map, 1f);
+						foreach (CompRCSThruster rcs in ship.RCSs)
+						{
+							if (rcs.active && Rand.Chance(0.3f)) //td need better fx, not affected by wind
+								FleckMaker.ThrowHeatGlow(rcs.ventTo, rcs.parent.Map, 1f);
+						}
 					}
 				}
 			}
@@ -2202,6 +2210,8 @@ namespace SaveOurShip2
 		}
 		public void EndBattle(Map loser, bool fled, int burnTimeElapsed = 0)
 		{
+			if (loser.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.inCombat)
+				return;
 			Log.Message("SOS2: ".Colorize(Color.cyan) + loser + " Lost ship battle!".Colorize(Color.red));
 			//tgtMap is opponent of origin
 			Map tgtMap = OriginMapComp.ShipCombatTargetMap;

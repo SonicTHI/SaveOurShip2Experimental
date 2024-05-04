@@ -64,8 +64,7 @@ namespace SaveOurShip2.Vehicles
 
         public IEnumerable<FloatMenuOption> FloatMenuMissions(int tile, ShipMapComp mapComp)
 		{
-			if (ShipInteriorMod2.ShuttleCanBoard(mapComp, vehicle))
-                yield return FloatMenuOption_Board(tile);
+			yield return FloatMenuOption_Board(tile, mapComp);
 			//samey in CompShuttleLauncher.CompGetGizmosExtra
 			if (vehicle.CompUpgradeTree != null)
 			{
@@ -79,29 +78,32 @@ namespace SaveOurShip2.Vehicles
 			}
         }
 
-        FloatMenuOption FloatMenuOption_Board(int tile)
+        FloatMenuOption FloatMenuOption_Board(int tile, ShipMapComp mapComp)
         {
-            return new FloatMenuOption("Mission: Boarding Party", delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOARD); });
+            string text = "SoS.ShuttleMissionFloatBoardWarn".Translate();
+            if (ShipInteriorMod2.ShuttleShouldBoard(mapComp, vehicle))
+                text = "SoS.ShuttleMissionFloatBoard".Translate();
+            return new FloatMenuOption(text, delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOARD); });
         }
 
         FloatMenuOption FloatMenuOption_Intercept(int tile)
         {
-            return new FloatMenuOption("Mission: Intercept Torpedoes/Fighters", delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.INTERCEPT); });
+            return new FloatMenuOption("SoS.ShuttleMissionFloatIntercept".Translate(), delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.INTERCEPT); });
         }
 
         FloatMenuOption FloatMenuOption_Strafe(int tile)
         {
-            return new FloatMenuOption("Mission: Strafe Enemy Ship", delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.STRAFE); });
+            return new FloatMenuOption("SoS.ShuttleMissionFloatStrafe".Translate(), delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.STRAFE); });
         }
 
         FloatMenuOption FloatMenuOption_Bomb(int tile)
         {
-            return new FloatMenuOption("Mission: Torpedo Enemy Ship", delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOMB); });
+            return new FloatMenuOption("SoS.ShuttleMissionFloatTorpedo".Translate(), delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOMB); });
         }
 
         FloatMenuOption FloatMenuOption_ReturnFromEnemy(int tile)
         {
-            return new FloatMenuOption("Return to Ship", delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOARD); });
+            return new FloatMenuOption("SoS.ShuttleMissionFloatReturn".Translate(), delegate { LaunchShuttleToCombatManager(vehicle, ShuttleMission.BOARD); });
         }
 
         public static void LaunchShuttleToCombatManager(VehiclePawn vehicle, ShuttleMission mission)

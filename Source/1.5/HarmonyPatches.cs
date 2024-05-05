@@ -127,6 +127,15 @@ namespace SaveOurShip2
 
 				DrawPower(screenHalf - 220, baseY, bridge);
 				DrawHeat(screenHalf - 415, baseY, bridge);
+
+				if (Mouse.IsOver(rect2))
+				{
+					StringBuilder stringBuilder = new StringBuilder();
+					stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipCombatRating", bridge.Ship.Threat));
+					stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipMass", bridge.Ship.MassActual));
+					stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipCombatThrust", bridge.Ship.ThrustRatio.ToString("F3")));
+					TooltipHandler.TipRegion(rect2, stringBuilder.ToString());
+				}
 			}
 			foreach (ShuttleMissionData mission in playerMapComp.ShuttleMissions)
 			{

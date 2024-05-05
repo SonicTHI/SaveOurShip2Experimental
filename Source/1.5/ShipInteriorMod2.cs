@@ -126,7 +126,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f23";
+		public const string SOS2EXPversion = "V101f24";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -954,7 +954,7 @@ namespace SaveOurShip2
 						VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
 						VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);
 						vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
-						SpawnShuttleUpgrades(vehicle);
+						SpawnShuttleUpgrades(vehicle, shipDef, passingShip);
 						GenSpawn.Spawn(vehicle, adjPos, map);
 						vehicle.ignition.Drafted = false;
 					}
@@ -2946,7 +2946,7 @@ namespace SaveOurShip2
 		{
 			return ShuttleHasLaser(vehicle) || ShuttleHasPlasma(vehicle) || ShuttleHasTorp(vehicle);
 		}
-		public static void SpawnShuttleUpgrades(VehiclePawn vehicle)
+		public static void SpawnShuttleUpgrades(VehiclePawn vehicle, ShipDef shipDef, PassingShip passingShip = null)
 		{
 			if (vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def == ResourceBank.UpgradeTreeDefOf.SoS2ShuttleUpgradeTree)
 			{

@@ -14,7 +14,7 @@
 		<startingShip>True</startingShip>
 		<neverFleet>True</neverFleet>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>12</x>
 			<z>16</z>
 		</core>

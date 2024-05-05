@@ -10,7 +10,7 @@
 		<label>Frigate</label>
 		<combatPoints>645</combatPoints>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>46</x>
 			<z>30</z>
 		</core>

@@ -280,6 +280,7 @@ namespace SaveOurShip2
 
 		//SC only - target only
 		public ShipAI ShipMapAI = 0; //target ship map AI
+		public IntVec3 ShuttleTarget = IntVec3.Invalid;
 		public bool HasShipMapAI => ShipMapAI != ShipAI.none; //target has ship map AI
 		//public Thing TurretTarget; //AI target for turrets
 		public int BattleStartTick = 0; //AI retreat param, stalemate eject
@@ -1153,7 +1154,17 @@ namespace SaveOurShip2
 							mission.weaponCooldown -= 1;
 							if (mission.weaponCooldown <= 0 && mission.rangeTraveled >= OriginMapComp.Range - 50f)
 							{
-								IntVec3 targetCell = (mission.shuttle.Faction == Faction.OfPlayer ? ShipCombatTargetMap.listerBuildings.allBuildingsNonColonist.RandomElement().Position : ShipCombatTargetMap.listerBuildings.allBuildingsColonist.RandomElement().Position);
+								IntVec3 targetCell;
+								if(mission.shuttle.Faction==Faction.OfPlayer)
+                                {
+									if (TargetMapComp.ShuttleTarget != IntVec3.Invalid)
+										targetCell = TargetMapComp.ShuttleTarget;
+									else
+										targetCell = ShipCombatTargetMap.listerBuildings.allBuildingsNonColonist.RandomElement().Position;
+
+								}
+								else
+									targetCell = ShipCombatTargetMap.listerBuildings.allBuildingsColonist.RandomElement().Position;
 								IntVec3 spawnCell = FindClosestEdgeCell(ShipCombatTargetMap, targetCell);
 								foreach (VehicleTurret turret in mission.shuttle.CompVehicleTurrets.turrets)
 								{
@@ -1161,7 +1172,7 @@ namespace SaveOurShip2
 									{
 										Projectile projectile = (Projectile)GenSpawn.Spawn(ResourceBank.ThingDefOf.Shuttle_Laser_Space, spawnCell, ShipCombatTargetMap);
 										IntVec3 a = targetCell - spawnCell;
-										float angle = a.AngleFlat + Rand.Range(-2, 2);
+										float angle = a.AngleFlat + Rand.Range(-0.25f, 0.25f);
 										IntVec3 c = spawnCell + new Vector3(1000 * Mathf.Sin(Mathf.Deg2Rad * angle), 0, 1000 * Mathf.Cos(Mathf.Deg2Rad * angle)).ToIntVec3();
 										projectile.Launch(mission.shuttle, spawnCell.ToVector3Shifted(), c, targetCell, ProjectileHitFlags.All);
 										mission.shuttle.compFuel.ConsumeFuel(2);
@@ -1170,7 +1181,7 @@ namespace SaveOurShip2
 									{
 										Projectile projectile = (Projectile)GenSpawn.Spawn(ResourceBank.ThingDefOf.Shuttle_Plasma, spawnCell, ShipCombatTargetMap);
 										IntVec3 a = targetCell - spawnCell;
-										float angle = a.AngleFlat + Rand.Range(-4, 4);
+										float angle = a.AngleFlat + Rand.Range(-1f, 1f);
 										IntVec3 c = spawnCell + new Vector3(1000 * Mathf.Sin(Mathf.Deg2Rad * angle), 0, 1000 * Mathf.Cos(Mathf.Deg2Rad * angle)).ToIntVec3();
 										projectile.Launch(mission.shuttle, spawnCell.ToVector3Shifted(), c, targetCell, ProjectileHitFlags.All);
 										mission.shuttle.compFuel.ConsumeFuel(2);
@@ -2218,6 +2229,7 @@ namespace SaveOurShip2
 			Map tgtMap = OriginMapComp.ShipCombatTargetMap;
 			var tgtMapComp = OriginMapComp.TargetMapComp;
 			tgtMapComp.ShipMapAI = ShipAI.none;
+			tgtMapComp.ShuttleTarget = IntVec3.Invalid;
 			tgtMapComp.ShipMapState = ShipMapState.isGraveyard;
 			if (OriginMapComp.map == ShipInteriorMod2.FindPlayerShipMap())
 				OriginMapComp.ShipMapState = ShipMapState.nominal;
@@ -2284,12 +2296,10 @@ namespace SaveOurShip2
 			}
 			foreach(ShuttleMissionData mission in OriginMapComp.ShuttleMissions.ListFullCopy())
             {
-				mission.mission = ShuttleMission.RETURN;
 				DeRegisterShuttleMission(mission);
 			}
 			foreach (ShuttleMissionData mission in OriginMapComp.TargetMapComp.ShuttleMissions.ListFullCopy())
 			{
-				mission.mission = ShuttleMission.BOARD;
 				DeRegisterShuttleMission(mission);
 			}
 
@@ -2361,10 +2371,15 @@ namespace SaveOurShip2
 			if (!destroyed)
             {
 				Map mapToSpawnIn;
-				if (mission.mission == ShuttleMission.BOARD)
-					mapToSpawnIn = ShipCombatTargetMap;
-				else //Return mission
-					mapToSpawnIn = map;
+				if (OriginMapComp.ShipMapState == ShipMapState.nominal)
+					mapToSpawnIn = OriginMapComp.map;
+				else
+				{
+					if (mission.mission == ShuttleMission.BOARD)
+						mapToSpawnIn = ShipCombatTargetMap;
+					else //Return mission
+						mapToSpawnIn = map;
+				}
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
 					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();

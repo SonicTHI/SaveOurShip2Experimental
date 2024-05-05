@@ -12,7 +12,7 @@
 		<rarityLevel>2</rarityLevel>
 		<customPaintjob>True</customPaintjob>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>75</x>
 			<z>15</z>
 		</core>

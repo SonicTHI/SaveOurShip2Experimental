@@ -10,7 +10,7 @@
 		<label>Twin spine destroyer</label>
 		<combatPoints>1089</combatPoints>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>66</x>
 			<z>25</z>
 		</core>

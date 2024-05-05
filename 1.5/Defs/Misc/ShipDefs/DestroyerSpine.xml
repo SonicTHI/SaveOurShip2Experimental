@@ -10,7 +10,7 @@
 		<label>Destroyer</label>
 		<combatPoints>847</combatPoints>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>42</x>
 			<z>21</z>
 		</core>

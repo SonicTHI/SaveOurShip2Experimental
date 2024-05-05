@@ -12,7 +12,7 @@
 		<randomTurretPoints>120</randomTurretPoints>
 		<neverAttacks>True</neverAttacks>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>28</x>
 			<z>31</z>
 		</core>

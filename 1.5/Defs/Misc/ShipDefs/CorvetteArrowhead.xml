@@ -10,7 +10,7 @@
 		<label>Arrowhead class corvette</label>
 		<combatPoints>168</combatPoints>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>37</x>
 			<z>27</z>
 		</core>

@@ -108,7 +108,7 @@ namespace SaveOurShip2
 					return this.mat;
 				return this.matOff;
 			}
-			if (thing.TryGetComp<CompPowerTrader>() == null || (thing.TryGetComp<CompPowerTrader>().PowerNet != null && thing.TryGetComp<CompPowerTrader>().PowerOn && (thing.TryGetComp<CompRefuelable>()==null || thing.TryGetComp<CompRefuelable>().Fuel>0)))
+			if ((thing.TryGetComp<CompPowerTrader>() == null || (thing.TryGetComp<CompPowerTrader>().PowerNet != null && thing.TryGetComp<CompPowerTrader>().PowerOn)) || (thing.TryGetComp<CompRefuelable>()!=null && thing.TryGetComp<CompRefuelable>().Fuel>0))
 			{
 				return this.mat;
 			}

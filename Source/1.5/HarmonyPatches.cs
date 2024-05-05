@@ -335,7 +335,7 @@ namespace SaveOurShip2
 			CompVehicleHeatNet heatNet = shuttle.GetComp<CompVehicleHeatNet>();
 			float heatMax = 0;
 			float heatCurrent = 0;
-			if (heatNet != null)
+			if (heatNet != null && heatNet.myNet != null)
 			{
 				heatMax = heatNet.myNet.StorageCapacity;
 				heatCurrent = heatNet.myNet.StorageUsed;
@@ -4612,6 +4612,21 @@ namespace SaveOurShip2
 				__result = true;
 			}
 		}
+    }
+
+	[HarmonyPatch(typeof(VehicleComponent), "HealComponent")]
+	public static class FastRepairOnShuttleBay
+    {
+		public static bool Prefix(ref float amount, VehicleComponent __instance)
+        {
+			if(__instance.vehicle.Spawned)
+            {
+				CompShipBay shuttleBay = __instance.vehicle.Position.GetFirstThingWithComp<CompShipBay>(__instance.vehicle.Map).GetComp<CompShipBay>();
+				if (shuttleBay.Props.repairBonus > 1)
+					amount *= shuttleBay.Props.repairBonus;
+			}
+			return true;
+        }
     }
 
 	[HarmonyPatch(typeof(ITab_Vehicle_Upgrades), "DrawButtons")] //Destructive patch, remove this when/if VF adds upgrade failure reasons

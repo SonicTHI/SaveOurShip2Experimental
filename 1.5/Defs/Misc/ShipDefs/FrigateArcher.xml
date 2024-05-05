@@ -10,7 +10,7 @@
 		<label>Archer class frigate</label>
 		<combatPoints>641</combatPoints>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>31</x>
 			<z>18</z>
 		</core>

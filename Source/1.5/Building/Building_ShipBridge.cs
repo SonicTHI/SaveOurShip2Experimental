@@ -8,6 +8,7 @@ using RimWorld.Planet;
 using RimWorld;
 using System.Text;
 using Verse.AI;
+using Verse.Sound;
 
 namespace SaveOurShip2
 {
@@ -501,12 +502,38 @@ namespace SaveOurShip2
 							},
 							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.RecallShuttle", mission.shuttle, mission.mission.ToString()),
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.RecallShuttleDesc"),
+							groupable = false,
 							icon = mission.mission == ShipMapComp.ShuttleMission.INTERCEPT ? ContentFinder<Texture2D>.Get("UI/ShuttleMissionIntercept") :
 								mission.mission == ShipMapComp.ShuttleMission.STRAFE ? ContentFinder<Texture2D>.Get("UI/ShuttleMissionStrafe") :
 								mission.mission == ShipMapComp.ShuttleMission.BOMB ? ContentFinder<Texture2D>.Get("UI/ShuttleMissionBomb") :
 								ContentFinder<Texture2D>.Get("UI/ShuttleMissionBoarding")
 						};
 						yield return changeShuttleMission;
+                    }
+					if (mapComp.ShuttleMissions.Any(mission => mission.mission==ShipMapComp.ShuttleMission.STRAFE || mission.mission==ShipMapComp.ShuttleMission.BOMB))
+                    {
+						Command_Action targetShuttles = new Command_Action
+						{
+							action = delegate
+							{
+								SoundDefOf.Tick_Tiny.PlayOneShotOnCamera();
+								CameraJumper.TryJump(mapComp.ShipCombatTargetMap.Center, mapComp.ShipCombatTargetMap);
+								Targeter targeter = Find.Targeter;
+								TargetingParameters parms = new TargetingParameters();
+								parms.canTargetPawns = true;
+								parms.canTargetBuildings = true;
+								parms.canTargetLocations = true;
+								Find.Targeter.BeginTargeting(parms, (Action<LocalTargetInfo>)delegate (LocalTargetInfo x)
+								{
+									mapComp.TargetMapComp.ShuttleTarget = x.Cell;
+								}, (Pawn)null, delegate { CameraJumper.TryJump(this.Position, mapComp.ShipCombatOriginMap); });
+							},
+							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.TargetShuttles"),
+							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.TargetShuttlesDesc"),
+							groupable = false,
+							icon = ContentFinder<Texture2D>.Get("UI/ShuttleMissionStrafe")
+						};
+						yield return targetShuttles;
                     }
 					if (Prefs.DevMode)
 					{

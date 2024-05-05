@@ -24,7 +24,9 @@ namespace SaveOurShip2
 		{
 			get
 			{
-				return Vector3.SlerpUnclamped(orbitVec * radius, orbitVec * radius * -1, theta * -1); //TODO phi
+				Vector3 v = Vector3.SlerpUnclamped(orbitVec * radius, orbitVec * radius * -1, theta * -1);
+				// Todo: y = phi*16 is a temporary fix to make space sites look spread around whitout bigger changes to coordinates code
+				return new Vector3(v.x, phi*16, v.z);
 			}
 		}
 

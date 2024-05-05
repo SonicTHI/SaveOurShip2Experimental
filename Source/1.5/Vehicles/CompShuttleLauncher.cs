@@ -150,7 +150,17 @@ namespace SaveOurShip2.Vehicles
             };
         }
 
-        public override void PostExposeData()
+		public override void PostSpawnSetup(bool respawningAfterLoad)
+		{
+			base.PostSpawnSetup(respawningAfterLoad);
+			var bay = parent.Position.GetThingList(parent.Map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
+			if (bay != null)
+			{
+				Log.Message("Dereged shuttle reserved area on bay at: " + parent.Position);
+				bay.TryGetComp<CompShipBay>().UnReserveArea(parent.Position, parent as VehiclePawn);
+			}
+		}
+		public override void PostExposeData()
         {
             base.PostExposeData();
             Scribe_Values.Look<float>(ref retreatAtHealth, "retreatAtHealth");

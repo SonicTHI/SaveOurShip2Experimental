@@ -696,6 +696,15 @@ namespace SaveOurShip2
 			{
 				threat += ship.Threat;
 			}
+			foreach (VehiclePawn veh in map.mapPawns.AllPawnsSpawned.Where(pawn => pawn is VehiclePawn veh && veh.CompVehicleLauncher != null && veh.CompVehicleLauncher.SpaceFlight))
+			{
+				int size = 20;
+				if (veh.GetStatValue(VehicleStatDefOf.CargoCapacity) > 2000) //huge
+					size = 80;
+				else if (veh.GetStatValue(VehicleStatDefOf.CargoCapacity) > 1000) //large
+					size = 40;
+				threat += size;
+			}
 			return threat;
 		}
 		public void StartShipEncounter(PassingShip passingShip = null, Map targetMap = null, Faction fac = null, int range = 0, bool fleet = false, bool bounty = false)
@@ -1410,7 +1419,7 @@ namespace SaveOurShip2
 						else
 							Heading = 0;
 					}
-					else if (Heading == 0)
+					else if (Heading == 0 || TargetMapComp.Heading == 0)
 					{
 						Heading = 0;
 					}

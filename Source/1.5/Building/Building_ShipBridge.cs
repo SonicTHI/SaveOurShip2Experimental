@@ -535,7 +535,7 @@ namespace SaveOurShip2
 						};
 						yield return targetShuttles;
                     }
-					if (Prefs.DevMode)
+					if (ckActive)
 					{
 						Command_Action forceBoard = new Command_Action
 						{

@@ -2138,7 +2138,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. When powered, this bay will double the rate at which pawns perform repairs. Automated loader arms will refuel docked shuttles' reactors from bay storage.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
+		<description>Provides docking facilities for shuttles. When powered, this bay will double the rate at which pawns perform repairs and automatically refuel docked shuttles using uranium fuel pods from an internal storage tank.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2154,12 +2154,13 @@
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<maxShuttleSize>5</maxShuttleSize>
+				<graphicPath>Things/Building/Ship/Shuttle_Bay_Roof</graphicPath>
 				<repairBonus>1</repairBonus>
 			</li>
 			  <li Class="CompProperties_Refuelable">
-				<fuelCapacity>1000.0</fuelCapacity>
+				<fuelCapacity>500.0</fuelCapacity>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>500</initialConfigurableTargetFuelLevel>
+				<initialConfigurableTargetFuelLevel>0</initialConfigurableTargetFuelLevel>
 				<fuelFilter>
 				  <thingDefs>
 					<li>ShuttleFuelPods</li>
@@ -2172,7 +2173,7 @@
 			  </li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>500</basePowerConsumption>
+				<basePowerConsumption>400</basePowerConsumption>
 			</li>
 			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
 		</comps>
@@ -2187,7 +2188,7 @@
 		<defName>ShipShuttleBayLarge</defName>
 		<label>large shuttle bay</label>
 		<designatorDropdown>Ship_ShuttleBays</designatorDropdown>
-		<thingClass>Building</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/Shuttle_Bay</texPath>
 			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
@@ -2210,7 +2211,7 @@
 			<MaxHitPoints>700</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. This version is large enough to support the superheavy shuttle.\n\nWhen powered, this bay will double the rate at which pawns perform repairs. Automated loader arms will refuel docked shuttles' reactors from bay storage.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
+		<description>Provides docking facilities for shuttles. This version is large enough to support the superheavy shuttle.\n\nWhen powered, this bay will double the rate at which pawns perform repairs and automatically refuel docked shuttles using uranium fuel pods from an internal storage tank.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
 		<size>(7,7)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2227,12 +2228,13 @@
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<maxShuttleSize>7</maxShuttleSize>
+				<graphicPath>Things/Building/Ship/Shuttle_Bay_Roof</graphicPath>
 				<repairBonus>1</repairBonus>
 			</li>
 			  <li Class="CompProperties_Refuelable">
-				<fuelCapacity>2000.0</fuelCapacity>
+				<fuelCapacity>1000.0</fuelCapacity>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>1000</initialConfigurableTargetFuelLevel>
+				<initialConfigurableTargetFuelLevel>0</initialConfigurableTargetFuelLevel>
 				<fuelFilter>
 				  <thingDefs>
 					<li>ShuttleFuelPods</li>
@@ -2245,7 +2247,7 @@
 			  </li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>800</basePowerConsumption>
+				<basePowerConsumption>600</basePowerConsumption>
 			</li>
 			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
 		</comps>
@@ -2409,6 +2411,7 @@
 		<defName>ShipSalvageBay</defName>
 		<label>salvage bay</label>
 		<designatorDropdown>Ship_SalvageBays</designatorDropdown>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/SalvageBay</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2448,6 +2451,8 @@
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<compClass>SaveOurShip2.CompShipBaySalvage</compClass>
 				<weight>5000</weight>
+				<borderSize>1</borderSize>
+				<graphicPath>Things/Building/Ship/Salvage_Bay_Roof</graphicPath>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -2461,6 +2466,7 @@
 		<defName>ShipSalvageBayNano</defName>
 		<label>glittertech salvage bay</label>
 		<designatorDropdown>Ship_SalvageBays</designatorDropdown>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/SalvageBayNano</texPath>
 			<graphicClass>Graphic_Single</graphicClass>

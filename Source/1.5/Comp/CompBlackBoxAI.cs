@@ -34,6 +34,7 @@ namespace SaveOurShip2
 					{
 						GreetedColonists = true;
 						Find.LetterStack.ReceiveLetter(TranslatorFormattedStringExtensions.Translate("SoS.BlackBoxMissionAIChamber"), TranslatorFormattedStringExtensions.Translate("SoS.BlackBoxMissionAIChamberDesc"),  LetterDefOf.NeutralEvent);
+						break;
 					}
 				}
 			}

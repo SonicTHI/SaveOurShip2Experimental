@@ -11,7 +11,7 @@
 		<combatPoints>887</combatPoints>
 		<rarityLevel>2</rarityLevel>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>20</x>
 			<z>26</z>
 		</core>

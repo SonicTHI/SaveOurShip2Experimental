@@ -29,12 +29,18 @@ namespace SaveOurShip2
 		{
 			base.PostExposeData();
 			Scribe_Deep.Look(ref reservedArea, "reservedArea", this);
+			if (reservedArea == null)
+				reservedArea = new HashSet<IntVec3>();
 		}
 
 		public ShipMapComp mapComp;
 		public CellRect bayRect;
 		Matrix4x4 matrix = new Matrix4x4();
 		public HashSet<IntVec3> reservedArea = new HashSet<IntVec3>();
+		HashSet<CompFueledTravel> dockedShuttles = new HashSet<CompFueledTravel>();
+		CompRefuelable compRefuelable;
+		CompPowerTrader compPowerTrader;
+
 		public CompProps_ShipBay Props
 		{
 			get
@@ -152,11 +158,56 @@ namespace SaveOurShip2
 			mapComp.Bays.Add(this);
 			bayRect = parent.OccupiedRect().ContractedBy(Props.borderSize);
 			matrix.SetTRS(new Vector3(parent.DrawPos.x, Altitudes.AltitudeFor(AltitudeLayer.MoteOverhead), parent.DrawPos.z), parent.Rotation.AsQuat, new Vector3(parent.DrawSize.x, 1f, parent.DrawSize.y));
+			ReCacheDockedShuttles();
+			compRefuelable = parent.GetComp<CompRefuelable>();
+			compPowerTrader = parent.GetComp<CompPowerTrader>();
 		}
 		public override void PostDeSpawn(Map map)
 		{
 			mapComp.Bays.Remove(this);
 			base.PostDeSpawn(map);
 		}
-	}
+
+        public override void CompTick()
+        {
+            base.CompTick();
+			if (parent.Spawned && compRefuelable != null && compPowerTrader != null && compPowerTrader.PowerOn) //ie, is powered and is not a salvage bay
+			{
+				int tick = Find.TickManager.TicksGame;
+				if (tick % 8 == 0)
+				{
+					if (tick % 256 == 0)
+						ReCacheDockedShuttles();
+					foreach (CompFueledTravel comp in dockedShuttles)
+					{
+						if (compRefuelable.fuel > 0 && comp.FuelPercentOfTarget < 1)
+						{
+							comp.Refuel(1);
+							compRefuelable.ConsumeFuel(1);
+						}
+						if (Props.autoRepair>0 && comp.Vehicle.statHandler.NeedsRepairs)
+						{
+							VehicleComponent component = GenCollection.FirstOrDefault<VehicleComponent>(comp.Vehicle.statHandler.ComponentsPrioritized,(VehicleComponent c) => c.HealthPercent < 1f);
+							component.HealComponent(Props.autoRepair);
+							comp.Vehicle.CrashLanded = false;
+						}
+					}
+				}
+			}
+        }
+
+		void ReCacheDockedShuttles()
+        {
+			foreach(IntVec3 cell in GenAdj.CellsOccupiedBy(parent))
+            {
+				VehiclePawn shuttle = cell.GetThingList(parent.Map).OfType<VehiclePawn>().FirstOrDefault();
+				if(shuttle!=null)
+                {
+					CompFueledTravel fueledTravel = shuttle.GetComp<CompFueledTravel>();
+					if (fueledTravel != null && fueledTravel.Props.fuelType == ResourceBank.ThingDefOf.ShuttleFuelPods)
+						dockedShuttles.Add(fueledTravel);
+                }
+            }
+        }
+    }
 }

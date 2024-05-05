@@ -10,6 +10,8 @@ namespace SaveOurShip2
 		public int weight = 0;
 		public int maxShuttleSize = 1;
 		public int borderSize = 0;
+		public float repairBonus = 1;
+		public float autoRepair = 0;
 		[NoTranslate]
 		public string graphicPath;
 		[Unsaved]

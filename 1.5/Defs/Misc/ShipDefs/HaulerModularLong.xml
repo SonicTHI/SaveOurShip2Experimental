@@ -14,7 +14,7 @@
 		<neverAttacks>True</neverAttacks>
 		<tradeShip>True</tradeShip>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>106</x>
 			<z>13</z>
 		</core>

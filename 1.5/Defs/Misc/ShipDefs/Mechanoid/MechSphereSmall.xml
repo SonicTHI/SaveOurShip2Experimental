@@ -12,7 +12,7 @@
 		<randomTurretPoints>80</randomTurretPoints>
 		<navyExclusive>True</navyExclusive>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>15</x>
 			<z>11</z>
 		</core>
@@ -164,7 +164,7 @@
 			<li>
 				<key>W</key>
 				<value>
-					<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+					<shapeOrDef>Ship_DroneCore</shapeOrDef>
 				</value>
 			</li>
 			<li>

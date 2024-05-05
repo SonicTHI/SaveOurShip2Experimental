@@ -10,7 +10,7 @@
 		<label>Industrial Ship Breaker</label>
 		<combatPoints>813</combatPoints>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>42</x>
 			<z>34</z>
 		</core>

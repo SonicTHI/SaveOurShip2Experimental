@@ -11,7 +11,7 @@
 		<combatPoints>323</combatPoints>
 		<randomTurretPoints>140</randomTurretPoints>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>34</x>
 			<z>9</z>
 		</core>

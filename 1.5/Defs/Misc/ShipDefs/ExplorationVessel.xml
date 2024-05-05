@@ -11,7 +11,7 @@
 		<combatPoints>197</combatPoints>
 		<neverAttacks>True</neverAttacks>
 		<core>
-			<shapeOrDef>Ship_ComputerCore</shapeOrDef>
+			<shapeOrDef>Ship_DroneCore</shapeOrDef>
 			<x>23</x>
 			<z>12</z>
 		</core>

@@ -2684,6 +2684,18 @@ namespace SaveOurShip2
 		}
 	}
 
+	// Ideology - prevent role activated/deactivated letters spam
+	[HarmonyPatch(typeof(Precept_RoleSingle), "RecacheActivity")]
+	public static class DisableForMoveRoleRecalc
+	{
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.MoveShipFlag)
+				return false;
+			return true;
+		}
+	}
+
 	//pawns
 	[HarmonyPatch(typeof(PreceptComp_Apparel), "GiveApparelToPawn")]
 	public static class PreventIdeoApparel

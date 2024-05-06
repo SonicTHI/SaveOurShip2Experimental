@@ -126,7 +126,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f25";
+		public const string SOS2EXPversion = "V101f26";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -951,7 +951,7 @@ namespace SaveOurShip2
 					}
 					else if (DefDatabase<VehicleDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
-						if (wreckLevel==0)
+						if (wreckLevel < 2)
 						{
 							VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
 							VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);

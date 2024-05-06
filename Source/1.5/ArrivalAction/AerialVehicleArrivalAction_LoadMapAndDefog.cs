@@ -31,6 +31,7 @@ namespace SaveOurShip2.Vehicles
                 MapLoaded(map);
                 FloodFillerFog.FloodUnfog(CellFinderLoose.TryFindCentralCell(map, 7, 10, (IntVec3 x) => !x.Roofed(map)), map);
                 ExecuteEvents();
+                GetOrGenerateMapUtility.UnfogMapFromEdge(map);
                 arrivalModeDef.Worker.VehicleArrived(vehicle, launchProtocol, map);
             }, "GeneratingMap", false, null, true, null);
             return true;

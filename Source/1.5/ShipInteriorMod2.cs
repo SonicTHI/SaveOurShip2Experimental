@@ -88,7 +88,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref renderPlanet, "renderPlanet", false);
 			Scribe_Values.Look(ref useSplashScreen, "useSplashScreen", true);
 			Scribe_Values.Look(ref persistShipUI, "persistShipUI", false);
-			Scribe_Values.Look(ref archoRemove, "archoRemove", true);
+			Scribe_Values.Look(ref archoRemove, "archoRemove", false);
 			Scribe_Values.Look(ref debugMode, "debugMode", false);
 
 			Scribe_Values.Look(ref minTravelTime, "minTravelTime", 5);
@@ -566,7 +566,7 @@ namespace SaveOurShip2
 						return true;
 				}
 				//any faction that has same def as navy, defeat check
-				else if (Find.FactionManager.AllFactions.Any(f => navy.factionDefs.Contains(f.def) && (!f.defeated || (f.defeated && navy.canOperateAfterFactionDefeated))))
+				else if (Find.FactionManager.AllFactions.Any(f => navy.factionDefs.Contains(f.def) && f.HostileTo(Faction.OfPlayer) && (!f.defeated || (f.defeated && navy.canOperateAfterFactionDefeated))))
 					return true;
 				return false;
 			}).RandomElement();
@@ -1402,29 +1402,37 @@ namespace SaveOurShip2
 					{
 						if (mapComp.InvaderLord == null) //spawn only one invader lord
 						{
-							invaderFac = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def)).RandomElement();
-							if (wreckLevel == 2)
-								mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_AssaultShip(invaderFac, false), map);
-							else
-								mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_DefendShip(invaderFac, map.Center), map);
-							Log.Message("SOS2: ".Colorize(Color.cyan) + map + "Spawned invaders from: " + invaderFac);
+							IEnumerable<Faction> possibleInvaders = Find.FactionManager.AllFactions.Where(f => navy.factionDefs.Contains(f.def) && f.HostileTo(Faction.OfPlayer));
+							if (possibleInvaders.Count() > 0)
+								invaderFac = possibleInvaders.RandomElement();
+							if (invaderFac != null)
+							{
+								if (wreckLevel == 2)
+									mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_AssaultShip(invaderFac, false), map);
+								else
+									mapComp.InvaderLord = LordMaker.MakeNewLord(invaderFac, new LordJob_DefendShip(invaderFac, map.Center), map);
+								Log.Message("SOS2: ".Colorize(Color.cyan) + map + "Spawned invaders from: " + invaderFac);
+							}
 						}
 						else
 							invaderFac = mapComp.InvaderLord.faction;
 
-						foreach (Pawn p in pawnsOnShip.Where(p => p.Downed || p.Dead))
+						if (invaderFac != null)
 						{
-							if ((wreckLevel == 2 && Rand.Chance(0.6f)) || (wreckLevel == 3 && Rand.Chance(0.3f)))
+							foreach (Pawn p in pawnsOnShip.Where(p => p.Downed || p.Dead))
 							{
-								PawnKindDef req;
-								int chance = Rand.RangeInclusive(1, 3);
-								if (chance == 3)
-									req = navy.marineHeavyDef;
-								else
-									req = navy.marineDef;
-								Pawn pawn = PawnGenerator.GeneratePawn(req, invaderFac);
-								GenSpawn.Spawn(pawn, p.Position, map);
-								mapComp.InvaderLord.AddPawn(pawn);
+								if ((wreckLevel == 2 && Rand.Chance(0.6f)) || (wreckLevel == 3 && Rand.Chance(0.3f)))
+								{
+									PawnKindDef req;
+									int chance = Rand.RangeInclusive(1, 3);
+									if (chance == 3)
+										req = navy.marineHeavyDef;
+									else
+										req = navy.marineDef;
+									Pawn pawn = PawnGenerator.GeneratePawn(req, invaderFac);
+									GenSpawn.Spawn(pawn, p.Position, map);
+									mapComp.InvaderLord.AddPawn(pawn);
+								}
 							}
 						}
 					}

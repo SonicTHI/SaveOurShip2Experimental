@@ -18,9 +18,9 @@
 	<SoS.Settings.EasyMode>Easy boarding mode</SoS.Settings.EasyMode>
 	<SoS.Settings.EasyMode.Desc>If checked, will prevent player pawns in shuttles from dying to point defense. Default: off</SoS.Settings.EasyMode.Desc>
 	<SoS.Settings.ShipMapPhysics>Ship map physics</SoS.Settings.ShipMapPhysics>
-	<SoS.Settings.ShipMapPhysics.Desc>If enabled pawns and things not on a ship while it is moving will be sent to the graveyard. This will also restrict shuttle landings to bays or outer hull. Default: Off</SoS.Settings.ShipMapPhysics.Desc>
-	<SoS.Settings.ArchoRemove>Remove archo animals</SoS.Settings.ArchoRemove>
-	<SoS.Settings.ArchoRemove.Desc>Removes archo animals if they are spawned into the game before the required building is built. Default: on</SoS.Settings.ArchoRemove.Desc>
+	<SoS.Settings.ShipMapPhysics.Desc>If enabled pawns and things not on a ship while it is moving will be sent to the graveyard. This will also restrict shuttle landings to bays or outer hull. Default: off</SoS.Settings.ShipMapPhysics.Desc>
+	<SoS.Settings.ArchoRemove>No archo animals without spore</SoS.Settings.ArchoRemove>
+	<SoS.Settings.ArchoRemove.Desc>Removes archo animals if they are spawned into the game before the required building is built. Kills all archo animals when the spore is destroyed. Default: off</SoS.Settings.ArchoRemove.Desc>
 	<SoS.Settings.Debug>Debug mode</SoS.Settings.Debug>
 	<SoS.Settings.Debug.Desc>Will draw ship area and list all ships/wrecks on map on screen with mouse over for details and add more info to the log. Default: off</SoS.Settings.Debug.Desc>
 	

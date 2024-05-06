@@ -123,7 +123,7 @@ namespace SaveOurShip2
 				int strSize = 5 + str.Length * 8;
 				Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 395 + strSize, 35);
 				Widgets.DrawMenuSection(rect2);
-				Widgets.Label(rect2.ContractedBy(7), str);
+				Widgets.Label(rect2.ContractedBy(6), str);
 
 				DrawPower(screenHalf - 220, baseY, bridge);
 				DrawHeat(screenHalf - 415, baseY, bridge);
@@ -137,17 +137,19 @@ namespace SaveOurShip2
 					TooltipHandler.TipRegion(rect2, stringBuilder.ToString());
 				}
 			}
+			Text.Font = GameFont.Tiny;
+			baseY += 15;
 			foreach (ShuttleMissionData mission in playerMapComp.ShuttleMissions)
 			{
-				baseY += 45;
+				baseY += 30;
 				string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
-				int strSize = 5 + str.Length * 8;
-				Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 395 + strSize, 35);
+				int strSize = 5 + str.Length * 6;
+				Rect rect2 = new Rect(screenHalf - 380 - strSize, baseY - 40, 295 + strSize, 25);
 				Widgets.DrawMenuSection(rect2);
-				Widgets.Label(rect2.ContractedBy(7), str);
+				Widgets.Label(rect2.ContractedBy(3), str);
 
 				DrawShuttleHealth(screenHalf - 220, baseY, mission.shuttle);
-				DrawShuttleHeat(screenHalf - 415, baseY, mission.shuttle);
+				DrawShuttleHeat(screenHalf - 365, baseY, mission.shuttle);
 			}
 			//no UI OOC bellow
 			var enemyMapComp = playerMapComp.TargetMapComp;
@@ -155,6 +157,7 @@ namespace SaveOurShip2
 				return;
 			//enemy heat & energy bars
 			baseY = __instance.Size.y + 40 + ModSettings_SoS.offsetUIy;
+			Text.Font = GameFont.Small;
 			foreach (int i in enemyMapComp.ShipsOnMap.Keys)
 			{
 				var bridge = enemyMapComp.ShipsOnMap[i].Core;
@@ -162,37 +165,39 @@ namespace SaveOurShip2
 					continue;
 
 				baseY += 45;
-				Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 395, 35);
+				Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 400, 35);
 				Widgets.DrawMenuSection(rect2);
 
 				DrawHeat(screenHalf + 455, baseY, bridge);
-				DrawPower(screenHalf + 645, baseY, bridge);
+				DrawPower(screenHalf + 650, baseY, bridge);
 			}
+			Text.Font = GameFont.Tiny;
+			baseY += 15;
 			foreach (ShuttleMissionData mission in enemyMapComp.ShuttleMissions)
 			{
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
-					baseY += 45;
+					baseY += 30;
 					string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
-					int strSize = 5 + str.Length * 8;
-					Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 395 + strSize, 35);
+					int strSize = 5 + str.Length * 6;
+					Rect rect2 = new Rect(screenHalf - 430 - strSize, baseY - 40, 295 + strSize, 25);
 					Widgets.DrawMenuSection(rect2);
-					Widgets.Label(rect2.ContractedBy(7), str);
+					Widgets.Label(rect2.ContractedBy(3), str);
 
 					DrawShuttleHealth(screenHalf - 220, baseY, mission.shuttle);
-					DrawShuttleHeat(screenHalf - 415, baseY, mission.shuttle);
+					DrawShuttleHeat(screenHalf - 365, baseY, mission.shuttle);
 				}
 				else
 				{
-					baseY += 45;
+					baseY += 30;
 					string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
-					int strSize = 5 + str.Length * 8;
-					Rect rect2 = new Rect(screenHalf + 435, baseY - 40, 395 + strSize, 35);
+					int strSize = 5 + str.Length * 6;
+					Rect rect2 = new Rect(screenHalf + 490, baseY - 40, 300 + strSize, 25);
 					Widgets.DrawMenuSection(rect2);
-					Widgets.Label(rect2.ContractedBy(7), str);
-
-					DrawShuttleHealth(screenHalf + 455 + strSize, baseY, mission.shuttle);
-					DrawShuttleHeat(screenHalf + 645 + strSize, baseY, mission.shuttle);
+					Rect rect3 = new Rect(screenHalf + 785, baseY - 40, 300 + strSize, 25);
+					Widgets.Label(rect3.ContractedBy(3), str);
+					DrawShuttleHealth(screenHalf + 505, baseY, mission.shuttle);
+					DrawShuttleHeat(screenHalf + 650, baseY, mission.shuttle);
 				}
 			}
 
@@ -307,7 +312,6 @@ namespace SaveOurShip2
 		{
 			Rect rect = new Rect(offset - 15, baseY - 40, 200, 35);
 			Widgets.FillableBar(rect.ContractedBy(6), bridge.powerRat, ResourceBank.PowerTex);
-			Text.Font = GameFont.Small;
 			rect.y += 7;
 			rect.x = offset;
 			rect.height = Text.LineHeight;
@@ -330,17 +334,16 @@ namespace SaveOurShip2
 		}
 		private static void DrawShuttleHealth(float offset, float baseY, VehiclePawn shuttle)
 		{
-			Rect rect = new Rect(offset - 15, baseY - 40, 200, 35);
+			Rect rect = new Rect(offset - 15, baseY - 40, 150, 25);
 			Widgets.FillableBar(rect.ContractedBy(6), shuttle.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity), ResourceBank.HeatTex);
-			Text.Font = GameFont.Small;
-			rect.y += 7;
+			rect.y += 5;
 			rect.x = offset;
 			rect.height = Text.LineHeight;
 			Widgets.Label(rect, "Hull: " + Mathf.Round(shuttle.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) * 100f) + "%");
 		}
 		private static void DrawShuttleHeat(float offset, float baseY, VehiclePawn shuttle)
 		{
-			Rect rect = new Rect(offset - 15, baseY - 40, 200, 35);
+			Rect rect = new Rect(offset - 15, baseY - 40, 150, 25);
 			CompVehicleHeatNet heatNet = shuttle.GetComp<CompVehicleHeatNet>();
 			float heatMax = 0;
 			float heatCurrent = 0;
@@ -350,8 +353,7 @@ namespace SaveOurShip2
 				heatCurrent = heatNet.myNet.StorageUsed;
 			}
 			Widgets.FillableBar(rect.ContractedBy(6), heatMax == 0 ? 0 : 1f - (heatCurrent / heatMax), ResourceBank.ShuttleShieldTex);
-			Text.Font = GameFont.Small;
-			rect.y += 7;
+			rect.y += 5;
 			rect.x = offset;
 			rect.height = Text.LineHeight;
 			Widgets.Label(rect, "Shields: " + (heatMax == 0 ? "N/A" : (Mathf.Round((1f - heatCurrent / heatMax) * 100f) + "%")));

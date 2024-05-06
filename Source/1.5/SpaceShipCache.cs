@@ -740,7 +740,7 @@ namespace SaveOurShip2
 						else if (b is Building_ShipBridge bridge && bridge.terminate == false)
 						{
 							Bridges.Add(bridge);
-							if (b.TryGetComp<CompBuildingConsciousness>() != null)
+							if (bridge.mannableComp == null)
 								AICores.Add(bridge);
 							if (IsWreck) //bridge placed on wreck, repath
 							{
@@ -855,7 +855,7 @@ namespace SaveOurShip2
 						else if (b is Building_ShipBridge bridge)
 						{
 							Bridges.Remove(bridge);
-							if (b.TryGetComp<CompBuildingConsciousness>() != null)
+							if (bridge.mannableComp == null)
 								AICores.Remove(bridge);
 							if (bridge == Core)
 								ReplaceCore();

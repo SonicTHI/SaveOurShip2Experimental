@@ -20,7 +20,7 @@ namespace SaveOurShip2
 			if (parent.IsHashIntervalTick(60))
 			{
 				Pawn myPawn = parent as Pawn;
-				if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore")) //no archo before spore
+				if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore") && ModSettings_SoS.archoRemove) //no archo before spore
 				{
 					myPawn.Destroy(DestroyMode.Vanish);
 					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.ArchoAnimalSuddenDeath"), parent, MessageTypeDefOf.NeutralEvent);

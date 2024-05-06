@@ -162,7 +162,7 @@ namespace SaveOurShip2.Vehicles
 			var bay = parent.Position.GetThingList(parent.Map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
 			if (bay != null)
 			{
-				Log.Message("Dereged shuttle reserved area on bay at: " + parent.Position);
+				Log.Message("Deregistered shuttle reserved area on bay at: " + parent.Position);
 				bay.TryGetComp<CompShipBay>().UnReserveArea(parent.Position, parent as VehiclePawn);
 			}
 		}

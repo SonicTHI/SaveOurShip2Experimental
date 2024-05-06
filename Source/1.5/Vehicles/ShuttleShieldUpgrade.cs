@@ -36,7 +36,7 @@ namespace SaveOurShip2.Vehicles
             //Check if we've already unlocked this... unlocking on load is unpredictable at times
             if (vehicle.GetComp<CompShipHeatShield>() != null)
             {
-                Log.Message("huh");
+                Log.Warning("[SoS2] Huh. Tried to unlock a shuttle shield upgrade twice. You should probably report this.");
                 return;
             }
             CompVehicleHeatNet net = vehicle.GetComp<CompVehicleHeatNet>();
@@ -59,11 +59,14 @@ namespace SaveOurShip2.Vehicles
             {
                 vehicle.comps.Add(myShield);
                 vehicle.RecacheComponents();
-                myShield.PostSpawnSetup(unlockingAfterLoad);
-                net.RebuildHeatNet(); 
-                ShipMapComp mapComp = vehicle.Map.GetComponent<ShipMapComp>();
-                if (mapComp != null)
-                    mapComp.Shields.Add(myShield);
+                if (vehicle.Spawned)
+                {
+                    myShield.PostSpawnSetup(unlockingAfterLoad);
+                    net.RebuildHeatNet();
+                    ShipMapComp mapComp = vehicle.Map.GetComponent<ShipMapComp>();
+                    if (mapComp != null)
+                        mapComp.Shields.Add(myShield);
+                }
             }
             else
                 PostLoadNewComponents.CompsToAdd.Add(myShield);

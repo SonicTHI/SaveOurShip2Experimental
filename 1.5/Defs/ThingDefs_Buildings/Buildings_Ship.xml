@@ -1496,9 +1496,61 @@
 		</researchPrerequisites>
 	</ThingDef>
 	<!-- core -->
+	<DesignatorDropdownGroupDef>
+		<defName>Ship_Cores</defName>
+	</DesignatorDropdownGroupDef>
+	<ThingDef ParentName="BuildingShipBase">
+		<defName>Ship_DroneCore</defName>
+		<label>drone core</label>
+		<designatorDropdown>Ship_Cores</designatorDropdown>
+		<thingClass>SaveOurShip2.Building_ShipBridge</thingClass>
+		<graphicData>
+			<texPath>Things/Building/Ship/ShipDroneCore</texPath>
+			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
+			<drawSize>(3,3)</drawSize>
+		</graphicData>
+		<researchPrerequisites>
+			<li>ShipPilotSeat</li>
+		</researchPrerequisites>
+		<statBases>
+			<WorkToBuild>6000</WorkToBuild>
+			<MaxHitPoints>150</MaxHitPoints>
+			<Flammability>0</Flammability>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<description>A simple computer core housing a subpersona AI. Incapable of creative problem-solving or interstellar guidance, it is nonetheless effective at piloting a ship in combat.</description>
+		<size>(3,3)</size>
+		<designationCategory>Ship</designationCategory>
+		<comps>
+			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
+			<li Class="CompProperties_ShipPart"/>
+			<li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>500</basePowerConsumption>
+				<transmitsPower>true</transmitsPower>
+			</li>
+			<li Class="SaveOurShip2.CompProps_ShipHeat">
+				<compClass>SaveOurShip2.CompShipHeat</compClass>
+			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
+		</comps>
+		<rotatable>false</rotatable>
+		<placeWorkers>
+			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
+		</placeWorkers>
+		<costList>
+			<Steel>150</Steel>
+			<ComponentSpacer>6</ComponentSpacer>
+			<Gold>20</Gold>
+		</costList>
+		<designationHotKey>Misc3</designationHotKey>
+		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
+	</ThingDef>
 	<ThingDef ParentName="BuildingShipBase">
 		<defName>Ship_ComputerCore</defName>
 		<label>ship computer core</label>
+		<designatorDropdown>Ship_Cores</designatorDropdown>
 		<thingClass>SaveOurShip2.Building_ShipBridge</thingClass>
 		<graphicData>
 			<texPath>Things/Building/Ship/ShipComputerCore</texPath>
@@ -1546,53 +1598,6 @@
 		<designationHotKey>Misc3</designationHotKey>
 		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 		<resourcesFractionWhenDeconstructed>1</resourcesFractionWhenDeconstructed>
-	</ThingDef>
-	<ThingDef ParentName="BuildingShipBase">
-		<defName>Ship_DroneCore</defName>
-		<label>drone core</label>
-		<thingClass>SaveOurShip2.Building_ShipBridge</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/ShipDroneCore</texPath>
-			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
-			<drawSize>(3,3)</drawSize>
-		</graphicData>
-		<researchPrerequisites>
-			<li>ShipPilotSeat</li>
-		</researchPrerequisites>
-		<statBases>
-			<WorkToBuild>6000</WorkToBuild>
-			<MaxHitPoints>150</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<tickerType>Normal</tickerType>
-		<description>A simple computer core housing a subpersona AI. Incapable of creative problem-solving or interstellar guidance, it is nonetheless effective at piloting a ship in combat.</description>
-		<size>(3,3)</size>
-		<designationCategory>Ship</designationCategory>
-		<comps>
-			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
-			<li Class="CompProperties_ShipPart"/>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>500</basePowerConsumption>
-				<transmitsPower>true</transmitsPower>
-			</li>
-			<li Class="SaveOurShip2.CompProps_ShipHeat">
-				<compClass>SaveOurShip2.CompShipHeat</compClass>
-			</li>
-			<li Class="CompProperties_Flickable"/>
-			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
-		</comps>
-		<rotatable>false</rotatable>
-		<placeWorkers>
-			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
-		</placeWorkers>
-		<costList>
-			<Steel>150</Steel>
-			<ComponentSpacer>6</ComponentSpacer>
-			<Gold>20</Gold>
-		</costList>
-		<designationHotKey>Misc3</designationHotKey>
-		<constructionSkillPrerequisite>8</constructionSkillPrerequisite>
 	</ThingDef>
 	<!-- sensors -->
 	<DesignatorDropdownGroupDef>

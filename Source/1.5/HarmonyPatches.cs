@@ -4640,7 +4640,7 @@ namespace SaveOurShip2
 		public static bool Prefix(CompUseEffect_CallBossgroup __instance)
 		{
 			Map map = __instance.parent.Map;
-			if (map != null && map.IsSpace() && map != ShipInteriorMod2.FindPlayerShipMap())
+			if (ModsConfig.BiotechActive && map != null && map.IsSpace() && map != ShipInteriorMod2.FindPlayerShipMap())
 				return false;
 			return true;
 		}

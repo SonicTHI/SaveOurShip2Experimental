@@ -4539,6 +4539,8 @@ namespace SaveOurShip2
 	public static class PostSpawnNewComponents
 	{
 		public static List<ThingComp> CompsToSpawn=new List<ThingComp>();
+		public static float ShieldGenHealth = 0;
+		public static float StoredHeat = 0;
 
 		public static bool Prefix(VehiclePawn __instance)
 		{
@@ -4552,7 +4554,13 @@ namespace SaveOurShip2
 				comp.PostSpawnSetup(true);
 			CompVehicleHeatNet net = __instance.GetComp<CompVehicleHeatNet>();
 			if (net != null)
+			{
 				net.RebuildHeatNet();
+				net.myNet.AddHeat(StoredHeat);
+			}
+			VehicleComponent shieldGen = __instance.statHandler.components.FirstOrDefault(comp => comp.props.key == "shieldGenerator");
+			if (shieldGen != null && ShieldGenHealth != 1)
+				shieldGen.health = ShieldGenHealth;
 		}
 	}
 
@@ -4630,8 +4638,8 @@ namespace SaveOurShip2
         {
 			if(__instance.vehicle.Spawned)
             {
-				CompShipBay shuttleBay = __instance.vehicle.Position.GetFirstThingWithComp<CompShipBay>(__instance.vehicle.Map).GetComp<CompShipBay>();
-				if (shuttleBay.Props.repairBonus > 1)
+				CompShipBay shuttleBay = __instance.vehicle.Position.GetFirstThingWithComp<CompShipBay>(__instance.vehicle.Map)?.GetComp<CompShipBay>();
+				if (shuttleBay != null && shuttleBay.Props.repairBonus > 1)
 					amount *= shuttleBay.Props.repairBonus;
 			}
 			return true;

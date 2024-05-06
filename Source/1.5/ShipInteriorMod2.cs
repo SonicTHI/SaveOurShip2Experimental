@@ -951,12 +951,15 @@ namespace SaveOurShip2
 					}
 					else if (DefDatabase<VehicleDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{
-						VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
-						VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);
-						vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
-						SpawnShuttleUpgrades(vehicle, shipDef, wreckLevel, passingShip);
-						GenSpawn.Spawn(vehicle, adjPos, map);
-						vehicle.ignition.Drafted = false;
+						if (wreckLevel==0)
+						{
+							VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
+							VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);
+							vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
+							SpawnShuttleUpgrades(vehicle, shipDef, wreckLevel, passingShip);
+							GenSpawn.Spawn(vehicle, adjPos, map);
+							vehicle.ignition.Drafted = false;
+						}
 					}
 					else if (DefDatabase<ThingDef>.GetNamedSilentFail(shape.shapeOrDef) != null)
 					{

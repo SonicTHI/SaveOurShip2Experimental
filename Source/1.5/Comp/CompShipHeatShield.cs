@@ -35,9 +35,12 @@ namespace SaveOurShip2
 			base.PostSpawnSetup(respawningAfterLoad);
 			if (radiusSet == -1)
 				radiusSet = radius = Props.shieldDefault;
-			ShipMapComp mapComp = parent.Map.GetComponent<ShipMapComp>();
-			if (mapComp != null)
-				mapComp.Shields.Add(this);
+			if (parent.Spawned)
+			{
+				ShipMapComp mapComp = parent.Map.GetComponent<ShipMapComp>();
+				if (mapComp != null)
+					mapComp.Shields.Add(this);
+			}
 			parentVehicle = parent as VehiclePawn;
 			if (parentVehicle != null)
 				return;
@@ -140,7 +143,8 @@ namespace SaveOurShip2
 				else
 				{
 					parentVehicle.statHandler.SetComponentHealth("shieldGenerator", 0);
-					parentVehicle.Map.GetComponent<ListerVehiclesRepairable>().Notify_VehicleTookDamage(parentVehicle);
+					if(parentVehicle.Spawned)
+						parentVehicle.Map.GetComponent<ListerVehiclesRepairable>().Notify_VehicleTookDamage(parentVehicle);
 				}
 				if(parent.Spawned)
 					GenExplosion.DoExplosion(parent.Position, parent.Map, 1.9f, DamageDefOf.Flame, parent);

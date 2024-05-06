@@ -28,7 +28,7 @@ namespace SaveOurShip2
 		public override void PostExposeData()
 		{
 			base.PostExposeData();
-			Scribe_Deep.Look(ref reservedArea, "reservedArea", this);
+			Scribe_Collections.Look<IntVec3>(ref reservedArea, "reservedArea", LookMode.Reference);
 			if (reservedArea == null)
 				reservedArea = new HashSet<IntVec3>();
 		}

@@ -26,11 +26,6 @@ namespace SaveOurShip2
         {
             CompVehicleHeatNet net = landing.vehicle.TryGetComp<CompVehicleHeatNet>();
             net?.RebuildHeatNet();
-			var bay = landing.vehicle.Position.GetThingList(landing.vehicle.Map).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault();
-			if (bay != null)
-			{
-				bay.TryGetComp<CompShipBay>().UnReserveArea(landing.Position, landing.vehicle);
-			}
 		}
     }
 }

@@ -801,7 +801,11 @@ namespace SaveOurShip2
 				}
 				else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)
 					ThreatRaw += 10;
-				Mass += b.def.Size.x * b.def.Size.z * 3;
+				// Exclude sleeping spots etc
+				if (!b.IsClearableFreeBuilding)
+				{
+					Mass += b.def.Size.x * b.def.Size.z * 3;
+				}
 			}
 		}
 		public void RemoveFromCache(Building b, DestroyMode mode)
@@ -904,7 +908,10 @@ namespace SaveOurShip2
 				}
 				else if (b.def == ResourceBank.ThingDefOf.ShipSpinalAmplifier)
 					ThreatRaw -= 10;
-				Mass -= b.def.Size.x * b.def.Size.z * 3;
+				if (!b.IsClearableFreeBuilding)
+				{
+					Mass -= b.def.Size.x * b.def.Size.z * 3;
+				}
 			}
 		}
 		public bool ReplaceCore() //before despawn try find replacer for core

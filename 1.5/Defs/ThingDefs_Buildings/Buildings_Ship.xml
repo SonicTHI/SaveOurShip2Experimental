@@ -722,7 +722,6 @@
 		<defName>ShipHullTile</defName>
 		<label>hull plating</label>
 		<designatorDropdown>Ship_Hulls</designatorDropdown>
-		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
 		<graphicData>
@@ -2139,7 +2138,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. When powered, this bay will double the rate at which pawns perform repairs. Automated loader arms will refuel docked shuttles' reactors from bay storage.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
+		<description>Provides docking facilities for shuttles. When powered, this bay will double the rate at which pawns perform repairs and automatically refuel docked shuttles using uranium fuel pods from an internal storage tank.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2155,12 +2154,13 @@
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<maxShuttleSize>5</maxShuttleSize>
+				<graphicPath>Things/Building/Ship/Shuttle_Bay_Roof</graphicPath>
 				<repairBonus>1</repairBonus>
 			</li>
 			  <li Class="CompProperties_Refuelable">
-				<fuelCapacity>1000.0</fuelCapacity>
+				<fuelCapacity>500.0</fuelCapacity>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>500</initialConfigurableTargetFuelLevel>
+				<initialConfigurableTargetFuelLevel>0</initialConfigurableTargetFuelLevel>
 				<fuelFilter>
 				  <thingDefs>
 					<li>ShuttleFuelPods</li>
@@ -2173,7 +2173,7 @@
 			  </li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>500</basePowerConsumption>
+				<basePowerConsumption>400</basePowerConsumption>
 			</li>
 			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
 		</comps>
@@ -2188,7 +2188,7 @@
 		<defName>ShipShuttleBayLarge</defName>
 		<label>large shuttle bay</label>
 		<designatorDropdown>Ship_ShuttleBays</designatorDropdown>
-		<thingClass>Building</thingClass>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/Shuttle_Bay</texPath>
 			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
@@ -2211,7 +2211,7 @@
 			<MaxHitPoints>700</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. This version is large enough to support the superheavy shuttle.\n\nWhen powered, this bay will double the rate at which pawns perform repairs. Automated loader arms will refuel docked shuttles' reactors from bay storage.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
+		<description>Provides docking facilities for shuttles. This version is large enough to support the superheavy shuttle.\n\nWhen powered, this bay will double the rate at which pawns perform repairs and automatically refuel docked shuttles using uranium fuel pods from an internal storage tank.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
 		<size>(7,7)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2228,12 +2228,13 @@
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<maxShuttleSize>7</maxShuttleSize>
+				<graphicPath>Things/Building/Ship/Shuttle_Bay_Roof</graphicPath>
 				<repairBonus>1</repairBonus>
 			</li>
 			  <li Class="CompProperties_Refuelable">
-				<fuelCapacity>2000.0</fuelCapacity>
+				<fuelCapacity>1000.0</fuelCapacity>
 				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>1000</initialConfigurableTargetFuelLevel>
+				<initialConfigurableTargetFuelLevel>0</initialConfigurableTargetFuelLevel>
 				<fuelFilter>
 				  <thingDefs>
 					<li>ShuttleFuelPods</li>
@@ -2246,7 +2247,7 @@
 			  </li>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>800</basePowerConsumption>
+				<basePowerConsumption>600</basePowerConsumption>
 			</li>
 			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
 		</comps>
@@ -2410,6 +2411,7 @@
 		<defName>ShipSalvageBay</defName>
 		<label>salvage bay</label>
 		<designatorDropdown>Ship_SalvageBays</designatorDropdown>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/SalvageBay</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -2449,6 +2451,8 @@
 			<li Class="SaveOurShip2.CompProps_ShipBay">
 				<compClass>SaveOurShip2.CompShipBaySalvage</compClass>
 				<weight>5000</weight>
+				<borderSize>1</borderSize>
+				<graphicPath>Things/Building/Ship/Salvage_Bay_Roof</graphicPath>
 			</li>
 		</comps>
 		<placeWorkers>
@@ -2462,6 +2466,7 @@
 		<defName>ShipSalvageBayNano</defName>
 		<label>glittertech salvage bay</label>
 		<designatorDropdown>Ship_SalvageBays</designatorDropdown>
+		<drawerType>MapMeshAndRealTime</drawerType>
 		<graphicData>
 			<texPath>Things/Building/Ship/SalvageBayNano</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
@@ -3056,7 +3061,6 @@
 	<ThingDef ParentName="BuildingBase">
 		<defName>ShipHullfoamTile</defName>
 		<label>hullfoam plating</label>
-		<thingClass>Building</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
 		<graphicData>
@@ -3363,8 +3367,8 @@
 	</ThingCategoryDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPBomberHeavy</defName>
-		<label>ship blueprint (heavy bomber)</label>
-		<description>Class: Heavy bomber\nA heavily armed ship but incapable of extended operations in space.\n\nMass: 1092\nSize: 28 x 26\nT/W ratio: 3.161\nCombat rating: 110\n\nWeapons: \n1x large railgun turret\n2x laser turret\n2x torpedo launcher\n\nRequired resources: \nsteel: 5057\nplasteel: 1777\nadvanced component: 77\ncomponent: 162\nuranium: 120\nsilver: 225\n\nRequired research: \nstarflight basics, ship navigation, cruiser armaments, air conditioning, heatsinks, ship fission reactor, rocket propulsion, laser turrets, firefoam, ship shields, capacitor arrays, ship torpedoes, ship life support</description>
+		<label>ship blueprint (Heavy bomber)</label>
+		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Heavy bomber\nA heavily armed ship but incapable of extended operations in space.\n\nMass: 1092\nSize: 28 x 26\nT/W ratio: 3.151\nCombat rating: 130\n\nWeapons: \n1x large railgun turret\n2x laser turret\n2x torpedo launcher\n2x plasma turret\n\nRequired resources: \nsteel: 5447\nplasteel: 1937\nadvanced component: 91\ncomponent: 168\nuranium: 160\nsilver: 225\ngold: 4\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion\nThird stage:\nship navigation, cruiser armaments, heatsinks, ship fission reactor, laser turrets, basic ship sensors, firefoam, ship shields, capacitor arrays, ship torpedoes, plasma turrets, ship life support</description>
 		<statBases>
 			<MarketValue>1000</MarketValue>
 		</statBases>
@@ -3376,8 +3380,8 @@
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCargoFirefly</defName>
-		<label>ship blueprint (firefly transport)</label>
-		<description>Class: Firefly class transport\nAn unarmed transport ship with a large cargo hold.\n\nMass: 4705\nSize: 79 x 50\nT/W ratio: 1.648\nCombat rating: 63\n\nWeapons: \nnone\nRequired resources: \nsteel: 24379\nplasteel: 5890\nadvanced component: 202\ncomponent: 740\ngold: 16\nuranium: 170\nentanglement manifold: 1\nsilver: 100\n\nRequired research: \nstarflight basics, ship navigation, advanced ship sensors, microelectronics, rocket propulsion, escape pods, air conditioning, electricity, solar panel, ship life support, salvage bay, vitals monitor, shuttle bay, complex furniture, heatsinks, machining, ship fission reactor, firefoam, hospital bed, capacitor arrays, Johnson-Tanaka Drive</description>
+		<label>ship blueprint (Firefly class transport)</label>
+		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Firefly class transport\nAn unarmed transport ship with a large cargo hold.\n\nMass: 4720\nSize: 79 x 50\nT/W ratio: 1.644\nCombat rating: 63\n\nWeapons: \nnone\nRequired resources: \nsteel: 25099\nplasteel: 5890\nadvanced component: 202\ncomponent: 740\ngold: 16\nuranium: 170\nentanglement manifold: 1\nsilver: 100\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, solar panel, air conditioning\nSecond stage:\nrocket propulsion, ship fission reactor, Johnson-Tanaka Drive\nThird stage:\nship navigation, advanced ship sensors, microelectronics, escape pods, ship life support, salvage bay, vitals monitor, shuttle bay, complex furniture, heatsinks, machining, firefoam, hospital bed, capacitor arrays</description>
 		<statBases>
 			<MarketValue>2000</MarketValue>
 		</statBases>
@@ -3389,8 +3393,8 @@
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvette</defName>
-		<label>ship blueprint (corvette)</label>
-		<description>Class: Corvette\nA small corvette.\n\nMass: 1860\nSize: 36 x 20\nT/W ratio: 2.383\nCombat rating: 132\n\nWeapons: \n2x torpedo launcher\n4x laser turret\n2x railgun turret\n\nRequired resources: \nsteel: 9172\nplasteel: 2992\nadvanced component: 132\ncomponent: 314\nsilver: 900\ngold: 4\nuranium: 120\n\nRequired research: \nstarflight basics, ship navigation, heatsinks, air conditioning, ship shields, microelectronics, salvage bay, basic ship sensors, ship fission reactor, ship torpedoes, ship life support, machining, firefoam, rocket propulsion, tube television, laser turrets, capacitor arrays, railgun turrets</description>
+		<label>ship blueprint (Corvette)</label>
+		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Corvette\nA very small corvette.\n\nMass: 1868\nSize: 36 x 20\nT/W ratio: 2.371\nCombat rating: 132\n\nWeapons: \n2x torpedo launcher\n4x laser turret\n2x railgun turret\n\nRequired resources: \nsteel: 9328\nplasteel: 2971\nadvanced component: 131\ncomponent: 315\nsilver: 900\ngold: 4\nuranium: 120\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion\nThird stage:\nship navigation, heatsinks, ship shields, microelectronics, basic ship sensors, ship fission reactor, ship torpedoes, ship life support, machining, firefoam, tube television, laser turrets, capacitor arrays, railgun turrets, salvage bay</description>
 		<statBases>
 			<MarketValue>2000</MarketValue>
 		</statBases>
@@ -3402,8 +3406,8 @@
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvetteGunship</defName>
-		<label>ship blueprint (corvette gunship)</label>
-		<description>Class: Corvette\nA slow but heavily armed corvette.\n\nMass: 3685\nSize: 69 x 26\nT/W ratio: 1.403\nCombat rating: 262\n\nWeapons: \n8x laser turret\n2x large railgun turret\n2x large plasma turret\n\nRequired resources: \nsteel: 19819\nadvanced component: 245\nplasteel: 6390\ncomponent: 651\nuranium: 530\ngold: 4\nsilver: 1700\n\nRequired research: \nship navigation, starflight basics, laser turrets, air conditioning, basic ship sensors, microelectronics, ship shields, heatsinks, cruiser armaments, firefoam, capacitor arrays, flatscreen television, electricity, hospital bed, escape pods, rocket propulsion, ship fission reactor, machining, salvage bay, ship life support, vitals monitor</description>
+		<label>ship blueprint (Corvette)</label>
+		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Corvette\nA slow but heavily armed corvette.\n\nMass: 3694\nSize: 69 x 26\nT/W ratio: 1.400\nCombat rating: 262\n\nWeapons: \n8x laser turret\n2x large railgun turret\n2x large plasma turret\n\nRequired resources: \nsteel: 20404\nadvanced component: 245\nplasteel: 6390\ncomponent: 651\nuranium: 530\ngold: 4\nsilver: 1700\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion\nThird stage:\nship navigation, laser turrets, basic ship sensors, microelectronics, ship shields, heatsinks, cruiser armaments, firefoam, capacitor arrays, flatscreen television, hospital bed, escape pods, ship fission reactor, machining, salvage bay, ship life support, vitals monitor</description>
 		<statBases>
 			<MarketValue>2000</MarketValue>
 		</statBases>
@@ -3415,8 +3419,8 @@
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvetteTorpedo</defName>
-		<label>ship blueprint (torpedo corvette)</label>
-		<description>Class: Corvette\nA heavily armed torpedo corvette.\n\nMass: 3731\nSize: 60 x 36\nT/W ratio: 1.853\nCombat rating: 313\n\nWeapons: \n6x laser turret\n2x large plasma turret\n2x torpedo launcher (2)\n\nRequired resources: \nsteel: 21001\nplasteel: 6070\nadvanced component: 275\ncomponent: 651\nuranium: 325\nsilver: 900\ngold: 20\n\nRequired research: \nstarflight basics, ship navigation, laser turrets, cruiser armaments, air conditioning, microelectronics, capacitor arrays, electricity, escape pods, tube television, rocket propulsion, heatsinks, hospital bed, ship shields, ship life support, vitals monitor, basic ship sensors, ship fission reactor, ship torpedoes, firefoam, purge ports, advanced ship sensors, salvage bay, machining</description>
+		<label>ship blueprint (Corvette)</label>
+		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Corvette\nA heavily armed torpedo corvette.\n\nMass: 3733\nSize: 60 x 36\nT/W ratio: 1.853\nCombat rating: 313\n\nWeapons: \n6x laser turret\n2x large plasma turret\n2x torpedo launcher (2)\n\nRequired resources: \nsteel: 21371\nplasteel: 6070\nadvanced component: 274\ncomponent: 651\nuranium: 325\nsilver: 900\ngold: 20\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion\nThird stage:\nship navigation, laser turrets, cruiser armaments, microelectronics, capacitor arrays, escape pods, tube television, heatsinks, hospital bed, ship shields, ship life support, vitals monitor, basic ship sensors, ship fission reactor, ship torpedoes, firefoam, purge ports, advanced ship sensors, salvage bay, machining</description>
 		<statBases>
 			<MarketValue>2000</MarketValue>
 		</statBases>
@@ -3428,20 +3432,21 @@
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvetteWinged</defName>
+		<label>ship blueprint (Corvette)</label>
 		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Corvette\nA winged corvette.\n\nMass: 3101\nSize: 44 x 48\nT/W ratio: 1.758\nCombat rating: 179\n\nWeapons: \n1x large railgun turret\n6x laser turret\n2x torpedo launcher\n\nRequired resources: \nsteel: 15648\nadvanced component: 172\nplasteel: 4794\ncomponent: 548\nuranium: 220\ngold: 4\nsilver: 900\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion\nThird stage:\nship navigation, capacitor arrays, cruiser armaments, microelectronics, ship life support, vitals monitor, hospital bed, basic ship sensors, laser turrets, ship fission reactor, salvage bay, heatsinks, escape pods, tube television, ship shields, ship torpedoes, firefoam</description>
 		<statBases>
 			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
-				<shipDef>BPCorvetteWinged</shipDef>
+				<shipDef>StartShipB</shipDef>
 			</li>
 		</comps>
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPFrigateArcher</defName>
-		<label>ship blueprint (archer frigate)</label>
-		<description>Class: Archer class frigate\nAn agile frigate that prefers to engage targets from long range with its large railgun.\n\nMass: 7422\nSize: 76 x 44\nT/W ratio: 1.909\nCombat rating: 575\n\nWeapons: \n10x laser turret\n2x large plasma turret\n1x spinal barrel: railgun\n2x torpedo launcher\n\nRequired resources: \nsteel: 39694\nadvanced component: 548\nplasteel: 12097\ncomponent: 1091\nuranium: 750\nsilver: 1100\ngold: 52\ncloth: 130\nwood: 55\n\nRequired research: \nship navigation, starflight basics, laser turrets, capital ship armaments, microelectronics, escape pods, air conditioning, hullfoam, ship shields, advanced ship sensors, heatsinks, hospital bed, ship life support, capacitor arrays, cruiser armaments, rocket propulsion, machining, fabrication, ship fission reactor, purge ports, firefoam, shuttle bay, salvage bay, multi-analyzer, hydroponics, ship torpedoes, electricity, complex furniture, drug production, complex clothing, vitals monitor, flatscreen television</description>
+		<label>ship blueprint (Archer class frigate)</label>
+		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Archer class frigate\nAn agile frigate that prefers to engage targets from long range with its spinal railgun.\n\nMass: 7425\nSize: 76 x 44\nT/W ratio: 1.909\nCombat rating: 640\n\nWeapons: \n10x laser turret\n2x large plasma turret\n1x spinal barrel: railgun\n2x torpedo launcher\n\nRequired resources: \nsteel: 40579\nadvanced component: 548\nplasteel: 12097\ncomponent: 1091\nuranium: 750\nsilver: 1100\ngold: 52\ncloth: 130\nwood: 55\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion, ship fission reactor\nThird stage:\nship navigation, laser turrets, capital ship armaments, microelectronics, escape pods, hullfoam, ship shields, advanced ship sensors, heatsinks, hospital bed, ship life support, capacitor arrays, cruiser armaments, machining, fabrication, purge ports, firefoam, shuttle bay, salvage bay, multi-analyzer, hydroponics, ship torpedoes, complex furniture, drug production, complex clothing, vitals monitor, flatscreen television</description>
 		<statBases>
 			<MarketValue>3000</MarketValue>
 		</statBases>
@@ -3453,24 +3458,27 @@
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPFrigateWinged</defName>
+		<label>ship blueprint (Frigate)</label>
 		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Frigate\nA large and powerful frigate.\n\nMass: 8249\nSize: 77 x 60\nT/W ratio: 1.781\nCombat rating: 674\n\nWeapons: \n2x plasma turret\n2x torpedo launcher (2)\n2x large railgun turret\n10x laser turret\n1x spinal barrel: railgun\n1x large laser turret\n\nRequired resources: \nsteel: 45369\nadvanced component: 566\nplasteel: 13290\ncomponent: 1323\nuranium: 800\ncloth: 50\nwood: 25\ngold: 52\nsilver: 1100\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion, ship fission reactor\nThird stage:\nship navigation, salvage bay, capacitor arrays, microelectronics, shuttle bay, plasma turrets, escape pods, ship life support, ship torpedoes, hospital bed, hydroponics, vitals monitor, hullfoam, machining, complex furniture, advanced ship sensors, ship shields, firefoam, cruiser armaments, laser turrets, heatsinks, capital ship armaments, multi-analyzer, fabrication, purge ports, flatscreen television</description>
 		<statBases>
 			<MarketValue>3000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
+				<shipDef>StartShipF</shipDef>
 			</li>
 		</comps>
 	</ThingDef>
 	<ThingDef ParentName="ShipBlueprintBase">
 		<defName>ShipBPCorvetteMartian</defName>
+		<label>ship blueprint (Old Martian corvette)</label>
 		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Old Martian corvette\nAn ancient design that stood the test of time.\n\nMass: 2516\nSize: 59 x 22\nT/W ratio: 1.733\nCombat rating: 137\n\nWeapons: \n6x cannon turret\n1x torpedo launcher (2)\n\nRequired resources: \nsteel: 12796\nplasteel: 3622\nadvanced component: 146\ngold: 20\ncomponent: 397\nuranium: 300\nsilver: 100\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion, ship fission reactor\nThird stage:\nship navigation, basic ship sensors, ship cannons, capacitor arrays, microelectronics, hydroponics, heatsinks, machining, salvage bay, advanced ship sensors, flatscreen television, ship torpedoes, hospital bed, vitals monitor, ship life support</description>
 		<statBases>
 			<MarketValue>2000</MarketValue>
 		</statBases>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
-				<shipDef>BPCorvetteMartian</shipDef>
+				<shipDef>StartShipTachinante</shipDef>
 			</li>
 		</comps>
 	</ThingDef>
@@ -3563,6 +3571,21 @@
 			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
 				<shipDef>BPDestroyer</shipDef>
 			</li>
+		</comps>
+	</ThingDef>
+	<ThingDef ParentName="ShipBlueprintBase">
+		<defName>ShipBPCruiserThor</defName>
+		<label>ship blueprint (Thor class cruiser)</label>
+		<description>A three stage reusable blueprint that can be used to build a complete space ship as long as one is capable of constructing the individual parts. Can be customized at any point but the next stage will only place prints when the required parts under them are already built.\n\nClass: Thor class cruiser\nA heavily armed cruiser.\n\nMass: 14617\nSize: 134 x 48\nT/W ratio: 1.455\nCombat rating: 1816\n\nWeapons: \n8x large railgun turret\n18x laser turret\n16x plasma turret\n2x spinal barrel: railgun\n8x torpedo launcher (2)\n\nRequired resources: \nsteel: 78409\nplasteel: 25883\nadvanced component: 1158\ngold: 86\npersona core: 1\nuranium: 2070\ncomponent: 1986\nsilver: 2800\ncloth: 50\nwood: 25\n\nRequired research for full construction:\nFirst stage:\nstarflight basics, electricity, air conditioning\nSecond stage:\nrocket propulsion, ship fission reactor\nThird stage:\nship computer core, cruiser armaments, escape pods, laser turrets, flatscreen television, shuttle bay, hospital bed, vitals monitor, capacitor arrays, fabrication, heatsinks, plasma turrets, ship shields, salvage bay, firefoam, machining, capital ship armaments, ship torpedoes, purge ports, hydroponics, drug production, ship navigation, microelectronics, advanced ship sensors, complex furniture, hullfoam, ship life support</description>
+		<statBases>
+			<MarketValue>6000</MarketValue>
+		</statBases>
+		<comps>
+			<li Class="SaveOurShip2.CompProps_ShipBlueprint">
+				<shipDef>BPCruiserThor</shipDef>
+			</li>
+		</comps>
+	</ThingDef>
 	<!-- ship move -->
 	<ThingDef ParentName="EtherealThingBase">
 		<defName>ShipMoveBlueprint</defName>

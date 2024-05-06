@@ -164,12 +164,12 @@ namespace SaveOurShip2
 		{
 			base.CompTickRare();
 		}
-		public override string CompInspectStringExtra()
+		/*public override string CompInspectStringExtra()
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.Append("SoS.SalvageBase".Translate());
 			return stringBuilder.ToString();
 			//return base.CompInspectStringExtra();
-		}
+		}*/
 	}
 }

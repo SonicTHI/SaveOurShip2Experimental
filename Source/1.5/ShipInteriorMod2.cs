@@ -126,7 +126,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f23";
+		public const string SOS2EXPversion = "V101f25";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -956,7 +956,7 @@ namespace SaveOurShip2
 							VehicleDef def = DefDatabase<VehicleDef>.GetNamed(shape.shapeOrDef);
 							VehiclePawn vehicle = VehicleSpawner.GenerateVehicle(def, fac);
 							vehicle.CompFueledTravel?.Refuel(vehicle.CompFueledTravel.FuelCapacity);
-							SpawnShuttleUpgrades(vehicle);
+							SpawnShuttleUpgrades(vehicle, shipDef, wreckLevel, passingShip);
 							GenSpawn.Spawn(vehicle, adjPos, map);
 							vehicle.ignition.Drafted = false;
 						}
@@ -2949,30 +2949,41 @@ namespace SaveOurShip2
 		{
 			return ShuttleHasLaser(vehicle) || ShuttleHasPlasma(vehicle) || ShuttleHasTorp(vehicle);
 		}
-		public static void SpawnShuttleUpgrades(VehiclePawn vehicle)
+		public static void SpawnShuttleUpgrades(VehiclePawn vehicle, ShipDef shipDef, int wreckLevel = 0, PassingShip passingShip = null)
 		{
-			if (vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def == ResourceBank.UpgradeTreeDefOf.SoS2ShuttleUpgradeTree)
+			if (Current.ProgramState != ProgramState.MapInitializing && vehicle.CompUpgradeTree != null && vehicle.CompUpgradeTree.Props.def == ResourceBank.UpgradeTreeDefOf.SoS2ShuttleUpgradeTree)
 			{
-				int version = Rand.Range(0, 8);
-				if (Current.ProgramState == ProgramState.MapInitializing)
-					version = 0;
-				switch (version)
+				int size = 1; //1 small, 2 medium, 3 large
+				vehicle.GetComp<CompShuttleLauncher>().retreatAtHealth = 0.25f;
+				if (vehicle.GetStatValue(VehicleStatDefOf.CargoCapacity) > 2000) //huge
 				{
-					case 0: //Boarding shuttle
-						Log.Message("Speccing shuttle as troop transport");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("PassengersSix"));
-						break;
-					case 1: //Interceptor
-					case 2:
-						Log.Message("Speccing shuttle as interceptor");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserA"));
-						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
-							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserB"));
-						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
-							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserC"));
-						break;
-					case 3: //Bomber
-					case 4:
+					vehicle.GetComp<CompShuttleLauncher>().retreatAtHealth = 0.15f;
+					size = 3;
+				}
+				else if (vehicle.GetStatValue(VehicleStatDefOf.CargoCapacity) > 1000) //large
+				{
+					vehicle.GetComp<CompShuttleLauncher>().retreatAtHealth = 0.2f;
+					size = 2;
+				}
+
+				int chance = 2;
+				if (wreckLevel > 2) //wrecked, damage hp, comps?
+				{
+					chance = 0;
+				}
+				else if (shipDef.carrier) //more upgrades
+					chance = 4;
+
+				if (Rand.RangeInclusive(chance, 15) > 4) //weapons
+				{
+					bool bomber = false;
+					if (!(passingShip is TradeShip) && size > 1)
+					{
+						bomber = true;
+					}
+					int weapon = Rand.RangeInclusive(1, 7);
+					if (bomber && weapon > 4)
+					{
 						Log.Message("Speccing shuttle as bomber");
 						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretTorpedoA"));
 						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
@@ -2984,88 +2995,66 @@ namespace SaveOurShip2
 						int torps = Rand.Range(3, 6);
 						for (int i = 0; i < torps; i++)
 							vehicle.GetDirectlyHeldThings().AddItem(ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipTorpedo_HighExplosive));
-						break;
-					default: //Heavy fighter
+					}
+					else if (weapon > 2) //interceptor
+					{
+						Log.Message("Speccing shuttle as interceptor");
+						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserA"));
+						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
+							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserB"));
+						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
+							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretLaserC"));
+					}
+					else //fighter
+					{
 						Log.Message("Speccing shuttle as heavy fighter");
 						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaA"));
 						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 2)
 							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaB"));
 						if (vehicle.statHandler.GetStatValue(ResourceBank.VehicleStatDefOf.Hardpoints) >= 3)
 							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("TurretPlasmaC"));
-						break;
+					}
 				}
-				switch (Rand.Range(0, 10))
+				else //transport
 				{
-					case 0:
-						Log.Message("Adding minimal armor");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorMinimal"));
-						break;
-					case 1:
-					case 2:
-						Log.Message("Adding heavy armor");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorHeavy"));
-						break;
-					case 3:
-						Log.Message("Adding nano armor");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorNano"));
-						break;
-					default:
-						break;
+					Log.Message("Speccing shuttle as troop transport");
+					vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("PassengersSix"));
 				}
-				switch (Rand.Range(0, 10))
+				bool shields = false;
+				if (Rand.RangeInclusive(chance, 10) > 5) //shields
 				{
-					case 0:
-					case 1:
-						Log.Message("Adding overdriven engine");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("EngineOverdriven"));
-						break;
-					case 2:
-					case 3:
-						Log.Message("Adding auxiliary thrusters");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("EngineThrusters"));
-						break;
-					default:
-						break;
-				}
-				bool shields = true;
-				switch (Rand.Range(0, 10))
-				{
-					case 0:
-					case 1:
-					case 2:
-					case 3:
-						Log.Message("Adding light shield generator");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ShieldsBasic"));
-						break;
-					case 4:
-					case 5:
-					case 6:
-					case 7:
-						Log.Message("Adding heavy shield generator");
+					shields = true;
+					if (size > 2 || (size > 1 && Rand.Bool))
 						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ShieldsHeavy"));
-						break;
-					default:
-						shields = false;
-						break;
+					else
+						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ShieldsBasic"));
 				}
-				switch (Rand.Range(0, 10))
+				if (Rand.RangeInclusive(chance, 10) > 6) //armor
 				{
-					case 0:
-						Log.Message("Adding cloaking device");
-						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("CargoCloaking"));
-						break;
-					case 1:
-					case 2:
-						if (shields)
-						{
-							Log.Message("Adding auxiliary heatsink");
-							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("CargoHeatsink"));
-						}
-						break;
-					default:
-						break;
+					if (size > 1 && Rand.Bool)
+					{
+						if (Rand.Bool)
+							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorHeavy"));
+						else
+							vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorNano"));
+					}
+					else
+						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("ArmorMinimal"));
 				}
-				vehicle.GetComp<CompShuttleLauncher>().retreatAtHealth = 0.15f;
+				if (Rand.RangeInclusive(chance, 10) > 7) //engines
+				{
+					if (Rand.Bool)
+						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("EngineOverdriven"));
+					else
+						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("EngineThrusters"));
+				}
+				if (Rand.RangeInclusive(chance, 10) > 7) //util
+				{
+					if (size > 1 && Rand.Bool)
+						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("CargoCloaking"));
+					else if (shields)
+						vehicle.CompUpgradeTree.FinishUnlock(vehicle.CompUpgradeTree.Props.def.GetNode("CargoHeatsink"));
+				}
 			}
 		}
 	}

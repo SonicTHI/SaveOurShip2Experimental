@@ -156,7 +156,7 @@ namespace SaveOurShip2
 						else
 						{
 							shuttleHit.TakeDamage(new DamageInfo(verbProps.defaultProjectile.projectile.damageDef, verbProps.defaultProjectile.projectile.GetDamageAmount(caster)), IntVec2.Zero);
-							Log.Message("Shuttle hit! It currently has " + shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) + " health.");
+							//Log.Message("Shuttle hit! It currently has " + shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) + " health.");
 							if(shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity)<=0)
 							{
 								if (shuttleHit.Faction==Faction.OfPlayer)

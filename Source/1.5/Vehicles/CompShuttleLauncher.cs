@@ -14,6 +14,12 @@ namespace SaveOurShip2.Vehicles
     {
         public float retreatAtHealth;
 
+        //Some reasoning is probably necessary for the following horrible kludges. Shuttle upgrades are added at runtime through CompUpgradeTree, and won't be saved by PostExpose.
+        //Sooooo... we're doing it here. Values are applied in PostSpawnNewComponents, in HarmonyPatches.cs.
+        public float serializedShieldGenHealth;
+        public float serializedHeat;
+
+
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
 		{
 			var mapComp = parent.Map.GetComponent<ShipMapComp>();
@@ -153,7 +159,23 @@ namespace SaveOurShip2.Vehicles
         public override void PostExposeData()
         {
             base.PostExposeData();
+            if(Scribe.mode==LoadSaveMode.Saving)
+            {
+                CompVehicleHeatNet heatNet = Vehicle.GetComp<CompVehicleHeatNet>();
+                if (heatNet != null && heatNet.myNet != null)
+                    serializedHeat = heatNet.myNet.StorageUsed;
+                VehicleComponent shieldGen = Vehicle.statHandler.components.FirstOrDefault(comp => comp.props.key == "shieldGenerator");
+                if (shieldGen != null)
+                    serializedShieldGenHealth = shieldGen.health;
+            }
             Scribe_Values.Look<float>(ref retreatAtHealth, "retreatAtHealth");
+            Scribe_Values.Look<float>(ref serializedHeat, "heat");
+            Scribe_Values.Look<float>(ref serializedShieldGenHealth, "shieldGenHealth");
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                PostSpawnNewComponents.ShieldGenHealth = serializedShieldGenHealth;
+                PostSpawnNewComponents.StoredHeat = serializedHeat;
+            }
         }
     }
 }

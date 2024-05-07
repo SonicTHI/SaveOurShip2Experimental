@@ -17,6 +17,7 @@
 	</ThingDef>
 	<PawnKindDef ParentName="AnimalKindBase" Name="ArchoAnimalKindBase" Abstract="True">
 		<canArriveManhunter>false</canArriveManhunter>
+		<maxPerGroup>0</maxPerGroup>
 	</PawnKindDef>
 
 	<ThingDef ParentName="BigBirdThingBase" Name="ArchoBigBirdThingBase" Abstract="True">

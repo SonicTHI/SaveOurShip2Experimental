@@ -187,9 +187,13 @@ namespace SaveOurShip2
 						}
 						if (Props.autoRepair>0 && comp.Vehicle.statHandler.NeedsRepairs)
 						{
-							VehicleComponent component = GenCollection.FirstOrDefault<VehicleComponent>(comp.Vehicle.statHandler.ComponentsPrioritized,(VehicleComponent c) => c.HealthPercent < 1f);
-							component.HealComponent(Props.autoRepair);
-							comp.Vehicle.CrashLanded = false;
+							VehicleComponent component = GenCollection.FirstOrDefault<VehicleComponent>(comp.Vehicle.statHandler.ComponentsPrioritized,(VehicleComponent c) => c.HealthPercent < Props.repairUpTo);
+							if (component != null)
+							{
+								component.HealComponent(Props.autoRepair);
+								comp.Vehicle.CrashLanded = false;
+								FleckMaker.ThrowMicroSparks(GenAdj.CellsOccupiedBy(comp.Vehicle).RandomElement().ToVector3Shifted(), parent.Map);
+							}
 						}
 					}
 				}
@@ -198,6 +202,7 @@ namespace SaveOurShip2
 
 		void ReCacheDockedShuttles()
         {
+			dockedShuttles = new HashSet<CompFueledTravel>();
 			foreach(IntVec3 cell in GenAdj.CellsOccupiedBy(parent))
             {
 				VehiclePawn shuttle = cell.GetThingList(parent.Map).OfType<VehiclePawn>().FirstOrDefault();

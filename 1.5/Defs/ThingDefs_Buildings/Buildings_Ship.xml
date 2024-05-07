@@ -2138,7 +2138,7 @@
 			<MaxHitPoints>500</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. When powered, this bay will double the rate at which pawns perform repairs and automatically refuel docked shuttles using uranium fuel pods from an internal storage tank.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
+		<description>Provides docking facilities for shuttles. This advanced maintenance bay uses mechanites to automatically repair damaged components up to half health, and will double the rate at which pawns perform repairs. It will also automatically refuel docked shuttles from its internal storage.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
 		<size>(5,5)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2150,6 +2150,7 @@
 			<Plasteel>50</Plasteel>
 			<ComponentSpacer>6</ComponentSpacer>
 		</costList>
+		<tickerType>Normal</tickerType>
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
 			<li Class="SaveOurShip2.CompProps_ShipBay">
@@ -2211,7 +2212,7 @@
 			<MaxHitPoints>700</MaxHitPoints>
 			<Flammability>0</Flammability>
 		</statBases>
-		<description>Provides docking facilities for shuttles. This version is large enough to support the superheavy shuttle.\n\nWhen powered, this bay will double the rate at which pawns perform repairs and automatically refuel docked shuttles using uranium fuel pods from an internal storage tank.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
+		<description>Provides docking facilities for shuttles, including the superheavy version. This advanced maintenance bay uses mechanites to automatically repair damaged components up to half health, and will double the rate at which pawns perform repairs. It will also automatically refuel docked shuttles from its internal storage.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
 		<size>(7,7)</size>
 		<designationCategory>Ship</designationCategory>
 		<rotatable>false</rotatable>
@@ -2258,152 +2259,6 @@
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<staticSunShadowHeight>1.0</staticSunShadowHeight>
 	</ThingDef>
-	<!--<ThingDef ParentName="BuildingBase">
-		<defName>ShipShuttleBayAdvanced</defName>
-		<label>advanced shuttle bay</label>
-		<designatorDropdown>Ship_ShuttleBays</designatorDropdown>
-		<thingClass>Building</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/Shuttle_Bay</texPath>
-			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
-			<drawSize>(5,5)</drawSize>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-			</damageData>
-		</graphicData>
-		<researchPrerequisites>
-			<li>ShipShuttleBay</li>
-		</researchPrerequisites>
-		<altitudeLayer>DoorMoveable</altitudeLayer>
-		<passability>Standable</passability>
-		<fillPercent>0.1</fillPercent>
-		<statBases>
-			<WorkToBuild>5000</WorkToBuild>
-			<MaxHitPoints>500</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<description>Provides docking facilities for shuttles. This advanced maintenance bay uses mechanites to automatically repair shuttles, and will triple the speed of any repairs performed by pawns. Automated loader arms will refuel docked shuttles' reactors from bay storage.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
-		<size>(5,5)</size>
-		<designationCategory>Ship</designationCategory>
-		<rotatable>false</rotatable>
-		<building>
-			<isEdifice>false</isEdifice>
-		</building>
-		<costList>
-			<Steel>250</Steel>
-			<Plasteel>50</Plasteel>
-			<ComponentSpacer>6</ComponentSpacer>
-		</costList>
-		<tickerType>Normal</tickerType>
-		<comps>
-			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
-			<li Class="SaveOurShip2.CompProps_ShipBay">
-				<maxShuttleSize>5</maxShuttleSize>
-				<repairBonus>2</repairBonus>
-				<autoRepair>0.1</autoRepair>
-			</li>
-			  <li Class="CompProperties_Refuelable">
-				<fuelCapacity>1000.0</fuelCapacity>
-				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>500</initialConfigurableTargetFuelLevel>
-				<fuelFilter>
-				  <thingDefs>
-					<li>ShuttleFuelPods</li>
-				  </thingDefs>
-				</fuelFilter>
-				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
-				<autoRefuelPercent>1</autoRefuelPercent>
-				<showFuelGizmo>true</showFuelGizmo>
-				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
-			  </li>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>500</basePowerConsumption>
-			</li>
-			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
-		</comps>
-		<placeWorkers>
-			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
-			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
-		</placeWorkers>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-	</ThingDef>
-	<ThingDef ParentName="BuildingBase">
-		<defName>ShipShuttleBayLargeAdvanced</defName>
-		<label>advanced large shuttle bay</label>
-		<designatorDropdown>Ship_ShuttleBays</designatorDropdown>
-		<thingClass>Building</thingClass>
-		<graphicData>
-			<texPath>Things/Building/Ship/Shuttle_Bay</texPath>
-			<graphicClass>SaveOurShip2.Graphic_SingleOnOff</graphicClass>
-			<drawSize>(7,7)</drawSize>
-			<damageData>
-				<cornerTL>Damage/Corner</cornerTL>
-				<cornerTR>Damage/Corner</cornerTR>
-				<cornerBL>Damage/Corner</cornerBL>
-				<cornerBR>Damage/Corner</cornerBR>
-			</damageData>
-		</graphicData>
-		<researchPrerequisites>
-			<li>ShipShuttleBay</li>
-		</researchPrerequisites>
-		<altitudeLayer>DoorMoveable</altitudeLayer>
-		<passability>Standable</passability>
-		<fillPercent>0.1</fillPercent>
-		<statBases>
-			<WorkToBuild>7000</WorkToBuild>
-			<MaxHitPoints>700</MaxHitPoints>
-			<Flammability>0</Flammability>
-		</statBases>
-		<description>Provides docking facilities for shuttles. This version is large enough to support the superheavy shuttle.\n\nThis advanced maintenance bay uses mechanites to automatically repair shuttles, and will triple the speed of any repairs performed by pawns. Automated loader arms will refuel docked shuttles' reactors from bay storage.\n\nMust be kept clear of obstructions. Place beacons around it to allow Imperial shuttles to land on it.</description>
-		<size>(7,7)</size>
-		<designationCategory>Ship</designationCategory>
-		<rotatable>false</rotatable>
-		<building>
-			<isEdifice>false</isEdifice>
-		</building>
-		<costList>
-			<Plasteel>75</Plasteel>
-			<ComponentSpacer>8</ComponentSpacer>
-		</costList>
-		<tickerType>Normal</tickerType>
-		<comps>
-			<li Class="SaveOurShip2.CompProps_ShipCachePart"/>
-			<li Class="SaveOurShip2.CompProps_ShipBay">
-				<maxShuttleSize>7</maxShuttleSize>
-				<repairBonus>2</repairBonus>
-				<autoRepair>0.1</autoRepair>
-			</li>
-			  <li Class="CompProperties_Refuelable">
-				<fuelCapacity>2000.0</fuelCapacity>
-				<targetFuelLevelConfigurable>true</targetFuelLevelConfigurable>
-				<initialConfigurableTargetFuelLevel>1000</initialConfigurableTargetFuelLevel>
-				<fuelFilter>
-				  <thingDefs>
-					<li>ShuttleFuelPods</li>
-				  </thingDefs>
-				</fuelFilter>
-				<consumeFuelOnlyWhenUsed>true</consumeFuelOnlyWhenUsed>
-				<autoRefuelPercent>1</autoRefuelPercent>
-				<showFuelGizmo>true</showFuelGizmo>
-				<drawOutOfFuelOverlay>false</drawOutOfFuelOverlay>
-			  </li>
-			<li Class="CompProperties_Power">
-				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>800</basePowerConsumption>
-			</li>
-			<li Class="SaveOurShip2.CompProps_GraphicOnOff"/>
-		<placeWorkers>
-			<li>SaveOurShip2.PlaceWorker_ShipBay</li>
-			<li>SaveOurShip2.PlaceWorker_OnShipHull</li>
-		</placeWorkers>
-		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<staticSunShadowHeight>1.0</staticSunShadowHeight>
-	</ThingDef>-->
 	<DesignatorDropdownGroupDef>
 		<defName>Ship_SalvageBays</defName>
 	</DesignatorDropdownGroupDef>

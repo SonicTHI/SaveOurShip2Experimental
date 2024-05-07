@@ -20,7 +20,7 @@ namespace SaveOurShip2
 			if (parent.IsHashIntervalTick(60))
 			{
 				Pawn myPawn = parent as Pawn;
-				if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore") && ModSettings_SoS.archoRemove) //no archo before spore
+				if (!ShipInteriorMod2.WorldComp.Unlocks.Contains("ArchotechSpore") && ModSettings_SoS.archoRemove) //Remove archolife creatures spawned by third-party content, if option is enabled
 				{
 					myPawn.Destroy(DestroyMode.Vanish);
 					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.ArchoAnimalSuddenDeath"), parent, MessageTypeDefOf.NeutralEvent);
@@ -29,9 +29,9 @@ namespace SaveOurShip2
 				if (myPawn.needs.food.CurLevel < myPawn.needs.food.MaxLevel)
 					myPawn.needs.food.CurLevel += 0.01f;
 
-				if (parent.IsHashIntervalTick(600)) //no archo without spore, purr
+				if (parent.IsHashIntervalTick(600)) //Purr! Also kill archolife creatures without a spore, if option is enabled
 				{
-					if (parent.Faction == Faction.OfPlayer && ModSettings_SoS.archoRemove)
+					if (parent.Faction == Faction.OfPlayer && ModSettings_SoS.archoKill)
 					{
 						bool hasSpore = false;
 						foreach (Map m in Find.Maps)

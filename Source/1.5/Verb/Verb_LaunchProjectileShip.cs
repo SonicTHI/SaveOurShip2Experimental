@@ -139,17 +139,22 @@ namespace SaveOurShip2
 				else if(mapComp.TargetMapComp.ShuttlesInRange.Where(shuttle=>shuttle.Faction!=turret.Faction).Any())
                 {
 					VehiclePawn shuttleHit = mapComp.TargetMapComp.ShuttlesInRange.Where(shuttle => shuttle.Faction != turret.Faction).RandomElement();
+					int? targetIntellectualSkill = (shuttleHit.FindPawnWithBestStat(StatDefOf.ResearchSpeed)?.skills?.GetSkill(SkillDefOf.Intellectual)?.Level);
+					int skill = 0;
+					if (targetIntellectualSkill.HasValue)
+						skill = targetIntellectualSkill.Value;
 					if(verbProps.defaultProjectile.thingClass!=typeof(Projectile_ExplosiveShipLaser) && Rand.Chance(0.75f))
                     {
 						Log.Message("Shuttle dodged non-laser weapon");
                     }
-					else if(Rand.Chance(1f-(shuttleHit.GetStatValue(ResourceBank.VehicleStatDefOf.SoS2CombatDodgeChance)/100f)))
+					else if(Rand.Chance(1f-(shuttleHit.GetStatValue(ResourceBank.VehicleStatDefOf.SoS2CombatDodgeChance) / Mathf.Lerp(120, 80, skill / 20f))))
 					{
-						if (shuttleHit.GetComp<CompShipHeatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 0) //Shield takes the hit
+						CompVehicleHeatNet heatNet = shuttleHit.GetComp<CompVehicleHeatNet>();
+						if (shuttleHit.GetComp<CompShipHeatShield>() != null && shuttleHit.statHandler.componentsByKeys["shieldGenerator"].health > 10 && heatNet != null && heatNet.myNet.StorageUsed < heatNet.myNet.StorageCapacity) //Shield takes the hit
 						{
 							Projectile dummyProjectile = (Projectile)ThingMaker.MakeThing(verbProps.defaultProjectile);
 							shuttleHit.GetComp<CompShipHeatShield>().HitShield(dummyProjectile);
-							Log.Message("Shuttle's shield took a hit! Its internal heatsinks are at " + shuttleHit.GetComp<CompVehicleHeatNet>().myNet.StorageUsed + " of " + shuttleHit.GetComp<CompVehicleHeatNet>().myNet.StorageCapacity + " capacity.");
+							Log.Message("Shuttle's shield took a hit! Its internal heatsinks are at " + heatNet.myNet.StorageUsed + " of " + heatNet.myNet.StorageCapacity + " capacity.");
 							if(!dummyProjectile.Destroyed)
 								dummyProjectile.Destroy();
 						}
@@ -186,11 +191,15 @@ namespace SaveOurShip2
 							}
 							else if(shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) <= ((CompShuttleLauncher)shuttleHit.CompVehicleLauncher).retreatAtHealth)
                             {
-								if(shuttleHit.Faction==Faction.OfPlayer)
-									Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
-								else
-									Messages.Message("SoS.EnemyShuttleRetreat".Translate(), MessageTypeDefOf.PositiveEvent);
-								mapComp.TargetMapComp.ShuttleMissions.Where(mission => mission.shuttle == shuttleHit).First().mission = ShipMapComp.ShuttleMission.RETURN;
+                                ShipMapComp.ShuttleMissionData missionData = mapComp.TargetMapComp.ShuttleMissions.Where(mission => mission.shuttle == shuttleHit).First();
+								if (missionData.mission != ShipMapComp.ShuttleMission.RETURN)
+								{
+									if (shuttleHit.Faction == Faction.OfPlayer)
+										Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
+									else
+										Messages.Message("SoS.EnemyShuttleRetreat".Translate(), MessageTypeDefOf.PositiveEvent);
+                                }
+								missionData.mission = ShipMapComp.ShuttleMission.RETURN;
 							}
 						}
 					}

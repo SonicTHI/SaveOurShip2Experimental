@@ -11,7 +11,8 @@ namespace SaveOurShip2
 		public int maxShuttleSize = 1;
 		public int borderSize = 0;
 		public float repairBonus = 1;
-		public float autoRepair = 0;
+		public float autoRepair = 0.4f;
+		public float repairUpTo = 0.5f;
 		[NoTranslate]
 		public string graphicPath;
 		[Unsaved]

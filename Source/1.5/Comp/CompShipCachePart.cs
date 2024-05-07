@@ -159,13 +159,14 @@ namespace SaveOurShip2
 						map.roofGrid.SetRoof(pos, RoofDefOf.RoofConstructed);
 				}
 			}
-
+			bool allOnSame = true;
 			HashSet<IntVec3> cellsToMerge = new HashSet<IntVec3>();
 			foreach (IntVec3 vec in cellsUnder) //init cells if not already in ShipCells
 			{
 				if (!mapComp.MapShipCells.ContainsKey(vec))
 				{
 					mapComp.MapShipCells.Add(vec, new Tuple<int, int>(-1, -1));
+					allOnSame = false;
 				}
 				else
 				{
@@ -175,6 +176,11 @@ namespace SaveOurShip2
 			if (mapComp.CacheOff) //on mapinit - cache is off
 			{
 				cellsToMerge.Clear();
+				return;
+			}
+			if (allOnSame) //part placed fully on plating, no merges
+			{
+				mapComp.ShipsOnMap[mapComp.ShipIndexOnVec(parentPos)].AddToCache(parent as Building);
 				return;
 			}
 			//plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this

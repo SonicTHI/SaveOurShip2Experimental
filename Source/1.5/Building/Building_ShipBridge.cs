@@ -966,7 +966,7 @@ namespace SaveOurShip2
 							groupable = false,
 							action = delegate
 							{
-								if (mapComp.GraveOrigin == null)
+								if (!mapComp.GraveOrigin.IsPlayerHome || mapComp.GraveOrigin == null)
 								{
 									Map m = ShipInteriorMod2.FindPlayerShipMap() ?? ShipInteriorMod2.GeneratePlayerShipMap(Map.Size);
 									mapComp.GraveOrigin = m;
@@ -1171,10 +1171,16 @@ namespace SaveOurShip2
 				Ship.Capture(Faction.OfPlayer);
 			//else
 			//	Ship.Capture(pawn.Faction);
-
-			if (mapComp.ShipMapState == ShipMapState.inCombat && mapComp.ShipsOnMap.Values.Any(s => s.Index != ShipIndex && s.CanMove()))
+			if (mapComp.ShipMapState == ShipMapState.inCombat)
 			{
-				mapComp.ShipsToMove.Add(ShipIndex);
+				if (mapComp.ShipsOnMap.Count == 1)
+				{
+					mapComp.EndBattle(Map, false, true);
+				}
+				else if (mapComp.ShipsOnMap.Values.Any(s => s.Index != ShipIndex && s.CanMove()))
+				{
+					mapComp.ShipsToMove.Add(ShipIndex);
+				}
 			}
 		}
 		private void Failure(Pawn pawn)

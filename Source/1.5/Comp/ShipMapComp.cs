@@ -1619,7 +1619,7 @@ namespace SaveOurShip2
 						}
 						else if (tick > warnedAboutAdrift)
 						{
-							EndBattle(map, false, warnedAboutAdrift - tick);
+							EndBattle(map, false, false, warnedAboutAdrift - tick);
 							return;
 						}
 					}
@@ -2307,7 +2307,7 @@ namespace SaveOurShip2
 					transporter.CancelLoad();
 			}
 		}
-		public void EndBattle(Map loser, bool fled, int burnTimeElapsed = 0)
+		public void EndBattle(Map loser, bool fled, bool hack = false, int burnTimeElapsed = 0)
 		{
 			if (loser.GetComponent<ShipMapComp>().ShipMapState != ShipMapState.inCombat)
 				return;
@@ -2337,7 +2337,10 @@ namespace SaveOurShip2
 					if (OriginMapComp.attackedTradeship)
 						ShipInteriorMod2.WorldComp.PlayerFactionBounty += 15;
 					tgtMap.Parent.GetComponent<TimedForcedExitShip>().StartForceExitAndRemoveMapCountdown(Rand.RangeInclusive(60000, 180000) - burnTimeElapsed);
-					Find.LetterStack.ReceiveLetter("SoS.WinShipBattle".Translate(), "SoS.WinShipBattleDesc".Translate(tgtMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
+					if (hack)
+						Find.LetterStack.ReceiveLetter("SoS.WinShipBattle".Translate(), "SoS.WinShipBattleHackDesc".Translate(tgtMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
+					else
+						Find.LetterStack.ReceiveLetter("SoS.WinShipBattle".Translate(), "SoS.WinShipBattleDesc".Translate(tgtMap.Parent.GetComponent<TimedForcedExitShip>().ForceExitAndRemoveMapCountdownTimeLeftString), LetterDefOf.PositiveEvent);
 				}
 			}
 			else //origin fled or lost

@@ -2686,6 +2686,18 @@ namespace SaveOurShip2
 		}
 	}
 
+	// Ideology - prevent role activated/deactivated letters spam
+	[HarmonyPatch(typeof(Precept_RoleSingle), "RecacheActivity")]
+	public static class DisableForMoveRoleRecalc
+	{
+		public static bool Prefix()
+		{
+			if (ShipInteriorMod2.MoveShipFlag)
+				return false;
+			return true;
+		}
+	}
+
 	//pawns
 	[HarmonyPatch(typeof(PreceptComp_Apparel), "GiveApparelToPawn")]
 	public static class PreventIdeoApparel
@@ -4632,6 +4644,19 @@ namespace SaveOurShip2
 			}
 		}
     }
+
+	// Biotech - disable "Summon diabolus available" letters for comm consoles on enemy ships
+	[HarmonyPatch(typeof(CompUseEffect_CallBossgroup), "PostSpawnSetup")]
+	public static class DisableMechSpawnAvailableLetter
+	{
+		public static bool Prefix(CompUseEffect_CallBossgroup __instance)
+		{
+			Map map = __instance.parent.Map;
+			if (ModsConfig.BiotechActive && map != null && map.IsSpace() && map != ShipInteriorMod2.FindPlayerShipMap())
+				return false;
+			return true;
+		}
+	}
 
 	[HarmonyPatch(typeof(VehicleComponent), "HealComponent")]
 	public static class FastRepairOnShuttleBay

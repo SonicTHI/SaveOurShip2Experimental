@@ -30,14 +30,14 @@ namespace SaveOurShip2.Vehicles
                 icon = ContentFinder<Texture2D>.Get("UI/Hover_On_Icon"),
                 action = delegate()
                 {
-                    Vehicle.CompFueledTravel?.ConsumeFuel(5);
+                    Vehicle.CompFueledTravel.ConsumeFuel(5);
                     LandingTargeter.Instance.BeginTargeting(Vehicle, Vehicle.Map, delegate(LocalTargetInfo target, Rot4 rot)
                     {
                         Vehicle.CompVehicleLauncher.TryLaunch(Vehicle.Map.Tile, new AerialVehicleArrivalAction_LandSpecificCell(Vehicle, Vehicle.Map.Parent, Vehicle.Map.Tile, target.Cell, rot));
                     }, (LocalTargetInfo targetInfo) => !Ext_Vehicles.IsRoofRestricted(Vehicle.VehicleDef, targetInfo.Cell, Vehicle.Map), null, null, true);
                 },
-                disabled = Ext_Vehicles.IsRoofRestricted(Vehicle.VehicleDef, Vehicle.Position, Vehicle.Map),
-                disabledReason = "Cannot launch under roof"
+                disabled = Vehicle.CompFueledTravel.Fuel < 5.1 || Ext_Vehicles.IsRoofRestricted(Vehicle.VehicleDef, Vehicle.Position, Vehicle.Map),
+                disabledReason = Vehicle.CompFueledTravel.Fuel < 5.1 ? "Not enough fuel" : "Cannot launch under roof"
 			};
 		}
     }

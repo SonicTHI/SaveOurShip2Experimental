@@ -38,7 +38,7 @@ namespace SaveOurShip2
 			SpaceSite site = (SpaceSite)WorldObjectMaker.MakeWorldObject(ResourceBank.WorldObjectDefOf.SiteSpace);
 			site.SetFaction(null);
 			site.Tile = tile.GetValue(slate);
-			SitePartDef core = DefDatabase<SitePartDef>.AllDefs.Where(def => def.tags != null && def.tags.Contains("SpaceCore") && ((!ShipInteriorMod2.WorldComp.Unlocks.Contains("BlackBoxShipDefeated") && Find.QuestManager.QuestsListForReading.Where(q=>(q.State!=QuestState.EndedFailed&&q.State!=QuestState.EndedOfferExpired&&q.State!=QuestState.EndedUnknownOutcome)&&(q.name.Equals(TranslatorFormattedStringExtensions.Translate("SoS.FoundOrbitalSite"))||q.name.Equals("Orbital Site Found")||q.name.Equals("Starship Bow"))).EnumerableNullOrEmpty()) || !def.tags.Contains("SpaceBlackBox"))).RandomElement();
+			SitePartDef core = DefDatabase<SitePartDef>.AllDefs.Where(def => def.tags != null && def.tags.Contains("SpaceCore")).RandomElement();
 			site.AddPart(new SitePart(site,core,new SitePartParams()));
 			site.customLabel = core.label;
 			site.desiredThreatPoints = site.ActualThreatPoints;
@@ -126,7 +126,7 @@ namespace SaveOurShip2
 			{
 				QuestGen.slate.Set<Site>(this.storeAs.GetValue(slate), site, false);
 			}
-			if (core.tags.Contains("SpaceBlackBox"))
+			/*if (core.tags.Contains("SpaceBlackBox"))
 			{
 				for (int j = 0; j < QuestGen.quest.PartsListForReading.Count; j++)
 				{
@@ -167,7 +167,7 @@ namespace SaveOurShip2
 				QuestGen.AddQuestNameRules(listBlackBox);
 			}
 			else
-			{
+			{*/
 				if (worker.GetValue(slate) == null)
 				{
 					dictionary.Add("worker_definite", "its AI");
@@ -175,7 +175,7 @@ namespace SaveOurShip2
 				}
 				QuestGen.AddQuestDescriptionRules(list);
 				QuestGen.AddQuestNameRules(list);
-			}
+			//}
 			QuestGen.AddQuestDescriptionConstants(dictionary);
 			QuestGen.AddQuestNameConstants(dictionary);
 			QuestGen.AddQuestNameRules(new List<Rule>

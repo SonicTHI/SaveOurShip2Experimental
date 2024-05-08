@@ -171,29 +171,26 @@ namespace SaveOurShip2
         public override void CompTick()
         {
             base.CompTick();
-			if (parent.Spawned && compRefuelable != null && compPowerTrader != null && compPowerTrader.PowerOn) //ie, is powered and is not a salvage bay
+			int tick = Find.TickManager.TicksGame;
+			if (tick % 8 == 0 && parent.Spawned && compRefuelable != null && compPowerTrader != null && compPowerTrader.PowerOn) //ie, is powered and is not a salvage bay
 			{
-				int tick = Find.TickManager.TicksGame;
-				if (tick % 8 == 0)
+				if (tick % 256 == 0)
+					ReCacheDockedShuttles();
+				foreach (CompFueledTravel comp in dockedShuttles)
 				{
-					if (tick % 256 == 0)
-						ReCacheDockedShuttles();
-					foreach (CompFueledTravel comp in dockedShuttles)
+					if (compRefuelable.fuel > 0 && comp.FuelPercentOfTarget < 1)
 					{
-						if (compRefuelable.fuel > 0 && comp.FuelPercentOfTarget < 1)
+						comp.Refuel(1);
+						compRefuelable.ConsumeFuel(1);
+					}
+					if (Props.autoRepair>0 && comp.Vehicle.statHandler.NeedsRepairs)
+					{
+						VehicleComponent component = GenCollection.FirstOrDefault<VehicleComponent>(comp.Vehicle.statHandler.ComponentsPrioritized,(VehicleComponent c) => c.HealthPercent < Props.repairUpTo);
+						if (component != null)
 						{
-							comp.Refuel(1);
-							compRefuelable.ConsumeFuel(1);
-						}
-						if (Props.autoRepair>0 && comp.Vehicle.statHandler.NeedsRepairs)
-						{
-							VehicleComponent component = GenCollection.FirstOrDefault<VehicleComponent>(comp.Vehicle.statHandler.ComponentsPrioritized,(VehicleComponent c) => c.HealthPercent < Props.repairUpTo);
-							if (component != null)
-							{
-								component.HealComponent(Props.autoRepair);
-								comp.Vehicle.CrashLanded = false;
-								FleckMaker.ThrowMicroSparks(GenAdj.CellsOccupiedBy(comp.Vehicle).RandomElement().ToVector3Shifted(), parent.Map);
-							}
+							component.HealComponent(Props.autoRepair);
+							comp.Vehicle.CrashLanded = false;
+							FleckMaker.ThrowMicroSparks(GenAdj.CellsOccupiedBy(comp.Vehicle).RandomElement().ToVector3Shifted(), parent.Map);
 						}
 					}
 				}

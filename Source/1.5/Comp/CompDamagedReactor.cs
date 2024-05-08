@@ -19,7 +19,7 @@ namespace SaveOurShip2
 				List<Pawn> pawnsToIrradiate = new List<Pawn>();
 				foreach(Pawn p in this.parent.Map.mapPawns.AllPawnsSpawned)
 				{
-					if (p.RaceProps.IsFlesh && p.GetRoom() != null && p.GetRoom() == RegionAndRoomQuery.RoomAt(new IntVec3(this.parent.Position.x, 0, this.parent.Position.z + 5), this.parent.Map))
+					if (p.RaceProps.IsFlesh && p.Position.DistanceTo(parent.Position)<=20)
 					{
 						pawnsToIrradiate.Add(p);
 					}

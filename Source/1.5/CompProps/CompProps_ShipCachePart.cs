@@ -8,6 +8,7 @@ namespace SaveOurShip2
 		public bool isPlating = false;
 		public bool isHardpoint = false; //hardpoint exclusive, can only place ship turrets or non shipparts on them
 		public bool isHull = false;
+		public bool isCorner = false;
 		public bool hermetic = false; //used for vacuum SpaceRoomCheck only
 		public bool roof = false; //on plating and walls (since RW roofs everything)
 

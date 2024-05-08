@@ -28,7 +28,7 @@ namespace SaveOurShip2
 			CellRect val = GenAdj.OccupiedRect(parent);
 			foreach(IntVec3 cell in val.Cells)
 			{
-				Vector3 vector = cell.ToVector3ShiftedWithAltitude((AltitudeLayer)30);
+				Vector3 vector = cell.ToVector3ShiftedWithAltitude(AltitudeLayer.WorldClipper);
 				Printer_Plane.PrintPlane(layer, vector, Vector2.one, LinkedDrawMatFrom(parent, cell), 0f, false, null, null, 0.01f, 0f);
 			}
 		}

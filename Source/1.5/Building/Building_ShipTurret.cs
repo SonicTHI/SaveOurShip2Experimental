@@ -754,7 +754,7 @@ namespace SaveOurShip2
 						vector = forcedTarget.Cell.ToVector3Shifted();
 					}
 					Vector3 a = this.TrueCenter();
-					vector.y = AltitudeLayer.MetaOverlays.AltitudeFor();
+					vector.y = AltitudeLayer.WorldClipper.AltitudeFor();
 					a.y = vector.y;
 					GenDraw.DrawLineBetween(a, vector, Building_TurretGun.ForcedTargetLineMat, 0.2f);
 				}

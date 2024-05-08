@@ -4763,6 +4763,16 @@ namespace SaveOurShip2
 		}
     }
 
+	[HarmonyPatch(typeof(VehiclePawn), "GetFloatMenuOptions")]
+	public static class TEMPFixVFPawnBoarding
+    {
+		public static void Postfix(Pawn selPawn, VehiclePawn __instance, ref IEnumerable<FloatMenuOption> __result)
+        {
+			if(selPawn.Faction != __instance.Faction)
+				__result=new List<FloatMenuOption>();
+        }
+    }
+
 	/*causes lag
 	[HarmonyPatch(typeof(ShipLandingBeaconUtility), "GetLandingZones")]
 	public static class RoyaltyShuttlesLandOnBays

@@ -111,7 +111,7 @@ namespace SaveOurShip2
 
 			int chance;
 			if (scanSites && !scanShips)
-				chance = 1;
+				chance = Rand.RangeInclusive(1, 3);
 			else if (!scanSites && scanShips)
 				chance = Rand.RangeInclusive(3, 15);
 			else
@@ -119,15 +119,42 @@ namespace SaveOurShip2
 
 			if (chance  < 3) //legacy site
 			{
-				Slate slate = new Slate();
-				slate.Set<Map>("map", this.parent.Map, false);
-				slate.Set<Pawn>("worker", worker, false);
-				slate.Set<float>("radius", Rand.Range(120f, 180f), false);
-				slate.Set<float>("theta", Rand.Range(((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta - 0.25f, ((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta + 0.25f), false);
-				slate.Set<float>("phi", Rand.Range(-1f, 1f), false);
-				slate.Set<int>("siteTile", ShipInteriorMod2.FindWorldTile(), false);
-				Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(DefDatabase<QuestScriptDef>.GetNamed("SpaceSiteQuest"), slate);
-				Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null);
+				bool hasBlackBoxQuest = Find.World.GetComponent<ShipWorldComp>().Unlocks.Contains("BlackBoxShipDefeated") || parent.Map.passingShipManager.passingShips.Any(ship=>ship is DerelictShip derelict && derelict.derelictShip.defName == "StarshipBowDungeonNew");
+				if (!hasBlackBoxQuest && chance == 1)
+				{
+					DerelictShip ship = new DerelictShip();
+					ship.wreckLevel = 5;
+					ship.derelictShip = DefDatabase<ShipDef>.GetNamed("StarshipBowDungeonNew");
+					ship.shipFaction = Faction.OfAncientsHostile;
+					ship.ticksUntilDeparture = Rand.RangeInclusive(140000, 180000);
+
+					parent.Map.passingShipManager.AddShip(ship);
+
+					string DescVersion;
+					if (Faction.OfPlayer.def.techLevel == TechLevel.Neolithic)
+						DescVersion = "SoS.FoundSiteSpecialTribal";
+					else if (Find.Scenario.parts.Any(part => part is ScenPart_StartInSpace))
+						DescVersion = "SoS.FoundSiteSpecialSpace";
+					else
+						DescVersion = "SoS.FoundSiteSpecial";
+
+					if (worker != null)
+						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
+					else
+						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
+				}
+				else
+				{
+					Slate slate = new Slate();
+					slate.Set<Map>("map", this.parent.Map, false);
+					slate.Set<Pawn>("worker", worker, false);
+					slate.Set<float>("radius", Rand.Range(120f, 180f), false);
+					slate.Set<float>("theta", Rand.Range(((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta - 0.25f, ((WorldObjectOrbitingShip)this.parent.Map.Parent).Theta + 0.25f), false);
+					slate.Set<float>("phi", Rand.Range(-1f, 1f), false);
+					slate.Set<int>("siteTile", ShipInteriorMod2.FindWorldTile(), false);
+					Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(DefDatabase<QuestScriptDef>.GetNamed("SpaceSiteQuest"), slate);
+					Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null);
+				}
 			}
 			else if (chance > 3 && chance < 7) //tradeship, already has faction, navy resolves in SpawnEnemyShip
 			{

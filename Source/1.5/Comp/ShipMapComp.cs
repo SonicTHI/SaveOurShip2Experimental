@@ -775,7 +775,7 @@ namespace SaveOurShip2
 				shipDef = derelictShip.derelictShip;
 				navyDef = derelictShip.spaceNavyDef;
 				faction = derelictShip.shipFaction;
-				if (derelictShip.wreckLevel == 2 && (derelictShip.derelictShip.neverAttacks && Rand.Chance(0.05f) || Rand.Chance(0.2f))) //fake wreck chance
+				if (derelictShip.wreckLevel == 2 && !derelictShip.derelictShip.neverRandom && (derelictShip.derelictShip.neverAttacks && Rand.Chance(0.05f) || Rand.Chance(0.2f))) //fake wreck chance
 				{
 					fakeWreck = true;
 					if (Rand.Chance(0.1f))
@@ -1341,11 +1341,15 @@ namespace SaveOurShip2
 												}
 												else if (shuttleHit.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity) <= ((CompShuttleLauncher)shuttleHit.CompVehicleLauncher).retreatAtHealth)
 												{
-													if (shuttleHit.Faction == Faction.OfPlayer)
-														Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
-													else
-														Messages.Message("SoS.EnemyShuttleRetreat".Translate(), MessageTypeDefOf.PositiveEvent);
-													TargetMapComp.ShuttleMissions.Where(otherMission => otherMission.shuttle == shuttleHit).First().mission = ShipMapComp.ShuttleMission.RETURN;
+													ShuttleMissionData missionData = TargetMapComp.ShuttleMissions.Where(otherMission => otherMission.shuttle == shuttleHit).First();
+													if (missionData.mission != ShuttleMission.RETURN)
+													{
+														if (shuttleHit.Faction == Faction.OfPlayer)
+															Messages.Message("SoS.ShuttleRetreat".Translate(), MessageTypeDefOf.NegativeEvent);
+														else
+															Messages.Message("SoS.EnemyShuttleRetreat".Translate(), MessageTypeDefOf.PositiveEvent);
+													}
+													missionData.mission = ShipMapComp.ShuttleMission.RETURN;
 												}
 											}
 										}
@@ -2113,7 +2117,7 @@ namespace SaveOurShip2
 					chance += 0.10f;
             }
 			chance += 0.15f * OriginMapComp.TorpedoTubes.Count();
-			chance -= ShuttleMissions.Where(mission => mission.mission == ShuttleMission.INTERCEPT).Count() * 0.2f;
+			chance -= ShuttleMissions.Where(mission => mission.mission == ShuttleMission.INTERCEPT).Count() * 0.4f;
 			return chance;
         }
 

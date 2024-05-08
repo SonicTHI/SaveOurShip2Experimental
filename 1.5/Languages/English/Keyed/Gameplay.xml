@@ -375,6 +375,8 @@
 	<SoS.HoverJump.Desc>Launch and land in the same tile, at the cost of 5 fuel</SoS.HoverJump.Desc>
 	<SoS.TargetShuttles>Set shuttle target</SoS.TargetShuttles>
 	<SoS.TargetShuttlesDesc>Choose where shuttles on strafing and bombing missions should aim</SoS.TargetShuttlesDesc>
+	<SoS.ToggleField>Toggle hull access</SoS.ToggleField>
+	<SoS.ToggleFieldDesc>Allow pawns and vehicles to pass through this region of permeable hull.</SoS.ToggleFieldDesc>
 	
 	<!-- obsolete/unused
 	<SoS.PirateTradeEmpire>Our act of piracy against the Empire has not gone unnoticed!</SoS.PirateTradeEmpire>

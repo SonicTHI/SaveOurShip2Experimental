@@ -832,6 +832,8 @@ namespace SaveOurShip2
 				ideoActive = true;
 			bool royActive = false;
 			bool isMechs = false; //for roy mech turret override
+			bool isDungeon = shipDef.defName == "StarshipBowDungeonNew";
+			HashSet<IntVec3> exclusionZones = new HashSet<IntVec3>();
 			if (ModsConfig.RoyaltyActive)
 			{
 				royActive = true;
@@ -969,6 +971,8 @@ namespace SaveOurShip2
 						bool wreckReplace = false;
 						Thing thing = null;
 						ThingDef def = ThingDef.Named(shape.shapeOrDef);
+						if (def == ResourceBank.ThingDefOf.Ship_DamagedReactor || def == ResourceBank.ThingDefOf.BlackBoxAI)
+							exclusionZones.Add(adjPos);
 						//def replacers
 						if (def.IsBuildingArtificial)
 						{
@@ -1154,6 +1158,12 @@ namespace SaveOurShip2
 									c.innerContainer.TryAdd(item, true);
 								}
 							}
+							else if (isDungeon && b is Building_CryptosleepCasket crypto && Rand.Chance(0.05f))
+                            {
+								Pawn sleeper = PawnGenerator.GeneratePawn(new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed("SpaceCrewEVA"), Faction.OfAncients, certainlyBeenInCryptosleep: true));
+								HealthUtility.DamageUntilDowned(sleeper);
+								crypto.TryAcceptThing(sleeper);
+							}
 							else
 							{
 								var batComp = b.TryGetComp<CompPowerBattery>();
@@ -1227,7 +1237,7 @@ namespace SaveOurShip2
 							thing = ThingMaker.MakeThing(ThingDef.Named(partDef.defName.Substring(0, partDef.defName.Length - 8)));
 						if (thing is Pawn p)
 						{
-							ShipPawnGen(p);
+							ShipPawnGen(p, isDungeon);
 							lord?.AddPawn(p);
 							pawnsOnShip.Add(p);
 						}
@@ -1258,7 +1268,7 @@ namespace SaveOurShip2
 						{
 							if (thing is Pawn p)
 							{
-								ShipPawnGen(p);
+								ShipPawnGen(p, isDungeon);
 								lord?.AddPawn(p);
 								pawnsOnShip.Add(p);
 							}
@@ -1338,6 +1348,7 @@ namespace SaveOurShip2
 			//2: outer explo more, destroy some buildings, some dead crew, chance for more invaders
 			//3: wreck all hull, outer explo lots, chance to split, destroy most buildings, most crew dead, chance for invaders
 			//4: planetside wreck - no invaders
+			//5: starship bow special dungeon
 			if (wreckLevel > 0)
 			{
 				var mapComp = map.GetComponent<ShipMapComp>();
@@ -1346,12 +1357,17 @@ namespace SaveOurShip2
 				//split
 				if ((wreckLevel == 2 || wreckLevel == 3) && size > 1000 && Rand.Chance(0.7f))
 				{
-					MakeLines(shipDef.sizeX, shipDef.sizeZ, map, fac, wreckLevel, offset);
+					MakeLines(shipDef.sizeX, shipDef.sizeZ, map, fac, wreckLevel, offset, exclusionZones);
 					madeLines = true;
 				}
-				if ((wreckLevel == 2 || wreckLevel == 3) && size > 8000)
+				if (((wreckLevel == 2 || wreckLevel == 3) && size > 8000))
 				{
-					MakeLines(shipDef.sizeX, shipDef.sizeZ, map, fac, wreckLevel, offset);
+					MakeLines(shipDef.sizeX, shipDef.sizeZ, map, fac, wreckLevel, offset, exclusionZones);
+				}
+				if (wreckLevel == 5)
+                {
+					MakeLines(shipDef.sizeX, shipDef.sizeZ, map, fac, wreckLevel, offset, exclusionZones);
+					MakeLines(shipDef.sizeX, shipDef.sizeZ, map, fac, wreckLevel, offset, exclusionZones);
 				}
 				//holes, surounded by wreck
 				int adj = 1 + (size / 1000);
@@ -1359,11 +1375,13 @@ namespace SaveOurShip2
 				holeNum = Rand.RangeInclusive(adj, adj - 1 + (wreckLevel * 2));
 				if (size > 4000 && wreckLevel > 1 && !madeLines)
 					holeNum += Rand.RangeInclusive(adj, adj - 1 + (wreckLevel * 2));
+				if (wreckLevel == 5)
+					holeNum *= 4;
 				CellRect rect = new CellRect(offset.x - 1, offset.z - 1, shipDef.sizeX + 1, shipDef.sizeZ + 1);
-				MakeHoles(FindCellOnOuterHull(map, holeNum, rect), map, fac, wreckLevel, 1.9f, 4.9f);
+				MakeHoles(FindCellOnOuterHull(map, holeNum, rect), map, fac, wreckLevel, 1.9f, 4.9f, exclusionZones);
 				//buildings
 				List<Building> toKill = new List<Building>();
-				if (wreckLevel > 2)
+				if (wreckLevel > 2 && wreckLevel != 5)
 				{
 					foreach (Building b in wreckDestroy.Where(t => !t.Destroyed))
 					{
@@ -1383,7 +1401,7 @@ namespace SaveOurShip2
 
 				//pawns
 				List<Pawn> pawnsToKill = new List<Pawn>();
-				foreach (Pawn p in pawnsOnShip)
+				foreach (Pawn p in pawnsOnShip.Where(pawn=>pawn.RaceProps.IsFlesh))
 				{
 					if (wreckLevel > 2)
 						HealthUtility.DamageUntilDead(p);
@@ -1462,11 +1480,14 @@ namespace SaveOurShip2
 				}
 			}
 		}
-		private static void ShipPawnGen(Pawn p) //td make proper pawngen req?
+		private static void ShipPawnGen(Pawn p, bool isDungeon) //td make proper pawngen req?
 		{
 			if (p.RaceProps.IsMechanoid)
 			{
-				p.SetFactionDirect(Faction.OfMechanoids);
+				if (!isDungeon)
+					p.SetFactionDirect(Faction.OfMechanoids);
+				else
+					p.SetFactionDirect(Faction.OfAncientsHostile);
 				p.ageTracker.AgeBiologicalTicks = (long)(Rand.Range(200f, 2500f) * 3600000f);
 				p.ageTracker.AgeChronologicalTicks = p.ageTracker.AgeBiologicalTicks;
 			}
@@ -1581,7 +1602,7 @@ namespace SaveOurShip2
 			}
 			return targetCells;
 		}
-		public static void MakeLines(int x, int z, Map map, Faction fac, int wreckLevel, IntVec3 offset)
+		public static void MakeLines(int x, int z, Map map, Faction fac, int wreckLevel, IntVec3 offset, HashSet<IntVec3> exclusionZones)
 		{
 			List<IntVec3> detVecs = new List<IntVec3>();
 			IntVec3 from = new IntVec3(Rand.RangeInclusive(offset.x + 10, offset.x + x - 10), 0, offset.z);
@@ -1596,9 +1617,9 @@ namespace SaveOurShip2
 				if (Rand.Chance(0.05f))
 					break;
 			}
-			MakeHoles(detVecs, map, fac, wreckLevel, 2.9f, 3.9f);
+			MakeHoles(detVecs, map, fac, wreckLevel, 2.9f, 3.9f, exclusionZones);
 		}
-		public static void MakeHoles(List<IntVec3> targets, Map map, Faction fac, int wreckLevel, float minSize, float maxSize)
+		public static void MakeHoles(List<IntVec3> targets, Map map, Faction fac, int wreckLevel, float minSize, float maxSize, HashSet<IntVec3> exclusionZones)
 		{
 			if (targets.NullOrEmpty())
 				return;
@@ -1606,8 +1627,21 @@ namespace SaveOurShip2
 			List<Thing> toDestroy = new List<Thing>();
 			List<Building> toReplace = new List<Building>();
 			HashSet<IntVec3> area = new HashSet<IntVec3>();
+
 			foreach (IntVec3 v in targets)
 			{
+				bool excluded = false;
+				foreach (IntVec3 exclusion in exclusionZones)
+				{
+					if (exclusion.DistanceTo(v) < maxSize + 5)
+					{
+						excluded = true;
+						break;
+					}
+				}
+				if (excluded)
+					continue;
+
 				List<Thing> toDestroySet = new List<Thing>();
 				List<Building> toReplaceSet = new List<Building>();
 				HashSet<IntVec3> areaSet = new HashSet<IntVec3>();
@@ -2205,15 +2239,18 @@ namespace SaveOurShip2
 			{
 				foreach (Thing spawnThing in toMoveShipParts.Where(t => !t.Destroyed && !t.Spawned))
 				{
-					spawnThing.SpawnSetup(sourceMap, false);
+					bool? isHullPlate = spawnThing.TryGetComp<CompShipCachePart>()?.Props.isHull;
+					spawnThing.SpawnSetup(sourceMap, isHullPlate.HasValue && isHullPlate.Value ? true : spawnThing is Building_ShipAirlock);
 				}
 				foreach (Thing spawnThing in toMoveBuildings.Where(t => !t.Destroyed && !t.Spawned))
 				{
-					spawnThing.SpawnSetup(sourceMap, false);
+					bool? isHullPlate = spawnThing.TryGetComp<CompShipCachePart>()?.Props.isHull;
+					spawnThing.SpawnSetup(sourceMap, isHullPlate.HasValue && isHullPlate.Value ? true : spawnThing is Building_ShipAirlock);
 				}
 				foreach (Thing spawnThing in toMoveThings.Where(t => !t.Destroyed && !t.Spawned))
 				{
-					spawnThing.SpawnSetup(sourceMap, false);
+					bool? isHullPlate = spawnThing.TryGetComp<CompShipCachePart>()?.Props.isHull;
+					spawnThing.SpawnSetup(sourceMap, isHullPlate.HasValue && isHullPlate.Value ? true : spawnThing is Building_ShipAirlock);
 				}
 				Find.LetterStack.ReceiveLetter("SoS.MoveFail".Translate(), "SoS.MoveFailDesc".Translate(reason), LetterDefOf.NegativeEvent);
 				MoveShipFlag = false;
@@ -2523,7 +2560,8 @@ namespace SaveOurShip2
 			if (fac != null && !(spawnThing is Pawn) && spawnThing.def.CanHaveFaction)
 				spawnThing.SetFaction(fac);
 
-			spawnThing.SpawnSetup(targetMap, false);
+			bool? isHullPlate = spawnThing.TryGetComp<CompShipCachePart>()?.Props.isHull;
+			spawnThing.SpawnSetup(targetMap, isHullPlate.HasValue&&isHullPlate.Value ? true : spawnThing is Building_ShipAirlock);
 		}
 		public static void AddPawnToLord(Map map, Pawn p)
 		{

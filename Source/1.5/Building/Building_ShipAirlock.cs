@@ -173,8 +173,9 @@ namespace SaveOurShip2
 		public override void Tick()
 		{
 			base.Tick();
+			int ticks = Find.TickManager.TicksGame;
 			//create area after animation
-			if (startTick > 0 && Find.TickManager.TicksGame > startTick)
+			if (startTick > 0 && ticks > startTick)
 			{
 				startTick = 0;
 				if (mapComp.ShipMapState != ShipMapState.inCombat && CanDock())
@@ -182,6 +183,9 @@ namespace SaveOurShip2
 					SpawnDock();
 				}
 			}
+			//Glow when opened
+			if (OpenPct > 0 && ticks % 16 == 0 && Outerdoor())
+				Map.flecks.CreateFleck(FleckMaker.GetDataStatic(DrawPos, Map, FleckDefOf.LightningGlow, 3));
 		}
 		public override IEnumerable<Gizmo> GetGizmos()
 		{

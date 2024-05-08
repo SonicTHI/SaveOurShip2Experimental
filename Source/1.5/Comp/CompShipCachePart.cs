@@ -180,7 +180,20 @@ namespace SaveOurShip2
 			}
 			if (allOnSame) //part placed fully on plating, no merges
 			{
-				mapComp.ShipsOnMap[mapComp.ShipIndexOnVec(parentPos)].AddToCache(parent as Building);
+				int shipIndex = mapComp.ShipIndexOnVec(parentPos);
+				if (!mapComp.ShipsOnMap.ContainsKey(shipIndex))
+                {
+					foreach(IntVec3 adjacentShipTile in GenAdj.CellsAdjacent8Way(parent))
+                    {
+						int otherShipIndex = mapComp.ShipIndexOnVec(adjacentShipTile);
+						if (mapComp.ShipsOnMap.ContainsKey(otherShipIndex))
+                        {
+							shipIndex = otherShipIndex;
+							break;
+                        }							
+                    }
+                }
+				mapComp.ShipsOnMap[shipIndex].AddToCache(parent as Building);
 				return;
 			}
 			//plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this
@@ -330,7 +343,7 @@ namespace SaveOurShip2
 		public override void PostDeSpawn(Map map) //proper parts only - terrain, roof removal, foam replacers
 		{
 			base.PostDeSpawn(map);
-			if (!Props.AnyPart)
+			if (!Props.AnyPart && !Props.isCorner)
 				return;
 
 			foreach (IntVec3 pos in cellsUnder)
@@ -366,7 +379,16 @@ namespace SaveOurShip2
 						map.roofGrid.SetRoof(pos, null);
 				}
 			}
-			if (FoamFill)
+			if (ArchoConvert)
+			{
+				Thing replacer = ThingMaker.MakeThing(ShipInteriorMod2.archoConversions[parentDef]);
+				replacer.Rotation = parentRot;
+				replacer.Position = parentPos;
+				replacer.SetFaction(fac);
+				replacer.SpawnSetup(map, false);
+				FleckMaker.ThrowSmoke(replacer.DrawPos, map, 2);
+			}
+			else if (FoamFill)
 			{
 				Thing replacer;
 				if (Props.isHull)
@@ -376,15 +398,6 @@ namespace SaveOurShip2
 
 				replacer.SetFaction(fac);
 				GenPlace.TryPlaceThing(replacer, cellsUnder.First(), map, ThingPlaceMode.Direct);
-			}
-			else if (ArchoConvert)
-			{
-				Thing replacer = ThingMaker.MakeThing(ShipInteriorMod2.archoConversions[parentDef]);
-				replacer.Rotation = parentRot;
-				replacer.Position = parentPos;
-				replacer.SetFaction(fac);
-				replacer.SpawnSetup(map, false);
-				FleckMaker.ThrowSmoke(replacer.DrawPos, map, 2);
 			}
 		}
 		public override void PostDraw()

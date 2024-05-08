@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f27";
+		public const string SOS2EXPversion = "V101f29";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -832,7 +832,7 @@ namespace SaveOurShip2
 				ideoActive = true;
 			bool royActive = false;
 			bool isMechs = false; //for roy mech turret override
-			bool isDungeon = shipDef.defName == "StarshipBowDungeonNew";
+			bool isDungeon = shipDef.defName == "StarshipBowDungeon";
 			HashSet<IntVec3> exclusionZones = new HashSet<IntVec3>();
 			if (ModsConfig.RoyaltyActive)
 			{

@@ -184,6 +184,7 @@
 		<comps>
 			<li Class="SaveOurShip2.CompProps_ShipCachePart">
 				<hermetic>true</hermetic>
+				<isCorner>true</isCorner>
 			</li>
 			<li>
 				<compClass>CompColorable</compClass>

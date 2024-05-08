@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Defs>
 	<SaveOurShip2.ShipDef>
-		<defName>StarshipBowDungeonNew</defName>
+		<defName>StarshipBowDungeon</defName>
 		<saveSysVer>2</saveSysVer>
-		<offsetX>10</offsetX>
-		<offsetZ>18</offsetZ>
+		<offsetX>20</offsetX>
+		<offsetZ>38</offsetZ>
 		<sizeX>222</sizeX>
 		<sizeZ>216</sizeZ>
 		<label>Starship Bow</label>

@@ -181,20 +181,11 @@ namespace SaveOurShip2
 			if (allOnSame) //part placed fully on plating, no merges
 			{
 				int shipIndex = mapComp.ShipIndexOnVec(parentPos);
-				if (!mapComp.ShipsOnMap.ContainsKey(shipIndex))
-                {
-					foreach(IntVec3 adjacentShipTile in GenAdj.CellsAdjacent8Way(parent))
-                    {
-						int otherShipIndex = mapComp.ShipIndexOnVec(adjacentShipTile);
-						if (mapComp.ShipsOnMap.ContainsKey(otherShipIndex))
-                        {
-							shipIndex = otherShipIndex;
-							break;
-                        }							
-                    }
-                }
-				mapComp.ShipsOnMap[shipIndex].AddToCache(parent as Building);
-				return;
+				if (shipIndex > 0)
+				{
+					mapComp.ShipsOnMap[shipIndex].AddToCache(parent as Building);
+					return;
+				}
 			}
 			//plating or shipPart: chk all cardinal, if any plating or shipPart has valid shipIndex, set to this
 			//plating or shipPart with different or no shipIndex: merge connected to this ship

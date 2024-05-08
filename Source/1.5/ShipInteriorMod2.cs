@@ -2067,9 +2067,9 @@ namespace SaveOurShip2
 				{
 					zonesToCopy.Add(sourceMap.zoneManager.ZoneAt(pos));
 				}
-				//store non ship terrain
+				//store terrain
 				var sourceTerrain = sourceMap.terrainGrid.TerrainAt(pos);
-				if (sourceTerrain.layerable && !IsHull(sourceTerrain))
+				if (sourceTerrain.layerable)
 				{
 					terrainToCopy.Add(new Tuple<IntVec3, TerrainDef>(adjustedPos, sourceTerrain));
 					sourceMap.terrainGrid.RemoveTopLayer(pos, false);
@@ -2239,18 +2239,15 @@ namespace SaveOurShip2
 			{
 				foreach (Thing spawnThing in toMoveShipParts.Where(t => !t.Destroyed && !t.Spawned))
 				{
-					bool? isHullPlate = spawnThing.TryGetComp<CompShipCachePart>()?.Props.isHull;
-					spawnThing.SpawnSetup(sourceMap, isHullPlate.HasValue && isHullPlate.Value ? true : spawnThing is Building_ShipAirlock);
+					spawnThing.SpawnSetup(sourceMap, true);
 				}
 				foreach (Thing spawnThing in toMoveBuildings.Where(t => !t.Destroyed && !t.Spawned))
 				{
-					bool? isHullPlate = spawnThing.TryGetComp<CompShipCachePart>()?.Props.isHull;
-					spawnThing.SpawnSetup(sourceMap, isHullPlate.HasValue && isHullPlate.Value ? true : spawnThing is Building_ShipAirlock);
+					spawnThing.SpawnSetup(sourceMap, true);
 				}
 				foreach (Thing spawnThing in toMoveThings.Where(t => !t.Destroyed && !t.Spawned))
 				{
-					bool? isHullPlate = spawnThing.TryGetComp<CompShipCachePart>()?.Props.isHull;
-					spawnThing.SpawnSetup(sourceMap, isHullPlate.HasValue && isHullPlate.Value ? true : spawnThing is Building_ShipAirlock);
+					spawnThing.SpawnSetup(sourceMap, true);
 				}
 				Find.LetterStack.ReceiveLetter("SoS.MoveFail".Translate(), "SoS.MoveFailDesc".Translate(reason), LetterDefOf.NegativeEvent);
 				MoveShipFlag = false;
@@ -2560,8 +2557,7 @@ namespace SaveOurShip2
 			if (fac != null && !(spawnThing is Pawn) && spawnThing.def.CanHaveFaction)
 				spawnThing.SetFaction(fac);
 
-			bool? isHullPlate = spawnThing.TryGetComp<CompShipCachePart>()?.Props.isHull;
-			spawnThing.SpawnSetup(targetMap, isHullPlate.HasValue&&isHullPlate.Value ? true : spawnThing is Building_ShipAirlock);
+			spawnThing.SpawnSetup(targetMap, true);
 		}
 		public static void AddPawnToLord(Map map, Pawn p)
 		{

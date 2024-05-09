@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f29";
+		public const string SOS2EXPversion = "V101f30";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -2482,24 +2482,24 @@ namespace SaveOurShip2
 			List<Section> sourceSec = new List<Section>();
 			foreach (IntVec3 pos in sourceArea)
 			{
-				var sec = sourceMap.mapDrawer.SectionAt(pos);
+				Section sec = sourceMap.mapDrawer.SectionAt(pos);
 				if (!sourceSec.Contains(sec))
 					sourceSec.Add(sec);
 			}
 			foreach (Section sec in sourceSec)
 			{
-				sec.RegenerateDirtyLayers();
+				sec.RegenerateAllLayers(); //RegenerateDirtyLayers - some layers are not set dirty properly (zones), slower
 			}
 			List<Section> targetSec = new List<Section>();
 			foreach (IntVec3 pos in targetArea)
 			{
-				var sec = targetMap.mapDrawer.SectionAt(pos);
+				Section sec = targetMap.mapDrawer.SectionAt(pos);
 				if (!targetSec.Contains(sec))
 					targetSec.Add(sec);
 			}
 			foreach (Section sec in targetSec)
 			{
-				sec.RegenerateDirtyLayers();
+				sec.RegenerateAllLayers(); //RegenerateDirtyLayers - some layers are not set dirty properly (zones), slower
 			}
 			if (devMode)
 			{

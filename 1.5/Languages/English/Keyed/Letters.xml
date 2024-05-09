@@ -31,7 +31,6 @@
 	<SoS.DerelictScan>Derelict detected</SoS.DerelictScan>
 	<SoS.DerelictScanDesc>Using your ship's sensors, {0} has detected a nearby derelict. The ship appears to be {1}. It does not respond to hails and appears to be powered down. You can use your bridge to order an investigation, or wait for it to burn up in the atmosphere.</SoS.DerelictScanDesc>
 	<SoS.FoundOrbitalSite>Starship bow detected!</SoS.FoundOrbitalSite>
-	<LetterFoundOrbitalSite>Using your ship's sensors, {4} has found {0} in a nearby orbit.\n\nUnfortunately, the orbit is decaying and will lead to atmospheric re-entry in {1} days.\n\n{3}.</LetterFoundOrbitalSite>
 	<SoS.FoundSiteSpecial>Using your ship's sensors, {0} has detected a large, relatively intact piece of debris. It appears to be part of the very same ship which brought your original colonists to this world!\n\nThis could be your best chance to acquire a working Johnson-Tanaka drive, or even rescue any of your fellow travelers who remain in cryptosleep, but do not underestimate the dangers you will face here.</SoS.FoundSiteSpecial>
 	<SoS.FoundSiteSpecialTribal>Using your ship's sensors, {0} has detected a large, relatively intact piece of debris. It may even be part of the "Sky-Traveler" of legend, which brought your tribe's distant ancestors to this world!\n\nThis could be your best chance to acquire a working Johnson-Tanaka drive, but do not underestimate the dangers you will face here.</SoS.FoundSiteSpecialTribal>
 	<SoS.FoundSiteSpecialSpace>Using your ship's sensors, {0} has detected a large, relatively intact piece of debris. It appears to be the bow of a large interstellar passenger liner.\n\nThis could be your best chance to acquire a working Johnson-Tanaka drive, but do not underestimate the dangers you will face here.</SoS.FoundSiteSpecialSpace>
@@ -173,6 +172,7 @@
 	
 	<!-- obsolete/unused
 	
+	<SoS.FoundOrbitalSiteDesc>Using your ship's sensors, {4} has found {0} in a nearby orbit.\n\nUnfortunately, the orbit is decaying and will lead to atmospheric re-entry in {1} days.\n\n{3}.</SoS.FoundOrbitalSiteDesc>
 	<SoSWinGame>Evolution complete</SoSWinGame>
 	<SoSWinGameDesc>[IT IS DONE.]\n\nWith this simple statement, {0} goes silent. It seems to be waiting for a final request from its human progenitors. The question it poses is simple yet momentous: with this power on your side, what will you make of the world?</SoSWinGameDesc>
 	<SoSAllPillars>Pillars assembled</SoSAllPillars>

@@ -2698,6 +2698,34 @@ namespace SaveOurShip2
 		}
 	}
 
+	// Ideology - disable friendly visitors, additional result of skylanterns ritual, disable in space
+	[HarmonyPatch(typeof(RitualOutcomeEffectWorker_Skylantern), "ApplyExtraOutcome")]
+	public static class DisableSkylanternsRecruit
+	{
+		public static bool Prefix(LordJob_Ritual jobRitual)
+		{
+			if (jobRitual.Map != null && jobRitual.Map.IsSpace())
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+
+	// Ideology - disable random recruit reward for rituals in space
+	[HarmonyPatch(typeof(RitualAttachableOutcomeEffectWorker_RandomRecruit), "Apply")]
+	public static class DisableRecruitReward
+	{
+		public static bool Prefix(LordJob_Ritual jobRitual)
+		{
+			if (jobRitual.Map != null && jobRitual.Map.IsSpace())
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+
 	//pawns
 	[HarmonyPatch(typeof(PreceptComp_Apparel), "GiveApparelToPawn")]
 	public static class PreventIdeoApparel

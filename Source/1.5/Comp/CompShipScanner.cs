@@ -120,7 +120,7 @@ namespace SaveOurShip2
 			if (chance  < 3) //legacy site
 			{
 				bool hasBlackBoxQuest = Find.World.GetComponent<ShipWorldComp>().Unlocks.Contains("BlackBoxShipDefeated") || parent.Map.passingShipManager.passingShips.Any(ship=>ship is DerelictShip derelict && derelict.derelictShip.defName == "StarshipBowDungeon");
-				if (!hasBlackBoxQuest && chance == 1)
+				if (!hasBlackBoxQuest && chance == 1) //blackbox quest
 				{
 					DerelictShip ship = new DerelictShip();
 					ship.wreckLevel = 5;
@@ -139,11 +139,11 @@ namespace SaveOurShip2
 						DescVersion = "SoS.FoundSiteSpecial";
 
 					if (worker != null)
-						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate(worker, ship.derelictShip), LetterDefOf.PositiveEvent);
+						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate(worker), LetterDefOf.PositiveEvent);
 					else
-						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate("its AI", ship.derelictShip), LetterDefOf.PositiveEvent);
+						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate("its AI"), LetterDefOf.PositiveEvent);
 				}
-				else
+				else //asteroids, sats
 				{
 					Slate slate = new Slate();
 					slate.Set<Map>("map", this.parent.Map, false);

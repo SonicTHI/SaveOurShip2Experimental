@@ -33,6 +33,7 @@ namespace SaveOurShip2.Vehicles
                     Vehicle.CompFueledTravel.ConsumeFuel(5);
                     LandingTargeter.Instance.BeginTargeting(Vehicle, Vehicle.Map, delegate(LocalTargetInfo target, Rot4 rot)
                     {
+                        LaunchTargeter.FlightPath = new List<FlightNode> { new FlightNode(Vehicle.Map.Tile) };
                         Vehicle.CompVehicleLauncher.TryLaunch(Vehicle.Map.Tile, new AerialVehicleArrivalAction_LandSpecificCell(Vehicle, Vehicle.Map.Parent, Vehicle.Map.Tile, target.Cell, rot));
                     }, (LocalTargetInfo targetInfo) => !Ext_Vehicles.IsRoofRestricted(Vehicle.VehicleDef, targetInfo.Cell, Vehicle.Map), null, null, true);
                 },

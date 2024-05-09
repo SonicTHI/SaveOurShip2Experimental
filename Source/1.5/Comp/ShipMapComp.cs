@@ -2500,7 +2500,7 @@ namespace SaveOurShip2
 							}
 						}
 						VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
-						GenSpawn.Spawn(vehicleSkyfaller_Arriving, target.Cell, mapToSpawnIn, rot);
+						GenSpawn.Spawn(vehicleSkyfaller_Arriving, target.Cell, mapToSpawnIn, Rot4.East);
 					},
 					null, null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
 				}
@@ -2538,7 +2538,7 @@ namespace SaveOurShip2
 							}
 						}
 					}
-					GenSpawn.Spawn(vehicleSkyfaller_Arriving, vec, mapToSpawnIn);
+					GenSpawn.Spawn(vehicleSkyfaller_Arriving, vec, mapToSpawnIn, Rot4.East);
 				}
 			}
         }

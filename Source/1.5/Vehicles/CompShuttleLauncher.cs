@@ -165,7 +165,7 @@ namespace SaveOurShip2.Vehicles
 				Log.Message("Deregistered shuttle reserved area on bay at: " + parent.Position);
 				bay.TryGetComp<CompShipBay>().UnReserveArea(parent.Position, parent as VehiclePawn);
 			}
-		}
+        }
 		public override void PostExposeData()
         {
             base.PostExposeData();
@@ -177,6 +177,8 @@ namespace SaveOurShip2.Vehicles
                 VehicleComponent shieldGen = Vehicle.statHandler.components.FirstOrDefault(comp => comp.props.key == "shieldGenerator");
                 if (shieldGen != null)
                     serializedShieldGenHealth = shieldGen.health;
+                else
+                    serializedShieldGenHealth = 1;
             }
             Scribe_Values.Look<float>(ref retreatAtHealth, "retreatAtHealth");
             Scribe_Values.Look<float>(ref serializedHeat, "heat");

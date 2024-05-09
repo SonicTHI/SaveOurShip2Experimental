@@ -4556,14 +4556,22 @@ namespace SaveOurShip2
 		public static float ShieldGenHealth = 0;
 		public static float StoredHeat = 0;
 
-		public static bool Prefix(VehiclePawn __instance)
+		public static bool Prefix(VehiclePawn __instance, bool respawningAfterLoad)
 		{
-			CompsToSpawn = new List<ThingComp>();
+			if(respawningAfterLoad)
+				CompsToSpawn = new List<ThingComp>();
 			return true;
 		}
 
-		public static void Postfix(VehiclePawn __instance)
+		public static void Postfix(VehiclePawn __instance, bool respawningAfterLoad)
 		{
+			if (!respawningAfterLoad)
+			{
+				CompVehicleHeatNet net2 = __instance.GetComp<CompVehicleHeatNet>();
+				if (net2 != null)
+					net2.RebuildHeatNet();
+				return;
+			}
 			foreach (ThingComp comp in CompsToSpawn)
 				comp.PostSpawnSetup(true);
 			CompVehicleHeatNet net = __instance.GetComp<CompVehicleHeatNet>();
@@ -4770,6 +4778,16 @@ namespace SaveOurShip2
         {
 			if(selPawn.Faction != __instance.Faction)
 				__result=new List<FloatMenuOption>();
+        }
+    }
+
+	[HarmonyPatch(typeof(PawnUtility), "IsTravelingInTransportPodWorldObject")]
+	public static class TEMPFixVFPrisonerFactionRandomize //Temporary until this fix is integrated into VF
+    {
+		public static void Postfix(Pawn pawn, ref bool __result)
+        {
+			if (ThingOwnerUtility.AnyParentIs<VehiclePawn>(pawn) || ThingOwnerUtility.AnyParentIs<AerialVehicleInFlight>(pawn))
+				__result = true;
         }
     }
 

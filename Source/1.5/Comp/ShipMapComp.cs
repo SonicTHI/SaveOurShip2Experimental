@@ -2271,6 +2271,23 @@ namespace SaveOurShip2
 				Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + shipIndex + " Removing with: " + core);
 				if (ShipGraveyard == null)
 					SpawnGraveyard();
+				foreach(Pawn pawn in map.mapPawns.AllPawnsSpawned)
+                {
+					if (pawn.Faction != Faction.OfPlayer && ship.Area.Contains(pawn.Position))
+					{
+						if (pawn is VehiclePawn vehicle)
+						{
+							vehicle.ignition.Drafted = false;
+							vehicle.DisembarkAll();
+						}
+						else
+						{
+							pawn.jobs?.StopAll();
+							if (pawn.TryGetLord(out Lord lord))
+								lord.RemovePawn(pawn);
+						}
+					}
+                }
 				ShipInteriorMod2.MoveShip(core, ShipGraveyard, IntVec3.Zero);
 			}
 			Log.Warning("SOS2: ".Colorize(Color.cyan) + map + " Ships remaining: " + ShipsOnMap.Count);

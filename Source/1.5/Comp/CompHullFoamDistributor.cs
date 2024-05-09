@@ -33,14 +33,14 @@ namespace SaveOurShip2
 			if (shipindex == -1)
 				yield break;
 
-			var ship = mapComp.ShipsOnMap[shipindex];
+			/*var ship = mapComp.ShipsOnMap[shipindex];
 			if (ship != null)
 			{
 				Command_Action foamFill = new Command_Action
 				{
 					action = delegate
 					{
-						FoamFill(ship);
+						ship.FoamFill();
 					},
 					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.FoamFill"),
 					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.FoamFillDesc"),
@@ -51,34 +51,7 @@ namespace SaveOurShip2
 					foamFill.Disable(TranslatorFormattedStringExtensions.Translate("SoS.FoamFillDisabled"));
 				}
 				yield return foamFill;
-			}
-		}
-		public void FoamFill(SpaceShipCache ship) //fill in missing plating or hull
-		{
-			//td needs to start from an attached part and fill outward
-			foreach (var b in ship.BuildingsDestroyed.Where(d => d.Item1.building.shipPart && d.Item1.Size.x == 1 && d.Item1.Size.z == 1))
-			{
-				var props = b.Item1.GetCompProperties<CompProps_ShipCachePart>();
-				if ((props.Plating && b.Item2.GetThingList(parent.Map).Any(t => t.TryGetComp<CompShipCachePart>()?.Props.Plating ?? false)) 
-					|| (props.Hull && b.Item2.GetThingList(parent.Map).Any(t => t.TryGetComp<CompShipCachePart>()?.Props.Hull ?? false)))
-				{
-					continue;
-				}
-				foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.fuelComp.Fuel > 0 && d.powerComp.PowerOn))
-				{
-					dist.fuelComp.ConsumeFuel(1);
-					Thing replacer;
-					if (props.Hull)
-						replacer = ThingMaker.MakeThing(ResourceBank.ThingDefOf.HullFoamWall);
-					else
-						replacer = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullfoamTile);
-
-					replacer.SetFaction(ship.Faction);
-					GenPlace.TryPlaceThing(replacer, b.Item2, parent.Map, ThingPlaceMode.Direct);
-					break;
-				}
-
-			}
+			}*/
 		}
 		public override void PostSpawnSetup(bool respawningAfterLoad)
 		{

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
+using Verse.Noise;
 
 
 namespace SaveOurShip2
@@ -73,32 +74,56 @@ namespace SaveOurShip2
 			{
 				return;
 			}
-			//List<Thing> toDestroy = new List<Thing>();
-			//List<Thing> toSpawn = new List<Thing>();
-			List<Thing> toConvert = new List<Thing>();
+			List<Thing> toDestroy = new List<Thing>();
+			List<Thing> toSpawn = new List<Thing>();
 			foreach (Thing t in c.GetThingList(parent.Map))
 			{
 				if (ShipInteriorMod2.archoConversions.ContainsKey(t.def))
 				{
-					t.TryGetComp<CompShipCachePart>().ArchoConvert = true;
-					toConvert.Add(t);
+					toDestroy.Add(t);
+					Thing replacement = ThingMaker.MakeThing(ShipInteriorMod2.archoConversions[t.def]);
+					replacement.Rotation = t.Rotation;
+					replacement.Position = t.Position;
+					replacement.SetFaction(Faction.OfPlayer);
+					/*var attachComp = t.TryGetComp<CompAttachBase>();
+					if (attachComp != null)
+					{
+						foreach (AttachableThing attach in attachComp.attachments)
+						{
+							attach.parent = replacement;
+						}
+						replacement.TryGetComp<CompAttachBase>().attachments.AddRange(new List<AttachableThing>(attachComp.attachments));
+						t.TryGetComp<CompAttachBase>().attachments.Clear();
+					}*/
+					int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
+					if (shipIndex > 0)
+					{
+						mapComp.ShipsOnMap[shipIndex].RemoveFromCache(t as Building, DestroyMode.Vanish);
+						mapComp.ShipsOnMap[shipIndex].AddToCache(replacement as Building);
+					}
+					toSpawn.Add(replacement);
 				}
 			}
-			if (toConvert.Count > 0)
+			if (toDestroy.Count > 0)
 			{
-				foreach (Thing t in toConvert)
+				ShipInteriorMod2.MoveShipFlag = true;
+				foreach (Thing t in toDestroy)
 				{
 					t.Destroy();
 				}
-			}
-			/*if (toDestroy.Count > 0)
-			{
-				TerrainDef terrain = parent.Map.terrainGrid.TerrainAt(c);
+				foreach (Thing replacement in toSpawn)
+				{
+					replacement.SpawnSetup(parent.Map, false);
+					FleckMaker.ThrowSmoke(replacement.DrawPos, parent.Map, 2);
+				}
+				parent.Map.roofGrid.SetRoof(c, ResourceBank.RoofDefOf.RoofShip);
+				ShipInteriorMod2.MoveShipFlag = false;
+				/*TerrainDef terrain = parent.Map.terrainGrid.TerrainAt(c);
 				parent.Map.terrainGrid.RemoveTopLayer(c, false);
 
-				if (terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipMech && terrain!= ResourceBank.TerrainDefOf.ShipWreckageTerrain && terrain!= ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam)
-					parent.Map.terrainGrid.SetTerrain(c, terrain);
-			}*/
+				if (terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShip && terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShipMech && terrain != ResourceBank.TerrainDefOf.ShipWreckageTerrain && terrain != ResourceBank.TerrainDefOf.FakeFloorInsideShipFoam)
+					parent.Map.terrainGrid.SetTerrain(c, terrain);*/
+			}
 		}
 
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()

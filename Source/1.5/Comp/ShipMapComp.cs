@@ -1109,7 +1109,7 @@ namespace SaveOurShip2
 					if (OriginMapComp.Range - mission.rangeTraveled < 65 && mission.liftedOffYet)
 						ShuttlesInRange.Add(mission.shuttle);
                 }
-				float bestThrustRatio = SlowestThrustToWeight() * 5f;
+				float bestThrustRatio = MapEnginePower * 5f;
 
 				if (bestThrustRatio >= 4f)
 					bestThrustRatio = 4f;
@@ -1430,6 +1430,10 @@ namespace SaveOurShip2
 		}
 		public void SlowTick(int tick)
 		{
+			foreach (SpaceShipCache ship in ShipsOnMap.Values)
+			{
+				ship.SlowTick();
+			}
 			if (ShipMapState == ShipMapState.inCombat)
 			{
 				if (Maintain) //distance maintain
@@ -2216,6 +2220,9 @@ namespace SaveOurShip2
 		}
 		public float SlowestThrustToWeight() //find worst t/w ship
 		{
+			if (ShipsOnMap.NullOrEmpty())
+				return 0f;
+
 			float enginePower = float.MaxValue;
 			foreach (SpaceShipCache ship in ShipsOnMap.Values)
 			{

@@ -6,6 +6,7 @@ using Verse;
 using RimWorld;
 using UnityEngine;
 using Vehicles;
+using static HarmonyLib.Code;
 
 namespace SaveOurShip2
 {
@@ -28,8 +29,10 @@ namespace SaveOurShip2
 		public HashSet<IntVec3> AreaDestroyed = new HashSet<IntVec3>(); //total area destroyed in combat
 		public HashSet<Building> Parts = new HashSet<Building>(); //shipParts only
 		public HashSet<Building> Buildings = new HashSet<Building>(); //all on ship parts, even partially
-		//for rebuild after battle, reset before combat, rebuild gizmo
+																	  //for rebuild after battle, reset before combat, rebuild gizmo
 		public HashSet<Tuple<ThingDef, IntVec3, Rot4>> BuildingsDestroyed = new HashSet<Tuple<ThingDef, IntVec3, Rot4>>();
+		//foam gens will try and fill this
+		public HashSet<Tuple<bool, IntVec3, int>> BuildingsToFoam = new HashSet<Tuple<bool, IntVec3, int>>();
 		public HashSet<Building> BuildingsNonRot = new HashSet<Building>();
 		public List<CompEngineTrail> Engines = new List<CompEngineTrail>();
 		public List<CompRCSThruster> RCSs = new List<CompRCSThruster>();
@@ -81,14 +84,14 @@ namespace SaveOurShip2
 					building.SetFaction(fac);
 			}
 			foreach (VehiclePawn shuttle in map.listerThings.GetThingsOfType<VehiclePawn>())
-            {
-				if (shuttle.Faction!=fac && Area.Contains(shuttle.Position))
-                {
+			{
+				if (shuttle.Faction != fac && Area.Contains(shuttle.Position))
+				{
 					shuttle.DisembarkAll();
 					shuttle.ignition.Drafted = false;
 					shuttle.SetFaction(fac);
-                }
-            }
+				}
+			}
 		}
 		//threat
 		public int BuildingCount = 0;
@@ -212,13 +215,15 @@ namespace SaveOurShip2
 			}
 			return enginePower;
 		}
-		public HashSet<int> DockedTo() //other ships docked to this
+		public HashSet<int> DockedTo() //all other ships docked to this
 		{
 			HashSet<int> dockedTo = new HashSet<int>();
 			foreach (Building_ShipAirlock b in mapComp.Docked.Where(d => d.dockedTo != null))
 			{
 				int i = mapComp.ShipIndexOnVec(b.Position);
 				int i2 = mapComp.ShipIndexOnVec(b.dockedTo.Position);
+				if (i < 0 || i2 < 0)
+					continue;
 				if (i == Index && i2 != Index) //dock on this, get docked
 				{
 					dockedTo.Add(i2);
@@ -565,6 +570,33 @@ namespace SaveOurShip2
 				}
 			}
 			return cells;
+		}
+
+		public void FoamFill()
+		{
+			//td needs to start from an attached part and fill outward
+			foreach (var b in BuildingsDestroyed.Where(d => d.Item1.building.shipPart && d.Item1.Size.x == 1 && d.Item1.Size.z == 1))
+			{
+				var props = b.Item1.GetCompProperties<CompProps_ShipCachePart>();
+				if ((props.Plating && b.Item2.GetThingList(Map).Any(t => t.TryGetComp<CompShipCachePart>()?.Props.Plating ?? false))
+					|| (props.Hull && b.Item2.GetThingList(Map).Any(t => t.TryGetComp<CompShipCachePart>()?.Props.Hull ?? false)))
+				{
+					continue;
+				}
+				foreach (CompHullFoamDistributor dist in FoamDistributors.Where(d => d.fuelComp.Fuel > 0 && d.powerComp.PowerOn))
+				{
+					dist.fuelComp.ConsumeFuel(1);
+					Thing replacer;
+					if (props.Hull)
+						replacer = ThingMaker.MakeThing(ResourceBank.ThingDefOf.HullFoamWall);
+					else
+						replacer = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullfoamTile);
+
+					replacer.SetFaction(Faction);
+					GenPlace.TryPlaceThing(replacer, b.Item2, Map, ThingPlaceMode.Direct);
+					break;
+				}
+			}
 		}
 
 		public float WeBeCrashing = 0;
@@ -928,6 +960,7 @@ namespace SaveOurShip2
 				MaxInvalidCorePath();
 				return true;
 			}
+
 			Log.Message("SOS2: ".Colorize(Color.cyan) + map + " Ship ".Colorize(Color.green) + Index + " ReplaceCore: Has 0 cores remaining.");
 			Core = null;
 			ResetCorePath();
@@ -1008,9 +1041,29 @@ namespace SaveOurShip2
 				}
 			}
 			//if wreck, move to grave
-			if (IsWreck && mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower != 0)
+			else if (IsWreck && mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower != 0)
 			{
 				mapComp.ShipsToMove.Add(Index);
+			}
+		}
+		public void SlowTick()
+		{
+			//fill lowest path vec/sec/foamdist
+			if (!IsWreck &&(BuildingsToFoam.Any() && FoamDistributors.Any()))
+			{
+				foreach (CompHullFoamDistributor dist in FoamDistributors.Where(d => d.fuelComp.Fuel > 0 && d.powerComp.PowerOn))
+				{
+					Tuple<bool, IntVec3, int> toReplace = BuildingsToFoam.OrderBy(t => t.Item3).First(); 
+
+					Thing replacer = ThingMaker.MakeThing(toReplace.Item1 ? ResourceBank.ThingDefOf.HullFoamWall : ResourceBank.ThingDefOf.ShipHullfoamTile);
+
+					replacer.SetFaction(Faction);
+					if (GenPlace.TryPlaceThing(replacer, toReplace.Item2, map, ThingPlaceMode.Direct))
+					{
+						BuildingsToFoam.Remove(toReplace);
+						dist.fuelComp.ConsumeFuel(1);
+					}
+				}
 			}
 		}
 		public void CheckForDetach(List<IntVec3> areaDestroyed)

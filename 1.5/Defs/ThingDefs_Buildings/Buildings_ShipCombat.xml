@@ -617,7 +617,7 @@
 			<turretGunDef>ShipTurret_ACITop</turretGunDef>
 			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
 			<turretBurstCooldownTime>10.0</turretBurstCooldownTime>
-			<turretTopDrawSize>3</turretTopDrawSize>
+			<turretTopDrawSize>2</turretTopDrawSize>
 		</building>
 		<costList>
 			<Steel>100</Steel>
@@ -667,7 +667,7 @@
 			<texPath>Things/Projectile/ShipTurretACI</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<shaderType>TransparentPostLight</shaderType>
-			<drawSize>(2,2)</drawSize>
+			<drawSize>(1,1)</drawSize>
 		</graphicData>
 		<thingClass>SaveOurShip2.Projectile_ShipFake</thingClass>
 		<projectile>
@@ -797,7 +797,7 @@
 			<turretGunDef>ShipTurret_ACIITop</turretGunDef>
 			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
 			<turretBurstCooldownTime>20.0</turretBurstCooldownTime>
-			<turretTopDrawSize>3</turretTopDrawSize>
+			<turretTopDrawSize>5</turretTopDrawSize>
 		</building>
 		<costList>
 			<Steel>150</Steel>
@@ -867,7 +867,7 @@
 			<texPath>Things/Projectile/ShipTurretACII</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
 			<shaderType>TransparentPostLight</shaderType>
-			<drawSize>(4,4)</drawSize>
+			<drawSize>(5,5)</drawSize>
 		</graphicData>
 		<projectile>
 			<explosionRadius>2.1</explosionRadius>
@@ -1286,6 +1286,7 @@
 			<turretGunDef>ShipTurret_LaserTop_Large</turretGunDef>
 			<turretBurstWarmupTime>1.0</turretBurstWarmupTime>
 			<turretBurstCooldownTime>35.0</turretBurstCooldownTime>
+			<turretTopDrawSize>4</turretTopDrawSize>
 		</building>
 		<costList>
 			<Steel>240</Steel>
@@ -1410,7 +1411,7 @@
 			<turretGunDef>ShipTurret_PlasmaTop</turretGunDef>
 			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
 			<turretBurstCooldownTime>25.0</turretBurstCooldownTime>
-			<turretTopDrawSize>4</turretTopDrawSize>
+			<turretTopDrawSize>2</turretTopDrawSize>
 		</building>
 		<costList>
 			<Steel>80</Steel>
@@ -1578,7 +1579,7 @@
 			<turretGunDef>ShipTurret_PlasmaTop_Large</turretGunDef>
 			<turretBurstWarmupTime>1.5</turretBurstWarmupTime>
 			<turretBurstCooldownTime>35.0</turretBurstCooldownTime>
-			<turretTopDrawSize>4</turretTopDrawSize>
+			<turretTopDrawSize>5</turretTopDrawSize>
 		</building>
 		<costList>
 			<Steel>240</Steel>
@@ -1721,7 +1722,7 @@
 			<turretGunDef>ShipTurret_KineticTop</turretGunDef>
 			<turretBurstWarmupTime>0.5</turretBurstWarmupTime>
 			<turretBurstCooldownTime>25.0</turretBurstCooldownTime>
-			<turretTopDrawSize>3</turretTopDrawSize>
+			<turretTopDrawSize>2</turretTopDrawSize>
 		</building>
 		<costList>
 			<Steel>80</Steel>
@@ -1877,7 +1878,7 @@
 			<turretGunDef>ShipTurret_KineticTop_Large</turretGunDef>
 			<turretBurstWarmupTime>1.5</turretBurstWarmupTime>
 			<turretBurstCooldownTime>35.0</turretBurstCooldownTime>
-			<turretTopDrawSize>3</turretTopDrawSize>
+			<turretTopDrawSize>4.6</turretTopDrawSize>
 		</building>
 		<costList>
 			<Steel>240</Steel>
@@ -1997,7 +1998,7 @@
 			<texPath>Things/Building/Ship/SpinalMountEmitter</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(5,3.2)</drawSize>
+			<drawSize>(5,3)</drawSize>
 		</graphicData>
 		<size>(5,3)</size>
 		<rotatable>true</rotatable>
@@ -2048,7 +2049,7 @@
 			<texPath>Things/Building/Ship/SpinalMountAmplifier</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(5,1.2)</drawSize>
+			<drawSize>(5,1)</drawSize>
 		</graphicData>
 		<size>(5,1)</size>
 		<rotatable>true</rotatable>
@@ -2100,7 +2101,7 @@
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Laser</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(5,4.2)</drawSize>
+			<drawSize>(5,5)</drawSize>
 		</graphicData>
 		<statBases>
 			<MaxHitPoints>1250</MaxHitPoints>
@@ -2157,6 +2158,7 @@
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
 			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
 		</building>
+		<size>(5,4)</size>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryWeapon">
 		<defName>ShipTurret_SpinalMountTopLaser</defName>
@@ -2209,7 +2211,7 @@
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Plasma</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(5,4.2)</drawSize>
+			<drawSize>(5,5)</drawSize>
 		</graphicData>
 		<statBases>
 			<MaxHitPoints>1250</MaxHitPoints>
@@ -2265,6 +2267,7 @@
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
 			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
 		</building>
+		<size>(5,4)</size>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryWeapon">
 		<defName>ShipTurret_SpinalMountTopPlasma</defName>
@@ -2338,7 +2341,7 @@
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Kinetic</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(5,4.2)</drawSize>
+			<drawSize>(5,5)</drawSize>
 		</graphicData>
 		<statBases>
 			<MaxHitPoints>1250</MaxHitPoints>
@@ -2394,6 +2397,7 @@
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
 			<turretBurstCooldownTime>45.0</turretBurstCooldownTime>
 		</building>
+		<size>(5,4)</size>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryWeapon">
 		<defName>ShipTurret_SpinalMountTopKinetic</defName>

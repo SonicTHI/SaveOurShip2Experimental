@@ -1166,7 +1166,7 @@
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Psychic</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(5,4.2)</drawSize>
+			<drawSize>(5,5)</drawSize>
 		</graphicData>
 		<statBases>
 			<MaxHitPoints>1250</MaxHitPoints>
@@ -1222,6 +1222,7 @@
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
 			<turretBurstCooldownTime>90.0</turretBurstCooldownTime>
 		</building>
+		<size>(5,4)</size>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryWeapon">
 		<defName>ShipTurret_SpinalMountTopPsychic</defName>
@@ -1310,7 +1311,7 @@
 			<texPath>Things/Building/Ship/SpinalMountBarrel_Shipeater</texPath>
 			<graphicClass>Graphic_Multi</graphicClass>
 			<shaderType>CutoutComplex</shaderType>
-			<drawSize>(5,4.2)</drawSize>
+			<drawSize>(5,5)</drawSize>
 		</graphicData>
 		<statBases>
 			<MaxHitPoints>1250</MaxHitPoints>
@@ -1363,6 +1364,7 @@
 			<turretBurstWarmupTime>2</turretBurstWarmupTime>
 			<turretBurstCooldownTime>90.0</turretBurstCooldownTime>
 		</building>
+		<size>(5,4)</size>
 	</ThingDef>
 	<ThingDef ParentName="BaseShipArtilleryWeapon">
 		<defName>ShipTurret_SpinalMountTopMechanite</defName>

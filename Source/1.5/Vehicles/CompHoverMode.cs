@@ -27,7 +27,7 @@ namespace SaveOurShip2.Vehicles
             {
                 defaultLabel = Translator.Translate("SoS.HoverJump"),
                 defaultDesc = Translator.Translate("SoS.HoverJump.Desc"),
-                icon = ContentFinder<Texture2D>.Get("UI/Hover_On_Icon"),
+                icon = ContentFinder<Texture2D>.Get("UI/ShuttleLocalFlight"),
                 action = delegate()
                 {
                     Vehicle.CompFueledTravel.ConsumeFuel(5);

@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f30";
+		public const string SOS2EXPversion = "V101f31";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -1943,10 +1943,6 @@ namespace SaveOurShip2
 			HashSet<int> shipIndexes = new HashSet<int> { shipIndex };
 			var ship = sourceMapComp.ShipsOnMap[shipIndex];
 			HashSet<IntVec3> sourceArea = new HashSet<IntVec3>(ship.Area);
-			if (sourceMapComp.Docked.Any()) //undock all
-			{
-				sourceMapComp.UndockAllFrom(shipIndex);
-			}
 
 			if (targetMap == null)
 				targetMap = core.Map;
@@ -2267,6 +2263,11 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveThings");
+
+			if (sourceMapComp.Docked.Any()) //undock all
+			{
+				sourceMapComp.UndockAllFrom(shipIndex);
+			}
 
 			//adjust cache
 			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache

@@ -7,6 +7,7 @@ using Verse;
 using Verse.Sound;
 using RimWorld;
 using Verse.AI;
+using HarmonyLib;
 
 namespace SaveOurShip2
 {
@@ -64,11 +65,6 @@ namespace SaveOurShip2
 		bool isWreckTile;
 
 		public HashSet<IntVec3> cellsUnder;
-		public bool FoamFill = false;
-		public bool ArchoConvert = false;
-		IntVec3 parentPos;
-		Rot4 parentRot;
-		ThingDef parentDef;
 		Map map;
 		public ShipMapComp mapComp;
 		Faction fac;
@@ -180,7 +176,7 @@ namespace SaveOurShip2
 			}
 			if (allOnSame) //part placed fully on plating, no merges
 			{
-				int shipIndex = mapComp.ShipIndexOnVec(parentPos);
+				int shipIndex = mapComp.ShipIndexOnVec(parent.Position);
 				if (shipIndex > 0)
 				{
 					mapComp.ShipsOnMap[shipIndex].AddToCache(parent as Building);
@@ -250,7 +246,7 @@ namespace SaveOurShip2
 						{
 							partExists = true;
 						}
-						else if (!ArchoConvert)
+						else
 						{
 							if (b is Building_ShipBridge br)
 								br.terminate = true;
@@ -279,22 +275,13 @@ namespace SaveOurShip2
 
 			var ship = mapComp.ShipsOnMap[shipIndex];
 			ship.RemoveFromCache(parent as Building, mode);
-			if (!parent.def.building.shipPart || ArchoConvert)
+			if (!parent.def.building.shipPart)
 			{
-				parentDef = parent.def;
-				parentPos = parent.Position;
-				parentRot = parent.Rotation;
 				return;
 			}
-			else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && ship.FoamDistributors.Any() && parent.def.Size == IntVec2.One && (Props.Hull && ShipInteriorMod2.AnyAdjRoomNotOutside(parent.Position, map) || (Props.Plating && !ShipInteriorMod2.ExposedToOutside(parent.Position.GetRoom(map)))))
+			else if ((mode == DestroyMode.KillFinalize || mode == DestroyMode.KillFinalizeLeavingsOnly) && parent.def.Size == IntVec2.One && !Props.isCorner && !ship.IsWreck && ship.FoamDistributors.Any())
 			{
-				//replace part with foam, no detach checks
-				foreach (CompHullFoamDistributor dist in ship.FoamDistributors.Where(d => d.fuelComp.Fuel > 0 && d.powerComp.PowerOn))
-				{
-					dist.fuelComp.ConsumeFuel(1);
-					FoamFill = true;
-					return;
-				}
+				ship.BuildingsToFoam.Add(new Tuple<bool, IntVec3, int>(Props.isHull, parent.Position, mapComp.MapShipCells[parent.Position].Item2));
 			}
 			foreach (IntVec3 vec in areaDestroyed)
 			{
@@ -369,26 +356,6 @@ namespace SaveOurShip2
 					if (Props.roof)
 						map.roofGrid.SetRoof(pos, null);
 				}
-			}
-			if (ArchoConvert)
-			{
-				Thing replacer = ThingMaker.MakeThing(ShipInteriorMod2.archoConversions[parentDef]);
-				replacer.Rotation = parentRot;
-				replacer.Position = parentPos;
-				replacer.SetFaction(fac);
-				replacer.SpawnSetup(map, false);
-				FleckMaker.ThrowSmoke(replacer.DrawPos, map, 2);
-			}
-			else if (FoamFill)
-			{
-				Thing replacer;
-				if (Props.isHull)
-					replacer = ThingMaker.MakeThing(ResourceBank.ThingDefOf.HullFoamWall);
-				else
-					replacer = ThingMaker.MakeThing(ResourceBank.ThingDefOf.ShipHullfoamTile);
-
-				replacer.SetFaction(fac);
-				GenPlace.TryPlaceThing(replacer, cellsUnder.First(), map, ThingPlaceMode.Direct);
 			}
 		}
 		public override void PostDraw()

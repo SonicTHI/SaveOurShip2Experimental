@@ -351,7 +351,7 @@
 		<defName>ShipInside_PassiveVentArchotech</defName>
 		<label>archotech ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
-		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.\n\nCan also heat rooms with electricity.</description>
+		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.\n\nIn an emergency, ship vents can remove superheated air and eject it from the ship. Triggering this feature will damage the ship's ventilation; for every four squares of the room, one point of damage will be dealt to a life-support system.</description>
 		<thingClass>SaveOurShip2.Building_ShipVent</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>
@@ -1507,8 +1507,8 @@
 	</ThingDef>
 	<ThingDef ParentName="BaseMakeableGrenade">
 		<defName>Weapon_GrenadeMechanite</defName>
-		<label>mechanite cocktails</label>
-		<description>Glass bottles filled with disassembler mechanites. A favorite weapon of extremely advanced hooligans.</description>
+		<label>pink goo</label>
+		<description>Glass bottles filled with a strange pink substance. The spore suggested that you throw these at your enemies.</description>
 		<tickerType>Normal</tickerType>
 		<graphicData>
 			<texPath>Things/Item/Equipment/WeaponRanged/Molotov</texPath>
@@ -1540,7 +1540,7 @@
 		</thingCategories>
 		<verbs>
 			<li>
-				<label>throw mechanites</label>
+				<label>throw</label>
 				<verbClass>Verb_LaunchProjectile</verbClass>
 				<hasStandardCommand>true</hasStandardCommand>
 				<range>12.9</range>
@@ -1564,6 +1564,8 @@
 			</li>
 		</comps>
 		<generateAllowChance>0</generateAllowChance>
+		<generateCommonality>0</generateCommonality>
+		<tradeability>None</tradeability>
 	</ThingDef>
 	<ThingDef Name="BaseMechaniteProjectile" ParentName="BaseGrenadeProjectile" Abstract="true">
 		<projectile>

@@ -1,6 +1,8 @@
 ﻿using System;
 using Verse;
 using RimWorld;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SaveOurShip2
 {
@@ -29,5 +31,5 @@ namespace SaveOurShip2
 			}
 			return true;
 		}
-	}
+    }
 }

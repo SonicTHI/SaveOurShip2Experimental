@@ -29,7 +29,12 @@ namespace SaveOurShip2
 					targetMapLarger = true;
 				}
 				AcceptanceReport result = true;
-				foreach (SketchEntity current in ship.shipSketch.Entities.Concat(ship.extenderSketch?.Entities))
+				IEnumerable<SketchEntity> entities;
+				if (ship.extenderSketch != null)
+					entities = ship.shipSketch.Entities.Concat(ship.extenderSketch?.Entities);
+				else
+					entities = ship.shipSketch.Entities;
+				foreach (SketchEntity current in entities)
 				{
 					IntVec3 vec = loc + current.pos;
 					if (!vec.InBounds(map))

@@ -4767,6 +4767,36 @@ namespace SaveOurShip2
 		}
     }
 
+	[HarmonyPatch(typeof(ReverseDesignatorDatabase), "InitDesignators")]
+	public static class AddRestoreDesignator
+    {
+		public static void Postfix(List<Designator> ___desList)
+        {
+			___desList.Add(new Designator_RestoreHull());
+        }
+    }
+
+	[HarmonyPatch(typeof(GenConstruct), "BlocksConstruction")]
+	public static class ReplaceWrecksAndFoam
+    {
+		public static void Postfix(Thing constructible, Thing t, ref bool __result)
+        {
+			BuildableDef actualDef;
+			if (constructible is Blueprint blueprint)
+				actualDef = blueprint.def.entityDefToBuild;
+			else if (constructible is Frame frame)
+				actualDef = frame.BuildDef;
+			else
+				actualDef = constructible.def;
+			if (actualDef == ResourceBank.ThingDefOf.ShipHullTile)
+				__result = false;
+			else if (actualDef == ResourceBank.ThingDefOf.Ship_Beam && (t.def == ResourceBank.ThingDefOf.Ship_Beam_Wrecked || t.def == ResourceBank.ThingDefOf.HullFoamWall))
+				__result = false;
+			else if (actualDef == ResourceBank.ThingDefOf.ShipAirlock && t.def == ResourceBank.ThingDefOf.ShipAirlockWrecked)
+				__result = false;
+		}
+    }
+
 	//TEMPORARY until I talk to Phil and see how to fix this properly
 	[HarmonyPatch(typeof(CompUpgradeTree), "CompTickRare")]
 	public static class TEMPStopRedErrorOnTakeoff

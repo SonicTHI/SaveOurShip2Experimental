@@ -377,6 +377,15 @@
 	<SoS.TargetShuttlesDesc>Choose where shuttles on strafing and bombing missions should aim</SoS.TargetShuttlesDesc>
 	<SoS.ToggleField>Toggle hull access</SoS.ToggleField>
 	<SoS.ToggleFieldDesc>Allow pawns and vehicles to pass through this region of permeable hull.</SoS.ToggleFieldDesc>
+	<SoSRestoreHull>Restore hull</SoSRestoreHull>
+	<SoSRestoreHullDesc>Construct new hull in place of wreckage</SoSRestoreHullDesc>
+	<SoSAlreadyRestoring>Already restoring this area!</SoSAlreadyRestoring>
+	<SoSMustDesignateWreckage>Must designate wrecked starship hull</SoSMustDesignateWreckage>
+	<SoS.UnDockWarning>Warning: Moving a ship while docked will release all docking clamps.</SoS.UnDockWarning>
+	<SoS.ExpelSuperheatedAir>Expel superheated air</SoS.ExpelSuperheatedAir>
+	<SoS.ExpelSuperheatedAirDesc>Use this vent to expel superheated air from the room. The process will damage your ship's life-support systems for one point per four tiles in the room, split evenly.</SoS.ExpelSuperheatedAirDesc>
+	<SoS.AirNotSuperheated>Air is not superheated</SoS.AirNotSuperheated>
+	<SoS.NoLifeSupport>No active life support</SoS.NoLifeSupport>
 	
 	<!-- obsolete/unused
 	<SoS.PirateTradeEmpire>Our act of piracy against the Empire has not gone unnoticed!</SoS.PirateTradeEmpire>

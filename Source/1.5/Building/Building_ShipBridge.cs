@@ -659,7 +659,7 @@ namespace SaveOurShip2
 							groupable = false,
 							action = delegate
 							{
-								Ship.CreateShipSketchIfFuelPct(0.01f, Map);
+								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(0.01f, Map); }, mapComp, shipIndex);
 							},
 							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Move"),
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveDesc"),
@@ -671,7 +671,7 @@ namespace SaveOurShip2
 							groupable = false,
 							action = delegate
 							{
-								Ship.CreateShipSketchIfFuelPct(0.01f, Map, 2);
+								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(0.01f, Map, 2); }, mapComp, shipIndex);
 							},
 							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveFlip"),
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveFlipDesc"),
@@ -683,7 +683,7 @@ namespace SaveOurShip2
 							groupable = false,
 							action = delegate
 							{
-								Ship.CreateShipSketchIfFuelPct(0.01f, Map, 1);
+								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(0.01f, Map, 1); }, mapComp, shipIndex);
 							},
 							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveRot"),
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveRotDesc"),
@@ -737,8 +737,7 @@ namespace SaveOurShip2
 								groupable = false,
 								action = delegate
 								{
-									mapComp.MoveToMap = m;
-									Ship.CreateShipSketchIfFuelPct(0.1f, m, 0, true);
+									ShipInteriorMod2.UnDockWarning(delegate { mapComp.MoveToMap = m; Ship.CreateShipSketchIfFuelPct(0.1f, m, 0, true); }, mapComp, shipIndex);
 								},
 								defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Land") + " (" + m.Parent.Label + ")",
 								defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.LandDesc") + m.Parent.Label,

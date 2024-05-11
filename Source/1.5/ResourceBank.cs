@@ -133,6 +133,7 @@ namespace SaveOurShip2
 			public static ThingDef Shuttle_Plasma;
 			public static ThingDef BlackBoxAI;
 			public static ThingDef Ship_DamagedReactor;
+			public static ThingDef Weapon_GrenadeMechanite;
 			//vanilla defs
 			public static ThingDef Turret_Autocannon;
 			public static ThingDef Turret_Sniper;

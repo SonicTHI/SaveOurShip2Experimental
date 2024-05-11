@@ -326,7 +326,7 @@
 		<defName>ShipInside_PassiveVentMechanoid</defName>
 		<label>mechanoid ship vent</label>
 		<designatorDropdown>Ship_Vents</designatorDropdown>
-		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.\n\nCan also heat rooms with electricity.</description>
+		<description>Exchanges heat with the coolant network, cooling or heating a ship's interior to the desired temperature.\n\nIn an emergency, ship vents can remove superheated air and eject it from the ship. Triggering this feature will damage the ship's ventilation; for every four squares of the room, one point of damage will be dealt to a life-support system.</description>
 		<thingClass>SaveOurShip2.Building_ShipVent</thingClass>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<category>Building</category>

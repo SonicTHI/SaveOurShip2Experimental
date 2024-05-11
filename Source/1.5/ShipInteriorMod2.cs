@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f32";
+		public const string SOS2EXPversion = "V101f33";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -1158,7 +1158,7 @@ namespace SaveOurShip2
 									c.innerContainer.TryAdd(item, true);
 								}
 							}
-							else if (isDungeon && b is Building_CryptosleepCasket crypto && Rand.Chance(0.05f))
+							else if (b is Building_CryptosleepCasket crypto && Rand.Chance(0.05f))
                             {
 								Pawn sleeper = PawnGenerator.GeneratePawn(new PawnGenerationRequest(DefDatabase<PawnKindDef>.GetNamed("SpaceCrewEVA"), Faction.OfAncients, certainlyBeenInCryptosleep: true));
 								HealthUtility.DamageUntilDowned(sleeper);
@@ -1397,15 +1397,23 @@ namespace SaveOurShip2
 					refuelComp?.ConsumeFuel(refuelComp.Fuel);
 					btd.Destroy();
 				}
-				//td remove floor, roof?
+				//td remove floors?
 
 				//pawns
 				List<Pawn> pawnsToKill = new List<Pawn>();
-				foreach (Pawn p in pawnsOnShip.Where(pawn=>pawn.RaceProps.IsFlesh))
+				foreach (Pawn p in pawnsOnShip)
 				{
-					if (wreckLevel > 2)
+					if (wreckLevel == 5 && !p.RaceProps.IsFlesh)
+					{
+						continue;
+					}
+					else if (wreckLevel > 2)
+					{
+						if (!p.RaceProps.IsFlesh && Rand.Chance(0.1f)) //small chance for derp mechs
+							continue;
 						HealthUtility.DamageUntilDead(p);
-					if (wreckLevel == 2)
+					}
+					else if (wreckLevel == 2)
 					{
 						int chance = Rand.RangeInclusive(1, 3);
 						if (chance == 1)

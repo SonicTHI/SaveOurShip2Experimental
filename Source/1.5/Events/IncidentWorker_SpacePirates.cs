@@ -11,7 +11,7 @@ namespace SaveOurShip2
 		{
 			Map map = (Map)parms.target;
 			var mapComp = map.GetComponent<ShipMapComp>();
-			if (mapComp.ShipMapState != ShipMapState.nominal || mapComp.NextTargetMap != null || ModSettings_SoS.frequencySoS == 0 || Find.TickManager.TicksGame < mapComp.LastAttackTick + 300000 / ModSettings_SoS.frequencySoS)
+			if (mapComp.ShipMapState != ShipMapState.nominal || mapComp.Cloaks.Any(c => c.active) || mapComp.NextTargetMap != null || ModSettings_SoS.frequencySoS == 0 || Find.TickManager.TicksGame < mapComp.LastAttackTick + 300000 / ModSettings_SoS.frequencySoS)
 				return false;
 
 			foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks)

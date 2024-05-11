@@ -3170,7 +3170,7 @@
 		<comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<basePowerConsumption>1400</basePowerConsumption>
+				<basePowerConsumption>1100</basePowerConsumption>
 			</li>
 			<li Class="CompProperties_Styleable"/>
 			<li Class="CompProperties_Glower">

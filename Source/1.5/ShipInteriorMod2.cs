@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f34";
+		public const string SOS2EXPversion = "V101f35";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -1237,8 +1237,7 @@ namespace SaveOurShip2
 							thing = ThingMaker.MakeThing(ThingDef.Named(partDef.defName.Substring(0, partDef.defName.Length - 8)));
 						if (thing is Pawn p)
 						{
-							ShipPawnGen(p, isDungeon);
-							lord?.AddPawn(p);
+							ShipPawnGen(p, isDungeon, lord);
 							pawnsOnShip.Add(p);
 						}
 						else if (thing is Hive)
@@ -1268,8 +1267,7 @@ namespace SaveOurShip2
 						{
 							if (thing is Pawn p)
 							{
-								ShipPawnGen(p, isDungeon);
-								lord?.AddPawn(p);
+								ShipPawnGen(p, isDungeon, lord);
 								pawnsOnShip.Add(p);
 							}
 							else if (thing is Hive)
@@ -1488,7 +1486,7 @@ namespace SaveOurShip2
 				}
 			}
 		}
-		private static void ShipPawnGen(Pawn p, bool isDungeon) //td make proper pawngen req?
+		private static void ShipPawnGen(Pawn p, bool isDungeon, Lord lord) //td make proper pawngen req?
 		{
 			if (p.RaceProps.IsMechanoid)
 			{
@@ -1506,6 +1504,10 @@ namespace SaveOurShip2
 				p.ageTracker.AgeBiologicalTicks = 36000000;
 				p.ageTracker.AgeChronologicalTicks = 36000000;
 			}
+			if (p.IsNonMutantAnimal && p.RaceProps.wildness <= 0.5f)
+				p.SetFactionDirect(Faction.OfAncients);
+			else
+				lord?.AddPawn(p);
 		}
 		public static void PostGenerateShipDef(Map map, bool clearArea, List<IntVec3> shipArea, List<Thing> planters)
 		{

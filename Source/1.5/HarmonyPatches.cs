@@ -1254,12 +1254,12 @@ namespace SaveOurShip2
 	{
 		public static bool Prefix(Building_Door door, Pawn pawn)
 		{
+			if (pawn.Faction != Faction.OfPlayer && pawn.HostFaction != Faction.OfPlayer)
+			{
+				return false;
+			}
 			if (door.Map.IsSpace())
 			{
-				if (pawn.Faction != Faction.OfPlayer && pawn.HostFaction != Faction.OfPlayer)
-				{
-					return false;
-				}
 				door.Map.fogGrid.Unfog(door.Position);
 				for (int i = 0; i < 4; i++)
 				{

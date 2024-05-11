@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f33";
+		public const string SOS2EXPversion = "V101f34";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -1934,10 +1934,10 @@ namespace SaveOurShip2
 
 			MoveShipFlag = true;
 			shipOriginMap = null;
-			bool playerMove = core.Faction == Faction.OfPlayer;
 			Map sourceMap = core.Map;
 			bool sourceMapIsSpace = sourceMap.IsSpace();
 			var sourceMapComp = sourceMap.GetComponent<ShipMapComp>();
+			bool playerMove = core.Faction == Faction.OfPlayer && sourceMapComp.ShipMapState != ShipMapState.inCombat;
 			int shipIndex = sourceMapComp.ShipIndexOnVec(core.Position);
 			if (shipIndex == -1)
 			{
@@ -1960,9 +1960,10 @@ namespace SaveOurShip2
 			var targetMapComp = targetMap.GetComponent<ShipMapComp>();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
 
-			//Log.Message("Area: " + ship.Area.Count);
-
-			//HashSet<Zone> zonesToDestroy = new HashSet<Zone>();
+			if (!playerMove && sourceMapComp.Docked.Any()) //undock all in combat
+			{
+				sourceMapComp.UndockAllFrom(shipIndex);
+			}
 			foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
@@ -2271,11 +2272,6 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveThings");
-
-			/*if (sourceMapComp.Docked.Any()) //undock all
-			{
-				sourceMapComp.UndockAllFrom(shipIndex);
-			}*/
 
 			//adjust cache
 			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache

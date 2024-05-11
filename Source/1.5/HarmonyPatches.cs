@@ -1249,6 +1249,58 @@ namespace SaveOurShip2
 		}
 	}
 
+	[HarmonyPatch(typeof(FogGrid), "Notify_PawnEnteringDoor")]
+	public static class UnFogOnDoorEnterSpaceVersion
+	{
+		public static bool Prefix(Building_Door door, Pawn pawn)
+		{
+			if (door.Map.IsSpace())
+			{
+				if (pawn.Faction != Faction.OfPlayer && pawn.HostFaction != Faction.OfPlayer)
+				{
+					return false;
+				}
+				door.Map.fogGrid.Unfog(door.Position);
+				for (int i = 0; i < 4; i++)
+				{
+					IntVec3 intVec = door.Position + GenAdj.CardinalDirections[i];
+					if (intVec.InBounds(door.Map) && intVec.Fogged(door.Map))
+					{
+						Building edifice = intVec.GetEdifice(door.Map);
+						if (edifice == null || !edifice.def.MakeFog)
+						{
+							foreach (IntVec3 v in intVec.GetRoom(door.Map).Cells) //unfog entire room
+							{
+								door.Map.fogGrid.Unfog(v);
+							}
+							foreach (IntVec3 v in intVec.GetRoom(door.Map).BorderCells) //and border
+							{
+								door.Map.fogGrid.Unfog(v);
+							}
+						}
+						else
+						{
+							door.Map.fogGrid.Unfog(intVec);
+						}
+					}
+				}
+				for (int j = 0; j < 8; j++)
+				{
+					IntVec3 c2 = door.Position + GenAdj.AdjacentCells[j];
+					if (c2.InBounds(door.Map))
+					{
+						Building edifice2 = c2.GetEdifice(door.Map);
+						if (edifice2 != null && edifice2.def.MakeFog)
+						{
+							door.Map.fogGrid.Unfog(c2);
+						}
+					}
+				}
+				return false;
+			}
+			return true;
+		}
+	}
 
 	[HarmonyPatch(typeof(SectionLayer_FogOfWar), "Regenerate")]
 	public static class DontDrawFogOnShips //toggles fogged cells over ship hull when mesh is made

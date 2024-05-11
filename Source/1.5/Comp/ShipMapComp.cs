@@ -1119,7 +1119,7 @@ namespace SaveOurShip2
 					if (OriginMapComp.Range - mission.rangeTraveled < 65 && mission.liftedOffYet)
 						ShuttlesInRange.Add(mission.shuttle);
                 }
-				float bestThrustRatio = MapEnginePower * 5f;
+				float bestThrustRatio = MapEnginePower / 8f;
 
 				if (bestThrustRatio >= 4f)
 					bestThrustRatio = 4f;

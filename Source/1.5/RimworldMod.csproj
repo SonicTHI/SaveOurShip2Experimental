@@ -112,6 +112,7 @@
     <Compile Include="CompProps\CompProps_CryptoCocoon.cs" />
     <Compile Include="Comp\CompCryptoCocoon.cs" />
     <Compile Include="Comp\CompShuttleAutoDoc.cs" />
+    <Compile Include="Designator_RestoreHull.cs" />
     <Compile Include="Obs-Shuttle\TransportPodsArrivalAction_MoonBase.cs" />
     <Compile Include="Obs-Shuttle\TransportPodsArrivalAction_ShipAssault.cs" />
     <Compile Include="BiomeWorker_OuterSpace.cs" />

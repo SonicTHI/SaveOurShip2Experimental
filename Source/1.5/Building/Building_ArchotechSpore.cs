@@ -227,7 +227,7 @@ namespace SaveOurShip2
 		void PlayPrank(int tick)
 		{
 			lastPrankTick = tick + Rand.Range(40000, 80000);
-			int prank = Rand.RangeInclusive(0, 5);
+			int prank = Rand.RangeInclusive(0, 6);
 			if (prank == 0) //cancer
 			{
 				Find.LetterStack.ReceiveLetter("SoS.ArchotechPrank".Translate(), "SoS.ArchotechPrankCancer".Translate(), LetterDefOf.NegativeEvent);
@@ -342,6 +342,11 @@ namespace SaveOurShip2
 					p.needs.mood.thoughts.memories.TryGainMemory(ThoughtDef.Named("ArchotechToldSecret"), victim);
 				}
 			}
+            else
+            {
+				Find.LetterStack.ReceiveLetter("SoS.ArchotechPrank".Translate(), "SoS.ArchotechPrankMechanites".Translate(), LetterDefOf.NegativeEvent);
+				GenPlace.TryPlaceThing(ThingMaker.MakeThing(ResourceBank.ThingDefOf.Weapon_GrenadeMechanite), InteractionCell, Map, ThingPlaceMode.Near);
+            }
 			Consciousness.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.Catharsis);
 		}
 

@@ -406,6 +406,14 @@ namespace SaveOurShip2
 			{
 				map.terrainGrid.RemoveTopLayer(v);
 			}
+			if (parent.def == ResourceBank.ThingDefOf.ShipHullfoamTile || parent.def == ResourceBank.ThingDefOf.ShipHullTileWrecked)
+				return;
+			Thing otherHullTile = v.GetThingList(map).Where(thing => thing.def == ResourceBank.ThingDefOf.ShipHullfoamTile || thing.def == ResourceBank.ThingDefOf.ShipHullTileWrecked).FirstOrDefault();
+			if (otherHullTile != null)
+			{
+				otherHullTile.Destroy();
+				map.terrainGrid.RemoveTopLayer(v);
+			}
 		}
 	}
 }

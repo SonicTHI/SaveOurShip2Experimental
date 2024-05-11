@@ -219,4 +219,13 @@
 			<ResearchTabShip />
 		</value>
 	</Operation>
+	
+	<!-- Designators -->
+	<Operation Class="PatchOperationAdd"> 
+		<xpath>/Defs/DesignationCategoryDef[defName="Orders"]/specialDesignatorClasses</xpath>
+		<value>
+			<li>SaveOurShip2.Designator_RestoreHull</li>
+		</value>
+	</Operation>
+	
 </Patch>

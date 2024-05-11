@@ -2264,10 +2264,10 @@ namespace SaveOurShip2
 			if (devMode)
 				watch.Record("moveThings");
 
-			if (sourceMapComp.Docked.Any()) //undock all
+			/*if (sourceMapComp.Docked.Any()) //undock all
 			{
 				sourceMapComp.UndockAllFrom(shipIndex);
-			}
+			}*/
 
 			//adjust cache
 			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache
@@ -2804,6 +2804,32 @@ namespace SaveOurShip2
 			dialog_NodeTree.closeOnCancel = true;
 			Find.WindowStack.Add(dialog_NodeTree);
 		}
+
+		public static void UnDockWarning(Action action, ShipMapComp mapComp, int index)
+        {
+			if (mapComp.ShipsOnMap.ContainsKey(index) && mapComp.Docked.Any(airlock => mapComp.ShipsOnMap[index].Area.Contains(airlock.Position)))
+			{
+				DiaNode theNode;
+				theNode = new DiaNode(TranslatorFormattedStringExtensions.Translate("SoS.UnDockWarning"));
+
+				DiaOption accept = new DiaOption("Accept");
+				accept.resolveTree = true;
+				accept.action = delegate { mapComp.UndockAllFrom(index); action.Invoke(); };
+				theNode.options.Add(accept);
+
+				DiaOption cancel = new DiaOption("Cancel");
+				cancel.resolveTree = true;
+				theNode.options.Add(cancel);
+
+				Dialog_NodeTree dialog_NodeTree = new Dialog_NodeTree(theNode, true, false, null);
+				dialog_NodeTree.silenceAmbientSound = false;
+				dialog_NodeTree.closeOnCancel = true;
+				Find.WindowStack.Add(dialog_NodeTree);
+			}
+			else
+				action.Invoke();
+		}
+
 		public static void TravelEffects(Building_ShipBridge bridge)
 		{
 			WorldComp.renderedThatAlready = false;

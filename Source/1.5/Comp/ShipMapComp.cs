@@ -371,7 +371,7 @@ namespace SaveOurShip2
 		public List<Building_ShipAirlock> Docked = new List<Building_ShipAirlock>();
 		public void UndockAllFrom (int index)
 		{
-			foreach (Building_ShipAirlock b in Docked)
+			foreach (Building_ShipAirlock b in Docked.ToList()) //Copy to avoid changing list
 			{
 				if (ShipIndexOnVec(b.Position) == index)
 					b.DeSpawnDock();
@@ -656,16 +656,17 @@ namespace SaveOurShip2
 		{
 			Log.Message("SOS2 autofire claim");
 			List<Building> buildings = new List<Building>();
+			List<Pawn> animals = new List<Pawn>();
 			List<Thing> things = new List<Thing>();
 			List<VehiclePawn> shuttles = new List<VehiclePawn>();
 			foreach (Thing t in map.listerThings.AllThings)
 			{
 				if (t is Building b && b.def.CanHaveFaction && b.Faction != Faction.OfPlayer)
-				{
 					buildings.Add(b);
-				}
 				else if (t is VehiclePawn p)
 					shuttles.Add(p);
+				else if (t is Pawn pawn && pawn.IsNonMutantAnimal)
+					animals.Add(pawn);
 				else if (t is DetachedShipPart)
 					things.Add(t);
 			}
@@ -673,6 +674,8 @@ namespace SaveOurShip2
 			{
 				foreach (Building b in buildings)
 				{
+					if (b.Faction == null)
+						continue;
 					if (b is Building_Storage s)
 						s.settings.filter.SetDisallowAll();
 					b.SetFaction(Faction.OfPlayer);
@@ -689,6 +692,13 @@ namespace SaveOurShip2
 				shuttle.DisembarkAll();
 				shuttle.SetFaction(Faction.OfPlayer);
 			}
+			foreach (Pawn animal in animals)
+            {
+				if (animal.RaceProps.wildness <= 0.5f)
+					animal.SetFaction(Faction.OfPlayer);
+				else
+					animal.SetFaction(null);
+            }
 			map.fogGrid.ClearAllFog();
 		}
 		//battle start

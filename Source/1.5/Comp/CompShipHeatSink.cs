@@ -13,7 +13,7 @@ namespace SaveOurShip2
 	[StaticConstructorOnStartup]
 	public class CompShipHeatSink : CompShipHeat
 	{
-		public static readonly float HeatPushMult = 15f; //bleed ratio modifier - inverse to Building_ShipVent AddHeatToNetwork
+		public static readonly float HeatPushMult = 10f; //bleed ratio modifier - inverse to Building_ShipVent AddHeatToNetwork
 		public float heatStored; //used only when a HB is not on a net or during PostExposeData
 		public float depletion; //ditto
 		public bool inSpace;

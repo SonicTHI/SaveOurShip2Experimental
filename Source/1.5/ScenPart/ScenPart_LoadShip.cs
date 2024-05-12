@@ -1,5 +1,6 @@
 ﻿
 using RimWorld;
+using SaveOurShip2.Vehicles;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Vehicles;
 using Verse;
 
 namespace SaveOurShip2
@@ -40,6 +42,8 @@ namespace SaveOurShip2
 		OutfitDatabase outfitDatabase;
 		DrugPolicyDatabase drugPolicyDatabase;
 		FoodRestrictionDatabase foodRestrictionDatabase;
+		ReadingPolicyDatabase readingPolicyDatabase;
+		RelationshipRecords relationshipRecords;
 		int traveltime;
 
 		public override bool CanCoexistWith(ScenPart other)
@@ -173,20 +177,14 @@ namespace SaveOurShip2
 			Scribe_Deep.Look<OutfitDatabase>(ref outfitDatabase, false, "outfitDatabase");
 			Scribe_Deep.Look<DrugPolicyDatabase>(ref drugPolicyDatabase, false, "drugPolicyDatabase");
 			Scribe_Deep.Look<FoodRestrictionDatabase>(ref foodRestrictionDatabase, false, "foodRestrictionDatabase");
+			Scribe_Deep.Look<ReadingPolicyDatabase>(ref readingPolicyDatabase, false, "readingPolicyDatabase");
+			Scribe_Deep.Look<RelationshipRecords>(ref relationshipRecords, true, "relationshipRecords");
 			Scribe_Deep.Look<UniqueIDsManager>(ref Current.Game.uniqueIDsManager, true, "uniqueIDsManager");
 			Scribe_Collections.Look<CustomXenotype>(ref xenosAboardShip, "xenotypes", LookMode.Deep);
 			Scribe_Deep.Look<CustomXenogermDatabase>(ref customXenogermDatabase, false, "customXenogermDatabase");
 			Scribe_Deep.Look<TaleManager>(ref taleManager, false, "taleManager");
 			//Scribe_Deep.Look<PlayLog>(ref playLog, false, "playLog");
 			//er Accessing TicksAbs but gameStartAbsTick is not set yet (you most likely want to use GenTicks.TicksAbs instead).
-
-			//GenerateShipSpaceMap
-			Scribe_Collections.Look<Thing>(ref toLoad, "shipThings", LookMode.Deep);
-			Scribe_Collections.Look<Zone>(ref zonesToLoad, "shipZones", LookMode.Deep);
-			Scribe_Collections.Look<IntVec3>(ref terrainPos, "terrainPos");
-			Scribe_Collections.Look<TerrainDef>(ref terrainDefs, "terrainDefs");
-			Scribe_Collections.Look<IntVec3>(ref roofPos, "roofPos");
-			Scribe_Collections.Look<RoofDef>(ref roofDefs, "roofDefs");
 
 			Scribe.mode = LoadSaveMode.Inactive;
 		}
@@ -195,6 +193,7 @@ namespace SaveOurShip2
 			if (HasValidFilename())
 			{
 				Log.Message("SOS2: ".Colorize(Color.cyan) + "PostWorldGenerate");
+
 				Faction.OfPlayer.def = playerFactionDef;
 				Faction.OfPlayer.Name = playerFactionName;
 				foreach (Ideo ideo in ideosAboardShip)
@@ -214,6 +213,8 @@ namespace SaveOurShip2
 				Current.Game.outfitDatabase = outfitDatabase;
 				Current.Game.drugPolicyDatabase = drugPolicyDatabase;
 				Current.Game.foodRestrictionDatabase = foodRestrictionDatabase;
+				Current.Game.readingPolicyDatabase = readingPolicyDatabase;
+				Current.Game.relationshipRecords = relationshipRecords;
 				//tales
 				if (taleManager == null )
 				{
@@ -248,7 +249,7 @@ namespace SaveOurShip2
 					Current.Game.playLog = playLog;
 				}
 				//game comps
-				Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep); //init issue
+				Scribe_Collections.Look<GameComponent>(ref components, "components", LookMode.Deep, new object[] { Current.Game });
 				if (components.NullOrEmpty())
 				{
 					Log.Warning("SOS2: ".Colorize(Color.cyan) + "comps were null!");
@@ -330,9 +331,24 @@ namespace SaveOurShip2
 		{
 			Log.Message("SOS2: ".Colorize(Color.cyan) + "GenerateShipSpaceMap");
 			ScenPart_LoadShip scen = (ScenPart_LoadShip)Current.Game.Scenario.parts.FirstOrDefault(s => s is ScenPart_LoadShip);
+
 			if (scen.filename != FILENAME_NONE)
 			{
 				Map spaceMap = ShipInteriorMod2.GeneratePlayerShipMap(Find.World.info.initialMapSize); //td size might be an issue
+
+				Scribe.mode = LoadSaveMode.Inactive;
+				Scribe.loader.InitLoading(Path.Combine(Path.Combine(GenFilePaths.SaveDataFolderPath, "SoS2"), scen.filename + ".sos2"));
+
+				//GenerateShipSpaceMap
+				Scribe_Collections.Look<Thing>(ref scen.toLoad, "shipThings", LookMode.Deep);
+				Scribe_Collections.Look<Zone>(ref scen.zonesToLoad, "shipZones", LookMode.Deep);
+				Scribe_Collections.Look<IntVec3>(ref scen.terrainPos, "terrainPos");
+				Scribe_Collections.Look<TerrainDef>(ref scen.terrainDefs, "terrainDefs");
+				Scribe_Collections.Look<IntVec3>(ref scen.roofPos, "roofPos");
+				Scribe_Collections.Look<RoofDef>(ref scen.roofDefs, "roofDefs");
+				Scribe_Deep.Look<StorageGroupManager>(ref spaceMap.storageGroups, true, "storageGroupManager", new object[] { spaceMap });
+
+				Scribe.mode = LoadSaveMode.Inactive;
 				Current.ProgramState = ProgramState.MapInitializing;
 				var mapComp = spaceMap.GetComponent<ShipMapComp>();
 				mapComp.CacheOff = true;
@@ -343,17 +359,54 @@ namespace SaveOurShip2
 				{
 					try
 					{
-						if (!thing.Destroyed)
+						if(thing is VehiclePawn vehicle && vehicle.VehicleDef.HasComp<CompVehicleLauncher>()) //Buggy initialization, requiring the jankiest solution that has ever janked
+						{
+							VehiclePawn newVehicle = VehicleSpawner.GenerateVehicle(vehicle.VehicleDef, Faction.OfPlayer);
+							CompVehicleLoadData LoadData = new CompVehicleLoadData();
+							LoadData.pattern = vehicle.patternData.patternDef;
+							LoadData.one = vehicle.patternData.color;
+							LoadData.two = vehicle.patternData.colorTwo;
+							LoadData.three = vehicle.patternData.colorThree;
+							LoadData.displacement = vehicle.patternData.displacement;
+							LoadData.tiles = vehicle.patternData.tiles;
+							LoadData.one = vehicle.patternData.color;
+							LoadData.fuel = newVehicle.CompFueledTravel.FuelCapacity;
+							CompUpgradeTree tree = vehicle.CompUpgradeTree;
+							if (tree == null)
+								tree = vehicle.comps.Where(comp => comp is CompUpgradeTree).FirstOrDefault() as CompUpgradeTree;
+							if (tree == null)
+								tree = vehicle.cachedComps.Where(comp => comp is CompUpgradeTree).FirstOrDefault() as CompUpgradeTree;
+							if (tree != null)
+                            {
+								foreach (string upgrade in tree.upgrades)
+									LoadData.upgrades.Add(upgrade);
+                            }
+							LoadData.parent = newVehicle;
+							newVehicle.comps.Add(LoadData);
+							newVehicle.RecacheComponents();
+							GenSpawn.Spawn(newVehicle, vehicle.Position, spaceMap);
+						}
+						else if (!thing.Destroyed)
 						{
 							thing.SpawnSetup(spaceMap, thing is Building_ShipBridge);
-							if(thing.def.CanHaveFaction)
-								thing.SetFaction(Faction.OfPlayer);
+							if (thing.def.CanHaveFaction)
+							{
+								if (thing is Pawn)
+									thing.SetFactionDirect(Faction.OfPlayer);
+								else
+									thing.SetFaction(Faction.OfPlayer);
+							}
 							if(thing is IThingHolder holder && holder.GetDirectlyHeldThings() != null)
 							{
 								foreach (Thing heldThing in holder.GetDirectlyHeldThings())
 								{
 									if (heldThing.def.CanHaveFaction)
-										heldThing.SetFaction(Faction.OfPlayer);
+									{
+										if (thing is Pawn)
+											thing.SetFactionDirect(Faction.OfPlayer);
+										else
+											heldThing.SetFaction(Faction.OfPlayer);
+									}
 									if (heldThing is Pawn pawn)
 										pawn.jobs.StartJob(new Verse.AI.Job(JobDefOf.Carried));
 								}
@@ -440,7 +493,7 @@ namespace SaveOurShip2
 				{
 					/*if (p.RaceProps != null && p.RaceProps.IsFlesh && (!p.InContainerEnclosed) && (!ShipInteriorMod2.IsHologram(p) || p.health.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.Map != map))
 						toKill.Add(p);*/
-					p.needs.mood.thoughts.memories.Memories.Clear(); //clear memories as they might relate to old things
+					p.needs?.mood?.thoughts?.memories?.Memories?.Clear(); //clear memories as they might relate to old things
 					p.royalty = new Pawn_RoyaltyTracker(p); //reset royal everything
 				}
 				/*foreach (Pawn p in toKill)

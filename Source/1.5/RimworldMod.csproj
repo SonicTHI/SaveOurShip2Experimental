@@ -368,6 +368,7 @@
     <Compile Include="Projectile\Projectile_MechaniteSpark.cs" />
     <Compile Include="MinifiedThingShipMove.cs" />
     <Compile Include="Vehicles\CompShuttleLauncher.cs" />
+    <Compile Include="Vehicles\CompVehicleLoadData.cs" />
     <Compile Include="Vehicles\ShuttleAutodocUpgrade.cs" />
     <Compile Include="Vehicles\ShuttleHeatsinkUpgrade.cs" />
     <Compile Include="Vehicles\ShuttlePassengerUpgrade.cs" />

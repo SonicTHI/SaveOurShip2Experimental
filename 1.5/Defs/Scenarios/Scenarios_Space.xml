@@ -203,7 +203,7 @@
 	<ScenarioDef>
 		<defName>SoSLoadShip</defName>
 		<label>Load Ship</label>
-		<description>SAVE+RELOAD AFTER START!\nAFTER, REPORT ISSUES PROPERLY WITH A PLAYER.LOG - SEE SOS2 GITHUB!\n\nStart with a ship that has left for another planet. You can edit the scenario and select your saved ship bellow. You can also choose to discard logs and tales, lowering your save size. This will disable many other types of scenario part, such as starting pawns.</description>
+		<description>Experimental feature - expect a ton of red and yellow alerts. These may or may not be harmless. If you encounter issues, give it a few second, then try loading and saving the game. If your ship didn't make it, we need your Player.log file in order to figure out what's going on!\n\nStart with a ship that has left for another planet. You can edit the scenario and select your saved ship bellow. You can also choose to discard logs and tales, lowering your save size. This will disable many other types of scenario part, such as starting pawns.</description>
 		<scenario>
 			<summary>Start with a ship that has left for another planet.</summary>
 			<playerFaction>

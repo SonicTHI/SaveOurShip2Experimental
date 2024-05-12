@@ -75,7 +75,19 @@ namespace SaveOurShip2
 				return name;
 			}
 		}
-		public Faction Faction => Buildings?.FirstOrDefault()?.Faction;
+		public Faction Faction => GetFaction();
+		Faction GetFaction()
+		{
+			if (Parts.NullOrEmpty())
+			{
+				Log.Warning("SOS2: getting faction from ship with no ship parts.");
+				return null;
+			}
+			if (Parts.Any(b => !b.TryGetComp<CompShipCachePart>().Props.Plating))
+				return Parts.First(b => !b.TryGetComp<CompShipCachePart>().Props.Plating).Faction;
+			else
+				return Parts.FirstOrDefault().Faction;
+		}
 		public void Capture(Faction fac)
 		{
 			foreach (Building building in Buildings)

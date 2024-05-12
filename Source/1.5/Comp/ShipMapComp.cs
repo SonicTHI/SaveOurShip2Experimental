@@ -674,7 +674,7 @@ namespace SaveOurShip2
 			{
 				foreach (Building b in buildings)
 				{
-					if (b.Faction == null)
+					if (!b.def.CanHaveFaction)
 						continue;
 					if (b is Building_Storage s)
 						s.settings.filter.SetDisallowAll();
@@ -2508,12 +2508,12 @@ namespace SaveOurShip2
 					else //Return mission
 						mapToSpawnIn = map;
 				}
+				var mapToSpawnInComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
-					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
-					if (!mapComp.IsPlayerShipMap && mapComp.Bays.Any(b => b.CanFitShuttleSize(mission.shuttle) != IntVec3.Zero))
+					if (!mapToSpawnInComp.IsPlayerShipMap && mapToSpawnInComp.Bays.Any(b => b.CanFitShuttleSize(mission.shuttle) != IntVec3.Zero))
 					{
-						foreach (var bay in mapComp.Bays) //unfog bays
+						foreach (var bay in mapToSpawnInComp.Bays) //unfog bays
 						{
 							FloodFillerFog.FloodUnfog(bay.parent.Position, mapToSpawnIn);
 						}
@@ -2540,12 +2540,11 @@ namespace SaveOurShip2
 				}
 				else //enemy shuttles - never returns?
 				{
-					var mapComp = mapToSpawnIn.GetComponent<ShipMapComp>();
 					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
 					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
 
 					IntVec3 vec = IntVec3.Zero;
-					foreach (var bay in Bays)
+					foreach (var bay in mapToSpawnInComp.Bays)
 					{
 						vec = bay.CanFitShuttleSize(mission.shuttle);
 						if (vec != IntVec3.Zero)
@@ -2556,9 +2555,9 @@ namespace SaveOurShip2
 					}
 					if (vec == IntVec3.Zero) //fallbacks
 					{
-						var ship = mapComp.ShipsOnMap.Values.Where(s => !s.IsWreck)?.RandomElement();
+						var ship = mapToSpawnInComp.ShipsOnMap.Values.Where(s => !s.IsWreck)?.RandomElement();
 						if (ship == null)
-							ship = mapComp.ShipsOnMap.Values.Where(s => s.IsWreck)?.RandomElement();
+							ship = mapToSpawnInComp.ShipsOnMap.Values.Where(s => s.IsWreck)?.RandomElement();
 						if (ship != null)
 						{
 							int i = 0;

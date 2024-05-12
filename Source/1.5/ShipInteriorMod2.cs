@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f33";
+		public const string SOS2EXPversion = "V101f35";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -1237,8 +1237,7 @@ namespace SaveOurShip2
 							thing = ThingMaker.MakeThing(ThingDef.Named(partDef.defName.Substring(0, partDef.defName.Length - 8)));
 						if (thing is Pawn p)
 						{
-							ShipPawnGen(p, isDungeon);
-							lord?.AddPawn(p);
+							ShipPawnGen(p, isDungeon, lord);
 							pawnsOnShip.Add(p);
 						}
 						else if (thing is Hive)
@@ -1268,8 +1267,7 @@ namespace SaveOurShip2
 						{
 							if (thing is Pawn p)
 							{
-								ShipPawnGen(p, isDungeon);
-								lord?.AddPawn(p);
+								ShipPawnGen(p, isDungeon, lord);
 								pawnsOnShip.Add(p);
 							}
 							else if (thing is Hive)
@@ -1488,7 +1486,7 @@ namespace SaveOurShip2
 				}
 			}
 		}
-		private static void ShipPawnGen(Pawn p, bool isDungeon) //td make proper pawngen req?
+		private static void ShipPawnGen(Pawn p, bool isDungeon, Lord lord) //td make proper pawngen req?
 		{
 			if (p.RaceProps.IsMechanoid)
 			{
@@ -1506,6 +1504,10 @@ namespace SaveOurShip2
 				p.ageTracker.AgeBiologicalTicks = 36000000;
 				p.ageTracker.AgeChronologicalTicks = 36000000;
 			}
+			if (p.IsNonMutantAnimal && p.RaceProps.wildness <= 0.5f)
+				p.SetFactionDirect(Faction.OfAncients);
+			else
+				lord?.AddPawn(p);
 		}
 		public static void PostGenerateShipDef(Map map, bool clearArea, List<IntVec3> shipArea, List<Thing> planters)
 		{
@@ -1934,10 +1936,10 @@ namespace SaveOurShip2
 
 			MoveShipFlag = true;
 			shipOriginMap = null;
-			bool playerMove = core.Faction == Faction.OfPlayer;
 			Map sourceMap = core.Map;
 			bool sourceMapIsSpace = sourceMap.IsSpace();
 			var sourceMapComp = sourceMap.GetComponent<ShipMapComp>();
+			bool playerMove = core.Faction == Faction.OfPlayer && sourceMapComp.ShipMapState != ShipMapState.inCombat;
 			int shipIndex = sourceMapComp.ShipIndexOnVec(core.Position);
 			if (shipIndex == -1)
 			{
@@ -1960,9 +1962,10 @@ namespace SaveOurShip2
 			var targetMapComp = targetMap.GetComponent<ShipMapComp>();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
 
-			//Log.Message("Area: " + ship.Area.Count);
-
-			//HashSet<Zone> zonesToDestroy = new HashSet<Zone>();
+			if (!playerMove && sourceMapComp.Docked.Any()) //undock all in combat
+			{
+				sourceMapComp.UndockAllFrom(shipIndex);
+			}
 			foreach (IntVec3 pos in sourceArea)
 			{
 				IntVec3 adjustedPos = Transform(pos);
@@ -2271,11 +2274,6 @@ namespace SaveOurShip2
 			}
 			if (devMode)
 				watch.Record("moveThings");
-
-			/*if (sourceMapComp.Docked.Any()) //undock all
-			{
-				sourceMapComp.UndockAllFrom(shipIndex);
-			}*/
 
 			//adjust cache
 			if (targetMap != sourceMap) //ship cache: if moving to different map, move cache

@@ -2,8 +2,6 @@
 using Verse;
 using System.Collections.Generic;
 using RimWorld;
-using System.Linq;
-using Verse.Sound;
 
 namespace SaveOurShip2
 {
@@ -105,7 +103,7 @@ namespace SaveOurShip2
 			};
 			toggleHeatWithPower.icon = ContentFinder<Texture2D>.Get("Things/Building/Misc/TempControl/Heater");
 			yield return toggleHeatWithPower;
-			Command_Action expelSuperheatedAir = new Command_Action
+			/*Command_Action expelSuperheatedAir = new Command_Action
 			{
 				action = delegate
 				{
@@ -140,7 +138,7 @@ namespace SaveOurShip2
 					expelSuperheatedAir.disabledReason = "SoS.NoLifeSupport".Translate();
                 }
 			}
-			yield return expelSuperheatedAir;
+			yield return expelSuperheatedAir;*/
 		}
 		public override void ExposeData()
 		{

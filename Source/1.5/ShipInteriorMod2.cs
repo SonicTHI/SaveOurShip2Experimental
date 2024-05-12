@@ -2565,6 +2565,9 @@ namespace SaveOurShip2
 				spawnThing.SetFaction(fac);
 
 			spawnThing.SpawnSetup(targetMap, true);
+
+			if(spawnThing is Pawn pawn)
+				pawn.pather.ResetToCurrentPosition();
 		}
 		public static void AddPawnToLord(Map map, Pawn p)
 		{
@@ -2617,6 +2620,21 @@ namespace SaveOurShip2
 			List<IntVec3> terrainPos = new List<IntVec3>();
 			List<TerrainDef> terrainDefs = new List<TerrainDef>();
 
+			//Pre-pass to drop carried Things, to avoid issues with modifying collections
+			foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned)
+            {
+				if(area.Contains(pawn.Position))
+                {
+					if (pawn.jobs != null)
+					{
+						pawn.jobs.ClearQueuedJobs();
+						pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+					}
+					if (pawn is VehiclePawn vehicle)
+						vehicle.inventory.DropAllNearPawn(vehicle.Position);
+				}
+            }
+
 			foreach (IntVec3 pos in area)
 			{
 				//add all things, terrain from area
@@ -2639,21 +2657,13 @@ namespace SaveOurShip2
 					}
 					else if (t is Pawn p)
 					{
-						if (p.jobs != null)
-						{
-							p.jobs.ClearQueuedJobs();
-							p.jobs.EndCurrentJob(JobCondition.Incompletable);
-						}
-						if (ModsConfig.RoyaltyActive && p.royalty != null && p.royalty.HasAnyTitleIn(Faction.OfEmpire))
-							p.royalty.SetTitle(Faction.OfEmpire, null, false);
-
-						p.needs.mood.thoughts.memories = new MemoryThoughtHandler(p);
+						pawnsAboardShip.Add(p);
 					}
 					if (t.Map.zoneManager.ZoneAt(t.Position) != null && !zones.Contains(t.Map.zoneManager.ZoneAt(t.Position)))
 					{
 						zones.Add(t.Map.zoneManager.ZoneAt(t.Position));
 					}
-					if (!toSave.Contains(t))
+					if (IsSaveable(t) && !toSave.Contains(t))
 					{
 						toSave.Add(t);
 					}
@@ -2707,14 +2717,23 @@ namespace SaveOurShip2
 				if (pawn.genes != null && pawn.genes.CustomXenotype != null)
 					xenosAboardShip.Add(pawn.genes.CustomXenotype);
 
-				List<DirectPawnRelation> toPrune = new List<DirectPawnRelation>();
-				foreach (DirectPawnRelation relation in pawn.relations.DirectRelations)
+				if (ModsConfig.RoyaltyActive && pawn.royalty != null && pawn.royalty.HasAnyTitleIn(Faction.OfEmpire))
+					pawn.royalty.SetTitle(Faction.OfEmpire, null, false);
+				if (pawn.needs != null && pawn.needs.mood != null && pawn.needs.mood.thoughts != null)
+					pawn.needs.mood.thoughts.memories = new MemoryThoughtHandler(pawn);
+
+				if (pawn.relations != null)
 				{
-					if (!pawnsAboardShip.Contains(relation.otherPawn))
-						toPrune.Add(relation);
+					List<DirectPawnRelation> toPrune = new List<DirectPawnRelation>();
+					foreach (DirectPawnRelation relation in pawn.relations.DirectRelations)
+					{
+						if (!pawnsAboardShip.Contains(relation.otherPawn))
+							toPrune.Add(relation);
+					}
+					foreach (DirectPawnRelation relation in toPrune)
+						pawn.relations.RemoveDirectRelation(relation);
+					pawn.relations.virtualRelations = new List<VirtualPawnRelation>();
 				}
-				foreach (DirectPawnRelation relation in toPrune)
-					pawn.relations.RemoveDirectRelation(relation);
 			}
 
 			List<GameComponent> components = new List<GameComponent>();
@@ -2747,6 +2766,9 @@ namespace SaveOurShip2
 				Scribe_Deep.Look<OutfitDatabase>(ref Current.Game.outfitDatabase, true, "outfitDatabase");
 				Scribe_Deep.Look<DrugPolicyDatabase>(ref Current.Game.drugPolicyDatabase, true, "drugPolicyDatabase");
 				Scribe_Deep.Look<FoodRestrictionDatabase>(ref Current.Game.foodRestrictionDatabase, true, "foodRestrictionDatabase");
+				Scribe_Deep.Look<ReadingPolicyDatabase>(ref Current.Game.readingPolicyDatabase, true, "readingPolicyDatabase");
+				Scribe_Deep.Look<RelationshipRecords>(ref Current.Game.relationshipRecords, true, "relationshipRecords");
+				Scribe_Deep.Look<StorageGroupManager>(ref map.storageGroups, true, "storageGroupManager");
 				Scribe_Deep.Look<UniqueIDsManager>(ref Current.Game.uniqueIDsManager, true, "uniqueIDsManager");
 
 				//typeof(GameDataSaveLoader).GetField("isSavingOrLoadingExternalIdeo", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).SetValue(null, true);
@@ -2768,8 +2790,14 @@ namespace SaveOurShip2
 
 			GameVictoryUtility.ShowCredits(GameVictoryUtility.MakeEndCredits("SoS.GameOverPlanetLeaveIntro".Translate(), "SoS.GameOverPlanetLeaveEnding".Translate(), stringBuilder.ToString(), "GameOverColonistsEscaped", null), null, false, 5f);
 
-			RemoveShipOrArea(map, core.ShipIndex);
+			RemoveShipOrArea(map, core.ShipIndex, killPawns:false, despawnPawns: true);
 		}
+
+		static bool IsSaveable(Thing t)
+        {
+			return t is ThingWithComps && !(t is Corpse); //Interestingly enough, all the things we don't want to save aren't ThingWithComps. Making a note here for future mod compatibility.
+        }
+
 		public static void SaveShipToFile(Building_ShipBridge core)
 		{
 			Map map = core.Map;
@@ -2856,7 +2884,7 @@ namespace SaveOurShip2
 				}
 			}
 		}
-		public static void RemoveShipOrArea(Map map, int index = -1, HashSet<IntVec3> area = null, bool killPawns = true)
+		public static void RemoveShipOrArea(Map map, int index = -1, HashSet<IntVec3> area = null, bool killPawns = true, bool despawnPawns = true)
 		{
 			var mapComp = map.GetComponent<ShipMapComp>();
 			if (index != -1)
@@ -2879,7 +2907,7 @@ namespace SaveOurShip2
 				{
 					if (!things.Contains(t))
 					{
-						if (t is Pawn && !killPawns)
+						if (t is Pawn && !killPawns && !despawnPawns)
 							continue;
 						things.Add(t);
 					}
@@ -2894,7 +2922,12 @@ namespace SaveOurShip2
 				try
 				{
 					if (t is Pawn)
-						t.Kill();
+					{
+						if (killPawns)
+							t.Kill();
+						else
+							t.Destroy(DestroyMode.Vanish);
+					}
 					if (t.def.destroyable && !t.Destroyed)
 					{
 						CompRefuelable refuelable = t.TryGetComp<CompRefuelable>();

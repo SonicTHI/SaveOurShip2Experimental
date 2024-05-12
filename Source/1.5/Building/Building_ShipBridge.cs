@@ -78,9 +78,9 @@ namespace SaveOurShip2
 			{
 				foreach (CompEngineTrail e in Ship.Engines.Where(e => e.Props.energy))
 				{
-					int mult = 10000;
+					int mult = 50000;
 					if (e.parent.def.size.x > 3)
-						mult = 30000;
+						mult = 150000;
 					playerJTPower += mult;
 				}
 			}

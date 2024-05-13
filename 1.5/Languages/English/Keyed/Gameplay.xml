@@ -69,6 +69,7 @@
 	<SoS.CaptureShip>Capture</SoS.CaptureShip>
 	<SoS.CaptureShipDesc>Move this ship to your map</SoS.CaptureShipDesc>
 	<SoS.LaunchFailPawns>Non player pawn found on ship: {0}, takeoff aborted.</SoS.LaunchFailPawns>
+	<SoS.MoveFailImmobile>No pilot, not enough fuel or RCS thrusters!</SoS.MoveFailImmobile>
 	<SoS.MoveFailFaction>Ship from another faction next to target area. Move aborted.</SoS.MoveFailFaction>
 	<SoS.MoveWreckCommand>Move wreck</SoS.MoveWreckCommand>
 	<SoS.MoveWreckCommandDesc>Reposition a wreck on your map</SoS.MoveWreckCommandDesc>
@@ -217,6 +218,9 @@
 	<SoS.HeatPurgeVenting>Already venting</SoS.HeatPurgeVenting>
 	<SoS.HeatPurgeNotEnough>Not enough heat in network for purge</SoS.HeatPurgeNotEnough>
 	<SoS.CloakBroken>Cloak disengaged due to heat depleetion</SoS.CloakBroken>
+	<SoS.HeatCritical>DANGER! Heat level critical!</SoS.HeatCritical>
+	<SoS.HeatNotConnected>Not connected to a thermal networ</SoS.HeatNotConnected>
+	<SoS.HeatTurretEnergy>Energy to fire:</SoS.HeatTurretEnergy>
 	<!-- turret -->
 	<SoS.TurretNotInShipCombat>Warning: Turret will not fire because you are not in ship combat.</SoS.TurretNotInShipCombat>
 	<SoS.TurretInPointDefense>Warning: Turret will not target the enemy ship because it is set to Point Defense mode</SoS.TurretInPointDefense>
@@ -247,8 +251,8 @@
 	<SoS.FoamFill>Fill destroyed</SoS.FoamFill>
 	<SoS.FoamFillDesc>Fill destroyed areas of your ship with hullfoam from its distributors.</SoS.FoamFillDesc>
 	<SoS.FoamFillDisabled>Nothing to fill or no fuel in distributors.</SoS.FoamFillDisabled>
-	
 	<!-- reactor -->
+	<SoS.ReactorInstability>Instability: {0}</SoS.ReactorInstability>
 	<SoS.ReactorOverdrive>Overdrive I</SoS.ReactorOverdrive>
 	<SoS.ReactorOverdriveDesc>Increase reactor output, at the cost of increased heat production and fuel consumption.</SoS.ReactorOverdriveDesc>
 	<SoS.ReactorOverdrive2>Overdrive II</SoS.ReactorOverdrive2>
@@ -267,6 +271,10 @@
 	<!-- pawns/eva -->
 	<SoS.DamagedReactorHurtsPawn>{0} is suffering radiation burns from a damaged reactor!</SoS.DamagedReactorHurtsPawn>
 	<SoS.EVACapable>EVA capable.</SoS.EVACapable>
+	<SoS.AtmosphereVacuum>Vacuum</SoS.AtmosphereVacuum>
+	<SoS.Atmosphere>Breathable Atmosphere</SoS.Atmosphere>
+	<SoS.AtmosphereNonBreathable>Non-Breathable Atmosphere</SoS.AtmosphereNonBreathable>
+	<SoS.AtmosphereBreach>Breach detected!</SoS.AtmosphereBreach>
 	<!-- holo/spore -->
 	<SoS.SpawnHologram>Spawn formgel</SoS.SpawnHologram>
 	<SoS.SpawnHologramDesc>Assemble a formgel through which this consciousness can affect the world</SoS.SpawnHologramDesc>

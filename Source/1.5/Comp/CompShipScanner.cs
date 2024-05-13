@@ -141,7 +141,7 @@ namespace SaveOurShip2
 					if (worker != null)
 						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate(worker), LetterDefOf.PositiveEvent);
 					else
-						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate("its AI"), LetterDefOf.PositiveEvent);
+						Find.LetterStack.ReceiveLetter("SoS.FoundOrbitalSite".Translate(), DescVersion.Translate("SoS.FoundSiteAI".Translate()), LetterDefOf.PositiveEvent);
 				}
 				else //asteroids, sats
 				{

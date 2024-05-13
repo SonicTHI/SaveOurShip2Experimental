@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f36";
+		public const string SOS2EXPversion = "V101f37";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -1962,7 +1962,7 @@ namespace SaveOurShip2
 			var targetMapComp = targetMap.GetComponent<ShipMapComp>();
 			HashSet<IntVec3> targetArea = new HashSet<IntVec3>();
 
-			if (!playerMove && sourceMapComp.Docked.Any()) //undock all in combat
+			if (sourceMapComp.ShipMapState == ShipMapState.inCombat && sourceMapComp.Docked.Any()) //undock all in combat
 			{
 				sourceMapComp.UndockAllFrom(shipIndex);
 			}
@@ -2096,7 +2096,7 @@ namespace SaveOurShip2
 					roofToCopy.Add(new Tuple<IntVec3, RoofDef>(adjustedPos, sourceRoof));
 				}
 				sourceMap.roofGrid.SetRoof(pos, null);
-				if (core is Building_ShipBridge && playerMove) //home zone ships
+				if (core is Building_ShipBridge && core.Faction == Faction.OfPlayer) //home zone ships
 				{
 					sourceMap.areaManager.Home[pos] = false;
 					targetMap.areaManager.Home[adjustedPos] = true;

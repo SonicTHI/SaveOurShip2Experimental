@@ -689,11 +689,14 @@ namespace SaveOurShip2
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveRotDesc"),
 							icon = ContentFinder<Texture2D>.Get("UI/Rotate_Ship")
 						};
-						if (ShipCountdown.CountingDown)
+						if (ShipCountdown.CountingDown || !Ship.HasPilotRCSAndFuel(0.01f, false))
 						{
 							moveShip.Disable();
 							moveShipFlip.Disable();
 							moveShipRot.Disable();
+							moveShip.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailImmobile");
+							moveShipFlip.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailImmobile");
+							moveShipRot.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailImmobile");
 						}
 						else if (Ship.BuildingsNonRot.Any())
 						{
@@ -982,9 +985,10 @@ namespace SaveOurShip2
 							returnShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ReturnShipDesc");
 							returnShip.icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon");
 						}
-						if (ShipCountdown.CountingDown || mapComp.IsGraveOriginInCombat)
+						if (ShipCountdown.CountingDown || mapComp.IsGraveOriginInCombat || !Ship.HasPilotRCSAndFuel(0.01f, false))
 						{
 							returnShip.Disable();
+							returnShip.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailImmobile");
 						}
 						yield return returnShip;
 					}
@@ -1038,7 +1042,7 @@ namespace SaveOurShip2
 		public override string GetInspectString()
 		{
 			string text = base.GetInspectString();
-			text += "\nShip Name: " + Ship.Name;
+			text += "\n" + TranslatorFormattedStringExtensions.Translate("SoS.StatsShipName", Ship.Name);
 			return text;
 		}
 		public override void SpawnSetup(Map map, bool respawningAfterLoad)

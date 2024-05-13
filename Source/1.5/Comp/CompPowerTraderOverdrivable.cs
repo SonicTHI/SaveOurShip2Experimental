@@ -231,7 +231,7 @@ namespace SaveOurShip2
 
 		public override string CompInspectStringExtra()
 		{
-			return base.CompInspectStringExtra() + "\nInstability: " + instability.ToString("F2");
+			return base.CompInspectStringExtra() + "\n" + TranslatorFormattedStringExtensions.Translate("SoS.ReactorInstability", instability.ToString("F2"));
 		}
 
 		public override void PostSpawnSetup(bool respawningAfterLoad)

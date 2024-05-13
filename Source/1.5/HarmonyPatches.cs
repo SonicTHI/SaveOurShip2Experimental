@@ -20,6 +20,7 @@ using SaveOurShip2.Vehicles;
 using SmashTools;
 using static Vehicles.LandingTargeter;
 using static SaveOurShip2.ShipMapComp;
+using RuntimeAudioClipLoader;
 
 namespace SaveOurShip2
 {
@@ -505,22 +506,33 @@ namespace SaveOurShip2
 		public static void Postfix(ref string __result)
 		{
 			Map map = Find.CurrentMap;
-			if (!map.IsSpace()) return;
-
+			if (!map.IsSpace())
+				return;
+			
 			if (ShipInteriorMod2.ExposedToOutside(UI.MouseCell().GetRoom(map)))
 			{
+				bool col = false;
 				if (__result.StartsWith("IndoorsUnroofed".Translate() + " (1)"))
 				{
-					__result = "Breach detected!".Colorize(Color.red) + __result.Remove(0, "IndoorsUnroofed".Translate().Length + 4);
+					//no matter what, somehow the bellow string can not be colorized
+					__result = "SoS.AtmosphereBreach".Translate() + __result.Substring("IndoorsUnroofed".Translate().Length + 4);
+					col = true;
 				}
-				__result += " (Vacuum)";
+				__result += " (";
+				if (col)
+					__result += "SoS.AtmosphereVacuum".Translate().Colorize(Color.red);
+				else
+					__result += "SoS.AtmosphereVacuum".Translate();
+				__result += ")";
 			}
 			else
 			{
+				__result += " (";
 				if (map.GetComponent<ShipMapComp>().VecHasLS(UI.MouseCell()))
-					__result += " (Breathable Atmosphere)";
+					__result += "SoS.Atmosphere".Translate();
 				else
-					__result += " (Non-Breathable Atmosphere)".Colorize(Color.yellow);
+					__result += "SoS.AtmosphereNonBreathable".Translate().Colorize(Color.yellow);
+				__result += ")";
 			}
 		}
 	}

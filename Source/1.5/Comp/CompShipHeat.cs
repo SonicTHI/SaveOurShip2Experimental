@@ -51,18 +51,18 @@ namespace SaveOurShip2
 			{
 				output += TranslatorFormattedStringExtensions.Translate("SoS.HeatStored", Mathf.Round(myNet.StorageUsed), myNet.StorageCapacity, myNet.StorageCapacityRaw);
 				if (myNet.RatioInNetworkRaw > 0.9f)
-					output += "\n<color=red>DANGER! Heat level critical!</color>";
+					output += "\n" + TranslatorFormattedStringExtensions.Translate("SoS.HeatCritical").Colorize(Color.red);
 				if (Prefs.DevMode)
 				{
 					output += "\nGrid:" + myNet.GridID + " Ratio:" + myNet.RatioInNetworkRaw.ToString("F2") + " Depl ratio:" + myNet.DepletionRatio.ToString("F2") + "Temp: " + Mathf.Lerp(0, 200, myNet.RatioInNetworkRaw).ToString("F0");
 				}
 			}
 			else
-				output+="Not connected to a thermal network";
+				output+= TranslatorFormattedStringExtensions.Translate("SoS.HeatNotConnected");
 
 			if (this.Props.energyToFire > 0)
 			{
-				output += "\nEnergy to fire: ";
+				output += "\n"+ "SoS.HeatTurretEnergy".Translate();
 				if (this.parent is Building_ShipTurret t && t.spinalComp != null)
 				{
 					if (t.AmplifierCount != -1)

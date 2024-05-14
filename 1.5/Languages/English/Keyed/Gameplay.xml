@@ -141,6 +141,8 @@
 	<SoS.StatsShipMaxTakeoff>Maximum takeoff weight: {0}</SoS.StatsShipMaxTakeoff>
 	<SoS.StatsShipEnergy>Stored power: {0} / {1} Wd</SoS.StatsShipEnergy>
 	<SoS.StatsShipHeat>Stored heat: {0} / {1} HU{2}</SoS.StatsShipHeat>
+	<SoS.StatsShipHeatMaximumShort>maximum</SoS.StatsShipHeatMaximumShort>
+	<SoS.StatsShipHeatMaximum>Heat maximum: {0}</SoS.StatsShipHeatMaximum>
 	<SoS.StatsShipCombatRating>Combat rating: {0}</SoS.StatsShipCombatRating>
 	<SoS.StatsShipCombatThrust>Thrust/Weight ratio: {0}</SoS.StatsShipCombatThrust>
 	<SoS.ReportInterReady>Ready for interstellar travel.</SoS.ReportInterReady>

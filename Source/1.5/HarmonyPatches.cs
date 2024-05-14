@@ -1747,6 +1747,14 @@ namespace SaveOurShip2
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
 			if (!ship.HasMannedBridge())
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("SoS.ReportNeedPilot"));
+			//do not allow kidnapping other fac pawns/animals
+			foreach (Pawn p in ship.PawnsOnShip())
+			{
+				if (p.Faction != Faction.OfPlayer && !p.IsPrisoner)
+				{
+					newResult.Add(TranslatorFormattedStringExtensions.Translate("SoS.LaunchFailPawns", p.Name?.ToStringShort ?? p.KindLabel ?? ""));
+				}
+			}
 
 			__result = newResult;
 		}

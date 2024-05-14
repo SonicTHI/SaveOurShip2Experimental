@@ -68,7 +68,7 @@
 	<SoS.ReturnShipDesc>Move this ship back to your stable orbit</SoS.ReturnShipDesc>
 	<SoS.CaptureShip>Capture</SoS.CaptureShip>
 	<SoS.CaptureShipDesc>Move this ship to your map</SoS.CaptureShipDesc>
-	<SoS.LaunchFailPawns>Non player pawn found on ship: {0}, takeoff aborted.</SoS.LaunchFailPawns>
+	<SoS.LaunchFailPawns>Non player pawn found on ship: {0}, takeoff disabled.</SoS.LaunchFailPawns>
 	<SoS.MoveFailImmobile>No pilot, not enough fuel or RCS thrusters!</SoS.MoveFailImmobile>
 	<SoS.MoveFailFaction>Ship from another faction next to target area. Move aborted.</SoS.MoveFailFaction>
 	<SoS.MoveWreckCommand>Move wreck</SoS.MoveWreckCommand>

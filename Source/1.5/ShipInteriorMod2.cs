@@ -2045,13 +2045,7 @@ namespace SaveOurShip2
 						if (t is Pawn p)
 						{
 							pawns.Add(p);
-							if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
-							{
-								//do not allow kidnapping other fac pawns/animals
-								Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.LaunchFailPawns", p.Name.ToStringShort), null, MessageTypeDefOf.NegativeEvent);
-								return;
-							}
-							/*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
+							/*if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
 							{
 								Log.Message("Pawn holding thing: " + p.holdingOwner);
 								Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPawns", p.holdingOwner.Owner.ToString()), null, MessageTypeDefOf.NegativeEvent);

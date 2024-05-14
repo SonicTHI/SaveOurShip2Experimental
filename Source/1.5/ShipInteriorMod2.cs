@@ -130,7 +130,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f37";
+		public const string SOS2EXPversion = "V101f38";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -2050,13 +2050,7 @@ namespace SaveOurShip2
 						if (t is Pawn p)
 						{
 							pawns.Add(p);
-							if (!sourceMapIsSpace && p.Faction != Faction.OfPlayer && !p.IsPrisoner)
-							{
-								//do not allow kidnapping other fac pawns/animals
-								Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.LaunchFailPawns", p.Name.ToStringShort), null, MessageTypeDefOf.NegativeEvent);
-								return;
-							}
-							/*else if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
+							/*if (p.Faction == Faction.OfPlayer && p.holdingOwner is Building) //pawns in containers, abort
 							{
 								Log.Message("Pawn holding thing: " + p.holdingOwner);
 								Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPawns", p.holdingOwner.Owner.ToString()), null, MessageTypeDefOf.NegativeEvent);
@@ -3030,6 +3024,10 @@ namespace SaveOurShip2
 		public static bool IsShuttle(VehiclePawn vehicle)
 		{
 			return vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight;
+		}
+		public static bool IsPod(VehiclePawn vehicle)
+		{
+			return vehicle.def.size.x == 1 && vehicle.def.size.z == 1;
 		}
 		public static bool ShuttleShouldBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
 		{

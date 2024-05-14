@@ -691,6 +691,7 @@ namespace SaveOurShip2
 			{
 				shuttle.DisembarkAll();
 				shuttle.SetFaction(Faction.OfPlayer);
+				shuttle.ignition.Drafted = false;
 			}
 			foreach (Pawn animal in animals)
             {

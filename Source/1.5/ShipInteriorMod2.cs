@@ -97,6 +97,7 @@ namespace SaveOurShip2
 			Scribe_Values.Look(ref offsetUIx, "offsetUIx");
 			Scribe_Values.Look(ref offsetUIy, "offsetUIy");
 			Scribe_Values.Look(ref enemyMapSize, "enemyMapSize");
+			Scribe_Values.Look(ref shuttlesToDisplay, "shuttlesToDisplay", 5);
 			base.ExposeData();
 		}
 
@@ -120,7 +121,8 @@ namespace SaveOurShip2
 			maxTravelTime = 100,
 			offsetUIx = 0,
 			offsetUIy = 0,
-			enemyMapSize = 250;
+			enemyMapSize = 250,
+			shuttlesToDisplay = 5;
 	}
 	public class ShipInteriorMod2 : Mod
 	{
@@ -201,6 +203,9 @@ namespace SaveOurShip2
 			options.Label("SoS.Settings.OffsetUIy".Translate(), -1f, "SoS.Settings.OffsetUIy.Desc".Translate());
 			string bufferY = offsetUIy.ToString();
 			options.TextFieldNumeric<int>(ref offsetUIy, ref bufferY, int.MinValue, int.MaxValue);
+			options.Label("SoS.Settings.ShuttlesToDisplay".Translate(), -1f, "SoS.Settings.ShuttlesToDisplay.Desc".Translate());
+			string bufferShuttleNum = shuttlesToDisplay.ToString();
+			options.TextFieldNumeric<int>(ref shuttlesToDisplay, ref bufferShuttleNum, 0, 20);
 			options.Gap();
 			options.Gap();
 			options.Label("SoS.Settings.Misc".Translate());

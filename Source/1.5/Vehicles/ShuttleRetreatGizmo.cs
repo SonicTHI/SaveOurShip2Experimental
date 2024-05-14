@@ -20,6 +20,8 @@ namespace SaveOurShip2.Vehicles
 
 		bool draggingBar;
 
+		Vector2 topLeft;
+
 		private static readonly Texture2D HealthTex = SolidColorMaterials.NewSolidColorTexture(ColorLibrary.BlueGreen);
 
 		private static readonly Texture2D HealthHighlightTex = SolidColorMaterials.NewSolidColorTexture(ColorLibrary.BrightBlue);
@@ -47,6 +49,7 @@ namespace SaveOurShip2.Vehicles
 
 		public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
 		{
+			this.topLeft = topLeft;
 			Rect rect = new Rect(topLeft.x, topLeft.y, 212, 75);
 			Rect rect2 = rect.ContractedBy(6f);
 			Widgets.DrawWindowBackground(rect);
@@ -80,7 +83,12 @@ namespace SaveOurShip2.Vehicles
 			if (current2.type == EventType.MouseDown && current2.button == 0 && flag)
 			{
 				selectedHealthTarget = num;
-				shuttle.retreatAtHealth = selectedHealthTarget;
+				for (int i = 0; i < Find.Selector.NumSelected; i++)
+				{
+					Thing thing = Find.Selector.SelectedObjectsListForReading[i] as Thing;
+					if (thing != null && thing.TryGetComp<CompShuttleLauncher>(out CompShuttleLauncher launcher))
+						launcher.retreatAtHealth = selectedHealthTarget;
+				}
 				draggingBar = true;
 				SoundDefOf.DragSlider.PlayOneShotOnCamera();
 				current2.Use();
@@ -92,7 +100,12 @@ namespace SaveOurShip2.Vehicles
 					SoundDefOf.DragSlider.PlayOneShotOnCamera();
 				}
 				selectedHealthTarget = num;
-				shuttle.retreatAtHealth = selectedHealthTarget;
+				for(int i=0;i<Find.Selector.NumSelected;i++)
+                {
+					Thing thing = Find.Selector.SelectedObjectsListForReading[i] as Thing;
+					if(thing!=null && thing.TryGetComp<CompShuttleLauncher>(out CompShuttleLauncher launcher))
+						launcher.retreatAtHealth = selectedHealthTarget;
+                }
 				current2.Use();
 			}
 			DrawHealthTarget(rect, RetreatAtHealth);
@@ -124,6 +137,11 @@ namespace SaveOurShip2.Vehicles
         public override float GetWidth(float maxWidth)
         {
             return 212;
+        }
+
+        public override bool GroupsWith(Gizmo other)
+        {
+			return other is ShuttleRetreatGizmo;
         }
     }
 }

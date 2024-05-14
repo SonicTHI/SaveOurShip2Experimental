@@ -140,8 +140,13 @@ namespace SaveOurShip2
 			}
 			Text.Font = GameFont.Tiny;
 			baseY += 15;
-			foreach (ShuttleMissionData mission in playerMapComp.ShuttleMissions)
+			int shuttlesToDisplay = playerMapComp.ShuttleMissions.Count;
+			if (ModSettings_SoS.shuttlesToDisplay > 0 && shuttlesToDisplay > ModSettings_SoS.shuttlesToDisplay)
+				shuttlesToDisplay = ModSettings_SoS.shuttlesToDisplay;
+			List<ShuttleMissionData> missionsSorted = playerMapComp.ShuttleMissions.ToList().OrderBy(mission => mission.shuttle.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity)).ToList();
+			for (int i = 0; i < shuttlesToDisplay; i++)
 			{
+				ShuttleMissionData mission = missionsSorted[i];
 				baseY += 30;
 				string str = (mission.shuttle.Name != null ? mission.shuttle.Name.ToString() : mission.shuttle.def.label) + " (" + ShuttleMissionData.MissionGerund(mission.mission) + ")";
 				int strSize = 5 + str.Length * 6;
@@ -151,6 +156,15 @@ namespace SaveOurShip2
 
 				DrawShuttleHealth(screenHalf - 220, baseY, mission.shuttle);
 				DrawShuttleHeat(screenHalf - 365, baseY, mission.shuttle);
+			}
+			if (shuttlesToDisplay < playerMapComp.ShuttleMissions.Count)
+            {
+				baseY += 30;
+				string str = "(" + (playerMapComp.ShuttleMissions.Count - shuttlesToDisplay) + " more shuttles)";
+				int strSize = 5 + str.Length * 6;
+				Rect rect2 = new Rect(screenHalf - 380 - strSize, baseY - 40, 10 + strSize, 25);
+				Widgets.DrawMenuSection(rect2);
+				Widgets.Label(rect2.ContractedBy(3), str);
 			}
 			//no UI OOC bellow
 			var enemyMapComp = playerMapComp.TargetMapComp;
@@ -174,8 +188,13 @@ namespace SaveOurShip2
 			}
 			Text.Font = GameFont.Tiny;
 			baseY += 15;
-			foreach (ShuttleMissionData mission in enemyMapComp.ShuttleMissions)
+			shuttlesToDisplay = enemyMapComp.ShuttleMissions.Count;
+			if (ModSettings_SoS.shuttlesToDisplay > 0 && shuttlesToDisplay > ModSettings_SoS.shuttlesToDisplay)
+				shuttlesToDisplay = ModSettings_SoS.shuttlesToDisplay;
+			missionsSorted = enemyMapComp.ShuttleMissions.ToList().OrderBy(mission => mission.shuttle.statHandler.GetStatValue(VehicleStatDefOf.BodyIntegrity)).ToList();
+			for (int i = 0; i < shuttlesToDisplay; i++)
 			{
+				ShuttleMissionData mission = missionsSorted[i];
 				if (mission.shuttle.Faction == Faction.OfPlayer)
 				{
 					baseY += 30;
@@ -200,6 +219,15 @@ namespace SaveOurShip2
 					DrawShuttleHealth(screenHalf + 505, baseY, mission.shuttle);
 					DrawShuttleHeat(screenHalf + 650, baseY, mission.shuttle);
 				}
+			}
+			if (shuttlesToDisplay < enemyMapComp.ShuttleMissions.Count)
+			{
+				baseY += 30;
+				string str = "(" + (enemyMapComp.ShuttleMissions.Count - shuttlesToDisplay) + " more shuttles)";
+				int strSize = 5 + str.Length * 6;
+				Rect rect2 = new Rect(screenHalf + 785, baseY - 40, 10 + strSize, 25);
+				Widgets.DrawMenuSection(rect2);
+				Widgets.Label(rect2.ContractedBy(3), str);
 			}
 
 			//range bar
@@ -4859,6 +4887,16 @@ namespace SaveOurShip2
 			else if (actualDef == ResourceBank.ThingDefOf.ShipAirlock && t.def == ResourceBank.ThingDefOf.ShipAirlockWrecked)
 				__result = false;
 		}
+    }
+
+	[HarmonyPatch(typeof(VehiclePawn), "SpawnSetup")]
+	public static class ShuttlesDontStartDrafted
+    {
+		public static void Postfix(VehiclePawn __instance)
+        {
+			if (ShipInteriorMod2.IsShuttle(__instance) && __instance.Faction != Faction.OfPlayer)
+				__instance.ignition.Drafted = false;
+        }
     }
 
 	//TEMPORARY until I talk to Phil and see how to fix this properly

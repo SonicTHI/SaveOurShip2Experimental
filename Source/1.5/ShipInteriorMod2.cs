@@ -128,7 +128,7 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f37";
+		public const string SOS2EXPversion = "V101f38";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
@@ -3019,6 +3019,10 @@ namespace SaveOurShip2
 		public static bool IsShuttle(VehiclePawn vehicle)
 		{
 			return vehicle.CompVehicleLauncher != null && vehicle.CompVehicleLauncher.SpaceFlight;
+		}
+		public static bool IsPod(VehiclePawn vehicle)
+		{
+			return vehicle.def.size.x == 1 && vehicle.def.size.z == 1;
 		}
 		public static bool ShuttleShouldBoard(ShipMapComp targetMapComp, VehiclePawn vehicle)
 		{

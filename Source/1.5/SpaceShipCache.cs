@@ -755,6 +755,7 @@ namespace SaveOurShip2
 						foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
 						{
 							Area.Add(v);
+							AreaDestroyed.Remove(v);
 						}
 						if (part.Props.isPlating)
 						{

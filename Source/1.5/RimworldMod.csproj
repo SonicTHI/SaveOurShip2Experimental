@@ -133,6 +133,7 @@
     <Compile Include="CompProps\CompProps_ArchoHullConversion.cs" />
     <Compile Include="CompProps\CompProps_Archolife.cs" />
     <Compile Include="CompProps\CompProps_ArcholifeCosmetics.cs" />
+    <Compile Include="CloakThresholdGizmo.cs" />
     <Compile Include="Vehicles\CompHoverMode.cs" />
     <Compile Include="Vehicles\CompProperties_HoverMode.cs" />
     <Compile Include="Vehicles\CompVehicleHeatNet.cs" />

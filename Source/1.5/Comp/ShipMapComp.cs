@@ -691,6 +691,7 @@ namespace SaveOurShip2
 			{
 				shuttle.DisembarkAll();
 				shuttle.SetFaction(Faction.OfPlayer);
+				shuttle.ignition.Drafted = false;
 			}
 			foreach (Pawn animal in animals)
             {
@@ -2280,6 +2281,8 @@ namespace SaveOurShip2
 				return;
 			}
 			SpaceShipCache ship = ShipsOnMap[shipIndex];
+			foreach (Building_ArchotechPillar pillar in ship.Buildings.Where(building => building is Building_ArchotechPillar)) //Handling for archotech pillar A
+				ShipInteriorMod2.WorldComp.Unlocks.Add(((CompProps_ResearchUnlock)pillar.GetComp<CompResearchUnlock>().props).unlock);
 			if (ShipsOnMap.Values.Count(s => !s.IsWreck) == 0 || (ShipsOnMap.Values.Count(s => !s.IsWreck) == 1 && !ship.IsWreck && ship.Faction != ShipFaction)) //end battle if last ship or last ship captured
 			{
 				EndBattle(map, false);

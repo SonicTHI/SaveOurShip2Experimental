@@ -15,6 +15,7 @@ namespace SaveOurShip2
 		public CompShipHeatSource heatComp;
 		public CompFlickable flickComp;
 		public ShipMapComp mapComp;
+		public float breakCloakAtHeat=1;
 
 		public override void SpawnSetup(Map map, bool respawningAfterLoad)
 		{
@@ -45,13 +46,15 @@ namespace SaveOurShip2
 					bool turnedOff = false;
 					foreach (ShipHeatNet net in mapComp.cachedNets.Where(n => n != null && n.StorageCapacityRaw > 0))
 					{
-						if (!heatComp.AddDepletionToNetwork(1f + net.StorageCapacityRaw / 10000f))
+						if (!heatComp.AddDepletionToNetwork(1f + net.StorageCapacityRaw / 10000f) || heatComp.myNet.DepletionRatio >= breakCloakAtHeat)
 						{
 							foreach (Building_ShipCloakingDevice cloak in mapComp.Cloaks) //all cloaks off
 							{
 								cloak.flickComp.SwitchIsOn = false;
 							}
 							turnedOff = true;
+							if (heatComp.myNet.DepletionRatio >= breakCloakAtHeat)
+								Messages.Message("SoS.CloakBrokenAtHeat".Translate(), MessageTypeDefOf.NegativeEvent);
 							return;
 						}
 					}
@@ -94,6 +97,14 @@ namespace SaveOurShip2
 		{
 			base.ExposeData();
 			Scribe_Values.Look<bool>(ref active, "active", false);
+			Scribe_Values.Look<float>(ref breakCloakAtHeat, "breakCloakAtHeat", 1);
 		}
-	}
+
+        public override IEnumerable<Gizmo> GetGizmos()
+        {
+			List<Gizmo> gizmos = new List<Gizmo>(base.GetGizmos());
+			gizmos.Add(new CloakThresholdGizmo(this));
+			return gizmos;
+        }
+    }
 }

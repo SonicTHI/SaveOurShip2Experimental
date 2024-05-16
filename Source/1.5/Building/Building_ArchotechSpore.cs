@@ -1076,7 +1076,7 @@ namespace SaveOurShip2
 					builder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.GameOverEnemyA", Faction.OfPlayer.GetCallLabel(), Consciousness.Name.ToStringFull));
 					builder.AppendLine();
 
-					foreach (Faction fac in alliedFactions)
+					foreach (Faction fac in enemyFactions)
 					{
 						if (fac.def.techLevel > TechLevel.Neolithic && fac.def.techLevel < TechLevel.Ultra) //Outlanders and modded factions
 						{
@@ -1116,7 +1116,7 @@ namespace SaveOurShip2
 					builder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.GameOverEnemyB", Faction.OfPlayer.GetCallLabel(), Consciousness.Name.ToStringFull));
 					builder.AppendLine();
 
-					foreach (Faction fac in alliedFactions)
+					foreach (Faction fac in enemyFactions)
 					{
 						if (fac.def.techLevel > TechLevel.Neolithic && fac.def.techLevel < TechLevel.Ultra) //Outlanders and modded factions
 						{

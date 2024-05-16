@@ -9,42 +9,42 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 
-namespace SaveOurShip2.Vehicles
+namespace SaveOurShip2
 {
 	[StaticConstructorOnStartup]
-    class ShuttleRetreatGizmo : Gizmo
+    class CloakThresholdGizmo : Gizmo
     {
-        CompShuttleLauncher shuttle;
+		Building_ShipCloakingDevice cloak;
 
-		float selectedHealthTarget = -1f;
+		float breakCloakAtHeat = 1f;
 
 		bool draggingBar;
 
 		Vector2 topLeft;
 
-		private static readonly Texture2D HealthTex = SolidColorMaterials.NewSolidColorTexture(ColorLibrary.BlueGreen);
+		private static readonly Texture2D CloakTex = SolidColorMaterials.NewSolidColorTexture(ColorLibrary.BrickRed);
 
-		private static readonly Texture2D HealthHighlightTex = SolidColorMaterials.NewSolidColorTexture(ColorLibrary.BrightBlue);
+		private static readonly Texture2D CloakHighlightTex = SolidColorMaterials.NewSolidColorTexture(ColorLibrary.Red);
 
 		private static readonly Texture2D EmptyBarTex = SolidColorMaterials.NewSolidColorTexture(new Color(0.03f, 0.035f, 0.05f));
 
-		private static readonly Texture2D HealthTargetTex = SolidColorMaterials.NewSolidColorTexture(ColorLibrary.Blue);
+		private static readonly Texture2D CloakTargetTex = SolidColorMaterials.NewSolidColorTexture(ColorLibrary.DarkRed);
 
-		float RetreatAtHealth
+		float BreakCloakAtHeat
 		{
 			get
 			{
 				if (!draggingBar)
 				{
-					return shuttle.retreatAtHealth;
+					return cloak.breakCloakAtHeat;
 				}
-				return selectedHealthTarget;
+				return breakCloakAtHeat;
 			}
 		}
 
-		public ShuttleRetreatGizmo(CompShuttleLauncher launcher)
+		public CloakThresholdGizmo(Building_ShipCloakingDevice cloak)
         {
-            shuttle = launcher;
+			this.cloak = cloak;
         }
 
 		public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
@@ -57,12 +57,12 @@ namespace SaveOurShip2.Vehicles
 			float curY = rect3.yMin;
 			Text.Font = GameFont.Tiny;
 			Text.Anchor = TextAnchor.UpperLeft;
-			Widgets.Label(rect3.x, ref curY, rect3.width, "SoS.RetreatAtHealth".Translate() + ": " + RetreatAtHealth.ToStringPercent());
+			Widgets.Label(rect3.x, ref curY, rect3.width, "SoS.BreakCloakAtHeat".Translate() + ": " + BreakCloakAtHeat.ToStringPercent());
 			Text.Font = GameFont.Small;
 			if (Mouse.IsOver(rect2) && !draggingBar)
 			{
 				Widgets.DrawHighlight(rect2);
-				TooltipHandler.TipRegion(rect2, () => "SoS.RetreatAtHealthDesc".Translate(), 9493937);
+				TooltipHandler.TipRegion(rect2, () => "SoS.BreakCloakAtHeatDesc".Translate(), 9493937);
 			}
 			DrawBar(rect2, curY);
 			return new GizmoResult(GizmoState.Clear);
@@ -76,41 +76,33 @@ namespace SaveOurShip2.Vehicles
 			rect.yMax = inRect.yMax - 4f;
 			rect.yMin = curY + 10f;
 			bool flag = Mouse.IsOver(rect);
-			Widgets.FillableBar(rect, RetreatAtHealth, flag ? HealthHighlightTex : HealthTex, EmptyBarTex, doBorder: true);
+			Widgets.FillableBar(rect, BreakCloakAtHeat, flag ? CloakHighlightTex : CloakTex, EmptyBarTex, doBorder: true);
 			float num = Mathf.Clamp(Mathf.Round((Event.current.mousePosition.x - (rect.x + 3f)) / (rect.width - 8f) * 20f) / 20f, 0f, 1f);
 			Event current2 = Event.current;
 			if (current2.type == EventType.MouseDown && current2.button == 0 && flag)
 			{
-				selectedHealthTarget = num;
-				for (int i = 0; i < Find.Selector.NumSelected; i++)
-				{
-					Thing thing = Find.Selector.SelectedObjectsListForReading[i] as Thing;
-					if (thing != null && thing.TryGetComp<CompShuttleLauncher>(out CompShuttleLauncher launcher))
-						launcher.retreatAtHealth = selectedHealthTarget;
-				}
+				breakCloakAtHeat = num;
+				foreach (Building_ShipCloakingDevice cloak in this.cloak.mapComp.Cloaks)
+					cloak.breakCloakAtHeat = breakCloakAtHeat;
 				draggingBar = true;
 				SoundDefOf.DragSlider.PlayOneShotOnCamera();
 				current2.Use();
 			}
 			if (current2.type == EventType.MouseDrag && current2.button == 0 && draggingBar && flag)
 			{
-				if (Mathf.Abs(num - selectedHealthTarget) > float.Epsilon)
+				if (Mathf.Abs(num - breakCloakAtHeat) > float.Epsilon)
 				{
 					SoundDefOf.DragSlider.PlayOneShotOnCamera();
 				}
-				selectedHealthTarget = num;
-				for(int i=0;i<Find.Selector.NumSelected;i++)
-                {
-					Thing thing = Find.Selector.SelectedObjectsListForReading[i] as Thing;
-					if(thing!=null && thing.TryGetComp<CompShuttleLauncher>(out CompShuttleLauncher launcher))
-						launcher.retreatAtHealth = selectedHealthTarget;
-                }
+				breakCloakAtHeat = num;
+				foreach (Building_ShipCloakingDevice cloak in this.cloak.mapComp.Cloaks)
+					cloak.breakCloakAtHeat = breakCloakAtHeat;
 				current2.Use();
 			}
-			DrawHealthTarget(rect, RetreatAtHealth);
+			DrawHealthTarget(rect, BreakCloakAtHeat);
 			Text.Font = GameFont.Small;
 			Text.Anchor = TextAnchor.MiddleCenter;
-			Widgets.Label(rect, shuttle.retreatAtHealth.ToStringPercent());
+			Widgets.Label(rect, cloak.breakCloakAtHeat.ToStringPercent());
 			Text.Anchor = TextAnchor.UpperLeft;
 			GUI.color = Color.white;
 		}
@@ -118,7 +110,7 @@ namespace SaveOurShip2.Vehicles
 		private void DrawHealthTarget(Rect rect, float percent)
 		{
 			float num = Mathf.Round((rect.width - 8f) * percent);
-			GUI.DrawTexture(new Rect(rect.x + 3f + num, rect.y, 2f, rect.height), HealthTargetTex);
+			GUI.DrawTexture(new Rect(rect.x + 3f + num, rect.y, 2f, rect.height), CloakTargetTex);
 			float num2 = UIScaling.AdjustCoordToUIScalingFloor(rect.x + 2f + num);
 			float xMax = UIScaling.AdjustCoordToUIScalingCeil(num2 + 4f);
 			Rect rect2 = default(Rect);
@@ -127,10 +119,10 @@ namespace SaveOurShip2.Vehicles
 			rect2.xMin = num2;
 			rect2.xMax = xMax;
 			Rect rect3 = rect2;
-			GUI.DrawTexture(rect3, HealthTargetTex);
+			GUI.DrawTexture(rect3, CloakTargetTex);
 			Rect position = rect3;
 			position.y = rect.yMax - 2f;
-			GUI.DrawTexture(position, HealthTargetTex);
+			GUI.DrawTexture(position, CloakTargetTex);
 		}
 
         public override float GetWidth(float maxWidth)
@@ -140,7 +132,7 @@ namespace SaveOurShip2.Vehicles
 
         public override bool GroupsWith(Gizmo other)
         {
-			return other is ShuttleRetreatGizmo;
+			return other is CloakThresholdGizmo;
         }
     }
 }

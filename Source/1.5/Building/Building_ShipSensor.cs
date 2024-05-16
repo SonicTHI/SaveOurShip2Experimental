@@ -69,6 +69,7 @@ namespace SaveOurShip2
 				LongEventHandler.QueueLongEvent(delegate
 				{
 					GetOrGenerateMapUtility.GetOrGenerateMap(target.WorldObject.Tile, target.WorldObject.def);
+					GetOrGenerateMapUtility.UnfogMapFromEdge(observedMap.Map);
 				}, "Generating map",false, delegate { });
 				return true;
 			}

@@ -29,15 +29,16 @@ namespace SaveOurShip2.Vehicles
 		{
             //td not sure the limits we want on this, right now you could assault from anywhere, should it be only from ship-ship?
             var mp = Find.World.worldObjects.MapParentAt(tile);
-            if (mp != null && mp.def == ResourceBank.WorldObjectDefOf.ShipOrbiting) //target is ship
+            if (mp != null && (mp.def == ResourceBank.WorldObjectDefOf.ShipOrbiting || mp.def == ResourceBank.WorldObjectDefOf.ShipEnemy)) //target is ship
 			{
 				var mapComp = mp.Map.GetComponent<ShipMapComp>();
 				if (mapComp.ShipMapState == ShipMapState.inCombat) //target is in combat
 				{
-					if (mapComp.ShipCombatTargetMap != mapComp.ShipCombatOriginMap) //target is enemy ship
+					if (mapComp.map != mapComp.ShipCombatOriginMap) //target is enemy ship
 					{
 						foreach (FloatMenuOption giz in FloatMenuMissions(tile, mapComp))
 							yield return giz;
+                        yield break;
 					}
 					else //target is player ship
 					{
@@ -114,7 +115,7 @@ namespace SaveOurShip2.Vehicles
             vehicleSkyfaller_Leaving.vehicle = vehicle;
             vehicleSkyfaller_Leaving.createWorldObject = false;
             GenSpawn.Spawn(vehicleSkyfaller_Leaving, vehicle.Position, vehicle.Map, vehicle.CompVehicleLauncher.launchProtocol.CurAnimationProperties.forcedRotation ?? vehicle.Rotation);
-            ((ShuttleTakeoff)vehicle.CompVehicleLauncher.launchProtocol).TempMissionRef = vehicle.Map.GetComponent<ShipMapComp>().RegisterShuttleMission(vehicle, mission);
+            ((ShuttleTakeoff)vehicle.CompVehicleLauncher.launchProtocol).TempMissionRef = ShipInteriorMod2.FindPlayerShipMap().GetComponent<ShipMapComp>().RegisterShuttleMission(vehicle, mission);
             CameraJumper.TryHideWorld();
             vehicle.EventRegistry[VehicleEventDefOf.AerialVehicleLaunch].ExecuteEvents();
         }

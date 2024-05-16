@@ -26,6 +26,13 @@ namespace SaveOurShip2
 		{
 			get { return props as CompProps_EngineTrail; }
 		}
+		public virtual int FuelUse
+		{
+            get
+            {
+                return Props.fuelUse;
+            }
+        }
 		public virtual int Thrust
 		{
 			get
@@ -56,7 +63,7 @@ namespace SaveOurShip2
 				{
 					return true;
 				}
-				else if (refuelComp.Fuel > Props.fuelUse)
+				else if (refuelComp.Fuel > FuelUse)
 				{
 					return true;
 				}
@@ -78,7 +85,7 @@ namespace SaveOurShip2
 					{
 						return true;
 					}
-					else if (refuelComp.Fuel > Props.fuelUse)
+					else if (refuelComp.Fuel > FuelUse)
 					{
 						return true;
 					}
@@ -107,7 +114,7 @@ namespace SaveOurShip2
 				active = true;
 				return true;
 			}
-			if (refuelComp.Fuel > Props.fuelUse)
+			if (refuelComp.Fuel > FuelUse)
 			{
 				active = true;
 				return true;
@@ -216,12 +223,12 @@ namespace SaveOurShip2
 					}
 					if (refuelComp != null)
 					{
-						if (refuelComp.Fuel < Props.fuelUse)
+						if (refuelComp.Fuel < FuelUse)
 						{
 							Off();
 							return;
 						}
-						refuelComp.ConsumeFuel(Props.fuelUse);
+						refuelComp.ConsumeFuel(FuelUse);
 					}
 					/*if (!Props.soundWorking.NullOrUndefined())
 					{

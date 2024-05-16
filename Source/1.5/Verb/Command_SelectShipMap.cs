@@ -96,7 +96,7 @@ namespace SaveOurShip2
 					List<CompEngineTrail> engines = new List<CompEngineTrail>();
 					foreach (SpaceShipCache ship in mapComp.ShipsOnMap.Values)
 					{
-						foreach (CompEngineTrail engine in ship.Engines.Where(e => e.Props.fuelUse > 0))
+						foreach (CompEngineTrail engine in ship.Engines.Where(e => e.FuelUse > 0))
 						{
 							engines.Add(engine);
 							fuel += engine.refuelComp.Fuel;

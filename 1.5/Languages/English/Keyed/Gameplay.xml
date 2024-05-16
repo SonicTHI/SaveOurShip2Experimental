@@ -68,7 +68,7 @@
 	<SoS.ReturnShipDesc>Move this ship back to your stable orbit</SoS.ReturnShipDesc>
 	<SoS.CaptureShip>Capture</SoS.CaptureShip>
 	<SoS.CaptureShipDesc>Move this ship to your map</SoS.CaptureShipDesc>
-	<SoS.LaunchFailPawns>Non player pawn found on ship: {0}, takeoff aborted.</SoS.LaunchFailPawns>
+	<SoS.LaunchFailPawns>Non player pawn found on ship: {0}, takeoff disabled.</SoS.LaunchFailPawns>
 	<SoS.MoveFailImmobile>No pilot, not enough fuel or RCS thrusters!</SoS.MoveFailImmobile>
 	<SoS.MoveFailFaction>Ship from another faction next to target area. Move aborted.</SoS.MoveFailFaction>
 	<SoS.MoveWreckCommand>Move wreck</SoS.MoveWreckCommand>
@@ -141,6 +141,8 @@
 	<SoS.StatsShipMaxTakeoff>Maximum takeoff weight: {0}</SoS.StatsShipMaxTakeoff>
 	<SoS.StatsShipEnergy>Stored power: {0} / {1} Wd</SoS.StatsShipEnergy>
 	<SoS.StatsShipHeat>Stored heat: {0} / {1} HU{2}</SoS.StatsShipHeat>
+	<SoS.StatsShipHeatMaximumShort>maximum</SoS.StatsShipHeatMaximumShort>
+	<SoS.StatsShipHeatMaximum>Heat maximum: {0}</SoS.StatsShipHeatMaximum>
 	<SoS.StatsShipCombatRating>Combat rating: {0}</SoS.StatsShipCombatRating>
 	<SoS.StatsShipCombatThrust>Thrust/Weight ratio: {0}</SoS.StatsShipCombatThrust>
 	<SoS.ReportInterReady>Ready for interstellar travel.</SoS.ReportInterReady>
@@ -359,6 +361,7 @@
 	<SoS.EnemyShuttleOutOfTorps>Enemy shuttle is out of torpedoes and has begun retreating!</SoS.EnemyShuttleOutOfTorps>
 	<SoS.BoardingShuttleArrived>Your boarding shuttle has arrived!</SoS.BoardingShuttleArrived>
 	<SoS.EnemyBoardingShuttleArrived>Enemy boarding shuttle has arrived!</SoS.EnemyBoardingShuttleArrived>
+	<SoS.EnemyBoardingShuttleAborted>Enemy boarding shuttle is retreating!</SoS.EnemyBoardingShuttleAborted>
 	<SoS.ShuttleMissionBoarding>Board enemy ship</SoS.ShuttleMissionBoarding>
 	<SoS.ShuttleMissionBoardingDesc>Send this shuttle to board the enemy ship. It will be vulnerable to point-defense weaponry. If the enemy has active engines, the shuttle will take longer to arrive.</SoS.ShuttleMissionBoardingDesc>
 	<SoS.ShuttleMissionBoardingDisabled>Shuttle under roof and not on suitable bay!</SoS.ShuttleMissionBoardingDisabled>

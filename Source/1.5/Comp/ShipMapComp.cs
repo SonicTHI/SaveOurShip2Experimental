@@ -1761,10 +1761,25 @@ namespace SaveOurShip2
 						foreach (SpaceShipCache ship in ShipsOnMap.Values)
 						{
 							List<VehiclePawn> shuttles = new List<VehiclePawn>();
+							List<CompShipBay> bays = new List<CompShipBay>();
 							foreach (VehiclePawn vehicle in ship.ShuttlesOnShip(ship.Faction))
 							{
 								if (ShipInteriorMod2.IsShuttle(vehicle) && (vehicle.CompUpgradeTree == null || !ShipInteriorMod2.ShuttleIsArmed(vehicle)) && vehicle.NextAvailableHandler() != null)
-									shuttles.Add(vehicle);
+								{
+									if (ShipInteriorMod2.IsPod(vehicle) || !ModSettings_SoS.shipMapPhysics)
+										shuttles.Add(vehicle);
+									else //for non pods, check if there is room to land
+									{
+										foreach (CompShipBay bay in targetMapComp.Bays)
+										{
+											if (!bays.Contains(bay) && bay.CanFitShuttleSize(vehicle) != IntVec3.Zero)
+											{
+												shuttles.Add(vehicle);
+												bays.Add(bay);
+											}
+										}
+									}
+								}
 							}
 							List<VehiclePawn> shuttlesToBeFilled = new List<VehiclePawn>(shuttles);
 							IEnumerable<Pawn> pawnsToBoard = ship.PawnsOnShip(ship.Faction).Where(pawn => (pawn.CurJob == null || pawn.CurJob.def != ResourceBank.JobDefOf.ManShipBridge) && pawn.kindDef.combatPower > 40);
@@ -2543,9 +2558,6 @@ namespace SaveOurShip2
 				}
 				else //enemy shuttles - never returns?
 				{
-					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent); 
-					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
-
 					IntVec3 vec = IntVec3.Zero;
 					foreach (var bay in mapToSpawnInComp.Bays)
 					{
@@ -2556,6 +2568,16 @@ namespace SaveOurShip2
 							break;
 						}
 					}
+
+					if (ModSettings_SoS.shipMapPhysics && !ShipInteriorMod2.IsPod(mission.shuttle) && mapToSpawnInComp.MapEnginePower > 0.02f) //Restricted boarding, return if shuttle
+					{
+						Messages.Message("SoS.EnemyBoardingShuttleAborted".Translate(), MessageTypeDefOf.NeutralEvent);
+						ShuttleMissionData newMission = mapToSpawnInComp.targetMapComp.RegisterShuttleMission(mission.shuttle, ShuttleMission.RETURN);
+						newMission.rangeTraveled = OriginMapComp.Range;
+						newMission.liftedOffYet = true;
+						return;
+					}
+
 					if (vec == IntVec3.Zero) //fallbacks
 					{
 						var ship = mapToSpawnInComp.ShipsOnMap.Values.Where(s => !s.IsWreck)?.RandomElement();
@@ -2567,13 +2589,16 @@ namespace SaveOurShip2
 							while (i < 10)
 							{
 								IntVec3 v = ship.OuterCells().RandomElement();
-								vec = FindTargetForPod(ship, v);
+								vec = FindTargetForPod(mission, v);
 								if (vec != null)
 									break;
 								i++;
 							}
 						}
 					}
+
+					Messages.Message("SoS.EnemyBoardingShuttleArrived".Translate(), MessageTypeDefOf.NegativeEvent);
+					VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
 					GenSpawn.Spawn(vehicleSkyfaller_Arriving, vec, mapToSpawnIn, Rot4.East);
 				}
 			}
@@ -2629,9 +2654,9 @@ namespace SaveOurShip2
 				return "Mission_" + uniqueID;
             }
 		}
-		public IntVec3 FindTargetForPod(SpaceShipCache ship, IntVec3 v)
+		public IntVec3 FindTargetForPod(ShuttleMissionData mission, IntVec3 v)
 		{
-			if (!ModSettings_SoS.shipMapPhysics) //Default, find landing spot next to ship's outer rooms
+			if (!ModSettings_SoS.shipMapPhysics) //Default fallback, find landing spot next to ship's outer rooms
 			{
 				var result = IntVec3.Invalid;
 				CellFinder.TryFindRandomCellNear(v, map, 9, (IntVec3 cell) => { return cell.Standable(map) && !map.roofGrid.Roofed(cell); }, out result);
@@ -2639,7 +2664,7 @@ namespace SaveOurShip2
 					return v; //Fallback, hope this won't have to be used
 				return result;
 			}
-			else //Restricted boarding, punch holes in player ship
+			else //Restricted boarding fallback, pods punch holes in player ship
 			{
 				foreach (IntVec3 vec in GenAdj.CellsAdjacent8Way(v, Rot4.North, new IntVec2(7, 7)))
 				{

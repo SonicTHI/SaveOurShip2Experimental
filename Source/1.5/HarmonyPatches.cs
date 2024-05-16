@@ -135,6 +135,11 @@ namespace SaveOurShip2
 					stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipCombatRating", bridge.Ship.Threat));
 					stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipMass", bridge.Ship.MassActual));
 					stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipCombatThrust", bridge.Ship.ThrustRatio.ToString("F3")));
+					if(bridge.heatComp.myNet.Depletion > 0)
+					{
+						stringBuilder.AppendLine(TranslatorFormattedStringExtensions.Translate("SoS.StatsShipHeatMaximum", bridge.heatComp.myNet.StorageCapacityRaw));
+					}
+
 					TooltipHandler.TipRegion(rect2, stringBuilder.ToString());
 				}
 			}
@@ -1775,6 +1780,14 @@ namespace SaveOurShip2
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("ShipReportMissingPart") + ": " + ThingDefOf.Ship_SensorCluster.label);
 			if (!ship.HasMannedBridge())
 				newResult.Add(TranslatorFormattedStringExtensions.Translate("SoS.ReportNeedPilot"));
+			//do not allow kidnapping other fac pawns/animals
+			foreach (Pawn p in ship.PawnsOnShip())
+			{
+				if (p.Faction != Faction.OfPlayer && !p.IsPrisoner)
+				{
+					newResult.Add(TranslatorFormattedStringExtensions.Translate("SoS.LaunchFailPawns", p.Name?.ToStringShort ?? p.KindLabel ?? ""));
+				}
+			}
 
 			__result = newResult;
 		}
@@ -2807,6 +2820,20 @@ namespace SaveOurShip2
 	// Ideology - disable random recruit reward for rituals in space
 	[HarmonyPatch(typeof(RitualAttachableOutcomeEffectWorker_RandomRecruit), "Apply")]
 	public static class DisableRecruitReward
+	{
+		public static bool Prefix(LordJob_Ritual jobRitual)
+		{
+			if (jobRitual.Map != null && jobRitual.Map.IsSpace())
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+
+	// Ideology - disable farm animals reward for rituals in space
+	[HarmonyPatch(typeof(RitualAttachableOutcomeEffectWorker_FarmAnimalsWanderIn), "Apply")]
+	public static class DisableFarmAnimalsReward
 	{
 		public static bool Prefix(LordJob_Ritual jobRitual)
 		{

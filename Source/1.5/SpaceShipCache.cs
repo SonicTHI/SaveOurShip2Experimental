@@ -321,12 +321,7 @@ namespace SaveOurShip2
 		}
 		public bool HasPilotRCSAndFuel(float fuelPercentNeeded, bool atmospheric)
 		{
-			if (!HasMannedBridge())
-			{
-				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPilot"), Core, MessageTypeDefOf.NeutralEvent);
-				return false;
-			}
-			if (!HasRCSAndFuel(fuelPercentNeeded, atmospheric))
+			if (!HasMannedBridge() || !HasRCSAndFuel(fuelPercentNeeded, atmospheric))
 				return false;
 			return true;
 		}
@@ -755,6 +750,7 @@ namespace SaveOurShip2
 						foreach (IntVec3 v in GenAdj.CellsOccupiedBy(b))
 						{
 							Area.Add(v);
+							AreaDestroyed.Remove(v);
 						}
 						if (part.Props.isPlating)
 						{

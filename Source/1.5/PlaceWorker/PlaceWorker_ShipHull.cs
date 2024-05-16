@@ -12,7 +12,7 @@ namespace SaveOurShip2
 			CellRect occupiedRect = GenAdj.OccupiedRect(loc, rot, def.Size);
 			foreach (IntVec3 vec in occupiedRect)
 			{
-				if (vec.Fogged(map) || map.roofGrid.RoofAt(loc) == RoofDefOf.RoofRockThick)
+				if (vec.Fogged(map) || map.roofGrid.RoofAt(vec) == RoofDefOf.RoofRockThick)
 					return false;
 				foreach (Thing t in vec.GetThingList(map))
 				{

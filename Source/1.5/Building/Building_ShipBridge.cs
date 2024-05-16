@@ -968,7 +968,7 @@ namespace SaveOurShip2
 							groupable = false,
 							action = delegate
 							{
-								if (!mapComp.GraveOrigin.IsPlayerHome || mapComp.GraveOrigin == null)
+								if (mapComp.GraveOrigin == null || !mapComp.GraveOrigin.IsPlayerHome)
 								{
 									Map m = ShipInteriorMod2.FindPlayerShipMap() ?? ShipInteriorMod2.GeneratePlayerShipMap(Map.Size);
 									mapComp.GraveOrigin = m;

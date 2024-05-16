@@ -394,6 +394,9 @@
 	<SoS.ExpelSuperheatedAirDesc>Use this vent to expel superheated air from the room. The process will damage your ship's life-support systems for one point per four tiles in the room, split evenly.</SoS.ExpelSuperheatedAirDesc>
 	<SoS.AirNotSuperheated>Air is not superheated</SoS.AirNotSuperheated>
 	<SoS.NoLifeSupport>No active life support</SoS.NoLifeSupport>
+	<SoS.BreakCloakAtHeat>Break cloak at depletion level</SoS.BreakCloakAtHeat>
+	<SoS.BreakCloakAtHeatDesc>When the ship's coolant depletion reaches this percentage, disable cloaking device(s) so that it can recover.</SoS.BreakCloakAtHeatDesc>
+	<SoS.CloakBrokenAtHeat>Cloaking devices deactivated due to coolant depletion!</SoS.CloakBrokenAtHeat>
 	
 	<!-- obsolete/unused
 	<SoS.PirateTradeEmpire>Our act of piracy against the Empire has not gone unnoticed!</SoS.PirateTradeEmpire>

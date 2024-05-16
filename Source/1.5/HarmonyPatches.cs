@@ -4429,7 +4429,7 @@ namespace SaveOurShip2
 					continue;
 				Vector3 pos = shield.parent.Position.ToVector3Shifted();
 				pos.y = lastExactPos.y;
-				if(Vector3.Distance(lastExactPos, pos) > shield.radius && (Vector3.Distance(newExactPos, pos) <= shield.radius || Vector3.Distance((lastExactPos + newExactPos) / 2, pos) <= shield.radius))
+				if((__instance.Position.OnEdge(__instance.Map) || Vector3.Distance(lastExactPos, pos) > shield.radius) && (Vector3.Distance(newExactPos, pos) <= shield.radius || Vector3.Distance((lastExactPos + newExactPos) / 2, pos) <= shield.radius))
                 {
 					//Log.Message("Hit shield - lastExactPos was " + lastExactPos + ", newExactPos was " + newExactPos + ", midpoint was " + ((lastExactPos + newExactPos) / 2) + ", shield pos was " + pos + ", radius was " + shield.radius);
 					shield.HitShield(__instance);

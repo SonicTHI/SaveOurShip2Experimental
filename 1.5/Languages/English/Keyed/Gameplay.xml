@@ -69,8 +69,6 @@
 	<SoS.CaptureShip>Capture</SoS.CaptureShip>
 	<SoS.CaptureShipDesc>Move this ship to your map</SoS.CaptureShipDesc>
 	<SoS.LaunchFailPawns>Non player pawn found on ship: {0}, takeoff disabled.</SoS.LaunchFailPawns>
-	<SoS.MoveFailImmobile>No pilot, not enough fuel or RCS thrusters!</SoS.MoveFailImmobile>
-	<SoS.MoveFailFaction>Ship from another faction next to target area. Move aborted.</SoS.MoveFailFaction>
 	<SoS.MoveWreckCommand>Move wreck</SoS.MoveWreckCommand>
 	<SoS.MoveWreckCommandDesc>Reposition a wreck on your map</SoS.MoveWreckCommandDesc>
 	<SoS.MoveWreckFlipCommand>Flip wreck</SoS.MoveWreckFlipCommand>
@@ -88,7 +86,8 @@
 	<SoS.SalvageDisabled>In ship battle or enemy pawns present!</SoS.SalvageDisabled>
 	<SoS.SalvageAbandonConfirm>Are you sure you want to discard the target?\nEverything connected to or on it will burn up in the atmosphere!</SoS.SalvageAbandonConfirm>
 	<SoS.SalvageBridge>Can not move intact ships with the salvage bay, capture or destroy the bridge.</SoS.SalvageBridge>
-	<SoS.SalvageCount>Not enough salvage bays. {0}/{1}</SoS.SalvageCount>
+	<SoS.SalvageFailMass>Not enough salvage bays on ships that can move. {0}/{1}</SoS.SalvageFailMass>
+	<SoS.SalvageFailFuel>Not enough fuel. {0}/{1}</SoS.SalvageFailFuel>
 	<SoS.SalvageNoSpace>Not enough space on salvage bay.</SoS.SalvageNoSpace>
 	<SoS.SalvageEnemiesPresent>Use salvage bay to claim after all enemies have been defeated.</SoS.SalvageEnemiesPresent>
 	<SoS.ClaimWrecksCommand>Claim wrecks</SoS.ClaimWrecksCommand>
@@ -174,9 +173,11 @@
 	<SoS.MoveRotDesc>Rotate the ship counter clockwise</SoS.MoveRotDesc>
 	<SoS.MoveFail>Move failed!</SoS.MoveFail>
 	<SoS.MoveFailDesc>Ship move failed! Recheck your ship and reload if things are out of place or broken. This is most often caused by modded buildings that do not despawn properly.\nFailed by moving: {0}</SoS.MoveFailDesc>
+	<SoS.MoveFailPilot>Ship requires a pilot to move.</SoS.MoveFailPilot>
 	<SoS.MoveFailRCS>Not enough RCS thrusters to move ship, required {0}</SoS.MoveFailRCS>
 	<SoS.MoveFailFuel>Not enough fuel to move ship, required {0} fuel</SoS.MoveFailFuel>
-	<SoS.MoveFailPilot>Ship requires a pilot to move.</SoS.MoveFailPilot>
+	<SoS.MoveFailFaction>Ship from another faction next to target area. Move aborted.</SoS.MoveFailFaction>
+	<SoS.MoveFailCombat>Main ship map is in battle.</SoS.MoveFailCombat>
 	<SoS.Land>Land ship</SoS.Land>
 	<SoS.LandDesc>Land this ship near </SoS.LandDesc>
 	<SoS.Rebuild>Rebuild ship parts</SoS.Rebuild>

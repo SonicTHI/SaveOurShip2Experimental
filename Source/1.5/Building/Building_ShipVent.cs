@@ -105,49 +105,53 @@ namespace SaveOurShip2
 			};
 			toggleHeatWithPower.icon = ContentFinder<Texture2D>.Get("Things/Building/Misc/TempControl/Heater");
 			yield return toggleHeatWithPower;
-			Command_Action expelSuperheatedAir = new Command_Action
+
+			if (Map.IsSpace())
 			{
-				action = delegate
+				Command_Action expelSuperheatedAir = new Command_Action
 				{
-					Room room = ventTo.GetRoom(Map);
-					foreach (IntVec3 cell in room.Cells)
-						FleckMaker.ThrowDustPuff(cell, Map, 1);
-					foreach (Fire fire in room.ContainedThings<Fire>())
-						fire.Destroy();
-					foreach (Pawn pawn in room.ContainedThings<Pawn>())
-                    {
-						if (pawn.DecompressionResistance() < 1)
-							WeatherEvent_VacuumDamage.DoPawnDecompressionDamage(pawn, 10);
-                    }						
-					room.Temperature = 0f;
+					action = delegate
+					{
+						Room room = ventTo.GetRoom(Map);
+						foreach (IntVec3 cell in room.Cells)
+							FleckMaker.ThrowDustPuff(cell, Map, 1);
+						foreach (Fire fire in room.ContainedThings<Fire>())
+							fire.Destroy();
+						foreach (Pawn pawn in room.ContainedThings<Pawn>())
+						{
+							if (pawn.DecompressionResistance() < 1)
+								WeatherEvent_VacuumDamage.DoPawnDecompressionDamage(pawn, 10);
+						}
+						room.Temperature = 0f;
+						ShipMapComp comp = Map.GetComponent<ShipMapComp>();
+						SpaceShipCache ship = comp.ShipsOnMap[comp.ShipIndexOnVec(Position)];
+						int pointsOfDamage = room.CellCount / ship.LifeSupports.Count;
+						Log.Message("Dealing " + pointsOfDamage + " to each of " + ship.LifeSupports.Count + " life supports.");
+						foreach (CompShipLifeSupport lifeSupport in ship.LifeSupports.ToList()) //Curse you, collection modification bugs!
+							lifeSupport.parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, pointsOfDamage));
+						DefDatabase<SoundDef>.GetNamed("Explosion_Smoke").PlayOneShot(this);
+					},
+					defaultLabel = "SoS.ExpelSuperheatedAir".Translate(),
+					defaultDesc = "SoS.ExpelSuperheatedAirDesc".Translate(),
+					icon = ContentFinder<Texture2D>.Get("UI/VacuumSuckSuckSuck")
+				};
+				if (ventTo.GetRoom(Map).Temperature < 100)
+				{
+					expelSuperheatedAir.disabled = true;
+					expelSuperheatedAir.disabledReason = "SoS.AirNotSuperheated".Translate();
+				}
+				else
+				{
 					ShipMapComp comp = Map.GetComponent<ShipMapComp>();
 					SpaceShipCache ship = comp.ShipsOnMap[comp.ShipIndexOnVec(Position)];
-					int pointsOfDamage = room.CellCount / ship.LifeSupports.Count;
-					Log.Message("Dealing " + pointsOfDamage + " to each of " + ship.LifeSupports.Count + " life supports.");
-					foreach(CompShipLifeSupport lifeSupport in ship.LifeSupports.ToList()) //Curse you, collection modification bugs!
-						lifeSupport.parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, pointsOfDamage));
-					DefDatabase<SoundDef>.GetNamed("Explosion_Smoke").PlayOneShot(this);
-				},
-				defaultLabel = "SoS.ExpelSuperheatedAir".Translate(),
-				defaultDesc = "SoS.ExpelSuperheatedAirDesc".Translate(),
-				icon = ContentFinder<Texture2D>.Get("UI/VacuumSuckSuckSuck")
-			};
-			if(ventTo.GetRoom(Map).Temperature < 100)
-            {
-				expelSuperheatedAir.disabled = true;
-				expelSuperheatedAir.disabledReason = "SoS.AirNotSuperheated".Translate();
-            }
-			else
-            {
-				ShipMapComp comp = Map.GetComponent<ShipMapComp>();
-				SpaceShipCache ship = comp.ShipsOnMap[comp.ShipIndexOnVec(Position)];
-				if(!ship.LifeSupports.Any())
-                {
-					expelSuperheatedAir.disabled = true;
-					expelSuperheatedAir.disabledReason = "SoS.NoLifeSupport".Translate();
-                }
+					if (!ship.LifeSupports.Any())
+					{
+						expelSuperheatedAir.disabled = true;
+						expelSuperheatedAir.disabledReason = "SoS.NoLifeSupport".Translate();
+					}
+				}
+				yield return expelSuperheatedAir;
 			}
-			yield return expelSuperheatedAir;
 		}
 		public override void ExposeData()
 		{

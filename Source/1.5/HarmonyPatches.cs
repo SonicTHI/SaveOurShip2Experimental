@@ -4926,6 +4926,68 @@ namespace SaveOurShip2
         }
     }
 
+	[HarmonyPatch(typeof(Building_HoldingPlatform), "EjectContents")]
+	public static class EntitiesTravelWithShip
+    {
+		public static bool Prefix()
+        {
+			return !ShipInteriorMod2.MoveShipFlag;
+        }
+    }
+
+	[HarmonyPatch(typeof(AnomalyUtility), "TryDuplicatePawn_NewTemp")]
+	public static class NoDuplicatingFormgels
+    {
+		public static bool Prefix(Pawn originalPawn, ref Pawn duplicatePawn)
+        {
+			if(originalPawn.health?.hediffSet?.GetFirstHediff<HediffPawnIsHologram>()!=null)
+            {
+				duplicatePawn = null;
+				return false;
+            }
+			return true;
+        }
+    }
+
+	[HarmonyPatch(typeof(CreepJoinerUtility), "GenerateAndSpawn", new Type[] { typeof(CreepJoinerFormKindDef), typeof(CreepJoinerBenefitDef), typeof(CreepJoinerDownsideDef), typeof(CreepJoinerAggressiveDef), typeof(CreepJoinerRejectionDef), typeof(Map) })]
+	public static class CreepsInSpace
+    {
+		public static void Postfix(ref Pawn __result, Map map)
+        {
+			if(map.IsSpace())
+            {
+				__result.apparel.Wear((Apparel)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Apparel_SpaceSuitBody, ThingDefOf.Cloth));
+				__result.apparel.Wear((Apparel)ThingMaker.MakeThing(ResourceBank.ThingDefOf.Apparel_SpaceSuitHelmet));
+			}
+        }
+    }
+
+	[HarmonyPatch(typeof(Pawn_HealthTracker), "ShouldBeDeathrestingOrInComa")]
+	public static class NewFormgelImmortality
+    {
+		public static void Postfix(Pawn ___pawn, Pawn_HealthTracker __instance, ref bool __result)
+        {
+			if (__instance.ShouldBeDead() && __instance.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
+			{
+				__instance.hediffSet.GetFirstHediff<HediffPawnIsHologram>().consciousnessSource.GetComp<CompBuildingConsciousness>().HologramDestroyed(true);
+				__result = true;
+			}
+        }
+    }
+
+	[HarmonyPatch(typeof(Pawn_HealthTracker), "ForceDeathrestOrComa")]
+	public static class NewFormgelImmortality2
+	{
+		public static bool Prefix(Pawn_HealthTracker __instance, Pawn ___pawn)
+        {
+			if (__instance.hediffSet.GetFirstHediff<HediffPawnIsHologram>() != null)
+            {
+				return false;
+			}
+			return true;
+        }
+	}
+
 	//TEMPORARY until I talk to Phil and see how to fix this properly
 	[HarmonyPatch(typeof(CompUpgradeTree), "CompTickRare")]
 	public static class TEMPStopRedErrorOnTakeoff

@@ -2,6 +2,8 @@
 using Verse;
 using System.Collections.Generic;
 using RimWorld;
+using Verse.Sound;
+using System.Linq;
 
 namespace SaveOurShip2
 {
@@ -103,17 +105,24 @@ namespace SaveOurShip2
 			};
 			toggleHeatWithPower.icon = ContentFinder<Texture2D>.Get("Things/Building/Misc/TempControl/Heater");
 			yield return toggleHeatWithPower;
-			/*Command_Action expelSuperheatedAir = new Command_Action
+			Command_Action expelSuperheatedAir = new Command_Action
 			{
 				action = delegate
 				{
 					Room room = ventTo.GetRoom(Map);
 					foreach (IntVec3 cell in room.Cells)
 						FleckMaker.ThrowDustPuff(cell, Map, 1);
+					foreach (Fire fire in room.ContainedThings<Fire>())
+						fire.Destroy();
+					foreach (Pawn pawn in room.ContainedThings<Pawn>())
+                    {
+						if (pawn.DecompressionResistance() < 1)
+							WeatherEvent_VacuumDamage.DoPawnDecompressionDamage(pawn, 10);
+                    }						
 					room.Temperature = 0f;
 					ShipMapComp comp = Map.GetComponent<ShipMapComp>();
 					SpaceShipCache ship = comp.ShipsOnMap[comp.ShipIndexOnVec(Position)];
-					int pointsOfDamage = room.CellCount / ship.LifeSupports.Count / 4;
+					int pointsOfDamage = room.CellCount / ship.LifeSupports.Count;
 					Log.Message("Dealing " + pointsOfDamage + " to each of " + ship.LifeSupports.Count + " life supports.");
 					foreach(CompShipLifeSupport lifeSupport in ship.LifeSupports.ToList()) //Curse you, collection modification bugs!
 						lifeSupport.parent.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, pointsOfDamage));
@@ -138,7 +147,7 @@ namespace SaveOurShip2
 					expelSuperheatedAir.disabledReason = "SoS.NoLifeSupport".Translate();
                 }
 			}
-			yield return expelSuperheatedAir;*/
+			yield return expelSuperheatedAir;
 		}
 		public override void ExposeData()
 		{

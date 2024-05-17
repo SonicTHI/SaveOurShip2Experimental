@@ -36,6 +36,12 @@ namespace SaveOurShip2
 						IntVec3 adj = IntVec3.Zero;
 						WorldObjectOrbitingShip mapPar; //origin might not be WOS
 						
+						foreach(Building building in ship.Buildings)
+                        {
+							if (building is Building_ShipAirlock airlock && airlock.Outerdoor())
+								airlock.SetForbidden(true);
+                        }
+						
 						if (!originIsSpace || (originIsSpace && (mapComp.ShipsOnMap.Count > 1 || originMap.mapPawns.AllPawns.Any(p => !mapComp.MapShipCells.ContainsKey(p.Position))))) //to either with temp map
 						{
 							//spawn new WO and map

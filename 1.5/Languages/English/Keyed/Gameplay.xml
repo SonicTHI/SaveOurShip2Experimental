@@ -394,7 +394,7 @@
 	<SoSMustDesignateWreckage>Must designate wrecked starship hull</SoSMustDesignateWreckage>
 	<SoS.UnDockWarning>Warning: Moving a ship while docked will release all docking clamps.</SoS.UnDockWarning>
 	<SoS.ExpelSuperheatedAir>Expel superheated air</SoS.ExpelSuperheatedAir>
-	<SoS.ExpelSuperheatedAirDesc>Use this vent to expel superheated air from the room. The process will damage your ship's life-support systems for one point per four tiles in the room, split evenly.</SoS.ExpelSuperheatedAirDesc>
+	<SoS.ExpelSuperheatedAirDesc>Use this vent to expel superheated air from the room. The process will damage your ship's life-support system(s) for one point per tile in the room, split evenly.\n\nAny non-EVA-capable pawns in the room will suffer explosive decompression!</SoS.ExpelSuperheatedAirDesc>
 	<SoS.AirNotSuperheated>Air is not superheated</SoS.AirNotSuperheated>
 	<SoS.NoLifeSupport>No active life support</SoS.NoLifeSupport>
 	<SoS.BreakCloakAtHeat>Break cloak at depletion level</SoS.BreakCloakAtHeat>

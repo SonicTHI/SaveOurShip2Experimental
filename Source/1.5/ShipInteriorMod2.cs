@@ -1855,7 +1855,13 @@ namespace SaveOurShip2
 			Map originMap = core.Map;
 			IntVec3 size = originMap.Size;
 			var originMapComp = originMap.GetComponent<ShipMapComp>();
-			var ship = originMapComp.ShipsOnMap[((Building_ShipBridge)core).ShipIndex];
+			var ship = originMapComp.ShipsOnMap[((Building_ShipBridge)core).ShipIndex]; 
+			
+			foreach (Building building in ship.Buildings)
+			{
+				if (building is Building_ShipAirlock airlock && airlock.Outerdoor())
+					airlock.SetForbidden(true);
+			}
 
 			//spawn new WO and map
 			bool mapIsLarger = false;

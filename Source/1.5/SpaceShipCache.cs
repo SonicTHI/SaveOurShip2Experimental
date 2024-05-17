@@ -42,6 +42,7 @@ namespace SaveOurShip2
 		public List<Building_ShipBridge> Bridges = new List<Building_ShipBridge>();
 		public List<Building_ShipBridge> AICores = new List<Building_ShipBridge>();
 		public HashSet<Building_ShipTurret> Turrets = new HashSet<Building_ShipTurret>();
+		public List<CompShipBay> Bays = new List<CompShipBay>();
 		public List<Building_ShipSensor> Sensors = new List<Building_ShipSensor>();
 		public List<CompHullFoamDistributor> FoamDistributors = new List<CompHullFoamDistributor>();
 		public List<CompShipLifeSupport> LifeSupports = new List<CompShipLifeSupport>();
@@ -316,14 +317,48 @@ namespace SaveOurShip2
 		}
 		public void CreateShipSketchIfFuelPct(float fuelPercentNeeded, Map map, byte rot = 0, bool atmospheric = false)
 		{
-			if (HasPilotRCSAndFuel(fuelPercentNeeded, atmospheric))
-				CreateShipSketch(map, rot, atmospheric);
+			if (!HasMannedBridge())
+			{
+				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPilot"), Core, MessageTypeDefOf.NeutralEvent);
+				return;
+			}
+			float fuelNeeded = MassActual;
+			if (!HasRCS())
+			{
+				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
+				return;
+			}
+			fuelNeeded *= fuelPercentNeeded;
+			if (FuelNeeded(atmospheric) < fuelNeeded)
+			{
+				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailFuel", fuelNeeded), Core, MessageTypeDefOf.NeutralEvent);
+				return;
+			}
+			CreateShipSketch(map, rot, atmospheric);
 		}
 		public bool HasPilotRCSAndFuel(float fuelPercentNeeded, bool atmospheric)
 		{
-			if (!HasMannedBridge() || !HasRCSAndFuel(fuelPercentNeeded, atmospheric))
+			if (!HasMannedBridge() || !HasRCS() || FuelNeeded(atmospheric) < MassActual * fuelPercentNeeded)
 				return false;
 			return true;
+		}
+		public string MoveFailReason(float fuelPercentNeeded, bool atmospheric = false)
+		{
+			if (!HasMannedBridge())
+			{
+				return TranslatorFormattedStringExtensions.Translate("SoS.MoveFailPilot");
+			}
+			float fuelNeeded = MassActual;
+			if (!HasRCS())
+			{
+				return TranslatorFormattedStringExtensions.Translate("SoS.MoveFailRCS", 1 + (fuelNeeded / 2000));
+			}
+			fuelNeeded *= fuelPercentNeeded;
+			if (FuelNeeded(atmospheric) < fuelNeeded)
+			{
+				return TranslatorFormattedStringExtensions.Translate("SoS.MoveFailFuel", fuelNeeded);
+			}
+			return "";
 		}
 		public bool HasMannedBridge()
 		{
@@ -341,22 +376,13 @@ namespace SaveOurShip2
 			}
 			return false;
 		}
-		public bool HasRCSAndFuel(float fuelPercentNeeded, bool atmospheric)
+		public bool HasRCS(float fuelNeeded = 0)
 		{
-			float fuelNeeded = MassActual;
-			Log.Message("Mass: " + MassActual + " fuel req: " + fuelNeeded * fuelPercentNeeded + " RCS: " + RCSs.Count);
-			if (atmospheric && ((1000 < fuelNeeded && RCSs.Count * 2000 < fuelNeeded) || Engines.Any(e => e.Props.reactionless))) //2k weight/RCS to move
-			{
-				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailRCS", 1 + (fuelNeeded / 2000)), Core, MessageTypeDefOf.NeutralEvent);
-				return false;
-			}
-			fuelNeeded *= fuelPercentNeeded;
-			if (FuelNeeded(atmospheric) < fuelNeeded)
-			{
-				Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.MoveFailFuel", fuelNeeded), Core, MessageTypeDefOf.NeutralEvent);
-				return false;
-			}
-			return true;
+			if (Engines.Any(e => e.Props.reactionless))
+				return true;
+			if (fuelNeeded == 0)
+				fuelNeeded = MassActual;
+			return 1000 < fuelNeeded || RCSs.Count * 2000 < fuelNeeded;
 		}
 		public float FuelNeeded(bool atmospheric)
 		{
@@ -369,7 +395,7 @@ namespace SaveOurShip2
 			}
 			return fuelHad;
 		}
-		public void CreateShipSketch(Map targetMap, byte rotb = 0, bool atmospheric = false)
+		public void CreateShipSketch(Map targetMap, byte rotb = 0, bool atmospheric = false, float fuelPaidByTarget = 0)
 		{
 			IntVec3 lowestCorner = LowestCorner(rotb, Map);
 			Sketch sketch = new Sketch();
@@ -449,6 +475,7 @@ namespace SaveOurShip2
 			fakeMover.originMap = Map;
 			fakeMover.targetMap = targetMap;
 			fakeMover.atmospheric = atmospheric;
+			fakeMover.fuelPaidByTarget = fuelPaidByTarget;
 			fakeMover.Position = fakeMover.shipRoot.Position;
 			fakeMover.SpawnSetup(targetMap, false);
 			List<object> selected = new List<object>();
@@ -777,6 +804,8 @@ namespace SaveOurShip2
 					{
 						if (b.TryGetComp<CompCryptoLaunchable>() != null)
 							Pods.Add(b.GetComp<CompCryptoLaunchable>());
+						else if (b.TryGetComp<CompShipBay>() != null)
+							Bays.Add(b.GetComp<CompShipBay>());
 						else if (b is Building_ShipBridge bridge && bridge.terminate == false)
 						{
 							Bridges.Add(bridge);
@@ -892,6 +921,8 @@ namespace SaveOurShip2
 					{
 						if (b.TryGetComp<CompCryptoLaunchable>() != null)
 							Pods.Remove(b.GetComp<CompCryptoLaunchable>());
+						else if (b.TryGetComp<CompShipBay>() != null)
+							Bays.Remove(b.GetComp<CompShipBay>());
 						else if (b is Building_ShipBridge bridge)
 						{
 							Bridges.Remove(bridge);

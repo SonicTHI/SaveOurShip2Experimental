@@ -84,26 +84,14 @@ namespace SaveOurShip2
 			else if (mode == SelectShipMapMode.stabilize)
 			{
 				int bCount = targetMap.listerBuildings.allBuildingsNonColonist.Count + targetMap.listerBuildings.allBuildingsColonist.Count;
-				int bMax = mapComp.MaxSalvageWeightOnMap();
-				if (bCount > bMax)
+				List<CompEngineTrail> engines = mapComp.MaxSalvageWeightOnMap(out int maxMass, out float fuel);
+				if (bCount > maxMass)
 				{
-					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageCount", bCount, bMax), MessageTypeDefOf.NeutralEvent);
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageCount", bCount, maxMass), MessageTypeDefOf.NeutralEvent);
 				}
 				else
 				{
 					float req = bCount;// * 2.5f;
-					float fuel = 0f;
-					List<CompEngineTrail> engines = new List<CompEngineTrail>();
-					foreach (SpaceShipCache ship in mapComp.ShipsOnMap.Values)
-					{
-						foreach (CompEngineTrail engine in ship.Engines.Where(e => e.FuelUse > 0))
-						{
-							engines.Add(engine);
-							fuel += engine.refuelComp.Fuel;
-							if (engine.PodFueled)
-								fuel += engine.refuelComp.Fuel;
-						}
-					}
 					Log.Message("SOS2: ".Colorize(Color.cyan) + " fuel/req: " + fuel +"/"+req);
 					if (fuel > req)
 					{

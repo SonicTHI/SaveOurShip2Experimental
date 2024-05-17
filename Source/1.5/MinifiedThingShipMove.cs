@@ -18,6 +18,7 @@ namespace SaveOurShip2
 		public Map originMap = null;
 		public Map targetMap = null;
 		public bool atmospheric = false;
+		public float fuelPaidByTarget = 0;
 		public Faction fac = null;
 
 		public override void Tick()
@@ -93,6 +94,38 @@ namespace SaveOurShip2
 					}
 					else //normal move to target map, claim moved ships for player
 					{
+						if (fuelPaidByTarget > 0) //moved with bay, paid by target map
+						{
+							Log.Message("SOS2 fuelPaidByTarget: " + fuelPaidByTarget);
+							var targetMapComp = targetMap.GetComponent<ShipMapComp>();
+							List<CompEngineTrail> engines = new List<CompEngineTrail>();
+							List<SpaceShipCache> ships = new List<SpaceShipCache>();
+							float fuel = 0;
+							foreach (SpaceShipCache ship in targetMapComp.ShipsOnMap.Values)
+							{
+								if (ship.CanFire() && ship.HasMannedBridge() && ship.HasRCS())
+								{
+									ships.Add(ship);
+									foreach (CompEngineTrail engine in ship.Engines.Where(e => e.FuelUse > 0))
+									{
+										fuel += engine.refuelComp.Fuel;
+										if (engine.PodFueled)
+											fuel += engine.refuelComp.Fuel;
+										engines.Add(engine);
+									}
+								}
+							}
+							foreach (SpaceShipCache ship in ships)
+							{
+								foreach (CompEngineTrail engine in engines)
+								{
+									float consume = fuelPaidByTarget * engine.refuelComp.Fuel / fuel;
+									if (engine.PodFueled)
+										consume *= 0.5f;
+									engine.refuelComp.ConsumeFuel(Mathf.Min(consume, engine.refuelComp.Fuel));
+								}
+							}
+						}
 						ShipInteriorMod2.MoveShip(shipRoot, targetMap, InstallBlueprintUtility.ExistingBlueprintFor(this).Position - bottomLeftPos, fac, shipRotNum, includeRock);
 					}
 				}

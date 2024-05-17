@@ -4550,8 +4550,6 @@ namespace SaveOurShip2
 			if (ModSettings_SoS.shipMapPhysics && mapComp.ShipMapState == ShipMapState.inCombat && mapComp.MapEnginePower >= 0.02f)
 			{
 				if (mapComp.Bays.Any(b => b.CanFitShuttleSize(__instance.vehicle) != IntVec3.Zero))
-					__result = PositionState.Invalid; //restrict to bays if available
-				else
 					__result = PositionState.Obstructed; //warn but allow
 				return;
 			}

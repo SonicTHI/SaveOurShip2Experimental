@@ -362,6 +362,8 @@ namespace SaveOurShip2
 				"AncientComplex_Standard",
 				//bt
 				"OpportunitySite_AncientComplex_Mechanitor",
+				//Anomaly
+				"CreepJoinerArrival",
 				//mod
 				"VFEA_OpportunitySite_SealedVault",
 				"VFEM_OpportunitySite_LootedVault"

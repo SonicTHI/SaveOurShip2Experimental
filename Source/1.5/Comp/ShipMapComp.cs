@@ -2569,7 +2569,7 @@ namespace SaveOurShip2
 						VehicleSkyfaller_Arriving vehicleSkyfaller_Arriving = (VehicleSkyfaller_Arriving)VehicleSkyfallerMaker.MakeSkyfaller(mission.shuttle.CompVehicleLauncher.Props.skyfallerIncoming, mission.shuttle);
 						GenSpawn.Spawn(vehicleSkyfaller_Arriving, target.Cell, mapToSpawnIn, Rot4.East);
 					},
-					null, null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
+					(LocalTargetInfo info) => { var bay = info.Cell.GetThingList(mapToSpawnIn).Where(t => t.TryGetComp<CompShipBay>() != null)?.FirstOrDefault(); return bay==null || bay.TryGetComp<CompShipBay>().CanFitShuttleSize(mission.shuttle)!=IntVec3.Zero; }, null, null, mission.shuttle.VehicleDef.rotatable && !(mission.shuttle.CompVehicleLauncher.launchProtocol.LandingProperties?.forcedRotation).HasValue, forcedTargeting: true);
 				}
 				else //enemy shuttles - never returns?
 				{

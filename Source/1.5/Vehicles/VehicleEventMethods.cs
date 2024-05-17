@@ -25,6 +25,7 @@ namespace SaveOurShip2
         public static void ShuttleLanded(DefaultTakeoff landing)
         {
             CompVehicleHeatNet net = landing.vehicle.TryGetComp<CompVehicleHeatNet>();
+            landing.vehicle.ignition.Drafted = false;
             net?.RebuildHeatNet();
 		}
     }

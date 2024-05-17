@@ -386,6 +386,13 @@
 						<DecompressionResistance>1</DecompressionResistance>
 					</value>
 				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/HediffDef[defName="Ghoul"]/stages/li/statOffsets</xpath>
+					<value>
+						<HypoxiaResistance>1</HypoxiaResistance>
+						<DecompressionResistance>1</DecompressionResistance>
+					</value>
+				</li>
 			</operations>
 		</match>
 	</Operation>

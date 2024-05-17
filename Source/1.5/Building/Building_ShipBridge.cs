@@ -874,8 +874,8 @@ namespace SaveOurShip2
 											mapComp.StartShipEncounter(passingShip);
 										},
 										icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Pirate"),
-										defaultLabel = "Attack " + passingShip.FullTitle,
-										defaultDesc = "Attack the " + passingShip.FullTitle
+										defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.AttackShip") + " " + passingShip.FullTitle,
+										defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.AttackShipDesc") + " " + passingShip.FullTitle
 									};
 									yield return attackPirateShip;
 								}
@@ -889,8 +889,8 @@ namespace SaveOurShip2
 											mapComp.StartShipEncounter(passingShip);
 										},
 										icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Trader"),
-										defaultLabel = "Attack " + passingShip.FullTitle,
-										defaultDesc = "Attempt an act of space piracy against " + passingShip.FullTitle
+										defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.AttackShip") + " " + passingShip.FullTitle,
+										defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.AttackShipPirate") + " " + passingShip.FullTitle
 									};
 									yield return attackTradeShip;
 								}
@@ -904,8 +904,8 @@ namespace SaveOurShip2
 											mapComp.StartShipEncounter(passingShip);
 										},
 										icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Pirate"),
-										defaultLabel = "Attack " + passingShip.FullTitle,
-										defaultDesc = "Attempt to engage " + passingShip.FullTitle
+										defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.AttackShip") + " " + passingShip.FullTitle,
+										defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.AttackShipEngage") + " " + passingShip.FullTitle
 									};
 									yield return attackAttackableShip;
 								}
@@ -919,8 +919,8 @@ namespace SaveOurShip2
 											mapComp.StartShipEncounter(passingShip);
 										},
 										icon = ContentFinder<Texture2D>.Get("UI/IncomingShip_Icon_Quest"),
-										defaultLabel = "Approach " + passingShip.FullTitle,
-										defaultDesc = "Approach to investigate " + passingShip.FullTitle
+										defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ApproachShip") + " " + passingShip.FullTitle,
+										defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ApproachShip") + " " + passingShip.FullTitle
 									};
 									yield return approachDerelictShip;
 								}

@@ -28,7 +28,7 @@ namespace SaveOurShip2.Vehicles
                 yield return new Command_ActionHighlighter
                 {
                     defaultLabel = Translator.Translate("SoS.HoverJump"),
-                    defaultDesc = Translator.Translate("SoS.HoverJump.Desc"),
+                    defaultDesc = Translator.Translate("SoS.HoverJumpDesc"),
                     icon = ContentFinder<Texture2D>.Get("UI/ShuttleLocalFlight"),
                     action = delegate ()
                     {
@@ -40,8 +40,8 @@ namespace SaveOurShip2.Vehicles
                         }, (LocalTargetInfo targetInfo) => !Ext_Vehicles.IsRoofRestricted(Vehicle.VehicleDef, targetInfo.Cell, Vehicle.Map), null, null, true);
                     },
                     disabled = Vehicle.CompFueledTravel.Fuel < 5.1 || Ext_Vehicles.IsRoofRestricted(Vehicle.VehicleDef, Vehicle.Position, Vehicle.Map),
-                    disabledReason = Vehicle.CompFueledTravel.Fuel < 5.1 ? "Not enough fuel" : "Cannot launch under roof"
-                };
+                    disabledReason = Vehicle.CompFueledTravel.Fuel < 5.1 ? "SoS.NotEnoughFuel".Translate() : "SoS.UnderRoof".Translate()
+				};
             }
 		}
     }

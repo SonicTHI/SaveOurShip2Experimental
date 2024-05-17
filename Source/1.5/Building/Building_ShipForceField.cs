@@ -8,7 +8,7 @@ using RimWorld;
 
 namespace SaveOurShip2
 {
-	public class Building_ShipForceField : Building
+	/*public class Building_ShipForceField : Building
 	{
 		public CompPowerTrader powerComp;
 		public bool active = false;
@@ -29,10 +29,10 @@ namespace SaveOurShip2
 		{
 			base.DrawAt(drawLoc, flip);
 			//td draw powered forcefield wall
-			/*if (active)
+			if (active)
 			{
 
-			}*/
+			}
 		}
 		public override void Tick()
 		{
@@ -85,5 +85,5 @@ namespace SaveOurShip2
 				}
 			}
 		}
-	}
+	}*/
 }

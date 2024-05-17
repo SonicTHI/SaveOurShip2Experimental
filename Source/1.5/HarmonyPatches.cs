@@ -165,7 +165,7 @@ namespace SaveOurShip2
 			if (shuttlesToDisplay < playerMapComp.ShuttleMissions.Count)
             {
 				baseY += 30;
-				string str = "(" + (playerMapComp.ShuttleMissions.Count - shuttlesToDisplay) + " more shuttles)";
+				string str = "(" + (playerMapComp.ShuttleMissions.Count - shuttlesToDisplay) + " " + "SoS.ShuttlesMore".Translate() + ")";
 				int strSize = 5 + str.Length * 6;
 				Rect rect2 = new Rect(screenHalf - 380 - strSize, baseY - 40, 10 + strSize, 25);
 				Widgets.DrawMenuSection(rect2);
@@ -228,7 +228,7 @@ namespace SaveOurShip2
 			if (shuttlesToDisplay < enemyMapComp.ShuttleMissions.Count)
 			{
 				baseY += 30;
-				string str = "(" + (enemyMapComp.ShuttleMissions.Count - shuttlesToDisplay) + " more shuttles)";
+				string str = "(" + (enemyMapComp.ShuttleMissions.Count - shuttlesToDisplay) + " " + "SoS.ShuttlesMore".Translate() + ")";
 				int strSize = 5 + str.Length * 6;
 				Rect rect2 = new Rect(screenHalf + 785, baseY - 40, 10 + strSize, 25);
 				Widgets.DrawMenuSection(rect2);
@@ -1219,7 +1219,7 @@ namespace SaveOurShip2
 			if (map.IsSpace())
 			{
 				__result.disabled = true;
-				__result.disabledReason = "Cannot settle space sites";
+				__result.disabledReason = "SoS.SettleSpaceSites".Translate();
 			}
 		}
 	}
@@ -2613,7 +2613,7 @@ namespace SaveOurShip2
 						pawn.CanReserveAndReach(current, PathEndMode.OnCell, Danger.Deadly, 1, -1, null, true) &&
 						findCryptonestFor(current, pawn, true) != null)
 					{
-						string text2 = "Carry to cryptonest";
+						string text2 = "SoS.CarryToCryptonest".Translate();
 						JobDef jDef = DefDatabase<JobDef>.GetNamed("CarryToCryptonest");
 						Action action2 = delegate {
 							Building_CryptosleepCasket building_CryptosleepCasket =

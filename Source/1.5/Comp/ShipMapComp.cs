@@ -972,7 +972,7 @@ namespace SaveOurShip2
 			//post ship spawn - map name
 			if (fleet)
 			{
-				mp.Name = "Ship fleet " + newMap.uniqueID;
+				mp.Name = "SoS.ShipFleet".Translate() + " " + newMap.uniqueID;
 			}
 			else
 			{

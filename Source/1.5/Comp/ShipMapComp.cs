@@ -314,7 +314,7 @@ namespace SaveOurShip2
 		public Lord InvaderLord; //second AI ship lord for wreck second facton
 		public Map NextTargetMap; //if any, will trigger battle after 10s
 		public Map ShipGraveyard; //map to put destroyed ships to
-		public Map GraveOrigin; //check if parent is in combat
+		public Map GraveOrigin; //set on grave creation, check if parent is in combat
 
 		//atmospheric move
 		public IntVec3 MoveToVec; //vec to move to after altitude reached
@@ -386,14 +386,29 @@ namespace SaveOurShip2
 		public List<CompBuildingConsciousness> Spores = new List<CompBuildingConsciousness>(); //workjob
 		public List<CompShipBay> Bays = new List<CompShipBay>(); //landing checks
 		public HashSet<IntVec3> MapExtenderCells = new HashSet<IntVec3>(); //extender EVA checks
-		public int MaxSalvageWeightOnMap()
+		public List<CompEngineTrail> MaxSalvageWeightOnMap(out int maxMass, out float fuel) //for moving/stabilizing wrecks
 		{
-			int total = 0;
-			foreach (var b in map.GetComponent<ShipMapComp>().Bays.Where(t => t is CompShipBaySalvage))
+			List<CompEngineTrail> engines = new List<CompEngineTrail>();
+			maxMass = 0;
+			fuel = 0;
+			foreach (SpaceShipCache ship in ShipsOnMap.Values)
 			{
-				total += ((CompShipBaySalvage)b).SalvageWeight;
+				if (ship.CanFire() && ship.HasMannedBridge() && ship.HasRCS())
+				{
+					foreach (CompEngineTrail engine in ship.Engines.Where(e => e.FuelUse > 0))
+					{
+						fuel += engine.refuelComp.Fuel;
+						if (engine.PodFueled)
+							fuel += engine.refuelComp.Fuel;
+						engines.Add(engine);
+					}
+					foreach (CompShipBay bay in ship.Bays.Where(t => t is CompShipBaySalvage))
+					{
+						maxMass += ((CompShipBaySalvage)bay).SalvageWeight;
+					}
+				}
 			}
-			return total;
+			return engines;
 		}
 
 		//ship cache functions

@@ -15,7 +15,7 @@ namespace SaveOurShip2
 		public int salvageBayNum;
 		public byte rotb = 0;
 		public Map sourceMap;
-		public Map targetMap;
+		public Map targetMap; //map retrieved from
 
 		public override void ProcessInput(Event ev)
 		{
@@ -37,22 +37,31 @@ namespace SaveOurShip2
 		{
 			if (b == null)
 				return;
-			int bMax = sourceMap.GetComponent<ShipMapComp>().MaxSalvageWeightOnMap();
+			var sourceMapComp = b.Map.GetComponent<ShipMapComp>();
+			List<CompEngineTrail> engines = sourceMapComp.MaxSalvageWeightOnMap(out int maxMass, out float fuel);
 			var mapComp = b.Map.GetComponent<ShipMapComp>();
 			int shipIndex = mapComp.ShipIndexOnVec(b.Position);
+			float factor = ShipInteriorMod2.pctFuelLocal;
+			if (sourceMap != targetMap)
+				factor = ShipInteriorMod2.pctFuelMap;
 			if (shipIndex != -1)
 			{
 				var ship = mapComp.ShipsOnMap[shipIndex];
-				float bCountF = ship.BuildingCount * 2.5f;
-				if (bCountF > bMax) //moving this ship with another ship //td compare size, check bays and fuel
+				float mass = ship.MassActual;
+				if (maxMass < mass)
 				{
-					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageCount", (int)bCountF, bMax), MessageTypeDefOf.NeutralEvent);
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageFailMass", (int)mass, maxMass), MessageTypeDefOf.NeutralEvent);
 					return;
 				}
-				ship.CreateShipSketch(sourceMap, rotb);
+				if (fuel < mass * factor)
+				{
+					Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.SalvageFailFuel", (int)mass * factor, fuel), MessageTypeDefOf.NeutralEvent);
+					return;
+				}
+				ship.CreateShipSketch(sourceMap, rotb, false, mass * factor);
 			}
 			else //legacy move for rocks, etc //td rework
-				MoveShipSketch(b, sourceMap, rotb, true, bMax, false);
+				MoveShipSketch(b, sourceMap, rotb, true, maxMass, false);
 		}
 		//legacy move system that can work with rocks
 		public Sketch GenerateShipSketch(HashSet<IntVec3> positions, Map map, IntVec3 lowestCorner, byte rotb = 0)

@@ -130,13 +130,17 @@ namespace SaveOurShip2
 		{
 			base.GetSettings<ModSettings_SoS>();
 		}
-		public const string SOS2EXPversion = "V101f39";
+		public const string SOS2EXPversion = "V101f40";
 		public const int SOS2ReqCurrentMinor = 5;
 		public const int SOS2ReqCurrentBuild = 4062;
 
 		public const float altitudeNominal = 1000f; //nominal altitude for ship map background render
 		public const float altitudeLand = 110f; //min altitude for ship map background render
 		public const float crittersleepBodySize = 0.7f;
+		public const float pctFuelLocal = 0.02f;
+		public const float pctFuelMap = 0.05f;
+		public const float pctFuelSpace = 0.5f; //check is 1 since we dont want ships to crash right after takeoff
+		public const float pctFuelLand = 0.1f;
 
 		public static bool loadedGraphics = false;
 		public static bool HasSoS2CK = false;
@@ -2327,20 +2331,25 @@ namespace SaveOurShip2
 				}
 				if (sourceMapIsSpace)
 				{
-					if (targetMapIsSpace) //space map 1%
-						fuelNeeded *= 0.01f;
-					else //to ground 10%
+					if (targetMapIsSpace) //space map
 					{
-						fuelNeeded *= 0.1f;
+						if (targetMap == sourceMap)
+							fuelNeeded *= pctFuelLocal;
+						else
+							fuelNeeded *= pctFuelMap;
+					}
+					else //to ground
+					{
+						fuelNeeded *= pctFuelLand;
 						if (fuelNeeded > fuelStored)
 							weBeCrashing = fuelStored / fuelNeeded;
 						else if (!ship.CanMove())
 							weBeCrashing = 1f;
 					}
 				}
-				else //to space 50% initial
+				else //to space
 				{
-					fuelNeeded *= 0.5f;
+					fuelNeeded *= pctFuelSpace;
 				}
 				foreach (CompEngineTrail engine in engines)
 				{

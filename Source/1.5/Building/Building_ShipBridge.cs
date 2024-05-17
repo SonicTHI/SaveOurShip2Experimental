@@ -659,7 +659,7 @@ namespace SaveOurShip2
 							groupable = false,
 							action = delegate
 							{
-								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(0.01f, Map); }, mapComp, shipIndex);
+								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(ShipInteriorMod2.pctFuelLocal, Map); }, mapComp, shipIndex);
 							},
 							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Move"),
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveDesc"),
@@ -671,7 +671,7 @@ namespace SaveOurShip2
 							groupable = false,
 							action = delegate
 							{
-								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(0.01f, Map, 2); }, mapComp, shipIndex);
+								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(ShipInteriorMod2.pctFuelLocal, Map, 2); }, mapComp, shipIndex);
 							},
 							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveFlip"),
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveFlipDesc"),
@@ -683,20 +683,21 @@ namespace SaveOurShip2
 							groupable = false,
 							action = delegate
 							{
-								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(0.01f, Map, 1); }, mapComp, shipIndex);
+								ShipInteriorMod2.UnDockWarning(delegate { Ship.CreateShipSketchIfFuelPct(ShipInteriorMod2.pctFuelLocal, Map, 1); }, mapComp, shipIndex);
 							},
 							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.MoveRot"),
 							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.MoveRotDesc"),
 							icon = ContentFinder<Texture2D>.Get("UI/Rotate_Ship")
 						};
-						if (ShipCountdown.CountingDown || !Ship.HasPilotRCSAndFuel(0.01f, false))
+						if (ShipCountdown.CountingDown || !Ship.HasPilotRCSAndFuel(ShipInteriorMod2.pctFuelLocal, false))
 						{
 							moveShip.Disable();
 							moveShipFlip.Disable();
 							moveShipRot.Disable();
-							moveShip.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailImmobile");
-							moveShipFlip.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailImmobile");
-							moveShipRot.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailImmobile");
+							string failReaosn = Ship.MoveFailReason(ShipInteriorMod2.pctFuelLocal, false);
+							moveShip.disabledReason = failReaosn;
+							moveShipFlip.disabledReason = failReaosn;
+							moveShipRot.disabledReason = failReaosn;
 						}
 						else if (Ship.BuildingsNonRot.Any())
 						{
@@ -740,15 +741,16 @@ namespace SaveOurShip2
 								groupable = false,
 								action = delegate
 								{
-									ShipInteriorMod2.UnDockWarning(delegate { mapComp.MoveToMap = m; Ship.CreateShipSketchIfFuelPct(0.1f, m, 0, true); }, mapComp, shipIndex);
+									ShipInteriorMod2.UnDockWarning(delegate { mapComp.MoveToMap = m; Ship.CreateShipSketchIfFuelPct(ShipInteriorMod2.pctFuelLand, m, 0, true); }, mapComp, shipIndex);
 								},
 								defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.Land") + " (" + m.Parent.Label + ")",
 								defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.LandDesc") + m.Parent.Label,
 								icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon")
 							};
-							if (ShipCountdown.CountingDown)
+							if (ShipCountdown.CountingDown || !Ship.HasPilotRCSAndFuel(ShipInteriorMod2.pctFuelLand, false))
 							{
 								landShip.Disable();
+								landShip.disabledReason = Ship.MoveFailReason(ShipInteriorMod2.pctFuelLand, false);
 							}
 							yield return landShip;
 						}
@@ -926,9 +928,9 @@ namespace SaveOurShip2
 						}
 					}
 					//space - in transit
-					else if (mapComp.ShipMapState == ShipMapState.inTransit)
+					/*else if (mapComp.ShipMapState == ShipMapState.inTransit)
 					{
-						/*if (mapComp.Altitude == ShipInteriorMod2.altitudeLand) //arrived at map
+						if (mapComp.Altitude == ShipInteriorMod2.altitudeLand) //arrived at map
 						{
 							Command_Action landShip = new Command_Action //direct landing gizmo, grayed if zone not clear
 							{
@@ -958,26 +960,20 @@ namespace SaveOurShip2
 								yield return divertShip;
 							}
 							yield return landShip;
-						}*/
-					}
+						}
+					}*/
 					//in graveyard, not player map - return to player map
-					else if (mapComp.ShipMapState == ShipMapState.isGraveyard)
+					else if (!Map.IsPlayerHome && mapComp.ShipMapState == ShipMapState.isGraveyard)
 					{
+						Map playerMap = ShipInteriorMod2.FindPlayerShipMap() ?? ShipInteriorMod2.GeneratePlayerShipMap(Map.Size);
+						var playerMapComp = playerMap.GetComponent<ShipMapComp>();
 						Command_Action returnShip = new Command_Action
 						{
 							groupable = false,
 							action = delegate
 							{
-								if (mapComp.GraveOrigin == null || !mapComp.GraveOrigin.IsPlayerHome)
-								{
-									Map m = ShipInteriorMod2.FindPlayerShipMap() ?? ShipInteriorMod2.GeneratePlayerShipMap(Map.Size);
-									mapComp.GraveOrigin = m;
-								}
-								Ship.CreateShipSketchIfFuelPct(0.01f, mapComp.GraveOrigin);
-							},
-							defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CaptureShip"),
-							defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CaptureShipDesc"),
-							icon = ContentFinder<Texture2D>.Get("UI/Capture_Ship_Icon")
+								Ship.CreateShipSketchIfFuelPct(ShipInteriorMod2.pctFuelMap, playerMap);
+							}
 						};
 						if (mapComp.ShipFaction == Faction.OfPlayer)
 						{
@@ -985,10 +981,21 @@ namespace SaveOurShip2
 							returnShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ReturnShipDesc");
 							returnShip.icon = ContentFinder<Texture2D>.Get("UI/Planet_Landing_Icon");
 						}
-						if (ShipCountdown.CountingDown || mapComp.IsGraveOriginInCombat || !Ship.HasPilotRCSAndFuel(0.01f, false))
+						else
+						{
+							returnShip.defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.CaptureShip");
+							returnShip.defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.CaptureShipDesc");
+							returnShip.icon = ContentFinder<Texture2D>.Get("UI/Capture_Ship_Icon");
+						}
+						if (ShipCountdown.CountingDown || !Ship.HasPilotRCSAndFuel(ShipInteriorMod2.pctFuelMap, false))
 						{
 							returnShip.Disable();
-							returnShip.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailImmobile");
+							returnShip.disabledReason = Ship.MoveFailReason(ShipInteriorMod2.pctFuelMap, false);
+						}
+						else if (playerMapComp.ShipMapState == ShipMapState.inCombat)
+						{
+							returnShip.Disable();
+							returnShip.disabledReason = TranslatorFormattedStringExtensions.Translate("SoS.MoveFailCombat");
 						}
 						yield return returnShip;
 					}
@@ -1005,7 +1012,7 @@ namespace SaveOurShip2
 						{
 							Map playerShipMap = ShipInteriorMod2.FindPlayerShipMap();
 							if (playerShipMap != null) //player ship in orbit already, move to temp map
-								Ship.CreateShipSketchIfFuelPct(0.5f, playerShipMap, 0, true);
+								Ship.CreateShipSketchIfFuelPct(1f, playerShipMap, 0, true);
 							else
 								ShipCountdown.InitiateCountdown(this);
 						}

@@ -244,7 +244,7 @@ namespace SaveOurShip2
 					ChangeShieldSize(-10f);
 				},
 				defaultLabel = "- 10",
-				defaultDesc = "SoS.DecShieldRadius".Translate(),
+				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ShieldRadiusDec"),
 				hotKey = KeyBindingDefOf.Misc5,
 				icon = ContentFinder<Texture2D>.Get("UI/Commands/TempLower", true)
 			};
@@ -255,7 +255,7 @@ namespace SaveOurShip2
 					ChangeShieldSize(-1f);
 				},
 				defaultLabel = "- 1",
-				defaultDesc = "SoS.DecShieldRadius".Translate(),
+				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ShieldRadiusDec"),
 				hotKey = KeyBindingDefOf.Misc4,
 				icon = ContentFinder<Texture2D>.Get("UI/Commands/TempLower", true)
 			};
@@ -268,8 +268,8 @@ namespace SaveOurShip2
 						powerComp.PowerOutput = -powerComp.Props.basePowerConsumption;
 					SoundDefOf.Tick_Tiny.PlayOneShotOnCamera(null);
 				},
-				defaultLabel = "SoS.ResetShieldRadius".Translate(),
-				defaultDesc = "SoS.ResetShieldRadiusDesc".Translate(),
+				defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ShieldRadiusReset"),
+				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ShieldRadiusResetDesc"),
 				hotKey = KeyBindingDefOf.Misc1,
 				icon = ContentFinder<Texture2D>.Get("UI/Commands/TempReset", true)
 			};
@@ -280,7 +280,7 @@ namespace SaveOurShip2
 					ChangeShieldSize(1f);
 				},
 				defaultLabel = "+ 1",
-				defaultDesc = "SoS.IncShieldRadius".Translate(),
+				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ShieldRadiusInc"),
 				hotKey = KeyBindingDefOf.Misc2,
 				icon = ContentFinder<Texture2D>.Get("UI/Commands/TempRaise", true)
 			};
@@ -291,7 +291,7 @@ namespace SaveOurShip2
 					ChangeShieldSize(10f);
 				},
 				defaultLabel = "+ 10",
-				defaultDesc = "SoS.IncShieldRadius".Translate(),
+				defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ShieldRadiusInc"),
 				hotKey = KeyBindingDefOf.Misc3,
 				icon = ContentFinder<Texture2D>.Get("UI/Commands/TempRaise", true)
 			};
@@ -304,8 +304,8 @@ namespace SaveOurShip2
 						vehicleWantsShutDown = !vehicleWantsShutDown;
 					},
 					isActive = delegate () { return !vehicleWantsShutDown; },
-					defaultLabel = "Toggle shield",
-					defaultDesc = "Turn this shield on or off",
+					defaultLabel = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleToggleShield"),
+					defaultDesc = TranslatorFormattedStringExtensions.Translate("SoS.ShuttleToggleShieldDesc"),
 					icon = ContentFinder<Texture2D>.Get("UI/Shield_On")
 				};
             }

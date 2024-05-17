@@ -30,14 +30,14 @@ namespace SaveOurShip2
                 parent.pawn.health.AddHediff(HediffDefOf.Malnutrition);
             }
             else
-                Messages.Message("Unable to place cryptosleep cocoon!", target.Thing, MessageTypeDefOf.CautionInput);
+                Messages.Message(TranslatorFormattedStringExtensions.Translate("SoS.CocoonPlaceFail"), target.Thing, MessageTypeDefOf.CautionInput);
         }
 
         public override bool GizmoDisabled(out string reason)
         {
             if (parent.pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Malnutrition) != null)
             {
-                reason = "User is already malnourished";
+                reason = TranslatorFormattedStringExtensions.Translate("SoS.CocoonMalnourished");
                 return true;
             }
             reason = null;

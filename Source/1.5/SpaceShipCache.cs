@@ -382,7 +382,7 @@ namespace SaveOurShip2
 				return true;
 			if (fuelNeeded == 0)
 				fuelNeeded = MassActual;
-			return 1000 < fuelNeeded || RCSs.Count * 2000 < fuelNeeded;
+			return 1000 > fuelNeeded || RCSs.Count * 2000 > fuelNeeded;
 		}
 		public float FuelNeeded(bool atmospheric)
 		{

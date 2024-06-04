@@ -37,7 +37,7 @@ namespace SaveOurShip2
 		{
 			if (b == null)
 				return;
-			var sourceMapComp = b.Map.GetComponent<ShipMapComp>();
+			var sourceMapComp = salvageBay.Map.GetComponent<ShipMapComp>();
 			List<CompEngineTrail> engines = sourceMapComp.MaxSalvageWeightOnMap(out int maxMass, out float fuel);
 			var mapComp = b.Map.GetComponent<ShipMapComp>();
 			int shipIndex = mapComp.ShipIndexOnVec(b.Position);

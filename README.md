@@ -1,16 +1,11 @@
-## SAVE OUR SHIP 2 EXPERIMENTAL
+### Here lies Save Our Ship 2 Experimental.
 
-**[Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131) is an unofficial expansion for RimWorld. Build space ships that you can live on and launch them into space. Once there continue your story of survival overcoming new challenges and reaping new rewards.**
+It represents 4 years of work by me and other contributors. For a detailed list of contributions see this [sheet](https://docs.google.com/spreadsheets/d/e/2PACX-1vTdo5hy_GJEqWkTXUnXKenO9rKQ9gkt7Ov36ns_jUpIpBH-ay1i7CpzJwYyNYtvt9O9wVfCkUHsB4ut/pubhtml).
 
-### **THE 1.5 VERSION IS STILL IN BETA AND HAS ISSUES, USE IT AT YOUR OWN RISK!**
+**On 17.May 2024 it was integrated into the Steam release of [Save Our Ship 2](https://steamcommunity.com/sharedfiles/filedetails/?id=1909914131) and forked to a new [official repository](https://github.com/KentHaeger/SaveOurShip2).**
 
-**SOS2 EXPERIMENTAL** (SOS2EXP) is the stable and maintained version of SOS2 for RimWorld 1.5. It includes over two years worth of bugfixes, performance optimizations, mechanics changes and some new features that might need more testing. A working version for RimWorld 1.4 is included but will not receive any further updates. An updated version of the Creation kit is available [here](https://github.com/SonicTHI/SaveOurShip2CreationKit).
+**Anyone looking to download the latest releases or contribute, follow those links!**
 
-**While this version is officially endorsed, it is not maintained by RHX media and you use it at your own risk.** The original creators occasionally still contribute to this project but neither they or anyone else (**except yourself**) is responsible for your pawns, saves, PC, etc.
+All contributions are owned by their authors.
 
-___
-### **[The project wiki](https://github.com/SonicTHI/SaveOurShip2Experimental/wiki) contains information on how to install, troubleshoot and utilize SOS2EXP!**
-___
-**CONTRIBUTION / CODE SUBMISSIONS / PULL REQUESTS / MOD CONFLICT RESOLUTIONS:**
-
-**First time submitters: do not make unsolicited pull requests. Submit an issue or contact me in #save-our-ship on [Radian Helix Media discord](https://discord.gg/GK7nqgu) first - read the server rules!.**
+SonicTHI, 20.Jun 2024
